@@ -1,11 +1,11 @@
 {
   "required": true,
-  "minVersion": "0.8.5-GTNH",
+  "minVersion": "0.8",
   "package": "com.science.gtnl.mixin",
-  "refmap": "mixins.GTNotLeisure.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
-  "client": [],
-  "server": []
+  "mixins": [
+
+  ],
+  "refmap": "mixins.gtnl.refmap.json"
 }
