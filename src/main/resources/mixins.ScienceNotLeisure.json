@@ -5,7 +5,10 @@
   "refmap": "mixins.ScienceNotLeisure.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
+  "mixins": [
+    "Accessor.MTECubicMultiBlockBaseAccessor",
+    "MultiBlockStructure.VacuumFreezer.MTEVacuumFreezerMixin"
+  ],
   "client": [],
   "server": []
 }

@@ -1,20 +1,7 @@
-           ,CCCCCCC    ,CCCCCCC    ,CCCCCCC    ,CCCCCCC    ,CCCCCCC    
- CCCCC     ,CDDDDDC    ,CD D DC    ,CD D DC    ,CDDDDDC    ,CCCCCCC    
+           ,CCCCCCC    ,CCCCCCC    ,CCCCCCC    ,CCCCCCC    ,CCCCCCC
+ CCCCC     ,CDDDDDC    ,CD D DC    ,CD D DC    ,CDDDDDC    ,CCCCCCC
  CAAAC     ,CD   DC EEE,C     C EFE,C     C EFE,CD D DC EFE,CCCCCCC EEE
  CAAAC     ,CD   DC EBE,CD   DDDDDB,CD   DC BDB,CDDDDDDDDDB,CCCCCCC EBE
  CAAAC     ,CD   DC EBE,C     C BDB,C     C BDB,CD D DC BDB,CCCCCCC EBE
  CC~CC     ,CDDDDDC EBE,CD D DDDDDB,CD D DC BDB,CDDDDDDDDDB,CCCCCCC EBE
  CCCCC     ,CCCCCCC EEE,CCCCCCC EFE,CCCCCCC EFE,CCCCCCC EFE,CCCCCCC EEE
-
-Blocks:
-A -> ofBlock...(BW_GlasBlocks, 0, ...);
-B -> ofBlock...(MetaBlockCasing, 2, ...);
-C -> ofBlock...(gt.blockcasings2, 1, ...);
-D -> ofBlock...(gt.blockcasings2, 13, ...);
-E -> ofBlock...(gt.blockcasings4, 1, ...);
-F -> ofBlock...(gt.blockcasingsNH, 1, ...);
-
-Offsets:
-3 5 0
-
-并行=玻璃等级^2+电压等级^2

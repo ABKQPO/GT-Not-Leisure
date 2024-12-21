@@ -12,7 +12,7 @@ public class MainConfig {
     public static double secondsOfArtificialStarProgressCycleTime = 6.4;
     public static boolean EnableRenderDefaultArtificialStar = true;
     public static long EUEveryStrangeAnnihilationFuelRod = 32768L * Integer.MAX_VALUE;
-    public static boolean MultiBlockStructureEnable = false;
+    public static boolean MultiBlockStructureEnable = true;
 
     private static Configuration config;
 
