@@ -66,7 +66,7 @@ public abstract class VacuumFreezerMixin<T extends MTECubicMultiBlockBase<T>> ex
         try {
             Method method = MTECubicMultiBlockBase.class.getDeclaredMethod("getCasingElement");
             method.setAccessible(true);
-            return (IStructureElement<T>) method.invoke(instance); // 在方法内部完成类型转换
+            return (IStructureElement<T>) method.invoke(instance);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("无法调用 getCasingElement 方法", e);
         }
