@@ -166,7 +166,7 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 64L))
             .fluidInputs(
                 Materials.Lithium.getMolten(586),
-                Materials.Draconic.getMolten(288),
+                Materials.Draconium.getMolten(288),
                 Materials.Mercury.getFluid(1000))
             .fluidOutputs(GGMaterial.thoriumBasedLiquidFuel.getFluidOrGas(4000))
             .noOptimize()
