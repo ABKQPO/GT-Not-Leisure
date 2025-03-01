@@ -411,7 +411,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(8),
                 ItemList.Circuit_Parts_TransistorASMD.get(8),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8))
-            .fluidInputs(Materials.SolderingAlloy.getFluid(144))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .itemOutputs(ItemList.Circuit_Neuroprocessor.get(1))
             .requiresCleanRoom()
             .specialValue(0)
@@ -426,7 +426,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 GTNLItemList.HighlyAdvancedSoc.get(1),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8),
                 GTOreDictUnificator.get(OrePrefixes.bolt, Materials.Naquadah, 8))
-            .fluidInputs(Materials.SolderingAlloy.getFluid(144))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .itemOutputs(ItemList.Circuit_Neuroprocessor.get(2))
             .requiresCleanRoom()
             .specialValue(0)
@@ -443,7 +443,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(12),
                 ItemList.Circuit_Chip_Ram.get(24),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 16))
-            .fluidInputs(Materials.SolderingAlloy.getFluid(288))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
             .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(2))
             .requiresCleanRoom()
             .specialValue(0)
