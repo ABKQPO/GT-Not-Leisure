@@ -193,7 +193,7 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
             .fluidInputs(
                 Materials.Neutronium.getMolten(1152),
                 Materials.Caesium.getMolten(2304),
-                Materials.Naquadah.getGas(288))
+                Materials.Naquadah.getMolten(288))
             .fluidOutputs(GGMaterial.plutoniumBasedLiquidFuel.getFluidOrGas(1000))
             .noOptimize()
             .duration(400)
