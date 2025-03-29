@@ -20,6 +20,7 @@ import com.science.gtnl.common.recipe.GTNL.NaquadahReactorRecipes;
 import com.science.gtnl.common.recipe.GTNL.NatureSpiritArrayRecipes;
 import com.science.gtnl.common.recipe.GTNL.PetrochemicalPlantRecipes;
 import com.science.gtnl.common.recipe.GTNL.PlatinumBasedTreatmentRecipes;
+import com.science.gtnl.common.recipe.GTNL.ShallowChemicalCouplingRecipes;
 import com.science.gtnl.common.recipe.GTNL.PortalToAlfheimRecipes;
 import com.science.gtnl.common.recipe.GTNL.RareEarthCentrifugalRecipes;
 import com.science.gtnl.common.recipe.GTNL.ReFusionReactorRecipes;
@@ -87,7 +88,8 @@ public class RecipeLoader {
             new BacterialVatRecipes(), new CuttingRecipes(), new BlastFurnaceRecipes(), new FluidExtractorRecipes(),
             new DecayHastenerRecipes(), new PreciseAssemblerRecipes(), new FuelRefiningComplexRecipes(),
             new CrackingRecipes(), new DistillationTowerRecipes(), new SpaceMinerRecipes(), new SpaceDrillRecipes(),
-            new SpaceAssemblerRecipes(), new PCBFactoryRecipes(), new PlatinumBasedTreatmentRecipes() };
+            new SpaceAssemblerRecipes(), new PCBFactoryRecipes(), new PlatinumBasedTreatmentRecipes(),
+            new ShallowChemicalCouplingRecipes() };
 
         new OP_NormalProcessing().enumOreProcessingRecipes();
         new ShapedArcaneCraftingRecipesPool().loadRecipes();
