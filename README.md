@@ -14,6 +14,8 @@
 
 如果你还有什么值得加入的机器，请提交issue
 
+Creator:HFStudio
+
 ---
 
 ## License
