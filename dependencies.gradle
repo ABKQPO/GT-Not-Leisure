@@ -30,7 +30,3 @@ dependencies {
     implementation('com.github.GTNewHorizons:ThaumicTinkerer:2.10.2:dev')
     implementation('com.github.GTNewHorizons:WarpTheory:1.4.3-GTNH:dev')
 }
-
-configurations.all {
-    exclude group: 'com.github.GTNewHorizons', module: 'Hodgepodge'
-}
