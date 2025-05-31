@@ -22,7 +22,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.core.item.chemistry.AgriculturalChem;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
@@ -43,7 +43,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2distilledwater", 1000))
             .fluidOutputs(MaterialPool.SilicaGelBase.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(130)
             .eut(480)
             .addTo(MNCR);
@@ -54,7 +53,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.SodiumNitrateSolution.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(120)
             .addTo(MNCR);
@@ -67,7 +65,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(Materials.Chlorine.getGas(1000))
             .itemOutputs(MaterialPool.ZnFeAlCl.get(OrePrefixes.dust, 4))
             .specialValue(0)
-            .noOptimize()
             .duration(250)
             .eut(TierEU.RECIPE_LuV)
             .addTo(MNCR);
@@ -77,7 +74,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(WerkstoffMaterialPool.AmmoniumNitrate.getFluidOrGas(1000))
             .fluidOutputs(GGMaterial.naquadahSolution.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(TierEU.RECIPE_LuV)
             .addTo(MNCR);
@@ -93,19 +89,15 @@ public class MixerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.BlazeCube.get(1))
             .fluidInputs(FluidRegistry.getFluidStack("pyrotheum", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(TierEU.RECIPE_IV)
             .addTo(MNCR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.RareEarth, 1L))
-            .fluidInputs(
-                FluidUtils.getFluidStack(AgriculturalChem.RedMud, 1000),
-                Materials.HydrochloricAcid.getFluid(4000))
+            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 1000), Materials.HydrochloricAcid.getFluid(4000))
             .fluidOutputs(MaterialPool.NeutralisedRedMud.getFluidOrGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(MNCR);
@@ -130,7 +122,6 @@ public class MixerRecipes implements IRecipePool {
                 Materials.Iridium.getMolten(9216),
                 Materials.Osmium.getMolten(9216))
             .specialValue(0)
-            .noOptimize()
             .duration(27648000)
             .eut(TierEU.RECIPE_LV)
             .addTo(MNCR);
@@ -146,7 +137,7 @@ public class MixerRecipes implements IRecipePool {
 
         RA.stdBuilder()
             .itemInputs(new ItemStack(Blocks.gravel, 16))
-            .fluidInputs(FluidUtils.getWater(1000))
+            .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.GravelSluice.getFluidOrGas(4000))
             .duration(5 * SECONDS)
             .eut(TierEU.RECIPE_LV)
@@ -154,7 +145,7 @@ public class MixerRecipes implements IRecipePool {
 
         RA.stdBuilder()
             .itemInputs(new ItemStack(Blocks.sand, 16))
-            .fluidInputs(FluidUtils.getWater(1000))
+            .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.SandSluice.getFluidOrGas(4000))
             .duration(5 * SECONDS)
             .eut(TierEU.RECIPE_LV)
@@ -162,7 +153,7 @@ public class MixerRecipes implements IRecipePool {
 
         RA.stdBuilder()
             .itemInputs(new ItemStack(Blocks.obsidian, 16))
-            .fluidInputs(FluidUtils.getWater(1000))
+            .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.ObsidianSluice.getFluidOrGas(4000))
             .duration(5 * SECONDS)
             .eut(TierEU.RECIPE_LV)
@@ -174,7 +165,7 @@ public class MixerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Emerald, 4),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Ruby, 4),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 4))
-            .fluidInputs(FluidUtils.getWater(1000))
+            .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.GemSluice.getFluidOrGas(4000))
             .duration(15 * SECONDS)
             .eut(300)

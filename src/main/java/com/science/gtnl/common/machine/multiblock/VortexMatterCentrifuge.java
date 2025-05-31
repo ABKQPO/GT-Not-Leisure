@@ -19,13 +19,11 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import galaxyspace.core.register.GSBlocks;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
@@ -33,8 +31,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
-public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<VortexMatterCentrifuge>
-    implements IWirelessEnergyHatchInformation {
+public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<VortexMatterCentrifuge> {
 
     private static final int HORIZONTAL_OFF_SET = 15;
     private static final int VERTICAL_OFF_SET = 7;
@@ -115,7 +112,7 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
             STRUCTURE_DEFINITION = StructureDefinition.<VortexMatterCentrifuge>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
                 .addElement('A', ofBlock(BlockLoader.MetaCasing, 5))
-                .addElement('B', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('B', ofBlock(sBlockCasingsDyson, 9))
                 .addElement('C', ofBlock(sBlockCasingsTT, 6))
                 .addElement('D', ofBlock(sBlockCasingsTT, 0))
                 .addElement('E', ofBlock(sBlockCasings10, 3))
@@ -154,7 +151,7 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

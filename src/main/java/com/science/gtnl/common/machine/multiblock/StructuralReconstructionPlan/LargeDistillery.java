@@ -191,7 +191,8 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeDistillery_Mode_" + this.machineMode));
     }
@@ -363,7 +364,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         mHeight = 0;
-        int built = survivialBuildPiece(
+        int built = survivalBuildPiece(
             STRUCTURE_PIECE_BASE,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -377,7 +378,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         int tTotalHeight = Math.min(13, stackSize.stackSize + 2);
         for (int i = 1; i < tTotalHeight - 1; i++) {
             mHeight = i;
-            built = survivialBuildPiece(
+            built = survivalBuildPiece(
                 STRUCTURE_PIECE_LAYER_HINT,
                 stackSize,
                 HORIZONTAL_OFF_SET,
@@ -390,7 +391,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
             if (built >= 0) return built;
         }
         mHeight = tTotalHeight - 1;
-        built = survivialBuildPiece(
+        built = survivalBuildPiece(
             STRUCTURE_PIECE_TOP_HINT,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -402,7 +403,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
             true);
         if (built >= 0) return built;
         mHeight = tTotalHeight;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_TOP,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -428,7 +429,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.5 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1.0 / 4.0 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1.0 / 4.0 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

@@ -40,7 +40,6 @@ public class ReFusionReactorRecipes implements IRecipePool {
                 FluidRegistry.getFluidStack("molten.infinity", 2147483647),
                 FluidRegistry.getFluidStack("antimatter", 2147483647))
             .outputChances(1)
-            .noOptimize()
             .duration(1)
             .eut(1)
             .addTo(RFRR);

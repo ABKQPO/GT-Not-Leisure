@@ -100,7 +100,7 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         int realBudget = elementBudget >= 200 ? elementBudget : Math.min(200, elementBudget * 5);
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -152,9 +152,9 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount))
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount))
                     .setEUtDiscount(1)
-                    .setSpeedBoost(1);
+                    .setDurationModifier(1);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

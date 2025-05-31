@@ -12,13 +12,13 @@ import com.science.gtnl.loader.IRecipePool;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.metadata.CompressionTierKey;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class CompressorRecipes implements IRecipePool {
 
@@ -39,8 +39,7 @@ public class CompressorRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Ingot.get(1)))
             .itemOutputs(MaterialPool.CompressedSteam.get(OrePrefixes.ingot, 1))
-            .fluidInputs(FluidUtils.getSteam(100000))
-            .noOptimize()
+            .fluidInputs(Materials.Steam.getGas(100000))
             .duration(80)
             .metadata(COMPRESSION_TIER, 2)
             .eut(512)
@@ -50,7 +49,6 @@ public class CompressorRecipes implements IRecipePool {
             .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Ingot.get(1)))
             .itemOutputs(MaterialPool.CompressedSteam.get(OrePrefixes.ingot, 1))
             .fluidInputs(FluidRegistry.getFluidStack("supercriticalsteam", 2000))
-            .noOptimize()
             .duration(80)
             .metadata(COMPRESSION_TIER, 2)
             .eut(512)
@@ -59,7 +57,6 @@ public class CompressorRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(GTNLItemList.BlazeCube.get(9))
             .itemOutputs(GTNLItemList.BlazeCubeBlock.get(1))
-            .noOptimize()
             .duration(300)
             .eut(TierEU.RECIPE_LV)
             .addTo(CR);

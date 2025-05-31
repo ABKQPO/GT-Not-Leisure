@@ -33,7 +33,6 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("molten.gaiaspirit", 288))
             .itemOutputs(GTNLItemList.GaiaGlass.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30720)
             .addTo(cBR);
@@ -43,7 +42,6 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("molten.terrasteel", 576))
             .itemOutputs(GTNLItemList.TerraGlass.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(cBR);
@@ -53,7 +51,6 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("dye.chemical.dyeyellow", 576))
             .itemOutputs(new ItemStack(Blocks.sponge, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(16)
             .addTo(cBR);
@@ -63,7 +60,6 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(Materials.DraconiumAwakened.getMolten(576))
             .itemOutputs(GTModHandler.getModItem(DraconicEvolution.ID, "dragonHeart", 1))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(1966080)
             .addTo(cBR);
@@ -77,7 +73,6 @@ public class ChemicalBathRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Uraninite, 2))
             .outputChances(10000, 10000, 5000)
             .specialValue(0)
-            .noOptimize()
             .duration(1800)
             .eut(TierEU.RECIPE_HV)
             .addTo(cBR);
@@ -91,7 +86,6 @@ public class ChemicalBathRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Uraninite, 2))
             .outputChances(10000, 10000, 5000)
             .specialValue(0)
-            .noOptimize()
             .duration(1800)
             .eut(TierEU.RECIPE_HV)
             .addTo(cBR);
@@ -101,7 +95,6 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(Materials.HydrochloricAcid.getFluid(4000))
             .itemOutputs(MaterialPool.UraniumChlorideSlag.get(OrePrefixes.dust, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(160)
             .eut(TierEU.RECIPE_HV)
             .addTo(cBR);

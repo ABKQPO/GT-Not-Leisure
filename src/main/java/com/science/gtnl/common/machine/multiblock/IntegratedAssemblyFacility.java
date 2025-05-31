@@ -6,8 +6,7 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.GTValues.VN;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.stream.Collectors;
@@ -26,12 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import bartworks.API.BorosilicateGlass;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
@@ -39,7 +36,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
@@ -54,8 +50,7 @@ import gregtech.api.util.OverclockCalculator;
 import gregtech.common.blocks.BlockCasings8;
 import gtnhlanth.common.register.LanthItemList;
 
-public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<IntegratedAssemblyFacility>
-    implements IWirelessEnergyHatchInformation {
+public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<IntegratedAssemblyFacility> {
 
     private int casingTier;
     private static final int HORIZONTAL_OFF_SET = 8;
@@ -164,8 +159,8 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                 .addElement('J', ofBlock(LanthItemList.NIOBIUM_CAVITY_CASING, 0))
                 .addElement('K', ofBlock(sBlockCasings2, 5))
                 .addElement('L', ofBlock(LanthItemList.COOLANT_DELIVERY_CASING, 0))
-                .addElement('M', ofBlock(IGBlocks.SpaceElevatorCasing, 1))
-                .addElement('N', BorosilicateGlass.ofBoroGlass((byte) 0, (t, v) -> t.mGlassTier = v, t -> t.mGlassTier))
+                .addElement('M', ofBlock(sBlockCasingsSE, 1))
+                .addElement('N', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('O', ofBlock(BlockLoader.MetaBlockGlow, 31))
                 .addElement('P', ofBlock(sBlockCasings6, 9))
                 .addElement('Q', ofBlock(BlockLoader.MetaCasing, 5))
@@ -189,7 +184,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -240,10 +235,10 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                 return super.createOverclockCalculator(recipe)
                     .setEUtDiscount(
                         0.4 - (mParallelTier / 50.0) * Math.pow(0.95, mGlassTier) * Math.pow(0.95, casingTier))
-                    .setSpeedBoost(
+                    .setDurationModifier(
                         0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier) * Math.pow(0.95, casingTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override
@@ -296,14 +291,14 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setByte("mGlassTier", mGlassTier);
+        aNBT.setInteger("mGlassTier", mGlassTier);
         aNBT.setInteger("casingTier", casingTier);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mGlassTier = aNBT.getByte("mGlassTier");
+        mGlassTier = aNBT.getInteger("mGlassTier");
         casingTier = aNBT.getInteger("casingTier");
     }
 

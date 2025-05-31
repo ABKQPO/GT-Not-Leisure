@@ -27,7 +27,7 @@ public abstract class SimpleMetalLoader_Mixin {
                     .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Turbine_Blade.get(1)))
                     .itemOutputs(werkstoff.get(turbineBlade, 1))
                     .fluidInputs(werkstoff.getMolten(864))
-                    .noOptimize()
+
                     .duration(
                         (int) Math.max(
                             werkstoff.getStats()
@@ -42,7 +42,7 @@ public abstract class SimpleMetalLoader_Mixin {
                     .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Turbine_Blade.get(1)))
                     .itemOutputs(werkstoff.get(turbineBlade, 1))
                     .fluidInputs(werkstoff.getFluidOrGas(864))
-                    .noOptimize()
+
                     .duration(
                         (int) Math.max(
                             werkstoff.getStats()
@@ -57,7 +57,7 @@ public abstract class SimpleMetalLoader_Mixin {
                     werkstoff.get(ingot, 6),
                     GTUtility.copyAmount(0, ItemList.Shape_Extruder_Turbine_Blade.get(1)))
                 .itemOutputs(werkstoff.get(turbineBlade, 1))
-                .noOptimize()
+
                 .duration(
                     (int) Math.max(
                         werkstoff.getStats()
@@ -69,7 +69,7 @@ public abstract class SimpleMetalLoader_Mixin {
             GTValues.RA.stdBuilder()
                 .itemInputs(werkstoff.get(plateDouble, 3), werkstoff.get(screw, 2))
                 .itemOutputs(werkstoff.get(turbineBlade, 1))
-                .noOptimize()
+
                 .duration(
                     (int) Math.max(
                         werkstoff.getStats()

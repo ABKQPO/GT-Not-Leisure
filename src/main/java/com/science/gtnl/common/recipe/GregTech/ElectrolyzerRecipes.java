@@ -31,7 +31,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem("gregtech", "gt.metaitem.01", 1, 2009))
             .fluidOutputs(FluidRegistry.getFluidStack("hydrogen", 1000), FluidRegistry.getFluidStack("fluorine", 4000))
             .specialValue(0)
-            .noOptimize()
             .duration(840)
             .eut(60)
             .addTo(ENCR);
@@ -44,7 +43,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
                 FluidRegistry.getFluidStack("oxygen", 1000),
                 FluidRegistry.getFluidStack("fluorine", 4000))
             .specialValue(0)
-            .noOptimize()
             .duration(840)
             .eut(60)
             .addTo(ENCR);
@@ -55,7 +53,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem("gregtech", "gt.metaitem.01", 1, 2009))
             .fluidOutputs(FluidRegistry.getFluidStack("fluorine", 3000))
             .specialValue(0)
-            .noOptimize()
             .duration(640)
             .eut(30)
             .addTo(ENCR);
@@ -66,7 +63,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem("gregtech", "gt.metaitem.01", 7, 2010))
             .fluidOutputs(FluidRegistry.getFluidStack("hydrogen", 6000), FluidRegistry.getFluidStack("oxygen", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(112)
             .eut(60)
             .addTo(ENCR);
@@ -77,7 +73,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialsElements.getInstance().BROMINE.getFluidStack(1000), Materials.Hydrogen.getGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(72)
             .eut(30)
             .addTo(ENCR);
@@ -90,7 +85,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
                 GTModHandler.getModItem("gregtech", "gt.metaitem.01", 1, 2022))
             .fluidOutputs(Materials.Oxygen.getGas(4000))
             .specialValue(0)
-            .noOptimize()
             .duration(168)
             .eut(60)
             .addTo(ENCR);
@@ -103,7 +97,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(4000),
                 Materials.Chlorine.getGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(48)
             .eut(60)
             .addTo(ENCR);
@@ -113,7 +106,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Praseodymium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -123,7 +115,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lanthanum, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -133,7 +124,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Scandium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -143,7 +133,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -153,7 +142,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gadolinium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -163,7 +151,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Terbium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -173,7 +160,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Dysprosium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -183,7 +169,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Holmium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -193,7 +178,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Erbium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -203,7 +187,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thulium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -213,7 +196,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Ytterbium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -223,7 +205,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lutetium, 2))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(70)
             .eut(60)
             .addTo(ENCR);
@@ -233,7 +214,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.FluoroBenzene.getFluidOrGas(1000))
             .fluidOutputs(Materials.Hydrogen.getGas(5000), Materials.Fluorine.getGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(96)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -243,7 +223,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .fluidInputs(MaterialsFluorides.URANIUM_HEXAFLUORIDE.getFluidStack(1000))
             .fluidOutputs(Materials.Fluorine.getGas(6000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -253,7 +232,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .fluidInputs(MaterialsFluorides.NEPTUNIUM_HEXAFLUORIDE.getFluidStack(1008))
             .fluidOutputs(Materials.Fluorine.getGas(6000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -263,7 +241,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .fluidInputs(MaterialsFluorides.SELENIUM_HEXAFLUORIDE.getFluidStack(1008))
             .fluidOutputs(Materials.Fluorine.getGas(6000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -273,7 +250,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .fluidInputs(MaterialsFluorides.TECHNETIUM_HEXAFLUORIDE.getFluidStack(1008))
             .fluidOutputs(Materials.Fluorine.getGas(6000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -283,7 +259,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(MaterialsElements.getInstance().RADIUM.getDust(1))
             .fluidOutputs(Materials.Chlorine.getGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(TierEU.RECIPE_IV)
             .addTo(ENCR);
@@ -293,7 +268,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Barium, 1))
             .fluidOutputs(Materials.Chlorine.getGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);
@@ -305,7 +279,6 @@ public class ElectrolyzerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Calcium, 1))
             .fluidOutputs(Materials.Oxygen.getGas(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(ENCR);

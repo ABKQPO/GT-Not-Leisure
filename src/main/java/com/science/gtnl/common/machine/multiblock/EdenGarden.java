@@ -207,7 +207,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> {
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -492,7 +492,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> {
         for (MTEHatchOutputBus tHatch : validMTEList(mOutputBusses)) {
             if (!(tHatch instanceof MTEHatchOutputBusME)) continue;
             for (ItemStack stack : bucket.tryRemoveSeed(bucket.getSeedCount(), false)) {
-                ((MTEHatchOutputBusME) tHatch).store(stack);
+                tHatch.storePartial(stack);
             }
             return true;
         }
@@ -505,7 +505,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> {
         if (helper.getMaxParallel() > 0) {
             for (ItemStack toOutput : bucket.tryRemoveSeed(helper.getMaxParallel(), false)) {
                 for (MTEHatchOutputBus tHatch : validMTEList(mOutputBusses)) {
-                    if (tHatch.storeAll(toOutput)) break;
+                    if (tHatch.storePartial(toOutput)) break;
                 }
             }
         }
@@ -855,7 +855,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> {
     }
 
     @Override
-    protected String generateCurrentRecipeInfoString() {
+    public String generateCurrentRecipeInfoString() {
         StringBuilder ret = new StringBuilder(EnumChatFormatting.WHITE + "Progress: ")
             .append(String.format("%,.2f", (double) this.mProgresstime / 20))
             .append("s / ")

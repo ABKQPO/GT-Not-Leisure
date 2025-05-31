@@ -7,8 +7,7 @@ import static goodgenerator.loader.Loaders.compactFusionCoil;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.validMTEList;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -32,7 +31,6 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import bartworks.API.BorosilicateGlass;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
@@ -41,7 +39,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
@@ -54,8 +51,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 
-public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<EngravingLaserPlant>
-    implements IWirelessEnergyHatchInformation {
+public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<EngravingLaserPlant> {
 
     private int casingTier;
     private static final int HORIZONTAL_OFF_SET = 10;
@@ -163,7 +159,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
                         (t, meta) -> t.casingTier = meta,
                         t -> t.casingTier))
                 .addElement('K', ofBlock(sBlockCasings10, 11))
-                .addElement('L', BorosilicateGlass.ofBoroGlass((byte) 0, (t, v) -> t.mGlassTier = v, t -> t.mGlassTier))
+                .addElement('L', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('M', ofFrame(Materials.Neutronium))
                 .build();
         }
@@ -184,7 +180,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -235,10 +231,10 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
                 return super.createOverclockCalculator(recipe)
                     .setEUtDiscount(
                         0.4 - (mParallelTier / 50.0) * Math.pow(0.95, mGlassTier) * Math.pow(0.95, casingTier))
-                    .setSpeedBoost(
+                    .setDurationModifier(
                         0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier) * Math.pow(0.95, casingTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override
@@ -291,14 +287,14 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setByte("mGlassTier", mGlassTier);
+        aNBT.setInteger("mGlassTier", mGlassTier);
         aNBT.setInteger("casingTier", casingTier);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mGlassTier = aNBT.getByte("mGlassTier");
+        mGlassTier = aNBT.getInteger("mGlassTier");
         casingTier = aNBT.getInteger("casingTier");
     }
 

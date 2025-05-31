@@ -183,7 +183,7 @@ public class LargeSteamMixer extends SteamMultiMachineBase<LargeSteamMixer> impl
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -270,9 +270,9 @@ public class LargeSteamMixer extends SteamMultiMachineBase<LargeSteamMixer> impl
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount))
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount))
                     .setEUtDiscount(tierMachine + (enableHVRecipe ? 1 : 0))
-                    .setSpeedBoost(1 / 0.67 / tierMachine - (enableHVRecipe ? 0.25 : 0));
+                    .setDurationModifier(1 / 0.67 / tierMachine - (enableHVRecipe ? 0.25 : 0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

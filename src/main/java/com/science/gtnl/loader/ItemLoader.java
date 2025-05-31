@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.Utils.enums.GTNLItemList;
 import com.science.gtnl.Utils.text.AnimatedText;
 import com.science.gtnl.common.item.ItemRecord;
+import com.science.gtnl.common.item.items.CircuitIntegratedPlus;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.FuelRod.FuelRod;
 import com.science.gtnl.common.item.items.FuelRod.FuelRodDepleted;
@@ -38,6 +39,7 @@ public class ItemLoader {
     public static Item RejectionRing = new RejectionRing();
     public static Item TwilightSword = new TwilightSword();
     public static Item PhysicsCape = new PhysicsCape();
+    public static Item CircuitIntegratedPlus = new CircuitIntegratedPlus();
     public static Item TimeStopPocketWatch = new TimeStopPocketWatch();
     public static Item SuperReachRing = new SuperReachRing();
     public static Item RecordSus = new ItemRecord("sus");
@@ -80,6 +82,7 @@ public class ItemLoader {
         IRegistry(TimeStopPocketWatch, "TimeStopPocketWatch");
         IRegistry(RecordSus, "RecordSus");
         IRegistry(RecordNewHorizons, "RecordNewHorizons");
+        IRegistry(CircuitIntegratedPlus, "CircuitIntegratedPlus");
 
         IRegistry(InfinityFuelRodDepleted, "InfinityFuelRodDepleted");
         IRegistry(InfinityFuelRod, "InfinityFuelRod");

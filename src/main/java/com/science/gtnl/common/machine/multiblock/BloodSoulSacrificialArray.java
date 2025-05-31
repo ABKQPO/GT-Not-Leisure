@@ -144,7 +144,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 3);
         GTUtility.sendChatToPlayer(
             aPlayer,
@@ -207,7 +208,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -308,11 +309,6 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
                 if (!world.isRemote) {
                     EntityMeteor meteor = new EntityMeteor(world, spawnX + 0.5, spawnY, spawnZ + 0.5, 114514);
                     meteor.motionY = -1.0f;
-                    meteor.hasTerrae = true;
-                    meteor.hasOrbisTerrae = true;
-                    meteor.hasCrystallos = true;
-                    meteor.hasIncendium = true;
-                    meteor.hasTennebrae = true;
 
                     world.spawnEntityInWorld(meteor);
                     spawnMeteor = false;
@@ -370,7 +366,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             @Nonnull
             @Override
             public CheckRecipeResult process() {
-                RecipeMap<?> recipeMap = preProcess();
+                RecipeMap<?> recipeMap = getCurrentRecipeMap();
 
                 if (inputItems == null) {
                     inputItems = new ItemStack[0];
@@ -488,7 +484,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(1)
-                    .setSpeedBoost(1 - (mParallelTier / 50.0));
+                    .setDurationModifier(1 - (mParallelTier / 50.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

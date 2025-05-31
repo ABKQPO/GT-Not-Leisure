@@ -157,6 +157,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
+    public ItemStack[] getSharedItems() {
+        return null;
+    }
+
+    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         if (mStoredFluid != null) {
@@ -177,11 +182,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
                 }
             }
         }
-    }
-
-    @Override
-    public boolean displaysStackSize() {
-        return true;
     }
 
     @Override

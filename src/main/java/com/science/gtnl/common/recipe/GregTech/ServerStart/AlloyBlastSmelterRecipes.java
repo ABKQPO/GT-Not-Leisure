@@ -24,7 +24,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1))
             .fluidOutputs(Materials.Europium.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(TierEU.RECIPE_LuV)
             .addTo(aBS);

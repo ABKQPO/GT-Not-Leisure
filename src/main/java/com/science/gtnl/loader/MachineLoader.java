@@ -203,7 +203,7 @@ import com.science.gtnl.common.materials.MaterialUtils;
 
 import bartworks.API.BorosilicateGlass;
 import goodgenerator.util.CrackRecipeAdder;
-import gregtech.api.GregTechAPI;
+import gregtech.api.covers.CoverRegistry;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
@@ -1264,7 +1264,7 @@ public class MachineLoader {
     public static void registerMTEHatch() {
         Set<Fluid> acceptedFluids = new HashSet<>();
         acceptedFluids.add(
-            FluidUtils.getFluidStack("fluidmana", 1)
+            MaterialPool.FluidMana.getFluidOrGas(1)
                 .getFluid());
 
         if (Mods.TwistSpaceTechnology.isModLoaded()) {
@@ -1576,7 +1576,7 @@ public class MachineLoader {
         GTNLItemList.BigSteamInputHatch.set(
             new CustomFluidHatch(
                 ImmutableSet.of(
-                    FluidUtils.getSteam(1)
+                    Materials.Steam.getGas(1)
                         .getFluid(),
                     FluidUtils.getSuperHeatedSteam(1)
                         .getFluid(),
@@ -2343,30 +2343,30 @@ public class MachineLoader {
     }
 
     private static void registerCovers() {
-        GregTechAPI.registerCover(
+        CoverRegistry.registerCover(
             GTNLItemList.HydraulicPump.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_PUMP)),
-            new CoverPump(1048576, TextureFactory.of(OVERLAY_PUMP)));
+            context -> new CoverPump(context, 1048576, TextureFactory.of(OVERLAY_PUMP)));
 
-        GregTechAPI.registerCover(
+        CoverRegistry.registerCover(
             GTNLItemList.HydraulicConveyor.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_CONVEYOR)),
-            new CoverConveyor(1, 16, TextureFactory.of(OVERLAY_CONVEYOR)));
+            context -> new CoverConveyor(context, 1, 16, TextureFactory.of(OVERLAY_CONVEYOR)));
 
-        GregTechAPI.registerCover(
+        CoverRegistry.registerCover(
             GTNLItemList.HydraulicRegulator.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_PUMP)),
-            new CoverFluidRegulator(1048576, TextureFactory.of(OVERLAY_PUMP)));
+            context -> new CoverFluidRegulator(context, 1048576, TextureFactory.of(OVERLAY_PUMP)));
 
-        GregTechAPI.registerCover(
+        CoverRegistry.registerCover(
             GTNLItemList.HydraulicSteamValve.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_VALVE)),
-            new CoverSteamValve(16777216, TextureFactory.of(OVERLAY_VALVE)));
+            context -> new CoverSteamValve(context, 16777216, TextureFactory.of(OVERLAY_VALVE)));
 
-        GregTechAPI.registerCover(
+        CoverRegistry.registerCover(
             GTNLItemList.HydraulicSteamRegulator.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_VALVE)),
-            new CoverSteamRegulator(16777216, TextureFactory.of(OVERLAY_VALVE)));
+            context -> new CoverSteamRegulator(context, 16777216, TextureFactory.of(OVERLAY_VALVE)));
 
     }
 

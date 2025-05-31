@@ -20,7 +20,6 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -66,7 +65,7 @@ public class CraftingTableRecipes implements IRecipePool {
         addCraftingRecipe(
             GTNLItemList.LargeSteamAlloySmelter.get(1),
             new Object[] { "ABA", "CDC", "AEA", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 1),
-                'B', new ItemStack(ModItems.itemBasicTurbine, 1, 1), 'C', ItemList.Casing_Firebox_Bronze.get(1), 'D',
+                'B', GregtechItemList.BasicBronzeTurbine.get(1), 'C', ItemList.Casing_Firebox_Bronze.get(1), 'D',
                 new ItemStack(Items.cauldron, 1), 'E', ItemList.Machine_Bronze_AlloySmelter.get(1) });
 
         addCraftingRecipe(

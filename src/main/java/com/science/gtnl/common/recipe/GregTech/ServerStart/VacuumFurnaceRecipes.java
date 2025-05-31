@@ -13,8 +13,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.core.item.chemistry.AgriculturalChem;
-import gtPlusPlus.core.item.chemistry.MilledOreProcessing;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
 
@@ -36,9 +35,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tellurium, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Nickel, 48),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cobalt, 32))
-            .fluidInputs(FluidUtils.getFluidStack(MilledOreProcessing.PlatinumFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(AgriculturalChem.RedMud, 200), FluidUtils.getWater(2000))
-            .noOptimize()
+            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PlatinumFlotationFroth, 4000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_LuV)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
@@ -53,9 +51,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lanthanum, 32),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lutetium, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 8))
-            .fluidInputs(FluidUtils.getFluidStack(MilledOreProcessing.MonaziteFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(AgriculturalChem.RedMud, 200), FluidUtils.getWater(2000))
-            .noOptimize()
+            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.MonaziteFlotationFroth, 4000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_ZPM)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
@@ -72,9 +69,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 MaterialsElements.getInstance().RUTHENIUM.getDust(48),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Promethium, 32),
                 MaterialsElements.getInstance().HAFNIUM.getDust(16))
-            .fluidInputs(FluidUtils.getFluidStack(MilledOreProcessing.PentlanditeFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(AgriculturalChem.RedMud, 200), FluidUtils.getWater(2000))
-            .noOptimize()
+            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PentlanditeFlotationFroth, 4000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_LuV)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)

@@ -20,7 +20,7 @@ import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.enums.SoundResource;
 import gregtech.api.items.MetaBaseItem;
-import gregtech.api.metatileentity.CommonMetaTileEntity;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
@@ -47,8 +47,8 @@ public class BehaviourScanner_Mixin {
 
                 if (!Mods.Overpowered.isModLoaded() && MainConfig.enableRecipeOutputChance) {
                     TileEntity tile = aWorld.getTileEntity(aX, aY, aZ);
-                    if (tile instanceof CommonMetaTileEntity) {
-                        Object meta = ((CommonMetaTileEntity) tile).getMetaTileEntity();
+                    if (tile instanceof BaseMetaTileEntity baseMetaTile) {
+                        Object meta = baseMetaTile.getMetaTileEntity();
                         if (meta instanceof MTEMultiBlockBase mte) {
                             GTRecipe recipe = ChanceBonusManager.customProvider.getRecipeForMachine(mte);
                             if (recipe != null) {

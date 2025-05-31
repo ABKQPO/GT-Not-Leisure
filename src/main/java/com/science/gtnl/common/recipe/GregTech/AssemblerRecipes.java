@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.reavaritia.common.block.ReAvaBasicBlocks;
 import com.science.gtnl.Utils.enums.GTNLItemList;
 import com.science.gtnl.Utils.recipes.RecipeBuilder;
@@ -105,7 +106,7 @@ public class AssemblerRecipes implements IRecipePool {
                             .get(1))
                     .fluidInputs(FluidRegistry.getFluidStack(fluidName, 144))
                     .specialValue(0)
-                    .noOptimize()
+
                     .duration(40)
                     .eut(TierEU.RECIPE_LV)
                     .addTo(As);
@@ -120,7 +121,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Polyimide.getMolten(288))
             .itemOutputs(GTNLItemList.BiowareSMDCapacitor.get(16))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(491520)
             .requiresCleanRoom()
@@ -134,7 +134,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Polyimide.getMolten(288))
             .itemOutputs(GTNLItemList.BiowareSMDDiode.get(16))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(491520)
             .requiresCleanRoom()
@@ -148,7 +147,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Polyimide.getMolten(288))
             .itemOutputs(GTNLItemList.BiowareSMDResistor.get(16))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(491520)
             .requiresCleanRoom()
@@ -162,7 +160,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Polyimide.getMolten(288))
             .itemOutputs(GTNLItemList.BiowareSMDTransistor.get(16))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(491520)
             .requiresCleanRoom()
@@ -175,7 +172,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Polyimide.getMolten(288))
             .itemOutputs(GTNLItemList.BiowareSMDInductor.get(16))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(491520)
             .requiresCleanRoom()
@@ -188,7 +184,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(ExtraUtilities.ID, "decorativeBlock2", 1, 7))
             .itemOutputs(GTNLItemList.FortifyGlowstone.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(As);
@@ -202,7 +197,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(Botania.ID, "manaResource", 16, 8))
             .itemOutputs(GTNLItemList.ActivatedGaiaPylon.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(As);
@@ -217,7 +211,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 2L))
             .itemOutputs(GTNLItemList.FluidManaInputHatch.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30720)
             .addTo(As);
@@ -236,7 +229,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(9216))
             .itemOutputs(GTNLItemList.MeteorMiner.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(1200)
             .eut(30720)
             .addTo(As);
@@ -244,7 +236,7 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 ItemList.Casing_Coil_Superconductor.get(1L),
-                com.dreammaster.item.ItemList.LaserEmitter.getIS(4),
+                NHItemList.LaserEmitter.getIS(4),
                 GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 4),
                 new ItemStack(ModItems.itemDehydratorCoilWire, 8, 2),
                 ItemList.LuV_Coil.get(4L),
@@ -253,7 +245,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(9216))
             .itemOutputs(GTNLItemList.LaserBeacon.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(30720)
             .addTo(As);
@@ -272,7 +263,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialsAlloy.INDALLOY_140.getFluidStack(256000))
             .itemOutputs(GTNLItemList.ComponentAssembler.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(7680)
             .addTo(As);
@@ -291,7 +281,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialsAlloy.INDALLOY_140.getFluidStack(64000))
             .itemOutputs(GTNLItemList.PetrochemicalPlant.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(1200)
             .eut(7680)
             .addTo(As);
@@ -310,7 +299,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(18432))
             .itemOutputs(GTNLItemList.ProcessingArray.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(1920)
             .addTo(As);
@@ -322,7 +310,6 @@ public class AssemblerRecipes implements IRecipePool {
                 ItemList.Machine_Bricked_BlastFurnace.get(1L))
             .itemOutputs(GTNLItemList.BrickedBlastFurnace.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(16)
             .addTo(As);
@@ -336,7 +323,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.EV, 2L))
             .itemOutputs(GTNLItemList.LargeCircuitAssembler.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1920)
             .addTo(As);
@@ -351,7 +337,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Electrum, 2L))
             .itemOutputs(GTNLItemList.Desulfurizer.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(As);
@@ -366,7 +351,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GregtechItemList.Gregtech_Computer_Cube.get(1L))
             .itemOutputs(GregtechItemList.Industrial_Cryogenic_Freezer.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(32070)
             .addTo(As);
@@ -381,7 +365,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GregtechItemList.Gregtech_Computer_Cube.get(1L))
             .itemOutputs(GregtechItemList.Machine_Adv_BlastFurnace.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(32070)
             .addTo(As);
@@ -400,7 +383,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.ColdIceFreezer.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(4608))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(32070)
             .addTo(As);
@@ -418,7 +400,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.BlazeBlastFurnace.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(4608))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(32070)
             .addTo(As);
@@ -436,7 +417,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.ChemicalPlant.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(1920)
             .addTo(As);
@@ -454,7 +434,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeExtruder.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -472,7 +451,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeCutter.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -489,7 +467,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeMacerationTower.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -506,7 +483,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeArcSmelter.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -523,7 +499,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeSiftingFunnel.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -542,7 +517,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeBrewer.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -559,7 +533,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeIndustrialLathe.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -576,7 +549,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeMaterialPress.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -593,7 +565,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeWiremill.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -611,7 +582,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeBender.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -629,7 +599,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeForming.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -647,7 +616,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeElectrolyzer.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -665,7 +633,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeElectromagnet.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -684,7 +651,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeAssembler.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -702,7 +668,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeMixer.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -721,7 +686,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargeCentrifuge.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -734,7 +698,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(12))
             .itemOutputs(GTNLItemList.NeutroniumPipeCasing.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(30)
             .addTo(As);
@@ -747,7 +710,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.NeutroniumGearbox.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(122880)
             .addTo(As);
@@ -765,7 +727,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
             .itemOutputs(GTNLItemList.RareEarthCentrifugal.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(1000)
             .eut(7864320)
             .addTo(As);
@@ -780,7 +741,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.Polytetrafluoroethylene.getMolten(576))
             .itemOutputs(GTNLItemList.HeatVent.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(As);
@@ -797,7 +757,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.VacuumFreezer.get(1))
             .fluidInputs(Materials.Aluminium.getMolten(1152))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(As);
@@ -814,7 +773,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(new FluidStack(MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getPlasma(), 16000))
             .itemOutputs(GTNLItemList.Antifreeze_Heatproof_Machine_Casing.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1966080)
             .addTo(As);
@@ -832,7 +790,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 4))
             .itemOutputs(new ItemStack(ReAvaBasicBlocks.NeutronCollector, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(491520)
             .addTo(As);
@@ -844,7 +801,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.HSLASteel.getMolten(144))
             .itemOutputs(GTNLItemList.MolybdenumDisilicideCoil.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(500)
             .eut(1920)
             .addTo(As);
@@ -857,7 +813,6 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(Materials.NiobiumTitanium.getMolten(1152))
             .itemOutputs(GTNLItemList.FusionGlass.get(4))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30720)
             .addTo(As);
@@ -871,7 +826,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 2L))
             .itemOutputs(GTNLItemList.EnergeticPhotovoltaicBlock.get(2))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(As);
@@ -885,7 +839,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Titanium, 2L))
             .itemOutputs(GTNLItemList.AdvancedPhotovoltaicBlock.get(2))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(120)
             .addTo(As);
@@ -899,7 +852,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 2L))
             .itemOutputs(GTNLItemList.VibrantPhotovoltaicBlock.get(2))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(As);
@@ -912,7 +864,6 @@ public class AssemblerRecipes implements IRecipePool {
                 ItemList.Electric_Motor_IV.get(1L))
             .itemOutputs(GTNLItemList.CrushingWheels.get(2))
             .specialValue(0)
-            .noOptimize()
             .duration(50)
             .eut(16)
             .addTo(As);
@@ -925,7 +876,6 @@ public class AssemblerRecipes implements IRecipePool {
                 ItemList.Electric_Motor_IV.get(1L))
             .itemOutputs(GTNLItemList.SlicingBlades.get(2))
             .specialValue(0)
-            .noOptimize()
             .duration(50)
             .eut(16)
             .addTo(As);
@@ -937,7 +887,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 2, 30))
             .itemOutputs(MEoutputBus)
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(480)
             .addTo(As);
@@ -949,7 +898,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 2, 30))
             .itemOutputs(MEoutputHatch)
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(480)
             .addTo(As);
@@ -963,7 +911,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 30))
             .itemOutputs(ItemList.Hatch_Input_ME_Advanced.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -977,7 +924,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 30))
             .itemOutputs(ItemList.Hatch_Input_Bus_ME_Advanced.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -991,7 +937,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.pipeNonuple, Materials.Bronze, 1L))
             .itemOutputs(GTNLItemList.DualInputHatchLV.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(30)
             .addTo(As);
@@ -1006,7 +951,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchMV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(120)
             .addTo(As);
@@ -1021,7 +965,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchHV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(480)
             .addTo(As);
@@ -1036,7 +979,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchEV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(1920)
             .addTo(As);
@@ -1051,7 +993,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchIV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7680)
             .addTo(As);
@@ -1066,7 +1007,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchLuV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(30720)
             .addTo(As);
@@ -1081,7 +1021,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchZPM.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(122880)
             .addTo(As);
@@ -1096,7 +1035,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(491520)
             .addTo(As);
@@ -1111,7 +1049,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUHV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(1966080)
             .addTo(As);
@@ -1126,7 +1063,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUEV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(7864320)
             .addTo(As);
@@ -1141,7 +1077,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUIV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(31457280)
             .addTo(As);
@@ -1156,7 +1091,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUMV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(125829120)
             .addTo(As);
@@ -1171,7 +1105,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchUXV.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(503316480)
             .addTo(As);
@@ -1187,7 +1120,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DualInputHatchMAX.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(2013265920)
             .addTo(As);
@@ -1204,7 +1136,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.WoodDistillation.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(7680)
             .addTo(As);
@@ -1224,7 +1155,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.MolecularTransformer.get(1))
             .fluidInputs(MaterialsAlloy.NITINOL_60.getFluidStack(2304))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(As);
@@ -1238,7 +1168,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LargePyrolyseOven.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(576))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(480)
             .addTo(As);
@@ -1256,7 +1185,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.LVParallelControllerCore.get(1))
             .fluidInputs(Materials.Cupronickel.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(30)
             .addTo(As);
@@ -1274,7 +1202,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.MVParallelControllerCore.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(120)
             .addTo(As);
@@ -1293,7 +1220,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.HVParallelControllerCore.get(1))
             .fluidInputs(Materials.EnergeticAlloy.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(480)
             .addTo(As);
@@ -1312,7 +1238,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.EVParallelControllerCore.get(1))
             .fluidInputs(Materials.TPV.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(1920)
             .addTo(As);
@@ -1331,7 +1256,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.IVParallelControllerCore.get(1))
             .fluidInputs(Materials.HSSG.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(7680)
             .addTo(As);
@@ -1340,7 +1264,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.TungstenSteel, 4L),
-                GregtechItemList.GT_MetaTileEntity_Solidifier_I.get(1),
+                GregtechItemList.Hatch_Solidifier_I.get(1),
                 GTNLItemList.NinefoldInputHatchIV.get(1),
                 ItemList.Automation_ChestBuffer_IV.get(4),
                 GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.TungstenSteel, 4L),
@@ -1348,7 +1272,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.HumongousSolidifierHatch.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(576))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(30720)
             .addTo(As);
@@ -1364,7 +1287,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.FluidIceInputHatch.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(As);
@@ -1380,7 +1302,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.FluidBlazeInputHatch.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(As);
@@ -1396,7 +1317,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.AlloyBlastSmelter.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(576))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(7680)
             .addTo(As);
@@ -1407,7 +1327,6 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(392)
             .eut(TierEU.RECIPE_MV)
             .addTo(As);
-
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenCarbide, 2L),
@@ -1742,7 +1661,6 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.TungstensteelGearbox.get(1))
             .specialValue(0)
-            .noOptimize()
             .duration(50)
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
@@ -1755,7 +1673,6 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.PressureBalancedCasing.get(1))
             .fluidInputs(Materials.Draconium.getMolten(576))
             .specialValue(0)
-            .noOptimize()
             .duration(800)
             .eut(TierEU.RECIPE_EV)
             .addTo(As);

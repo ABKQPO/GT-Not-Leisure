@@ -162,7 +162,7 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -184,7 +184,7 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
                 return super.createOverclockCalculator(recipe).setEUt(ElectricImplosionCompressor.this.getMaxInputEu())
                     .setAmperage(1)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1 / 1.67 - (mParallelTier / 200.0));
+                    .setDurationModifier(1 / 1.67 - (mParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

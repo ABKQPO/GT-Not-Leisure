@@ -82,7 +82,6 @@ public class ExtremeExtremeEntityCrusherRecipes {
                     .toArray())
             .duration(eecRecipe.mDuration)
             .eut(eecRecipe.mEUt)
-            .noOptimize()
             .addTo(EEEC);
     }
 }

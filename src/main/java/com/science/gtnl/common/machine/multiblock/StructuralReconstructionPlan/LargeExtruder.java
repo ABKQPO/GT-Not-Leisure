@@ -126,7 +126,7 @@ public class LargeExtruder extends GTMMultiMachineBase<LargeExtruder> implements
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1.0 / 3.75 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1.0 / 3.75 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -179,7 +179,7 @@ public class LargeExtruder extends GTMMultiMachineBase<LargeExtruder> implements
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

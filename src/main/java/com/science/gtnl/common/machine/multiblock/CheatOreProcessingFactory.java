@@ -42,7 +42,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -54,8 +53,7 @@ import gregtech.common.blocks.BlockCasings1;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory>
-    implements IWirelessEnergyHatchInformation {
+public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory> {
 
     public static final String STRUCTURE_PIECE_MAIN = "main";
     private static IStructureDefinition<CheatOreProcessingFactory> STRUCTURE_DEFINITION = null;
@@ -248,7 +246,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
 
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

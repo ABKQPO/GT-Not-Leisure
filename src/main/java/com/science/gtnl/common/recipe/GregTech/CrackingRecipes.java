@@ -24,7 +24,6 @@ public class CrackingRecipes implements IRecipePool {
             .fluidOutputs(MaterialPool.FluorineCrackedNaquadah.getFluidOrGas(1000))
             .duration(120)
             .eut(TierEU.RECIPE_UV)
-            .noOptimize()
             .addTo(CR);
 
         GTValues.RA.stdBuilder()
@@ -33,7 +32,6 @@ public class CrackingRecipes implements IRecipePool {
             .fluidOutputs(MaterialPool.RadonCrackedEnrichedNaquadah.getFluidOrGas(1000))
             .duration(160)
             .eut(TierEU.RECIPE_UHV)
-            .noOptimize()
             .addTo(CR);
     }
 }

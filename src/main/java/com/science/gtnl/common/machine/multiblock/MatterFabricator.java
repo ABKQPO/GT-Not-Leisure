@@ -300,7 +300,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
             public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return OverclockCalculator.ofNoOverclock(recipe)
                     .setEUtDiscount(1)
-                    .setSpeedBoost(1);
+                    .setDurationModifier(1);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -308,7 +308,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

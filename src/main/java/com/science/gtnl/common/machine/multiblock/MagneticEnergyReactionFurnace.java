@@ -33,7 +33,6 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import galaxyspace.core.register.GSBlocks;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -42,7 +41,6 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -54,8 +52,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 
-public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBase<MagneticEnergyReactionFurnace>
-    implements IWirelessEnergyHatchInformation {
+public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBase<MagneticEnergyReactionFurnace> {
 
     private static final int MACHINEMODE_ARC = 0;
     private static final int MACHINEMODE_PLSAMA = 1;
@@ -164,7 +161,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
                         .casingIndex(CASING_INDEX)
                         .dot(1)
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(blockCasings4Misc, 3))))
-                .addElement('M', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('M', ofBlock(sBlockCasingsSE, 9))
                 .addElement('N', ofBlock(lscLapotronicEnergyUnit, 0))
                 .build();
         }
@@ -185,7 +182,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -237,9 +234,9 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe)
                     .setEUtDiscount(0.4 - (mParallelTier / 50.0) * Math.pow(0.80, coilTier))
-                    .setSpeedBoost(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.80, coilTier));
+                    .setDurationModifier(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.80, coilTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     public HeatingCoilLevel getCoilLevel() {
@@ -288,7 +285,8 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(
             aPlayer,

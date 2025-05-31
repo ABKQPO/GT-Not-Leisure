@@ -25,7 +25,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     protected boolean isBioModule = false;
     protected boolean isPolModule = false;
     protected double setEUtDiscount = 0;
-    protected double setSpeedBoost = 0;
+    protected double setDurationModifier = 0;
     protected int setMaxParallel = 0;
     protected final int HORIZONTAL_OFF_SET = 7;
     protected final int VERTICAL_OFF_SET = 17;
@@ -98,7 +98,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
                     : super.createOverclockCalculator(recipe).setRecipeHeat(recipe.mSpecialValue)
                         .setMachineHeat(mHeatingCapacity)
                         .setEUtDiscount(setEUtDiscount)
-                        .setSpeedBoost(setSpeedBoost);
+                        .setDurationModifier(setDurationModifier);
             }
 
             @Override
@@ -141,11 +141,11 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     }
 
     public double getSpeedBoost() {
-        return setSpeedBoost;
+        return setDurationModifier;
     }
 
-    public void setSpeedBoost(double boost) {
-        setSpeedBoost = boost;
+    public void setDurationModifier(double boost) {
+        setDurationModifier = boost;
     }
 
     public int getMaxParallel() {

@@ -231,6 +231,9 @@ public enum GTNLItemList implements IItemContainer {
     FakeItemSiren,
     PhysicsCape,
     TimeStopPocketWatch,
+    MilledNaquadahEnriched,
+
+    CircuitIntegratedPlus,
 
     InfinityFuelRod,
     InfinityFuelRodDepleted,

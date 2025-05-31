@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.GTNL;
 
 import static gregtech.api.enums.Mods.EternalSingularity;
-import static gregtech.api.enums.Mods.GalaxySpace;
 import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeConstants.FOG_UPGRADE_NAME_SHORT;
 
@@ -54,7 +53,7 @@ public class EternalGregTechWorkshopUpgradeRecipes implements IRecipePool {
             CustomItemList.Godforge_StellarEnergySiphonCasing.get(8),
             GregtechItemList.FusionComputer_UV3.get(8),
             GregtechItemList.Casing_Fusion_Internal2.get(64),
-            getModItem(GalaxySpace.ID, "item.DysonSwarmParts", 64, 3),
+            ItemList.UHTResistantMesh.get(64),
             MaterialsAlloy.QUANTUM.getPlateDense(48),
             MaterialsElements.STANDALONE.RHUGNOR.getGear(32),
             getModItem(EternalSingularity.ID, "eternal_singularity", 16L),

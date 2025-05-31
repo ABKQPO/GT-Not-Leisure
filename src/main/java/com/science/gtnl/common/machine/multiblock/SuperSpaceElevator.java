@@ -41,12 +41,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
-import com.gtnewhorizons.gtnhintergalactic.config.IGConfig;
-import com.gtnewhorizons.gtnhintergalactic.gui.IG_UITextures;
-import com.gtnewhorizons.gtnhintergalactic.tile.TileEntitySpaceElevatorCable;
-import com.gtnewhorizons.gtnhintergalactic.tile.multi.elevator.ElevatorUtil;
-import com.gtnewhorizons.gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -60,7 +54,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.Utils.item.ItemUtils;
 
-import galaxyspace.core.register.GSBlocks;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -77,6 +71,11 @@ import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import gtnhintergalactic.config.IGConfig;
+import gtnhintergalactic.gui.IG_UITextures;
+import gtnhintergalactic.tile.TileEntitySpaceElevatorCable;
+import gtnhintergalactic.tile.multi.elevator.ElevatorUtil;
+import gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
 import kubatech.loaders.BlockLoader;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -229,7 +228,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shapeBase))
             .addShape(STRUCTURE_PIECE_EXTENDED, transpose(shapeExtended))
             .addElement('A', ofBlock(com.science.gtnl.loader.BlockLoader.MetaCasing, 18))
-            .addElement('B', ofBlock(IGBlocks.SpaceElevatorCasing, 2))
+            .addElement('B', ofBlock(sBlockCasingsSE, 2))
             .addElement('C', ofBlock(sBlockCasingsTT, 0))
             .addElement(
                 'D',
@@ -247,9 +246,9 @@ public class SuperSpaceElevator extends TTMultiblockBase
                 buildHatchAdder(SuperSpaceElevator.class).atLeast(Energy.or(ExoticEnergy), Dynamo)
                     .casingIndex(CASING_INDEX_BASE)
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(IGBlocks.SpaceElevatorCasing, 0))))
-            .addElement('G', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
-            .addElement('H', ofBlock(IGBlocks.SpaceElevatorCasing, 1))
+                    .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(sBlockCasingsSE, 0))))
+            .addElement('G', ofBlock(sBlockCasingsDyson, 9))
+            .addElement('H', ofBlock(sBlockCasingsSE, 1))
             .addElement('I', ofBlock(sBlockCasings1, 12))
             .addElement('J', ofBlock(BlockLoader.defcCasingBlock, 7))
             .addElement('K', ofBlock(bw_realglas, 14))
@@ -267,15 +266,17 @@ public class SuperSpaceElevator extends TTMultiblockBase
                         HatchElement.OutputData)
                     .casingIndex(CASING_INDEX_BASE)
                     .dot(1)
-                    .buildAndChain(IGBlocks.SpaceElevatorCasing, 0))
+                    .buildAndChain(sBlockCasingsSE, 0))
             .addElement(
                 'M',
                 HatchElementBuilder.<SuperSpaceElevator>builder()
                     .atLeast(ProjectModuleElement.ProjectModule)
                     .casingIndex(CASING_INDEX_BASE)
                     .dot(1)
-                    .buildAndChain(IGBlocks.SpaceElevatorCasing, 0))
-            .addElement('N', ElevatorUtil.ofBlockAdder(SuperSpaceElevator::addCable, IGBlocks.SpaceElevatorCable, 0))
+                    .buildAndChain(sBlockCasingsSE, 0))
+            .addElement(
+                'N',
+                ElevatorUtil.ofBlockAdder(SuperSpaceElevator::addCable, GregTechAPI.sSpaceElevatorCable, 0))
             .addElement('O', ofBlock(com.science.gtnl.loader.BlockLoader.MetaBlockGlow, 31))
             .build();
     }
@@ -312,7 +313,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
         int built = 0;
 
-        built = this.survivialBuildPiece(
+        built = this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             STRUCTURE_PIECE_MAIN_HOR_OFFSET,
@@ -327,7 +328,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
         if (tMotorTier > 1) {
             for (int i = 0; i < tMotorTier - 1; i++) {
-                built = this.survivialBuildPiece(
+                built = this.survivalBuildPiece(
                     STRUCTURE_PIECE_EXTENDED,
                     stackSize,
                     STRUCTURE_PIECE_EXTENDED_HOR_OFFSET,
@@ -404,7 +405,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
     public boolean addCable(Block block, int aBaseCasingIndex, World world, int x, int y, int z) {
         // Check if the cable block is valid and can see the sky
-        if (block != IGBlocks.SpaceElevatorCable || world == null) {
+        if (block != GregTechAPI.sSpaceElevatorCable || world == null) {
             return false;
         }
         if (!world.canBlockSeeTheSky(x, y + 1, z)) {
@@ -585,7 +586,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                         () -> StatCollector.translateToLocal(
                             "gt.blockmachines.multimachine.ig.elevator.gui.numOfModules") + ": " + getNumberOfModules())
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(widget -> getBaseMetaTileEntity().getErrorDisplayID() == 0));
+                    .setEnabled(widget -> getBaseMetaTileEntity().isAllowedToWork()));
     }
 
     @Override

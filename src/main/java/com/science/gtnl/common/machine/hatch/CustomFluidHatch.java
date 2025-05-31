@@ -197,11 +197,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    public boolean isSimpleMachine() {
-        return true;
-    }
-
-    @Override
     public boolean isFacingValid(ForgeDirection facing) {
         return true;
     }
@@ -238,19 +233,9 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         return true;
     }
 
-    @Override
-    public boolean displaysItemStack() {
-        return true;
-    }
-
     public void updateSlots() {
         if (mInventory[getInputSlot()] != null && mInventory[getInputSlot()].stackSize <= 0)
             mInventory[getInputSlot()] = null;
-    }
-
-    @Override
-    public int getTankPressure() {
-        return -100;
     }
 
     @Override

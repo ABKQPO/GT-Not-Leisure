@@ -34,7 +34,6 @@ public class PCBFactoryRecipes implements IRecipePool {
                 Materials.Iron.getPlasma(100),
                 Materials.IronIIIChloride.getFluid(4000))
             .duration(300)
-            .noOptimize()
             .metadata(TIER, 1)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(PCBFR);

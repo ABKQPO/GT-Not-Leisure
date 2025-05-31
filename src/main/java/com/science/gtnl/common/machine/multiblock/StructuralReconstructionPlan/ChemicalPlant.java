@@ -158,7 +158,7 @@ public class ChemicalPlant extends GTMMultiMachineBase<ChemicalPlant> implements
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -211,7 +211,7 @@ public class ChemicalPlant extends GTMMultiMachineBase<ChemicalPlant> implements
                     .setDurationDecreasePerOC(4)
                     .setEUtIncreasePerOC(4)
                     .setEUtDiscount(0.8 * Math.pow(0.95, getCoilLevel().getTier()))
-                    .setSpeedBoost(1 / 1.67 * Math.pow(0.95, getCoilLevel().getTier()));
+                    .setDurationModifier(1 / 1.67 * Math.pow(0.95, getCoilLevel().getTier()));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

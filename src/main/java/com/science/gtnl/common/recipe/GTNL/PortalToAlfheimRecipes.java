@@ -35,7 +35,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                     2147483647,
                     getModItem(IndustrialCraft2.ID, "blockNuke", 1)
                         .setStackDisplayName(texter("Elves don't like bread.", "PTARRecipes.1"))))
-            .noOptimize()
             .duration(1200)
             .eut(0)
             .addTo(PTAR);
@@ -43,7 +42,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTModHandler.getModItem(AdvancedSolarPanel.ID, "asp_crafting_items", 1, 9, missing))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "manaResource", 1, 8, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -51,7 +49,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 1L))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "manaResource", 1, 9, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -59,7 +56,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 1, 0, missing))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "elfGlass", 1, 0, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -67,7 +63,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Items.quartz, 1))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "quartz", 1, 5, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -75,7 +70,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(ItemList.Casing_CleanStainlessSteel.get(1))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "dreamwood", 1, 0, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -83,7 +77,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gearGtSmall, Materials.TungstenSteel, 1L))
             .itemOutputs(GTModHandler.getModItem(Botania.ID, "manaResource", 1, 7, missing))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(PTAR);
@@ -166,7 +159,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 139,
                 139,
                 1)
-            .noOptimize()
             .duration(1200)
             .eut(122880)
             .addTo(PTAR);
@@ -247,7 +239,6 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 139,
                 139,
                 1)
-            .noOptimize()
             .duration(100)
             .eut(7864320)
             .addTo(PTAR);

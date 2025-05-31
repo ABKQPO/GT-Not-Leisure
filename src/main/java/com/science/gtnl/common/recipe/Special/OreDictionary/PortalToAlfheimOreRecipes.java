@@ -31,7 +31,6 @@ public class PortalToAlfheimOreRecipes implements IOreRecipeRegistrator {
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(1, aStack))
                 .itemOutputs(GTModHandler.getModItem(Botania.ID, "elfGlass", 1, 0, missing))
-                .noOptimize()
                 .duration(20)
                 .eut(2048)
                 .addTo(PTAR);
@@ -48,7 +47,6 @@ public class PortalToAlfheimOreRecipes implements IOreRecipeRegistrator {
                 GTUtility.copyAmount(1, aStack))
             .itemOutputs(GTModHandler.getModItem("Botania", "stone", 1, 0))
             .fluidInputs(MaterialPool.FluidMana.getFluidOrGas(200))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(MIR);

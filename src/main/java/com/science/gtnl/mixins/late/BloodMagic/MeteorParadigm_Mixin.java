@@ -1,5 +1,6 @@
 package com.science.gtnl.mixins.late.BloodMagic;
 
+import static WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor.*;
 import static com.science.gtnl.Utils.bloodMagic.MeteorParadigmHelper.*;
 
 import java.util.ArrayList;
@@ -15,11 +16,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigmComponent;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 
 @SuppressWarnings("UnusedMixin")
-@Mixin(value = MeteorParadigm.class, remap = false)
+@Mixin(value = Meteor.class, remap = false)
 public abstract class MeteorParadigm_Mixin {
 
     @Inject(
@@ -29,36 +31,23 @@ public abstract class MeteorParadigm_Mixin {
             target = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFZ)Lnet/minecraft/world/Explosion;",
             shift = At.Shift.AFTER),
         cancellable = true)
-    private void onCreateMeteorImpact(World world, int x, int y, int z, boolean[] flags, CallbackInfo ci) {
-        MeteorParadigm self = (MeteorParadigm) (Object) this;
+    private void onCreateMeteorImpact(World world, int x, int y, int z, List<Reagent> reagents, CallbackInfo ci) {
+        Meteor self = (Meteor) (Object) this;
 
         final int originalRadius = self.radius;
-        final int originalFillerChance = self.fillerChance;
-        final List<MeteorParadigmComponent> componentList = new ArrayList<>(self.componentList);
-        final List<MeteorParadigmComponent> originalFillerList = new ArrayList<>(self.fillerList);
+        final float originalFillerChance = self.fillerChance;
+        final List<MeteorComponent> oreList = new ArrayList<>(self.ores);
+        final List<MeteorComponent> originalFillerList = new ArrayList<>(self.filler);
 
-        boolean hasTerrae = false, hasOrbisTerrae = false, hasCrystallos = false, hasIncendium = false,
-            hasTennebrae = false;
-        if (flags != null && flags.length >= 5) {
-            hasTerrae = flags[0];
-            hasOrbisTerrae = flags[1];
-            hasCrystallos = flags[2];
-            hasIncendium = flags[3];
-            hasTennebrae = flags[4];
-        }
+        int newRadius = getNewRadius(originalRadius, reagents);
 
-        int newRadius = calculateRadius(originalRadius, hasOrbisTerrae, hasTerrae);
-        int fillerChance = calculateFillerChance(originalFillerChance, hasOrbisTerrae, hasTerrae);
-        List<MeteorParadigmComponent> currentFillerList = buildFillerList(
-            hasCrystallos,
-            hasIncendium,
-            hasTennebrae,
-            originalFillerList);
+        float fillerChance = getNewFillerChance(originalFillerChance, reagents);
+        List<MeteorComponent> currentFillerList = getNewFillerList(originalFillerList, reagents);
 
         final SphereData sphereData = precomputeSphereData(world, x, y, z, newRadius);
-        final WeightData componentWeights = precomputeWeights(componentList);
+        final WeightData totalComponentWeight = precomputeWeights(oreList);
         final WeightData fillerWeights = precomputeWeights(currentFillerList);
-        final int finalFillerChance = fillerChance;
+        final float finalFillerChance = fillerChance;
 
         AtomicInteger counter = new AtomicInteger(0);
         List<Future<?>> futures = new ArrayList<>();
@@ -72,7 +61,7 @@ public abstract class MeteorParadigm_Mixin {
                     () -> processChunk(
                         world,
                         sphereData,
-                        componentWeights,
+                        totalComponentWeight,
                         fillerWeights,
                         finalFillerChance,
                         start,

@@ -31,9 +31,7 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import bartworks.API.BorosilicateGlass;
 import bartworks.util.BWUtil;
-import galaxyspace.core.register.GSBlocks;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
@@ -42,7 +40,6 @@ import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -55,8 +52,8 @@ import gregtech.api.util.OverclockCalculator;
 import gregtech.common.blocks.BlockCasings8;
 import gtnhlanth.common.register.LanthItemList;
 
-public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachineBase<NanitesIntegratedProcessingCenter>
-    implements IWirelessEnergyHatchInformation {
+public class NanitesIntegratedProcessingCenter
+    extends WirelessEnergyMultiMachineBase<NanitesIntegratedProcessingCenter> {
 
     private HeatingCoilLevel heatLevel;
     private int coilTier = 0;
@@ -66,7 +63,7 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
     private final int VERTICAL_OFF_SET = 20;
     private final int DEPTH_OFF_SET = 0;
     private double setEUtDiscount = 1;
-    private double setSpeedBoost = 1;
+    private double setDurationModifier = 1;
     public ArrayList<NanitesBaseModule<?>> moduleHatches = new ArrayList<>();
     private static IStructureDefinition<NanitesIntegratedProcessingCenter> STRUCTURE_DEFINITION = null;
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -148,13 +145,13 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
                     if (allowModuleConnection(module, this)) {
                         module.connect();
                         module.setEUtDiscount(getEUtDiscount());
-                        module.setSpeedBoost(getSpeedBoost());
+                        module.setDurationModifier(getSpeedBoost());
                         module.setMaxParallel(getMaxParallelRecipes());
                         module.setHeatingCapacity(mHeatingCapacity);
                     } else {
                         module.disconnect();
                         module.setEUtDiscount(1);
-                        module.setSpeedBoost(1);
+                        module.setDurationModifier(1);
                         module.setMaxParallel(0);
                         module.setHeatingCapacity(0);
                     }
@@ -196,22 +193,13 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
                             NanitesIntegratedProcessingCenter::getCoilLevel)))
                 .addElement('H', ofBlock(sBlockCasings4, 10))
                 .addElement('I', ofBlock(sBlockCasings10, 3))
-                .addElement('J', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('J', ofBlock(sBlockCasingsSE, 9))
                 .addElement('K', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
                 .addElement('L', ofBlock(blockCasings4Misc, 4))
                 .addElement('M', ofBlock(sBlockCasings2, 5))
                 .addElement('N', ofFrame(Materials.CosmicNeutronium))
                 .addElement('O', ofBlock(sBlockCasings8, 1))
-                .addElement(
-                    'P',
-                    withChannel(
-                        "glass",
-                        BorosilicateGlass.ofBoroGlass(
-                            (byte) 0,
-                            (byte) 1,
-                            Byte.MAX_VALUE,
-                            (te, t) -> te.mGlassTier = t,
-                            te -> te.mGlassTier)))
+                .addElement('P', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement(
                     'Q',
                     ofChain(
@@ -244,7 +232,7 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -291,11 +279,11 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
             @Override
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 setEUtDiscount = 1 - (mParallelTier / 50.0) * Math.pow(0.80, coilTier);
-                setSpeedBoost = Math.pow(0.75, mParallelTier) * Math.pow(0.80, coilTier);
+                setDurationModifier = Math.pow(0.75, mParallelTier) * Math.pow(0.80, coilTier);
                 return super.createOverclockCalculator(recipe).setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(mHeatingCapacity)
                     .setEUtDiscount(setEUtDiscount)
-                    .setSpeedBoost(setSpeedBoost);
+                    .setDurationModifier(setDurationModifier);
             }
 
             @Override
@@ -370,7 +358,7 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
         return false;
     }
 
-    public byte getGlassTier() {
+    public int getGlassTier() {
         return this.mGlassTier;
     }
 
@@ -387,7 +375,7 @@ public class NanitesIntegratedProcessingCenter extends WirelessEnergyMultiMachin
     }
 
     public double getSpeedBoost() {
-        return setSpeedBoost;
+        return setDurationModifier;
     }
 
     @Override

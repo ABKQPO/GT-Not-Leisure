@@ -23,7 +23,6 @@ import com.science.gtnl.common.machine.multiMachineClasses.GTMMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.RecipeRegister;
 
-import bartworks.API.BorosilicateGlass;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -82,16 +81,7 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
                         .dot(1)
                         .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(BlockLoader.MetaCasing, 19))))
-                .addElement(
-                    'B',
-                    withChannel(
-                        "glass",
-                        BorosilicateGlass.ofBoroGlass(
-                            (byte) 0,
-                            (byte) 1,
-                            Byte.MAX_VALUE,
-                            (te, t) -> te.mGlassTier = t,
-                            te -> te.mGlassTier)))
+                .addElement('B', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement(
                     'C',
                     withChannel(
@@ -198,7 +188,7 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
                     .setHeatOC(true)
                     .setHeatDiscount(false)
                     .setEUtDiscount(Math.pow(0.85, getCoilLevel().getTier()))
-                    .setSpeedBoost(Math.pow(0.85, getCoilLevel().getTier()));
+                    .setDurationModifier(Math.pow(0.85, getCoilLevel().getTier()));
             }
 
             @Override
@@ -225,7 +215,7 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         this.setCoilLevel(HeatingCoilLevel.None);
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

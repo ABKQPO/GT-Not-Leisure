@@ -4,10 +4,7 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.multitileentity.multiblock.casing.Glasses.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.blockCactusCharcoal;
-import static gtPlusPlus.core.block.ModBlocks.blockCactusCoke;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,8 +48,8 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.blocks.BlockCasings1;
-import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -96,14 +93,14 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     private int currentSteam;
     private ItemStack currentOffer;
     private long fueledAmount = 0;
-    private static final ItemStack[] possibleInputs = { new ItemStack(ModItems.itemCactusCharcoal, 1),
-        new ItemStack(blockCactusCharcoal, 1), new ItemStack(blockCactusCharcoal, 1, 1),
-        new ItemStack(blockCactusCharcoal, 1, 2), new ItemStack(blockCactusCharcoal, 1, 3),
-        new ItemStack(blockCactusCharcoal, 1, 4), new ItemStack(blockCactusCharcoal, 1, 5),
-        new ItemStack(ModItems.itemCactusCoke, 1), new ItemStack(blockCactusCoke, 1),
-        new ItemStack(blockCactusCoke, 1, 1), new ItemStack(blockCactusCoke, 1, 2),
-        new ItemStack(blockCactusCoke, 1, 3), new ItemStack(blockCactusCoke, 1, 4),
-        new ItemStack(blockCactusCoke, 1, 5) };
+    private static final ItemStack[] possibleInputs = { GregtechItemList.CactusCharcoal.get(1),
+        GregtechItemList.BlockCactusCharcoal.get(1), GregtechItemList.CompressedCactusCharcoal.get(1),
+        GregtechItemList.DoubleCompressedCactusCharcoal.get(1), GregtechItemList.TripleCompressedCactusCharcoal.get(1),
+        GregtechItemList.QuadrupleCompressedCactusCharcoal.get(1),
+        GregtechItemList.QuintupleCompressedCactusCharcoal.get(1), GregtechItemList.CactusCoke.get(1),
+        GregtechItemList.BlockCactusCoke.get(1), GregtechItemList.CompressedCactusCoke.get(1),
+        GregtechItemList.DoubleCompressedCactusCoke.get(1), GregtechItemList.TripleCompressedCactusCoke.get(1),
+        GregtechItemList.QuadrupleCompressedCactusCoke.get(1), GregtechItemList.QuintupleCompressedCactusCoke.get(1) };
     private static final long[] totalValue = { 8_000L, 90_000L, 1_012_500L, 11_390_625L, 128_144_531L, 1_441_625_977L,
         16_218_292_236L, 16_000L, 180_000L, 2_025_000L, 22_781_250L, 256_289_063L, 2_883_251_953L, 32_436_584_473L };
     private static final int[] steamType = { 1, 1, 1, 2, 2, 3, 3, 1, 1, 1, 2, 2, 3, 3 };
@@ -196,7 +193,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_SURVIVAL,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -250,7 +247,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     private void outputSteam() {
         if (fueledAmount > 0) {
             if (currentSteam == 1) {
-                addOutput(FluidUtils.getSteam((int) Math.min(3200, fueledAmount)));
+                addOutput(Materials.Steam.getGas((int) Math.min(3200, fueledAmount)));
                 fueledAmount -= (int) Math.min(3200, fueledAmount);
             } else if (currentSteam == 2) {
                 addOutput(FluidUtils.getSuperHeatedSteam((int) Math.min(6400, fueledAmount)));

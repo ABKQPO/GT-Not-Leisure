@@ -14,7 +14,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.core.item.chemistry.AgriculturalChem;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class CentrifugeRecipes implements IRecipePool {
@@ -26,11 +26,10 @@ public class CentrifugeRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .fluidInputs(MaterialPool.NeutralisedRedMud.getFluidOrGas(2000))
             .fluidOutputs(
-                FluidUtils.getFluidStack(AgriculturalChem.RedMud, 1000),
+                FluidUtils.getFluidStack(GTPPFluids.RedMud, 1000),
                 MaterialPool.FerricReeChloride.getFluidOrGas(1000),
                 Materials.Hydrogen.getGas(4000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(120)
             .addTo(CNCR);
@@ -42,7 +41,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 Materials.IronIIIChloride.getFluid(1000),
                 Materials.Water.getFluid(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(320)
             .eut(480)
             .addTo(CNCR);
@@ -57,7 +55,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 MaterialPool.ErLuOxidesSolution.getFluidOrGas(250),
                 Materials.HydrochloricAcid.getFluid(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(CNCR);
@@ -71,7 +68,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 MaterialPool.RadiumChloride.get(OrePrefixes.dust, 1))
             .outputChances(10000, 10000, 10000, 500)
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);
@@ -82,7 +78,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 Materials.NitrogenDioxide.getGas(3000),
                 Materials.Deuterium.getGas(1000),
                 Materials.Helium_3.getGas(1000))
-            .noOptimize()
             .duration(400)
             .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);

@@ -18,7 +18,6 @@ public class VacuumFreezerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.EnderAir.getFluidOrGas(4000))
             .fluidOutputs(MaterialPool.FluidEnderAir.getFluidOrGas(4000))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(TierEU.RECIPE_IV)
             .addTo(CNCR);

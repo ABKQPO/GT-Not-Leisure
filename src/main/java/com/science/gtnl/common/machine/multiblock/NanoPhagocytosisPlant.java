@@ -41,7 +41,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -57,8 +56,7 @@ import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor;
 import tectech.thing.metaTileEntity.multi.godforge.color.StarColorStorage;
 
-public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPhagocytosisPlant>
-    implements IWirelessEnergyHatchInformation {
+public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPhagocytosisPlant> {
 
     private static final int DEFAULT_STAR_SIZE = 20;
     private final StarColorStorage starColors = new StarColorStorage();
@@ -253,7 +251,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         int realBudget = elementBudget >= 2000 ? elementBudget : Math.min(2000, elementBudget * 5);
 
         int built = 0;
-        built = survivialBuildPiece(
+        built = survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -266,7 +264,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
         if (built >= 0) return built;
 
-        built += survivialBuildPiece(
+        built += survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_RING_ONE,
             stackSize,
             HORIZONTAL_OFF_SET_RING_ONE,
@@ -279,7 +277,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
         if (built >= 0) return built;
 
-        built += this.survivialBuildPiece(
+        built += this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_RING_TWO,
             stackSize,
             HORIZONTAL_OFF_SET_RING_TWO,
@@ -292,7 +290,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
         if (built >= 0) return built;
 
-        built += this.survivialBuildPiece(
+        built += this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_RING_THREE,
             stackSize,
             HORIZONTAL_OFF_SET_RING_THREE,
@@ -306,7 +304,8 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         if (isRendererDisabled) {
             isRendererDisabled = false;
             // let the renderer automatically rebuild itself as needed through normal logic
@@ -543,9 +542,9 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe)
                     .setEUtDiscount(0.4 - (mParallelTier / 50.0) * Math.pow(0.95, getMaxInputVoltage()))
-                    .setSpeedBoost(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, getMaxInputVoltage()));
+                    .setDurationModifier(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, getMaxInputVoltage()));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override

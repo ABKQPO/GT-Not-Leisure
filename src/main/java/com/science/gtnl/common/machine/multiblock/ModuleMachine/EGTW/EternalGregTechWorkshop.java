@@ -40,7 +40,6 @@ import com.google.common.math.LongMath;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -88,7 +87,6 @@ import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -105,8 +103,7 @@ import tectech.thing.gui.TecTechUITextures;
 import tectech.thing.metaTileEntity.multi.godforge.util.MilestoneFormatter;
 import tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon;
 
-public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWorkshop>
-    implements IWirelessEnergyHatchInformation {
+public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWorkshop> {
 
     // 75 x 19 x 75
     public static final String STRUCTURE_PIECE_MAIN_TOP = "main_top";
@@ -337,7 +334,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         if (isRendererDisabled) {
             isRendererDisabled = false;
             // let the renderer automatically rebuild itself as needed through normal logic
@@ -433,7 +431,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .addElement('A', ofBlock(TTCasingsContainer.GodforgeCasings, 0))
             .addElement('B', ofBlock(Loaders.componentAssemblylineCasing, 12))
             .addElement('C', ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('D', ofBlock(IGBlocks.SpaceElevatorMotor, 4))
+            .addElement('D', ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
             .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
             .addElement('F', ofBlock(GregTechAPI.sBlockCasings9, 12))
             .addElement('G', ofBlock(TTCasingsContainer.GodforgeCasings, 1))
@@ -649,7 +647,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         int built;
 
-        built = this.survivialBuildPiece(
+        built = this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -663,7 +661,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         if (built >= 0) return built;
 
         for (int i = 0; i < stackSize.stackSize; i++) {
-            built = this.survivialBuildPiece(
+            built = this.survivalBuildPiece(
                 STRUCTURE_PIECE_MAIN_UP,
                 stackSize,
                 HORIZONTAL_OFF_SET_UP,
@@ -676,7 +674,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
             if (built >= 0) return built;
 
-            built = this.survivialBuildPiece(
+            built = this.survivalBuildPiece(
                 STRUCTURE_PIECE_MAIN_DOWN,
                 stackSize,
                 HORIZONTAL_OFF_SET_DOWN,
@@ -690,7 +688,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             if (built >= 0) return built;
 
             if (stackSize.stackSize > 1) {
-                built = this.survivialBuildPiece(
+                built = this.survivalBuildPiece(
                     STRUCTURE_PIECE_MAIN_EXTRA,
                     stackSize,
                     HORIZONTAL_OFF_SET_EXTRA,
@@ -703,7 +701,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
                 if (built >= 0) return built;
 
-                built = this.survivialBuildPiece(
+                built = this.survivalBuildPiece(
                     STRUCTURE_PIECE_MAIN_EXTRA,
                     stackSize,
                     HORIZONTAL_OFF_SET_EXTRA,
@@ -718,7 +716,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             }
         }
 
-        built = this.survivialBuildPiece(
+        built = this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_TOP,
             stackSize,
             HORIZONTAL_OFF_SET_TOP,
@@ -731,7 +729,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         if (built >= 0) return built;
 
-        built = this.survivialBuildPiece(
+        built = this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_BOTTOM,
             stackSize,
             HORIZONTAL_OFF_SET_BOTTOM,
@@ -765,7 +763,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         if (allowModuleConnection(module, this)) {
                             module.connect();
                             module.setEUtDiscount(getEUtDiscount());
-                            module.setSpeedBoost(getSpeedBoost());
+                            module.setDurationModifier(getSpeedBoost());
                             module.setMaxParallel(getMaxParallelRecipes());
                             module.setMaxUseEUt(getMaxUseEUt());
                             module.setHeat(getHeatingCapacity());
@@ -773,7 +771,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         } else {
                             module.disconnect();
                             module.setEUtDiscount(1);
-                            module.setSpeedBoost(1);
+                            module.setDurationModifier(1);
                             module.setMaxParallel(0);
                             module.setMaxParallel(0);
                             module.setMaxUseEUt(0);
@@ -859,7 +857,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         if (getBaseMetaTileEntity().isAllowedToWork()) {
             if (addEUToGlobalEnergyMap(ownerUUID, -moduleHatches.size() * Integer.MAX_VALUE)) {
                 setEUtDiscount(Math.pow(0.95, mModuleTier));
-                setSpeedBoost(Math.pow(0.9, mModuleTier));
+                setDurationModifier(Math.pow(0.9, mModuleTier));
                 setMaxUseEUt((1L << Math.min(mModuleTier, 28)) * (Integer.MAX_VALUE * 10L));
 
                 mEfficiencyIncrease = 10000;
@@ -952,7 +950,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return mSpeedBoost;
     }
 
-    public void setSpeedBoost(double speedBoost) {
+    public void setDurationModifier(double speedBoost) {
         mSpeedBoost = speedBoost;
     }
 

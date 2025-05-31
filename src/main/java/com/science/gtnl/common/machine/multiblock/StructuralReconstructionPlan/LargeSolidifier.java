@@ -9,10 +9,13 @@ import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -38,7 +41,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
-import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
+import gregtech.api.objects.GTDualInputPattern;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -47,9 +50,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
-import gregtech.common.tileentities.machines.IDualInputHatch;
-import gregtech.common.tileentities.machines.IDualInputInventory;
-import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
+import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 
@@ -117,12 +118,8 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
             RecipeMap<?> currentRecipeMap = RecipeMaps.fluidSolidifierRecipes;
 
             @Override
-            protected RecipeMap<?> preProcess() {
+            protected RecipeMap<?> getCurrentRecipeMap() {
                 lastRecipeMap = currentRecipeMap;
-
-                if (maxParallelSupplier != null) {
-                    maxParallel = maxParallelSupplier.get();
-                }
                 return currentRecipeMap;
             }
 
@@ -137,51 +134,48 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                 return super.process();
             }
 
+            @Override
+            public boolean tryCachePossibleRecipesFromPattern(IDualInputInventoryWithPattern inv) {
+                if (dualInvWithPatternToRecipeCache.containsKey(inv)) {
+                    activeDualInv = inv;
+                    return true;
+                }
+
+                GTDualInputPattern inputs = inv.getPatternInputs();
+                setInputItems(inputs.inputItems);
+                setInputFluids(inputs.inputFluid);
+                Set<GTRecipe> recipes = findRecipeMatches(RecipeMaps.fluidSolidifierRecipes)
+                    .collect(Collectors.toSet());
+                if (recipes.isEmpty())
+                    recipes = findRecipeMatches(GGFabRecipeMaps.toolCastRecipes).collect(Collectors.toSet());
+                if (!recipes.isEmpty()) {
+                    dualInvWithPatternToRecipeCache.put(inv, recipes);
+                    activeDualInv = inv;
+                    return true;
+                }
+                return false;
+            }
+
             @NotNull
             @Override
             public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1 / 4.0 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1 / 4.0 - (mParallelTier / 200.0)));
             }
 
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    protected CheckRecipeResult doCheckRecipe() {
-        CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
-
-        // check crafting input hatches first
-        if (supportsCraftingMEBuffer()) {
-            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
-                for (var it = dualInputHatch.inventories(); it.hasNext();) {
-                    IDualInputInventory slot = it.next();
-                    processingLogic.setInputItems(slot.getItemInputs());
-                    processingLogic.setInputFluids(slot.getFluidInputs());
-                    CheckRecipeResult foundResult = processingLogic.process();
-                    if (foundResult.wasSuccessful()) {
-                        return foundResult;
-                    }
-                    if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
-                        // Recipe failed in interesting way, so remember that and continue searching
-                        result = foundResult;
-                    }
-                }
-            }
-        }
-
-        // Logic for GT_MetaTileEntity_Hatch_Solidifier
+    protected CheckRecipeResult checkRecipeForCustomHatches(CheckRecipeResult lastResult) {
         for (MTEHatchInput solidifierHatch : mInputHatches) {
             if (solidifierHatch instanceof MTEHatchSolidifier hatch) {
-                ItemStack mold = hatch.getMold();
+                List<ItemStack> items = hatch.getNonConsumableItems();
                 FluidStack fluid = solidifierHatch.getFluid();
 
-                if (mold != null && fluid != null) {
-                    List<ItemStack> inputItems = new ArrayList<>();
-                    inputItems.add(mold);
-
-                    processingLogic.setInputItems(inputItems.toArray(new ItemStack[0]));
+                if (items != null && fluid != null) {
+                    processingLogic.setInputItems(items);
                     processingLogic.setInputFluids(fluid);
 
                     CheckRecipeResult foundResult = processingLogic.process();
@@ -190,40 +184,13 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                     }
                     if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
                         // Recipe failed in interesting way, so remember that and continue searching
-                        result = foundResult;
+                        lastResult = foundResult;
                     }
                 }
             }
         }
-
         processingLogic.clear();
-        processingLogic.setInputFluids(getStoredFluids());
-        // Default logic
-        for (MTEHatchInputBus bus : mInputBusses) {
-            if (bus instanceof MTEHatchCraftingInputME) {
-                continue;
-            }
-            List<ItemStack> inputItems = new ArrayList<>();
-            for (int i = bus.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack stored = bus.getStackInSlot(i);
-                if (stored != null) {
-                    inputItems.add(stored);
-                }
-            }
-            if (canUseControllerSlotForRecipe() && getControllerSlot() != null) {
-                inputItems.add(getControllerSlot());
-            }
-            processingLogic.setInputItems(inputItems.toArray(new ItemStack[0]));
-            CheckRecipeResult foundResult = processingLogic.process();
-            if (foundResult.wasSuccessful()) {
-                return foundResult;
-            }
-            if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
-                // Recipe failed in interesting way, so remember that and continue searching
-                result = foundResult;
-            }
-        }
-        return result;
+        return lastResult;
     }
 
     @Override
@@ -301,7 +268,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

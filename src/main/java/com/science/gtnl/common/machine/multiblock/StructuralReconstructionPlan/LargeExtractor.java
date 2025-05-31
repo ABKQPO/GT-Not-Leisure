@@ -161,7 +161,7 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.6 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1 / 2.5 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1 / 2.5 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -193,7 +193,8 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeExtractor_Mode_" + this.machineMode));
     }
@@ -239,7 +240,7 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

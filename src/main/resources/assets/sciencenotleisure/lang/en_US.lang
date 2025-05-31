@@ -706,6 +706,8 @@ Tooltip_Testitem_11=§f§lIf you encounter any issues or want to make suggestion
 Tooltip_Testitem_12=The machines added by this mod start from meta value 21000
 Tooltip_Testitem_13=§c§lAlso reminder: Do not right-click with this item!
 
+item.CircuitIntegratedPlus.name=Circuit Integrated Plus
+
 item.KFCFamily.name=Crazy Thursday
 Tooltip_KFCFamily_00=§oCrazy Thursday, v me 50!
 gtnl.potion.perfect_physique=Perfect Physique
@@ -1503,6 +1505,12 @@ Tooltip_SteamFlightModule_01=Adds flight module to the Steam Stairway
 Tooltip_SteamFlightModule_02=Consumes steam to grant you the power of free flight
 Tooltip_SteamFlightModule_03=Adjust overclock count to consume more steam and expand the range
 Tooltip_SteamFlightModule_04=Effective range: 64 * overclock count
+
+NameSteamWeatherModule=Steam Weather Module
+gtnl.recipe.SteamWeatherModuleFakeRecipes=Weather Changes
+SteamWeatherModuleRecipeType=Weather Changes
+Tooltip_SteamWeatherModule_00=§a§lEnrique Pucci... so that's my stand-in... "Weather Report!"
+Tooltip_SteamWeatherModule_01=Adds weather changes module to the Steam Stairway
 
 NameSteamBeaconModuleI=Steam Elevator Beacon Module I
 NameSteamBeaconModuleII=Steam Elevator Beacon Module II

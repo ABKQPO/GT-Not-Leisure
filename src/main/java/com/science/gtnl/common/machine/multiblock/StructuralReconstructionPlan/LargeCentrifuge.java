@@ -176,7 +176,8 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeCentrifuge_Mode_" + this.machineMode));
     }
@@ -222,7 +223,7 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -242,7 +243,7 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
             @Override
             public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1.0 / 2.6 - (mParallelTier / 200.0));
+                    .setDurationModifier(1.0 / 2.6 - (mParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

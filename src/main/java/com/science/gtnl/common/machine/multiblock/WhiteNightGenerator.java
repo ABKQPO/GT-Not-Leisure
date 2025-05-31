@@ -28,12 +28,10 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.Utils.Utils;
 import com.science.gtnl.common.machine.multiMachineClasses.MultiMachineBase;
 
-import galaxyspace.core.register.GSBlocks;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.MaterialsKevlar;
@@ -42,7 +40,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
@@ -57,8 +54,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.casing.TTCasingsContainer;
 
-public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator>
-    implements IWirelessEnergyHatchInformation {
+public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
 
     protected boolean wirelessMode = false;
     public static final String STRUCTURE_PIECE_MAIN = "main";
@@ -198,7 +194,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator>
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -225,17 +221,17 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator>
                         .dot(1)
                         .casingIndex(CASING_INDEX)
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(GregTechAPI.sBlockCasings10, 13))))
-                .addElement('B', ofBlock(GSBlocks.DysonSwarmBlocks, 1))
+                .addElement('B', ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
                 .addElement('C', ofBlock(BlockLoader.defcCasingBlock, 12))
                 .addElement('D', ofBlock(TTCasingsContainer.GodforgeCasings, 8))
                 .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
-                .addElement('F', ofBlock(IGBlocks.SpaceElevatorCasing, 1))
+                .addElement('F', ofBlock(GregTechAPI.sBlockCasingsSE, 1))
                 .addElement('G', ofFrame(MaterialsUEVplus.SixPhasedCopper))
                 .addElement('H', ofBlock(TTCasingsContainer.GodforgeCasings, 8))
                 .addElement('I', ofBlock(ModBlocks.blockCasings3Misc, 11))
                 .addElement('J', ofBlock(GregTechAPI.sBlockCasings9, 5))
                 .addElement('K', ofBlock(Loaders.gravityStabilizationCasing, 0))
-                .addElement('L', ofBlock(GSBlocks.DysonSwarmBlocks, 8))
+                .addElement('L', ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
                 .addElement('M', ofBlock(GregTechAPI.sBlockCasings9, 5))
                 .addElement('N', ofBlock(GregTechAPI.sBlockCasings10, 14))
                 .addElement('O', ofBlock(GregTechAPI.sBlockCasings10, 14))
@@ -332,7 +328,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator>
     }
 
     @Override
-    protected int getMaxParallelRecipes() {
+    public int getMaxParallelRecipes() {
         return 1;
     }
 

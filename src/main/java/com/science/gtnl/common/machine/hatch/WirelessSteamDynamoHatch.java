@@ -1,7 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
 import static com.science.gtnl.Utils.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
-import static gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation.number_of_energy_additions;
+import static gregtech.common.misc.WirelessNetworkManager.number_of_energy_additions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -25,6 +26,7 @@ import com.science.gtnl.Utils.item.ItemUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.SteamMultiMachineBase;
 import com.science.gtnl.common.materials.MaterialPool;
 
+import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
@@ -46,7 +48,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public WirelessSteamDynamoHatch(final int aID, final String aName, final String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
         this.mLockedFluids = ImmutableSet.of(
-            FluidUtils.getSteam(1)
+            Materials.Steam.getGas(1)
                 .getFluid(),
             FluidUtils.getSuperHeatedSteam(1)
                 .getFluid(),
@@ -58,7 +60,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public WirelessSteamDynamoHatch(final String aName, int aTier, final ITexture[][][] aTextures, Set<Fluid> aFluid) {
         super(aName, aTier, 3, new String[] { "" }, aTextures);
         this.mLockedFluids = ImmutableSet.of(
-            FluidUtils.getSteam(1)
+            Materials.Steam.getGas(1)
                 .getFluid(),
             FluidUtils.getSuperHeatedSteam(1)
                 .getFluid(),
@@ -99,7 +101,8 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public void setLockedFluidName(String lockedFluidName) {}
 
     @Override
-    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {}
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {}
 
     @Override
     public boolean isLiquidInput(ForgeDirection side) {

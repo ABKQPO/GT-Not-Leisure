@@ -10,7 +10,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -19,7 +18,7 @@ import net.minecraft.world.World;
 import com.science.gtnl.config.MainConfig;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigmComponent;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 import cpw.mods.fml.common.Optional;
 import gregtech.common.blocks.TileEntityOres;
 
@@ -45,11 +44,11 @@ public class MeteorParadigmHelper {
 
     public static class WeightData {
 
-        final List<MeteorParadigmComponent> components;
+        final List<MeteorComponent> components;
         final int[] prefixSum;
         final int total;
 
-        WeightData(List<MeteorParadigmComponent> components, int[] prefixSum, int total) {
+        WeightData(List<MeteorComponent> components, int[] prefixSum, int total) {
             this.components = components;
             this.prefixSum = prefixSum;
             this.total = total;
@@ -64,7 +63,7 @@ public class MeteorParadigmHelper {
     }
 
     public static void processChunk(World world, SphereData sphereData, WeightData components, WeightData fillers,
-        int fillerChance, int start, int end, AtomicInteger counter) {
+        float fillerChance, int start, int end, AtomicInteger counter) {
         final Random rand = new Random();
         final int[] batchRandoms = new int[end - start];
         for (int i = 0; i < batchRandoms.length; i++) {
@@ -81,11 +80,11 @@ public class MeteorParadigmHelper {
             int selectedIndex = targetData.select(rand);
             if (selectedIndex == -1) continue;
 
-            MeteorParadigmComponent comp = useFiller ? fillers.components.get(selectedIndex)
+            MeteorComponent comp = useFiller ? fillers.components.get(selectedIndex)
                 : components.components.get(selectedIndex);
 
             try {
-                ItemStack stack = comp.getValidBlockParadigm();
+                ItemStack stack = comp.getBlock();
                 if (stack != null && stack.getItem() instanceof ItemBlock) {
                     placeBlockFast(world, worldX, worldY, worldZ, (ItemBlock) stack.getItem(), stack.getItemDamage());
 
@@ -109,34 +108,6 @@ public class MeteorParadigmHelper {
         }
     }
 
-    public static int calculateRadius(int base, boolean hasOrbis, boolean hasTerrae) {
-        int radius = base;
-        if (hasOrbis) radius += 2;
-        else if (hasTerrae) radius += 1;
-        return radius;
-    }
-
-    public static int calculateFillerChance(int base, boolean hasOrbis, boolean hasTerrae) {
-        double multiplier = 1.0;
-        if (hasOrbis) multiplier = 1.12;
-        else if (hasTerrae) multiplier = 1.06;
-        return Math.min((int) (base * multiplier), 100);
-    }
-
-    public static List<MeteorParadigmComponent> buildFillerList(boolean hasCrystallos, boolean hasIncendium,
-        boolean hasTennebrae, List<MeteorParadigmComponent> original) {
-        if (!hasCrystallos && !hasIncendium && !hasTennebrae) {
-            return new ArrayList<>(original);
-        }
-
-        List<MeteorParadigmComponent> list = new ArrayList<>();
-        if (hasCrystallos) list.add(new MeteorParadigmComponent(new ItemStack(Blocks.ice), 180));
-        if (hasIncendium) list.add(new MeteorParadigmComponent(new ItemStack(Blocks.netherrack), 150));
-        if (hasTennebrae) list.add(new MeteorParadigmComponent(new ItemStack(Blocks.obsidian), 120));
-        list.addAll(original);
-        return list;
-    }
-
     @Optional.Method(modid = "gregtech")
     private static void handleGTOres(World world, int x, int y, int z) {
         try {
@@ -149,9 +120,9 @@ public class MeteorParadigmHelper {
         }
     }
 
-    public static WeightData precomputeWeights(List<MeteorParadigmComponent> components) {
+    public static WeightData precomputeWeights(List<MeteorComponent> components) {
         int total = components.stream()
-            .mapToInt(c -> c.getWeight())
+            .mapToInt(MeteorComponent::getWeight)
             .sum();
         int[] prefixSum = new int[components.size()];
         int sum = 0;

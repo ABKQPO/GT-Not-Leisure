@@ -192,7 +192,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
                     .setHeatOC(true)
                     .setHeatDiscount(false)
                     .setEUtDiscount(0.9 * Math.pow(0.95, getCoilLevel().getTier()))
-                    .setSpeedBoost(1.0 / 1.25 * Math.pow(0.95, getCoilLevel().getTier()));
+                    .setDurationModifier(1.0 / 1.25 * Math.pow(0.95, getCoilLevel().getTier()));
             }
 
             @Override
@@ -224,7 +224,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         this.setCoilLevel(HeatingCoilLevel.None);
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

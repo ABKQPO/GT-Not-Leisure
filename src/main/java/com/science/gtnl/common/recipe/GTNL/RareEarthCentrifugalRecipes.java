@@ -37,7 +37,6 @@ public class RareEarthCentrifugalRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Lutetium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Yttrium, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(491520)
             .addTo(RECR);

@@ -8,7 +8,7 @@ import com.science.gtnl.Utils.recipes.MeteorRecipeData;
 import com.science.gtnl.loader.IRecipePool;
 import com.science.gtnl.loader.RecipeRegister;
 
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import gregtech.api.enums.GTValues;
 import gregtech.api.recipe.RecipeMap;
@@ -20,7 +20,7 @@ public class FallingTowerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        for (MeteorParadigm meteor : MeteorRegistry.paradigmList) {
+        for (Meteor meteor : MeteorRegistry.meteorList) {
             MeteorRecipeData data = new MeteorRecipeData(meteor);
 
             ItemStack input = data.input;

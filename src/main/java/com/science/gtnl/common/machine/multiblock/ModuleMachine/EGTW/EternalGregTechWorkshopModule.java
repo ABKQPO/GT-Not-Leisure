@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -143,7 +142,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         return mSpeedBoost;
     }
 
-    public void setSpeedBoost(double boost) {
+    public void setDurationModifier(double boost) {
         mSpeedBoost = boost;
     }
 
@@ -197,7 +196,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setMachineHeat(getHeat())
                     .setEUtDiscount(getEUtDiscount())
-                    .setSpeedBoost(getSpeedBoost());
+                    .setDurationModifier(getSpeedBoost());
             }
         }.setMaxParallelSupplier(this::getMaxParallel);
     }
@@ -315,7 +314,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
             .addElement('D', ofBlock(GregTechAPI.sBlockCasings1, 14))
             .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
             .addElement('F', ofBlock(GregTechAPI.sBlockCasings9, 14))
-            .addElement('G', ofBlock(IGBlocks.SpaceElevatorMotor, 4))
+            .addElement('G', ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
             .addElement('H', ofFrame(Materials.NaquadahAlloy))
             .addElement('I', ofBlock(TTCasingsContainer.GodforgeCasings, 0))
             .addElement('J', ofBlock(TTCasingsContainer.GodforgeCasings, 1))
@@ -351,7 +350,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

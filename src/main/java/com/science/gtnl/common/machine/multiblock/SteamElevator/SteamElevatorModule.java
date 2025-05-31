@@ -129,7 +129,7 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -149,11 +149,6 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        return 1;
-    }
-
-    @Override
     protected ProcessingLogic createProcessingLogic() {
 
         return new ProcessingLogic() {
@@ -169,7 +164,7 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount));
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

@@ -23,8 +23,6 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 
-import bartworks.API.BorosilicateGlass;
-import galaxyspace.core.register.GSBlocks;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
@@ -32,7 +30,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -45,7 +42,7 @@ import gregtech.api.util.OverclockCalculator;
 import gregtech.common.blocks.BlockCasings8;
 import tectech.thing.casing.TTCasingsContainer;
 
-public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> implements IWirelessEnergyHatchInformation {
+public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
     private HeatingCoilLevel heatLevel;
     public static final int HORIZONTAL_OFF_SET = 7;
@@ -128,7 +125,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> imple
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition.<CrackerHub>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement('A', BorosilicateGlass.ofBoroGlass((byte) 0, (t, v) -> t.mGlassTier = v, t -> t.mGlassTier))
+                .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('B', ofBlock(sBlockCasings10, 3))
                 .addElement('C', ofBlock(sBlockCasings2, 15))
                 .addElement('D', ofBlock(sBlockCasings3, 10))
@@ -148,7 +145,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> imple
                 .addElement('L', ofFrame(Materials.Ultimet))
                 .addElement('M', ofFrame(Materials.HSSS))
                 .addElement('N', ofBlock(sBlockReinforced, 10))
-                .addElement('O', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('O', ofBlock(sBlockCasingsSE, 9))
                 .addElement('P', Muffler.newAny(getCasingTextureID(), 16))
                 .build();
         }
@@ -169,7 +166,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> imple
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -207,13 +204,13 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> imple
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setByte("mGlassTier", mGlassTier);
+        aNBT.setInteger("mGlassTier", mGlassTier);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mGlassTier = aNBT.getByte("mGlassTier");
+        mGlassTier = aNBT.getInteger("mGlassTier");
     }
 
     @Override
@@ -243,9 +240,9 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> imple
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe)
                     .setEUtDiscount(0.4 - (mParallelTier / 50.0) * Math.pow(0.95, mGlassTier))
-                    .setSpeedBoost(1.0 / 10.0 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
+                    .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Nonnull
