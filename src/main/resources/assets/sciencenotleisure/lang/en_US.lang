@@ -706,6 +706,8 @@ Tooltip_Testitem_11=§f§lIf you encounter any issues or want to make suggestion
 Tooltip_Testitem_12=The machines added by this mod start from meta value 21000
 Tooltip_Testitem_13=§c§lAlso reminder: Do not right-click with this item!
 
+item.CircuitIntegratedPlus.name=Circuit Integrated Plus
+
 item.KFCFamily.name=Crazy Thursday
 Tooltip_KFCFamily_00=§oCrazy Thursday, v me 50!
 gtnl.potion.perfect_physique=Perfect Physique

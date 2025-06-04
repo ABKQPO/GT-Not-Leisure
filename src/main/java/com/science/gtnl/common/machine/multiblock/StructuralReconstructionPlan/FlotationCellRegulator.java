@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gtPlusPlus.core.block.ModBlocks.*;
 import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.*;
 
@@ -23,7 +24,6 @@ import com.science.gtnl.common.machine.multiMachineClasses.GTMMultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.RecipeRegister;
 
-import bartworks.API.BorosilicateGlass;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -115,7 +115,7 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
                     .setDurationDecreasePerOC(4)
                     .setEUtIncreasePerOC(4)
                     .setEUtDiscount(1 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1 - (mParallelTier / 200.0));
+                    .setDurationModifier(1 - (mParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -146,16 +146,7 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition.<FlotationCellRegulator>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement(
-                    'A',
-                    withChannel(
-                        "glass",
-                        BorosilicateGlass.ofBoroGlass(
-                            (byte) 0,
-                            (byte) 1,
-                            Byte.MAX_VALUE,
-                            (te, t) -> te.mGlassTier = t,
-                            te -> te.mGlassTier)))
+                .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('B', ofBlock(sBlockCasings2, 15))
                 .addElement('C', ofBlock(blockCasings2Misc, 1))
                 .addElement(
@@ -209,7 +200,7 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

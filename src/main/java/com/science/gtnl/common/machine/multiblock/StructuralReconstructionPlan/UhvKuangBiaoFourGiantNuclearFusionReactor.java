@@ -2,8 +2,7 @@ package com.science.gtnl.common.machine.multiblock.StructuralReconstructionPlan;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
+import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
@@ -31,7 +30,6 @@ import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import galaxyspace.core.register.GSBlocks;
 import goodgenerator.loader.Loaders;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
@@ -110,7 +108,7 @@ public class UhvKuangBiaoFourGiantNuclearFusionReactor
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -312,7 +310,7 @@ public class UhvKuangBiaoFourGiantNuclearFusionReactor
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(4 - (mParallelTier / 12.5))
-                    .setSpeedBoost(1.0 / 2.0 - (mParallelTier / 200.0));
+                    .setDurationModifier(1.0 / 2.0 - (mParallelTier / 200.0));
             }
 
             @NotNull
@@ -347,7 +345,7 @@ public class UhvKuangBiaoFourGiantNuclearFusionReactor
                         .dot(1)
                         .atLeast(InputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(blockCasings3Misc, 12))))
-                .addElement('D', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('D', ofBlock(sBlockCasingsDyson, 9))
                 .addElement('E', ofFrame(Materials.Tungsten))
                 .addElement('F', ofFrame(Materials.InfinityCatalyst))
                 .addElement('G', ofBlock(BlockLoader.MetaBlockGlass, 2))

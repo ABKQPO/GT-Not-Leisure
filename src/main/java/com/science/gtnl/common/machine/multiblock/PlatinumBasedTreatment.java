@@ -23,7 +23,6 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.MultiMachineBase;
 import com.science.gtnl.loader.RecipeRegister;
 
-import bartworks.API.BorosilicateGlass;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -76,16 +75,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition.<PlatinumBasedTreatment>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement(
-                    'A',
-                    withChannel(
-                        "glass",
-                        BorosilicateGlass.ofBoroGlass(
-                            (byte) 0,
-                            (byte) 1,
-                            Byte.MAX_VALUE,
-                            (te, t) -> te.mGlassTier = t,
-                            te -> te.mGlassTier)))
+                .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('B', ofBlock(sBlockCasings1, 11))
                 .addElement('C', ofBlock(sSolenoidCoilCasings, 3))
                 .addElement('D', ofBlock(sBlockCasings10, 13))
@@ -213,7 +203,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
             @Override
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(1.0 - getCoilLevel().getTier() * 0.05)
-                    .setSpeedBoost(1.0 - getCoilLevel().getTier() * 0.05);
+                    .setDurationModifier(1.0 - getCoilLevel().getTier() * 0.05);
             }
 
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
@@ -239,7 +229,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         this.setCoilLevel(HeatingCoilLevel.None);
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

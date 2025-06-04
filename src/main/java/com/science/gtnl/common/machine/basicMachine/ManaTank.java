@@ -2,18 +2,17 @@ package com.science.gtnl.common.machine.basicMachine;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTUtility.formatNumbers;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -45,10 +44,10 @@ import vazkii.botania.common.block.tile.mana.TilePool;
 
 public class ManaTank extends MTEDigitalTankBase {
 
-    private boolean isLiquidizerMode = true;
-    private static final int MANA_POOL_RADIUS = 5;
-    private static final int MANA_FLOWER_RADIUS = 6;
-    private static FluidStack fluidMana;
+    public boolean isLiquidizerMode = true;
+    public static final int MANA_POOL_RADIUS = 5;
+    public static final int MANA_FLOWER_RADIUS = 6;
+    public static FluidStack fluidMana;
 
     public ManaTank(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 10);
@@ -129,14 +128,6 @@ public class ManaTank extends MTEDigitalTankBase {
                         EnumChatFormatting.YELLOW + fluid.getLocalizedName()));
             }
         }
-    }
-
-    @Override
-    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        isLiquidizerMode = !isLiquidizerMode;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Mode_ManaTank_0" + (isLiquidizerMode ? 0 : 1)));
     }
 
     @Override
@@ -541,9 +532,13 @@ public class ManaTank extends MTEDigitalTankBase {
             .widget(new CycleButtonWidget().setToggle(() -> mAllowInputFromOutputSide, val -> {
                 mAllowInputFromOutputSide = val;
                 if (!mAllowInputFromOutputSide) {
-                    GTUtility.sendChatToPlayer(buildContext.getPlayer(), GTUtility.getTrans("096"));
+                    GTUtility.sendChatToPlayer(
+                        buildContext.getPlayer(),
+                        translateToLocal("gt.interact.desc.input_from_output_off"));
                 } else {
-                    GTUtility.sendChatToPlayer(buildContext.getPlayer(), GTUtility.getTrans("095"));
+                    GTUtility.sendChatToPlayer(
+                        buildContext.getPlayer(),
+                        translateToLocal("gt.interact.desc.input_from_output_on"));
                 }
             })
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)

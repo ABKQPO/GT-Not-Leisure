@@ -1,6 +1,7 @@
 package com.science.gtnl.common.render.tile;
 
 import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.*;
 
 import java.io.File;
 
@@ -81,7 +82,7 @@ public class PlayerDollRenderer extends TileEntitySpecialRenderer {
 
         if (MainConfig.enableCustomPlayerDoll && !offlineMode) {
             String ownerUUID = null;
-            String playerName = null;
+            String playerName;
 
             if (nbt.hasKey("SkullOwner", 8)) {
                 playerName = nbt.getString("SkullOwner");

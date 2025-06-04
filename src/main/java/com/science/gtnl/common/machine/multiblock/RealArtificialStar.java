@@ -48,12 +48,10 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.RecipeRegister;
 
-import galaxyspace.core.register.GSBlocks;
 import gregtech.api.GregTechAPI;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -68,8 +66,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
-public class RealArtificialStar extends MultiMachineBase<RealArtificialStar>
-    implements IWirelessEnergyHatchInformation {
+public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
     public static final String STRUCTURE_PIECE_MAIN = "main";
     private static IStructureDefinition<RealArtificialStar> STRUCTURE_DEFINITION = null;
@@ -168,7 +165,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar>
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             if (enableRender && isRendering) {
                 destroyRenderBlock();
@@ -401,7 +399,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar>
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -489,9 +487,9 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar>
                             -1,
                             (t, m) -> t.tierStabilisationField = m,
                             t -> t.tierStabilisationField)))
-                .addElement('I', ofBlock(GSBlocks.DysonSwarmBlocks, 0))
-                .addElement('J', ofBlock(GSBlocks.DysonSwarmBlocks, 5))
-                .addElement('K', ofBlock(GSBlocks.DysonSwarmBlocks, 8))
+                .addElement('I', ofBlock(sBlockCasingsDyson, 0))
+                .addElement('J', ofBlock(sBlockCasingsDyson, 5))
+                .addElement('K', ofBlock(sBlockCasingsDyson, 8))
                 .addElement('L', ofBlock(BlockQuantumGlass.INSTANCE, 0))
                 .build();
         }
@@ -576,7 +574,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar>
     }
 
     @Override
-    protected int getMaxParallelRecipes() {
+    public int getMaxParallelRecipes() {
         return 1;
     }
 

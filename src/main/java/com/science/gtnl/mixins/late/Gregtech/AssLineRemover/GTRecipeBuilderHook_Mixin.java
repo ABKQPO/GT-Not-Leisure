@@ -1,8 +1,7 @@
 package com.science.gtnl.mixins.late.Gregtech.AssLineRemover;
 
 import static com.science.gtnl.Utils.recipes.AssLineRecipeHook.RECIPE_TO_REMOVE;
-import static gregtech.api.util.GTRecipeConstants.RESEARCH_ITEM;
-import static gregtech.api.util.GTRecipeConstants.RESEARCH_TIME;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +26,7 @@ import gregtech.api.recipe.metadata.IRecipeMetadataStorage;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
+import gregtech.api.util.recipe.Scanning;
 
 @SuppressWarnings("UnusedMixin")
 @Mixin(value = GTRecipeBuilder.class, remap = false)
@@ -52,8 +52,9 @@ public class GTRecipeBuilderHook_Mixin {
         if (recipeMap == GTRecipeConstants.AssemblyLine) {
             if (this.metadataStorage != null) {
                 ItemStack researchItem = this.metadataStorage.getMetadata(RESEARCH_ITEM);
+                Scanning scanningData = this.metadataStorage.getMetadataOrDefault(SCANNING, new Scanning(0, 0));
                 // noinspection DataFlowIssue
-                int time = this.metadataStorage.getMetadata(RESEARCH_TIME);
+                int time = scanningData.time;
                 if (researchItem != null) {
                     String name = GameData.getItemRegistry()
                         .getNameForObject(researchItem.getItem());

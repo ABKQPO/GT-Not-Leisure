@@ -24,7 +24,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
@@ -33,8 +32,7 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
-public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
-    implements IWirelessEnergyHatchInformation {
+public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor> {
 
     private static final int HORIZONTAL_OFF_SET = 14;
     private static final int VERTICAL_OFF_SET = 7;
@@ -147,7 +145,7 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

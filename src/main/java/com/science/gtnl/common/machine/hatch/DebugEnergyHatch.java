@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import static gregtech.api.enums.GTValues.VN;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
@@ -36,7 +37,8 @@ import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.util.GTUtility;
 import tectech.thing.metaTileEntity.Textures;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
-import tectech.thing.metaTileEntity.pipe.MTEPipeEnergy;
+import tectech.thing.metaTileEntity.pipe.MTEPipeLaser;
+import tectech.thing.metaTileEntity.pipe.MTEPipeLaserMirror;
 import tectech.util.CommonValues;
 import tectech.util.TTUtility;
 
@@ -47,15 +49,20 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
     public DebugEnergyHatch(int aID, String aName, String aNameRegional, int aTier) {
-        super(
-            aID,
-            aName,
-            aNameRegional,
-            aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_00"),
-                StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_01"),
-                StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_02") });
+        super(aID, aName, aNameRegional, aTier);
         TTUtility.setTier(aTier, this);
+    }
+
+    @Override
+    public String[] getDescription() {
+
+        ArrayList<String> desc = new ArrayList<>();
+
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_00"));
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_01"));
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_02"));
+
+        return desc.toArray(new String[] {});
     }
 
     public DebugEnergyHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -197,35 +204,52 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     private void moveAround(IGregTechTileEntity aBaseMetaTileEntity) {
         for (final ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
             if (face == aBaseMetaTileEntity.getFrontFacing()) continue;
-            final ForgeDirection opposite = face.getOpposite();
+            ForgeDirection opposite = face.getOpposite();
             for (short dist = 1; dist < 1000; dist++) {
                 IGregTechTileEntity tGTTileEntity = aBaseMetaTileEntity
                     .getIGregTechTileEntityAtSideAndDistance(face, dist);
-                if (tGTTileEntity != null) {
-                    IMetaTileEntity aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
-                    if (aMetaTileEntity != null) {
-                        if (aMetaTileEntity instanceof MTEHatchEnergyTunnel
-                            && opposite == tGTTileEntity.getFrontFacing()) {
-                            if (maxEUOutput() > ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUInput()) {
-                                aMetaTileEntity.doExplosion(maxEUOutput());
-                            } else {
-                                long diff = Math.min(
-                                    AMP * 20L * maxEUOutput(),
-                                    Math.min(
-                                        ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUStore()
-                                            - aMetaTileEntity.getBaseMetaTileEntity()
-                                                .getStoredEU(),
-                                        aBaseMetaTileEntity.getStoredEU()));
-                                ((MTEHatchEnergyTunnel) aMetaTileEntity).setEUVar(
-                                    aMetaTileEntity.getBaseMetaTileEntity()
-                                        .getStoredEU() + diff);
-                            }
-                        } else if (aMetaTileEntity instanceof MTEPipeEnergy) {
-                            if (((MTEPipeEnergy) aMetaTileEntity).connectionCount < 2) {} else {
-                                ((MTEPipeEnergy) aMetaTileEntity).markUsed();
-                            }
-                        }
+                if (tGTTileEntity == null) {
+                    break;
+                }
+                IMetaTileEntity aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+                if (aMetaTileEntity == null) {
+                    break;
+                }
+
+                // If we hit a mirror, use the mirror's view instead
+                if (aMetaTileEntity instanceof MTEPipeLaserMirror tMirror) {
+                    tGTTileEntity = tMirror.bendAround(opposite);
+                    if (tGTTileEntity == null) {
+                        break;
+                    } else {
+                        aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+                        opposite = tMirror.getChainedFrontFacing();
                     }
+                }
+
+                if (aMetaTileEntity instanceof MTEHatchEnergyTunnel && opposite == tGTTileEntity.getFrontFacing()) {
+                    if (maxEUOutput() > ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUInput()) {
+                        aMetaTileEntity.doExplosion(maxEUOutput());
+                    } else {
+                        long diff = Math.min(
+                            AMP * 20L * maxEUOutput(),
+                            Math.min(
+                                ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUStore()
+                                    - aMetaTileEntity.getBaseMetaTileEntity()
+                                        .getStoredEU(),
+                                aBaseMetaTileEntity.getStoredEU()));
+                        ((MTEHatchEnergyTunnel) aMetaTileEntity).setEUVar(
+                            aMetaTileEntity.getBaseMetaTileEntity()
+                                .getStoredEU() + diff);
+                    }
+                } else if (aMetaTileEntity instanceof MTEPipeLaser) {
+                    if (((MTEPipeLaser) aMetaTileEntity).connectionCount < 2) {
+                        break;
+                    } else {
+                        ((MTEPipeLaser) aMetaTileEntity).markUsed();
+                    }
+                } else {
+                    break;
                 }
             }
         }

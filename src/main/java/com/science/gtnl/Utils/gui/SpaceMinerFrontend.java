@@ -1,11 +1,12 @@
 package com.science.gtnl.Utils.gui;
 
+import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_LOCATION;
+import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_PROJECT;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import com.gtnewhorizons.gtnhintergalactic.recipe.IGRecipeMaps;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
@@ -31,8 +32,8 @@ public class SpaceMinerFrontend extends GTNLLogoFrontend {
             List<String> specialInfo = new ArrayList<>();
             specialInfo.add(GCCoreUtil.translateWithFormat("ig.nei.module", recipeInfo.recipe.mSpecialValue));
 
-            String neededProject = recipeInfo.recipe.getMetadata(IGRecipeMaps.SPACE_PROJECT);
-            String neededProjectLocation = recipeInfo.recipe.getMetadata(IGRecipeMaps.SPACE_LOCATION);
+            String neededProject = recipeInfo.recipe.getMetadata(SPACE_PROJECT);
+            String neededProjectLocation = recipeInfo.recipe.getMetadata(SPACE_LOCATION);
             if (neededProject != null && !neededProject.isEmpty()) {
                 specialInfo.add(
                     String.format(

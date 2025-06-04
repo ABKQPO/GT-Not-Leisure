@@ -20,7 +20,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("gas_sulfuricgas", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("lightlysteamcracked.gas", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -30,7 +29,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("gas_sulfuricgas", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("moderatelysteamcracked.gas", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -40,7 +38,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("gas_sulfuricgas", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("severelysteamcracked.gas", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -49,7 +46,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricnaphtha", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("lightlysteamcracked.naphtha", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -59,7 +55,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricnaphtha", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("moderatelysteamcracked.naphtha", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -69,7 +64,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricnaphtha", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("severelysteamcracked.naphtha", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -78,7 +72,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sufluriclight_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("lightlysteamcracked.lightfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -88,7 +81,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sufluriclight_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("moderatelysteamcracked.lightfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -98,7 +90,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sufluriclight_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("severelysteamcracked.lightfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -107,7 +98,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricheavy_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("lightlysteamcracked.heavyfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -117,7 +107,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricheavy_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("moderatelysteamcracked.heavyfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);
@@ -127,7 +116,6 @@ public class SteamCrackerRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sulfuricheavy_fuel", 1000))
             .fluidOutputs(FluidRegistry.getFluidStack("severelysteamcracked.heavyfuel", 400))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(30)
             .addTo(SCR);

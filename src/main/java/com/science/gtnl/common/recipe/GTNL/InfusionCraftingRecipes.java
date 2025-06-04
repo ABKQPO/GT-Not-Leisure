@@ -77,7 +77,6 @@ public class InfusionCraftingRecipes implements IRecipePool {
                 .itemOutputs((Recipe.getOutput()))
                 .fluidInputs()
                 .fluidOutputs()
-                .noOptimize()
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IIC);

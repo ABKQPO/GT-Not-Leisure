@@ -170,7 +170,7 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -224,7 +224,7 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
                     .setAmperageOC(true)
                     .setDurationDecreasePerOC(4)
                     .setEUtIncreasePerOC(4)
-                    .setSpeedBoost(100.0 / (100 + 10 * mLevel))
+                    .setDurationModifier(100.0 / (100 + 10 * mLevel))
                     .setHeatOC(true)
                     .setRecipeHeat(0)
                     .setMachineHeat((int) (getCoilLevel().getHeat() * 2));

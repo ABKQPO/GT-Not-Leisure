@@ -63,7 +63,6 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.Utils.Pair;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.GTMMultiMachineBase;
 import com.science.gtnl.config.MainConfig;
@@ -105,7 +104,7 @@ import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 
 public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> implements ISurvivalConstructable {
 
-    private static final Map<String, Pair<GTRecipe.RecipeAssemblyLine, AssemblyLineUtils.LookupResult>> recipeCache = new HashMap<>();
+    private static final Map<Integer, List<GTRecipe.RecipeAssemblyLine>> recipeCache = new HashMap<>();
     private final String ZERO_STRING = "0";
     private String costingEUText = ZERO_STRING;
     private UUID ownerUUID;
@@ -241,16 +240,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return processRecipeLogic(inputInventories, energyEU, maxParallel, minRecipeTime);
     }
 
-    private String generateCacheKeyFromRecipeHash(ItemStack tDataStick) {
-        // 获取物品的 tagCompound 和固定的 Recipe Hash
-        if (tDataStick.hasTagCompound()) {
-            String recipeHash = tDataStick.getTagCompound()
-                .getString("Data.Recipe.Hash");
-            return "RecipeHash_" + recipeHash;
-        }
-        return "RecipeHash_NoHash";
-    }
-
     private CheckRecipeResult processRecipeLogic(ArrayList<IDualInputInventory> inputInventories, long energyEU,
         int maxParallel, int limit) {
         long totalNeedEUt = 0; // 累加的总功率
@@ -285,100 +274,98 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             ArrayList<FluidStack> allFluids = new ArrayList<>(Arrays.asList(fluidInputs));
 
             List<GTRecipe.RecipeAssemblyLine> validRecipes = new ArrayList<>();
-            for (ItemStack tDataStick : getDataItems(2)) {
-                if (tDataStick == null) continue;
-                AssemblyLineUtils.LookupResult tLookupResult = AssemblyLineUtils
-                    .findAssemblyLineRecipeFromDataStick(tDataStick, false);
 
-                String cacheKey = generateCacheKeyFromRecipeHash(tDataStick);
+            ArrayList<GTRecipe.RecipeAssemblyLine> availableRecipes = new ArrayList<>();
+            if (AssemblyLineUtils.isItemDataStick(mInventory[1])) {
+                availableRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(mInventory[1]));
+            }
+            for (MTEHatchDataAccess dataAccess : validMTEList(mDataAccessHatches)) {
+                availableRecipes.addAll(dataAccess.getAssemblyLineRecipes());
+            }
+
+            for (GTRecipe.RecipeAssemblyLine recipe : availableRecipes) {
+                if (recipe == null || recipe.mInputs == null) continue;
+
+                int cacheKey = recipe.getPersistentHash();
+
                 if (recipeCache.containsKey(cacheKey)) {
-                    // 使用缓存的结果
-                    Pair<GTRecipe.RecipeAssemblyLine, AssemblyLineUtils.LookupResult> cachedResult = recipeCache
-                        .get(cacheKey);
-                    validRecipes.add(cachedResult.getKey());
+                    validRecipes.addAll(recipeCache.get(cacheKey));
                     continue;
                 }
 
-                if (tLookupResult.getType() == AssemblyLineUtils.LookupResultType.VALID_STACK_AND_VALID_HASH
-                    || tLookupResult.getType() == AssemblyLineUtils.LookupResultType.VALID_STACK_AND_VALID_RECIPE) {
+                List<GTRecipe.RecipeAssemblyLine> recipeList = new ArrayList<>();
+                recipeList.add(recipe);
+                validRecipes.add(recipe);
 
-                    GTRecipe.RecipeAssemblyLine tRecipe = tLookupResult.getRecipe();
-                    if (tRecipe != null) {
-                        ItemStack[] tInputs = tRecipe.mInputs;
-                        ItemStack[][] tOreDictAlt = tRecipe.mOreDictAlt;
+                recipeCache.put(cacheKey, recipeList);
 
-                        validRecipes.add(tRecipe); // 原始配方
-                        recipeCache.put(cacheKey, new Pair<>(tRecipe, tLookupResult));
+                ItemStack[] tInputs = recipe.mInputs;
+                ItemStack[][] tOreDictAlt = recipe.mOreDictAlt;
 
-                        boolean hasValidAlt = false;
-                        if (tOreDictAlt != null) {
-                            for (ItemStack[] altArray : tOreDictAlt) {
-                                if (altArray != null && altArray.length > 1) {
-                                    hasValidAlt = true;
-                                    break;
+                boolean hasValidAlt = false;
+                if (tOreDictAlt != null) {
+                    for (ItemStack[] altArray : tOreDictAlt) {
+                        if (altArray != null && altArray.length > 1) {
+                            hasValidAlt = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasValidAlt) {
+                    Map<String, Set<Integer>> groupedSlots = new HashMap<>();
+                    for (int i = 0; i < tOreDictAlt.length; i++) {
+                        ItemStack[] alts = tOreDictAlt[i];
+                        if (alts == null || alts.length <= 1) continue;
+
+                        String key = Arrays.stream(alts)
+                            .filter(Objects::nonNull)
+                            .map(stack -> stack.getUnlocalizedName() + "@" + stack.getItemDamage())
+                            .sorted()
+                            .collect(Collectors.joining("|"));
+
+                        groupedSlots.computeIfAbsent(key, k -> new HashSet<>())
+                            .add(i);
+                    }
+
+                    List<ItemStack[]> combinations = new ArrayList<>();
+                    combinations.add(Arrays.copyOf(tInputs, tInputs.length));
+
+                    for (Map.Entry<String, Set<Integer>> entry : groupedSlots.entrySet()) {
+                        Set<Integer> slotGroup = entry.getValue();
+                        int referenceSlot = slotGroup.iterator()
+                            .next();
+                        ItemStack[] alternatives = tOreDictAlt[referenceSlot];
+
+                        if (alternatives == null || alternatives.length == 0) continue;
+
+                        List<ItemStack[]> newCombinations = new ArrayList<>();
+                        for (ItemStack altItem : alternatives) {
+                            for (ItemStack[] prevCombo : combinations) {
+                                ItemStack[] newCombo = Arrays.copyOf(prevCombo, prevCombo.length);
+                                for (int slot : slotGroup) {
+                                    newCombo[slot] = altItem.copy();
                                 }
+                                newCombinations.add(newCombo);
                             }
                         }
+                        combinations = newCombinations;
+                    }
 
-                        if (hasValidAlt) {
-                            // 对替代内容做分组（完全一致才分到一组）
-                            Map<String, Set<Integer>> groupedSlots = new HashMap<>();
-                            for (int i = 0; i < tOreDictAlt.length; i++) {
-                                ItemStack[] alts = tOreDictAlt[i];
-                                if (alts == null || alts.length <= 1) continue;
-
-                                // 使用所有替代品的哈希组合作为唯一标识
-                                String key = Arrays.stream(alts)
-                                    .filter(Objects::nonNull)
-                                    .map(stack -> stack.getUnlocalizedName() + "@" + stack.getItemDamage())
-                                    .sorted()
-                                    .collect(Collectors.joining("|"));
-
-                                groupedSlots.computeIfAbsent(key, k -> new HashSet<>())
-                                    .add(i);
-                            }
-
-                            // 构造笛卡尔积组合
-                            List<ItemStack[]> combinations = new ArrayList<>();
-                            combinations.add(Arrays.copyOf(tInputs, tInputs.length));
-
-                            for (Map.Entry<String, Set<Integer>> entry : groupedSlots.entrySet()) {
-                                Set<Integer> slotGroup = entry.getValue();
-                                int referenceSlot = slotGroup.iterator()
-                                    .next();
-                                ItemStack[] alternatives = tOreDictAlt[referenceSlot];
-
-                                if (alternatives == null || alternatives.length == 0) continue;
-
-                                List<ItemStack[]> newCombinations = new ArrayList<>();
-                                for (ItemStack altItem : alternatives) {
-                                    for (ItemStack[] prevCombo : combinations) {
-                                        ItemStack[] newCombo = Arrays.copyOf(prevCombo, prevCombo.length);
-                                        for (int slot : slotGroup) {
-                                            newCombo[slot] = altItem.copy();
-                                        }
-                                        newCombinations.add(newCombo);
-                                    }
-                                }
-                                combinations = newCombinations;
-                            }
-
-                            // 注册所有生成组合
-                            for (ItemStack[] inputs : combinations) {
-                                GTRecipe.RecipeAssemblyLine tAltRecipe = new GTRecipe.RecipeAssemblyLine(
-                                    tRecipe.mResearchItem,
-                                    tRecipe.mResearchTime,
-                                    inputs,
-                                    tRecipe.mFluidInputs,
-                                    tRecipe.mOutput,
-                                    tRecipe.mDuration,
-                                    tRecipe.mEUt,
-                                    tOreDictAlt);
-                                validRecipes.add(tAltRecipe);
-                                String altCacheKey = cacheKey + "_alt_" + Arrays.hashCode(inputs);
-                                recipeCache.put(altCacheKey, new Pair<>(tAltRecipe, tLookupResult));
-                            }
-                        }
+                    for (ItemStack[] inputs : combinations) {
+                        GTRecipe.RecipeAssemblyLine altRecipe = new GTRecipe.RecipeAssemblyLine(
+                            recipe.mResearchItem,
+                            recipe.mResearchTime,
+                            recipe.mResearchVoltage,
+                            inputs,
+                            recipe.mFluidInputs,
+                            recipe.mOutput,
+                            recipe.mDuration,
+                            recipe.mEUt,
+                            tOreDictAlt);
+                        validRecipes.add(altRecipe);
+                        recipeCache.computeIfAbsent(cacheKey, k -> new ArrayList<>())
+                            .add(altRecipe);
                     }
                 }
             }
@@ -478,6 +465,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 GTRecipe.RecipeAssemblyLine overclockedRecipe = new GTRecipe.RecipeAssemblyLine(
                     recipe.mResearchItem, // 研究物品
                     recipe.mResearchTime, // 研究时间
+                    recipe.mResearchVoltage,
                     inputItems, // 输入物品
                     inputFluids, // 输入流体
                     outputItem, // 输出物品
@@ -736,6 +724,11 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         public WrappedInventory(ArrayList<ItemStack> itemInputs, ArrayList<FluidStack> fluidInputs) {
             this.itemInputs = itemInputs;
             this.fluidInputs = fluidInputs;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return itemInputs == null || fluidInputs == null;
         }
 
         @Override
@@ -1020,29 +1013,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         logic.setAmperageOC(false);
     }
 
-    /**
-     * @param state using bitmask, 1 for IntegratedCircuit, 2 for DataStick, 4 for DataOrb
-     */
-    private static boolean isCorrectDataItem(ItemStack aStack, int state) {
-        if ((state & 1) != 0 && ItemList.Circuit_Integrated.isStackEqual(aStack, true, true)) return true;
-        if ((state & 2) != 0 && ItemList.Tool_DataStick.isStackEqual(aStack, false, true)) return true;
-        return (state & 4) != 0 && ItemList.Tool_DataOrb.isStackEqual(aStack, false, true);
-    }
-
-    /**
-     * @param state using bitmask, 1 for IntegratedCircuit, 2 for DataStick, 4 for DataOrb
-     */
-    public ArrayList<ItemStack> getDataItems(int state) {
-        ArrayList<ItemStack> rList = new ArrayList<>();
-        if (GTUtility.isStackValid(mInventory[1]) && isCorrectDataItem(mInventory[1], state)) {
-            rList.add(mInventory[1]);
-        }
-        for (MTEHatchDataAccess tHatch : validMTEList(mDataAccessHatches)) {
-            rList.addAll(tHatch.getInventoryItems(stack -> isCorrectDataItem(stack, state)));
-        }
-        return rList;
-    }
-
     public boolean addDataAccessToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         if (aTileEntity == null) return false;
         IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
@@ -1062,7 +1032,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -1113,7 +1083,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return OverclockCalculator.ofNoOverclock(recipe)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0) * ((mParallelTier >= 12) ? 0.2 : 1))
-                    .setSpeedBoost((1 / 1.67 - (mParallelTier / 200.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1));
+                    .setDurationModifier(
+                        (1 / 1.67 - (mParallelTier / 200.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

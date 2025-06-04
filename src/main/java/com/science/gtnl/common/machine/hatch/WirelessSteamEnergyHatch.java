@@ -2,7 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import static com.science.gtnl.Utils.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
 import static com.science.gtnl.Utils.steam.SteamWirelessNetworkManager.getUserSteam;
-import static gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation.number_of_energy_additions;
+import static gregtech.common.misc.WirelessNetworkManager.number_of_energy_additions;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -16,13 +16,13 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.Utils.item.ItemUtils;
 
+import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.render.TextureFactory;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
@@ -31,7 +31,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public WirelessSteamEnergyHatch(final int aID, final String aName, final String aNameRegional, int aTier) {
         super(
             ImmutableSet.of(
-                FluidUtils.getSteam(1)
+                Materials.Steam.getGas(1)
                     .getFluid()),
             aTier == 0 ? 8000000 : Integer.MAX_VALUE,
             aID,
@@ -43,7 +43,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public WirelessSteamEnergyHatch(final String aName, final ITexture[][][] aTextures, int aTier) {
         super(
             ImmutableSet.of(
-                FluidUtils.getSteam(1)
+                Materials.Steam.getGas(1)
                     .getFluid()),
             aTier == 0 ? 8000000 : Integer.MAX_VALUE,
             aName,
@@ -141,7 +141,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         FluidStack currentSteamStack = getFillableStack();
 
         if (currentSteamStack == null) {
-            currentSteamStack = FluidUtils.getSteam(0);
+            currentSteamStack = Materials.Steam.getGas(0);
         }
 
         if (currentSteamStack.amount < mFluidCapacity) {
@@ -154,7 +154,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
             if (steamToTransfer <= 0) return; // nothing to transfer
 
             if (!addSteamToGlobalSteamMap(owner_uuid, -steamToTransfer)) return;
-            fill(FluidUtils.getSteam(steamToTransfer), true);
+            fill(Materials.Steam.getGas(steamToTransfer), true);
         }
     }
 }

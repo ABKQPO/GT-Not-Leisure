@@ -91,13 +91,11 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
 
     public EnergyInfuser(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-        minRepairStatus = (byte) getIdealStatus();
         eDismantleBoom = true;
     }
 
     public EnergyInfuser(String aName) {
         super(aName);
-        minRepairStatus = (byte) getIdealStatus();
         eDismantleBoom = true;
     }
 
@@ -325,7 +323,8 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         outputAllItems = true;
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EnergyInfuser_00" + this.machineMode));
     }
@@ -410,4 +409,17 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
 
     @Override
     protected void chargeController_EM(IGregTechTileEntity aBaseMetaTileEntity) {}
+
+    @Override
+    public void checkMaintenance() {}
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
+    }
 }

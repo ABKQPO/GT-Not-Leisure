@@ -7,6 +7,7 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -22,7 +23,6 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.GTMMultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 
-import bartworks.API.BorosilicateGlass;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -142,16 +142,7 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition.<LargeEngravingLaser>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement(
-                    'A',
-                    withChannel(
-                        "glass",
-                        BorosilicateGlass.ofBoroGlass(
-                            (byte) 0,
-                            (byte) 1,
-                            Byte.MAX_VALUE,
-                            (te, t) -> te.mGlassTier = t,
-                            te -> te.mGlassTier)))
+                .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement(
                     'B',
                     buildHatchAdder(LargeEngravingLaser.class).casingIndex(CASING_INDEX)
@@ -209,7 +200,7 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1.0 / 3.5 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1.0 / 3.5 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -222,7 +213,7 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

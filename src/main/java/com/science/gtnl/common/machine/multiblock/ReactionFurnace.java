@@ -5,8 +5,10 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -27,6 +29,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -38,6 +41,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.blocks.BlockCasings8;
 import gregtech.common.blocks.BlockCasings9;
+import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 
 public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implements ISurvivalConstructable {
 
@@ -158,50 +162,46 @@ public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implem
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        ItemStack controllerItem = getControllerSlot();
-        this.mParallelTier = getParallelTier(controllerItem);
-        ArrayList<ItemStack> tInputList = getAllStoredInputs();
-        if (tInputList.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
-
-        int fakeOriginalMaxParallel = 1;
-        OverclockCalculator calculator = new OverclockCalculator().setEUt(getAverageInputVoltage())
-            .setAmperage(getMaxInputAmps())
-            .setRecipeEUt(RECIPE_EUT)
-            .setDuration(RECIPE_DURATION)
-            .setAmperageOC(mEnergyHatches.size() != 1)
-            .setParallel(fakeOriginalMaxParallel);
-
-        int maxParallel = getMaxParallelRecipes();
-        int originalMaxParallel = maxParallel;
-        double tickTimeAfterOC = calculator.calculateDurationUnderOneTick();
-        if (tickTimeAfterOC < 1) {
-            maxParallel = GTUtility.safeInt((long) (maxParallel / tickTimeAfterOC), 0);
+        List<ItemStack> tInput = getAllStoredInputs();
+        long availableEUt = GTUtility.roundUpVoltage(getMaxInputVoltage());
+        if (availableEUt < 4) {
+            return CheckRecipeResultRegistry.insufficientPower(4);
         }
+        if (tInput.isEmpty()) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+        int maxParallel = getMaxParallelRecipes();
+        int originalMaxParallel = getMaxParallelRecipes();
+
+        OverclockCalculator calculator = new OverclockCalculator().setEUt(availableEUt)
+            .setRecipeEUt(4)
+            .setDuration(64)
+            .setParallel(originalMaxParallel);
+
+        maxParallel = GTUtility.safeInt((long) (maxParallel * calculator.calculateMultiplierUnderOneTick()), 0);
 
         int maxParallelBeforeBatchMode = maxParallel;
         if (isBatchModeEnabled()) {
             maxParallel = GTUtility.safeInt((long) maxParallel * getMaxBatchSize(), 0);
         }
 
-        int currentParallel = 0;
-        for (ItemStack item : tInputList) {
+        int currentParallel = (int) Math.min(maxParallel, availableEUt / 4);
+        int itemParallel = 0;
+        for (ItemStack item : tInput) {
             ItemStack smeltedOutput = GTModHandler.getSmeltingOutput(item, false, null);
             if (smeltedOutput != null) {
-                if (item.stackSize <= (maxParallel - currentParallel)) {
-                    currentParallel += item.stackSize;
-                } else {
-                    currentParallel = maxParallel;
-                    break;
-                }
+                int parallelsLeft = currentParallel - itemParallel;
+                if (parallelsLeft <= 0) break;
+                itemParallel += Math.min(item.stackSize, parallelsLeft);
             }
         }
+
+        currentParallel = itemParallel;
         if (currentParallel <= 0) {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
         int currentParallelBeforeBatchMode = Math.min(currentParallel, maxParallelBeforeBatchMode);
-        int fakeCurrentParallel = (int) Math.ceil((double) currentParallelBeforeBatchMode / originalMaxParallel);
-
-        calculator.setCurrentParallel(fakeCurrentParallel)
+        calculator.setCurrentParallel(currentParallelBeforeBatchMode)
             .calculate();
 
         double batchMultiplierMax = 1;
@@ -210,37 +210,105 @@ public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implem
             batchMultiplierMax = (double) getMaxBatchSize() / calculator.getDuration();
             batchMultiplierMax = Math.min(batchMultiplierMax, (double) currentParallel / maxParallelBeforeBatchMode);
         }
+
         int finalParallel = (int) (batchMultiplierMax * currentParallelBeforeBatchMode);
 
-        // Consume inputs and generate outputs
-        ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
-        int remainingCost = finalParallel;
-        for (ItemStack item : tInputList) {
-            ItemStack smeltedOutput = GTModHandler.getSmeltingOutput(item, false, null);
-            if (smeltedOutput != null) {
-                if (remainingCost >= item.stackSize) {
-                    remainingCost -= item.stackSize;
-                    smeltedOutput.stackSize *= item.stackSize;
-                    item.stackSize = 0;
-                    smeltedOutputs.add(smeltedOutput);
-                } else {
-                    smeltedOutput.stackSize *= remainingCost;
-                    item.stackSize -= remainingCost;
-                    smeltedOutputs.add(smeltedOutput);
+        // Copy the getItemOutputSlots as to not mutate the output busses' slots.
+        List<ItemStack> outputSlots = new ArrayList<>();
+        for (ItemStack stack : getItemOutputSlots(null)) {
+            if (stack != null) {
+                outputSlots.add(stack.copy());
+            } else {
+                outputSlots.add(null);
+            }
+        }
+
+        boolean hasMEOutputBus = false;
+        for (final MTEHatch bus : validMTEList(mOutputBusses)) {
+            if (bus instanceof MTEHatchOutputBusME meBus) {
+                if (!meBus.isLocked() && meBus.canAcceptItem()) {
+                    hasMEOutputBus = true;
                     break;
                 }
             }
         }
+        // Consume items and generate outputs
+        ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
+        int toSmelt = finalParallel;
+        for (ItemStack item : tInput) {
+            ItemStack smeltedOutput = GTModHandler.getSmeltingOutput(item, false, null);
+            if (smeltedOutput != null) {
+                int maxOutput = 0;
+                int remainingToSmelt = Math.min(toSmelt, item.stackSize);
+
+                if (hasMEOutputBus) {
+                    // Has an unlocked ME Output Bus and therefore can always fit the full stack
+                    maxOutput = remainingToSmelt;
+                } else {
+
+                    // Calculate how many of this output can fit in the output slots
+                    int needed = remainingToSmelt;
+                    ItemStack outputType = smeltedOutput.copy();
+                    outputType.stackSize = 1;
+
+                    for (int i = 0; i < outputSlots.size(); i++) {
+                        ItemStack slot = outputSlots.get(i);
+                        if (slot == null) {
+                            // Empty slot: can fit a full stack
+                            int canFit = Math.min(needed, outputType.getMaxStackSize());
+                            ItemStack newStack = outputType.copy();
+                            newStack.stackSize = canFit;
+                            outputSlots.set(i, newStack); // Fill the slot
+                            maxOutput += canFit;
+                            needed -= canFit;
+                        } else if (slot.isItemEqual(outputType)) {
+                            int canFit;
+                            // Check for locked ME Output bus
+                            if (slot.stackSize == 65) {
+                                canFit = needed;
+                            } else {
+                                // Same type: can fit up to max stack size
+                                int space = outputType.getMaxStackSize() - slot.stackSize;
+                                canFit = Math.min(needed, space);
+                            }
+                            slot.stackSize += canFit;
+                            maxOutput += canFit;
+                            needed -= canFit;
+                            // No need to set, since slot is a reference
+                        }
+                        if (needed <= 0) break;
+                    }
+                }
+
+                // If void protection is enabled, only process what fits
+                int toProcess = protectsExcessItem() ? maxOutput : remainingToSmelt;
+
+                if (toProcess > 0) {
+                    ItemStack outputStack = smeltedOutput.copy();
+                    outputStack.stackSize *= toProcess;
+                    smeltedOutputs.add(outputStack);
+
+                    item.stackSize -= toProcess;
+                    toSmelt -= toProcess;
+                    if (toSmelt <= 0) break;
+                }
+            }
+        }
+        if (smeltedOutputs.isEmpty()) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
         this.mOutputItems = smeltedOutputs.toArray(new ItemStack[0]);
 
         this.mEfficiency = 10000 - (getIdealStatus() - getRepairStatus()) * 1000;
         this.mEfficiencyIncrease = 10000;
-        this.mMaxProgresstime = 20;
+        this.mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax);
         this.lEUt = calculator.getConsumption();
+        if (this.lEUt > 0) {
+            this.lEUt = -this.lEUt;
+        }
+        this.updateSlots();
 
-        if (this.lEUt > 0) this.lEUt = -this.lEUt;
-
-        updateSlots();
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
@@ -256,7 +324,7 @@ public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implem
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

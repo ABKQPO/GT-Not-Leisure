@@ -48,7 +48,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> FallingTowerRecipes = RecipeMapBuilder
@@ -59,7 +58,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> BloodDemonInjectionRecipes = RecipeMapBuilder
@@ -70,7 +68,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
                 .setMaxRecipesPerPage(2))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> AlchemicChemistrySetRecipes = RecipeMapBuilder
@@ -81,7 +78,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
                 .setMaxRecipesPerPage(2))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RealArtificialStarRecipes = RecipeMapBuilder
@@ -91,7 +87,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.RealArtificialStar.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> PortalToAlfheimRecipes = RecipeMapBuilder
@@ -102,7 +97,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RuneAltarRecipes = RecipeMapBuilder
@@ -113,7 +107,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> NatureSpiritArrayRecipes = RecipeMapBuilder
@@ -122,7 +115,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> ManaInfusionRecipes = RecipeMapBuilder
@@ -131,7 +123,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> LapotronChipRecipes = RecipeMapBuilder
@@ -140,7 +131,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LapotronChip.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamCrackerRecipes = RecipeMapBuilder
@@ -149,7 +139,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.SteamCracking.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CheatOreProcessingRecipes = RecipeMapBuilder
@@ -158,7 +147,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.CheatOreProcessingFactory.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> DesulfurizerRecipes = RecipeMapBuilder
@@ -167,7 +155,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.Desulfurizer.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> PetrochemicalPlantRecipes = RecipeMapBuilder
@@ -176,7 +163,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.PetrochemicalPlant.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SmeltingMixingFurnaceRecipes = RecipeMapBuilder
@@ -185,7 +171,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.SmeltingMixingFurnace.get(1)))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RareEarthCentrifugalRecipes = RecipeMapBuilder
@@ -194,7 +179,6 @@ public class RecipeRegister {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.RareEarthCentrifugal.get(1)))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> IndustrialShapedArcaneCraftingRecipes = RecipeMapBuilder
@@ -205,7 +189,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.IndustrialArcaneAssembler.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> MatterFabricatorRecipes = RecipeMapBuilder
@@ -216,7 +199,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.MatterFabricator.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> TheTwilightForestRecipes = RecipeMapBuilder
@@ -227,7 +209,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> FishingGroundRecipes = RecipeMapBuilder
@@ -238,7 +219,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> IndustrialInfusionCraftingRecipes = RecipeMapBuilder
@@ -250,7 +230,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.IndustrialArcaneAssembler.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> IsaMillRecipes = RecipeMapBuilder.of("gtnl.recipe.IsaMillRecipes")
@@ -263,7 +242,6 @@ public class RecipeRegister {
         .neiRecipeComparator(
             Comparator.<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(IsaMillTierKey.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> CellRegulatorRecipes = RecipeMapBuilder
@@ -274,7 +252,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.FlotationCellRegulator.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> ElementCopyingRecipes = RecipeMapBuilder
@@ -285,7 +262,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.ElementCopying.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> WoodDistillationRecipes = RecipeMapBuilder
@@ -296,7 +272,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.WoodDistillation.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> MolecularTransformerRecipes = RecipeMapBuilder
@@ -307,7 +282,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.MolecularTransformer.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> NaquadahReactorRecipes = RecipeMapBuilder
@@ -319,7 +293,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LargeNaquadahReactor.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .addSpecialTexture(59, 20, 58, 42, GGUITextures.PICTURE_NAQUADAH_REACTOR)
         .build();
 
@@ -331,7 +304,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.DecayHastener.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> GrandAssemblyLineRecipes = RecipeMapBuilder
@@ -342,7 +314,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.GrandAssemblyLine.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> FuelRefiningComplexRecipes = RecipeMapBuilder
@@ -354,7 +325,6 @@ public class RecipeRegister {
             builder -> builder.setDisplayStack(GTNLItemList.FuelRefiningComplex.get(1))
                 .setMaxRecipesPerPage(1))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> SpaceMinerRecipes = RecipeMapBuilder.of("gtnl.recipe.SpaceMinerRecipes")
@@ -372,7 +342,6 @@ public class RecipeRegister {
         .neiRecipeComparator(
             Comparator.<GTRecipe, Integer>comparing(recipe -> recipe.mSpecialValue)
                 .thenComparing(GTRecipe::compareTo))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> SpaceDrillRecipes = RecipeMapBuilder.of("gtnl.recipe.SpaceDrillRecipes")
@@ -382,7 +351,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.ResourceCollectionModule.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> PlatinumBasedTreatmentRecipes = RecipeMapBuilder
@@ -393,7 +361,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.PlatinumBasedTreatment.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> ShallowChemicalCouplingRecipes = RecipeMapBuilder
@@ -405,7 +372,6 @@ public class RecipeRegister {
             builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1))
                 .setMaxRecipesPerPage(1))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> AdvancedCircuitAssemblyLineRecipes = RecipeMapBuilder
@@ -423,7 +389,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.AdvancedCircuitAssemblyLine.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamGateAssemblerRecipes = RecipeMapBuilder
@@ -438,7 +403,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.SteamGateAssembler.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CactusWonderFakeRecipes = RecipeMapBuilder
@@ -447,7 +411,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_ARROW_2_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamCactusWonder.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamManufacturerRecipes = RecipeMapBuilder
@@ -456,7 +419,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_EXTRACT_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamManufacturer.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamCarpenterRecipes = RecipeMapBuilder
@@ -465,7 +427,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_ARROW_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamCarpenter.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> LavaMakerRecipes = RecipeMapBuilder.of("gtnl.recipe.LavaMaker")
@@ -473,7 +434,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_COMPRESS_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamLavaMaker.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamWoodcutterRecipes = RecipeMapBuilder
@@ -482,7 +442,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_ARROW_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamWoodcutter.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamExtractinatorRecipes = RecipeMapBuilder
@@ -491,7 +450,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_EXTRACT_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamExtractinator.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SteamFusionReactorRecipes = RecipeMapBuilder
@@ -504,7 +462,6 @@ public class RecipeRegister {
             Comparator
                 .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(SteamFusionTierKey.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> InfernalCockRecipes = RecipeMapBuilder
@@ -513,7 +470,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_EXTRACT_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamInfernalCokeOven.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RockBreakerRecipes = RecipeMapBuilder
@@ -522,7 +478,6 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_EXTRACT_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamRockBreaker.get(1))))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> ConvertToCircuitAssembler = RecipeMapBuilder
@@ -530,7 +485,6 @@ public class RecipeRegister {
         .frontend(GTNLLogoFrontend::new)
         .maxIO(6, 1, 1, 0)
         .disableRegisterNEI()
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> ExtremeExtremeEntityCrusherRecipes = RecipeMapBuilder
@@ -541,7 +495,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.PrimitiveDistillationTower.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> LargeBioLabRecipes = RecipeMapBuilder.of("gtnl.recipe.LargeBioLabRecipes")
@@ -551,7 +504,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LargeBioLab.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static RecipeMap<RecipeMapBackend> GasCollectorRecipes = RecipeMapBuilder
@@ -562,7 +514,6 @@ public class RecipeRegister {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LargeGasCollector.get(1))
                 .setMaxRecipesPerPage(1))
-        .disableOptimize()
         .build();
 
     public static final RecipeMap<RecipeMapBackend> EternalGregTechWorkshopUpgradeRecipes = RecipeMapBuilder
@@ -583,6 +534,5 @@ public class RecipeRegister {
         .progressBarSteam(GTUITextures.PROGRESSBAR_EXTRACT_STEAM)
         .frontend(SteamLogoFrontend::new)
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamWeatherModule.get(1))))
-        .disableOptimize()
         .build();
 }

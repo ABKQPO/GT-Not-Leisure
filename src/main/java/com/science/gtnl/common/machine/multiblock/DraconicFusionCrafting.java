@@ -190,9 +190,9 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
                         .setDurationDecreasePerOC(4)
                         .setEUtIncreasePerOC(4)
                         .setEUtDiscount(0.5 - (mParallelTier / 50.0))
-                        .setSpeedBoost(1.0 / 2.0 - (mParallelTier / 200.0));
+                        .setDurationModifier(1.0 / 2.0 - (mParallelTier / 200.0));
                 } else return super.createOverclockCalculator(recipe).setEUtDiscount(0.5 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1.0 / 2.0 - (mParallelTier / 200.0));
+                    .setDurationModifier(1.0 / 2.0 - (mParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -222,7 +222,7 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

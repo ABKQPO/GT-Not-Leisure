@@ -67,12 +67,12 @@ public class LargeMacerationTower extends GTMMultiMachineBase<LargeMacerationTow
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialMultiMachineActive)
+                    .addIcon(TexturesGtBlock.Overlay_MatterFab_Active)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialMultiMachine)
+                    .addIcon(TexturesGtBlock.Overlay_MatterFab)
                     .extFacing()
                     .build() };
         }
@@ -158,7 +158,7 @@ public class LargeMacerationTower extends GTMMultiMachineBase<LargeMacerationTow
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -178,7 +178,7 @@ public class LargeMacerationTower extends GTMMultiMachineBase<LargeMacerationTow
             @Override
             public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.001, 1.0 / 2.0 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.001, 1.0 / 2.0 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

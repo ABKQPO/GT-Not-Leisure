@@ -47,6 +47,8 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     private int craftingMasterX, craftingMasterY, craftingMasterZ;
     private boolean craftingMasterSet = false;
 
+    private MTEHatchCraftingInputME master; // use getMaster() to access
+
     public SuperCraftingInputProxy(int aID, String aName, String aNameRegional) {
         super(
             aID,
@@ -69,6 +71,17 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperCraftingInputProxy(mName, mTier, mDescriptionArray, mTextures);
+    }
+
+    @Override
+    public ItemStack[] getSharedItems() {
+        if (getMasterSuper() != null) {
+            return getMasterSuper().getSharedItems();
+        } else if (getCraftingMaster() != null) {
+            return getCraftingMaster().getSharedItems();
+        } else {
+            return new ItemStack[0];
+        }
     }
 
     @Override

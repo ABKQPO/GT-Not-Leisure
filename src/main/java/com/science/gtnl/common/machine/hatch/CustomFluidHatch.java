@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.hatch;
 import static gregtech.api.enums.Textures.BlockIcons.FLUID_STEAM_IN_SIGN;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_PIPE_IN;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -19,10 +18,10 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.Utils.item.ItemUtils;
+import com.science.gtnl.mixins.late.Gregtech.MTEHatchAccessor;
 
 import gregtech.GTMod;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUIInfos;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -118,45 +117,34 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
 
-        int texturePointer = getUpdateData();
-        int mTexturePage;
+        int mTexturePage = ((MTEHatchAccessor) this).getTexturePage();
 
-        try {
-            Class<?> hatchClass = MTEHatch.class;
-            Field texturePageField = hatchClass.getDeclaredField("mTexturePage");
-            texturePageField.setAccessible(true);
-            mTexturePage = (byte) texturePageField.get(this);
-            if (mTexturePage < 0 || mTexturePage >= Textures.BlockIcons.casingTexturePages.length) {
-                return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[0][0] };
+        if (mTexturePage < 0 || mTexturePage >= Textures.BlockIcons.casingTexturePages.length) {
+            return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[0][0] };
+        }
+
+        int textureIndex = ((MTEHatchAccessor) this).getTextureIndex();
+
+        if (side != aFacing) {
+            if (textureIndex > 0 && textureIndex < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
+                return new ITexture[] { Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex] };
+            } else {
+                return new ITexture[] { getBaseTexture(colorIndex) };
             }
-
-            int textureIndex = texturePointer | (mTexturePage << 7);
-
-            if (side != aFacing) {
-                if (textureIndex > 0 && texturePointer < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
-                    return new ITexture[] { Textures.BlockIcons.casingTexturePages[mTexturePage][texturePointer] };
+        } else {
+            if (textureIndex > 0 && textureIndex < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
+                if (aActive) {
+                    return getTexturesActive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
                 } else {
-                    return new ITexture[] { getBaseTexture(colorIndex) };
+                    return getTexturesInactive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
                 }
             } else {
-                if (textureIndex > 0 && texturePointer < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
-                    if (aActive) {
-                        return getTexturesActive(Textures.BlockIcons.casingTexturePages[mTexturePage][texturePointer]);
-                    } else {
-                        return getTexturesInactive(
-                            Textures.BlockIcons.casingTexturePages[mTexturePage][texturePointer]);
-                    }
+                if (aActive) {
+                    return getTexturesActive(getBaseTexture(colorIndex));
                 } else {
-                    if (aActive) {
-                        return getTexturesActive(getBaseTexture(colorIndex));
-                    } else {
-                        return getTexturesInactive(getBaseTexture(colorIndex));
-                    }
+                    return getTexturesInactive(getBaseTexture(colorIndex));
                 }
             }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-            return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[0][0] };
         }
     }
 
@@ -197,11 +185,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    public boolean isSimpleMachine() {
-        return true;
-    }
-
-    @Override
     public boolean isFacingValid(ForgeDirection facing) {
         return true;
     }
@@ -213,7 +196,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        GTUIInfos.openGTTileEntityUI(aBaseMetaTileEntity, aPlayer);
+        openGui(aPlayer);
         return true;
     }
 
@@ -238,19 +221,9 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         return true;
     }
 
-    @Override
-    public boolean displaysItemStack() {
-        return true;
-    }
-
     public void updateSlots() {
         if (mInventory[getInputSlot()] != null && mInventory[getInputSlot()].stackSize <= 0)
             mInventory[getInputSlot()] = null;
-    }
-
-    @Override
-    public int getTankPressure() {
-        return -100;
     }
 
     @Override

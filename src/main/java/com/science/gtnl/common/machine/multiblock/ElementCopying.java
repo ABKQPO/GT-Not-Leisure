@@ -135,7 +135,7 @@ public class ElementCopying extends GTMMultiMachineBase<ElementCopying> implemen
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -175,7 +175,7 @@ public class ElementCopying extends GTMMultiMachineBase<ElementCopying> implemen
                     .setDurationDecreasePerOC(4)
                     .setEUtIncreasePerOC(4)
                     .setEUtDiscount(1 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1 - (mParallelTier / 200.0));
+                    .setDurationModifier(1 - (mParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

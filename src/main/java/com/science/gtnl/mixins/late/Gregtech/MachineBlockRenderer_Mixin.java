@@ -15,6 +15,7 @@ import com.science.gtnl.common.machine.multiblock.MeteorMiner;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.render.GTRendererBlock;
 
+@SuppressWarnings("UnusedMixin")
 @Mixin(value = GTRendererBlock.class, remap = false)
 public abstract class MachineBlockRenderer_Mixin {
 

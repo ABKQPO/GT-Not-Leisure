@@ -5,8 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTStructureUtility.*;
 import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -26,14 +25,12 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import bartworks.API.BorosilicateGlass;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -47,8 +44,7 @@ import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
-public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBase<SuperconductingMagneticPresser>
-    implements IWirelessEnergyHatchInformation {
+public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBase<SuperconductingMagneticPresser> {
 
     private static final int HORIZONTAL_OFF_SET = 6;
     private static final int VERTICAL_OFF_SET = 5;
@@ -94,7 +90,6 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
             .addInputBus(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
             .addOutputBus(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
             .addInputHatch(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
             .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
             .toolTipFinisher();
         return tt;
@@ -135,7 +130,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
                 .addElement(
                     'E',
                     buildHatchAdder(SuperconductingMagneticPresser.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
+                        .atLeast(InputBus, OutputBus, InputHatch, Energy.or(ExoticEnergy))
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(sBlockCasings8, 7))))
@@ -146,7 +141,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
                 .addElement('J', ofBlock(sBlockCasings8, 10))
                 .addElement('K', ofBlockAnyMeta(ELECTRODE_CASING))
                 .addElement('L', ofBlock(sBlockCasings3, 11))
-                .addElement('M', BorosilicateGlass.ofBoroGlass((byte) 0, (t, v) -> t.mGlassTier = v, t -> t.mGlassTier))
+                .addElement('M', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement(
                     'N',
                     ofBlockAnyMeta(
@@ -175,7 +170,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -230,21 +225,21 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
                 return wirelessMode ? OverclockCalculator.ofNoOverclock(recipe)
                     : super.createOverclockCalculator(recipe)
                         .setEUtDiscount(0.4 - (mParallelTier / 50.0) * Math.pow(0.95, mGlassTier))
-                        .setSpeedBoost(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
+                        .setDurationModifier(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setByte("mGlassTier", mGlassTier);
+        aNBT.setInteger("mGlassTier", mGlassTier);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mGlassTier = aNBT.getByte("mGlassTier");
+        mGlassTier = aNBT.getInteger("mGlassTier");
     }
 
 }

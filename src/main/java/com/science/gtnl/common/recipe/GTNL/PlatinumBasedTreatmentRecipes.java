@@ -51,7 +51,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Chlorine.getGas(158000),
                 FluidRegistry.getFluidStack("steam", 14000))
             .specialValue(0)
-            .noOptimize()
             .duration(12000)
             .eut(TierEU.RECIPE_IV)
             .addTo(PBTR);
@@ -78,7 +77,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Chlorine.getGas(183000),
                 FluidRegistry.getFluidStack("steam", 10000))
             .specialValue(0)
-            .noOptimize()
             .duration(6000)
             .eut(TierEU.RECIPE_LuV)
             .addTo(PBTR);
@@ -103,7 +101,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Chlorine.getGas(132000),
                 Materials.Oxygen.getGas(8000))
             .specialValue(0)
-            .noOptimize()
             .duration(6000)
             .eut(TierEU.RECIPE_LuV)
             .addTo(PBTR);
@@ -121,7 +118,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
             .fluidInputs(Materials.Hydrogen.getGas(25000))
             .fluidOutputs(Materials.Oxygen.getGas(4000), Materials.Chlorine.getGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(1500)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(PBTR);
@@ -138,7 +134,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
             .fluidInputs(Materials.Hydrogen.getGas(8000), Materials.Chlorine.getGas(40000))
             .fluidOutputs(Materials.Oxygen.getGas(8000))
             .specialValue(0)
-            .noOptimize()
             .duration(1500)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(PBTR);
@@ -153,7 +148,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Ammonia.getGas(224000))
             .fluidOutputs(Materials.Ethylene.getGas(64000))
             .specialValue(0)
-            .noOptimize()
             .duration(2400)
             .eut(TierEU.RECIPE_LuV)
             .addTo(PBTR);
@@ -169,7 +163,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Ammonia.getGas(134000))
             .fluidOutputs(Materials.Ethylene.getGas(64000))
             .specialValue(0)
-            .noOptimize()
             .duration(2400)
             .eut(TierEU.RECIPE_LuV)
             .addTo(PBTR);
@@ -186,7 +179,6 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
                 Materials.Chlorine.getGas(90000))
             .fluidOutputs(Materials.Hydrogen.getGas(71000))
             .specialValue(0)
-            .noOptimize()
             .duration(6000)
             .eut(TierEU.RECIPE_LuV)
             .addTo(PBTR);

@@ -66,9 +66,9 @@ public final class Utils {
     }
 
     /**
-     * One method to handle multi survivialBuildPiece at once.
+     * One method to handle multi survivalBuildPiece at once.
      *
-     * @param buildPieces All result of `survivialBuildPiece`.
+     * @param buildPieces All result of `survivalBuildPiece`.
      * @return If all result is -1, return -1. Otherwise, return the sum of all non-negative values.
      */
     public static int multiBuildPiece(int... buildPieces) {

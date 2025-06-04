@@ -198,7 +198,7 @@ public class AdvancedCircuitAssemblyLine extends GTMMultiMachineBase<AdvancedCir
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.8 - (mParallelTier / 36.0));
-                // .setSpeedBoost(Math.max(0.05, 1.0 / 3.75 - (ParallelTier / 200.0)));
+                // .setDurationModifier(Math.max(0.05, 1.0 / 3.75 - (ParallelTier / 200.0)));
             }
 
             @Override
@@ -251,7 +251,7 @@ public class AdvancedCircuitAssemblyLine extends GTMMultiMachineBase<AdvancedCir
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

@@ -109,7 +109,7 @@ public class LuvKuangBiaoOneGiantNuclearFusionReactor
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -311,7 +311,7 @@ public class LuvKuangBiaoOneGiantNuclearFusionReactor
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(4 - (mParallelTier / 12.5))
-                    .setSpeedBoost(1.0 / 2.0 - (mParallelTier / 200.0));
+                    .setDurationModifier(1.0 / 2.0 - (mParallelTier / 200.0));
             }
 
             @NotNull

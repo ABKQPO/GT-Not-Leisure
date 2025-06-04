@@ -20,7 +20,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.core.item.chemistry.GenericChem;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
 import gtPlusPlus.core.material.nuclear.MaterialsNuclides;
@@ -38,7 +38,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Ethylenediamine.getFluidOrGas(1000))
             .itemOutputs(MaterialPool.Hexanitrohexaazaisowurtzitane.get(OrePrefixes.dust, 36))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(1920)
             .addTo(UC);
@@ -51,7 +50,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.Ethylenediamine.getFluidOrGas(1000), FluidRegistry.getFluidStack("water", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(180)
             .eut(120)
             .addTo(UC);
@@ -64,7 +62,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.Ethanolamine.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(60)
             .eut(7680)
             .addTo(UC);
@@ -81,7 +78,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.FluoroboricAcide.getFluidOrGas(4000),
                 FluidRegistry.getFluidStack("aceticacid", 4000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(491520)
             .addTo(UC);
@@ -89,14 +85,13 @@ public class ChemicalRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs()
             .fluidInputs(
-                new FluidStack(GenericChem.BoricAcid, 1000),
+                new FluidStack(GTPPFluids.BoricAcid, 1000),
                 FluidRegistry.getFluidStack("hydrofluoricacid_gt5u", 4000))
             .itemOutputs()
             .fluidOutputs(
                 MaterialPool.FluoroboricAcide.getFluidOrGas(1000),
                 FluidRegistry.getFluidStack("water", 13000))
             .specialValue(0)
-            .noOptimize()
             .duration(150)
             .eut(120)
             .addTo(UC);
@@ -110,7 +105,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.NitroniumTetrafluoroborate.get(OrePrefixes.dust, 8))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(40)
             .eut(1920)
             .addTo(UC);
@@ -122,7 +116,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem("miscutils", "itemDustSodiumFluoride", 2))
             .fluidOutputs(MaterialPool.BoronFluoride.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(125)
             .addTo(UC);
@@ -133,7 +126,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.BoronFluoride.getFluidOrGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(UC);
@@ -146,11 +138,10 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.Tetraacetyldinitrohexaazaisowurtzitane.get(OrePrefixes.dust, 46))
             .fluidOutputs(
                 FluidRegistry.getFluidStack("hydrofluoricacid_gt5u", 24000),
-                new FluidStack(GenericChem.BoricAcid, 6000),
+                new FluidStack(GTPPFluids.BoricAcid, 6000),
                 FluidRegistry.getFluidStack("nitricoxide", 4000),
                 MaterialPool.Benzaldehyde.getFluidOrGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(140)
             .eut(7680)
             .addTo(UC);
@@ -164,7 +155,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.NitronsoniumTetrafluoroborate.get(OrePrefixes.dust, 7))
             .fluidOutputs(FluidRegistry.getFluidStack("nitricacid", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(120)
             .addTo(UC);
@@ -178,7 +168,6 @@ public class ChemicalRecipes implements IRecipePool {
                 setStackSize(MaterialPool.Dibenzyltetraacetylhexaazaisowurtzitane.get(OrePrefixes.dust, 1), 64 + 6))
             .fluidOutputs(FluidRegistry.getFluidStack("liquid_toluene", 6000))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(122880)
             .addTo(UC);
@@ -189,7 +178,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.SuccinimidylAcetate.get(OrePrefixes.dust, 18))
             .fluidOutputs(Materials.AceticAcid.getFluid(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(7680)
             .addTo(UC);
@@ -207,7 +195,6 @@ public class ChemicalRecipes implements IRecipePool {
                 GTModHandler.getModItem("gregtech", "gt.metaitem.01", 12, 2817))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 6000), FluidRegistry.getFluidStack("hydrogen", 6000))
             .specialValue(0)
-            .noOptimize()
             .duration(220)
             .eut(1920)
             .addTo(UC);
@@ -222,7 +209,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.HydroxylamineHydrochloride.getFluidOrGas(2000),
                 FluidRegistry.getFluidStack("water", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(480)
             .addTo(UC);
@@ -233,7 +219,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.BariumChloride.get(OrePrefixes.dust, 3))
             .fluidOutputs(FluidRegistry.getFluidStack("hydrogen", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(60)
             .eut(120)
             .addTo(UC);
@@ -246,7 +231,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.HydrobromicAcid.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(480)
             .addTo(UC);
@@ -259,7 +243,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.PotassiumSulfate.get(OrePrefixes.dust, 14))
             .fluidOutputs(FluidRegistry.getFluidStack("sulfuricacid", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1920)
             .addTo(UC);
@@ -270,7 +253,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.PotassiumHydroxylaminedisulfonate.get(OrePrefixes.dust, 13))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1920)
             .addTo(UC);
@@ -281,7 +263,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem("gregtech", "gt.metaitem.01", 7, 2630))
             .fluidOutputs(MaterialPool.NitrousAcid.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(30)
             .addTo(UC);
@@ -292,7 +273,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.SodiumNitrite.get(OrePrefixes.dust, 4))
             .fluidOutputs(FluidRegistry.getFluidStack("oxygen", 1000), FluidRegistry.getFluidStack("water", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(30)
             .addTo(UC);
@@ -308,7 +288,6 @@ public class ChemicalRecipes implements IRecipePool {
                 FluidRegistry.getFluidStack("hydrogen", 4000),
                 FluidRegistry.getFluidStack("carbonmonoxide", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(1966080)
             .addTo(UC);
@@ -319,7 +298,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.PotassiumBisulfite.get(OrePrefixes.dust, 12))
             .fluidOutputs(FluidRegistry.getFluidStack("carbondioxide", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(160)
             .eut(480)
             .addTo(UC);
@@ -329,7 +307,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.Benzylamine.getFluidOrGas(6000), MaterialPool.Glyoxal.getFluidOrGas(3000))
             .itemOutputs(setStackSize(MaterialPool.Hexabenzylhexaazaisowurtzitane.get(OrePrefixes.dust, 1), 64 + 38))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(7680)
             .addTo(UC);
@@ -345,7 +322,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.Glyoxal.getFluidOrGas(2000),
                 FluidRegistry.getFluidStack("nitrogendioxide", 1000))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(60)
             .addTo(UC);
@@ -359,7 +335,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.Acetonitrile.get(OrePrefixes.dust, 6))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1966080)
             .addTo(UC);
@@ -375,7 +350,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.Benzylamine.getFluidOrGas(1000),
                 FluidRegistry.getFluidStack("fluid.formaldehyde", 6000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(7680)
             .addTo(UC);
@@ -388,7 +362,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.Hexamethylenetetramine.get(OrePrefixes.dust, 22))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 6000))
             .specialValue(0)
-            .noOptimize()
             .duration(160)
             .eut(30)
             .addTo(UC);
@@ -399,7 +372,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.SuccinicAnhydride.get(OrePrefixes.dust, 11))
             .fluidOutputs(FluidRegistry.getFluidStack("aceticacid", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(7680)
             .addTo(UC);
@@ -412,7 +384,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.MaleicAnhydride.getFluidOrGas(2000))
             .itemOutputs(MaterialPool.SuccinicAcid.get(OrePrefixes.dust, 14))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(1920)
             .addTo(UC);
@@ -423,7 +394,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(FluidRegistry.getFluidStack("water", 4000), MaterialPool.MaleicAnhydride.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(280)
             .eut(480)
             .addTo(UC);
@@ -434,7 +404,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.PloyamicAcid.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(122880)
             .addTo(UC);
@@ -445,7 +414,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.Oxydianiline.getFluidOrGas(1000), FluidRegistry.getFluidStack("methane", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(150)
             .eut(120)
             .addTo(UC);
@@ -456,7 +424,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.PyromelliticDianhydride.get(OrePrefixes.dust, 18))
             .fluidOutputs(FluidRegistry.getFluidStack("water", 6000))
             .specialValue(0)
-            .noOptimize()
             .duration(150)
             .eut(120)
             .addTo(UC);
@@ -469,7 +436,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.Durene.get(OrePrefixes.dust, 24))
             .fluidOutputs(FluidRegistry.getFluidStack("hydrochloricacid_gt5u", 2000))
             .specialValue(0)
-            .noOptimize()
             .duration(150)
             .eut(120)
             .addTo(UC);
@@ -481,7 +447,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 3))
             .fluidOutputs(MaterialPool.RareEarthChlorides.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(30)
             .addTo(UC);
@@ -494,7 +459,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.BenzenediazoniumTetrafluoroborate.getFluidOrGas(1000),
                 Materials.Water.getFluid(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(130)
             .eut(TierEU.RECIPE_LuV)
             .addTo(UC);
@@ -508,7 +472,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.AntimonyTrifluoride.get(OrePrefixes.dust, 4))
             .fluidOutputs(MaterialPool.Fluorotoluene.getFluidOrGas(1000), Materials.Water.getFluid(4000))
             .specialValue(0)
-            .noOptimize()
             .duration(150)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -519,7 +482,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(MaterialPool.AntimonyTrifluoride.get(OrePrefixes.dust, 8))
             .fluidOutputs(Materials.Water.getFluid(3000))
             .specialValue(0)
-            .noOptimize()
             .duration(60)
             .eut(TierEU.RECIPE_LV)
             .addTo(UC);
@@ -529,7 +491,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.HydrofluoricAcid.getFluid(4000))
             .fluidOutputs(GGMaterial.fluoroantimonicAcid.getFluidOrGas(1000), Materials.Hydrogen.getGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -539,7 +500,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.Fluorine.getGas(2000))
             .fluidOutputs(GGMaterial.antimonyPentafluoride.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -555,7 +515,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.Hydroquinone.getFluidOrGas(1000),
                 Materials.Acetone.getFluid(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(TierEU.RECIPE_EV)
             .addTo(UC);
@@ -570,7 +529,6 @@ public class ChemicalRecipes implements IRecipePool {
                 MaterialPool.FluoroBenzene.getFluidOrGas(1000))
             .fluidOutputs(Materials.HydrochloricAcid.getFluid(6000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_EV)
             .addTo(UC);
@@ -586,7 +544,6 @@ public class ChemicalRecipes implements IRecipePool {
                 Materials.Water.getFluid(1000),
                 Materials.CarbonDioxide.getGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(250)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(UC);
@@ -599,7 +556,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.CarbonDioxide.getGas(1000))
             .fluidOutputs(Materials.Water.getFluid(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -611,7 +567,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.Fluorine.getGas(4000))
             .fluidOutputs(MaterialsNuclides.Li2BeF4.getFluidStack(1008))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(TierEU.RECIPE_IV)
             .addTo(UC);
@@ -624,7 +579,6 @@ public class ChemicalRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(5000))
             .fluidOutputs(Materials.Water.getFluid(4000), MaterialPool.SmallBaka.getFluidOrGas(1000))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -634,7 +588,6 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTModHandler.getModItem(IndustrialCraft2.ID, "blockITNT", 32))
             .fluidInputs(MaterialPool.SmallBaka.getFluidOrGas(2000))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
@@ -645,7 +598,6 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.HydrochloricAcid.getFluid(4000))
             .fluidOutputs(Materials.Hydrogen.getGas(4000))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);

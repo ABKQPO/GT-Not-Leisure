@@ -17,7 +17,6 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
 import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.loader.RecipeRegister;
 
@@ -145,7 +144,7 @@ public class GenerationEarthEngine extends GTPPMultiBlockBase<GenerationEarthEng
                 .addElement('G', ofBlock(sBlockCasings8, 13))
                 .addElement('H', ofBlock(sBlockCasings1, 13))
                 .addElement('I', ofBlock(sBlockCasings8, 2))
-                .addElement('J', ofBlock(IGBlocks.SpaceElevatorCasing, 1))
+                .addElement('J', ofBlock(sBlockCasingsSE, 1))
                 .addElement('K', ofBlock(BlockLoader.defcCasingBlock, 11))
                 .addElement(
                     'L',
@@ -178,7 +177,7 @@ public class GenerationEarthEngine extends GTPPMultiBlockBase<GenerationEarthEng
         int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
 
         if (stackSize.stackSize > 1) {
-            return this.survivialBuildPiece(
+            return this.survivalBuildPiece(
                 STRUCTURE_PIECE_MAIN,
                 stackSize,
                 HORIZONTAL_OFF_SET,

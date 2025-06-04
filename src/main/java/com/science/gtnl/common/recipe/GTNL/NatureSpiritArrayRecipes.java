@@ -34,7 +34,6 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTUtility.copyAmount(0, asgardandelion))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(2000000))
-            .noOptimize()
             .duration(20)
             .eut(491520)
             .addTo(NSAR);
@@ -42,7 +41,6 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 0))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(3300))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
@@ -50,7 +48,6 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 1))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(6500))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
@@ -58,7 +55,6 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 2))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(44000))
-            .noOptimize()
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
@@ -66,7 +62,6 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTUtility.copyAmount(0, GTModHandler.getModItem(Botania.ID, "pool", 1, 1)))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(2147483647))
-            .noOptimize()
             .duration(20)
             .eut(7864320)
             .addTo(NSAR);

@@ -91,7 +91,7 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -153,11 +153,6 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     @Override
     public int getDamageToComponent(ItemStack aStack) {
         return 0;
-    }
-
-    @Override
-    public boolean explodesOnComponentBreak(ItemStack aStack) {
-        return false;
     }
 
     // YOINKED all this code n im NOT giving it back

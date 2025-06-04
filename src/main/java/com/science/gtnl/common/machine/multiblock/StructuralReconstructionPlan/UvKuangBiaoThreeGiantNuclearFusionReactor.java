@@ -30,7 +30,6 @@ import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import galaxyspace.core.register.GSBlocks;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
@@ -109,7 +108,7 @@ public class UvKuangBiaoThreeGiantNuclearFusionReactor
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -311,7 +310,7 @@ public class UvKuangBiaoThreeGiantNuclearFusionReactor
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(4 - (mParallelTier / 12.5))
-                    .setSpeedBoost(1.0 / 2.0 - (mParallelTier / 200.0));
+                    .setDurationModifier(1.0 / 2.0 - (mParallelTier / 200.0));
             }
 
             @NotNull
@@ -346,7 +345,7 @@ public class UvKuangBiaoThreeGiantNuclearFusionReactor
                         .dot(1)
                         .atLeast(InputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
                         .buildAndChain(onElementPass(x -> ++x.tCountCasing, ofBlock(sBlockCasings4, 8))))
-                .addElement('D', ofBlock(GSBlocks.DysonSwarmBlocks, 9))
+                .addElement('D', ofBlock(sBlockCasingsDyson, 9))
                 .addElement('E', ofFrame(Materials.Tungsten))
                 .addElement('F', ofFrame(Materials.Neutronium))
                 .addElement('G', ofBlock(BlockLoader.MetaBlockGlass, 2))

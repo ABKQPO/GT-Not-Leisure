@@ -321,7 +321,7 @@ public class OP_NormalProcessing {
         GTValues.RA.stdBuilder()
             .itemInputs(input)
             .itemOutputs(output)
-            .noOptimize()
+
             .eut(OreProcessRecipeEUt)
             .duration(OreProcessRecipeDuration)
             .addTo(RecipeRegister.CheatOreProcessingRecipes);

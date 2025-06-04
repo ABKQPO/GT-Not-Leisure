@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.reavaritia.common.item.InfinityTotem;
+import com.science.gtnl.Utils.enums.GTNLItemList;
 import com.science.gtnl.Utils.enums.Mods;
 
 import baubles.api.BaublesApi;
@@ -78,5 +79,9 @@ public class ItemUtils {
             throw new RuntimeException(e);
         }
         return s;
+    }
+
+    public static ItemStack getIntegratedCircuitPlus(int config) {
+        return GTNLItemList.CircuitIntegratedPlus.getWithDamage(0, config);
     }
 }

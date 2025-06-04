@@ -189,7 +189,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -231,7 +231,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
                     .setHeatDiscount(true)
                     .enablePerfectOC()
                     .setEUtDiscount(0.8 - ((mParallelTier + mHeatingCapacity / 1800.0) / 50.0))
-                    .setSpeedBoost(1 / 1.67 - ((mParallelTier + mHeatingCapacity / 1800.0) / 200.0));
+                    .setDurationModifier(1 / 1.67 - ((mParallelTier + mHeatingCapacity / 1800.0) / 200.0));
             }
 
             @Override

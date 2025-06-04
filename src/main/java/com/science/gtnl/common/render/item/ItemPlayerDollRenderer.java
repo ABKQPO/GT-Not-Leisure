@@ -1,6 +1,7 @@
 package com.science.gtnl.common.render.item;
 
 import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.*;
 
 import java.io.File;
 
@@ -96,7 +97,7 @@ public class ItemPlayerDollRenderer implements IItemRenderer {
 
         if (MainConfig.enableCustomPlayerDoll && !offlineMode) {
             String ownerUUID = null;
-            String playerName = null;
+            String playerName;
             NBTTagCompound nbt = item.getTagCompound();
 
             if (nbt != null) {

@@ -6,6 +6,7 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -25,12 +26,10 @@ import com.science.gtnl.Utils.StructureUtils;
 import com.science.gtnl.common.machine.multiMachineClasses.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 
-import bartworks.API.BorosilicateGlass;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -42,8 +41,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import tectech.thing.casing.BlockGTCasingsTT;
 
-public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEnergyLaserLathe>
-    implements IWirelessEnergyHatchInformation {
+public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEnergyLaserLathe> {
 
     private static final int HORIZONTAL_OFF_SET = 16;
     private static final int VERTICAL_OFF_SET = 7;
@@ -140,7 +138,7 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
                 .addElement('I', ofBlock(sBlockCasingsTT, 6))
                 .addElement('J', ofBlock(sBlockCasingsTT, 4))
                 .addElement('K', ofBlock(sBlockCasings10, 1))
-                .addElement('L', BorosilicateGlass.ofBoroGlass((byte) 0, (t, v) -> t.mGlassTier = v, t -> t.mGlassTier))
+                .addElement('L', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('M', ofBlock(sBlockCasings10, 7))
                 .addElement('N', ofBlock(sBlockCasings3, 11))
                 .addElement('O', ofBlock(sBlockGlass1, 1))
@@ -163,7 +161,7 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -213,9 +211,9 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
                 return wirelessMode ? OverclockCalculator.ofNoOverclock(recipe)
                     : super.createOverclockCalculator(recipe)
                         .setEUtDiscount(0.4 - (mParallelTier / 50.0) * Math.pow(0.95, mGlassTier))
-                        .setSpeedBoost(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
+                        .setDurationModifier(0.1 * Math.pow(0.75, mParallelTier) * Math.pow(0.95, mGlassTier));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override
@@ -226,13 +224,13 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setByte("mGlassTier", mGlassTier);
+        aNBT.setInteger("mGlassTier", mGlassTier);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mGlassTier = aNBT.getByte("mGlassTier");
+        mGlassTier = aNBT.getInteger("mGlassTier");
     }
 
 }

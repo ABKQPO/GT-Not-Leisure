@@ -169,7 +169,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
 
-        int built = survivialBuildPiece(
+        int built = survivalBuildPiece(
             STRUCTURE_PIECE_MAIN_SURVIVAL,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -230,13 +230,14 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
-            // note that a basic steam machine has .setEUtDiscount(2F).setSpeedBoost(2F). So these here are bonuses.
+            // note that a basic steam machine has .setEUtDiscount(2F).setDurationModifier(2F). So these here are
+            // bonuses.
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount))
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount))
                     .setEUtDiscount(1.25 * tierMachine)
-                    .setSpeedBoost(1.6 / tierMachine);
+                    .setDurationModifier(1.6 / tierMachine);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

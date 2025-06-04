@@ -89,7 +89,6 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                 .clearInvalid()
                 .itemInputsUnified(inputItems.toArray(new ItemStack[0]))
                 .itemOutputs(recipe.getOutput())
-                .noOptimize()
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IAA);
@@ -119,7 +118,6 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                 .clearInvalid()
                 .itemInputsUnified(inputItems.toArray(new ItemStack[0]))
                 .itemOutputs(recipe.getOutput())
-                .noOptimize()
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IAA);

@@ -159,7 +159,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -199,7 +199,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
                     .setRecipeHeat(0)
                     .setHeatOC(true)
                     .setHeatDiscount(false)
-                    .setSpeedBoost(1 / 1.33);
+                    .setDurationModifier(1 / 1.33);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

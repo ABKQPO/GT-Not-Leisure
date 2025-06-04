@@ -143,11 +143,6 @@ public class EnergeticPhotovoltaicPowerStation extends MTEEnhancedMultiBlockBase
     }
 
     @Override
-    public boolean explodesOnComponentBreak(ItemStack aStack) {
-        return false;
-    }
-
-    @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
 
@@ -325,7 +320,7 @@ public class EnergeticPhotovoltaicPowerStation extends MTEEnhancedMultiBlockBase
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

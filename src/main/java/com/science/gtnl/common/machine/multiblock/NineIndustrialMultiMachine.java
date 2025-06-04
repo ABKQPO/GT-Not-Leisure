@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static bartworks.common.loaders.ItemRegistry.bw_realglas2;
-import static com.dreammaster.gthandler.casings.GT_Container_CasingsNH.sBlockCasingsNH;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.Utils.Utils.NEGATIVE_ONE;
@@ -55,7 +54,6 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -72,8 +70,7 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine>
-    implements IWirelessEnergyHatchInformation {
+public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine> {
 
     private final NineIndustrialMultiMachineManager modeManager = new NineIndustrialMultiMachineManager();
     public static final String[] aToolTipNames = new String[108];
@@ -193,7 +190,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -232,12 +229,12 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialMultiMachineActive)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixerActive)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialMultiMachine)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixer)
                     .extFacing()
                     .build() };
         }

@@ -26,7 +26,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
             .fluidInputs(Materials.Nitrogen.getGas(10000))
             .fluidOutputs(MaterialPool.Germaniumtungstennitride.getMolten(2304))
             .specialValue(0)
-            .noOptimize()
             .duration(9600)
             .eut(30720)
             .addTo(aBS);
@@ -40,7 +39,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Molybdenum, 1))
             .fluidOutputs(MaterialPool.HSLASteel.getMolten(720))
             .specialValue(0)
-            .noOptimize()
             .duration(3750)
             .eut(480)
             .addTo(aBS);
@@ -52,7 +50,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Silicon, 2))
             .fluidOutputs(MaterialPool.MolybdenumDisilicide.getMolten(432))
             .specialValue(0)
-            .noOptimize()
             .duration(1800)
             .eut(1920)
             .addTo(aBS);

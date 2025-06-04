@@ -182,7 +182,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -204,7 +204,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
                 return super.createOverclockCalculator(recipe).setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(FuelRefiningComplex.this.mHeatingCapacity)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(0.6 - (mParallelTier / 200.0));
+                    .setDurationModifier(0.6 - (mParallelTier / 200.0));
             }
 
             @Override

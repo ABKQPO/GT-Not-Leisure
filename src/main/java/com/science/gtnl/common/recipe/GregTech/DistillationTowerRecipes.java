@@ -28,7 +28,6 @@ public class DistillationTowerRecipes implements IRecipePool {
                 Materials.Ammonia.getGas(200),
                 Materials.Fluorine.getGas(200))
             .specialValue(0)
-            .noOptimize()
             .duration(600)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(DTR);
@@ -42,7 +41,6 @@ public class DistillationTowerRecipes implements IRecipePool {
                 GGMaterial.naquadriaRichSolution.getFluidOrGas(100))
             .outputChances(5000)
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(TierEU.RECIPE_HV)
             .addTo(DTR);
@@ -55,7 +53,6 @@ public class DistillationTowerRecipes implements IRecipePool {
                 Materials.Radon.getGas(200),
                 Materials.Fluorine.getGas(200))
             .specialValue(0)
-            .noOptimize()
             .duration(300)
             .eut(TierEU.RECIPE_LuV)
             .addTo(DTR);
@@ -68,7 +65,6 @@ public class DistillationTowerRecipes implements IRecipePool {
                 GGMaterial.enrichedNaquadahRichSolution.getFluidOrGas(100))
             .outputChances(5000)
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(TierEU.RECIPE_EV)
             .addTo(DTR);
@@ -87,7 +83,6 @@ public class DistillationTowerRecipes implements IRecipePool {
                 Materials.Radon.getGas(1000))
             .outputChances(1000)
             .specialValue(0)
-            .noOptimize()
             .duration(2000)
             .eut(TierEU.RECIPE_IV)
             .addTo(DTR);

@@ -191,7 +191,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
         int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
 
         if (stackSize.stackSize > 1) {
-            return this.survivialBuildPiece(
+            return this.survivalBuildPiece(
                 STRUCTURE_PIECE_MAIN,
                 stackSize,
                 HORIZONTAL_OFF_SET,

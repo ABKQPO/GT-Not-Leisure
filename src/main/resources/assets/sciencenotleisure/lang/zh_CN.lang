@@ -706,6 +706,8 @@ Tooltip_Testitem_11=§f§l如果你遇到了什么问题或者想提出意见, �
 Tooltip_Testitem_12=本模组添加的机器meta值从21000开始
 Tooltip_Testitem_13=§c§l另外提醒: 不要拿着这个物品右键!
 
+item.CircuitIntegratedPlus.name=突破编程电路
+
 item.KFCFamily.name=疯狂星期四
 Tooltip_KFCFamily_00=§o疯狂星期四, v我50!
 gtnl.potion.perfect_physique=完美体魄

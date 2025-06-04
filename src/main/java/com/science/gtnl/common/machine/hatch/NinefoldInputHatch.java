@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.hatch;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -40,21 +42,10 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
     private static Textures.BlockIcons.CustomIcon face;
 
     public NinefoldInputHatch(int aID, int aSlot, String aName, String aNameRegional, int aTier) {
-        super(
-            aID,
-            aSlot,
-            aName,
-            aNameRegional,
-            aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_00"), "",
-                StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_02_00") + GTUtility.formatNumbers(aSlot)
-                    + StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_02_01") });
+        super(aID, aSlot, aName, aNameRegional, aTier);
         this.mStoredFluid = new FluidStack[aSlot];
         fluidTanks = new FluidStackTank[aSlot];
         mCapacityPer = getCapacityPerTank(aTier, aSlot);
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01")
-            + GTUtility.formatNumbers(mCapacityPer)
-            + "L";
     }
 
     public NinefoldInputHatch(String aName, int aSlot, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -69,9 +60,23 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
                 fluid -> mStoredFluid[index] = fluid,
                 mCapacityPer);
         }
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01")
-            + GTUtility.formatNumbers(mCapacityPer)
-            + "L";
+    }
+
+    @Override
+    public String[] getDescription() {
+
+        ArrayList<String> desc = new ArrayList<>();
+
+        desc.add(StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_00"));
+        desc.add(
+            StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01") + GTUtility.formatNumbers(mCapacityPer)
+                + "L");
+        desc.add(
+            StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_02_00")
+                + GTUtility.formatNumbers(mInventory.length));
+        desc.add(StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_02_01"));
+
+        return desc.toArray(new String[] {});
     }
 
     @Override

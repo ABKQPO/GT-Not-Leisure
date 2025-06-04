@@ -30,7 +30,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IWirelessEnergyHatchInformation;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -41,8 +40,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 
-public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling>
-    implements IWirelessEnergyHatchInformation {
+public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
 
     private HeatingCoilLevel heatLevel;
     private static final int HORIZONTAL_OFF_SET = 32;
@@ -161,7 +159,7 @@ public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling>
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        return this.survivialBuildPiece(
+        return this.survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -211,10 +209,10 @@ public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling>
             @Override
             protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(0.4 - (mParallelTier / 50.0))
-                    .setSpeedBoost(
+                    .setDurationModifier(
                         1.0 / 10.0 * Math.pow(0.75, mParallelTier) * Math.pow(0.85, getCoilLevel().getTier()));
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     public HeatingCoilLevel getCoilLevel() {

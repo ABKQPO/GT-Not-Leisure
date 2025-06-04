@@ -7,9 +7,9 @@ on:
   schedule:
     - cron:  '00 0 * * *'
   pull_request:
-    branches: [ master, main, v2.7.2 ]
+    branches: [ master, dev	]
   push:
-    branches: [ master, main, v2.7.2 ]
+    branches: [ master, dev ]
 
 jobs:
   build-and-test:
@@ -105,12 +105,12 @@ jobs:
       if: true
       run: |
         mkdir -p run
-        mkdir -p run/server
-        echo "eula=true" > run/server/eula.txt
+        mkdir -p run/server_280
+        echo "eula=true" > run/server_280/eula.txt
         # Set a constant seed with a village at spawn
-        echo "level-seed=-6202107849386030209\nonline-mode=true\n" > run/server/server.properties
-        echo "stop" > run/server/stop.txt
-        timeout 90 ./gradlew --build-cache --info --stacktrace runServer 2>&1 < run/server/stop.txt | tee -a server.log || true
+        echo "level-seed=-6202107849386030209\nonline-mode=true\n" > run/server_280/server.properties
+        echo "stop" > run/server_280/stop.txt
+        timeout 90 ./gradlew --build-cache --info --stacktrace runServer 2>&1 < run/server_280/stop.txt | tee -a server.log || true
 
     - name: Test no errors reported during server run
       if: true

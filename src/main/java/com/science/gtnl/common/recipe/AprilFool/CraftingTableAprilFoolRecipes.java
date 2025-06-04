@@ -14,7 +14,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
@@ -162,7 +161,7 @@ public class CraftingTableAprilFoolRecipes implements IRecipePool {
             new Object[] { "ABC", "BDB", "CBA", 'A', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.pipeTiny, Materials.Bronze, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 1), 'D',
-                new ItemStack(ModItems.itemBasicTurbine, 1, 0) });
+                GregtechItemList.BasicIronTurbine.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.HydraulicPiston.get(1),
@@ -170,13 +169,13 @@ public class CraftingTableAprilFoolRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.CrudeSteel, 1), 'D',
                 GTOreDictUnificator.get(OrePrefixes.pipeTiny, Materials.Bronze, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 1), 'B',
-                new ItemStack(ModItems.itemBasicTurbine, 1, 0), 'E', GTNLItemList.HydraulicMotor.get(1), 'F',
+                GregtechItemList.BasicIronTurbine.get(1), 'E', GTNLItemList.HydraulicMotor.get(1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.HydraulicPump.get(1),
             new Object[] { "ABC", "sDw", "CEA", 'A', GTNLItemList.HydraulicMotor.get(1), 'B',
-                new ItemStack(ModItems.itemBasicTurbine, 1, 1), 'C',
+                GregtechItemList.BasicBronzeTurbine.get(1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ring, Materials.Rubber, 1), 'D',
                 GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.Bronze, 1), 'E',
                 GTOreDictUnificator.get(OrePrefixes.bolt, Materials.CrudeSteel, 1) });

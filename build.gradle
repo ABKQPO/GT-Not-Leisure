@@ -18,21 +18,21 @@ tasks.withType(JavaCompile) {
 }
 
 tasks.named("runClient", JavaExec) {
-    workingDir = file("${projectDir}/run/client")
+    workingDir = file("${projectDir}/run/client_280")
     doFirst {
         workingDir.mkdirs()
     }
 }
 
 tasks.named("runClient17", JavaExec) {
-    workingDir = file("${projectDir}/run/client17")
+    workingDir = file("${projectDir}/run/client17_280")
     doFirst {
         workingDir.mkdirs()
     }
 }
 
 tasks.named("runServer", JavaExec) {
-    workingDir = file("${projectDir}/run/server")
+    workingDir = file("${projectDir}/run/server_280")
     doFirst {
         workingDir.mkdirs()
     }

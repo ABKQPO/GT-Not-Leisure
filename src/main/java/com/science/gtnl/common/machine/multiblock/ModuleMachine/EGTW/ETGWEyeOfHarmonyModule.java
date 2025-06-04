@@ -171,7 +171,8 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         enableRawStarMatter = !enableRawStarMatter;
         aPlayer.addChatMessage(
             new ChatComponentText(
@@ -503,12 +504,14 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         while (amount >= Integer.MAX_VALUE) {
             ItemStack tmpItem = item.copy();
             tmpItem.stackSize = Integer.MAX_VALUE;
-            ((MTEHatchOutputBusME) mOutputBusses.get(0)).store(tmpItem);
+            mOutputBusses.get(0)
+                .storePartial(tmpItem);
             amount -= Integer.MAX_VALUE;
         }
         ItemStack tmpItem = item.copy();
         tmpItem.stackSize = (int) amount;
-        ((MTEHatchOutputBusME) mOutputBusses.get(0)).store(tmpItem);
+        mOutputBusses.get(0)
+            .storePartial(tmpItem);
     }
 
     private void outputFluidToAENetwork(FluidStack fluid, long amount) {

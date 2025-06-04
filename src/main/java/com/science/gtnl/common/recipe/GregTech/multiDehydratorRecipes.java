@@ -11,7 +11,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.core.item.chemistry.GenericChem;
+import gtPlusPlus.core.fluids.GTPPFluids;
 
 public class multiDehydratorRecipes implements IRecipePool {
 
@@ -25,16 +25,14 @@ public class multiDehydratorRecipes implements IRecipePool {
                 MaterialPool.SilicaGel.get(OrePrefixes.dust, 3),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 2))
             .specialValue(0)
-            .noOptimize()
             .duration(130)
             .eut(480)
             .addTo(mD);
 
         RecipeBuilder.builder()
-            .fluidInputs(new FluidStack(GenericChem.BoricAcid, 2000))
+            .fluidInputs(new FluidStack(GTPPFluids.BoricAcid, 2000))
             .itemOutputs(MaterialPool.BoronTrioxide.get(OrePrefixes.dust, 5))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(480)
             .addTo(mD);
@@ -44,7 +42,6 @@ public class multiDehydratorRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialPool.Polyimide.getMolten(144))
             .specialValue(0)
-            .noOptimize()
             .duration(270)
             .eut(30)
             .addTo(mD);

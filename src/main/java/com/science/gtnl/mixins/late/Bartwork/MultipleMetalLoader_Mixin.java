@@ -28,7 +28,7 @@ public abstract class MultipleMetalLoader_Mixin {
             GTValues.RA.stdBuilder()
                 .itemInputs(werkstoff.get(plate, 64))
                 .itemOutputs(werkstoff.get(plateSuperdense, 1))
-                .noOptimize()
+
                 .metadata(COMPRESSION_TIER, 1)
                 .duration(
                     (int) Math.max(

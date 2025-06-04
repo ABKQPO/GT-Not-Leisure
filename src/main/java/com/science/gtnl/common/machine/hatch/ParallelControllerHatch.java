@@ -47,7 +47,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
             aTextures);
         this.maxParallel = setMaxParallel(mTier);
         this.parallel = maxParallel;
-        int speedBoost = setSpeedBoost(mTier);
+        int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
         mDescriptionArray[1] = String
             .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_01"), maxParallel);
@@ -62,7 +62,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         super(aName, aTier, aInvSlotCount, aDescription, aTextures);
         this.maxParallel = setMaxParallel(mTier);
         this.parallel = maxParallel;
-        int speedBoost = setSpeedBoost(mTier);
+        int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
         mDescriptionArray[1] = String
             .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_01"), maxParallel);
@@ -145,7 +145,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         }
     }
 
-    public int setSpeedBoost(int mTier) {
+    public int setDurationModifier(int mTier) {
         if (mTier <= 1) {
             return 1;
         } else {

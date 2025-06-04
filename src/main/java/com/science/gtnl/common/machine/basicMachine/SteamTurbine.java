@@ -34,10 +34,6 @@ public class SteamTurbine extends MTEBasicGenerator implements IAddGregtechLogo 
         mDescriptionArray[3] = StatCollector.translateToLocal("Tooltip_SteamTurbine_03") + getCapacity() + "L";
     }
 
-    public SteamTurbine(String aName, int aTier, String aDescription, ITexture[][][] aTextures) {
-        super(aName, aTier, aDescription, aTextures);
-    }
-
     public SteamTurbine(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
         mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_SteamTurbine_02") + getEfficiency() + "%";

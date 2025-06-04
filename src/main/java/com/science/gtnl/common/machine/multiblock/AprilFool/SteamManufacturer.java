@@ -118,7 +118,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -176,9 +176,9 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount))
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount))
                     .setEUtDiscount(1)
-                    .setSpeedBoost(1);
+                    .setDurationModifier(1);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

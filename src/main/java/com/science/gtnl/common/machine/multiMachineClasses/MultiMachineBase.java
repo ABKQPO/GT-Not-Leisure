@@ -8,17 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -43,7 +40,8 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.Utils.item.ItemUtils;
-import com.science.gtnl.api.mixinHelper.IOverclockCalculatorExtension;
+import com.science.gtnl.Utils.recipes.GTNL_OverclockCalculator;
+import com.science.gtnl.Utils.recipes.GTNL_ProcessingLogic;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.CustomMaintenanceHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -63,19 +61,12 @@ import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
-import gregtech.api.metatileentity.implementations.MTEHatchMuffler;
-import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
-import gregtech.api.util.OverclockCalculator;
 import gregtech.common.tileentities.machines.IDualInputHatch;
-import gregtech.common.tileentities.machines.IDualInputInventory;
-import gregtech.common.tileentities.machines.MTEHatchInputBusME;
-import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gtPlusPlus.GTplusplus;
 import gtPlusPlus.api.objects.Logger;
 import gtPlusPlus.api.objects.minecraft.BlockPos;
@@ -83,13 +74,13 @@ import gtPlusPlus.core.config.ASMConfiguration;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.METHatchAirIntake;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchInputBattery;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchOutputBattery;
-import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MteHatchSteamBusInput;
+import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
 
 public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MTEExtendedPowerMultiBlockBase<T>
     implements IConstructable, ISurvivalConstructable {
 
     protected int tCountCasing;
-    protected byte mGlassTier = 0;
+    protected int mGlassTier = 0;
     protected int mParallelTier;
     protected int energyHatchTier;
     protected int mMaxParallel = 0;
@@ -130,7 +121,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     // region new methods
     public void repairMachine() {
         mHardHammer = true;
-        mSoftHammer = true;
+        mSoftMallet = true;
         mScrewdriver = true;
         mCrowbar = true;
         mSolderingTool = true;
@@ -180,7 +171,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      */
     @ApiStatus.OverrideOnly
     protected ProcessingLogic createProcessingLogic() {
-        return new ProcessingLogic() {
+        return new GTNL_ProcessingLogic() {
 
             @NotNull
             @Override
@@ -193,13 +184,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
             @NotNull
             @Override
-            public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                OverclockCalculator calc = super.createOverclockCalculator(recipe);
-                ((IOverclockCalculatorExtension) calc).setMoreSpeedBoost(configSpeedBoost);
-                return calc;
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost);
             }
 
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     /**
@@ -233,18 +222,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      * @return The value (or a method to get the value) of Max Parallel (dynamically) .
      */
     @ApiStatus.OverrideOnly
-    protected abstract int getMaxParallelRecipes();
+    public abstract int getMaxParallelRecipes();
 
     public abstract int getCasingTextureID();
-
-    /**
-     * Limit the max parallel to prevent overflow.
-     *
-     * @return Limited parallel.
-     */
-    protected int getLimitedMaxParallel() {
-        return getMaxParallelRecipes();
-    }
 
     protected long getMachineVoltageLimit() {
         return GTValues.V[energyHatchTier];
@@ -380,6 +360,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
+        // If no logic is found, try legacy checkRecipe
         if (processingLogic == null) {
             return checkRecipe(mInventory[1]) ? CheckRecipeResultRegistry.SUCCESSFUL
                 : CheckRecipeResultRegistry.NO_RECIPE;
@@ -389,10 +370,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
         CheckRecipeResult result = doCheckRecipe();
         result = postCheckRecipe(result, processingLogic);
+        // inputs are consumed at this point
         updateSlots();
         if (!result.wasSuccessful()) return result;
 
-        mEfficiency = 10000;
+        mEfficiency = (10000 - (getIdealStatus() - getRepairStatus()) * 1000);
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = processingLogic.getDuration();
         setEnergyUsage(processingLogic);
@@ -401,71 +383,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         mOutputFluids = processingLogic.getOutputFluids();
 
         return result;
-    }
-
-    /**
-     * <p>
-     * Get inputting items without DualInputHatch, and no separation mode.
-     * <p>
-     * Always used to get some special input items.
-     *
-     * @return The inputting items.
-     */
-    public ArrayList<ItemStack> getStoredInputsWithoutDualInputHatch() {
-
-        ArrayList<ItemStack> rList = new ArrayList<>();
-        for (MTEHatchInputBus tHatch : filterValidMTEs(mInputBusses)) {
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    rList.add(itemStack);
-                }
-            }
-        }
-
-        if (getStackInSlot(1) != null && getStackInSlot(1).getUnlocalizedName()
-            .startsWith("gt.integrated_circuit")) rList.add(getStackInSlot(1));
-        return rList;
-    }
-
-    public ArrayList<ItemStack> getStoredInputItemsWithDualInputHatch() {
-
-        if (supportsCraftingMEBuffer() && !mDualInputHatches.isEmpty()) {
-            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
-                Iterator<? extends IDualInputInventory> inventoryIterator = dualInputHatch.inventories();
-                while (inventoryIterator.hasNext()) {
-                    ItemStack[] items = inventoryIterator.next()
-                        .getItemInputs();
-                    if (items == null || items.length == 0) continue;
-
-                    ArrayList<ItemStack> rList = new ArrayList<>();
-                    for (int i = 0; i < items.length; i++) {
-                        if (items[i] != null) {
-                            rList.add(items[i]);
-                        }
-                    }
-                    return rList;
-                }
-            }
-        }
-
-        ArrayList<ItemStack> rList = new ArrayList<>();
-        for (MTEHatchInputBus tHatch : filterValidMTEs(mInputBusses)) {
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    rList.add(itemStack);
-                }
-            }
-        }
-
-        if (getStackInSlot(1) != null && getStackInSlot(1).getUnlocalizedName()
-            .startsWith("gt.integrated_circuit")) rList.add(getStackInSlot(1));
-        return rList;
     }
 
     protected boolean depleteInputFromRestrictedHatches(Collection<CustomFluidHatch> aHatches, int aAmount) {
@@ -483,114 +400,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return false;
     }
 
-    /**
-     * Forced get all input items, include all Dual Input Hatch slot.
-     *
-     * @return The items list.
-     */
-    public ArrayList<ItemStack> getStoredInputsNoSeparation() {
-        ArrayList<ItemStack> rList = new ArrayList<>();
-
-        if (supportsCraftingMEBuffer()) {
-            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
-                Iterator<? extends IDualInputInventory> inventoryIterator = dualInputHatch.inventories();
-                while (inventoryIterator.hasNext()) {
-                    ItemStack[] items = inventoryIterator.next()
-                        .getItemInputs();
-                    if (items == null || items.length == 0) continue;
-
-                    for (int i = 0; i < items.length; i++) {
-                        if (items[i] != null) {
-                            rList.add(items[i]);
-                        }
-                    }
-
-                }
-            }
-        }
-
-        Map<GTUtility.ItemId, ItemStack> inputsFromME = new HashMap<>();
-        for (MTEHatchInputBus tHatch : GTUtility.filterValidMTEs(mInputBusses)) {
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    if (isMEBus) {
-                        // Prevent the same item from different ME buses from being recognized
-                        inputsFromME.put(GTUtility.ItemId.createNoCopy(itemStack), itemStack);
-                    } else {
-                        rList.add(itemStack);
-                    }
-                }
-            }
-        }
-
-        if (getStackInSlot(1) != null && getStackInSlot(1).getUnlocalizedName()
-            .startsWith("gt.integrated_circuit")) rList.add(getStackInSlot(1));
-        if (!inputsFromME.isEmpty()) {
-            rList.addAll(inputsFromME.values());
-        }
-        return rList;
-    }
-
-    /**
-     * Forced get all input fluids, include all Dual Input Hatch slot.
-     *
-     * @return ArrayList of all fluid stacks, contains fluid stacks in Crafting Input Hatch.
-     */
-    public ArrayList<FluidStack> getStoredFluidsWithDualInput() {
-        ArrayList<FluidStack> rList = new ArrayList<>();
-        Map<Fluid, FluidStack> inputsFromME = new HashMap<>();
-        for (MTEHatchInput tHatch : GTUtility.filterValidMTEs(mInputHatches)) {
-            setHatchRecipeMap(tHatch);
-            if (tHatch instanceof MTEHatchMultiInput multiInputHatch) {
-                for (FluidStack tFluid : multiInputHatch.getStoredFluid()) {
-                    if (tFluid != null) {
-                        rList.add(tFluid);
-                    }
-                }
-            } else if (tHatch instanceof MTEHatchInputME meHatch) {
-                for (FluidStack fluidStack : meHatch.getStoredFluids()) {
-                    if (fluidStack != null) {
-                        // Prevent the same fluid from different ME hatches from being recognized
-                        inputsFromME.put(fluidStack.getFluid(), fluidStack);
-                    }
-                }
-            } else {
-                if (tHatch.getFillableStack() != null) {
-                    rList.add(tHatch.getFillableStack());
-                }
-            }
-        }
-
-        if (!inputsFromME.isEmpty()) {
-            rList.addAll(inputsFromME.values());
-        }
-
-        // get all fluids from Dual input
-        if (supportsCraftingMEBuffer()) {
-            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
-                Iterator<? extends IDualInputInventory> inventoryIterator = dualInputHatch.inventories();
-                while (inventoryIterator.hasNext()) {
-                    FluidStack[] fluids = inventoryIterator.next()
-                        .getFluidInputs();
-                    if (fluids == null || fluids.length == 0) continue;
-
-                    for (int i = 0; i < fluids.length; i++) {
-                        if (fluids[i] != null && fluids[i].amount > 0) {
-                            rList.add(fluids[i]);
-                        }
-                    }
-
-                }
-            }
-        }
-
-        return rList;
-    }
-
     // region Overrides
     @Override
     public String[] getInfoData() {
@@ -603,7 +412,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         ret[origin.length] = EnumChatFormatting.AQUA + texter("Parallels", "MachineInfoData.Parallels")
             + ": "
             + EnumChatFormatting.GOLD
-            + this.getLimitedMaxParallel();
+            + this.getTrueParallel();
         ret[origin.length + 1] = EnumChatFormatting.AQUA + texter("Speed multiplier", "MachineInfoData.SpeedMultiplier")
             + ": "
             + EnumChatFormatting.GOLD
@@ -621,35 +430,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
-    public boolean addEnergyHatchOrExoticEnergyHatchToMachineList(IGregTechTileEntity aTileEntity,
-        int aBaseCasingIndex) {
-        return addEnergyInputToMachineList(aTileEntity, aBaseCasingIndex)
-            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
-    }
-
     public boolean addInputBusOrOutputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         return addInputBusToMachineList(aTileEntity, aBaseCasingIndex)
             || addOutputBusToMachineList(aTileEntity, aBaseCasingIndex);
-    }
-
-    public boolean addInputHatchOrOutputHatchToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return addInputHatchToMachineList(aTileEntity, aBaseCasingIndex)
-            || addOutputHatchToMachineList(aTileEntity, aBaseCasingIndex);
-    }
-
-    public boolean addFluidInputToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) return false;
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (aMetaTileEntity == null) return false;
-        if (aMetaTileEntity instanceof MTEHatchInput) {
-            ((MTEHatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
-            ((MTEHatchInput) aMetaTileEntity).mRecipeMap = getRecipeMap();
-            return mInputHatches.add((MTEHatchInput) aMetaTileEntity);
-        } else if (aMetaTileEntity instanceof MTEHatchMuffler) {
-            ((MTEHatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
-            return mMufflerHatches.add((MTEHatchMuffler) aMetaTileEntity);
-        }
-        return false;
     }
 
     @Override
@@ -709,7 +492,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             return false;
         }
         if (aTileEntity instanceof MTEHatchInput || aTileEntity instanceof MTEHatchInputBus
-            || aTileEntity instanceof MteHatchSteamBusInput) {
+            || aTileEntity instanceof MTEHatchSteamBusInput) {
             if (aTileEntity instanceof MTEHatchInput) {
                 ((MTEHatchInput) aTileEntity).mRecipeMap = null;
                 ((MTEHatchInput) aTileEntity).mRecipeMap = aMap;
@@ -727,8 +510,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                     log("Cleared Input Bus.");
                 }
             } else {
-                ((MteHatchSteamBusInput) aTileEntity).mRecipeMap = null;
-                ((MteHatchSteamBusInput) aTileEntity).mRecipeMap = aMap;
+                ((MTEHatchSteamBusInput) aTileEntity).mRecipeMap = null;
+                ((MTEHatchSteamBusInput) aTileEntity).mRecipeMap = aMap;
                 if (aMap != null) {
                     log("Remapped Input Bus to " + aMap.unlocalizedName + ".");
                 } else {
@@ -812,18 +595,15 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                 return false;
             }
             BlockPos aCurPos = new BlockPos(aCur);
-            boolean aExists = false;
             for (E m : aList) {
                 IGregTechTileEntity b = ((IMetaTileEntity) m).getBaseMetaTileEntity();
                 if (b != null) {
                     BlockPos aPos = new BlockPos(b);
-                    if (aPos != null) {
-                        if (aCurPos.equals(aPos)) {
-                            if (GTplusplus.CURRENT_LOAD_PHASE == GTplusplus.INIT_PHASE.STARTED) {
-                                log("Found Duplicate " + b.getInventoryName() + " at " + aPos.getLocationString());
-                            }
-                            return false;
+                    if (aCurPos.equals(aPos)) {
+                        if (GTplusplus.CURRENT_LOAD_PHASE == GTplusplus.INIT_PHASE.STARTED) {
+                            log("Found Duplicate " + b.getInventoryName() + " at " + aPos.getLocationString());
                         }
+                        return false;
                     }
                 }
             }
@@ -851,38 +631,20 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public boolean addEnergyOutputMultipleDynamos(long aEU, boolean aAllowMixedVoltageDynamos) {
-        int injected = 0;
+        long injected = 0;
         long totalOutput = 0;
         long aFirstVoltageFound = -1;
-        boolean aFoundMixedDynamos = false;
         for (MTEHatchDynamo aDynamo : filterValidMTEs(mDynamoHatches)) {
             long aVoltage = aDynamo.maxEUOutput();
             long aTotal = aDynamo.maxAmperesOut() * aVoltage;
             // Check against voltage to check when hatch mixing
             if (aFirstVoltageFound == -1) {
                 aFirstVoltageFound = aVoltage;
-            } else {
-                if (aFirstVoltageFound != aVoltage) {
-                    aFoundMixedDynamos = true;
-                }
             }
             totalOutput += aTotal;
         }
 
-        /*
-         * disable explosion
-         * if (totalOutput < aEU || (aFoundMixedDynamos && !aAllowMixedVoltageDynamos)) {
-         * explodeMultiblock();
-         * return false;
-         * }
-         */
-
-        long actualOutputEU;
-        if (totalOutput < aEU) {
-            actualOutputEU = totalOutput;
-        } else {
-            actualOutputEU = aEU;
-        }
+        long actualOutputEU = Math.min(totalOutput, aEU);
 
         long leftToInject;
         long aVoltage;
@@ -914,37 +676,16 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return true;
     }
 
-    /**
-     * Gets the maximum Efficiency that spare Part can get (0 - 10000)
-     *
-     * @param aStack
-     */
     @Override
     public int getMaxEfficiency(ItemStack aStack) {
         return 10000;
     }
 
-    /**
-     * Gets the damage to the ItemStack, usually 0 or 1.
-     *
-     * @param aStack
-     */
     @Override
     public int getDamageToComponent(ItemStack aStack) {
         return 0;
     }
 
-    /**
-     * If it explodes when the Component has to be replaced.
-     */
-    @Override
-    public boolean explodesOnComponentBreak(ItemStack aStack) {
-        return false;
-    }
-
-    /**
-     * no longer afraid of rain
-     */
     @Override
     public boolean willExplodeInRain() {
         return false;

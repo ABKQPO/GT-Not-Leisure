@@ -6,8 +6,8 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigmComponent;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 
 public class MeteorRecipeData {
 
@@ -18,17 +18,16 @@ public class MeteorRecipeData {
     public final int cost;
     public final int radius;
 
-    public MeteorRecipeData(MeteorParadigm meteor) {
-        this.input = meteor.focusStack != null ? meteor.focusStack.copy() : null;
+    public MeteorRecipeData(Meteor meteor) {
+        this.input = meteor.focusItem != null ? meteor.focusItem.copy() : null;
         this.cost = meteor.cost;
         this.radius = meteor.radius;
 
         float fillerRatio = meteor.fillerChance / 100.0f;
         float componentRatio = 1.0f - fillerRatio;
 
-        List<MeteorParadigmComponent> componentsCopy = copyComponents(meteor.componentList);
-        List<MeteorParadigmComponent> fillersCopy = meteor.fillerChance > 0 ? copyComponents(meteor.fillerList)
-            : new ArrayList<>();
+        List<MeteorComponent> componentsCopy = copyComponents(meteor.ores);
+        List<MeteorComponent> fillersCopy = meteor.fillerChance > 0 ? copyComponents(meteor.filler) : new ArrayList<>();
 
         float totalComponentWeight = calculateTotalWeight(componentsCopy);
         componentsCopy.sort(Comparator.comparingInt(c -> -c.getWeight()));
@@ -42,28 +41,28 @@ public class MeteorRecipeData {
         }
     }
 
-    private List<MeteorParadigmComponent> copyComponents(List<MeteorParadigmComponent> originals) {
-        List<MeteorParadigmComponent> copies = new ArrayList<>();
-        for (MeteorParadigmComponent comp : originals) {
+    private List<MeteorComponent> copyComponents(List<MeteorComponent> originals) {
+        List<MeteorComponent> copies = new ArrayList<>();
+        for (MeteorComponent comp : originals) {
             copies.add(
-                new MeteorParadigmComponent(
-                    comp.getValidBlockParadigm()
+                new MeteorComponent(
+                    comp.getBlock()
                         .copy(),
                     comp.getWeight()));
         }
         return copies;
     }
 
-    private float calculateTotalWeight(List<MeteorParadigmComponent> components) {
+    private float calculateTotalWeight(List<MeteorComponent> components) {
         return (float) components.stream()
-            .mapToInt(MeteorParadigmComponent::getWeight)
+            .mapToInt(MeteorComponent::getWeight)
             .sum();
     }
 
-    private void processComponents(List<MeteorParadigmComponent> components, float ratio, float totalWeight) {
-        for (MeteorParadigmComponent component : components) {
+    private void processComponents(List<MeteorComponent> components, float ratio, float totalWeight) {
+        for (MeteorComponent component : components) {
             float chance = component.getWeight() / totalWeight * ratio;
-            ItemStack outputStack = component.getValidBlockParadigm()
+            ItemStack outputStack = component.getBlock()
                 .copy();
             outputStack.stackSize = getEstimatedAmount(chance, this.radius);
             outputs.add(outputStack);

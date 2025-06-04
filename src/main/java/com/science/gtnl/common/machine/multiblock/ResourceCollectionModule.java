@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static gregtech.api.GregTechAPI.sBlockCasingsSE;
 import static net.minecraft.item.ItemStack.areItemStacksEqual;
 
 import java.util.Arrays;
@@ -19,11 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.gtnhintergalactic.block.IGBlocks;
-import com.gtnewhorizons.gtnhintergalactic.item.IGItems;
-import com.gtnewhorizons.gtnhintergalactic.item.ItemMiningDrones;
-import com.gtnewhorizons.gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
-import com.gtnewhorizons.gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -37,6 +33,7 @@ import com.science.gtnl.Utils.item.ItemUtils;
 import com.science.gtnl.Utils.recipes.ResourceCollectionModuleTierKey;
 import com.science.gtnl.loader.RecipeRegister;
 
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -52,6 +49,8 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
+import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
+import gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
 import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
 import tectech.thing.metaTileEntity.multi.base.INameFunction;
 import tectech.thing.metaTileEntity.multi.base.IStatusFunction;
@@ -75,30 +74,12 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/space_module";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SM_STRUCTURE_FILE_PATH);
-    public final ItemStack MiningDroneMkVIII = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UV.ordinal());
-    public final ItemStack MiningDroneMkIX = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UHV.ordinal());
-    public final ItemStack MiningDroneMkX = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UEV.ordinal());
-    public final ItemStack MiningDroneMkXI = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UIV.ordinal());
-    public final ItemStack MiningDroneMkXII = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UMV.ordinal());
-    public final ItemStack MiningDroneMkXIII = new ItemStack(
-        IGItems.MiningDrones,
-        16,
-        ItemMiningDrones.DroneTiers.UXV.ordinal());
+    public final ItemStack MiningDroneMkVIII = ItemList.MiningDroneUV.get(16);
+    public final ItemStack MiningDroneMkIX = ItemList.MiningDroneUHV.get(16);
+    public final ItemStack MiningDroneMkX = ItemList.MiningDroneUEV.get(16);
+    public final ItemStack MiningDroneMkXI = ItemList.MiningDroneUIV.get(16);
+    public final ItemStack MiningDroneMkXII = ItemList.MiningDroneUMV.get(16);
+    public final ItemStack MiningDroneMkXIII = ItemList.MiningDroneUXV.get(16);
 
     public ResourceCollectionModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 14, 5, 1);
@@ -176,7 +157,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                         ResourceCollectionModule::addClassicToMachineList,
                         4096,
                         1,
-                        IGBlocks.SpaceElevatorCasing,
+                        sBlockCasingsSE,
                         0))
                 .build();
         }
@@ -201,7 +182,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(
             aPlayer,
@@ -316,7 +298,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                     .setEUtIncreasePerOC(4)
                     .setAmperage(availableAmperage)
                     .setEUtDiscount(1 - (ParallelTier / 50.0))
-                    .setSpeedBoost(1 - (ParallelTier / 200.0));
+                    .setDurationModifier(1 - (ParallelTier / 200.0));
             }
         }.setMaxParallelSupplier(() -> Math.min((int) parallelSetting.get(), getMaxParallelRecipes()));
     }

@@ -29,7 +29,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Sapphire, 1L))
             .itemOutputs(GTModHandler.getModItem(IndustrialCraft2.ID, "itemBatLamaCrystal", 1, 26))
             .specialValue(0)
-            .noOptimize()
             .duration(800)
             .eut(524288)
             .addTo(MTR);
@@ -38,7 +37,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Ruby, 1L))
             .itemOutputs(GTModHandler.getModItem(IndustrialCraft2.ID, "itemBatCrystal", 2, 26))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(524288)
             .addTo(MTR);
@@ -47,7 +45,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTNLItemList.ClayedGlowstone.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Sunnarium, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(524288)
             .addTo(MTR);
@@ -56,7 +53,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.WroughtIron, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Steel, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(80)
             .eut(480)
             .addTo(MTR);
@@ -67,7 +63,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Graphene, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(100)
             .eut(TierEU.RECIPE_IV)
             .addTo(MTR);
@@ -78,7 +73,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 2L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Coal, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(120)
             .addTo(MTR);
@@ -87,7 +81,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.coal, 4))
             .itemOutputs(new ItemStack(Items.diamond, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(120)
             .eut(7680)
             .addTo(MTR);
@@ -96,7 +89,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Calcium, 2L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Bone, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(30)
             .addTo(MTR);
@@ -105,7 +97,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.dye, 6, 15))
             .itemOutputs(new ItemStack(Items.bone, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(40)
             .eut(30)
             .addTo(MTR);
@@ -114,7 +105,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.WroughtIron, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(120)
             .addTo(MTR);
@@ -123,7 +113,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.quartz, 1))
             .itemOutputs(GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(160)
             .eut(120)
             .addTo(MTR);
@@ -132,7 +121,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.coal, 1, 1))
             .itemOutputs(new ItemStack(Items.coal, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(200)
             .eut(120)
             .addTo(MTR);
@@ -141,7 +129,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Coal, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.ActivatedCarbon, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(122880)
             .addTo(MTR);
@@ -150,7 +137,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Steel, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.DamascusSteel, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(20)
             .eut(480)
             .addTo(MTR);
@@ -159,7 +145,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.skull, 2, 1))
             .itemOutputs(new ItemStack(Items.nether_star, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(800)
             .eut(1920)
             .addTo(MTR);
@@ -168,7 +153,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Platinum, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Iridium, 1L))
             .specialValue(0)
-            .noOptimize()
             .duration(400)
             .eut(480)
             .addTo(MTR);
@@ -177,7 +161,6 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.Quartzite, 1L))
             .itemOutputs(GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 1))
             .specialValue(0)
-            .noOptimize()
             .duration(160)
             .eut(120)
             .addTo(MTR);

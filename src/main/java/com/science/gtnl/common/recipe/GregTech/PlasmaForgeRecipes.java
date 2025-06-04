@@ -27,7 +27,6 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 GTModHandler.getModItem("GoodGenerator", "fluidCore", 2, 7))
             .fluidInputs(MaterialPool.ExcitedNaquadahFuel.getFluidOrGas(1000))
             .itemOutputs(GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1))
-            .noOptimize()
             .duration(20)
             .metadata(COIL_HEAT, 13501)
             .eut(31457280)

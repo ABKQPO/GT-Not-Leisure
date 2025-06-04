@@ -193,7 +193,7 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
                     .setRecipeEUt(recipe.mEUt)
                     .setEUt(availableVoltage)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.05, 1.0 / 4.0 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.05, 1.0 / 4.0 - (mParallelTier / 200.0)));
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
@@ -225,7 +225,8 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         this.machineMode = (byte) ((this.machineMode + 1) % 2);
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeArcSmelter_Mode_" + this.machineMode));
     }
@@ -249,7 +250,7 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,

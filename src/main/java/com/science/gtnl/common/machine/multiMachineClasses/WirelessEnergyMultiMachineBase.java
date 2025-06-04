@@ -22,7 +22,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.Utils.enums.GTNLItemList;
-import com.science.gtnl.api.mixinHelper.IOverclockCalculatorExtension;
+import com.science.gtnl.Utils.recipes.GTNL_OverclockCalculator;
+import com.science.gtnl.Utils.recipes.GTNL_ProcessingLogic;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -31,7 +32,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
-import gregtech.api.util.OverclockCalculator;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -129,13 +129,13 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     }
 
     @Override
-    protected void startRecipeProcessing() {
+    public void startRecipeProcessing() {
         isRecipeProcessing = true;
         super.startRecipeProcessing();
     }
 
     @Override
-    protected void endRecipeProcessing() {
+    public void endRecipeProcessing() {
         super.endRecipeProcessing();
         isRecipeProcessing = false;
     }
@@ -147,7 +147,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     protected ProcessingLogic createProcessingLogic() {
-        return new ProcessingLogic() {
+        return new GTNL_ProcessingLogic() {
 
             @NotNull
             @Override
@@ -169,17 +169,12 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
             @Nonnull
             @Override
-            protected OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
-
-                OverclockCalculator calc = super.createOverclockCalculator(recipe)
-                    .setEUtDiscount(0.4 - (mParallelTier / 50.0))
-                    .setSpeedBoost(1.0 / 10.0 * Math.pow(0.75, mParallelTier));
-
-                ((IOverclockCalculatorExtension) calc).setMoreSpeedBoost(configSpeedBoost);
-
-                return calc;
+            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setEUtDiscount(0.4 - (mParallelTier / 50.0))
+                    .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier))
+                    .setExtraDurationModifier(configSpeedBoost);
             }
-        }.setMaxParallelSupplier(this::getLimitedMaxParallel);
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Nonnull

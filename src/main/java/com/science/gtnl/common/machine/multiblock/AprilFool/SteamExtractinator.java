@@ -163,7 +163,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -212,12 +212,13 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
-            // note that a basic steam machine has .setEUtDiscount(2F).setSpeedBoost(2F). So these here are bonuses.
+            // note that a basic steam machine has .setEUtDiscount(2F).setDurationModifier(2F). So these here are
+            // bonuses.
             @Override
             @Nonnull
             protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).limitOverclockCount(Math.min(4, recipeOcCount))
-                    .setSpeedBoost(1f);
+                return super.createOverclockCalculator(recipe).setMaxOverclocks(Math.min(4, recipeOcCount))
+                    .setDurationModifier(1f);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }

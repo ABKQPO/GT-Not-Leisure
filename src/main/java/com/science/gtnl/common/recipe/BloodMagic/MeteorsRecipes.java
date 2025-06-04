@@ -20,18 +20,16 @@ import gregtech.api.util.GTModHandler;
 public class MeteorsRecipes {
 
     public static void registerMeteors() {
-        MeteorRegistry.registerMeteorParadigm(
+        MeteorRegistry.registerMeteor(
             GTNLItemList.StargateTier9.get(1),
             new String[] { "SGCraft:stargateBase:0:10", "SGCraft:stargateRing:0:10", "SGCraft:stargateRing:1:10",
                 "bartworks:bw.werkstoffblocks.01:25201:10", "SGCraft:ocInterface:0:10", "SGCraft:rfPowerUnit:0:10",
                 "gregtech:gt.blockmachines:21113:10", "gregtech:gt.blockmachines:21008:10",
                 "ScienceNotLeisure:MetaCasing:21:10", "ScienceNotLeisure:MetaCasing:22:10", "IC2:blockNuke:0:10" },
             10,
-            Integer.MAX_VALUE,
-            new String[] { "gregtech:gt.blockmetal9:10:5" },
-            5);
+            Integer.MAX_VALUE);
 
-        MeteorRegistry.registerMeteorParadigm(
+        MeteorRegistry.registerMeteor(
             GTModHandler.getModItem(IndustrialCraft2.ID, "blockNuke", 1),
             new String[] { "miscutils:blockMiningExplosives:0:20", "IC2:blockITNT:0:20", "minecraft:tnt:1:15",
                 "HardcoreEnderExpansion:enhanced_tnt:0:15", "BloodArsenal:blood_tnt:0:15",
@@ -39,11 +37,9 @@ public class MeteorsRecipes {
                 "EnderZoo:blockEnderCharge:0:5", "TConstruct:explosive.slime:0:5", "TConstruct:explosive.slime:2:5",
                 "ThaumicHorizons:alchemite:0:15", "IC2:blockNuke:0:10", "minecraft:redstone_block:0:1" },
             100,
-            114514,
-            new String[] {},
-            0);
+            114514);
 
-        MeteorRegistry.registerMeteorParadigm(
+        MeteorRegistry.registerMeteor(
             GTNLItemList.StargateSingularity.get(1),
             generateAndMergeMetalBlocks(
                 new String[] { "minecraft:diamond_block:0:5", "minecraft:emerald_block:0:5", "minecraft:coal_block:0:5",
@@ -88,9 +84,7 @@ public class MeteorsRecipes {
                     "miscutils:blockBlockWatertightSteel:0:5", "miscutils:blockBlockWhiteMetal:0:5",
                     "miscutils:blockBlockZeron100:0:5", "miscutils:blockBlockZirconiumCarbide:0:5" }),
             100,
-            Integer.MAX_VALUE,
-            new String[] {},
-            0);
+            Integer.MAX_VALUE);
     }
 
     private static final Map<String, Boolean> ORE_DICT_CACHE = new HashMap<>();

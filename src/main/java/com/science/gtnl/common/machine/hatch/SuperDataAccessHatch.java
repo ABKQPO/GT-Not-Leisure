@@ -30,11 +30,6 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
         initializeInventory(81);
     }
 
-    public SuperDataAccessHatch(String aName, int aTier, String aDescription, ITexture[][][] aTextures) {
-        super(aName, aTier, aDescription, aTextures);
-        initializeInventory(81);
-    }
-
     public SuperDataAccessHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
         initializeInventory(81);
@@ -42,7 +37,7 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
 
     private void initializeInventory(int size) {
         try {
-            Field mInventoryField = MetaTileEntity.class.getDeclaredField("mInventory");
+            Field mInventoryField = MetaTileEntity.class.getField("mInventory");
             mInventoryField.setAccessible(true);
             mInventory = new ItemStack[size];
             mInventoryField.set(this, mInventory);

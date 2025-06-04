@@ -1,8 +1,6 @@
 package com.science.gtnl.common.recipe.GTNL;
 
 import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
-import static gtPlusPlus.core.item.chemistry.RocketFuels.Monomethylhydrazine_Plus_Nitric_Acid;
-import static gtPlusPlus.core.item.chemistry.RocketFuels.Unsymmetrical_Dimethylhydrazine_Plus_Nitrogen_Tetroxide;
 
 import net.minecraftforge.fluids.FluidStack;
 
@@ -17,9 +15,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.core.item.chemistry.CoalTar;
-import gtPlusPlus.core.item.chemistry.GenericChem;
-import gtPlusPlus.core.item.chemistry.RocketFuels;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.material.nuclear.MaterialsNuclides;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
@@ -40,7 +36,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Toluene.getFluid(4000),
                 Materials.Octane.getFluid(3000))
             .fluidOutputs(Materials.GasolinePremium.getFluid(50000))
-            .noOptimize()
             .duration(1200)
             .metadata(COIL_HEAT, 6800)
             .eut(TierEU.RECIPE_IV)
@@ -50,9 +45,8 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 64L))
-            .fluidInputs(new FluidStack(CoalTar.Coal_Gas, 80000), Materials.Oxygen.getGas(10000))
-            .fluidOutputs(FluidUtils.getFluidStack(RocketFuels.RP1_Plus_Liquid_Oxygen, 4000))
-            .noOptimize()
+            .fluidInputs(new FluidStack(GTPPFluids.CoalGas, 80000), Materials.Oxygen.getGas(10000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RP1RocketFuel, 4000))
             .duration(1200)
             .metadata(COIL_HEAT, 6300)
             .eut(TierEU.RECIPE_IV)
@@ -66,9 +60,8 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(12000),
                 Materials.Oxygen.getGas(8000),
                 Materials.Nitrogen.getGas(10000),
-                new FluidStack(GenericChem.Hydrogen_Peroxide, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(RocketFuels.Dense_Hydrazine_Mix, 4000))
-            .noOptimize()
+                new FluidStack(GTPPFluids.HydrogenPeroxide, 4000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.DenseHydrazineFuelMixture, 4000))
             .duration(800)
             .metadata(COIL_HEAT, 7400)
             .eut(TierEU.RECIPE_EV)
@@ -83,7 +76,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(2000),
                 Materials.NitrationMixture.getFluid(4000))
             .fluidOutputs(Materials.NitroFuel.getFluid(18000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 4800)
             .eut(TierEU.RECIPE_EV)
@@ -97,7 +89,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.BioDiesel.getFluid(16000),
                 Materials.NitrationMixture.getFluid(4000))
             .fluidOutputs(Materials.NitroFuel.getFluid(14000))
-            .noOptimize()
             .duration(600)
             .metadata(COIL_HEAT, 3600)
             .eut(TierEU.RECIPE_EV)
@@ -111,7 +102,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(18000),
                 Materials.Oxygen.getGas(2000))
             .fluidOutputs(Materials.GasolineRegular.getFluid(22000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 3200)
             .eut(TierEU.RECIPE_HV)
@@ -125,7 +115,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(16000),
                 Materials.Oxygen.getGas(3000))
             .fluidOutputs(GGMaterial.ethanolGasoline.getFluidOrGas(20000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 3200)
             .eut(TierEU.RECIPE_HV)
@@ -139,9 +128,8 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(14000),
                 Materials.Nitrogen.getGas(6000),
                 Materials.NitricAcid.getFluid(3000),
-                new FluidStack(GenericChem.Hydrogen_Peroxide, 2000))
-            .fluidOutputs(FluidUtils.getFluidStack(Monomethylhydrazine_Plus_Nitric_Acid, 4000))
-            .noOptimize()
+                new FluidStack(GTPPFluids.HydrogenPeroxide, 2000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.CN3H7O3RocketFuel, 4000))
             .duration(1200)
             .metadata(COIL_HEAT, 8100)
             .eut(TierEU.RECIPE_IV)
@@ -156,9 +144,8 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Nitrogen.getGas(7000),
                 Materials.NitricAcid.getFluid(3000),
                 Materials.Oxygen.getGas(1000),
-                new FluidStack(GenericChem.Hydrogen_Peroxide, 2000))
-            .fluidOutputs(FluidUtils.getFluidStack(Unsymmetrical_Dimethylhydrazine_Plus_Nitrogen_Tetroxide, 5000))
-            .noOptimize()
+                new FluidStack(GTPPFluids.HydrogenPeroxide, 2000))
+            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.H8N4C2O4RocketFuel, 5000))
             .duration(1200)
             .metadata(COIL_HEAT, 9000)
             .eut(TierEU.RECIPE_IV)
@@ -171,7 +158,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Draconium.getMolten(288),
                 Materials.Mercury.getFluid(1000))
             .fluidOutputs(GGMaterial.thoriumBasedLiquidFuel.getFluidOrGas(4000))
-            .noOptimize()
             .duration(1200)
             .metadata(COIL_HEAT, 8500)
             .eut(TierEU.RECIPE_IV)
@@ -184,7 +170,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Quantium.getMolten(576),
                 Materials.Radon.getGas(1000))
             .fluidOutputs(GGMaterial.uraniumBasedLiquidFuel.getFluidOrGas(1000))
-            .noOptimize()
             .duration(800)
             .metadata(COIL_HEAT, 9200)
             .eut(TierEU.RECIPE_IV)
@@ -197,7 +182,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Caesium.getMolten(2304),
                 Materials.Naquadah.getMolten(288))
             .fluidOutputs(GGMaterial.plutoniumBasedLiquidFuel.getFluidOrGas(1000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 9900)
             .eut(TierEU.RECIPE_LuV)
@@ -215,7 +199,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(40000),
                 Materials.Oxygen.getGas(17000))
             .fluidOutputs(GGMaterial.ironedFuel.getFluidOrGas(50000))
-            .noOptimize()
             .duration(600)
             .metadata(COIL_HEAT, 8200)
             .eut(TierEU.RECIPE_IV)
@@ -226,14 +209,13 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 4L),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 40L))
             .fluidInputs(
-                new FluidStack(RocketFuels.Kerosene, 40000),
+                new FluidStack(GTPPFluids.Kerosene, 40000),
                 Materials.Naphtha.getFluid(3000),
                 Materials.Gas.getGas(40000),
                 Materials.Nitrogen.getGas(1000),
                 Materials.Hydrogen.getGas(59000),
                 Materials.Oxygen.getGas(12000))
             .fluidOutputs(GGMaterial.ironedKerosene.getFluidOrGas(44000))
-            .noOptimize()
             .duration(600)
             .metadata(COIL_HEAT, 4800)
             .eut(TierEU.RECIPE_EV)
@@ -248,7 +230,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Lithium.getMolten(1008),
                 Materials.Beryllium.getMolten(144))
             .fluidOutputs(MaterialsNuclides.LiFBeF2UF4.getFluidStack(1000))
-            .noOptimize()
             .duration(200)
             .metadata(COIL_HEAT, 5800)
             .eut(TierEU.RECIPE_EV)
@@ -264,7 +245,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Lithium.getMolten(1008),
                 Materials.Beryllium.getMolten(144))
             .fluidOutputs(MaterialsNuclides.LiFBeF2ZrF4U235.getFluidStack(1000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 6100)
             .eut(TierEU.RECIPE_EV)
@@ -280,7 +260,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Lithium.getMolten(1008),
                 Materials.Beryllium.getMolten(144))
             .fluidOutputs(MaterialsNuclides.LiFBeF2ZrF4UF4.getFluidStack(1000))
-            .noOptimize()
             .duration(200)
             .metadata(COIL_HEAT, 6400)
             .eut(TierEU.RECIPE_IV)
@@ -296,7 +275,6 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
                 Materials.Lithium.getMolten(1008),
                 Materials.Beryllium.getMolten(144))
             .fluidOutputs(MaterialsNuclides.LiFBeF2ThF4UF4.getFluidStack(1000))
-            .noOptimize()
             .duration(400)
             .metadata(COIL_HEAT, 6700)
             .eut(TierEU.RECIPE_IV)

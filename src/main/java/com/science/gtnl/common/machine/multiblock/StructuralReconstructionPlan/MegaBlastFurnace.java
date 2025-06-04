@@ -175,7 +175,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ) {
+        float aX, float aY, float aZ, ItemStack aTool) {
         if (!aPlayer.isSneaking()) {
             this.inputSeparation = !this.inputSeparation;
             GTUtility.sendChatToPlayer(
@@ -242,7 +242,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
                     .setHeatOC(true)
                     .setHeatDiscount(true)
                     .setEUtDiscount(0.8 - (mParallelTier / 50.0))
-                    .setSpeedBoost(Math.max(0.005, 1.0 / 5.0 - (mParallelTier / 200.0)));
+                    .setDurationModifier(Math.max(0.005, 1.0 / 5.0 - (mParallelTier / 200.0)));
             }
 
             @Override
@@ -278,7 +278,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
         this.setCoilLevel(HeatingCoilLevel.None);
-        return survivialBuildPiece(
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
