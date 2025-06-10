@@ -35,7 +35,7 @@ public class SpaceDrillRecipes implements IRecipePool {
         int minerTier, int duration, long eut) {
         GTValues.RA.stdBuilder()
             .itemInputs(
-                (circuit <= 24) ? GTUtility.getIntegratedCircuit(circuit)
+                (circuit < 25) ? GTUtility.getIntegratedCircuit(circuit)
                     : ItemUtils.getIntegratedCircuitPlus(circuit - 25),
                 GTUtility.copyAmountUnsafe(0, drone))
             .fluidInputs(fuel)

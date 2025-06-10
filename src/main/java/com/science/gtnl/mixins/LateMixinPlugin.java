@@ -30,6 +30,8 @@ public class LateMixinPlugin implements ILateMixinLoader {
         mixins.add("Gregtech.MTEDigitalTankBase_Mixin");
         mixins.add("Gregtech.MTEHatchAccessor");
         mixins.add("Gregtech.BaseMetaTileEntity_Mixin");
+        // mixins.add("Gregtech.EyeOfHarmonyRecipeAccessor");
+        // mixins.add("Gregtech.EyeOfHarmonyRecipeStorage_Mixin");
 
         if (!Mods.Overpowered.isModLoaded() && MainConfig.enableRecipeOutputChance) {
             mixins.add("Gregtech.VoltageChanceBonus_GT_ParallelHelper_Mixin");
