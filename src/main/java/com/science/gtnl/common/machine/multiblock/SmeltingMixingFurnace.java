@@ -214,9 +214,6 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         wirelessMode = false;
         hasRequiredItem = false;
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) return false;
-        if (this.tCountCasing <= 15) {
-            return false;
-        }
 
         ItemStack requiredItem = ItemList.Transdimensional_Alignment_Matrix.get(1);
         for (ItemStack item : getAllStoredInputs()) {
@@ -228,7 +225,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
         energyHatchTier = checkEnergyHatchTier();
         wirelessMode = mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty();
-        return true;
+        return tCountCasing > 10;
     }
 
     @Override
