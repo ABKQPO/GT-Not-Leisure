@@ -7,9 +7,9 @@ on:
   schedule:
     - cron:  '00 0 * * *'
   pull_request:
-    branches: [ master, main, v2.7.2 ]
+    branches: [ master, dev, dev-280 ]
   push:
-    branches: [ master, main, v2.7.2 ]
+    branches: [ master, dev, dev-280 ]
 
 jobs:
   build-and-test:
