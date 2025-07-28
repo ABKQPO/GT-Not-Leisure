@@ -4,7 +4,6 @@ import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.addItemToolti
 import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.text;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import com.science.gtnl.common.item.ItemInfinityCell;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
@@ -14,6 +13,7 @@ import com.science.gtnl.Utils.enums.GTNLItemList;
 import com.science.gtnl.Utils.text.AnimatedText;
 import com.science.gtnl.Utils.text.TextUtils;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemRecord;
 import com.science.gtnl.common.item.MetaItemAdder;
 import com.science.gtnl.common.item.items.Bauble.LuckyHorseshoe;
@@ -62,7 +62,7 @@ public class ItemLoader {
     public static Item metaItem;
     public static ItemBucket honeyBucket;
     public static ItemBucket shimmerBucket;
-    public static ItemInfinityCell infinityCell;
+    public static ItemInfinityCell infinityDyeCell;
 
     public static Item satietyRing;
     public static Item rejectionRing;
@@ -116,7 +116,12 @@ public class ItemLoader {
         physicsCape = new PhysicsCape();
         royalGel = new RoyalGel();
         luckyHorseshoe = new LuckyHorseshoe();
-        infinityCell = new ItemInfinityCell();
+
+        ItemInfinityCell.SubItem[] dyeCellItem = new ItemInfinityCell.SubItem[16];
+        for (int i = 0; i < 16; i++) {
+            dyeCellItem[i] = ItemInfinityCell.SubItem.getInstance("gregtech:gt.metaitem.02", (short) (32414 + i));
+        }
+        infinityDyeCell = new ItemInfinityCell("InfinityDyeCell", dyeCellItem);
 
         GameRegistry.registerItem(steamRocket, "SteamRocket");
         GameRegistry.registerItem(fakeItemSiren, "FakeItemSiren");
@@ -144,7 +149,7 @@ public class ItemLoader {
         GameRegistry.registerItem(royalGel, "RoyalGel");
         GameRegistry.registerItem(physicsCape, "PhysicsCape");
         GameRegistry.registerItem(luckyHorseshoe, "LuckyHorseshoe");
-        GameRegistry.registerItem(infinityCell, "InfinityCell");
+        GameRegistry.registerItem(infinityDyeCell, "InfinityDyeCell");
 
         GTNLItemList.RecordSus.set(new ItemStack(RecordLoader.recordSus, 1));
         GTNLItemList.RecordNewHorizons.set(new ItemStack(RecordLoader.recordNewHorizons, 1));
