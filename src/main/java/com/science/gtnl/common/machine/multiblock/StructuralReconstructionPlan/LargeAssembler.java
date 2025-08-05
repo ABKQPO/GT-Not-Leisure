@@ -167,7 +167,12 @@ public class LargeAssembler extends GTMMultiMachineBase<LargeAssembler> implemen
 
         energyHatchTier = checkEnergyHatchTier();
         for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
-            if (mGlassTier < VoltageIndex.UEV & mEnergyHatch.mTier > mGlassTier) {
+            if (mGlassTier < VoltageIndex.UHV & mEnergyHatch.mTier > mGlassTier) {
+                return false;
+            }
+        }
+        for (MTEHatch mExoticEnergyHatch : this.mExoticEnergyHatches) {
+            if (mGlassTier < VoltageIndex.UHV && mExoticEnergyHatch.mTier > mGlassTier) {
                 return false;
             }
         }

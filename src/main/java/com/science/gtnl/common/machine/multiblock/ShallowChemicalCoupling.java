@@ -254,13 +254,13 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
         energyHatchTier = checkEnergyHatchTier();
 
         for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
-            if (mGlassTier < VoltageIndex.UEV & mEnergyHatch.mTier > mGlassTier) {
+            if (mGlassTier < VoltageIndex.UHV & mEnergyHatch.mTier > mGlassTier) {
                 return false;
             }
         }
 
         for (MTEHatch mExoEnergyHatch : this.mExoticEnergyHatches) {
-            if (mGlassTier < VoltageIndex.UEV & mExoEnergyHatch.mTier > mGlassTier) {
+            if (mGlassTier < VoltageIndex.UHV & mExoEnergyHatch.mTier > mGlassTier) {
                 return false;
             }
         }

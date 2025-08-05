@@ -27,12 +27,10 @@ import com.science.gtnl.loader.BlockLoader;
 import bartworks.API.BorosilicateGlass;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
-import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -109,7 +107,6 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
             .addInfo(StatCollector.translateToLocal("Tooltip_HandOfJohnDavisonRockefeller_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HandOfJohnDavisonRockefeller_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HandOfJohnDavisonRockefeller_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HandOfJohnDavisonRockefeller_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
@@ -197,13 +194,7 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
             return false;
         }
 
-        for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
-            mSpeedCount = mGlassTier + GTUtility.getTier(this.getMaxInputVoltage());
-
-            if (mGlassTier < VoltageIndex.UEV & mEnergyHatch.mTier > mGlassTier - 1) {
-                return false;
-            }
-        }
+        mSpeedCount = mGlassTier + GTUtility.getTier(this.getMaxInputVoltage());
         energyHatchTier = checkEnergyHatchTier();
         wirelessMode = mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty();
         return tCountCasing >= 80;

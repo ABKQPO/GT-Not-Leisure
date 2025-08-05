@@ -181,6 +181,11 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
                 return false;
             }
         }
+        for (MTEHatch mExoticEnergyHatch : this.mExoticEnergyHatches) {
+            if (mGlassTier < VoltageIndex.UHV && mExoticEnergyHatch.mTier > mGlassTier) {
+                return false;
+            }
+        }
 
         if (MainConfig.enableMachineAmpLimit) {
             for (MTEHatch hatch : getExoticEnergyHatches()) {

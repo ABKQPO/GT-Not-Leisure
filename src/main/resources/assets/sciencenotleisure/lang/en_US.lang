@@ -1827,10 +1827,9 @@ NameHandOfJohnDavisonRockefeller=Hand of John Davison Rockefeller
 HandOfJohnDavisonRockefellerRecipeType=Chemical Plant
 Tooltip_HandOfJohnDavisonRockefeller_00=§8§oA mysterious machine from the ExxonMobil Central Curve.
 Tooltip_HandOfJohnDavisonRockefeller_01=§8§oUnfortunately, it's fracturing the Central Finite Curve.
-Tooltip_HandOfJohnDavisonRockefeller_02=Glass tier - 1 limits Energy Hatch tier, UMV glass unlocks all tiers.
-Tooltip_HandOfJohnDavisonRockefeller_03=EU consumption multiplied by 95% per glass or voltage tier increase.
-Tooltip_HandOfJohnDavisonRockefeller_04=Speed increases by 2.5% per glass or voltage tier increase
-Tooltip_HandOfJohnDavisonRockefeller_05=Ignores recipe tier requirements!
+Tooltip_HandOfJohnDavisonRockefeller_02=EU consumption multiplied by 95% per glass or voltage tier increase.
+Tooltip_HandOfJohnDavisonRockefeller_03=Speed increases by 2.5% per glass or voltage tier increase
+Tooltip_HandOfJohnDavisonRockefeller_04=Ignores recipe tier requirements!
 Tooltip_HandOfJohnDavisonRockefeller_Casing=Any Pressure Suppression Machine Block
 
 NameBrickedBlastFurnace=Bricked Blast Furnace

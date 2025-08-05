@@ -1827,10 +1827,9 @@ NameHandOfJohnDavisonRockefeller=洛克菲勒之手
 HandOfJohnDavisonRockefellerRecipeType=化工厂
 Tooltip_HandOfJohnDavisonRockefeller_00=§8§o来自埃克森美孚中央曲线的神秘机器。
 Tooltip_HandOfJohnDavisonRockefeller_01=§8§o不幸的是, 它在压裂中央有限曲线。
-Tooltip_HandOfJohnDavisonRockefeller_02=玻璃等级 - 1 限制了能源仓等级, UMV玻璃解锁所有等级
-Tooltip_HandOfJohnDavisonRockefeller_03=每增加一级玻璃或电压等级, EU消耗乘以95%
-Tooltip_HandOfJohnDavisonRockefeller_04=每增加一级玻璃或电压等级, 速度加快2.5%
-Tooltip_HandOfJohnDavisonRockefeller_05=无视配方要求的等级!
+Tooltip_HandOfJohnDavisonRockefeller_02=每增加一级玻璃或电压等级, EU消耗乘以95%
+Tooltip_HandOfJohnDavisonRockefeller_03=每增加一级玻璃或电压等级, 速度加快2.5%
+Tooltip_HandOfJohnDavisonRockefeller_04=无视配方要求的等级!
 Tooltip_HandOfJohnDavisonRockefeller_Casing=任意压力抑制机械方块
 
 NameBrickedBlastFurnace=砖高炉
@@ -2218,7 +2217,7 @@ Tooltip_ComponentAssembler_00=批量组装基础部件(马达,泵)等
 Tooltip_ComponentAssembler_01=§e部件装配线外壳§r等级最高为UV
 Tooltip_ComponentAssembler_02=支持升压和超频
 Tooltip_ComponentAssembler_03=最多安装2个能源仓! 
-Tooltip_ComponentAssembler_04=玻璃等级限制了能源仓等级, UMV玻璃解锁所有等级
+Tooltip_ComponentAssembler_04=玻璃等级限制了能源仓等级, UV玻璃解锁所有等级
 Tooltip_ComponentAssembler_05=§o效率碾压其他组装机/装配线! 
 Tooltip_ComponentAssembler_Casing=任意脱氧钢机械方块
 
@@ -2664,7 +2663,7 @@ gtnl.recipe.ShallowChemicalCouplingRecipes=浅层化学耦合
 Tooltip_ShallowChemicalCoupling_00=§7§o基于分子层面操控的化学反应设备
 Tooltip_ShallowChemicalCoupling_01=§7§o通过直接操控分子化学键来避免繁杂的多步化学反应
 Tooltip_ShallowChemicalCoupling_02=线圈等级每提高一级, 配方时间和耗电乘以85%
-Tooltip_ShallowChemicalCoupling_03=玻璃等级限制了能源仓等级, UEV玻璃解锁所有等级
+Tooltip_ShallowChemicalCoupling_03=玻璃等级限制了能源仓等级, UHV玻璃解锁所有等级
 Tooltip_ShallowChemicalCoupling_Casing_00=任意化学防护机械方块
 
 NameAdvancedCircuitAssemblyLine=进阶电路装配线
