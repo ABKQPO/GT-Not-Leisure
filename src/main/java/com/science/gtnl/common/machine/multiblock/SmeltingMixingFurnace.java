@@ -210,7 +210,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        this.tCountCasing = 0;
+        this.tCountCasing = -1;
         wirelessMode = false;
         hasRequiredItem = false;
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) return false;
