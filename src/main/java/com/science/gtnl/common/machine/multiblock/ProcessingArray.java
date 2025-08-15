@@ -94,11 +94,11 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public int getMaxParallelRecipes() {
-        if (getControllerSlot() == null) {
+        if (getControllerSlot() == null && getControllerSlot().getItem() == new ItemStack(sBlockMachines).getItem()) {
             return 0;
         }
         return getControllerSlot().stackSize * 2 + GTUtility.getTier(this.getMaxInputVoltage()) * 4
-            + getCoilLevel().getTier() * 4;
+            + mHeatingCapacity.getTier() * 4;
     }
 
     @Override
@@ -285,8 +285,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     public void setTierAndMult() {
         IMetaTileEntity aMachine = ItemMachines.getMetaTileEntity(getControllerSlot());
-        if (aMachine instanceof MTETieredMachineBlock) {
-            tTier = ((MTETieredMachineBlock) aMachine).mTier;
+        if (aMachine instanceof MTETieredMachineBlock tierMachine) {
+            tTier = tierMachine.mTier;
         } else {
             tTier = 0;
         }
@@ -359,11 +359,13 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
+        aNBT.setByte("coilTier", this.mHeatingCapacity.getTier());
     }
 
     @Override
     public void loadNBTData(final NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        mHeatingCapacity = HeatingCoilLevel.getFromTier(aNBT.getByte("coilTier"));
         if (aNBT.hasKey("mSeparate")) {
             // backward compatibility
             inputSeparation = aNBT.getBoolean("mSeparate");
@@ -397,6 +399,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         }
 
         setTierAndMult();
+
+        if (mEnergyHatches.isEmpty() || mExoticEnergyHatches.isEmpty()) return false;
 
         if (GTUtility.getTier(this.getMaxInputVoltage()) > tTier + 4) {
             return false;
