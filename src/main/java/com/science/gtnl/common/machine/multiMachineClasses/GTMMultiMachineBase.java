@@ -168,7 +168,7 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
 
     @Override
     public long getMaxInputAmps() {
-        return getMaxInputAmpsHatch(getExoticAndNormalEnergyHatchList());
+        return getMaxWorkingInputAmps(getExoticAndNormalEnergyHatchList());
     }
 
     public static long getMaxInputAmpsHatch(Collection<? extends MTEHatch> hatches) {
@@ -176,6 +176,20 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
         for (MTEHatch tHatch : validMTEList(hatches)) {
             long currentAmp = tHatch.getBaseMetaTileEntity()
                 .getInputAmperage();
+            ampsList.add(currentAmp);
+        }
+
+        if (ampsList.isEmpty()) {
+            return 0L;
+        }
+
+        return Collections.max(ampsList);
+    }
+
+    public static long getMaxWorkingInputAmps(Collection<? extends MTEHatch> hatches) {
+        List<Long> ampsList = new ArrayList<>();
+        for (MTEHatch tHatch : validMTEList(hatches)) {
+            long currentAmp = tHatch.maxWorkingAmperesIn();
             ampsList.add(currentAmp);
         }
 

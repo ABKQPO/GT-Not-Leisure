@@ -186,6 +186,11 @@ public class LargeCircuitAssembler extends GTMMultiMachineBase<LargeCircuitAssem
                 return false;
             }
         }
+        for (MTEHatch mExoticEnergyHatch : this.mExoticEnergyHatches) {
+            if (mGlassTier < VoltageIndex.UV && mExoticEnergyHatch.mTier > mGlassTier) {
+                return false;
+            }
+        }
 
         if (MainConfig.enableMachineAmpLimit) {
             for (MTEHatch hatch : getExoticEnergyHatches()) {

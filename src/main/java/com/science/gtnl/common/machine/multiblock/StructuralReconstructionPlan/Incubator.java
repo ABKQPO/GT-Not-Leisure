@@ -333,6 +333,11 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                 return false;
             }
         }
+        for (MTEHatch mExoticEnergyHatch : this.mExoticEnergyHatches) {
+            if (mGlassTier < VoltageIndex.UHV && mExoticEnergyHatch.mTier > mGlassTier) {
+                return false;
+            }
+        }
 
         if (MainConfig.enableMachineAmpLimit) {
             for (MTEHatch hatch : getExoticEnergyHatches()) {
