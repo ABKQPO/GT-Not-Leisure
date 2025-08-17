@@ -5,6 +5,7 @@ import static com.science.gtnl.loader.IScriptLoader.missing;
 import static goodgenerator.loader.Loaders.huiCircuit;
 import static gregtech.api.enums.Mods.*;
 
+import gregtech.common.redstonecircuits.CircuitRedstoneMeter;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -2207,5 +2208,18 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(20)
             .eut(TierEU.RECIPE_MAX)
             .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.OilCracker.get(64),
+                GTOreDictUnificator.get(OrePrefixes.circuit,Materials.UEV,12),
+                new ItemStack(GregTechAPI.sBlockCasings5, 32, 11))
+            .fluidInputs(Materials.RadoxHeavy.getFluid(1000))
+            .itemOutputs(GTNLItemList.CrackerHub.get(1))
+            .duration(1200)
+            .eut(TierEU.RECIPE_UHV)
+            .addTo(As);
+
+
     }
 }
