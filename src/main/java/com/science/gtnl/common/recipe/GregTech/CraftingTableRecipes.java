@@ -5,15 +5,8 @@ import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTModHandler.addCraftingRecipe;
 import static gregtech.api.util.GTModHandler.addShapelessCraftingRecipe;
 
-import com.dreammaster.oredict.OreDictTypes;
-import com.science.gtnl.common.materials.MaterialPool;
-import gregtech.api.GregTechAPI;
-import gregtech.api.enums.*;
-import journeymap.client.forge.helper.ForgeHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemEnderPearl;
 import net.minecraft.item.ItemStack;
 
 import com.dreammaster.gthandler.CustomItemList;
@@ -21,6 +14,11 @@ import com.science.gtnl.Utils.enums.GTNLItemList;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.IRecipePool;
 
+import gregtech.api.enums.ItemList;
+import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsBotania;
+import gregtech.api.enums.MaterialsUEVplus;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
@@ -28,7 +26,6 @@ import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
-import net.minecraft.util.WeightedRandom;
 
 public class CraftingTableRecipes implements IRecipePool {
 
@@ -557,37 +554,38 @@ public class CraftingTableRecipes implements IRecipePool {
 
         addCraftingRecipe(
             GTNLItemList.SteamElevator.get(1),
-            new Object[]{"ABA","CDC","EFE",'A',GTNLItemList.PrecisionSteamMechanism.get(1),'B', ItemList.Casing_BronzePlatedBricks.get(1),
-                'C',new ItemStack(Blocks.brick_block, 1),'D',GTNLItemList.SteamCompactPipeCasing.get(1),
-                'E', ItemList.Casing_SolidSteel.get(1),'F',new ItemStack(Blocks.stonebrick,1)});
-
+            new Object[] { "ABA", "CDC", "EFE", 'A', GTNLItemList.PrecisionSteamMechanism.get(1), 'B',
+                ItemList.Casing_BronzePlatedBricks.get(1), 'C', new ItemStack(Blocks.brick_block, 1), 'D',
+                GTNLItemList.SteamCompactPipeCasing.get(1), 'E', ItemList.Casing_SolidSteel.get(1), 'F',
+                new ItemStack(Blocks.stonebrick, 1) });
 
         addCraftingRecipe(
             GTNLItemList.SteamBeaconModuleI.get(1),
-            bitsd,
-            new Object[]{"ABA","CDC","EEE",'A',GTNLItemList.PrecisionSteamMechanism.get(1),'B', GTNLItemList.HydraulicSteamReceiver.get(1),
-                'C',GTOreDictUnificator.get(OrePrefixes.pipeHuge, Materials.Steel, 1),'D',new ItemStack(Items.brewing_stand,1),
-                'E',ItemList.Casing_SolidSteel.get(1)});
+            new Object[] { "ABA", "CDC", "EEE", 'A', GTNLItemList.PrecisionSteamMechanism.get(1), 'B',
+                GTNLItemList.HydraulicSteamReceiver.get(1), 'C',
+                GTOreDictUnificator.get(OrePrefixes.pipeHuge, Materials.Steel, 1), 'D',
+                new ItemStack(Items.brewing_stand, 1), 'E', ItemList.Casing_SolidSteel.get(1) });
 
         addCraftingRecipe(
             GTNLItemList.SteamBeaconModuleII.get(1),
-            new Object[]{"ABA","CDC","EFE",'A',GTNLItemList.PrecisionSteamMechanism.get(1),'B', ItemList.Sensor_LV.get(1),
-                'C',GTOreDictUnificator.get(OrePrefixes.pipeHuge, Materials.Steel,1),'D',GTNLItemList.SteamBeaconModuleI.get(1),
-                'E',GTNLItemList.SteamCompactPipeCasing.get(1),'F',ItemList.Casing_SolidSteel.get(1)});
+            new Object[] { "ABA", "CDC", "EFE", 'A', GTNLItemList.PrecisionSteamMechanism.get(1), 'B',
+                ItemList.Sensor_LV.get(1), 'C', GTOreDictUnificator.get(OrePrefixes.pipeHuge, Materials.Steel, 1), 'D',
+                GTNLItemList.SteamBeaconModuleI.get(1), 'E', GTNLItemList.SteamCompactPipeCasing.get(1), 'F',
+                ItemList.Casing_SolidSteel.get(1) });
 
         addCraftingRecipe(
             GTNLItemList.SteamFlightModule.get(1),
-            bitsd,
-            new Object[]{"ABA","CDC","EFE",'A',new ItemStack(Items.ender_pearl),'B',GTModHandler.getModItem(Thaumcraft.ID,"ItemBaubleBlanks",1,1),
-                'C',GTNLItemList.HydraulicVaporGenerator,'D',GTNLItemList.SteamBeaconModuleI.get(1),
-                'E',GTNLItemList.HydraulicPump.get(1),'F',new ItemStack(Items.feather,1)});
+            new Object[] { "ABA", "CDC", "EFE", 'A', new ItemStack(Items.ender_pearl), 'B',
+                GTModHandler.getModItem(Thaumcraft.ID, "ItemBaubleBlanks", 1, 1), 'C',
+                GTNLItemList.HydraulicVaporGenerator, 'D', GTNLItemList.SteamBeaconModuleI.get(1), 'E',
+                GTNLItemList.HydraulicPump.get(1), 'F', new ItemStack(Items.feather, 1) });
 
         addCraftingRecipe(
             GTNLItemList.SteamWeatherModule.get(1),
-            bitsd,
-            new Object[]{"ABA","CDC","EFE",'A',new ItemStack(Items.water_bucket,1),'B',GTNLItemList.HydraulicSteamJetSpewer.get(1),
-                'C',new ItemStack(Blocks.yellow_flower),'D',ItemList.Casing_SolidSteel.get(1),
-                'E',new ItemStack(Items.gunpowder,1),'F',new ItemStack(Items.snowball,1)});
+            new Object[] { "ABA", "CDC", "EFE", 'A', new ItemStack(Items.water_bucket, 1), 'B',
+                GTNLItemList.HydraulicSteamJetSpewer.get(1), 'C', new ItemStack(Blocks.yellow_flower), 'D',
+                ItemList.Casing_SolidSteel.get(1), 'E', new ItemStack(Items.gunpowder, 1), 'F',
+                new ItemStack(Items.snowball, 1) });
 
         if (MainConfig.enableSomethingRecipe) {
             addCraftingRecipe(

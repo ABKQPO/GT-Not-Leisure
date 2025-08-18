@@ -261,4 +261,17 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     public String getMachineModeName() {
         return StatCollector.translateToLocal("IndustrialArcaneAssembler_Mode_" + machineMode);
     }
+
+    @Override
+    public void checkMaintenance() {}
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
+    }
 }
