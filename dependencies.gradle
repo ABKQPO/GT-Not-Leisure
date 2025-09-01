@@ -35,4 +35,5 @@ configurations.all {
     exclude group: 'com.github.GTNewHorizons', module: 'CodeChickenLib'
     exclude group: 'com.github.GTNewHorizons', module: 'Hodgepodge'
     exclude group: 'com.github.GTNewHorizons', module: 'Baubles'
+    exclude group: 'net.glease', module: 'tc4recipelib'
 }
