@@ -2216,5 +2216,28 @@ public class ScriptAvaritia implements IScriptLoader {
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.VibrantAlloy, 1),
                 '9',
                 new ItemStack(Items.dye, 1, 14));
+
+        ExtremeCraftingManager.getInstance()
+            .addExtremeShapedOreRecipe(
+                ReAvaItemList.ExtremeAnvil.get(1),
+                "AAAAAAAAA",
+                "ABBBBBBBA",
+                "--BCCCB--",
+                "--CDDDC--",
+                "--CDEDC--",
+                "--CDDDC--",
+                "-ABCCCBA-",
+                "-ABBBBBA-",
+                "-AAAAAAA-",
+                "A",
+                GTModHandler.getModItem(Avaritia.ID, "Resource_Block", 1),
+                "B",
+                GTModHandler.getModItem(Avaritia.ID, "Crystal_Matrix", 1),
+                "C",
+                new ItemStack(Blocks.anvil, 1),
+                "D",
+                GTNLItemList.BlazeCubeBlock.get(1),
+                "E",
+                GTNLItemList.EnhancementCore.get(1));
     }
 }

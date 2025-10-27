@@ -54,33 +54,6 @@ public class AssemblerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        String[] lampTypes = { "Lamp", "LampBorderless", "LampOff", "LampOffBorderless" };
-
-        String[] colors = { "Black", "Pink", "Red", "Orange", "Yellow", "Green", "Lime", "Blue", "LightBlue", "Cyan",
-            "Brown", "Magenta", "Purple", "Gray", "LightGray", "White" };
-
-        for (String color : colors) {
-            String fluidName = "dye.chemical.dye" + color.toLowerCase();
-
-            for (int i = 0; i < lampTypes.length; i++) {
-                String lampType = lampTypes[i];
-                int circuitConfig = i + 1;
-
-                GTValues.RA.stdBuilder()
-                    .itemInputs(
-                        GTOreDictUnificator.get(OrePrefixes.plate, Materials.Glass, 6L),
-                        new ItemStack(Items.glowstone_dust, 1),
-                        GTUtility.getIntegratedCircuit(circuitConfig))
-                    .itemOutputs(
-                        GTNLItemList.valueOf(color + lampType)
-                            .get(1))
-                    .fluidInputs(FluidRegistry.getFluidStack(fluidName, 144))
-                    .specialValue(0)
-                    .duration(40)
-                    .eut(TierEU.RECIPE_LV)
-                    .addTo(As);
-            }
-        }
 
         GTValues.RA.stdBuilder()
             .itemInputs(
@@ -2615,89 +2588,6 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
-        ItemStack[] COIL = { ItemList.LV_Coil.get(1), ItemList.MV_Coil.get(1), ItemList.HV_Coil.get(1),
-            ItemList.EV_Coil.get(1), ItemList.IV_Coil.get(1), ItemList.LuV_Coil.get(1), ItemList.ZPM_Coil.get(1),
-            ItemList.UV_Coil.get(1), ItemList.UHV_Coil.get(1), ItemList.UHV_Coil.get(2), ItemList.UHV_Coil.get(4),
-            ItemList.UHV_Coil.get(8), ItemList.UHV_Coil.get(16), ItemList.UHV_Coil.get(32) };
-
-        ItemStack[] COIL_4A = { ItemList.LV_Coil.get(2), ItemList.MV_Coil.get(2), ItemList.HV_Coil.get(2),
-            ItemList.EV_Coil.get(2), ItemList.IV_Coil.get(2), ItemList.LuV_Coil.get(2), ItemList.ZPM_Coil.get(1),
-            ItemList.UV_Coil.get(2), ItemList.UHV_Coil.get(2), ItemList.UHV_Coil.get(4), ItemList.UHV_Coil.get(8),
-            ItemList.UHV_Coil.get(16), ItemList.UHV_Coil.get(32), ItemList.UHV_Coil.get(64) };
-
-        ItemStack[] CHIP = { GTOreDictUnificator.get(OrePrefixes.spring, Materials.Tin, 1),
-            ItemList.Circuit_Chip_ULPIC.get(1), ItemList.Circuit_Chip_LPIC.get(1), ItemList.Circuit_Chip_PIC.get(1),
-            ItemList.Circuit_Chip_HPIC.get(1), ItemList.Circuit_Chip_UHPIC.get(1), ItemList.Circuit_Chip_QPIC.get(1),
-            ItemList.Circuit_Chip_NPIC.get(1), ItemList.Circuit_Chip_PPIC.get(1), ItemList.Circuit_Chip_PPIC.get(2),
-            ItemList.Circuit_Chip_PPIC.get(4), ItemList.Circuit_Chip_PPIC.get(8), ItemList.Circuit_Chip_PPIC.get(16),
-            ItemList.Circuit_Chip_PPIC.get(32) };
-
-        ItemStack[] INDUCTOR = { ItemList.Circuit_Parts_Coil.get(4), ItemList.Circuit_Parts_Coil.get(8),
-            ItemList.Circuit_Parts_InductorSMD.get(4), ItemList.Circuit_Parts_InductorSMD.get(8),
-            ItemList.Circuit_Parts_InductorSMD.get(16), ItemList.Circuit_Parts_InductorSMD.get(32),
-            ItemList.Circuit_Parts_InductorASMD.get(4), ItemList.Circuit_Parts_InductorASMD.get(8),
-            ItemList.Circuit_Parts_InductorXSMD.get(4), ItemList.Circuit_Parts_InductorXSMD.get(8),
-            ItemList.Circuit_Parts_InductorXSMD.get(16), ItemList.Circuit_Parts_InductorXSMD.get(32),
-            GTNLItemList.BiowareSMDInductor.get(8), GTNLItemList.BiowareSMDInductor.get(16) };
-
-        ItemStack[] SUPER_CHEST = { ItemList.Super_Chest_LV.get(1), ItemList.Super_Chest_MV.get(1),
-            ItemList.Super_Chest_HV.get(1), ItemList.Super_Chest_EV.get(1), ItemList.Super_Chest_IV.get(1),
-            ItemList.Quantum_Chest_LV.get(1), ItemList.Quantum_Chest_MV.get(1), ItemList.Quantum_Chest_HV.get(1),
-            ItemList.Quantum_Chest_EV.get(1), ItemList.Quantum_Chest_IV.get(1), ItemList.Quantum_Chest_IV.get(2),
-            ItemList.Quantum_Chest_IV.get(4), ItemList.Quantum_Chest_IV.get(8), ItemList.Quantum_Chest_IV.get(16) };
-
-        ItemStack[] OUTPUT_BUS = { ItemList.Hatch_Output_Bus_LV.get(1), ItemList.Hatch_Output_Bus_MV.get(1),
-            ItemList.Hatch_Output_Bus_HV.get(1), ItemList.Hatch_Output_Bus_EV.get(1),
-            ItemList.Hatch_Output_Bus_IV.get(1), GregtechItemList.Hatch_SuperBus_Output_LV.get(1),
-            GregtechItemList.Hatch_SuperBus_Output_MV.get(1), GregtechItemList.Hatch_SuperBus_Output_HV.get(1),
-            GregtechItemList.Hatch_SuperBus_Output_EV.get(1), GregtechItemList.Hatch_SuperBus_Output_IV.get(1),
-            GregtechItemList.Hatch_SuperBus_Output_LuV.get(1), GregtechItemList.Hatch_SuperBus_Output_ZPM.get(1),
-            GregtechItemList.Hatch_SuperBus_Output_UV.get(1), GregtechItemList.Hatch_SuperBus_Output_MAX.get(1), };
-
-        for (int i = 0; i < 14; i++) {
-            boolean isHighTier = i >= 11;
-
-            OrePrefixes cable01 = isHighTier ? OrePrefixes.wireGt01 : OrePrefixes.cableGt01;
-            OrePrefixes cable04 = isHighTier ? OrePrefixes.wireGt04 : OrePrefixes.cableGt04;
-
-            GTValues.RA.stdBuilder()
-                .itemInputs(
-                    ItemUtils.SENSOR[i].get(1),
-                    GTOreDictUnificator.get(OrePrefixes.plate, Materials.EnderPearl, 4),
-                    GTOreDictUnificator.get(OrePrefixes.circuit, ItemUtils.TIER[i], 1),
-                    COIL[i],
-                    CHIP[i],
-                    GTOreDictUnificator.get(cable01, ItemUtils.CABLE[i], 2),
-                    GTOreDictUnificator.get(cable01, Materials.RedAlloy, 2),
-                    GTOreDictUnificator.get(OrePrefixes.plate, ItemUtils.TIER_MATERIAL[i], 2))
-                .itemOutputs(GTNLItemList.WIRELESS_ENERGY_COVER[i].get(1))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .duration(200)
-                .eut(GTValues.VP[i + 1])
-                .addTo(As);
-
-            GTValues.RA.stdBuilder()
-                .itemInputs(
-                    GTNLItemList.WIRELESS_ENERGY_COVER[i].get(2),
-                    INDUCTOR[i],
-                    GTOreDictUnificator.get(cable04, ItemUtils.CABLE[i], 4),
-                    COIL_4A[i],
-                    GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.BatteryAlloy, 2))
-                .itemOutputs(GTNLItemList.WIRELESS_ENERGY_COVER_4A[i].get(1))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .duration(200)
-                .eut(GTValues.VP[i + 1])
-                .addTo(As);
-
-            GTValues.RA.stdBuilder()
-                .itemInputs(OUTPUT_BUS[i], SUPER_CHEST[i])
-                .itemOutputs(GTNLItemList.HUMONGOUS_OUTPUT_BUS[i].get(1))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .duration(100)
-                .eut(GTValues.VP[i])
-                .addTo(As);
-        }
-
         GTValues.RA.stdBuilder()
             .itemInputs(
                 ItemList.Hatch_Dynamo_IV.get(1),
@@ -2856,6 +2746,180 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_MAX)
             .addTo(As);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTNLItemList.ShimmerBucket.get(1), GTModHandler.getModItem(OpenComputers.ID, "disassembler", 1))
+            .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
+            .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.HoneyBucket.get(1),
+                GTModHandler.getModItem(PamsHarvestCraft.ID, "royaljellyItem", 64))
+            .itemOutputs(GTNLItemList.InfinityHoneyBucket.get(1))
+            .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 100000))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(new ItemStack(Items.water_bucket, 1), GregtechItemList.Hatch_Reservoir.get(1))
+            .itemOutputs(GTNLItemList.InfinityWaterBucket.get(1))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                new ItemStack(Items.lava_bucket, 1),
+                GTModHandler.getModItem(ThaumicExploration.ID, "everburnUrn", 1))
+            .itemOutputs(GTNLItemList.InfinityLavaBucket.get(1))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                tectech.thing.CustomItemList.hatch_CreativeMaintenance.get(4),
+                ItemList.WetTransformer_LuV_IV.get(4),
+                ItemList.Field_Generator_IV.get(4),
+                ItemList.Sensor_IV.get(8),
+                ItemList.Emitter_IV.get(8),
+                ItemList.Robot_Arm_IV.get(16),
+                ItemList.Electric_Piston_IV.get(16),
+                ItemList.Electric_Pump_IV.get(16),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 16))
+            .itemOutputs(GTNLItemList.AutoConfigurationMaintenanceHatch.get(1))
+            .fluidInputs(Materials.TungstenSteel.getMolten(9216))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(As);
+
+        loadLamp();
+        loadWirelessHatch();
+        loadLaserHatch();
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+
+    public void loadLamp() {
+        String[] lampTypes = { "Lamp", "LampBorderless", "LampOff", "LampOffBorderless" };
+
+        String[] colors = { "Black", "Pink", "Red", "Orange", "Yellow", "Green", "Lime", "Blue", "LightBlue", "Cyan",
+            "Brown", "Magenta", "Purple", "Gray", "LightGray", "White" };
+
+        for (String color : colors) {
+            String fluidName = "dye.chemical.dye" + color.toLowerCase();
+
+            for (int i = 0; i < lampTypes.length; i++) {
+                String lampType = lampTypes[i];
+                int circuitConfig = i + 1;
+
+                GTValues.RA.stdBuilder()
+                    .itemInputs(
+                        GTOreDictUnificator.get(OrePrefixes.plate, Materials.Glass, 6L),
+                        new ItemStack(Items.glowstone_dust, 1),
+                        GTUtility.getIntegratedCircuit(circuitConfig))
+                    .itemOutputs(
+                        GTNLItemList.valueOf(color + lampType)
+                            .get(1))
+                    .fluidInputs(FluidRegistry.getFluidStack(fluidName, 144))
+                    .specialValue(0)
+                    .duration(40)
+                    .eut(TierEU.RECIPE_LV)
+                    .addTo(As);
+            }
+        }
+    }
+
+    public void loadWirelessHatch() {
+        ItemStack[] COIL = { ItemList.LV_Coil.get(1), ItemList.MV_Coil.get(1), ItemList.HV_Coil.get(1),
+            ItemList.EV_Coil.get(1), ItemList.IV_Coil.get(1), ItemList.LuV_Coil.get(1), ItemList.ZPM_Coil.get(1),
+            ItemList.UV_Coil.get(1), ItemList.UHV_Coil.get(1), ItemList.UHV_Coil.get(2), ItemList.UHV_Coil.get(4),
+            ItemList.UHV_Coil.get(8), ItemList.UHV_Coil.get(16), ItemList.UHV_Coil.get(32) };
+
+        ItemStack[] COIL_4A = { ItemList.LV_Coil.get(2), ItemList.MV_Coil.get(2), ItemList.HV_Coil.get(2),
+            ItemList.EV_Coil.get(2), ItemList.IV_Coil.get(2), ItemList.LuV_Coil.get(2), ItemList.ZPM_Coil.get(1),
+            ItemList.UV_Coil.get(2), ItemList.UHV_Coil.get(2), ItemList.UHV_Coil.get(4), ItemList.UHV_Coil.get(8),
+            ItemList.UHV_Coil.get(16), ItemList.UHV_Coil.get(32), ItemList.UHV_Coil.get(64) };
+
+        ItemStack[] CHIP = { GTOreDictUnificator.get(OrePrefixes.spring, Materials.Tin, 1),
+            ItemList.Circuit_Chip_ULPIC.get(1), ItemList.Circuit_Chip_LPIC.get(1), ItemList.Circuit_Chip_PIC.get(1),
+            ItemList.Circuit_Chip_HPIC.get(1), ItemList.Circuit_Chip_UHPIC.get(1), ItemList.Circuit_Chip_QPIC.get(1),
+            ItemList.Circuit_Chip_NPIC.get(1), ItemList.Circuit_Chip_PPIC.get(1), ItemList.Circuit_Chip_PPIC.get(2),
+            ItemList.Circuit_Chip_PPIC.get(4), ItemList.Circuit_Chip_PPIC.get(8), ItemList.Circuit_Chip_PPIC.get(16),
+            ItemList.Circuit_Chip_PPIC.get(32) };
+
+        ItemStack[] INDUCTOR = { ItemList.Circuit_Parts_Coil.get(4), ItemList.Circuit_Parts_Coil.get(8),
+            ItemList.Circuit_Parts_InductorSMD.get(4), ItemList.Circuit_Parts_InductorSMD.get(8),
+            ItemList.Circuit_Parts_InductorSMD.get(16), ItemList.Circuit_Parts_InductorSMD.get(32),
+            ItemList.Circuit_Parts_InductorASMD.get(4), ItemList.Circuit_Parts_InductorASMD.get(8),
+            ItemList.Circuit_Parts_InductorXSMD.get(4), ItemList.Circuit_Parts_InductorXSMD.get(8),
+            ItemList.Circuit_Parts_InductorXSMD.get(16), ItemList.Circuit_Parts_InductorXSMD.get(32),
+            GTNLItemList.BiowareSMDInductor.get(8), GTNLItemList.BiowareSMDInductor.get(16) };
+
+        ItemStack[] SUPER_CHEST = { ItemList.Super_Chest_LV.get(1), ItemList.Super_Chest_MV.get(1),
+            ItemList.Super_Chest_HV.get(1), ItemList.Super_Chest_EV.get(1), ItemList.Super_Chest_IV.get(1),
+            ItemList.Quantum_Chest_LV.get(1), ItemList.Quantum_Chest_MV.get(1), ItemList.Quantum_Chest_HV.get(1),
+            ItemList.Quantum_Chest_EV.get(1), ItemList.Quantum_Chest_IV.get(1), ItemList.Quantum_Chest_IV.get(2),
+            ItemList.Quantum_Chest_IV.get(4), ItemList.Quantum_Chest_IV.get(8), ItemList.Quantum_Chest_IV.get(16) };
+
+        ItemStack[] OUTPUT_BUS = { ItemList.Hatch_Output_Bus_LV.get(1), ItemList.Hatch_Output_Bus_MV.get(1),
+            ItemList.Hatch_Output_Bus_HV.get(1), ItemList.Hatch_Output_Bus_EV.get(1),
+            ItemList.Hatch_Output_Bus_IV.get(1), GregtechItemList.Hatch_SuperBus_Output_LV.get(1),
+            GregtechItemList.Hatch_SuperBus_Output_MV.get(1), GregtechItemList.Hatch_SuperBus_Output_HV.get(1),
+            GregtechItemList.Hatch_SuperBus_Output_EV.get(1), GregtechItemList.Hatch_SuperBus_Output_IV.get(1),
+            GregtechItemList.Hatch_SuperBus_Output_LuV.get(1), GregtechItemList.Hatch_SuperBus_Output_ZPM.get(1),
+            GregtechItemList.Hatch_SuperBus_Output_UV.get(1), GregtechItemList.Hatch_SuperBus_Output_MAX.get(1), };
+
+        for (int i = 0; i < 14; i++) {
+            boolean isHighTier = i >= 11;
+
+            OrePrefixes cable01 = isHighTier ? OrePrefixes.wireGt01 : OrePrefixes.cableGt01;
+            OrePrefixes cable04 = isHighTier ? OrePrefixes.wireGt04 : OrePrefixes.cableGt04;
+
+            GTValues.RA.stdBuilder()
+                .itemInputs(
+                    ItemUtils.SENSOR[i].get(1),
+                    GTOreDictUnificator.get(OrePrefixes.plate, Materials.EnderPearl, 4),
+                    GTOreDictUnificator.get(OrePrefixes.circuit, ItemUtils.TIER[i], 1),
+                    COIL[i],
+                    CHIP[i],
+                    GTOreDictUnificator.get(cable01, ItemUtils.CABLE[i], 2),
+                    GTOreDictUnificator.get(cable01, Materials.RedAlloy, 2),
+                    GTOreDictUnificator.get(OrePrefixes.plate, ItemUtils.TIER_MATERIAL[i], 2))
+                .itemOutputs(GTNLItemList.WIRELESS_ENERGY_COVER[i].get(1))
+                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+                .duration(200)
+                .eut(GTValues.VP[i + 1])
+                .addTo(As);
+
+            GTValues.RA.stdBuilder()
+                .itemInputs(
+                    GTNLItemList.WIRELESS_ENERGY_COVER[i].get(2),
+                    INDUCTOR[i],
+                    GTOreDictUnificator.get(cable04, ItemUtils.CABLE[i], 4),
+                    COIL_4A[i],
+                    GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.BatteryAlloy, 2))
+                .itemOutputs(GTNLItemList.WIRELESS_ENERGY_COVER_4A[i].get(1))
+                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+                .duration(200)
+                .eut(GTValues.VP[i + 1])
+                .addTo(As);
+
+            GTValues.RA.stdBuilder()
+                .itemInputs(OUTPUT_BUS[i], SUPER_CHEST[i])
+                .itemOutputs(GTNLItemList.HUMONGOUS_OUTPUT_BUS[i].get(1))
+                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+                .duration(100)
+                .eut(GTValues.VP[i])
+                .addTo(As);
+        }
+    }
+
+    public void loadLaserHatch() {
         for (int j = 0; j < 10; j++) {
             for (int i = 0; i < 9; i++) {
                 int quantity;
@@ -2907,42 +2971,6 @@ public class AssemblerRecipes implements IRecipePool {
                     .addTo(As);
             }
         }
-
-        GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.ShimmerBucket.get(1), GTModHandler.getModItem(OpenComputers.ID, "disassembler", 1))
-            .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
-            .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
-            .duration(10 * SECONDS)
-            .eut(TierEU.RECIPE_HV)
-            .addTo(As);
-
-        GTValues.RA.stdBuilder()
-            .itemInputs(
-                GTNLItemList.HoneyBucket.get(1),
-                GTModHandler.getModItem(PamsHarvestCraft.ID, "royaljellyItem", 64))
-            .itemOutputs(GTNLItemList.InfinityHoneyBucket.get(1))
-            .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 100000))
-            .duration(10 * SECONDS)
-            .eut(TierEU.RECIPE_MV)
-            .addTo(As);
-
-        GTValues.RA.stdBuilder()
-            .itemInputs(new ItemStack(Items.water_bucket, 1), GregtechItemList.Hatch_Reservoir.get(1))
-            .itemOutputs(GTNLItemList.InfinityWaterBucket.get(1))
-            .duration(10 * SECONDS)
-            .eut(TierEU.RECIPE_LV)
-            .addTo(As);
-
-        GTValues.RA.stdBuilder()
-            .itemInputs(
-                new ItemStack(Items.lava_bucket, 1),
-                GTModHandler.getModItem(ThaumicExploration.ID, "everburnUrn", 1))
-            .itemOutputs(GTNLItemList.InfinityLavaBucket.get(1))
-            .duration(10 * SECONDS)
-            .eut(TierEU.RECIPE_LV)
-            .addTo(As);
-
-        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadDeleteRecipe() {
