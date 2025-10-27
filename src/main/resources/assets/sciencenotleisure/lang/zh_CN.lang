@@ -1757,6 +1757,11 @@ NEI.ElectrocellGenerator.specialValue=发电系数：%s
 NEI.ElectrocellGenerator.generatorEUt=基础发电量：%s EU/t
 ElectrocellGeneratorRecipeType=电化学反应
 Tooltip_ElectrocellGenerator_00=干净环保且高效！
+Tooltip_ElectrocellGenerator_01=在左侧输入正极，右侧输入负极
+Tooltip_ElectrocellGenerator_02=每秒消耗对应数量的酸，输出副产物
+Tooltip_ElectrocellGenerator_03=如果没有酸输入，发电量将大幅下降！
+Tooltip_ElectrocellGenerator_04=同时只能输入一种酸
+Tooltip_ElectrocellGenerator_05=当酸超过一定数量可以根据发电系数多消耗多产出
 Tooltip_ElectrocellGenerator_Casing=任意脱氧钢机械方块
 
 NameLargeNaquadahReactor=大型硅岩反应堆

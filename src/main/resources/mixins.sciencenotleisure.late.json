@@ -27,6 +27,7 @@
     "Gregtech.AccessorMTEHatch",
     "Gregtech.AccessorRecipeDisplayInfo",
     "Gregtech.MixinMTEVoidMinerBase",
+    "Gregtech.MixinMTEVoidMiners",
     "Gregtech.MixinBaseMetaTileEntity",
     "Gregtech.MixinGTNEIDefaultHandler",
     "Gregtech.MixinGTShapedRecipe",

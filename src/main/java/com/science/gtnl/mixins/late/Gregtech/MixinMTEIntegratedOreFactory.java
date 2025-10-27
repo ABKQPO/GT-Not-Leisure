@@ -25,8 +25,18 @@ public abstract class MixinMTEIntegratedOreFactory {
             target = "Lgregtech/api/util/HatchElementBuilder;atLeast([Lgregtech/api/interfaces/IHatchElement;)Lgregtech/api/util/HatchElementBuilder;"))
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static HatchElementBuilder redirectAtLeast(HatchElementBuilder instance, IHatchElement<?>[] elements) {
-        if (elements.length == 2 && elements[0] == HatchElement.Energy && elements[1] == HatchElement.Maintenance) {
-            return instance.atLeast(HatchElement.Energy.or(HatchElement.ExoticEnergy), HatchElement.Maintenance);
+        for (IHatchElement<?> e : elements) {
+            if (e == HatchElement.Energy) {
+                IHatchElement<?>[] modified = new IHatchElement<?>[elements.length];
+                for (int i = 0; i < elements.length; i++) {
+                    if (elements[i] == HatchElement.Energy) {
+                        modified[i] = HatchElement.Energy.or(HatchElement.ExoticEnergy);
+                    } else {
+                        modified[i] = elements[i];
+                    }
+                }
+                return instance.atLeast(modified);
+            }
         }
         return instance.atLeast(elements);
     }

@@ -1757,6 +1757,11 @@ NEI.ElectrocellGenerator.specialValue=Generation Coefficient: %s
 NEI.ElectrocellGenerator.generatorEUt=Base Power Output: %s EU/t
 ElectrocellGeneratorRecipeType=Electrochemical Reaction
 Tooltip_ElectrocellGenerator_00=Clean, eco-friendly, and efficient!
+Tooltip_ElectrocellGenerator_01=Input anode on the left, cathode on the right
+Tooltip_ElectrocellGenerator_02=Consumes acid per second and outputs byproducts
+Tooltip_ElectrocellGenerator_03=Power drops sharply without acid input!
+Tooltip_ElectrocellGenerator_04=Only one acid type allowed at a time
+Tooltip_ElectrocellGenerator_05=More acid increases power and consumption based on efficiency
 Tooltip_ElectrocellGenerator_Casing=Any Solid Steel Machine Casing
 
 NameLargeNaquadahReactor=Large Naquadah Reactor

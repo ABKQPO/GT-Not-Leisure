@@ -1378,12 +1378,12 @@ public class AssemblingLineRecipes implements IRecipePool {
             1,
             new Object[] { CustomItemList.Machine_Multi_Research.get(64), CustomItemList.Machine_Multi_DataBank.get(64),
                 CustomItemList.dataInAss_Wireless_Hatch.get(64), CustomItemList.dataOutAss_Wireless_Hatch.get(64),
-                ItemList.SpaceElevatorModuleAssemblerT2.get(8),
+                ItemList.SpaceElevatorModuleAssemblerT2.get(16),
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSingularityCraftingStorage", 8),
                 CustomItemList.DATApipe.get(64),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, MaterialsUEVplus.SpaceTime, 64),
-                ItemList.Tool_DataOrb.get(64), ItemList.Tool_DataStick.get(64), ItemList.Field_Generator_UIV.get(4),
-                ItemList.ZPM4.get(4), new Object[] { OrePrefixes.circuit.get(Materials.UMV), 32L },
+                ItemList.Tool_DataOrb.get(64), ItemList.Tool_DataStick.get(64), ItemList.Field_Generator_UIV.get(16),
+                ItemList.ZPM4.get(16), new Object[] { OrePrefixes.circuit.get(Materials.UMV), 32L },
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.CosmicNeutronium, 32),
                 GGMaterial.shirabon.get(OrePrefixes.plateSuperdense, 32),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.ProtoHalkonite, 32) },
@@ -1392,7 +1392,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 MaterialPool.SuperMutatedLivingSolder.getFluidOrGas(640000),
                 GGMaterial.metastableOganesson.getMolten(368640) },
             GTNLItemList.DebugDataAccessHatch.get(1),
-            2000,
+            20000,
             (int) TierEU.RECIPE_UMV);
     }
 }
