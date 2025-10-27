@@ -1353,5 +1353,28 @@ public class AssemblingLineRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .duration(15 * SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            GTNLItemList.LargeCutter.get(1),
+            32768000,
+            40000,
+            (int) TierEU.RECIPE_UHV,
+            1,
+            new Object[] { GTNLItemList.LargeCutter.get(64),
+                GregtechItemList.Industrial_CuttingFactoryController.get(64), ItemList.Neutronium_Active_Casing.get(64),
+                ItemList.Casing_ContainmentField.get(12), ItemList.Electric_Motor_UHV.get(32),
+                ItemList.Electric_Piston_UHV.get(32), ItemList.Conveyor_Module_UHV.get(32),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UEV, 12),
+                com.dreammaster.gthandler.CustomItemList.HighEnergyFlowCircuit.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUHV, 12),
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Infinity, 4),
+                GregtechItemList.Laser_Lens_Special.get(1),
+                GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 4), },
+            new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(23040),
+                Materials.SuperCoolant.getFluid(128000), Materials.UUMatter.getFluid(128000),
+                Materials.Lubricant.getFluid(128000) },
+            GTNLItemList.NeutroniumWireCutting.get(1),
+            1000,
+            (int) TierEU.RECIPE_UHV);
     }
 }
