@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -233,6 +234,20 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         }
 
         return false;
+    }
+
+    @Inject(method = "consumeNobleGas", at = @At("HEAD"), remap = false, cancellable = true)
+    public void consumeNobleGas(FluidStack gasToConsume, CallbackInfoReturnable<Boolean> cir) {
+        if (!GTNL$enableMixin) return;
+        for (FluidStack s : this.getStoredFluids()) {
+            if (s.isFluidEqual(gasToConsume) && s.amount >= 20) {
+                s.amount -= 20;
+                this.updateSlots();
+                cir.setReturnValue(true);
+                return;
+            }
+        }
+        cir.setReturnValue(false);
     }
 
     @Redirect(method = "checkHatches", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;isEmpty()Z"))

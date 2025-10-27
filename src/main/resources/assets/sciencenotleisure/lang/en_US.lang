@@ -1396,7 +1396,7 @@ Waila_CurrentSteamCost=Current Steam Consumption
 
 VoidMinerRecipeType=§eMiner§r
 Tooltip_VoidMiner_01=Consumes %s EU/t
-Tooltip_VoidMiner_02=Can be supplied with §b2 L/s§7 of Noble gases to boost §6output
+Tooltip_VoidMiner_02=Can be supplied with §b20 L/count§7 of Noble gases to boost §6output
 Tooltip_VoidMiner_03=§dNeon§7 : §64x§7
 Tooltip_VoidMiner_04=§bKrypton§7 : §68x§7
 Tooltip_VoidMiner_05=§3Xenon§7 : §616x§7
@@ -1404,6 +1404,7 @@ Tooltip_VoidMiner_06=§9Oganesson§7 : §664x§7
 Tooltip_VoidMiner_07=Will output %s Ores per Second depending on the Dimension it is build in
 Tooltip_VoidMiner_08=Put the Ore into the input bus to set the Whitelist/Blacklist
 Tooltip_VoidMiner_09=Blacklist or non Whitelist Ore will be §4VOIDED§r.
+Tooltip_VoidMiner_10=Total ampere must not exceed 256A
 Tooltip_VoidMinerI_Casing_00=§620x§7 Mining Osmiridium Casing
 Tooltip_VoidMinerI_Casing_01=§642x§7 Osmiridium Frame Box
 Tooltip_VoidMinerI_Casing_02=§66x§7 Bolted Osmiridium Casing

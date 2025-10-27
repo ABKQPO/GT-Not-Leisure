@@ -1396,7 +1396,7 @@ Waila_CurrentSteamCost=当前蒸汽消耗
 
 VoidMinerRecipeType=§e采矿机§r
 Tooltip_VoidMiner_01=消耗功率：%s EU/t
-Tooltip_VoidMiner_02=可以提供 §b2L/s§7 的惰性气体以提高§6产量
+Tooltip_VoidMiner_02=可以提供 §b20L/次§7 的惰性气体以提高§6产量
 Tooltip_VoidMiner_03=§d氖§7 : §64x§7
 Tooltip_VoidMiner_04=§b氪§7 : §68x§7
 Tooltip_VoidMiner_05=§3氙§7 : §616x§7
@@ -1404,6 +1404,7 @@ Tooltip_VoidMiner_06=§9鿫§7 : §664x§7
 Tooltip_VoidMiner_07=根据建造所在维度，每秒将产出 %s 个矿石。
 Tooltip_VoidMiner_08=将矿石放入输入总线以设置白名单/黑名单
 Tooltip_VoidMiner_09=黑名单或非白名单矿石将被§4销毁§r。
+Tooltip_VoidMiner_10=总电流不得超过256安
 Tooltip_VoidMinerI_Casing_00=§620§fx §7坚实铱锇机械方块
 Tooltip_VoidMinerI_Casing_01=§642§fx§7 铱锇合金框架
 Tooltip_VoidMinerI_Casing_02=§66§fx§7 铱锇合金机械方块
