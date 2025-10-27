@@ -1,5 +1,7 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
+import static gregtech.api.util.GTUtility.*;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,6 +30,8 @@ import com.science.gtnl.utils.machine.VMTweakHelper;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
+import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gtneioreplugin.plugin.block.ModBlocks;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 
@@ -113,6 +117,16 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
 
         return EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_Dimension_Override")
             + (ext == null ? vmTweak$mLastDimensionOverride : ext);
+    }
+
+    @Override
+    public long getMaxInputVoltage() {
+        long rVoltage = 0;
+        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
+            .getInputVoltage();
+        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
+            .getInputVoltage();
+        return rVoltage;
     }
 
     @Override
