@@ -4452,6 +4452,12 @@ public class MachineLoader {
         if (MainConfig.enableIntegratedOreFactoryChange) {
             addItemTooltip(ItemList.Ore_Processor.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
         }
+
+        if (MainConfig.enableVoidMinerTweak) {
+            addItemTooltip(ItemRegistry.voidminer[0], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+        }
     }
 
     public enum GasCollectorTier {
