@@ -21,6 +21,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,7 @@ import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
+import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.loader.Loaders;
 import gregtech.GTMod;
 import gregtech.api.enums.Materials;
@@ -70,8 +72,10 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -79,16 +83,16 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDriller>
     implements ISurvivalConstructable {
 
-    private int excessFuel = 0;
-    private int drillTier = 0;
+    public int excessFuel = 0;
+    public int drillTier = 0;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String AID_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/advanced_infinite_driller";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(AID_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 12;
-    protected final int VERTICAL_OFF_SET = 39;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(AID_STRUCTURE_FILE_PATH);
+    private final int HORIZONTAL_OFF_SET = 12;
+    private final int VERTICAL_OFF_SET = 39;
+    private final int DEPTH_OFF_SET = 0;
 
     public AdvancedInfiniteDriller(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -215,9 +219,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             int consumptionCount = 0;
 
             for (FluidStack tFluid : storedFluids) {
-                if (tFluid != null && tFluid.getFluid()
-                    .getName()
-                    .equals("pyrotheum")) {
+                if (GTUtility.areFluidsEqual(tFluid, new FluidStack(GTPPFluids.Pyrotheum, 1))) {
                     int consumption = (int) Math.pow(excessFuel, 1.3);
                     if (tFluid.amount >= consumption) {
                         tFluid.amount -= consumption;
@@ -257,10 +259,10 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                             continue;
                         }
 
-                        int amount = 2_000_000 * (1 + tVeinRNG.nextInt(500));
+                        int amount = 10_000_000 + tVeinRNG.nextInt(Integer.MAX_VALUE / 50_000_000) * 50_000_000;
                         outputFluids.add(new FluidStack(uoFluid.getFluid(), amount));
 
-                        needEu += amount / 100_000;
+                        needEu += amount / 200;
                         count++;
                     }
                 }
@@ -303,7 +305,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         startRecipeProcessing();
 
-        if (excessFuel > 2000 && mProgresstime != 0 && mProgresstime % 20 == 0) {
+        if (excessFuel > 2000 && mProgresstime > 0 && mProgresstime % 20 == 0) {
             excessFuel += (int) Math.floor(excessFuel / 2000.0);
         }
 
@@ -312,46 +314,34 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             this.stopMachine(ShutDownReasonRegistry.POWER_LOSS);
         }
 
-        if (mProgresstime != 0) {
-            if (this.mProgresstime % 5 == 0 && excessFuel >= 2000) {
-                ArrayList<FluidStack> storedFluids = getStoredFluids();
-                for (FluidStack tFluid : storedFluids) {
-                    if (tFluid != null) {
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("pyrotheum")) {
-                            int consumption = (int) Math.pow(excessFuel, 1.3);
-                            if (tFluid.amount >= consumption) {
-                                tFluid.amount -= consumption;
-                                excessFuel += 1;
-                            }
+        if (mProgresstime > 0) {
+            if (mProgresstime % 5 == 0 && excessFuel >= 2000) {
+                for (FluidStack tFluid : getStoredFluids()) {
+                    if (tFluid == null || tFluid.getFluid() == null) continue;
+                    int amount = tFluid.amount;
+                    if (GTUtility.areFluidsEqual(tFluid, new FluidStack(GTPPFluids.Pyrotheum, 1))) {
+                        int consumption = (int) Math.pow(excessFuel, 1.3);
+                        if (amount >= consumption) {
+                            tFluid.amount -= consumption;
+                            excessFuel += 1;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("ic2distilledwater")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 1;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, FluidRegistry.getFluidStack("ic2distilledwater", 1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("liquidoxygen")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 2;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, Materials.LiquidOxygen.getFluid(1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier * 2;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("liquid helium")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 4;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, WerkstoffLoader.LiquidHelium.getFluidOrGas(1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier * 4;
                         }
                     }
                 }
