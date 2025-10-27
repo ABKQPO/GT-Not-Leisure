@@ -1206,8 +1206,8 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LuckyHorseshoe.get(1),
-            new Object[] { "AA", "ABA", " A ", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Gold, 1L), 'B',
-                ItemUtils.getEnchantedBook(Enchantment.fortune, 3) });
+            new Object[] { "AA ", "ABA", " A ", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Gold, 1L),
+                'B', ItemUtils.getEnchantedBook(Enchantment.fortune, 3) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.NetherTeleporter.get(1),

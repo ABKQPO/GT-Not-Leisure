@@ -88,8 +88,8 @@ public class CentrifugeRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(GTUtility.getIntegratedCircuit(1))
-            .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 1000))
-            .fluidOutputs(FluidRegistry.getFluidStack("for.honey", 1000))
+            .fluidInputs(FluidRegistry.getFluidStack("for.honey", 1000))
+            .fluidOutputs(new FluidStack(BlockLoader.honeyFluid, 1000))
             .duration(300)
             .eut(TierEU.RECIPE_ULV)
             .addTo(CNCR);

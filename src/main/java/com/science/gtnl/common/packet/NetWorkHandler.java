@@ -38,6 +38,8 @@ public class NetWorkHandler {
             i++,
             Side.CLIENT);
         network.registerMessage(StatusMessage.class, StatusMessage.class, i++, Side.CLIENT);
+        network
+            .registerMessage(SyncCircuitNanitesPacket.Handler.class, SyncCircuitNanitesPacket.class, i++, Side.CLIENT);
         network.registerMessage(SyncRecipePacket.Handler.class, SyncRecipePacket.class, i++, Side.CLIENT);
     }
 }

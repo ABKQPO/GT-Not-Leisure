@@ -14,6 +14,7 @@ import com.science.gtnl.common.command.CommandSudo;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandTitle;
 import com.science.gtnl.loader.MaterialLoader;
+import com.science.gtnl.loader.RecipeLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
 
@@ -24,6 +25,7 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -93,6 +95,11 @@ public class ScienceNotLeisure {
     public void completeInit(FMLLoadCompleteEvent event) {
         proxy.completeInit(event);
         MaterialLoader.loadCompleteInit();
+    }
+
+    @Mod.EventHandler
+    public void onServerStarted(FMLServerStartedEvent event) {
+        RecipeLoader.loadRecipesServerStart();
     }
 
     // register server commands in this event handler (Remove if not needed)

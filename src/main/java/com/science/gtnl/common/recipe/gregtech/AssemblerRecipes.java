@@ -2797,6 +2797,21 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(As);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Super_Tank_EV.get(1),
+                GTModHandler.getModItem(Botania.ID, "pool", 4, 3),
+                GTModHandler.getModItem(Botania.ID, "spreader", 2, 3),
+                GTModHandler.getModItem(Botania.ID, "corporeaSpark", 4, 1),
+                GTModHandler.getModItem(Botania.ID, "pistonRelay", 4),
+                GTModHandler.getModItem(Botania.ID, "manaBeacon", 1),
+                ItemRefer.Fluid_Storage_Core_T2.get(2))
+            .itemOutputs(GTNLItemList.ManaTank.get(1))
+            .fluidInputs(MaterialsBotania.Terrasteel.getMolten(576))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_EV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();

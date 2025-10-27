@@ -147,7 +147,6 @@ public class RecipeLoader {
                 loadNewRemoveRecipes();
             }
         }
-        loadCircuitRelatedRecipes();
         recipesAdded = true;
     }
 

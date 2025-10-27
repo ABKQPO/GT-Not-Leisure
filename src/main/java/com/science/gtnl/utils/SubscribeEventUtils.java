@@ -33,6 +33,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -44,6 +45,7 @@ import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.item.TimeStopManager;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.packet.SoundPacket;
+import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
 import com.science.gtnl.common.packet.SyncConfigPacket;
 import com.science.gtnl.common.packet.SyncRecipePacket;
 import com.science.gtnl.common.packet.TitlePacket;
@@ -58,7 +60,9 @@ import com.science.gtnl.utils.gui.recipe.ElectrocellGeneratorFrontend;
 import com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend;
 import com.science.gtnl.utils.recipes.CircuitNanitesRecipeData;
 
+import bartworks.API.SideReference;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -93,7 +97,7 @@ public class SubscribeEventUtils {
             player.triggerAchievement(AchievementsLoader.welcome);
             network.sendTo(new SyncConfigPacket(), player);
             network.sendTo(new SoundPacket(true), player);
-            network.sendTo(new SyncRecipePacket(player.worldObj.getSeed()), player);
+            network.sendTo(new SyncCircuitNanitesPacket(player.worldObj.getSeed()), player);
 
             SchematicRegistry
                 .addUnlockedPage(player, SchematicRegistry.getMatchingRecipeForID(MainConfig.idSchematicRocketSteam));
@@ -177,6 +181,12 @@ public class SubscribeEventUtils {
             }
             TickrateAPI.changeClientTickrate(event.player, tickrate);
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void EntityJoinWorldEvent(EntityJoinWorldEvent event) {
+        if (event == null || !(event.entity instanceof EntityPlayerMP player) || !SideReference.Side.Server) return;
+        network.sendTo(new SyncRecipePacket(), player);
     }
 
     @SubscribeEvent
