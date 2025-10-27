@@ -94,6 +94,9 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             .addInfo("")
             .addInfo("")
             .addInfo("")
+            .addInfo("")
+            .addInfo("")
+            .addInfo("")
             .addInfo(
                 StatCollector.translateToLocalFormatted(
                     "Tooltip_VoidMiner_01",
