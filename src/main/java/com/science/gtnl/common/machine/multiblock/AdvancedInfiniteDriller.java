@@ -259,7 +259,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                             continue;
                         }
 
-                        int amount = 10_000_000 + tVeinRNG.nextInt(Integer.MAX_VALUE / 50_000_000) * 50_000_000;
+                        int amount = 1_000_000 + tVeinRNG.nextInt(Integer.MAX_VALUE / 10_000_000) * 10_000_000;
                         outputFluids.add(new FluidStack(uoFluid.getFluid(), amount));
 
                         needEu += amount / 200;
