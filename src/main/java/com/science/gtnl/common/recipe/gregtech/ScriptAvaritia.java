@@ -2229,15 +2229,15 @@ public class ScriptAvaritia implements IScriptLoader {
                 "-ABCCCBA-",
                 "-ABBBBBA-",
                 "-AAAAAAA-",
-                "A",
-                GTModHandler.getModItem(Avaritia.ID, "Resource_Block", 1),
-                "B",
+                'A',
+                GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1),
+                'B',
                 GTModHandler.getModItem(Avaritia.ID, "Crystal_Matrix", 1),
-                "C",
+                'C',
                 new ItemStack(Blocks.anvil, 1),
-                "D",
+                'D',
                 GTNLItemList.BlazeCubeBlock.get(1),
-                "E",
+                'E',
                 GTNLItemList.EnhancementCore.get(1));
     }
 }
