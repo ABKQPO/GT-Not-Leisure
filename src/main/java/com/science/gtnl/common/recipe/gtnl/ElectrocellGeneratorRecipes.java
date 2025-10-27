@@ -66,16 +66,16 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.foil, Materials.Aluminium, 3),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumBisulfate, 4))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 4))
-            .fluidInputs(Materials.Sodium.getFluid(4000))
-            .fluidOutputs(Materials.Hydrogen.getGas(4000))
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 1),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumBisulfate, 8))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 8))
+            .fluidInputs(Materials.Sodium.getFluid(8000))
+            .fluidOutputs(Materials.Hydrogen.getGas(8000))
             .outputChances(10000)
             .eut(0)
-            .specialValue(100)
-            .metadata(GENERATOR_EUT, 4096L)
-            .duration(600)
+            .specialValue(110)
+            .metadata(GENERATOR_EUT, 8192L)
+            .duration(1400)
             .addTo(EGR);
     }
 }
