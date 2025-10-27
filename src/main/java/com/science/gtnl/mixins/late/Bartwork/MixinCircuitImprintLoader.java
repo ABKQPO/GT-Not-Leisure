@@ -28,7 +28,7 @@ public abstract class MixinCircuitImprintLoader {
             target = "Lbartworks/system/material/CircuitGeneration/CircuitImprintLoader;exchangeRecipesInList(Ljava/util/HashSet;Ljava/util/HashSet;)V",
             shift = At.Shift.BEFORE))
     private static void injectCustomRecipeLoader(CallbackInfo ci) {
-        RecipeLoader.loadRecipesServerStart();
+        RecipeLoader.loadCircuitRelatedRecipes();
     }
 
     /**

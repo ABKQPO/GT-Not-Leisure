@@ -36,7 +36,7 @@ import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 
-public class ModFilteredInputBusME extends MTEHatchInputBusME {
+public class TypeFilteredInputBusME extends MTEHatchInputBusME {
 
     @Nullable
     private String modid;
@@ -44,32 +44,32 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
     private String name;
     private int meta = GTRecipeBuilder.WILDCARD;
 
-    public ModFilteredInputBusME(int aID, String aName, String aNameRegional) {
+    public TypeFilteredInputBusME(int aID, String aName, String aNameRegional) {
         super(aID, true, aName, aNameRegional);
     }
 
-    public ModFilteredInputBusME(String aName, boolean autoPullAvailable, int aTier, String[] aDescription,
+    public TypeFilteredInputBusME(String aName, boolean autoPullAvailable, int aTier, String[] aDescription,
         ITexture[][][] aTextures) {
         super(aName, autoPullAvailable, aTier, aDescription, aTextures);
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new ModFilteredInputBusME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures);
+        return new TypeFilteredInputBusME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_00"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_01"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_02"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_03"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_04"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_05"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_06"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_07"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_08"),
-            StatCollector.translateToLocal("Tooltip_ModFilteredInputBusME_09") };
+        return new String[] { StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_00"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_01"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_02"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_03"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_04"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_05"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_06"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_07"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_08"),
+            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_09") };
     }
 
     public boolean hasFilter() {
@@ -160,7 +160,11 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
             if (getBaseMetaTileEntity() instanceof IGridProxyable gridProxyable) {
-                gridProxy = new AENetworkProxy(gridProxyable, "proxy", GTNLItemList.ModFilteredInputBusME.get(1), true);
+                gridProxy = new AENetworkProxy(
+                    gridProxyable,
+                    "proxy",
+                    GTNLItemList.TypeFilteredInputBusME.get(1),
+                    true);
                 gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
                 updateValidGridProxySides();
 
@@ -253,7 +257,7 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
                     .addTooltip(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
 
         builder.widget(
-            TextWidget.localised("Info_ModFilteredInputBusME_ModID")
+            TextWidget.localised("Info_TypeFilteredInputBusME_ModID")
                 .setPos(3, 120)
                 .setSize(60, 14))
             .widget(
@@ -267,7 +271,7 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
                     .attachSyncer(new FakeSyncWidget.StringSyncer(this::getModid, this::setModid), builder));
 
         builder.widget(
-            TextWidget.localised("Info_ModFilteredInputBusME_ItemName")
+            TextWidget.localised("Info_TypeFilteredInputBusME_ItemName")
                 .setPos(3, 154)
                 .setSize(60, 14))
             .widget(
@@ -281,7 +285,7 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
                     .attachSyncer(new FakeSyncWidget.StringSyncer(this::getNameFilter, this::setNameFilter), builder));
 
         builder.widget(
-            TextWidget.localised("Info_ModFilteredInputBusME_ItemMeta")
+            TextWidget.localised("Info_TypeFilteredInputBusME_ItemMeta")
                 .setPos(3, 188)
                 .setSize(60, 14))
             .widget(
@@ -300,18 +304,18 @@ public class ModFilteredInputBusME extends MTEHatchInputBusME {
     @Override
     public String[] getInfoData() {
         String busStatusKey = getProxy() != null && getProxy().isActive()
-            ? StatCollector.translateToLocal("Info_ModFilteredInputBusME_Online")
-            : StatCollector.translateToLocalFormatted("Info_ModFilteredInputBusME_Offline", getAEDiagnostics());
+            ? StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Online")
+            : StatCollector.translateToLocalFormatted("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
 
         String filterInfo = hasFilter()
             ? StatCollector.translateToLocalFormatted(
-                "Info_ModFilteredInputBusME_Filtered_Set",
+                "Info_TypeFilteredInputBusME_Filtered_Set",
                 modid != null ? modid : "*",
                 name != null ? name : "*",
                 meta != GTRecipeBuilder.WILDCARD ? meta : "*")
-            : StatCollector.translateToLocal("Info_ModFilteredInputBusME_Filtered_Unset");
+            : StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered_Unset");
 
         return new String[] { busStatusKey,
-            StatCollector.translateToLocal("Info_ModFilteredInputBusME_Filtered") + filterInfo };
+            StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered") + filterInfo };
     }
 }

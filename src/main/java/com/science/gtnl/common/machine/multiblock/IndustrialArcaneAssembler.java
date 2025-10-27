@@ -199,7 +199,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     public boolean checkHatch() {
         return super.checkHatch() && GTUtility.areStacksEqual(
             getControllerSlot(),
-            ItemUtils.createItemStack(
+            ItemUtils.getItemStack(
                 Thaumcraft.ID,
                 "WandCasting",
                 1,

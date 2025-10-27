@@ -1173,13 +1173,91 @@ public class CraftingTableRecipes implements IRecipePool {
                 MaterialsAlloy.TUMBAGA.getPlate(1), 'D',
                 GTModHandler.getModItem(BuildCraftFactory.ID, "tankBlock", 1) });
 
-        if (MainConfig.enableSomethingRecipe) {
-            GTModHandler.addCraftingRecipe(
-                tectech.thing.CustomItemList.hatch_CreativeMaintenance.get(1),
-                recipeFlags,
-                new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
-                    ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
-                    ItemList.Hull_HV.get(1L) });
-        }
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PhysicsCape.get(1),
+            new Object[] { "ABA", "CDC", "EDE", 'A', OrePrefixes.plate.get(Materials.AnyRubber), 'B',
+                ItemList.Circuit_Parts_Coil.get(1), 'C',
+                GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.Manasteel, 1L), 'D',
+                ItemList.HV_Coil.get(1), 'E', GTModHandler.getModItem(DraconicEvolution.ID, "magnet", 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.RecordSus.get(1),
+            new Object[] { "AAA", "ABA", "AAA", 'A', GTModHandler.getModItem(Avaritia.ID, "Resource", 1, 7), 'B',
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thaumium, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.RejectionRing.get(1),
+            new Object[] { " A ", "BCB", " A ", 'A',
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.DarkSteel, 1L), 'B',
+                GTModHandler.getModItem(Botania.ID, "lens", 1, 5), 'C',
+                GTModHandler.getModItem(Botania.ID, "magnetRing", 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SlimeSaddle.get(1),
+            new Object[] { "ABA", "ACA", "ADA", 'A', GTModHandler.getModItem(EtFuturumRequiem.ID, "slime", 1), 'B',
+                new ItemStack(Items.saddle, 1), 'C', GTModHandler.getModItem(TinkerConstruct.ID, "materials", 1, 1),
+                'D', GTModHandler.getModItem(TinkerConstruct.ID, "slime.pad", 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SuperstrongSponge.get(1),
+            new Object[] { "AAA", "BCD", "EEE", 'A', GTModHandler.getModItem(OpenBlocks.ID, "sponge", 1), 'B',
+                ItemList.Hatch_Void.get(1), 'C', ItemList.Pump_LV.get(1), 'D',
+                GTModHandler.getModItem(ExtraUtilities.ID, "trashcan", 1, 1), 'E', new ItemStack(Blocks.sponge, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.LuckyHorseshoe.get(1),
+            new Object[] { "AA ", "ABA", " A ", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Gold, 1L),
+                'B', ItemUtils.getEnchantedBook(Enchantment.fortune, 3) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.NetherTeleporter.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A',
+                GTModHandler.getModItem(MineAndBladeBattleGear2.ID, "mb.arrow", 1, 3), 'B',
+                GTModHandler.getModItem(ThaumicBases.ID, "eldritchArk", 1), 'C',
+                GregtechItemList.CompressedObsidian.get(1), 'D', new ItemStack(Items.flint_and_steel, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PlayerLeash.get(1),
+            new Object[] { "ABA", "CDC", "EBE", 'A', new ItemStack(Items.feather, 1), 'B', new ItemStack(Items.lead, 1),
+                'C', new ItemStack(Blocks.wool, 1), 'D', new ItemStack(Blocks.fence, 1), 'E',
+                new ItemStack(Blocks.hay_block, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.RoyalGel.get(1),
+            new Object[] { "ABA", "CDC", "ACA", 'A', GTModHandler.getModItem(TinkerConstruct.ID, "slime.gel", 1), 'B',
+                new ItemStack(Blocks.gold_block, 1), 'C',
+                GTModHandler.getModItem(TinkerConstruct.ID, "materials", 1, 17), 'D',
+                GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Ruby, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.TapDynamoHatchLV.get(1),
+            new Object[] { "ABC", "DEF", "ABC", 'A', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Steel, 1),
+                'B', OrePrefixes.circuit.get(Materials.LV), 'C',
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1), 'D', ItemList.Electric_Piston_LV.get(1),
+                'E', ItemList.Hull_LV.get(1), 'F', GTOreDictUnificator.get(OrePrefixes.cableGt08, Materials.Tin, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.WaterCandle.get(1),
+            new Object[] { "ABA", "ACA", "ABA", 'A', new ItemStack(Items.potionitem, 1, 8201), 'B',
+                new ItemStack(Items.water_bucket, 1), 'C', GTModHandler.getModItem(Thaumcraft.ID, "blockCandle", 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.VeinMiningPickaxe.get(1),
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Robot_Arm_LV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(Blocks.redstone_block, 1), 'D',
+                new ItemStack(Items.diamond_pickaxe, 1), 'E',
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1), 'F',
+                GregtechItemList.TransmissionComponent_LV.get(1) });
+
+        if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
+    }
+
+    public void loadExtraRecipe() {
+        GTModHandler.addCraftingRecipe(
+            tectech.thing.CustomItemList.hatch_CreativeMaintenance.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
+                ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
+                ItemList.Hull_HV.get(1L) });
     }
 }

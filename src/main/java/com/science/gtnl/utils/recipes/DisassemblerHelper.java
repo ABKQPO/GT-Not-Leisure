@@ -484,7 +484,7 @@ public class DisassemblerHelper {
                         List<ItemStack> fluidStacks = new ArrayList<>();
                         if (reversedFirst.mFluidInputs != null) {
                             for (FluidStack fluid : reversedFirst.mFluidInputs) {
-                                fluidStacks.add(ItemUtils.createFluidPacket(fluid, fluid.amount));
+                                fluidStacks.add(ItemUtils.getFluidPacket(fluid, fluid.amount));
                             }
                         }
                         fluidStacks.add(hardOverride.getValue());
@@ -514,7 +514,7 @@ public class DisassemblerHelper {
                 List<ItemStack> fluidStacks = new ArrayList<>();
                 if (reversedFirst.mFluidInputs != null) {
                     for (FluidStack fluid : reversedFirst.mFluidInputs) {
-                        fluidStacks.add(ItemUtils.createFluidPacket(fluid, fluid.amount));
+                        fluidStacks.add(ItemUtils.getFluidPacket(fluid, fluid.amount));
                     }
                 }
                 fluidStacks.addAll(transformedOutputs);
@@ -557,7 +557,7 @@ public class DisassemblerHelper {
             }
             if (recipe.mFluidInputs != null) {
                 for (FluidStack fluid : recipe.mFluidInputs) {
-                    outputs.add(ItemUtils.createFluidPacket(fluid, fluid.amount));
+                    outputs.add(ItemUtils.getFluidPacket(fluid, fluid.amount));
                 }
             }
             if (outputs.isEmpty()) continue;
@@ -582,7 +582,7 @@ public class DisassemblerHelper {
             List<ItemStack> outputs = new ArrayList<>(new ArrayList<>(Arrays.asList(recipe.mInputs)));
             if (recipe.mFluidInputs != null) {
                 for (FluidStack fluid : recipe.mFluidInputs) {
-                    outputs.add(ItemUtils.createFluidPacket(fluid, fluid.amount));
+                    outputs.add(ItemUtils.getFluidPacket(fluid, fluid.amount));
                 }
             }
 

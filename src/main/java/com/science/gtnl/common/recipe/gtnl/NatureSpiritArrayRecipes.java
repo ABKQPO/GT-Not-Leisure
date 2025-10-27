@@ -20,7 +20,7 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        ItemStack asgardandelion = ItemUtils.createSpecialFlower("asgardandelion");
+        ItemStack asgardandelion = ItemUtils.getSpecialFlower("asgardandelion");
 
         GTValues.RA.stdBuilder()
             .itemInputs(GTUtility.copyAmount(0, asgardandelion))

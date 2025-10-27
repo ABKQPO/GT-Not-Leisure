@@ -115,7 +115,7 @@ public class FishingGroundRecipes implements IRecipePool {
                 new ItemStack(Items.diamond, 1),
                 new ItemStack(Items.emerald, 1),
                 new ItemStack(Items.golden_apple, 1),
-                ItemUtils.createItemStack(ItemList.ZPM.get(1), "{GT.ItemCharge:2000000000000L}", null))
+                ItemUtils.getItemStack(ItemList.ZPM.get(1), "{GT.ItemCharge:2000000000000L}", null))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(
                 8000,

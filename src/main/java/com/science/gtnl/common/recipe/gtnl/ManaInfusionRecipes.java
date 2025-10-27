@@ -25,28 +25,28 @@ public class ManaInfusionRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        ItemStack daybloom = ItemUtils.createSpecialFlower("daybloom");
-        ItemStack daybloomDecor = ItemUtils.createSpecialFlower("daybloomDecor");
-        ItemStack hydroangeas = ItemUtils.createSpecialFlower("hydroangeas");
-        ItemStack hydroangeasDecor = ItemUtils.createSpecialFlower("hydroangeasDecor");
-        ItemStack nightshade = ItemUtils.createSpecialFlower("nightshade");
-        ItemStack nightshadeDecor = ItemUtils.createSpecialFlower("nightshadeDecor");
-        ItemStack bellethorn = ItemUtils.createSpecialFlower("bellethorn");
-        ItemStack bellethornChibi = ItemUtils.createSpecialFlower("bellethornChibi");
-        ItemStack agricarnation = ItemUtils.createSpecialFlower("agricarnation");
-        ItemStack agricarnationChibi = ItemUtils.createSpecialFlower("agricarnationChibi");
-        ItemStack hopperhock = ItemUtils.createSpecialFlower("hopperhock");
-        ItemStack hopperhockChibi = ItemUtils.createSpecialFlower("hopperhockChibi");
-        ItemStack rannuncarpus = ItemUtils.createSpecialFlower("rannuncarpus");
-        ItemStack rannuncarpusChibi = ItemUtils.createSpecialFlower("rannuncarpusChibi");
-        ItemStack clayconia = ItemUtils.createSpecialFlower("clayconia");
-        ItemStack clayconiaChibi = ItemUtils.createSpecialFlower("clayconiaChibi");
-        ItemStack marimorphosis = ItemUtils.createSpecialFlower("marimorphosis");
-        ItemStack marimorphosisChibi = ItemUtils.createSpecialFlower("marimorphosisChibi");
-        ItemStack bubbell = ItemUtils.createSpecialFlower("bubbell");
-        ItemStack bubbellChibi = ItemUtils.createSpecialFlower("bubbellChibi");
-        ItemStack solegnolia = ItemUtils.createSpecialFlower("solegnolia");
-        ItemStack solegnoliaChibi = ItemUtils.createSpecialFlower("solegnoliaChibi");
+        ItemStack daybloom = ItemUtils.getSpecialFlower("daybloom");
+        ItemStack daybloomDecor = ItemUtils.getSpecialFlower("daybloomDecor");
+        ItemStack hydroangeas = ItemUtils.getSpecialFlower("hydroangeas");
+        ItemStack hydroangeasDecor = ItemUtils.getSpecialFlower("hydroangeasDecor");
+        ItemStack nightshade = ItemUtils.getSpecialFlower("nightshade");
+        ItemStack nightshadeDecor = ItemUtils.getSpecialFlower("nightshadeDecor");
+        ItemStack bellethorn = ItemUtils.getSpecialFlower("bellethorn");
+        ItemStack bellethornChibi = ItemUtils.getSpecialFlower("bellethornChibi");
+        ItemStack agricarnation = ItemUtils.getSpecialFlower("agricarnation");
+        ItemStack agricarnationChibi = ItemUtils.getSpecialFlower("agricarnationChibi");
+        ItemStack hopperhock = ItemUtils.getSpecialFlower("hopperhock");
+        ItemStack hopperhockChibi = ItemUtils.getSpecialFlower("hopperhockChibi");
+        ItemStack rannuncarpus = ItemUtils.getSpecialFlower("rannuncarpus");
+        ItemStack rannuncarpusChibi = ItemUtils.getSpecialFlower("rannuncarpusChibi");
+        ItemStack clayconia = ItemUtils.getSpecialFlower("clayconia");
+        ItemStack clayconiaChibi = ItemUtils.getSpecialFlower("clayconiaChibi");
+        ItemStack marimorphosis = ItemUtils.getSpecialFlower("marimorphosis");
+        ItemStack marimorphosisChibi = ItemUtils.getSpecialFlower("marimorphosisChibi");
+        ItemStack bubbell = ItemUtils.getSpecialFlower("bubbell");
+        ItemStack bubbellChibi = ItemUtils.getSpecialFlower("bubbellChibi");
+        ItemStack solegnolia = ItemUtils.getSpecialFlower("solegnolia");
+        ItemStack solegnoliaChibi = ItemUtils.getSpecialFlower("solegnoliaChibi");
 
         GTValues.RA.stdBuilder()
             .itemInputs(GTUtility.copyAmount(0, GTModHandler.getModItem(Botania.ID, "alchemyCatalyst", 1)), daybloom)

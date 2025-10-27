@@ -237,7 +237,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 GTModHandler.getModItem(ThaumicEnergistics.ID, "thaumicenergistics.block.arcane.assembler", 64),
                 GTModHandler.getModItem(Thaumcraft.ID, "blockStoneDevice", 64, 2),
                 GTModHandler.getModItem(Thaumcraft.ID, "blockStoneDevice", 64, 2),
-                ItemUtils.createItemStack(
+                ItemUtils.getItemStack(
                     Thaumcraft.ID,
                     "WandCasting",
                     1,
@@ -1353,6 +1353,47 @@ public class AssemblingLineRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .duration(15 * SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
+
+        GTValues.RA.stdBuilder()
+            .metadata(RESEARCH_ITEM, ItemList.Automation_TypeFilter_IV.get(1))
+            .metadata(SCANNING, new Scanning(15 * MINUTES, TierEU.RECIPE_EV))
+            .itemInputs(
+                ItemList.Hatch_Input_Bus_ME_Advanced.get(1),
+                ItemList.Conveyor_Module_IV.get(1),
+                ItemList.Emitter_IV.get(1),
+                ItemList.Automation_TypeFilter_IV.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 30),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockChest", 1))
+            .fluidInputs(MaterialsAlloy.INDALLOY_140.getFluidStack(720), Materials.Lubricant.getFluid(1000))
+            .itemOutputs(GTNLItemList.TypeFilteredInputBusME.get(1))
+            .eut(TierEU.RECIPE_IV)
+            .duration(15 * SECONDS)
+            .addTo(GTRecipeConstants.AssemblyLine);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            GTNLItemList.SuperDataAccessHatch.get(1),
+            3072000,
+            2048,
+            102400000,
+            1,
+            new Object[] { CustomItemList.Machine_Multi_Research.get(64), CustomItemList.Machine_Multi_DataBank.get(64),
+                CustomItemList.dataInAss_Wireless_Hatch.get(64), CustomItemList.dataOutAss_Wireless_Hatch.get(64),
+                ItemList.SpaceElevatorModuleAssemblerT2.get(16),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSingularityCraftingStorage", 8),
+                CustomItemList.DATApipe.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, MaterialsUEVplus.SpaceTime, 64),
+                ItemList.Tool_DataOrb.get(64), ItemList.Tool_DataStick.get(64), ItemList.Field_Generator_UIV.get(16),
+                ItemList.ZPM4.get(16), new Object[] { OrePrefixes.circuit.get(Materials.UMV), 32L },
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.CosmicNeutronium, 32),
+                GGMaterial.shirabon.get(OrePrefixes.plateSuperdense, 32),
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.ProtoHalkonite, 32) },
+            new FluidStack[] { MaterialsUEVplus.DimensionallyShiftedSuperfluid.getFluid(512000),
+                MaterialsUEVplus.TranscendentMetal.getMolten(368640),
+                MaterialPool.SuperMutatedLivingSolder.getFluidOrGas(640000),
+                GGMaterial.metastableOganesson.getMolten(368640) },
+            GTNLItemList.DebugDataAccessHatch.get(1),
+            20000,
+            (int) TierEU.RECIPE_UMV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeCutter.get(1),

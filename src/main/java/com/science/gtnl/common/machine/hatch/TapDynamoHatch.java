@@ -53,8 +53,8 @@ public class TapDynamoHatch extends MTEHatchDynamo {
     }
 
     @Override
-    public long maxEUOutput() {
-        return V[mTier] * 16;
+    public long maxAmperesOut() {
+        return 16;
     }
 
     @Override

@@ -21,12 +21,12 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -44,11 +44,13 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
+import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.loader.Loaders;
-import gregtech.api.enums.GTValues;
+import gregtech.GTMod;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.OrePrefixes;
@@ -62,31 +64,35 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
+import gregtech.api.objects.GTUODimension;
+import gregtech.api.objects.GTUOFluid;
+import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
-import gtneioreplugin.plugin.block.ModBlocks;
+import gtPlusPlus.core.fluids.GTPPFluids;
+import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDriller>
     implements ISurvivalConstructable {
 
-    private int excessFuel = 0;
-    private int drillTier = 0;
-    private int needEu = 0;
+    public int excessFuel = 0;
+    public int drillTier = 0;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String AID_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/advanced_infinite_driller";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(AID_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 12;
-    protected final int VERTICAL_OFF_SET = 39;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(AID_STRUCTURE_FILE_PATH);
+    private final int HORIZONTAL_OFF_SET = 12;
+    private final int VERTICAL_OFF_SET = 39;
+    private final int DEPTH_OFF_SET = 0;
 
     public AdvancedInfiniteDriller(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -179,6 +185,11 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
+    protected IAlignmentLimits getInitialAlignmentLimits() {
+        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
+    }
+
+    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(sBlockCasings8, 10);
     }
@@ -208,9 +219,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             int consumptionCount = 0;
 
             for (FluidStack tFluid : storedFluids) {
-                if (tFluid != null && tFluid.getFluid()
-                    .getName()
-                    .equals("pyrotheum")) {
+                if (GTUtility.areFluidsEqual(tFluid, new FluidStack(GTPPFluids.Pyrotheum, 1))) {
                     int consumption = (int) Math.pow(excessFuel, 1.3);
                     if (tFluid.amount >= consumption) {
                         tFluid.amount -= consumption;
@@ -229,171 +238,40 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                 return CheckRecipeResultRegistry.NO_RECIPE;
             }
         } else {
-            needEu = 0;
+            int needEu = 0;
             List<FluidStack> outputFluids = new ArrayList<>();
             for (ItemStack item : getAllStoredInputs()) {
-                if (item.getItem() != null) {
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ow")))) {
-                        outputFluids.add(calculateOutput(0.4, 625, Materials.Oil.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 350, Materials.OilHeavy.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 625, Materials.OilLight.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 625, Materials.OilMedium.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 350, Materials.NatruralGas.getFluid(1L)));
-                    }
+                if (item.getItem() instanceof ItemDimensionDisplay) {
+                    int dimID = VMTweakHelper.dimMapping.inverse()
+                        .getOrDefault(ItemDimensionDisplay.getDimension(item), 0);
+                    GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimID);
+                    if (dimension == null) continue;
 
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Mo")))) {
-                        outputFluids.add(calculateOutput(0.4, 200, Materials.SaltWater.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.85, 425, Materials.Helium_3.getGas(1L)));
-                    }
+                    XSTR tVeinRNG = new XSTR(System.nanoTime());
+                    int count = 0;
+                    int attempts = 0;
 
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ma")))) {
-                        outputFluids.add(calculateOutput(0.5, 400, Materials.SaltWater.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.5, 400, Materials.Chlorobenzene.getFluid(1L)));
-                    }
+                    while (count < 5 && attempts < 100) {
+                        attempts++;
+                        GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
 
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Eu")))) {
-                        outputFluids.add(calculateOutput(0.5, 800, Materials.SaltWater.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 200, Materials.OilExtraHeavy.getFluid(1L)));
-                        outputFluids
-                            .add(calculateOutput(0.4, 3500, FluidRegistry.getFluidStack("ic2distilledwater", 1)));
-                    }
+                        if (uoFluid == null || uoFluid.getFluid() == null) {
+                            continue;
+                        }
 
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ca")))) {
-                        outputFluids.add(calculateOutput(0.5, 200, Materials.Oxygen.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.5, 200, Materials.LiquidOxygen.getFluid(1L)));
-                    }
+                        int amount = 1_000_000 + tVeinRNG.nextInt(Integer.MAX_VALUE / 10_000_000) * 10_000_000;
+                        outputFluids.add(new FluidStack(uoFluid.getFluid(), amount));
 
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Rb")))) {
-                        outputFluids.add(calculateOutput(0.4, 625, Materials.NatruralGas.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 625, Materials.OilExtraHeavy.getFluid(1L)));
-                        outputFluids
-                            .add(calculateOutput(0.5, 5000, FluidRegistry.getFluidStack("ic2distilledwater", 1)));
-                        outputFluids.add(calculateOutput(0.4, 820, Materials.Lava.getFluid(1L)));
+                        needEu += amount / 200;
+                        count++;
                     }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Io")))) {
-                        outputFluids.add(calculateOutput(0.45, 350, Materials.SulfuricAcid.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.45, 750, Materials.CarbonDioxide.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 650, Materials.Lead.getMolten(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Me")))) {
-                        outputFluids.add(calculateOutput(0.769, 800, Materials.Helium_3.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 400, Materials.Iron.getMolten(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ve")))) {
-                        outputFluids.add(calculateOutput(0.4, 250, Materials.SulfuricAcid.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.4, 1500, Materials.CarbonDioxide.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 1600, Materials.Lead.getMolten(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Mi")))) {
-                        outputFluids.add(calculateOutput(1.0, 900, Materials.HydricSulfide.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ob")))) {
-                        outputFluids.add(calculateOutput(1.0, 2000, Materials.CarbonMonoxide.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ti")))) {
-                        outputFluids.add(calculateOutput(0.5, 800, Materials.Ethane.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.5, 200, Materials.Methane.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Ra")))) {
-                        outputFluids.add(calculateOutput(0.4, 1250, Materials.SaltWater.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.6, 1250, Materials.Helium_3.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Pr")))) {
-                        outputFluids.add(calculateOutput(1.0, 700, Materials.Deuterium.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Tr")))) {
-                        outputFluids.add(calculateOutput(0.5, 800, Materials.Ethylene.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.5, 800, Materials.Nitrogen.getGas(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("MM")))) {
-                        outputFluids.add(calculateOutput(1.0, 300, Materials.HydrofluoricAcid.getFluid(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("Pl")))) {
-                        outputFluids.add(calculateOutput(0.4, 800, Materials.Nitrogen.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 300, Materials.Fluorine.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 800, Materials.Oxygen.getGas(1L)));
-                        outputFluids.add(calculateOutput(0.4, 800, Materials.LiquidAir.getFluid(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("BC")))) {
-                        outputFluids.add(calculateOutput(0.5, 800, Materials.OilExtraHeavy.getFluid(1L)));
-                        outputFluids.add(calculateOutput(0.5, 300, Materials.Unknown.getFluid(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("BE")))) {
-                        outputFluids.add(calculateOutput(1.0, 400, Materials.LiquidAir.getFluid(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("BF")))) {
-                        outputFluids.add(calculateOutput(1.0, 400, Materials.Tin.getMolten(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("CB")))) { // CentauriA is α Centauri Bb
-                        outputFluids.add(calculateOutput(1.0, 300, Materials.Copper.getMolten(1L)));
-                    }
-
-                    if (item.isItemEqual(new ItemStack(ModBlocks.getBlock("TE")))) {
-                        outputFluids.add(calculateOutput(0.4, 200, Materials.Copper.getMolten(1L)));
-                        outputFluids.add(calculateOutput(0.4, 10000, Materials.OilExtraHeavy.getFluid(1L)));
-                        outputFluids
-                            .add(calculateOutput(0.4, 700, FluidRegistry.getFluidStack("ic2distilledwater", 1)));
-                    }
-
                 }
             }
-
-            if (!outputFluids.isEmpty()) {
-                mOutputFluids = outputFluids.toArray(new FluidStack[0]);
-            }
-
-            if (mOutputFluids != null) {
-                this.mMaxProgresstime = (int) (((5750000 / excessFuel) - 475) * mConfigSpeedBoost);
-                this.lEUt = -needEu;
-                return CheckRecipeResultRegistry.SUCCESSFUL;
-            }
+            mOutputFluids = outputFluids.toArray(new FluidStack[0]);
+            this.mMaxProgresstime = (int) (((5750000 / excessFuel) - 475) * mConfigSpeedBoost);
+            this.lEUt = -needEu;
+            return CheckRecipeResultRegistry.SUCCESSFUL;
         }
-
-        return CheckRecipeResultRegistry.NO_RECIPE;
-    }
-
-    public FluidStack calculateOutput(double probability, long oilFieldReserve, FluidStack fluidStack) {
-
-        FluidStack fluidStacks = null;
-
-        if (Math.random() < probability) {
-            Fluid fluidType = fluidStack.getFluid();
-            long baseOutput = (long) ((1000 * oilFieldReserve * (oilFieldReserve + 1))
-                * (0.5 + 0.25 * (GTValues.V[mEnergyHatchTier - 7]))
-                * (excessFuel / 1000.0)
-                * drillTier);
-
-            needEu += (int) (baseOutput / 10000);
-
-            if (baseOutput > Integer.MAX_VALUE) {
-                long totalAmount = baseOutput;
-
-                while (totalAmount > 0) {
-                    int stackSize = (int) Math.min(totalAmount, Integer.MAX_VALUE);
-                    fluidStacks = new FluidStack(fluidType, stackSize);
-                    totalAmount -= stackSize;
-                }
-            } else {
-                fluidStacks = new FluidStack(fluidType, (int) baseOutput);
-            }
-        }
-
-        return fluidStacks;
     }
 
     @Override
@@ -427,7 +305,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         startRecipeProcessing();
 
-        if (excessFuel > 2000 && mProgresstime != 0 && mProgresstime % 20 == 0) {
+        if (excessFuel > 2000 && mProgresstime > 0 && mProgresstime % 20 == 0) {
             excessFuel += (int) Math.floor(excessFuel / 2000.0);
         }
 
@@ -436,46 +314,34 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             this.stopMachine(ShutDownReasonRegistry.POWER_LOSS);
         }
 
-        if (mProgresstime != 0) {
-            if (this.mProgresstime % 5 == 0 && excessFuel >= 2000) {
-                ArrayList<FluidStack> storedFluids = getStoredFluids();
-                for (FluidStack tFluid : storedFluids) {
-                    if (tFluid != null) {
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("pyrotheum")) {
-                            int consumption = (int) Math.pow(excessFuel, 1.3);
-                            if (tFluid.amount >= consumption) {
-                                tFluid.amount -= consumption;
-                                excessFuel += 1;
-                            }
+        if (mProgresstime > 0) {
+            if (mProgresstime % 5 == 0 && excessFuel >= 2000) {
+                for (FluidStack tFluid : getStoredFluids()) {
+                    if (tFluid == null || tFluid.getFluid() == null) continue;
+                    int amount = tFluid.amount;
+                    if (GTUtility.areFluidsEqual(tFluid, new FluidStack(GTPPFluids.Pyrotheum, 1))) {
+                        int consumption = (int) Math.pow(excessFuel, 1.3);
+                        if (amount >= consumption) {
+                            tFluid.amount -= consumption;
+                            excessFuel += 1;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("ic2distilledwater")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 1;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, FluidRegistry.getFluidStack("ic2distilledwater", 1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("liquidoxygen")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 2;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, Materials.LiquidOxygen.getFluid(1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier * 2;
                         }
-
-                        if (tFluid.getFluid()
-                            .getName()
-                            .equals("liquid helium")) {
-                            if (tFluid.amount >= 200000) {
-                                tFluid.amount -= 200000;
-                                excessFuel -= 4;
-                            }
+                    } else if (GTUtility.areFluidsEqual(tFluid, WerkstoffLoader.LiquidHelium.getFluidOrGas(1))) {
+                        int multiplier = amount / 200_000;
+                        if (multiplier > 0) {
+                            tFluid.amount -= multiplier * 200_000;
+                            excessFuel -= multiplier * 4;
                         }
                     }
                 }

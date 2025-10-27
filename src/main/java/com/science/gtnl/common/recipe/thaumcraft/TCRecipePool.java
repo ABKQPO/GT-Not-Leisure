@@ -51,11 +51,11 @@ public class TCRecipePool implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.nanite, MaterialsUEVplus.MagMatter, 1), ItemList.Timepiece.get(1),
                 ItemList.Transdimensional_Alignment_Matrix.get(1), ItemList.EnergisedTesseract.get(1),
                 ItemList.Field_Generator_UXV.get(1), ItemList.GigaChad.get(1),
-                ItemUtils.createItemStack(ItemList.ZPM6.get(1), "{GT.ItemCharge:" + Long.MAX_VALUE + "}", null),
+                ItemUtils.getItemStack(ItemList.ZPM6.get(1), "{GT.ItemCharge:" + Long.MAX_VALUE + "}", null),
                 CustomItemList.astralArrayFabricator.get(1), CustomItemList.Machine_Multi_EyeOfHarmony.get(1),
                 CustomItemList.Machine_Multi_ForgeOfGods.get(1), ItemList.SpaceElevatorModuleAssemblerT3.get(1),
                 ItemList.SpaceElevatorModulePumpT3.get(1), new ItemStack(LudicrousItems.bigPearl, 1),
-                ItemUtils.createItemStack(
+                ItemUtils.getItemStack(
                     Mods.EnderIO.ID,
                     "blockCapBank",
                     1,

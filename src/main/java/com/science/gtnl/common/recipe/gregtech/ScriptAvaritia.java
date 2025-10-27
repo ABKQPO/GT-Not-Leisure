@@ -62,134 +62,128 @@ public class ScriptAvaritia implements IScriptLoader {
 
     @Override
     public void loadRecipes() {
-        ItemStack eternityFluidPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.Eternity.getMolten(1), 114514);
-        ItemStack magMatterFluidPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.MagMatter.getMolten(1), 114514);
-        ItemStack universiumFluidPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.Universium.getMolten(1), 114514);
+        ItemStack eternityFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.Eternity.getMolten(1), 114514);
+        ItemStack magMatterFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.MagMatter.getMolten(1), 114514);
+        ItemStack universiumFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.Universium.getMolten(1), 114514);
         ItemStack quarkGluonPlasmaFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.QuarkGluonPlasma.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.QuarkGluonPlasma.getFluid(1), 114514);
         ItemStack sgCrystalSlurryFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.StargateCrystalSlurry.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.StargateCrystalSlurry.getFluid(1), 114514);
         ItemStack mcsmFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter.getMolten(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter.getMolten(1), 114514);
         ItemStack dimensionallyShiftedSuperFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyShiftedSuperfluid.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyShiftedSuperfluid.getFluid(1), 114514);
         ItemStack sixPhasedCopperFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.SixPhasedCopper.getMolten(1), 114514);
-        ItemStack phononMediumFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.PhononMedium.getFluid(1), 114514);
-        ItemStack antimatterFluidPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.Antimatter.getFluid(1), 114514);
-        ItemStack plasmaLeadFluidPacket = ItemUtils.createFluidPacket(Materials.Lead.getPlasma(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.SixPhasedCopper.getMolten(1), 114514);
+        ItemStack phononMediumFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.PhononMedium.getFluid(1), 114514);
+        ItemStack antimatterFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.Antimatter.getFluid(1), 114514);
+        ItemStack plasmaLeadFluidPacket = ItemUtils.getFluidPacket(Materials.Lead.getPlasma(1), 114514);
         ItemStack dtrFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentResidue.getFluid(1), 114514);
-        ItemStack plasmaPlutonium241FluidPacket = ItemUtils
-            .createFluidPacket(Materials.Plutonium241.getPlasma(1), 114514);
-        ItemStack plasmaAmericiumPacket = ItemUtils.createFluidPacket(Materials.Americium.getPlasma(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentResidue.getFluid(1), 114514);
+        ItemStack plasmaPlutonium241FluidPacket = ItemUtils.getFluidPacket(Materials.Plutonium241.getPlasma(1), 114514);
+        ItemStack plasmaAmericiumPacket = ItemUtils.getFluidPacket(Materials.Americium.getPlasma(1), 114514);
         ItemStack plasmaNeonPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().NEON.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().NEON.getPlasma(), 1), 114514);
         ItemStack plasmaGermaniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().GERMANIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().GERMANIUM.getPlasma(), 1), 114514);
         ItemStack plasmaKryptonPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().KRYPTON.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().KRYPTON.getPlasma(), 1), 114514);
         ItemStack plasmaSeleniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().SELENIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaRadonPacket = ItemUtils.createFluidPacket(Materials.Radon.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().SELENIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaRadonPacket = ItemUtils.getFluidPacket(Materials.Radon.getPlasma(1), 114514);
         ItemStack plasmaHafniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().HAFNIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaSulfurPacket = ItemUtils.createFluidPacket(Materials.Sulfur.getPlasma(1), 114514);
-        ItemStack plasmaOxygenPacket = ItemUtils.createFluidPacket(Materials.Oxygen.getPlasma(1), 114514);
-        ItemStack plasmaNitrogenPacket = ItemUtils.createFluidPacket(Materials.Nitrogen.getPlasma(1), 114514);
-        ItemStack plasmaHeliumPacket = ItemUtils.createFluidPacket(Materials.Helium.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().HAFNIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaSulfurPacket = ItemUtils.getFluidPacket(Materials.Sulfur.getPlasma(1), 114514);
+        ItemStack plasmaOxygenPacket = ItemUtils.getFluidPacket(Materials.Oxygen.getPlasma(1), 114514);
+        ItemStack plasmaNitrogenPacket = ItemUtils.getFluidPacket(Materials.Nitrogen.getPlasma(1), 114514);
+        ItemStack plasmaHeliumPacket = ItemUtils.getFluidPacket(Materials.Helium.getPlasma(1), 114514);
         ItemStack plasmaThorium232Packet = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().THORIUM232.getPlasma(), 1), 114514);
-        ItemStack plasmaBoronPacket = ItemUtils.createFluidPacket(Materials.Boron.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().THORIUM232.getPlasma(), 1), 114514);
+        ItemStack plasmaBoronPacket = ItemUtils.getFluidPacket(Materials.Boron.getPlasma(1), 114514);
         ItemStack plasmaRheniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().RHENIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaBismuthPacket = ItemUtils.createFluidPacket(Materials.Bismuth.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().RHENIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaBismuthPacket = ItemUtils.getFluidPacket(Materials.Bismuth.getPlasma(1), 114514);
         ItemStack plasmaIodinePacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().IODINE.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().IODINE.getPlasma(), 1), 114514);
         ItemStack plasmaZirconiumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().ZIRCONIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().ZIRCONIUM.getPlasma(), 1), 114514);
         ItemStack plasmaBrominePacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().BROMINE.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().BROMINE.getPlasma(), 1), 114514);
         ItemStack plasmaXenonPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().XENON.getPlasma(), 1), 114514);
-        ItemStack plasmaHypogenPacket = ItemUtils.createFluidPacket(Materials.Hydrogen.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().XENON.getPlasma(), 1), 114514);
+        ItemStack plasmaHypogenPacket = ItemUtils.getFluidPacket(Materials.Hydrogen.getPlasma(1), 114514);
         ItemStack plasmaAdvancedNitinolPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.ADVANCED_NITINOL.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.ADVANCED_NITINOL.getPlasma(), 1), 114514);
         ItemStack plasmaChromaticGlassPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.CHRONOMATIC_GLASS.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.CHRONOMATIC_GLASS.getPlasma(), 1), 114514);
         ItemStack plasmaAstralTitaniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.ASTRAL_TITANIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.ASTRAL_TITANIUM.getPlasma(), 1), 114514);
         ItemStack plasmaCelestialTungstenPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getPlasma(), 1), 114514);
         ItemStack plasmaDragonBloodPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.DRAGON_METAL.getPlasma(), 1), 114514);
-        ItemStack plasmaTinPacket = ItemUtils.createFluidPacket(Materials.Tin.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.DRAGON_METAL.getPlasma(), 1), 114514);
+        ItemStack plasmaTinPacket = ItemUtils.getFluidPacket(Materials.Tin.getPlasma(1), 114514);
         ItemStack plasmaThalliumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().THALLIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaCalciumPacket = ItemUtils.createFluidPacket(Materials.Calcium.getPlasma(1), 114514);
-        ItemStack plasmaTitaniumPacket = ItemUtils.createFluidPacket(Materials.Titanium.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().THALLIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaCalciumPacket = ItemUtils.getFluidPacket(Materials.Calcium.getPlasma(1), 114514);
+        ItemStack plasmaTitaniumPacket = ItemUtils.getFluidPacket(Materials.Titanium.getPlasma(1), 114514);
         ItemStack plasmaFermiumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().FERMIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().FERMIUM.getPlasma(), 1), 114514);
         ItemStack plasmaRutheniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().RUTHENIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaSilverPacket = ItemUtils.createFluidPacket(Materials.Silver.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().RUTHENIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaSilverPacket = ItemUtils.getFluidPacket(Materials.Silver.getPlasma(1), 114514);
         ItemStack plasmaRadiumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().RADIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().RADIUM.getPlasma(), 1), 114514);
         ItemStack plasmaPlutonium238Packet = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().PLUTONIUM238.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().PLUTONIUM238.getPlasma(), 1), 114514);
         ItemStack plasmaRunitePacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.RUNITE.getPlasma(), 1), 114514);
-        ItemStack rawStarMatterPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.RawStarMatter.getFluid(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.RUNITE.getPlasma(), 1), 114514);
+        ItemStack rawStarMatterPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.RawStarMatter.getFluid(1), 114514);
         ItemStack plasmaForcePacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.FORCE.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.FORCE.getPlasma(), 1), 114514);
         ItemStack plasmaRhugnorPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.STANDALONE.RHUGNOR.getPlasma(), 1), 114514);
-        ItemStack plasmaZincPacket = ItemUtils.createFluidPacket(Materials.Zinc.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.STANDALONE.RHUGNOR.getPlasma(), 1), 114514);
+        ItemStack plasmaZincPacket = ItemUtils.getFluidPacket(Materials.Zinc.getPlasma(1), 114514);
         ItemStack plasmaTechnetiumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().TECHNETIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().TECHNETIUM.getPlasma(), 1), 114514);
         ItemStack plasmaNeptuniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().NEPTUNIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().NEPTUNIUM.getPlasma(), 1), 114514);
         ItemStack plasmaCaliforniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().CALIFORNIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaNiobiumPacket = ItemUtils.createFluidPacket(Materials.Niobium.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().CALIFORNIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaNiobiumPacket = ItemUtils.getFluidPacket(Materials.Niobium.getPlasma(1), 114514);
         ItemStack plasmaCuriumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().CURIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().CURIUM.getPlasma(), 1), 114514);
         ItemStack plasmaProtactiniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().PROTACTINIUM.getPlasma(), 1), 114514);
-        ItemStack excitedDTRCPacket = ItemUtils.createFluidPacket(MaterialsUEVplus.ExcitedDTRC.getFluid(1), 114514);
-        ItemStack excitedDTSCFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.ExcitedDTSC.getFluid(1), 114514);
-        ItemStack excitedDTECFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.ExcitedDTEC.getFluid(1), 114514);
-        ItemStack excitedDTPCFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.ExcitedDTPC.getFluid(1), 114514);
-        ItemStack excitedDTCCFluidPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.ExcitedDTCC.getFluid(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().PROTACTINIUM.getPlasma(), 1), 114514);
+        ItemStack excitedDTRCPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.ExcitedDTRC.getFluid(1), 114514);
+        ItemStack excitedDTSCFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.ExcitedDTSC.getFluid(1), 114514);
+        ItemStack excitedDTECFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.ExcitedDTEC.getFluid(1), 114514);
+        ItemStack excitedDTPCFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.ExcitedDTPC.getFluid(1), 114514);
+        ItemStack excitedDTCCFluidPacket = ItemUtils.getFluidPacket(MaterialsUEVplus.ExcitedDTCC.getFluid(1), 114514);
         ItemStack plasmaRhodiumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().RHODIUM.getPlasma(), 1), 114514);
-        ItemStack plasmaNickelPacket = ItemUtils.createFluidPacket(Materials.Nickel.getPlasma(1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().RHODIUM.getPlasma(), 1), 114514);
+        ItemStack plasmaNickelPacket = ItemUtils.getFluidPacket(Materials.Nickel.getPlasma(1), 114514);
         ItemStack plasmaPoloniumPacket = ItemUtils
-            .createFluidPacket(new FluidStack(MaterialsElements.getInstance().POLONIUM.getPlasma(), 1), 114514);
+            .getFluidPacket(new FluidStack(MaterialsElements.getInstance().POLONIUM.getPlasma(), 1), 114514);
         ItemStack dimensionallyTranscendentCrudeCatalystPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentCrudeCatalyst.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentCrudeCatalyst.getFluid(1), 114514);
         ItemStack dimensionallyTranscendentExoticCatalystPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentExoticCatalyst.getFluid(1), 114514);
-        ItemStack plasmaThoriumPacket = ItemUtils.createFluidPacket(Materials.Thorium.getPlasma(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentExoticCatalyst.getFluid(1), 114514);
+        ItemStack plasmaThoriumPacket = ItemUtils.getFluidPacket(Materials.Thorium.getPlasma(1), 114514);
         ItemStack stableBaryonicMatterPacket = ItemUtils
-            .createFluidPacket(Materials.StableBaryonicMatter.getFluid(1), 114514);
+            .getFluidPacket(Materials.StableBaryonicMatter.getFluid(1), 114514);
         ItemStack dimensionallyTranscendentStellarCatalystPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentStellarCatalyst.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentStellarCatalyst.getFluid(1), 114514);
         ItemStack dimensionallyTranscendentProsaicCatalystPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentProsaicCatalyst.getFluid(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentProsaicCatalyst.getFluid(1), 114514);
         ItemStack dimensionallyTranscendentResplendentCatalystPacket = ItemUtils
-            .createFluidPacket(MaterialsUEVplus.DimensionallyTranscendentResplendentCatalyst.getFluid(1), 114514);
-        ItemStack plasmaIronPacket = ItemUtils.createFluidPacket(Materials.Iron.getPlasma(1), 114514);
+            .getFluidPacket(MaterialsUEVplus.DimensionallyTranscendentResplendentCatalyst.getFluid(1), 114514);
+        ItemStack plasmaIronPacket = ItemUtils.getFluidPacket(Materials.Iron.getPlasma(1), 114514);
         ItemStack[] purifiedWaterPackets = new ItemStack[8];
 
         for (int i = 1; i <= 8; i++) {
             Materials material = Materials.get("Grade" + i + "PurifiedWater");
-            purifiedWaterPackets[i - 1] = ItemUtils.createFluidPacket(material.getFluid(1), 114514);
+            purifiedWaterPackets[i - 1] = ItemUtils.getFluidPacket(material.getFluid(1), 114514);
         }
 
         ExtremeCraftingManager.getInstance()
@@ -1021,13 +1015,8 @@ public class ScriptAvaritia implements IScriptLoader {
                 "ghijklmno",
                 "ppppppppp",
                 'A',
-                ItemUtils.createItemStack(
-                    "EnderIO",
-                    "blockCapBank",
-                    1,
-                    0,
-                    "{storedEnergyRF:2500000,type:\"CREATIVE\"}",
-                    null),
+                ItemUtils
+                    .getItemStack("EnderIO", "blockCapBank", 1, 0, "{storedEnergyRF:2500000,type:\"CREATIVE\"}", null),
                 'B',
                 GTModHandler.getModItem(OpenComputers.ID, "item", 1, 114, missing),
                 'C',
@@ -1107,7 +1096,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'd',
                 GTNLItemList.CompressedStargateTier5.get(1),
                 'e',
-                ItemUtils.createSpecialFlower("asgardandelion"),
+                ItemUtils.getSpecialFlower("asgardandelion"),
                 'f',
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSingularityCraftingStorage", 1, 0, missing),
                 'g',
@@ -2227,5 +2216,28 @@ public class ScriptAvaritia implements IScriptLoader {
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.VibrantAlloy, 1),
                 '9',
                 new ItemStack(Items.dye, 1, 14));
+
+        ExtremeCraftingManager.getInstance()
+            .addExtremeShapedOreRecipe(
+                ReAvaItemList.ExtremeAnvil.get(1),
+                "AAAAAAAAA",
+                "ABBBBBBBA",
+                "--BCCCB--",
+                "--CDDDC--",
+                "--CDEDC--",
+                "--CDDDC--",
+                "-ABCCCBA-",
+                "-ABBBBBA-",
+                "-AAAAAAA-",
+                "A",
+                GTModHandler.getModItem(Avaritia.ID, "Resource_Block", 1),
+                "B",
+                GTModHandler.getModItem(Avaritia.ID, "Crystal_Matrix", 1),
+                "C",
+                new ItemStack(Blocks.anvil, 1),
+                "D",
+                GTNLItemList.BlazeCubeBlock.get(1),
+                "E",
+                GTNLItemList.EnhancementCore.get(1));
     }
 }

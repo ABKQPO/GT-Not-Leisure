@@ -1088,7 +1088,7 @@ public enum GTNLItemList implements IItemContainer {
     HumongousOutputBusUMV,
     HumongousOutputBusUXV,
     HumongousOutputBusMAX,
-    ModFilteredInputBusME,
+    TypeFilteredInputBusME,
     LootBagRedemption,
     EnergyTransferNode,
     DieselGeneratorLV,

@@ -4,6 +4,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.item.items.SuspiciousStew.*;
 import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
@@ -120,17 +121,28 @@ public class ItemLoader {
         infinityWaterBucket = new ItemInfinityItem(
             "InfinityWaterBucket",
             Blocks.water,
+            FluidRegistry.getFluid("water"),
             GTNLItemList.InfinityWaterBucket);
-        infinityLavaBucket = new ItemInfinityItem("InfinityLavaBucket", Blocks.lava, GTNLItemList.InfinityLavaBucket);
+        infinityLavaBucket = new ItemInfinityItem(
+            "InfinityLavaBucket",
+            Blocks.lava,
+            FluidRegistry.getFluid("lava"),
+            GTNLItemList.InfinityLavaBucket);
         infinityHoneyBucket = new ItemInfinityItem(
             "InfinityHoneyBucket",
             BlockLoader.honeyFluidBlock,
+            BlockLoader.honeyFluid,
             GTNLItemList.InfinityHoneyBucket);
         infinityShimmerBucket = new ItemInfinityItem(
             "InfinityShimmerBucket",
             BlockLoader.shimmerFluidBlock,
+            BlockLoader.shimmerFluid,
             GTNLItemList.InfinityShimmerBucket);
-        superstrongSponge = new ItemInfinityItem("SuperstrongSponge", null, GTNLItemList.SuperstrongSponge, false);
+        superstrongSponge = new ItemInfinityItem(
+            "SuperstrongSponge",
+            (Block) null,
+            false,
+            GTNLItemList.SuperstrongSponge);
         RecordLoader.recordSus = new ItemRecord("sus").setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         RecordLoader.recordNewHorizons = new ItemRecord("new_horizons")
             .setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);

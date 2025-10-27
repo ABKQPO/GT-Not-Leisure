@@ -62,52 +62,52 @@ public class SpaceDrillRecipes implements IRecipePool {
             Arrays.asList(
                 Collections.unmodifiableList(
                     Arrays.asList(
-                        Materials.Hydrogen.getGas(10000000),
-                        Materials.Helium.getGas(10000000),
-                        Materials.Nitrogen.getGas(10000000),
-                        Materials.Methane.getGas(10000000),
-                        Materials.SulfurDioxide.getGas(10000000),
-                        Materials.CarbonDioxide.getGas(10000000),
-                        Materials.NitrogenDioxide.getGas(10000000),
-                        Materials.Ammonia.getGas(10000000),
-                        Materials.Chlorine.getGas(10000000),
-                        Materials.Fluorine.getGas(10000000),
-                        Materials.CarbonMonoxide.getGas(10000000),
-                        Materials.Oxygen.getGas(10000000))),
+                        Materials.Hydrogen.getGas(100000),
+                        Materials.Helium.getGas(100000),
+                        Materials.Nitrogen.getGas(100000),
+                        Materials.Methane.getGas(100000),
+                        Materials.SulfurDioxide.getGas(100000),
+                        Materials.CarbonDioxide.getGas(100000),
+                        Materials.NitrogenDioxide.getGas(100000),
+                        Materials.Ammonia.getGas(100000),
+                        Materials.Chlorine.getGas(100000),
+                        Materials.Fluorine.getGas(100000),
+                        Materials.CarbonMonoxide.getGas(100000),
+                        Materials.Oxygen.getGas(100000))),
                 Collections.unmodifiableList(
                     Arrays.asList(
                         safeGetFluidStack("unknowwater"),
-                        WerkstoffLoader.Neon.getFluidOrGas(10000000),
-                        Materials.Argon.getGas(10000000),
-                        WerkstoffLoader.Krypton.getFluidOrGas(10000000),
-                        WerkstoffLoader.Xenon.getFluidOrGas(10000000),
-                        Materials.Radon.getGas(10000000),
-                        Materials.Helium_3.getGas(10000000))),
+                        WerkstoffLoader.Neon.getFluidOrGas(100000),
+                        Materials.Argon.getGas(100000),
+                        WerkstoffLoader.Krypton.getFluidOrGas(100000),
+                        WerkstoffLoader.Xenon.getFluidOrGas(100000),
+                        Materials.Radon.getGas(100000),
+                        Materials.Helium_3.getGas(100000))),
                 Collections.unmodifiableList(
                     Arrays.asList(
-                        Materials.Deuterium.getGas(10000000),
-                        Materials.Tritium.getGas(10000000),
-                        Materials.HeavyFuel.getFluid(10000000),
-                        Materials.LightFuel.getFluid(10000000),
-                        Materials.Naphtha.getFluid(10000000),
-                        Materials.Gas.getGas(10000000),
-                        new FluidStack(GTPPFluids.CoalGas, 10000000),
-                        new FluidStack(MaterialsElements.getInstance().BROMINE.getFluid(), 10000000),
-                        Materials.Methane.getGas(10000000),
-                        Materials.Oil.getFluid(10000000),
-                        Materials.OilHeavy.getFluid(10000000),
-                        Materials.Lava.getFluid(10000000),
-                        Materials.SaltWater.getFluid(10000000),
+                        Materials.Deuterium.getGas(100000),
+                        Materials.Tritium.getGas(100000),
+                        Materials.HeavyFuel.getFluid(100000),
+                        Materials.LightFuel.getFluid(100000),
+                        Materials.Naphtha.getFluid(100000),
+                        Materials.Gas.getGas(100000),
+                        new FluidStack(GTPPFluids.CoalGas, 100000),
+                        new FluidStack(MaterialsElements.getInstance().BROMINE.getFluid(), 100000),
+                        Materials.Methane.getGas(100000),
+                        Materials.Oil.getFluid(100000),
+                        Materials.OilHeavy.getFluid(100000),
+                        Materials.Lava.getFluid(100000),
+                        Materials.SaltWater.getFluid(100000),
                         safeGetFluidStack("ic2distilledwater"),
-                        safeGetFluidStack("pyrotheum"),
-                        safeGetFluidStack("cryotheum"),
+                        new FluidStack(GTPPFluids.Pyrotheum, 100000),
+                        new FluidStack(GTPPFluids.Cryotheum, 100000),
                         safeGetFluidStack("liquiddna"),
-                        Materials.HydrochloricAcid.getFluid(10000000),
-                        Materials.SulfuricAcid.getFluid(10000000),
-                        Materials.NitricAcid.getFluid(10000000),
-                        Materials.HydrofluoricAcid.getFluid(10000000),
-                        Materials.PhosphoricAcid.getFluid(10000000),
-                        Materials.PhthalicAcid.getFluid(10000000)))));
+                        Materials.HydrochloricAcid.getFluid(100000),
+                        Materials.SulfuricAcid.getFluid(100000),
+                        Materials.NitricAcid.getFluid(100000),
+                        Materials.HydrofluoricAcid.getFluid(100000),
+                        Materials.PhosphoricAcid.getFluid(100000),
+                        Materials.PhthalicAcid.getFluid(100000)))));
 
         List<MinerTierData> minerTiers = Arrays.asList(
             new MinerTierData(1, ItemList.MiningDroneUV.get(1), (int) TierEU.RECIPE_UV),
@@ -173,6 +173,6 @@ public class SpaceDrillRecipes implements IRecipePool {
     }
 
     public FluidStack safeGetFluidStack(String name) {
-        return FluidRegistry.getFluidStack(name, 10000000);
+        return FluidRegistry.getFluidStack(name, 100000);
     }
 }
