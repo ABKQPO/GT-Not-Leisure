@@ -2,8 +2,12 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.enums.Mods.DraconicEvolution;
 
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.loader.BlockLoader;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
@@ -80,6 +84,14 @@ public class CentrifugeRecipes implements IRecipePool {
                 Materials.Helium_3.getGas(1000))
             .duration(400)
             .eut(TierEU.RECIPE_HV)
+            .addTo(CNCR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 1000))
+            .fluidOutputs(FluidRegistry.getFluidStack("for.honey", 1000))
+            .duration(300)
+            .eut(TierEU.RECIPE_ULV)
             .addTo(CNCR);
     }
 }

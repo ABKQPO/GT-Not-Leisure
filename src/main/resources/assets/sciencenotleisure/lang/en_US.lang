@@ -536,6 +536,9 @@ SterileMaintenanceHatch=Sterile Maintenance Hatch
 SterileConfigurationMaintenanceHatch=Sterile Configuration Maintenance Hatch
 AbsoluteMaintenanceHatch=Absolute Maintenance Hatch
 AbsoluteConfigurationMaintenanceHatch=Absolute Configuration Maintenance Hatch
+Tooltip_AutoConfigurationMaintenanceHatch_00=For automatically maintaining Multiblocks
+Tooltip_AutoConfigurationMaintenanceHatch_01=Does control everything but itself.
+Tooltip_AutoConfigurationMaintenanceHatch_02=§bSelfless dedication!
 Info_ConfigurationMaintenanceHatch_00=Configuration machine processing time, unit: %%
 
 NinefoldInputHatchEV=Ninefold Input Hatch (EV)

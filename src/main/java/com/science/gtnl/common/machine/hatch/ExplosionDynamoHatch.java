@@ -35,7 +35,7 @@ public class ExplosionDynamoHatch extends MTEHatchDynamo {
     }
 
     @Override
-    public long maxEUOutput() {
-        return V[mTier] * 64;
+    public long maxAmperesOut() {
+        return 64;
     }
 }

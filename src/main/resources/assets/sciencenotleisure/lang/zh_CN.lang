@@ -536,6 +536,9 @@ SterileMaintenanceHatch=无菌维护仓
 SterileConfigurationMaintenanceHatch=可配置无菌维护仓
 AbsoluteMaintenanceHatch=绝对洁净维护仓
 AbsoluteConfigurationMaintenanceHatch=可配置绝对洁净维护仓
+Tooltip_AutoConfigurationMaintenanceHatch_00=用于自动维护多方块机器
+Tooltip_AutoConfigurationMaintenanceHatch_01=它能掌控一切，除了自己.
+Tooltip_AutoConfigurationMaintenanceHatch_02=§b无私奉献！
 Info_ConfigurationMaintenanceHatch_00=配置机器处理耗时，单位：%%
 
 NinefoldInputHatchEV=九重输入仓 (EV)

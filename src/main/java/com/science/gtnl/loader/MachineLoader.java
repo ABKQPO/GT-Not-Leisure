@@ -1941,7 +1941,10 @@ public class MachineLoader {
                 StatCollector.translateToLocal("AutoConfigurationMaintenanceHatch"),
                 80,
                 120,
-                5));
+                5,
+                new String[] { StatCollector.translateToLocal("Tooltip_AutoConfigurationMaintenanceHatch_00"),
+                    StatCollector.translateToLocal("Tooltip_AutoConfigurationMaintenanceHatch_01"),
+                    StatCollector.translateToLocal("Tooltip_AutoConfigurationMaintenanceHatch_02"), }));
         addItemTooltip(GTNLItemList.AutoConfigurationMaintenanceHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.ExplosionDynamoHatch.set(
