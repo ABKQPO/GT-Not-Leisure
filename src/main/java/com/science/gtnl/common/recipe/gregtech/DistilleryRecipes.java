@@ -33,7 +33,7 @@ public class DistilleryRecipes implements IRecipePool {
         if (Forestry.isModLoaded()) {
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    ItemUtils.createItemStack(Forestry.ID, "leaves", 1, 0, "{species:\"forestry.treePine\"}", null))
+                    ItemUtils.getItemStack(Forestry.ID, "leaves", 1, 0, "{species:\"forestry.treePine\"}", null))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
                 .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
                 .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 250))
@@ -43,7 +43,7 @@ public class DistilleryRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    ItemUtils.createItemStack(Forestry.ID, "leaves", 1, 0, "{species:\"forestry.treePine\"}", null))
+                    ItemUtils.getItemStack(Forestry.ID, "leaves", 1, 0, "{species:\"forestry.treePine\"}", null))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
                 .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
                 .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))

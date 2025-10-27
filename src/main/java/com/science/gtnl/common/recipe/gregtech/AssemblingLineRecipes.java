@@ -237,7 +237,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 GTModHandler.getModItem(ThaumicEnergistics.ID, "thaumicenergistics.block.arcane.assembler", 64),
                 GTModHandler.getModItem(Thaumcraft.ID, "blockStoneDevice", 64, 2),
                 GTModHandler.getModItem(Thaumcraft.ID, "blockStoneDevice", 64, 2),
-                ItemUtils.createItemStack(
+                ItemUtils.getItemStack(
                     Thaumcraft.ID,
                     "WandCasting",
                     1,
@@ -1351,6 +1351,22 @@ public class AssemblingLineRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(2304), Materials.Lubricant.getFluid(16000))
             .itemOutputs(GTNLItemList.AdvancedSuperDualInputHatchME.get(1))
             .eut(TierEU.RECIPE_LuV)
+            .duration(15 * SECONDS)
+            .addTo(GTRecipeConstants.AssemblyLine);
+
+        GTValues.RA.stdBuilder()
+            .metadata(RESEARCH_ITEM, ItemList.Automation_TypeFilter_IV.get(1))
+            .metadata(SCANNING, new Scanning(15 * MINUTES, TierEU.RECIPE_EV))
+            .itemInputs(
+                ItemList.Hatch_Input_Bus_ME_Advanced.get(1),
+                ItemList.Conveyor_Module_IV.get(1),
+                ItemList.Emitter_IV.get(1),
+                ItemList.Automation_TypeFilter_IV.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 30),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockChest", 1))
+            .fluidInputs(MaterialsAlloy.INDALLOY_140.getFluidStack(720), Materials.Lubricant.getFluid(1000))
+            .itemOutputs(GTNLItemList.TypeFilteredInputBusME.get(1))
+            .eut(TierEU.RECIPE_IV)
             .duration(15 * SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
     }

@@ -97,7 +97,7 @@ public class ItemDebug extends Item {
                         .append(si.meta());
                 }
             } else {
-                log.append("ItemUtils.createItemStack(")
+                log.append("ItemUtils.getItemStack(")
                     .append("\"")
                     .append(modid)
                     .append("\"")

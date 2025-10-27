@@ -78,7 +78,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     private static final int RUNE_MODE = 3;
     private boolean enableInfinityMana = false;
     private static final ItemStack asgardandelion = ItemUtils
-        .createItemStack(Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
+        .getItemStack(Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
 
     public TeleportationArrayToAlfheim(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

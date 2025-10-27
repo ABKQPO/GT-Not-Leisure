@@ -20,6 +20,7 @@ import com.reavaritia.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -855,7 +856,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 2, 30))
             .itemOutputs(
                 ItemUtils
-                    .createItemStack(ItemList.Hatch_Output_Bus_ME.get(1L), "{baseCapacity:9223372036854775807L}", null))
+                    .getItemStack(ItemList.Hatch_Output_Bus_ME.get(1L), "{baseCapacity:9223372036854775807L}", null))
             .specialValue(0)
             .duration(300)
             .eut(480)
@@ -867,8 +868,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(AE2FluidCraft.ID, "part_fluid_interface", 1),
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 2, 30))
             .itemOutputs(
-                ItemUtils
-                    .createItemStack(ItemList.Hatch_Output_ME.get(1L), "{baseCapacity:9223372036854775807L}", null))
+                ItemUtils.getItemStack(ItemList.Hatch_Output_ME.get(1L), "{baseCapacity:9223372036854775807L}", null))
             .specialValue(0)
             .duration(300)
             .eut(480)
@@ -1316,7 +1316,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.copyAmount(
                     0,
-                    ItemUtils.createItemStack(
+                    ItemUtils.getItemStack(
                         EnderIO.ID,
                         "blockCapBank",
                         1,
@@ -2907,6 +2907,40 @@ public class AssemblerRecipes implements IRecipePool {
                     .addTo(As);
             }
         }
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTNLItemList.ShimmerBucket.get(1), GTModHandler.getModItem(OpenComputers.ID, "disassembler", 1))
+            .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
+            .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.HoneyBucket.get(1),
+                GTModHandler.getModItem(PamsHarvestCraft.ID, "royaljellyItem", 64))
+            .itemOutputs(GTNLItemList.InfinityHoneyBucket.get(1))
+            .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 100000))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(new ItemStack(Items.water_bucket, 1), GregtechItemList.Hatch_Reservoir.get(1))
+            .itemOutputs(GTNLItemList.InfinityWaterBucket.get(1))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                new ItemStack(Items.lava_bucket, 1),
+                GTModHandler.getModItem(ThaumicExploration.ID, "everburnUrn", 1))
+            .itemOutputs(GTNLItemList.InfinityLavaBucket.get(1))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }

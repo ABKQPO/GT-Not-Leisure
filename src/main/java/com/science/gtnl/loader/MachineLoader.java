@@ -40,7 +40,6 @@ import com.science.gtnl.common.machine.hatch.HumongousOutputBus;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
-import com.science.gtnl.common.machine.hatch.ModFilteredInputBusME;
 import com.science.gtnl.common.machine.hatch.NanitesInputBus;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.OredictInputBusME;
@@ -56,6 +55,7 @@ import com.science.gtnl.common.machine.hatch.SuperInputHatchME;
 import com.science.gtnl.common.machine.hatch.SuperVoidBus;
 import com.science.gtnl.common.machine.hatch.SuperVoidHatch;
 import com.science.gtnl.common.machine.hatch.TapDynamoHatch;
+import com.science.gtnl.common.machine.hatch.TypeFilteredInputBusME;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.hatch.WirelessMultiDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
@@ -2239,12 +2239,12 @@ public class MachineLoader {
                 16));
         addItemTooltip(GTNLItemList.ManaEnergyHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
-        GTNLItemList.ModFilteredInputBusME.set(
-            new ModFilteredInputBusME(
-                MOD_FILTERED_INPUT_BUS_ME.ID,
-                "ModFilteredInputBusME",
-                StatCollector.translateToLocal("ModFilteredInputBusME")));
-        addItemTooltip(GTNLItemList.ModFilteredInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        GTNLItemList.TypeFilteredInputBusME.set(
+            new TypeFilteredInputBusME(
+                TYPE_FILTERED_INPUT_BUS_ME.ID,
+                "TypeFilteredInputBusME",
+                StatCollector.translateToLocal("TypeFilteredInputBusME")));
+        addItemTooltip(GTNLItemList.TypeFilteredInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.HumongousOutputBusLV.set(
             new HumongousOutputBus(

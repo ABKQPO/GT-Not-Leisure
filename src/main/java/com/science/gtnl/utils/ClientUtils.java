@@ -74,7 +74,7 @@ public class ClientUtils {
             dropItem.stackSize = 1;
             result = dropItem;
         } else if (entity instanceof EntityPlayer entityPlayer) {
-            result = ItemUtils.createPlayerSkull(entityPlayer.getCommandSenderName());
+            result = ItemUtils.getPlayerSkull(entityPlayer.getCommandSenderName());
         } else {
             int entityID = EntityList.getEntityID(entity);
             if (entityID <= 0) return false;

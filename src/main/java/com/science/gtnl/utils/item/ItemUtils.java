@@ -191,7 +191,7 @@ public class ItemUtils {
         return Blocks.air;
     }
 
-    public static ItemStack createItemStack(ItemStack baseStack, String aNBTString, ItemStack aReplacement) {
+    public static ItemStack getItemStack(ItemStack baseStack, String aNBTString, ItemStack aReplacement) {
         if (baseStack == null) return aReplacement;
         try {
             baseStack.stackTagCompound = (NBTTagCompound) JsonToNBT.func_150315_a(aNBTString);
@@ -201,7 +201,7 @@ public class ItemUtils {
         return baseStack;
     }
 
-    public static ItemStack createItemStack(String aModID, String aItem, long aAmount, int aMeta, String aNBTString) {
+    public static ItemStack getItemStack(String aModID, String aItem, long aAmount, int aMeta, String aNBTString) {
         ItemStack s = getModItem(aModID, aItem, aAmount, aMeta);
         try {
             s.stackTagCompound = (NBTTagCompound) JsonToNBT.func_150315_a(aNBTString);
@@ -211,7 +211,7 @@ public class ItemUtils {
         return s;
     }
 
-    public static ItemStack createItemStack(String aModID, String aItem, long aAmount, int aMeta, String aNBTString,
+    public static ItemStack getItemStack(String aModID, String aItem, long aAmount, int aMeta, String aNBTString,
         ItemStack aReplacement) {
         ItemStack itemStack = getModItem(aModID, aItem, aAmount, aMeta);
         if (itemStack == null) return aReplacement;
@@ -223,7 +223,7 @@ public class ItemUtils {
         return itemStack;
     }
 
-    public static ItemStack createSpecialFlower(String typeName) {
+    public static ItemStack getSpecialFlower(String typeName) {
         ItemStack stack = GTModHandler.getModItem(Botania.ID, "specialFlower", 1);
         if (stack == null) return null;
 
@@ -237,7 +237,7 @@ public class ItemUtils {
         return stack;
     }
 
-    public static ItemStack createFluidPacket(FluidStack fluid, int amount) {
+    public static ItemStack getFluidPacket(FluidStack fluid, int amount) {
         if (fluid == null) return new ItemStack(Blocks.fire);
         ItemStack packet = GTModHandler.getModItem(AE2FluidCraft.ID, "fluid_packet", 1);
         NBTTagCompound tag = packet.getTagCompound();
@@ -399,7 +399,7 @@ public class ItemUtils {
         return book;
     }
 
-    public static ItemStack createPlayerSkull(String playerName) {
+    public static ItemStack getPlayerSkull(String playerName) {
         ItemStack skullStack = new ItemStack(Items.skull, 1, 3);
 
         NBTTagCompound tag = new NBTTagCompound();
