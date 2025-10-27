@@ -1394,5 +1394,29 @@ public class AssemblingLineRecipes implements IRecipePool {
             GTNLItemList.DebugDataAccessHatch.get(1),
             20000,
             (int) TierEU.RECIPE_UMV);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            GTNLItemList.LargeCutter.get(1),
+            1600000,
+            10000,
+            (int) TierEU.RECIPE_UV,
+            1,
+            new Object[] { GTNLItemList.LargeCutter.get(1),
+                GTNLItemList.LargeCutter.get(1),
+                GTNLItemList.LargeCutter.get(1),
+                GTNLItemList.LargeCutter.get(1),
+                GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Neutronium, 16),
+                ItemList.Robot_Arm_UHV.get(64),
+                ItemList.Robot_Arm_UHV.get(64),
+                GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Neutronium, 16),
+                ItemList.Conveyor_Module_UHV.get(64),
+                ItemList.NtNanofibers.get(64),
+                ItemList.NtNanofibers.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUHV, 8)},
+            new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(3000),
+                Materials.UUMatter.getFluid(32000)},
+            GTNLItemList.NeutroniumWireCutting.get(1),
+            1000,
+            (int) TierEU.RECIPE_UHV);
     }
 }
