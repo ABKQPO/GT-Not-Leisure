@@ -2812,6 +2812,19 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_EV)
             .addTo(As);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Robot_Arm_LV.get(2),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 2L),
+                new ItemStack(Blocks.redstone_block, 2),
+                new ItemStack(Items.diamond_pickaxe, 1),
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 2),
+                GregtechItemList.TransmissionComponent_LV.get(1))
+            .itemOutputs(GTNLItemList.VeinMiningPickaxe.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();

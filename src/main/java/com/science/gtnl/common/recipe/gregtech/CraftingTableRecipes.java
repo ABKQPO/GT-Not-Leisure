@@ -1241,6 +1241,14 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "ACA", "ABA", 'A', new ItemStack(Items.potionitem, 1, 8201), 'B',
                 new ItemStack(Items.water_bucket, 1), 'C', GTModHandler.getModItem(Thaumcraft.ID, "blockCandle", 1) });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.VeinMiningPickaxe.get(1),
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Robot_Arm_LV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(Blocks.redstone_block, 1), 'D',
+                new ItemStack(Items.diamond_pickaxe, 1), 'E',
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1), 'F',
+                GregtechItemList.TransmissionComponent_LV.get(1) });
+
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }
 
