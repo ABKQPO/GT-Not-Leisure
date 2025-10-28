@@ -1761,6 +1761,12 @@ Tooltip_MegaMixer_02=When recipe locking is enabled, grants two §cperfect overc
 Tooltip_MegaMixer_03=With recipe locking, continuous operation speeds up to 700%
 Tooltip_MegaMixer_Casing=Any Reinforced Iridium Machine Block
 
+NameCompoundDistillationFractionator=Compound Distillation Fractionator
+CompoundDistillationFractionatorRecipeType=Distillation Tower / Distillation Chamber
+CompoundDistillationFractionator_Mode_0=Distillation Tower
+CompoundDistillationFractionator_Mode_1=Distillation Chamber
+Tooltip_CompoundDistillationFractionator_Casing=Stabilized Naquadah Water Plant Casing
+
 NameLargeDistillery=Large Distillation Plant
 LargeDistilleryRecipeType=Distillation Tower / Distillation Chamber
 LargeDistillery_Mode_0=Distillation Tower
@@ -1981,10 +1987,16 @@ LargeSolidifierRecipeType=Fluid Solidifier / Tool Mold
 Tooltip_LargeSolidifier_00=300% faster than machines of the same voltage
 Tooltip_LargeSolidifier_Casing=Any ore washing plant machine block
 
+NameMegaCanner=Mega Canner
+MegaCannerRecipeType=Canning Machine / Fluid Canning Machine
+MegaCanning_Mode_0=Canning Machine
+MegaCanning_Mode_1=Fluid Canning Machine
+Tooltip_MegaCanner_Casing=Any ore washing plant machine block
+
 NameLargeCanning=Large Canning Machine
-LargeCanningRecipeType=Fluid Canning Machine / Canning Machine
-LargeCanning_Mode_0=Fluid Canning Machine
-LargeCanning_Mode_1=Canning Machine
+LargeCanningRecipeType=Canning Machine / Fluid Canning Machine
+LargeCanning_Mode_0=Canning Machine
+LargeCanning_Mode_1=Fluid Canning Machine
 Tooltip_LargeCanning_00=233% faster than machines of the same voltage
 Tooltip_LargeCanning_01=Only requires 50% of the recipe's power demand
 Tooltip_LargeCanning_Casing=Any ore washing plant machine block

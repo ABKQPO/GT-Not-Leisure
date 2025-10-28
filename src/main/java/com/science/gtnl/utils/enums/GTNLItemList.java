@@ -574,6 +574,8 @@ public enum GTNLItemList implements IItemContainer {
     HorizontalCompressor,
     MegaVacuumDryingFurnace,
     MegaBathTank,
+    MegaCanner,
+    CompoundDistillationFractionator,
 
     EnergyHatchLV,
     EnergyHatchLV4A,

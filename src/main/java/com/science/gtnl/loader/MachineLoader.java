@@ -211,6 +211,7 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.V
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.VacuumFreezer;
 import com.science.gtnl.common.machine.multiblock.wireless.AdvancedMassFabricator;
 import com.science.gtnl.common.machine.multiblock.wireless.AetronPressor;
+import com.science.gtnl.common.machine.multiblock.wireless.CompoundDistillationFractionator;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundExtremeCoolingUnit;
 import com.science.gtnl.common.machine.multiblock.wireless.CrackerHub;
 import com.science.gtnl.common.machine.multiblock.wireless.EngravingLaserPlant;
@@ -222,6 +223,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.HorizontalCompressor;
 import com.science.gtnl.common.machine.multiblock.wireless.IntegratedAssemblyFacility;
 import com.science.gtnl.common.machine.multiblock.wireless.MagneticEnergyReactionFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaBathTank;
+import com.science.gtnl.common.machine.multiblock.wireless.MegaCanner;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaVacuumDryingFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.NanitesCircuitAssemblyFactory;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoAssemblerMarkL;
@@ -1485,6 +1487,17 @@ public class MachineLoader {
                 "NameMegaBathTank",
                 StatCollector.translateToLocal("NameMegaBathTank")));
         addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MegaCanner
+            .set(new MegaCanner(MEGA_CANNER.ID, "NameMegaCanner", StatCollector.translateToLocal("NameMegaCanner")));
+        addItemTooltip(GTNLItemList.MegaCanner.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.CompoundDistillationFractionator.set(
+            new CompoundDistillationFractionator(
+                COMPOUND_DISTILLATION_FRACTIONATOR.ID,
+                "NameCompoundDistillationFractionator",
+                StatCollector.translateToLocal("NameCompoundDistillationFractionator")));
+        addItemTooltip(GTNLItemList.CompoundDistillationFractionator.get(1), AnimatedText.SNL_QYZG);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(
