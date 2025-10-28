@@ -165,6 +165,14 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     }
 
     @Override
+    public int nextMachineMode() {
+        if (machineMode == MACHINEMODE_VACUUMFURNACE) return MACHINEMODE_DEHYDRATOR;
+        else if (machineMode == MACHINEMODE_DEHYDRATOR) return MACHINEMODE_COLD_TRAP;
+        else if (machineMode == MACHINEMODE_COLD_TRAP) return MACHINEMODE_NUCLEAR_SALT;
+        else return MACHINEMODE_VACUUMFURNACE;
+    }
+
+    @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         super.addUIWidgets(builder, buildContext);
         setMachineModeIcons();

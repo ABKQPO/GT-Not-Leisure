@@ -61,6 +61,7 @@ import com.science.gtnl.common.machine.hatch.WirelessMultiDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.common.machine.multiblock.AdvancedInfiniteDriller;
+import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
 import com.science.gtnl.common.machine.multiblock.BloodSoulSacrificialArray;
 import com.science.gtnl.common.machine.multiblock.BrickedBlastFurnace;
 import com.science.gtnl.common.machine.multiblock.CheatOreProcessingFactory;
@@ -88,6 +89,7 @@ import com.science.gtnl.common.machine.multiblock.LargeGasCollector;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
 import com.science.gtnl.common.machine.multiblock.LargeNaquadahReactor;
 import com.science.gtnl.common.machine.multiblock.LibraryOfRuina;
+import com.science.gtnl.common.machine.multiblock.MassFabricator;
 import com.science.gtnl.common.machine.multiblock.MatterFabricator;
 import com.science.gtnl.common.machine.multiblock.MegaMixer;
 import com.science.gtnl.common.machine.multiblock.MeteorMiner;
@@ -207,6 +209,7 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.P
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.RocketAssembler;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.VacuumDryingFurnace;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.VacuumFreezer;
+import com.science.gtnl.common.machine.multiblock.wireless.AdvancedMassFabricator;
 import com.science.gtnl.common.machine.multiblock.wireless.AetronPressor;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundExtremeCoolingUnit;
 import com.science.gtnl.common.machine.multiblock.wireless.CrackerHub;
@@ -215,8 +218,11 @@ import com.science.gtnl.common.machine.multiblock.wireless.FieldForgePress;
 import com.science.gtnl.common.machine.multiblock.wireless.HandOfJohnDavisonRockefeller;
 import com.science.gtnl.common.machine.multiblock.wireless.HeavyRolling;
 import com.science.gtnl.common.machine.multiblock.wireless.HighEnergyLaserLathe;
+import com.science.gtnl.common.machine.multiblock.wireless.HorizontalCompressor;
 import com.science.gtnl.common.machine.multiblock.wireless.IntegratedAssemblyFacility;
 import com.science.gtnl.common.machine.multiblock.wireless.MagneticEnergyReactionFurnace;
+import com.science.gtnl.common.machine.multiblock.wireless.MegaBathTank;
+import com.science.gtnl.common.machine.multiblock.wireless.MegaVacuumDryingFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.NanitesCircuitAssemblyFactory;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoAssemblerMarkL;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
@@ -1437,6 +1443,48 @@ public class MachineLoader {
                 StatCollector.translateToLocal("NameSteamOilDrillModuleIII"),
                 4));
         addItemTooltip(GTNLItemList.SteamOilDrillModuleIII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.AdvancedRareEarthCentrifugal.set(
+            new AdvancedRareEarthCentrifugal(
+                ADVANCED_RARE_EARTH_CENTRIFUGAL.ID,
+                "NameAdvancedRareEarthCentrifugal",
+                StatCollector.translateToLocal("NameAdvancedRareEarthCentrifugal")));
+        addItemTooltip(GTNLItemList.AdvancedRareEarthCentrifugal.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MassFabricator.set(
+            new MassFabricator(
+                MASS_FABRICATOR.ID,
+                "NameMassFabricator",
+                StatCollector.translateToLocal("NameMassFabricator")));
+        addItemTooltip(GTNLItemList.MassFabricator.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.AdvancedMassFabricator.set(
+            new AdvancedMassFabricator(
+                ADVANCED_MASS_FABRICATOR.ID,
+                "NameAdvancedMassFabricator",
+                StatCollector.translateToLocal("NameAdvancedMassFabricator")));
+        addItemTooltip(GTNLItemList.AdvancedMassFabricator.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.HorizontalCompressor.set(
+            new HorizontalCompressor(
+                HORIZONTAL_COMPRESSOR.ID,
+                "NameHorizontalCompressor",
+                StatCollector.translateToLocal("NameHorizontalCompressor")));
+        addItemTooltip(GTNLItemList.HorizontalCompressor.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MegaVacuumDryingFurnace.set(
+            new MegaVacuumDryingFurnace(
+                MEGA_VACUUM_DRYING_FURNACE.ID,
+                "NameMegaVacuumDryingFurnace",
+                StatCollector.translateToLocal("NameMegaVacuumDryingFurnace")));
+        addItemTooltip(GTNLItemList.MegaVacuumDryingFurnace.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MegaBathTank.set(
+            new MegaBathTank(
+                MEGA_BATH_TANK.ID,
+                "NameMegaBathTank",
+                StatCollector.translateToLocal("NameMegaBathTank")));
+        addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.SNL_QYZG);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

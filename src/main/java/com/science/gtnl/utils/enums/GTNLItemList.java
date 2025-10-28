@@ -568,6 +568,12 @@ public enum GTNLItemList implements IItemContainer {
     FOGAlloyBlastSmelterModule,
     FOGExtractorModule,
     RocketAssembler,
+    AdvancedRareEarthCentrifugal,
+    MassFabricator,
+    AdvancedMassFabricator,
+    HorizontalCompressor,
+    MegaVacuumDryingFurnace,
+    MegaBathTank,
 
     EnergyHatchLV,
     EnergyHatchLV4A,

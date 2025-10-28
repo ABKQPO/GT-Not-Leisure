@@ -1,23 +1,23 @@
 结构方块映射表:
 
 字母对应关系:
-A -> ofBlock...(MetaCasing02, 3, ...)
-B -> ofBlock...(gt.blockcasings2, 0, ...)
-C -> ofBlock...(gt.blockcasings2, 3, ...)
-D -> ofBlock...(gt.blockcasings2, 13, ...)
-E -> ofBlock...(gt.blockcasings3, 10, ...)
-F -> ofBlock...(gt.blockcasings4, 1, ...)
-G -> ofBlock...(gt.blockcasings6, 1, ...)
-H -> ofBlock...(gt.blockcasings6, 3, ...)
-I -> ofBlock...(gt.blockframes, 305, ...)
-J -> ofBlock...(gt.blockframes, 306, ...)
-K -> ofSpecialTileAdder(micdoodle8.mods.galacticraft.core.tile.TileEntityMulti, ...)
-L -> 控制器位置
-M -> ofSpecialTileAdder(micdoodle8.mods.galacticraft.core.tile.TileEntityLandingPad, ...)
+A -> ofBlock...(tile.blockDiamond, 0, ...)
+B -> ofBlock...(tile.blockGold, 0, ...)
+C -> ofBlock...(tile.blockLapis, 0, ...)
+D -> ofBlock...(tile.cloth, 0, ...)
+E -> ofBlock...(tile.cloth, 7, ...)
+F -> ofBlock...(tile.cloth, 8, ...)
+G -> ofBlock...(tile.cloth, 9, ...)
+H -> ofBlock...(tile.cloth, 15, ...)
+I -> ofBlock...(tile.glass, 0, ...)
+J -> ofBlock...(tile.stainedGlass, 0, ...)
+K -> ofBlock...(tile.stainedGlass, 7, ...)
+L -> ofBlock...(tile.stainedGlass, 15, ...)
+M -> 控制器位置
 
-偏移值 Offsets: 8 21 0
-结构体高度: 24
+偏移值 Offsets: 15 1 1
+结构体高度: 13
 
-宽: 17
-高: 24
-长: 16
+宽: 31
+高: 13
+长: 31

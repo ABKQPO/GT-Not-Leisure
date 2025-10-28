@@ -2747,7 +2747,9 @@ public class AssemblerRecipes implements IRecipePool {
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.ShimmerBucket.get(1), GTModHandler.getModItem(OpenComputers.ID, "disassembler", 1))
+            .itemInputs(
+                GTNLItemList.ShimmerBucket.get(1),
+                GTModHandler.getModItem(OpenComputers.ID, "disassembler", 64))
             .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
             .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
             .duration(10 * SECONDS)

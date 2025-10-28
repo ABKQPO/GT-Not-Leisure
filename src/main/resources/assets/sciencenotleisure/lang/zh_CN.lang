@@ -1446,9 +1446,32 @@ Tooltip_IntegratedOreFactory_Casing_09=输入仓(输入润滑油/蒸馏水/化�
 Tooltip_IntegratedOreFactory_Casing_10=消声仓(输出污染)
 Tooltip_IntegratedOreFactory_Casing_11=输出总线(输出产物)
 
+NameAdvancedMassFabricator=进阶质量发生器
+AdvancedMassFabricatorRecipeType=质量发生器
+Tooltip_AdvancedMassFabricator_Casing=任意元素约束机械方块
+
+NameMegaVacuumDryingFurnace=巨型真空干燥炉
+MegaVacuumDryingFurnaceRecipeType=真空炉 / 脱水机 / 冷阱 / 反应堆熔盐加工厂
+MegaVacuumDryingFurnace_Mode_0=真空炉
+MegaVacuumDryingFurnace_Mode_1=脱水机
+MegaVacuumDryingFurnace_Mode_2=冷阱
+MegaVacuumDryingFurnace_Mode_3=反应堆熔盐加工厂
+Tooltip_MegaVacuumDryingFurnace_00=每超过配方温度900K，耗能均将乘以95%(不计超频)
+Tooltip_MegaVacuumDryingFurnace_01=每超过配方温度1800K，将进行一次无损超频
+Tooltip_MegaVacuumDryingFurnace_02=超过MV后的每一级电压，都会将温度提高100K
+Tooltip_MegaVacuumDryingFurnace_Casing=任意超能机械方块
+
+NameMassFabricator=质量发生器
+MassFabricatorRecipeType=质量发生器
+Tooltip_MassFabricator_Casing=任意ZPM机械方块
+
 NameFuelRefiningComplex=燃料精炼复合体
 FuelRefiningComplexRecipeType=燃料精炼复合体
 gtnl.recipe.FuelRefiningComplexRecipes=燃料精炼复合体
+
+NameHorizontalCompressor=卧式压缩机
+HorizontalCompressorRecipeType=压缩机
+Tooltip_HorizontalCompressor_Casing=任意强化钨钢机械方块
 
 NameLargeHammer=大型锻造锤
 LargeHammerRecipeType=锻造锤
@@ -1933,6 +1956,13 @@ LargeElectromagnet_Mode_0=电磁离析机
 LargeElectromagnet_Mode_1=两级磁化机
 Tooltip_LargeElectromagnet_Casing=任意电解机机械方块
 
+NameMegaBathTank=巨型浸洗池
+MegaBathTankRecipeType=洗矿池 / 简易洗矿池 / 化学浸洗机
+MegaBathTank_Mode_0=洗矿池
+MegaBathTank_Mode_1=简易洗矿池
+MegaBathTank_Mode_2=化学浸洗机
+Tooltip_MegaBathTank_Casing=任意强化无菌净水厂机械方块
+
 NameLargeChemicalBath=大型化学浸洗机
 LargeChemicalBathRecipeType=洗矿池 / 简易洗矿池 / 化学浸洗机
 LargeChemicalBath_Mode_0=洗矿池
@@ -2231,6 +2261,10 @@ NameRareEarthCentrifugal=稀土离心机
 gtnl.recipe.RareEarthCentrifugalRecipes=稀土离心
 RareEarthCentrifugalRecipeType=稀土离心
 Tooltip_RareEarthCentrifugal_Casing=任意分子抑制机械方块
+
+NameAdvancedRareEarthCentrifugal=进阶稀土离心机
+AdvancedRareEarthCentrifugalRecipeType=稀土离心
+Tooltip_AdvancedRareEarthCentrifugal_Casing=任意镀铱机械方块
 
 NameEdenGarden=“伊甸”生态奇点
 EdenGardenRecipeType=作物农场

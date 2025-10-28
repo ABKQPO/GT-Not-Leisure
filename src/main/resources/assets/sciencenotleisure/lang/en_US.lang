@@ -1446,9 +1446,32 @@ Tooltip_IntegratedOreFactory_Casing_09=Input Hatch (Input lubricant/distilled wa
 Tooltip_IntegratedOreFactory_Casing_10=Muffler Hatch (Output Pollution)
 Tooltip_IntegratedOreFactory_Casing_11=Output Bus (Output products)
 
+NameAdvancedMassFabricator=Advanced Mass Fabricator
+AdvancedMassFabricatorRecipeType=Mass Fabricator
+Tooltip_AdvancedMassFabricator_Casing=Any Elemental Confinement Shell
+
+NameMegaVacuumDryingFurnace=Mega Vacuum Drying Furnace
+MegaVacuumDryingFurnaceRecipeType=Vacuum Furnace / Dehydrator / Cold Trap / Reactor Molten Salt Processing Plant
+MegaVacuumDryingFurnace_Mode_0=Vacuum Furnace
+MegaVacuumDryingFurnace_Mode_1=Dehydrator
+MegaVacuumDryingFurnace_Mode_2=Cold Trap
+MegaVacuumDryingFurnace_Mode_3=Reactor Molten Salt Processing Plant
+Tooltip_MegaVacuumDryingFurnace_00=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
+Tooltip_MegaVacuumDryingFurnace_01=For every 1800K above the recipe temperature, perform one lossless overclock
+Tooltip_MegaVacuumDryingFurnace_02=For each voltage tier above MV, temperature increases by 100K
+Tooltip_MegaVacuumDryingFurnace_Casing=Any Hyper Energy Machine Block
+
+NameMassFabricator=Mass Fabricator
+MassFabricatorRecipeType=Mass Fabricator
+Tooltip_MassFabricator_Casing=Any ZPM Casing
+
 NameFuelRefiningComplex=Fuel Refining Complex
 FuelRefiningComplexRecipeType=Fuel Refining Complex
 gtnl.recipe.FuelRefiningComplexRecipes=Fuel Refining Complex
+
+NameHorizontalCompressor=Horizontal Compressor
+HorizontalCompressorRecipeType=Compressor
+Tooltip_HorizontalCompressor_Casing=Any reinforced tungsten steel machine block
 
 NameLargeHammer=Large Forging Hammer
 LargeHammerRecipeType=Forging Hammer
@@ -1933,6 +1956,13 @@ LargeElectromagnet_Mode_0=Electromagnetic Separator
 LargeElectromagnet_Mode_1=Two-stage Magnetizer
 Tooltip_LargeElectromagnet_Casing=Any electrolyzer machine block
 
+NameMegaBathTank=Mega Bath Tank
+MegaBathTankRecipeType=Ore Washer / Simple Ore Washer / Chemical Bath
+MegaBathTank_Mode_0=Ore Washer
+MegaBathTank_Mode_1=Simple Ore Washer
+MegaBathTank_Mode_2=Chemical Bath
+Tooltip_MegaBathTank_Casing=Any Reinforced Sterile Water Plant Casing
+
 NameLargeChemicalBath=Large Chemical Bath
 LargeChemicalBathRecipeType=Ore Washer / Simple Ore Washer / Chemical Bath
 LargeChemicalBath_Mode_0=Ore Washer
@@ -2231,6 +2261,10 @@ NameRareEarthCentrifugal=Rare Earth Centrifuge
 gtnl.recipe.RareEarthCentrifugalRecipes=Rare Earth Centrifuging
 RareEarthCentrifugalRecipeType=Rare Earth Centrifuging
 Tooltip_RareEarthCentrifugal_Casing=Any Molecular Suppression Machine Block
+
+NameAdvancedRareEarthCentrifugal=Advanced Rare Earth Centrifugal
+AdvancedRareEarthCentrifugalRecipeType=Rare Earth Centrifuging
+Tooltip_AdvancedRareEarthCentrifugal_Casing=Ang Advanced Iridium Plated Machine Casing
 
 NameEdenGarden=Eden Garden Singularity
 EdenGardenRecipeType=Crop Farm

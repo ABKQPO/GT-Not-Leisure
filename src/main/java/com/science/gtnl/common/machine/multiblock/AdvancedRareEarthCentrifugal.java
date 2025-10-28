@@ -1,16 +1,14 @@
-package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
+package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Mods.IndustrialCraft2;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialPlatePress;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialPlatePressActive;
+import static gregtech.api.enums.Mods.*;
+import static gregtech.api.util.GTStructureUtility.*;
+import static gtPlusPlus.core.block.ModBlocks.*;
+import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.*;
+import static tectech.thing.casing.TTCasingsContainer.*;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -21,40 +19,44 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
+import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import goodgenerator.loader.Loaders;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.core.block.ModBlocks;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
-public class LargeForming extends GTMMultiMachineBase<LargeForming> implements ISurvivalConstructable {
+public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRareEarthCentrifugal>
+    implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String LF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_forming";
-    private final int HORIZONTAL_OFF_SET = 3;
-    private final int VERTICAL_OFF_SET = 2;
+    private static final String AREC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+        + "multiblock/advanced_rare_earth_centrifugal";
+    private final int HORIZONTAL_OFF_SET = 11;
+    private final int VERTICAL_OFF_SET = 11;
     private final int DEPTH_OFF_SET = 0;
-    private static final String[][] shape = StructureUtils.readStructureFromFile(LF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(AREC_STRUCTURE_FILE_PATH);
 
-    public LargeForming(int aID, String aName, String aNameRegional) {
+    public AdvancedRareEarthCentrifugal(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
-    public LargeForming(String aName) {
+    public AdvancedRareEarthCentrifugal(String aName) {
         super(aName);
     }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeForming(this.mName);
+        return new AdvancedRareEarthCentrifugal(this.mName);
     }
 
     @Override
@@ -63,12 +65,12 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialPlatePressActive)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialThermalCentrifugeActive)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialPlatePress)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialThermalCentrifuge)
                     .extFacing()
                     .build() };
         }
@@ -77,59 +79,55 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
 
     @Override
     public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(33);
+        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
     }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.formingPressRecipes;
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return Math.max(0.005, 1.0 / 6.0 - (Math.max(0, mParallelTier - 1) / 50.0));
+        return RecipePool.RareEarthCentrifugalRecipes;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeFormingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeForming_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeForming_01"))
+        tt.addMachineType(StatCollector.translateToLocal("AdvancedRareEarthCentrifugalRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Tectech_Hatch"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
-            .beginStructureBlock(7, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .beginStructureBlock(23, 13, 24, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
             .toolTipFinisher();
         return tt;
     }
 
     @Override
-    public IStructureDefinition<LargeForming> getStructureDefinition() {
-        return StructureDefinition.<LargeForming>builder()
+    public IStructureDefinition<AdvancedRareEarthCentrifugal> getStructureDefinition() {
+        return StructureDefinition.<AdvancedRareEarthCentrifugal>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(GameRegistry.findBlock(IndustrialCraft2.ID, "blockAlloyGlass")))
-            .addElement('B', ofBlock(sBlockCasings2, 5))
+            .addElement('A', ofBlock(Loaders.compactFusionCoil, 1))
+            .addElement('B', ofBlock(sBlockCasings10, 0))
             .addElement(
                 'C',
-                buildHatchAdder(LargeForming.class).casingIndex(getCasingTextureID())
+                buildHatchAdder(AdvancedRareEarthCentrifugal.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(Maintenance, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings3Misc, 1))))
-            .addElement('D', ofBlock(sBlockCasings3, 10))
-            .addElement('E', ofFrame(Materials.StainlessSteel))
+                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
+            .addElement('D', ofBlock(sBlockCasings8, 10))
+            .addElement('E', ofBlock(sBlockCasingsTT, 6))
+            .addElement('F', ofFrame(Materials.TungstenSteel))
+            .addElement('G', ofBlock(ModBlocks.blockSpecialMultiCasings, 11))
+            .addElement('H', ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('I', ofBlock(BlockLoader.metaCasing, 5))
             .build();
     }
 
@@ -139,7 +137,12 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
             return false;
         }
         setupParameters();
-        return mCountCasing >= 10;
+        return mCountCasing >= 20;
+    }
+
+    @Override
+    public boolean checkEnergyHatch() {
+        return true;
     }
 
     @Override

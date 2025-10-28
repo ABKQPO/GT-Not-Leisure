@@ -1,16 +1,10 @@
-package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
+package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Mods.IndustrialCraft2;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialPlatePress;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialPlatePressActive;
+import static gregtech.api.util.GTStructureUtility.*;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -21,40 +15,40 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
+import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.enums.Materials;
-import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.core.block.ModBlocks;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
-public class LargeForming extends GTMMultiMachineBase<LargeForming> implements ISurvivalConstructable {
+public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String LF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_forming";
-    private final int HORIZONTAL_OFF_SET = 3;
-    private final int VERTICAL_OFF_SET = 2;
+    private static final String MF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mass_fabricator";
+    private final int HORIZONTAL_OFF_SET = 2;
+    private final int VERTICAL_OFF_SET = 4;
     private final int DEPTH_OFF_SET = 0;
-    private static final String[][] shape = StructureUtils.readStructureFromFile(LF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(MF_STRUCTURE_FILE_PATH);
 
-    public LargeForming(int aID, String aName, String aNameRegional) {
+    public MassFabricator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
-    public LargeForming(String aName) {
+    public MassFabricator(String aName) {
         super(aName);
     }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeForming(this.mName);
+        return new MassFabricator(this.mName);
     }
 
     @Override
@@ -63,12 +57,12 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialPlatePressActive)
+                    .addIcon(TexturesGtBlock.Overlay_MatterFab_Active_Animated)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialPlatePress)
+                    .addIcon(TexturesGtBlock.Overlay_MatterFab_Animated)
                     .extFacing()
                     .build() };
         }
@@ -77,59 +71,54 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
 
     @Override
     public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(33);
+        return StructureUtils.getTextureIndex(sBlockCasings1, 7);
     }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.formingPressRecipes;
+        return GTPPRecipeMaps.multiblockMassFabricatorRecipes;
     }
 
     @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return Math.max(0.005, 1.0 / 6.0 - (Math.max(0, mParallelTier - 1) / 50.0));
+    public boolean getPerfectOC() {
+        return true;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeFormingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeForming_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeForming_01"))
+        tt.addMachineType(StatCollector.translateToLocal("MassFabricatorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PerfectOverclock"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
-            .beginStructureBlock(7, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .beginStructureBlock(5, 5, 8, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
             .toolTipFinisher();
         return tt;
     }
 
     @Override
-    public IStructureDefinition<LargeForming> getStructureDefinition() {
-        return StructureDefinition.<LargeForming>builder()
+    public IStructureDefinition<MassFabricator> getStructureDefinition() {
+        return StructureDefinition.<MassFabricator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(GameRegistry.findBlock(IndustrialCraft2.ID, "blockAlloyGlass")))
-            .addElement('B', ofBlock(sBlockCasings2, 5))
             .addElement(
-                'C',
-                buildHatchAdder(LargeForming.class).casingIndex(getCasingTextureID())
+                'A',
+                buildHatchAdder(MassFabricator.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings3Misc, 1))))
-            .addElement('D', ofBlock(sBlockCasings3, 10))
-            .addElement('E', ofFrame(Materials.StainlessSteel))
+                    .atLeast(Maintenance, InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 7))))
+            .addElement('B', ofBlock(ModBlocks.blockCasingsMisc, 8))
+            .addElement('C', ofBlock(BlockLoader.metaCasing, 2))
             .build();
     }
 
