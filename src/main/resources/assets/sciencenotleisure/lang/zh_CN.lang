@@ -1761,6 +1761,12 @@ Tooltip_MegaMixer_02=开启配方锁定后，给予两次无损超频，功率�
 Tooltip_MegaMixer_03=配方锁定后连续运行将加速至700%
 Tooltip_MegaMixer_Casing=任意强化镀铱机械方块
 
+NameCompoundDistillationFractionator=复合式蒸馏分馏塔
+CompoundDistillationFractionatorRecipeType=蒸馏塔 / 蒸馏室
+CompoundDistillationFractionator_Mode_0=蒸馏塔
+CompoundDistillationFractionator_Mode_1=蒸馏室
+Tooltip_CompoundDistillationFractionator_Casing=稳定化硅岩净水厂机械方块
+
 NameLargeDistillery=大型分馏蒸馏厂
 LargeDistilleryRecipeType=蒸馏塔 / 蒸馏室
 LargeDistillery_Mode_0=蒸馏塔
