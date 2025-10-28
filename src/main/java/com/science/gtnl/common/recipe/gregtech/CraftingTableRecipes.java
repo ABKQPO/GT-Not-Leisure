@@ -1156,8 +1156,9 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.ElectrocellGenerator.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', OrePrefixes.circuit.get(Materials.EV), 'B',
                 OrePrefixes.wireGt16.get(Materials.Titaniumonabariumdecacoppereikosaoxid), 'C',
-                ItemList.Electric_Pump_HV, 'D', ItemList.Casing_HV, 'E', MaterialPool.Stronze.get(OrePrefixes.pipeHuge),
-                'F', OrePrefixes.cableGt16.get(Materials.Nichrome) });
+                ItemList.Electric_Pump_HV, 'D', ItemList.Casing_HV, 'E',
+                MaterialPool.Stronze.get(OrePrefixes.pipeHuge, 1), 'F',
+                OrePrefixes.cableGt16.get(Materials.Nichrome) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.OriginalInputHatch.get(1),
