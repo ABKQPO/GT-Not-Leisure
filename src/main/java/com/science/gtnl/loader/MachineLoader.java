@@ -222,6 +222,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.HorizontalCompressor;
 import com.science.gtnl.common.machine.multiblock.wireless.IntegratedAssemblyFacility;
 import com.science.gtnl.common.machine.multiblock.wireless.MagneticEnergyReactionFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaBathTank;
+import com.science.gtnl.common.machine.multiblock.wireless.MegaCanner;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaVacuumDryingFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.NanitesCircuitAssemblyFactory;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoAssemblerMarkL;
@@ -1485,6 +1486,10 @@ public class MachineLoader {
                 "NameMegaBathTank",
                 StatCollector.translateToLocal("NameMegaBathTank")));
         addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MegaCanner
+            .set(new MegaCanner(MEGA_CANNER.ID, "NameMegaCanner", StatCollector.translateToLocal("NameMegaCanner")));
+        addItemTooltip(GTNLItemList.MegaCanner.get(1), AnimatedText.SNL_QYZG);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

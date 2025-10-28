@@ -1981,6 +1981,12 @@ LargeSolidifierRecipeType=流体固化器 / 工具铸形机
 Tooltip_LargeSolidifier_00=比相同电压的机器快300%
 Tooltip_LargeSolidifier_Casing=任意洗矿厂机械方块
 
+NameMegaCanner=特大装罐机
+MegaCannerRecipeType=装罐机 / 流体装罐机
+MegaCanning_Mode_0=装罐机
+MegaCanning_Mode_1=流体装罐机
+Tooltip_MegaCanner_Casing=任意洗矿厂机械方块
+
 NameLargeCanning=大型装罐机
 LargeCanningRecipeType=装罐机 / 流体装罐机
 LargeCanning_Mode_0=装罐机

@@ -1981,10 +1981,16 @@ LargeSolidifierRecipeType=Fluid Solidifier / Tool Mold
 Tooltip_LargeSolidifier_00=300% faster than machines of the same voltage
 Tooltip_LargeSolidifier_Casing=Any ore washing plant machine block
 
+NameMegaCanner=Mega Canner
+MegaCannerRecipeType=Canning Machine / Fluid Canning Machine
+MegaCanning_Mode_0=Canning Machine
+MegaCanning_Mode_1=Fluid Canning Machine
+Tooltip_MegaCanner_Casing=Any ore washing plant machine block
+
 NameLargeCanning=Large Canning Machine
-LargeCanningRecipeType=Fluid Canning Machine / Canning Machine
-LargeCanning_Mode_0=Fluid Canning Machine
-LargeCanning_Mode_1=Canning Machine
+LargeCanningRecipeType=Canning Machine / Fluid Canning Machine
+LargeCanning_Mode_0=Canning Machine
+LargeCanning_Mode_1=Fluid Canning Machine
 Tooltip_LargeCanning_00=233% faster than machines of the same voltage
 Tooltip_LargeCanning_01=Only requires 50% of the recipe's power demand
 Tooltip_LargeCanning_Casing=Any ore washing plant machine block
