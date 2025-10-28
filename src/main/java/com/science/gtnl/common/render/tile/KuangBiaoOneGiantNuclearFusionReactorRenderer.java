@@ -38,13 +38,13 @@ public class KuangBiaoOneGiantNuclearFusionReactorRenderer {
         // 动态旋转（环绕自身法线转动）
         float rotationTick = machine.prevRotation
             + MathHelper.wrapAngleTo180_float(machine.rotation - machine.prevRotation) * partialTicks;
-        GL11.glRotatef(rotationTick, 0f, 1f, 0f);
+        GL11.glRotatef(rotationTick, -0.05f, 1f, 0f);
         renderRing(x, y, z, partialTicks, 7.8f, 1.2f, 128, 32);
 
         GL11.glRotatef(2 * rotationTick, 0f, -1f, 0f);
         renderRing(x, y, z, partialTicks, 7.8f, 1f, 128, 32);
 
-        renderLightBeams(8, 9f, 2f, 0.3f, rotationTick);
+        renderLightBeams(8, 9.5f, 2f, 0.3f, rotationTick);
         renderLightBeams(6, 6.5f, 1.5f, 0.1f, -rotationTick);
 
         GL11.glPopMatrix();
