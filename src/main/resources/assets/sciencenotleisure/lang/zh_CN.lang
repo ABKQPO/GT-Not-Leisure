@@ -2059,7 +2059,10 @@ NameEyeOfHarmonyInjector=鸿蒙之眼注入器
 EyeOfHarmonyInjectorRecipeType=§b鸿蒙之眼注入器
 Tooltip_EyeOfHarmonyInjector_00=以强大的宇宙力量注入气体！
 Tooltip_EyeOfHarmonyInjector_01=这太令人兴奋了！
-Tooltip_EyeOfHarmonyInjector_02=§e爱来自Korosensei：)
+Tooltip_EyeOfHarmonyInjector_02=直接操纵鸿蒙之眼来灌注流体
+Tooltip_EyeOfHarmonyInjector_03=支持所有输入仓！
+Tooltip_EyeOfHarmonyInjector_04=在GUI内配置最大输入阈值
+Tooltip_EyeOfHarmonyInjector_05=§e爱来自Korosensei：)
 Tooltip_EyeOfHarmonyInjector_Casing=任意超能机械方块
 Tooltip_EyeOfHarmonyInjector_Parametrization=§b最大流体输入阈值
 

@@ -2059,7 +2059,10 @@ NameEyeOfHarmonyInjector=Eye Of Harmony Injector
 EyeOfHarmonyInjectorRecipeType=§bEye Of Harmony Injector
 Tooltip_EyeOfHarmonyInjector_00=Inject gas with powerful cosmic power!
 Tooltip_EyeOfHarmonyInjector_01=It's so exciting!
-Tooltip_EyeOfHarmonyInjector_02=§eLove from Korosensei :)
+Tooltip_EyeOfHarmonyInjector_02=Directly manipulate the Eye of Harmony to inject fluids
+Tooltip_EyeOfHarmonyInjector_03=Supports all input hatches!
+Tooltip_EyeOfHarmonyInjector_04=Configure maximum input threshold in the GUI
+Tooltip_EyeOfHarmonyInjector_05=§eLove from Korosensei :)
 Tooltip_EyeOfHarmonyInjector_Casing=Any Hyper Energy Machine Block
 Tooltip_EyeOfHarmonyInjector_Parametrization=§bMaximum fluid input threshold
 

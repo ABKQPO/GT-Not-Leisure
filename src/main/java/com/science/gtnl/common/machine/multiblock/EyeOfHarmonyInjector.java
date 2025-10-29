@@ -26,10 +26,9 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import bartworks.common.loaders.ItemRegistry;
-import goodgenerator.loader.Loaders;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.interfaces.IHatchElement;
@@ -40,9 +39,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import tectech.thing.casing.BlockGTCasingsTT;
-import tectech.thing.casing.TTCasingsContainer;
 import tectech.thing.metaTileEntity.multi.MTEEyeOfHarmony;
 import tectech.thing.metaTileEntity.multi.base.INameFunction;
 import tectech.thing.metaTileEntity.multi.base.IStatusFunction;
@@ -220,20 +217,20 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         return StructureDefinition.<EyeOfHarmonyInjector>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement('A', ofBlock(sBlockCasingsTT, 6))
-            .addElement('B', ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
+            .addElement('B', ofBlock(sBlockCasingsTT, 7))
             .addElement('C', ofBlock(sBlockCasings1, 13))
             .addElement('D', ofBlock(sBlockCasings9, 14))
-            .addElement('E', ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 0))
+            .addElement('E', ofBlock(sBlockCasingsTT, 8))
             .addElement('F', ofBlock(sBlockCasings10, 12))
             .addElement('G', ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', ofBlock(ModBlocks.blockCasings5Misc, 14))
+            .addElement('H', ofBlock(sBlockCasings10, 8))
             .addElement('I', ofBlock(sBlockCasings1, 12))
-            .addElement('J', ofFrame(MaterialsUEVplus.MagMatter))
-            .addElement('K', ofBlock(ItemRegistry.bw_realglas2, 2))
+            .addElement('J', ofFrame(Materials.CosmicNeutronium))
+            .addElement('K', ofBlock(BlockLoader.metaBlockGlass, 2))
             .addElement('L', ofBlock(sBlockCasings1, 14))
             .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofBlock(TTCasingsContainer.GodforgeCasings, 2))
-            .addElement('O', ofBlock(Loaders.gravityStabilizationCasing, 0))
+            .addElement('N', ofBlock(sBlockCasings3, 12))
+            .addElement('O', ofBlock(sBlockCasings9, 11))
             .addElement(
                 'P',
                 ofChain(
@@ -245,7 +242,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
             .addElement(
                 'Q',
                 HatchElementBuilder.<EyeOfHarmonyInjector>builder()
-                    .atLeast(EHO.EHO)
+                    .atLeast(EOH.EOH)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .build())
@@ -326,6 +323,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_05"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
@@ -356,9 +356,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         return new EyeOfHarmonyInjector(mName);
     }
 
-    public enum EHO implements IHatchElement<EyeOfHarmonyInjector> {
+    public enum EOH implements IHatchElement<EyeOfHarmonyInjector> {
 
-        EHO(EyeOfHarmonyInjector::addEHO, MTEEyeOfHarmony.class) {
+        EOH(EyeOfHarmonyInjector::addEHO, MTEEyeOfHarmony.class) {
 
             @Override
             public long count(EyeOfHarmonyInjector gtTieEntityMagesTower) {
@@ -370,7 +370,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         public final IGTHatchAdder<EyeOfHarmonyInjector> adder;
 
         @SafeVarargs
-        EHO(IGTHatchAdder<EyeOfHarmonyInjector> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+        EOH(IGTHatchAdder<EyeOfHarmonyInjector> adder, Class<? extends IMetaTileEntity>... mteClasses) {
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
         }
