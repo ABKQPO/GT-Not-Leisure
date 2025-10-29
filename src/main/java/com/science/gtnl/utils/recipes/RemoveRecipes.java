@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -49,6 +50,7 @@ public class RemoveRecipes {
         RecipeMapBackend vacuumFreezerRecipe = RecipeMaps.vacuumFreezerRecipes.getBackend();
         RecipeMapBackend cryogenicFreezerRecipe = GTPPRecipeMaps.advancedFreezerRecipes.getBackend();
         RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
+        RecipeMapBackend chemicalPlantRecipe = GTPPRecipeMaps.chemicalPlantRecipes.getBackend();
         Map<String, Integer> removedRecipeCounts = new HashMap<>();
 
         List<GTRecipe> recipesToRemoveFromAlloyBlastSmelter = new ArrayList<>();
@@ -132,8 +134,29 @@ public class RemoveRecipes {
                     }
                 }
             }
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    if (output.isFluidEqual(Materials.PrismaticGas.getFluid(1))) {
+                        recipesToRemoveFromVacuumFurnace.add(recipe);
+                    }
+                }
+            }
         }
         vacuumFurnaceRecipe.removeRecipes(recipesToRemoveFromVacuumFurnace);
+
+        List<GTRecipe> recipesToRemoveFromChemicalPlant = new ArrayList<>();
+        for (GTRecipe recipe : chemicalPlantRecipe.getAllRecipes()) {
+            for (ItemStack output : recipe.mOutputs) {
+                if (output != null) {
+                    // 铂泡沫
+                    if (output.isItemEqual(ItemList.Prismarine_Precipitate.get(1))) {
+                        recipesToRemoveFromChemicalPlant.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        chemicalPlantRecipe.removeRecipes(recipesToRemoveFromChemicalPlant);
 
         List<GTRecipe> recipesToRemoveFromVacuumFreezer = new ArrayList<>();
         for (GTRecipe recipe : vacuumFreezerRecipe.getAllRecipes()) {
@@ -213,6 +236,7 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Vacuum Furnace", recipesToRemoveFromVacuumFurnace.size());
             removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
             removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
+            removedRecipeCounts.put("Chemical Plant", recipesToRemoveFromChemicalPlant.size());
 
             StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
             for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {

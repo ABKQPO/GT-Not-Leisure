@@ -8,6 +8,7 @@ import com.science.gtnl.common.item.items.MilledOre;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -39,6 +40,15 @@ public class VacuumFurnaceRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_ZPM)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
+            .addTo(VFR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Prismatic_Crystal.get(1))
+            .fluidInputs(Materials.Boron.getPlasma(100))
+            .fluidOutputs(Materials.PrismaticGas.getFluid(1000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .metadata(COIL_HEAT, 7200)
             .addTo(VFR);
     }
 }

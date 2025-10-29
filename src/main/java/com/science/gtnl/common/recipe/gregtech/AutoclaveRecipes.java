@@ -14,11 +14,13 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 public class AutoclaveRecipes implements IRecipePool {
 
     public RecipeMap<?> AR = RecipeMaps.autoclaveRecipes;
@@ -43,6 +45,17 @@ public class AutoclaveRecipes implements IRecipePool {
                 getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2, missing))
             .duration(1200)
             .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
+        // 海晶石 蒸馏水配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GregtechItemList.RedAlgaeBiomass.get(32),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
+            .fluidInputs(GTModHandler.getDistilledWater(8000))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 4))
+            .duration(300)
+            .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
     }
 }
