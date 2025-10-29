@@ -180,7 +180,7 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
 
     @Override
     public int getCapacity() {
-        return 1000;
+        return 16000;
     }
 
     @Override

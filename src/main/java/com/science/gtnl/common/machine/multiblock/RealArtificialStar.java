@@ -13,6 +13,7 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static tectech.thing.casing.TTCasingsContainer.*;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -83,7 +84,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public double outputMultiplier = 1;
     public int recoveryChance = 0;
     public byte rewardContinuous = 0;
-    public long currentOutputEU = 0;
+    public BigInteger currentOutputEU = BigInteger.ZERO;
     public final DecimalFormat decimalFormat = new DecimalFormat("#.0");
     public boolean isRendering = false;
     public static boolean configEnableDefaultRender = MainConfig.enableRenderDefaultArtificialStar;
@@ -119,7 +120,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             currentTip.add(
                 EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
                     + EnumChatFormatting.GOLD
-                    + tag.getLong("currentOutputEU")
+                    + tag.getString("currentOutputEU")
                     + EnumChatFormatting.RED
                     + " * "
                     + decimalFormat.format(tag.getDouble("outputMultiplier"))
@@ -139,7 +140,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
         if (tileEntity != null) {
             if (tileEntity.isActive()) {
-                tag.setLong("currentOutputEU", currentOutputEU);
+                tag.setString("currentOutputEU", currentOutputEU.toString());
                 tag.setDouble("outputMultiplier", (outputMultiplier * (rewardContinuous + 100) / 100));
             }
         }
@@ -210,26 +211,37 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         boolean flag = false;
         long recoveryAmount = 0;
         long recoveryAmountTST = 0;
-        // * Integer.MAX_VALUE
-        currentOutputEU = 0;
+
+        currentOutputEU = BigInteger.ZERO;
+
         for (ItemStack items : getStoredInputs()) {
             if (items.isItemEqual(GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1))) {
-                currentOutputEU += MaxOfDepletedExcitedNaquadahFuelRod * items.stackSize;
+                currentOutputEU = currentOutputEU.add(
+                    BigInteger.valueOf(MaxOfDepletedExcitedNaquadahFuelRod)
+                        .multiply(BigInteger.valueOf(items.stackSize)));
                 flag = true;
             } else if (items.isItemEqual(GTNLItemList.EnhancementCore.get(1))) {
-                currentOutputEU += MaxOfEnhancementCore * items.stackSize;
+                currentOutputEU = currentOutputEU.add(
+                    BigInteger.valueOf(MaxOfEnhancementCore)
+                        .multiply(BigInteger.valueOf(items.stackSize)));
                 // recoveryAmount += items.stackSize;
                 flag = true;
             } else if (TwistSpaceTechnology.isModLoaded()) {
                 if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 14))) {
-                    currentOutputEU += MaxOfAntimatter * items.stackSize;
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfAntimatter)
+                            .multiply(BigInteger.valueOf(items.stackSize)));
                     flag = true;
                 } else if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 16))) {
-                    currentOutputEU += MaxOfAntimatterFuelRod * items.stackSize;
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfAntimatterFuelRod)
+                            .multiply(BigInteger.valueOf(items.stackSize)));
                     recoveryAmountTST += items.stackSize;
                     flag = true;
                 } else if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 29))) {
-                    currentOutputEU += MaxOfStrangeAnnihilationFuelRod * items.stackSize;
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfStrangeAnnihilationFuelRod)
+                            .multiply(BigInteger.valueOf(items.stackSize)));
                     recoveryAmountTST += items.stackSize;
                     flag = true;
                 }
@@ -253,10 +265,12 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         }
 
         // add EU to the wireless EU net
-        BigInteger eu = BigInteger
-            .valueOf((long) (currentOutputEU * outputMultiplier * ((rewardContinuous + 100d) / 100d)))
-            .multiply(Utils.INTEGER_MAX_VALUE);
-        if (!addEUToGlobalEnergyMap(ownerUUID, eu)) {
+        BigDecimal eu = new BigDecimal(currentOutputEU).multiply(BigDecimal.valueOf(outputMultiplier))
+            .multiply(BigDecimal.valueOf((rewardContinuous + 100d) / 100d))
+            .multiply(new BigDecimal(Utils.INTEGER_MAX_VALUE));
+
+        BigInteger result = eu.toBigInteger();
+        if (!addEUToGlobalEnergyMap(ownerUUID, result)) {
             return CheckRecipeResultRegistry.INTERNAL_ERROR;
         }
 
@@ -385,7 +399,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         aNBT.setInteger("tierStabilisationField", tierStabilisationField);
         aNBT.setDouble("outputMultiplier", outputMultiplier);
         aNBT.setByte("rewardContinuous", rewardContinuous);
-        aNBT.setLong("currentOutputEU", currentOutputEU);
+        aNBT.setString("currentOutputEU", currentOutputEU.toString());
         aNBT.setBoolean("isRendering", isRendering);
         aNBT.setBoolean("enableRender", enableRender);
     }
@@ -399,7 +413,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         tierStabilisationField = aNBT.getInteger("tierStabilisationField");
         outputMultiplier = aNBT.getDouble("outputMultiplier");
         rewardContinuous = aNBT.getByte("rewardContinuous");
-        currentOutputEU = aNBT.getLong("currentOutputEU");
+        currentOutputEU = new BigInteger(aNBT.getString("currentOutputEU"));
         isRendering = aNBT.getBoolean("isRendering");
         enableRender = aNBT.getBoolean("enableRender");
     }

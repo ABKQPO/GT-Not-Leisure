@@ -95,6 +95,7 @@ public class ScienceNotLeisure {
     public void completeInit(FMLLoadCompleteEvent event) {
         proxy.completeInit(event);
         MaterialLoader.loadCompleteInit();
+        RecipeLoader.loadCompleteInit();
     }
 
     @Mod.EventHandler
