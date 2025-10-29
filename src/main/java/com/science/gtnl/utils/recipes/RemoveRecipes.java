@@ -150,6 +150,7 @@ public class RemoveRecipes {
                 if (output != null) {
                     if (output.isFluidEqual(Materials.PrismaticGas.getFluid(1))) {
                         recipesToRemoveFromVacuumFurnace.add(recipe);
+                        break;
                     }
                 }
             }
@@ -181,6 +182,10 @@ public class RemoveRecipes {
                         recipesToRemoveFromVacuumFreezer.add(recipe);
                         break;
                     }
+                    if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
+                        recipesToRemoveFromVacuumFreezer.add(recipe);
+                        break;
+                    }
                 }
             }
         }
@@ -193,6 +198,10 @@ public class RemoveRecipes {
                 if (output != null) {
                     // 半流质下界气体
                     if (output.isFluidEqual(Materials.NetherSemiFluid.getFluid(1))) {
+                        recipesToRemoveFromCryogenicFreezer.add(recipe);
+                        break;
+                    }
+                    if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
                         recipesToRemoveFromCryogenicFreezer.add(recipe);
                         break;
                     }

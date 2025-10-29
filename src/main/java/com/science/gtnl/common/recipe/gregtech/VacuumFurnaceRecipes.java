@@ -1,6 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
@@ -48,6 +49,19 @@ public class VacuumFurnaceRecipes implements IRecipePool {
             .fluidOutputs(Materials.PrismaticGas.getFluid(1000))
             .duration(400)
             .eut(TierEU.RECIPE_LuV)
+            .metadata(COIL_HEAT, 7200)
+            .addTo(VFR);
+
+        // 海晶晶体 -> 海晶酸
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Prismatic_Crystal.get(1))
+            .fluidInputs(
+                Materials.Boron.getPlasma(100),
+                Materials.LiquidNitrogen.getGas(3000)
+                )
+            .fluidOutputs(Materials.PrismaticAcid.getFluid(4000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
             .metadata(COIL_HEAT, 7200)
             .addTo(VFR);
     }
