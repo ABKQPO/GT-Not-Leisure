@@ -2,6 +2,8 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
+import com.science.gtnl.config.MainConfig;
+import gregtech.api.util.GTUtility;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,6 +17,7 @@ import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -188,5 +191,32 @@ public class MixerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(MNCR);
 
+        // 海晶石溶液 工业HCL降价为HCL
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 24),
+                GTUtility.getIntegratedCircuit(1))
+            .fluidInputs(
+                Materials.HydrochloricAcid.getFluid(4000), // HydrochloricAcid Acid
+                FluidRegistry.getFluidStack("fluid.hydrogenperoxide", 4000)) // Hydrogen Peroxide
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 4))
+            .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(MNCR);
+
+        // 海晶石溶液 循环配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 6),
+                GTUtility.getIntegratedCircuit(2))
+            .fluidInputs(
+                Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(6000),
+                FluidRegistry.getFluidStack("fluid.hydrogenperoxide", 2000)) // Hydrogen Peroxide
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.NetherQuartz, 1))
+            .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(MNCR);
     }
 }
