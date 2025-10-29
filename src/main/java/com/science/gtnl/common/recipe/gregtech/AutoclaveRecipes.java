@@ -55,6 +55,17 @@ public class AutoclaveRecipes implements IRecipePool {
             .fluidInputs(GTModHandler.getDistilledWater(8000))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 4))
             .duration(300)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
+        // 海晶石 1级水配方 输出x2
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GregtechItemList.RedAlgaeBiomass.get(32),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
+            .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 16))
+            .duration(300)
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
     }
