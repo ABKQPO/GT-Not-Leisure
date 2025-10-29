@@ -108,42 +108,42 @@ import tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon;
 public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWorkshop> implements INEIPreviewModifier {
 
     // 75 x 19 x 75
-    private static final String STRUCTURE_PIECE_MAIN_TOP = "main_top";
-    private final int HORIZONTAL_OFF_SET_TOP = 37;
-    private final int VERTICAL_OFF_SET_TOP = 46;
-    private final int DEPTH_OFF_SET_TOP = 11;
+    public static final String STRUCTURE_PIECE_MAIN_TOP = "main_top";
+    public final int HORIZONTAL_OFF_SET_TOP = 37;
+    public final int VERTICAL_OFF_SET_TOP = 46;
+    public final int DEPTH_OFF_SET_TOP = 11;
 
     // 53 x 22 x 53
-    private static final String STRUCTURE_PIECE_MAIN_UP = "main_up";
-    private final int HORIZONTAL_OFF_SET_UP = 26;
-    private final int VERTICAL_OFF_SET_UP = 27;
-    private final int DEPTH_OFF_SET_UP = 0;
+    public static final String STRUCTURE_PIECE_MAIN_UP = "main_up";
+    public final int HORIZONTAL_OFF_SET_UP = 26;
+    public final int VERTICAL_OFF_SET_UP = 27;
+    public final int DEPTH_OFF_SET_UP = 0;
 
     // 53 x 11 x 53
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private final int HORIZONTAL_OFF_SET = 26;
-    private final int VERTICAL_OFF_SET = 5;
-    private final int DEPTH_OFF_SET = 1;
+    public static final String STRUCTURE_PIECE_MAIN = "main";
+    public final int HORIZONTAL_OFF_SET = 26;
+    public final int VERTICAL_OFF_SET = 5;
+    public final int DEPTH_OFF_SET = 1;
 
     // 53 x 22 x 53
-    private static final String STRUCTURE_PIECE_MAIN_DOWN = "main_down";
-    private final int HORIZONTAL_OFF_SET_DOWN = 26;
-    private final int VERTICAL_OFF_SET_DOWN = -6;
-    private final int DEPTH_OFF_SET_DOWN = 0;
+    public static final String STRUCTURE_PIECE_MAIN_DOWN = "main_down";
+    public final int HORIZONTAL_OFF_SET_DOWN = 26;
+    public final int VERTICAL_OFF_SET_DOWN = -6;
+    public final int DEPTH_OFF_SET_DOWN = 0;
 
     // 75 x 22 x 75
-    private static final String STRUCTURE_PIECE_MAIN_BOTTOM = "main_bottom";
-    private final int HORIZONTAL_OFF_SET_BOTTOM = 37;
-    private final int VERTICAL_OFF_SET_BOTTOM = -28;
-    private final int DEPTH_OFF_SET_BOTTOM = 11;
+    public static final String STRUCTURE_PIECE_MAIN_BOTTOM = "main_bottom";
+    public final int HORIZONTAL_OFF_SET_BOTTOM = 37;
+    public final int VERTICAL_OFF_SET_BOTTOM = -28;
+    public final int DEPTH_OFF_SET_BOTTOM = 11;
 
     // 63 x 7 x 63
-    private static final String STRUCTURE_PIECE_MAIN_EXTRA = "main_extra";
-    private static final String STRUCTURE_PIECE_MAIN_EXTRA_AIR = "main_extra_air";
-    private final int HORIZONTAL_OFF_SET_EXTRA = 31;
-    private final int VERTICAL_OFF_SET_EXTRA_UP = 14;
-    private final int VERTICAL_OFF_SET_EXTRA_DOWN = -8;
-    private final int DEPTH_OFF_SET_EXTRA = 5;
+    public static final String STRUCTURE_PIECE_MAIN_EXTRA = "main_extra";
+    public static final String STRUCTURE_PIECE_MAIN_EXTRA_AIR = "main_extra_air";
+    public final int HORIZONTAL_OFF_SET_EXTRA = 31;
+    public final int VERTICAL_OFF_SET_EXTRA_UP = 14;
+    public final int VERTICAL_OFF_SET_EXTRA_DOWN = -8;
+    public final int DEPTH_OFF_SET_EXTRA = 5;
 
     public static final String EGTWT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/top";
@@ -165,58 +165,58 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public static final String[][] shape_extra = StructureUtils.readStructureFromFile(EGTWE_STRUCTURE_FILE_PATH);
     public static final String[][] shape_extra_air = StructureUtils.replaceLetters(shape_extra, "a");
 
-    private int tCountCasing = 0;
-    private int mHeatingCapacity = 0;
-    private int mMachineTier = 0;
-    private int mModuleTier = 1;
-    private long mMaxUseEUt = 0;
-    private double mEUtDiscount = 1;
-    private double mSpeedBoost = 1;
-    private UUID ownerUUID;
-    private boolean mExtraModule;
+    public int tCountCasing = 0;
+    public int mHeatingCapacity = 0;
+    public int mMachineTier = 0;
+    public int mModuleTier = 1;
+    public long mMaxUseEUt = 0;
+    public double mEUtDiscount = 1;
+    public double mSpeedBoost = 1;
+    public UUID ownerUUID;
+    public boolean mExtraModule;
     @Setter
-    private boolean enableExtraModule;
-    private boolean secretUpgrade;
-    private boolean enableRender;
-    private boolean isRenderActive;
+    public boolean enableExtraModule;
+    public boolean secretUpgrade;
+    public boolean enableRender;
+    public boolean isRenderActive;
 
-    private static final MilestoneFormatter DEFAULT_FORMATTING_MODE = MilestoneFormatter.COMMA;
-    private static final BigInteger DEFAULT_TOTAL_POWER = BigInteger.ZERO;
-    private static final int DEFAULT_FUEL_CONSUMPTION_FACTOR = 1;
+    public static final MilestoneFormatter DEFAULT_FORMATTING_MODE = MilestoneFormatter.COMMA;
+    public static final BigInteger DEFAULT_TOTAL_POWER = BigInteger.ZERO;
+    public static final int DEFAULT_FUEL_CONSUMPTION_FACTOR = 1;
 
-    private static final long POWER_MILESTONE_CONSTANT = LongMath.pow(10, 15);
-    private static final long RECIPE_MILESTONE_CONSTANT = LongMath.pow(10, 7);
-    private static final long FUEL_MILESTONE_CONSTANT = 10_000;
-    private static final double POWER_LOG_CONSTANT = Math.log(9);
-    private static final double RECIPE_LOG_CONSTANT = Math.log(4);
-    private static final double FUEL_LOG_CONSTANT = Math.log(3);
+    public static final long POWER_MILESTONE_CONSTANT = LongMath.pow(10, 15);
+    public static final long RECIPE_MILESTONE_CONSTANT = LongMath.pow(10, 7);
+    public static final long FUEL_MILESTONE_CONSTANT = 10_000;
+    public static final double POWER_LOG_CONSTANT = Math.log(9);
+    public static final double RECIPE_LOG_CONSTANT = Math.log(4);
+    public static final double FUEL_LOG_CONSTANT = Math.log(3);
 
-    private final ItemStack[] storedUpgradeWindowItems = new ItemStack[16];
-    protected ItemStackHandler inputSlotHandler = new ItemStackHandler(16);
+    public ItemStack[] storedUpgradeWindowItems = new ItemStack[16];
+    public ItemStackHandler inputSlotHandler = new ItemStackHandler(16);
 
-    private BigInteger totalPowerConsumed = DEFAULT_TOTAL_POWER;
-    private long totalRecipesProcessed;
-    private long totalFuelConsumed;
-    private float totalExtensionsBuilt;
+    public BigInteger totalPowerConsumed = DEFAULT_TOTAL_POWER;
+    public long totalRecipesProcessed;
+    public long totalFuelConsumed;
+    public float totalExtensionsBuilt;
 
-    private long fuelConsumption;
+    public long fuelConsumption;
 
-    private int fuelConsumptionFactor = DEFAULT_FUEL_CONSUMPTION_FACTOR;
-    private int selectedFuelType;
+    public int fuelConsumptionFactor = DEFAULT_FUEL_CONSUMPTION_FACTOR;
+    public int selectedFuelType;
 
-    private int gravitonShardsAvailable = 0;
-    private int gravitonShardsSpent;
-    private boolean gravitonShardEjection;
+    public int gravitonShardsAvailable = 0;
+    public int gravitonShardsSpent;
+    public boolean gravitonShardEjection;
 
-    private float powerMilestonePercentage;
-    private float recipeMilestonePercentage;
-    private float fuelMilestonePercentage;
-    private float structureMilestonePercentage;
+    public float powerMilestonePercentage;
+    public float recipeMilestonePercentage;
+    public float fuelMilestonePercentage;
+    public float structureMilestonePercentage;
 
-    private MilestoneFormatter formattingMode = DEFAULT_FORMATTING_MODE;
+    public MilestoneFormatter formattingMode = DEFAULT_FORMATTING_MODE;
 
-    private final EGTWUpgradeStorage upgrades = new EGTWUpgradeStorage();
-    private EternalGregTechWorkshopUpgrade currentUpgradeWindow;
+    public EGTWUpgradeStorage upgrades = new EGTWUpgradeStorage();
+    public EternalGregTechWorkshopUpgrade currentUpgradeWindow;
 
     public ArrayList<EternalGregTechWorkshopModule> moduleHatches = new ArrayList<>();
 
@@ -265,38 +265,38 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     }
 
     @Override
-    public void loadNBTData(final NBTTagCompound NBT) {
-        super.loadNBTData(NBT);
-        mMachineTier = NBT.getInteger("mMachineTier");
-        mModuleTier = NBT.getInteger("mModuleTier");
-        enableExtraModule = NBT.getBoolean("enableExtraModule");
-        mExtraModule = NBT.getBoolean("mExtraModule");
-        gravitonShardsSpent = NBT.getInteger("gravitonShardsSpent");
-        isRenderActive = NBT.getBoolean("isRenderActive");
-        enableRender = NBT.getBoolean("enableRender");
+    public void loadNBTData(final NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mMachineTier = aNBT.getInteger("mMachineTier");
+        mModuleTier = aNBT.getInteger("mModuleTier");
+        enableExtraModule = aNBT.getBoolean("enableExtraModule");
+        mExtraModule = aNBT.getBoolean("mExtraModule");
+        gravitonShardsSpent = aNBT.getInteger("gravitonShardsSpent");
+        isRenderActive = aNBT.getBoolean("isRenderActive");
+        enableRender = aNBT.getBoolean("enableRender");
 
-        if (NBT.hasKey("totalPowerConsumed")) {
-            totalPowerConsumed = new BigInteger(NBT.getByteArray("totalPowerConsumed"));
+        if (aNBT.hasKey("totalPowerConsumed")) {
+            totalPowerConsumed = new BigInteger(aNBT.getByteArray("totalPowerConsumed"));
         }
-        if (NBT.hasKey("formattingMode")) {
-            int index = MathHelper.clamp_int(NBT.getInteger("formattingMode"), 0, MilestoneFormatter.VALUES.length);
+        if (aNBT.hasKey("formattingMode")) {
+            int index = MathHelper.clamp_int(aNBT.getInteger("formattingMode"), 0, MilestoneFormatter.VALUES.length);
             formattingMode = MilestoneFormatter.VALUES[index];
         }
 
         // Stored items
-        NBTTagCompound tempItemTag = NBT.getCompoundTag("upgradeWindowStorage");
+        NBTTagCompound tempItemTag = aNBT.getCompoundTag("upgradeWindowStorage");
         for (int index = 0; index < 16; index++) {
             int stackSize = tempItemTag.getInteger(index + "stacksizeOfStoredUpgradeItems");
-            ItemStack itemStack = ItemStack.loadItemStackFromNBT(NBT.getCompoundTag(index + "storedUpgradeItem"));
+            ItemStack itemStack = ItemStack.loadItemStackFromNBT(aNBT.getCompoundTag(index + "storedUpgradeItem"));
             if (itemStack != null) {
                 storedUpgradeWindowItems[index] = itemStack.splitStack(stackSize);
             }
         }
 
-        upgrades.rebuildFromNBT(NBT);
+        upgrades.rebuildFromNBT(aNBT);
     }
 
-    private void saveGeneralNBT(NBTTagCompound NBT, boolean force) {
+    public void saveGeneralNBT(NBTTagCompound NBT, boolean force) {
         if (force || mModuleTier != 0) NBT.setInteger("mModuleTier", mModuleTier);
         if (force || gravitonShardsSpent != 0) NBT.setInteger("gravitonShardsSpent", gravitonShardsSpent);
         if (force || gravitonShardsAvailable != 0) NBT.setInteger("gravitonShardsAvailable", gravitonShardsAvailable);
@@ -828,7 +828,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 
-    private final ArrayList<FluidStack> validFuelList = new ArrayList<>() {
+    public final ArrayList<FluidStack> validFuelList = new ArrayList<>() {
 
         {
             add(MaterialsUEVplus.DimensionallyTranscendentResidue.getFluid(1));
@@ -837,7 +837,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         }
     };
 
-    private void drainFuel() {
+    public void drainFuel() {
         fuelConsumption = (long) Math.max(calculateFuelConsumption(this) * 5, 1);
 
         FluidStack fuelToDrain = new FluidStack(validFuelList.get(selectedFuelType), (int) fuelConsumption);
@@ -942,8 +942,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             }
         };
 
-        private final List<Class<? extends IMetaTileEntity>> mteClasses;
-        private final IGTHatchAdder<EternalGregTechWorkshop> adder;
+        public final List<Class<? extends IMetaTileEntity>> mteClasses;
+        public final IGTHatchAdder<EternalGregTechWorkshop> adder;
 
         @SafeVarargs
         moduleElement(IGTHatchAdder<EternalGregTechWorkshop> adder, Class<? extends IMetaTileEntity>... mteClasses) {
@@ -965,7 +965,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return selectedFuelType;
     }
 
-    private void setFuelType(int fuelType) {
+    public void setFuelType(int fuelType) {
         selectedFuelType = fuelType;
     }
 
@@ -1057,7 +1057,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return false;
     }
 
-    private void determineCompositionMilestoneLevel() {
+    public void determineCompositionMilestoneLevel() {
         int[] uniqueModuleCount = new int[5];
         for (EternalGregTechWorkshopModule module : moduleHatches) {
             if (module instanceof EGTWFusionModule) {
@@ -1070,7 +1070,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         milestoneProgress[3] = (int) Math.floor(totalExtensionsBuilt);
     }
 
-    private void determineMilestoneProgress() {
+    public void determineMilestoneProgress() {
         if (milestoneProgress[0] < 7) {
             powerMilestonePercentage = (float) max(
                 (Math.log((totalPowerConsumed.divide(BigInteger.valueOf(POWER_MILESTONE_CONSTANT))).longValue())
@@ -1097,15 +1097,15 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         }
     }
 
-    private static final int FUEL_CONFIG_WINDOW_ID = 9;
-    private static final int UPGRADE_TREE_WINDOW_ID = 10;
-    private static final int INDIVIDUAL_UPGRADE_WINDOW_ID = 11;
-    private static final int MILESTONE_WINDOW_ID = 12;
-    private static final int INDIVIDUAL_MILESTONE_WINDOW_ID = 13;
-    private static final int MANUAL_INSERTION_WINDOW_ID = 14;
-    private static final int GENERAL_INFO_WINDOW_ID = 15;
+    public static final int FUEL_CONFIG_WINDOW_ID = 9;
+    public static final int UPGRADE_TREE_WINDOW_ID = 10;
+    public static final int INDIVIDUAL_UPGRADE_WINDOW_ID = 11;
+    public static final int MILESTONE_WINDOW_ID = 12;
+    public static final int INDIVIDUAL_MILESTONE_WINDOW_ID = 13;
+    public static final int MANUAL_INSERTION_WINDOW_ID = 14;
+    public static final int GENERAL_INFO_WINDOW_ID = 15;
 
-    private int currentMilestoneID = 0;
+    public int currentMilestoneID = 0;
 
     @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
@@ -1153,12 +1153,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 }
             })
                 .setSize(16, 16)
-                .setBackground(() -> {
-                    List<UITexture> button = new ArrayList<>();
-                    button.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
-                    button.add(TecTechUITextures.OVERLAY_BUTTON_HEAT_ON);
-                    return button.toArray(new IDrawable[0]);
-                })
+                .setBackground(
+                    () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
+                        TecTechUITextures.OVERLAY_BUTTON_HEAT_ON })
                 .addTooltip(translateToLocal("fog.button.fuelconfig.tooltip"))
                 .setPos(174, 110)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY))
@@ -1196,13 +1193,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 }
             })
                 .setSize(16, 16)
-                .setBackground(() -> {
-                    List<UITexture> button = new ArrayList<>();
-                    button.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
-                    button.add(TecTechUITextures.OVERLAY_BUTTON_FLAG);
-                    return button.toArray(new IDrawable[0]);
-
-                })
+                .setBackground(
+                    () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
+                        TecTechUITextures.OVERLAY_BUTTON_FLAG })
                 .addTooltip(translateToLocal("fog.button.milestones.tooltip"))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
                 .setPos(174, 91))
@@ -1213,12 +1206,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                             .openSyncedWindow(UPGRADE_TREE_WINDOW_ID);
                     })
                     .setSize(16, 16)
-                    .setBackground(() -> {
-                        List<UITexture> button = new ArrayList<>();
-                        button.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
-                        button.add(TecTechUITextures.OVERLAY_BUTTON_ARROW_BLUE_UP);
-                        return button.toArray(new IDrawable[0]);
-                    })
+                    .setBackground(
+                        () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
+                            TecTechUITextures.OVERLAY_BUTTON_ARROW_BLUE_UP })
                     .addTooltip(translateToLocal("fog.button.upgradetree.tooltip"))
                     .setPos(174, 129)
                     .setTooltipShowUpDelay(TOOLTIP_DELAY))
@@ -1229,12 +1219,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 enableExtraModule = !enableExtraModule;
             })
                 .setPlayClickSound(true)
-                .setBackground(() -> {
-                    List<UITexture> ret = new ArrayList<>();
-                    ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_ARROW_BLUE_UP);
-                    return ret.toArray(new IDrawable[0]);
-                })
+                .setBackground(
+                    () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
+                        TecTechUITextures.OVERLAY_BUTTON_ARROW_BLUE_UP })
                 .attachSyncer(
                     new FakeSyncWidget.BooleanSyncer(this::getEnableExtraModule, this::setEnableExtraModule),
                     builder)
@@ -1248,26 +1235,23 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 }
             })
                 .setSize(16, 16)
-                .setBackground(() -> {
-                    List<UITexture> button = new ArrayList<>();
-                    button.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
-                    button.add(TecTechUITextures.OVERLAY_CYCLIC_BLUE);
-                    return button.toArray(new IDrawable[0]);
-                })
+                .setBackground(
+                    () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
+                        TecTechUITextures.OVERLAY_CYCLIC_BLUE })
                 .addTooltip(translateToLocal("EGTW_UpdateStructureCheck"))
                 .setPos(8, 91)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY));
     }
 
-    private Text machineTier() {
+    public Text machineTier() {
         return new Text(GTUtility.formatNumbers(mMachineTier));
     }
 
-    private Text machineTierHeaderText() {
+    public Text machineTierHeaderText() {
         return new Text(translateToLocal("EGTW_MachineTier"));
     }
 
-    private Text machineState() {
+    public Text machineState() {
         if (mProgresstime > 0) {
             return new Text(translateToLocal("EGTW_MachineRunning"));
         }
@@ -1277,14 +1261,14 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return new Text(translateToLocal("EGTW_MachineIncomplete"));
     }
 
-    private Text extraModuleHeaderText() {
+    public Text extraModuleHeaderText() {
         if (enableExtraModule) {
             return new Text(translateToLocal("EGTW_ExtraModule"));
         }
         return new Text("");
     }
 
-    private Text extraModuleState() {
+    public Text extraModuleState() {
         if (enableExtraModule) {
             if (mExtraModule) {
                 return new Text(translateToLocal("EGTW_ExtraModule_On"));
@@ -1299,15 +1283,15 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return upgrades.isUpgradeActive(upgrade);
     }
 
-    private Text fuelUsage() {
+    public Text fuelUsage() {
         return new Text(fuelConsumption + " L/5s");
     }
 
-    protected ModularWindow createGeneralInfoWindow(final EntityPlayer player) {
+    public ModularWindow createGeneralInfoWindow(final EntityPlayer player) {
         return EternalGregTechWorkshopUI.createGeneralInfoWindow();
     }
 
-    protected ModularWindow createFuelConfigWindow(final EntityPlayer player) {
+    public ModularWindow createFuelConfigWindow(final EntityPlayer player) {
         final int w = 78;
         final int h = 130;
         final int parentW = getGUIWidth();
@@ -1499,7 +1483,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return upgrades.getTotalActiveUpgrades();
     }
 
-    protected ModularWindow createManualInsertionWindow(final EntityPlayer player) {
+    public ModularWindow createManualInsertionWindow(final EntityPlayer player) {
         EternalGregTechWorkshopUpgrade upgrade = currentUpgradeWindow;
         ItemStack[] inputs = upgrade.getExtraCost();
         final int WIDTH = 261;
@@ -1574,12 +1558,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    private Text inversionStatusText() {
+    public Text inversionStatusText() {
         String inversionStatus = "";
         return new Text(inversionStatus);
     }
 
-    protected ModularWindow createIndividualMilestoneWindow(final EntityPlayer player) {
+    public ModularWindow createIndividualMilestoneWindow(final EntityPlayer player) {
         final int w = 150;
         final int h = 150;
         final MilestoneIcon icon = MilestoneIcon.VALUES[currentMilestoneID];
@@ -1655,9 +1639,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    private final int[] milestoneProgress = new int[] { 0, 0, 0, 0 };
+    public final int[] milestoneProgress = new int[] { 0, 0, 0, 0 };
 
-    private Text gravitonShardAmountText(int milestoneID) {
+    public Text gravitonShardAmountText(int milestoneID) {
         int sum;
         int progress = milestoneProgress[milestoneID];
         sum = progress * (progress + 1) / 2;
@@ -1665,7 +1649,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             translateToLocal("gt.blockmachines.multimachine.FOG.shardgain") + ": " + EnumChatFormatting.GRAY + sum);
     }
 
-    private Text totalMilestoneProgress(int milestoneID) {
+    public Text totalMilestoneProgress(int milestoneID) {
         Number progress;
         String suffix;
         switch (milestoneID) {
@@ -1695,7 +1679,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 + suffix);
     }
 
-    private Text currentMilestoneLevel(int milestoneID) {
+    public Text currentMilestoneLevel(int milestoneID) {
         int milestoneLevel = Math.min(milestoneProgress[milestoneID], 7);
         return new Text(
             translateToLocal("gt.blockmachines.multimachine.FOG.milestoneprogress") + ": "
@@ -1703,7 +1687,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 + milestoneLevel);
     }
 
-    private Text milestoneProgressText(int milestoneID) {
+    public Text milestoneProgressText(int milestoneID) {
         Number max;
         String suffix;
         String progressText = translateToLocal("gt.blockmachines.multimachine.FOG.progress");
@@ -1741,7 +1725,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return new Text(progressText + ": " + EnumChatFormatting.GRAY + formattingMode.format(max) + " " + suffix);
     }
 
-    private Widget createMilestoneButton(int milestoneID, int width, int height, Pos2d pos) {
+    public Widget createMilestoneButton(int milestoneID, int width, int height, Pos2d pos) {
         return new ButtonWidget().setOnClick((clickData, widget) -> {
             currentMilestoneID = milestoneID;
             EternalGregTechWorkshopUI.reopenWindow(widget, INDIVIDUAL_MILESTONE_WINDOW_ID);
@@ -1758,7 +1742,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .setTooltipShowUpDelay(TOOLTIP_DELAY);
     }
 
-    protected ModularWindow createMilestoneWindow(final EntityPlayer player) {
+    public ModularWindow createMilestoneWindow(final EntityPlayer player) {
         final int WIDTH = 400;
         final int HEIGHT = 300;
         ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
@@ -1846,7 +1830,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    private Widget createUpgradeConnectorLine(Pos2d pos, int length, float rotationAngle, UpgradeColor color,
+    public Widget createUpgradeConnectorLine(Pos2d pos, int length, float rotationAngle, UpgradeColor color,
         EternalGregTechWorkshopUpgrade startUpgrade, EternalGregTechWorkshopUpgrade endUpgrade) {
         return new DrawableWidget().setDrawable(() -> {
             UITexture texture = color.getConnector();
@@ -1859,7 +1843,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .setSize(6, length);
     }
 
-    private void completeUpgrade(EternalGregTechWorkshopUpgrade upgrade) {
+    public void completeUpgrade(EternalGregTechWorkshopUpgrade upgrade) {
         if (isUpgradeActive(upgrade)) return;
         if (!upgrades.checkPrerequisites(upgrade)) return;
         if (!upgrades.checkCost(upgrade, gravitonShardsAvailable)) return;
@@ -1869,7 +1853,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         gravitonShardsSpent += upgrade.getShardCost();
     }
 
-    private void respecUpgrade(EternalGregTechWorkshopUpgrade upgrade) {
+    public void respecUpgrade(EternalGregTechWorkshopUpgrade upgrade) {
         if (!isUpgradeActive(upgrade)) return;
         if (!upgrades.checkDependents(upgrade)) return;
 
@@ -1882,7 +1866,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         }
     }
 
-    private Widget createUpgradeBox(EternalGregTechWorkshopUpgrade upgrade, IWidgetBuilder<?> builder) {
+    public Widget createUpgradeBox(EternalGregTechWorkshopUpgrade upgrade, IWidgetBuilder<?> builder) {
         return new MultiChildWidget().addChild(new ButtonWidget().setOnClick((clickData, widget) -> {
             currentUpgradeWindow = upgrade;
             if (clickData.mouseButton == 0) {
@@ -1921,7 +1905,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .attachSyncer(upgrades.getSyncer(upgrade), builder);
     }
 
-    protected ModularWindow createIndividualUpgradeWindow(final EntityPlayer player) {
+    public ModularWindow createIndividualUpgradeWindow(final EntityPlayer player) {
         EternalGregTechWorkshopUpgrade upgrade = currentUpgradeWindow;
 
         ModularWindow.Builder builder = ModularWindow.builder(upgrade.getWindowSize());
@@ -1953,7 +1937,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    protected ModularWindow createUpgradeTreeWindow(final EntityPlayer player) {
+    public ModularWindow createUpgradeTreeWindow(final EntityPlayer player) {
         ModularWindow.Builder builder = ModularWindow.builder(300, 300);
         Scrollable scrollable = new Scrollable().setVerticalScroll();
 
@@ -2091,7 +2075,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    private void destroyExtraModule() {
+    public void destroyExtraModule() {
         for (int i = 0; i < mMachineTier; i++) {
             buildPiece(
                 STRUCTURE_PIECE_MAIN_EXTRA_AIR,
@@ -2112,7 +2096,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     }
 
-    private void buildExtraModule() {
+    public void buildExtraModule() {
         for (int i = 0; i < mMachineTier; i++) {
             buildPiece(
                 STRUCTURE_PIECE_MAIN_EXTRA,
@@ -2132,7 +2116,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         }
     }
 
-    private void destroyRenderer() {
+    public void destroyRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
         this.getBaseMetaTileEntity()
             .getWorld()
@@ -2147,7 +2131,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         disableWorking();
     }
 
-    private void createRenderer() {
+    public void createRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
 
         this.getBaseMetaTileEntity()
@@ -2170,7 +2154,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         enableWorking();
     }
 
-    private ChunkCoordinates getRenderPos() {
+    public ChunkCoordinates getRenderPos() {
         IGregTechTileEntity gregTechTileEntity = this.getBaseMetaTileEntity();
         int x = gregTechTileEntity.getXCoord();
         int y = gregTechTileEntity.getYCoord();
@@ -2181,7 +2165,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return new ChunkCoordinates((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset));
     }
 
-    private TileEntityEternalGregTechWorkshop getRenderer() {
+    public TileEntityEternalGregTechWorkshop getRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
         TileEntity tile = this.getBaseMetaTileEntity()
             .getWorld()
@@ -2193,7 +2177,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return null;
     }
 
-    private void updateRenderer() {
+    public void updateRenderer() {
         TileEntityEternalGregTechWorkshop tile = getRenderer();
         if (tile == null) return;
         tile.setRenderCount(mMachineTier);

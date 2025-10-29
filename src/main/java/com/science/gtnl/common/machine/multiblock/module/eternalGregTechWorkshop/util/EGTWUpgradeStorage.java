@@ -14,10 +14,11 @@ import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 
 import gregtech.api.util.GTUtility;
+import lombok.Getter;
 
 public class EGTWUpgradeStorage {
 
-    private final EnumMap<EternalGregTechWorkshopUpgrade, UpgradeData> unlockedUpgrades = new EnumMap<>(
+    public final EnumMap<EternalGregTechWorkshopUpgrade, UpgradeData> unlockedUpgrades = new EnumMap<>(
         EternalGregTechWorkshopUpgrade.class);
 
     public EGTWUpgradeStorage() {
@@ -35,7 +36,7 @@ public class EGTWUpgradeStorage {
         return getData(upgrade).isCostPaid();
     }
 
-    public short[] getPaidCosts(EternalGregTechWorkshopUpgrade upgrade) {
+    public int[] getPaidCosts(EternalGregTechWorkshopUpgrade upgrade) {
         return getData(upgrade).amountsPaid;
     }
 
@@ -138,11 +139,11 @@ public class EGTWUpgradeStorage {
         return true;
     }
 
-    private UpgradeData getData(EternalGregTechWorkshopUpgrade upgrade) {
+    public UpgradeData getData(EternalGregTechWorkshopUpgrade upgrade) {
         return unlockedUpgrades.computeIfAbsent(upgrade, $ -> new UpgradeData());
     }
 
-    private boolean hasAnyProgress() {
+    public boolean hasAnyProgress() {
         if (isUpgradeActive(EternalGregTechWorkshopUpgrade.START)) return true;
 
         // Check if any costs have been paid in any upgrades
@@ -195,7 +196,7 @@ public class EGTWUpgradeStorage {
                 NBTTagCompound costTag = new NBTTagCompound();
                 costTag.setBoolean("paid", data.isCostPaid());
                 for (int i = 0; i < data.amountsPaid.length; i++) {
-                    costTag.setShort("costPaid" + i, data.amountsPaid[i]);
+                    costTag.setInteger("costPaid" + i, data.amountsPaid[i]);
                 }
                 upgradeTag.setTag("extraCost" + upgrade.ordinal(), costTag);
             }
@@ -215,7 +216,7 @@ public class EGTWUpgradeStorage {
                 NBTTagCompound costTag = upgradeTag.getCompoundTag("extraCost" + upgrade.ordinal());
                 data.costPaid = costTag.getBoolean("paid");
                 for (int j = 0; j < data.amountsPaid.length; j++) {
-                    data.amountsPaid[j] = costTag.getShort("costPaid" + j);
+                    data.amountsPaid[j] = costTag.getInteger("costPaid" + j);
                 }
             }
         }
@@ -239,34 +240,28 @@ public class EGTWUpgradeStorage {
         }, UpgradeData::writeToBuffer, UpgradeData::readFromBuffer);
     }
 
-    private static class UpgradeData {
+    public static class UpgradeData {
 
-        private boolean active;
-        private boolean costPaid;
-        private final short[] amountsPaid = new short[12];
+        @Getter
+        public boolean active;
+        @Getter
+        public boolean costPaid;
+        public final int[] amountsPaid = new int[12];
 
-        public boolean isActive() {
-            return active;
-        }
-
-        public boolean isCostPaid() {
-            return costPaid;
-        }
-
-        private static void writeToBuffer(PacketBuffer buf, UpgradeData data) {
-            buf.writeBoolean(data.isActive());
-            buf.writeBoolean(data.isCostPaid());
+        public static void writeToBuffer(PacketBuffer buf, UpgradeData data) {
+            buf.writeBoolean(data.active);
+            buf.writeBoolean(data.costPaid);
             for (int i = 0; i < data.amountsPaid.length; i++) {
-                buf.writeShort(data.amountsPaid[i]);
+                buf.writeInt(data.amountsPaid[i]);
             }
         }
 
-        private static UpgradeData readFromBuffer(PacketBuffer buf) {
+        public static UpgradeData readFromBuffer(PacketBuffer buf) {
             UpgradeData data = new UpgradeData();
             data.active = buf.readBoolean();
             data.costPaid = buf.readBoolean();
             for (int i = 0; i < data.amountsPaid.length; i++) {
-                data.amountsPaid[i] = buf.readShort();
+                data.amountsPaid[i] = buf.readInt();
             }
             return data;
         }

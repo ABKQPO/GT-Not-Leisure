@@ -140,30 +140,16 @@ public class RecipeLoader {
 
     public static boolean recipesAdded;
 
-    public static void loadRecipesServerStart() {
-        if (!recipesAdded) {
-            loadRecipes();
-            if (MainConfig.enableDeleteRecipe) {
-                loadNewRemoveRecipes();
-            }
-        }
-        recipesAdded = true;
-    }
-
-    public static void loadCircuitNanitesData(long worldSeed) {
-        new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
-    }
-
-    public static void loadNewRemoveRecipes() {
-        IRecipePool[] recipePools = new IRecipePool[] { new NewAlloyBlastSmelterRecipes(),
-            new NewVacuumFurnaceRecipes(), new NewFormingPressRecipes() };
+    public static void loadCompleteInit() {
+        IRecipePool[] recipePools = new IRecipePool[] { new CircuitAssemblerConvertRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
         }
     }
 
-    public static void loadRecipes() {
+    public static void loadRecipesServerStart() {
+        if (recipesAdded) return;
 
         ProcessingArrayRecipeLoader.registerDefaultGregtechMaps();
 
@@ -204,15 +190,8 @@ public class RecipeLoader {
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
             new BotaniaManaInfusionRecipes() };
 
-        IRecipePool[] recipePoolsServerStart = new IRecipePool[] { new CircuitAssemblerConvertRecipes(),
-            new AlloyBlastSmelterRecipes(), new VacuumFurnaceRecipes() };
-
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
-        }
-
-        for (IRecipePool recipePoolServerStart : recipePoolsServerStart) {
-            recipePoolServerStart.loadRecipes();
         }
 
         for (ItemStack stone : OreDictionary.getOres("stone")) {
@@ -268,8 +247,27 @@ public class RecipeLoader {
             }
         }
 
+        if (MainConfig.enableDeleteRecipe) {
+            loadNewRemoveRecipes();
+        }
+
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             AssemblyLineWithoutResearchRecipePool.loadRecipes();
+        }
+
+        recipesAdded = true;
+    }
+
+    public static void loadCircuitNanitesData(long worldSeed) {
+        new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
+    }
+
+    public static void loadNewRemoveRecipes() {
+        IRecipePool[] recipePools = new IRecipePool[] { new NewAlloyBlastSmelterRecipes(),
+            new NewVacuumFurnaceRecipes(), new NewFormingPressRecipes() };
+
+        for (IRecipePool recipePool : recipePools) {
+            recipePool.loadRecipes();
         }
     }
 

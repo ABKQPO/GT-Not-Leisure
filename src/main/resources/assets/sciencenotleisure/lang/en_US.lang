@@ -1471,7 +1471,9 @@ gtnl.recipe.FuelRefiningComplexRecipes=Fuel Refining Complex
 
 NameHorizontalCompressor=Horizontal Compressor
 HorizontalCompressorRecipeType=Compressor
+Tooltip_HorizontalCompressor_00=Upgrade machine to enable Black Hole Compressor!
 Tooltip_HorizontalCompressor_Casing=Any reinforced tungsten steel machine block
+Info_HorizontalCompressor_00=Black Hole Compressor Upgrade
 
 NameLargeHammer=Large Forging Hammer
 LargeHammerRecipeType=Forging Hammer

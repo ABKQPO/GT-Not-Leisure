@@ -1471,7 +1471,9 @@ gtnl.recipe.FuelRefiningComplexRecipes=燃料精炼复合体
 
 NameHorizontalCompressor=卧式压缩机
 HorizontalCompressorRecipeType=压缩机
+Tooltip_HorizontalCompressor_00=升级机器来启用黑洞压缩机！
 Tooltip_HorizontalCompressor_Casing=任意强化钨钢机械方块
+Info_HorizontalCompressor_00=黑洞压缩机升级
 
 NameLargeHammer=大型锻造锤
 LargeHammerRecipeType=锻造锤

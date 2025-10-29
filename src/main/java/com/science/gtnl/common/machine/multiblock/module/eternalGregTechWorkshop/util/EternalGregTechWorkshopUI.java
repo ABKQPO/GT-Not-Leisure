@@ -474,7 +474,7 @@ public class EternalGregTechWorkshopUI {
         return ImmutableList.of(translateToLocal("fog.button.materialrequirements.tooltip"));
     }
 
-    public static Widget createExtraCostWidget(final ItemStack costStack, Supplier<Short> paidAmount) {
+    public static Widget createExtraCostWidget(final ItemStack costStack, Supplier<Integer> paidAmount) {
         MultiChildWidget widget = new MultiChildWidget();
         widget.setSize(36, 18);
 
@@ -510,7 +510,7 @@ public class EternalGregTechWorkshopUI {
 
         // Progress text
         widget.addChild(new DynamicTextWidget(() -> {
-            short paid = paidAmount.get();
+            int paid = paidAmount.get();
             EnumChatFormatting color = EnumChatFormatting.YELLOW;
             if (paid == 0) color = EnumChatFormatting.RED;
             else if (paid == costStack.stackSize) color = EnumChatFormatting.GREEN;
