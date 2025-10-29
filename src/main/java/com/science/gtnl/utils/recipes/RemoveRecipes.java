@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -45,6 +46,9 @@ public class RemoveRecipes {
         RecipeMapBackend vacuumFurnaceRecipe = GTPPRecipeMaps.vacuumFurnaceRecipes.getBackend();
         RecipeMapBackend blastFurnaceRecipe = RecipeMaps.blastFurnaceRecipes.getBackend();
         RecipeMapBackend alloyBlastSmelterRecipe = GTPPRecipeMaps.alloyBlastSmelterRecipes.getBackend();
+        RecipeMapBackend vacuumFreezerRecipe = RecipeMaps.vacuumFreezerRecipes.getBackend();
+        RecipeMapBackend cryogenicFreezerRecipe = GTPPRecipeMaps.advancedFreezerRecipes.getBackend();
+        RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
         Map<String, Integer> removedRecipeCounts = new HashMap<>();
 
         List<GTRecipe> recipesToRemoveFromAlloyBlastSmelter = new ArrayList<>();
@@ -67,6 +71,10 @@ public class RemoveRecipes {
                 if (output != null) {
                     // 活性生物晶圆
                     if (output.isItemEqual(ItemList.Circuit_Wafer_Bioware.get(1))) {
+                        recipesToRemoveFromAutoClave.add(recipe);
+                        break;
+                    }
+                    if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
                         recipesToRemoveFromAutoClave.add(recipe);
                         break;
                     }
@@ -127,6 +135,48 @@ public class RemoveRecipes {
         }
         vacuumFurnaceRecipe.removeRecipes(recipesToRemoveFromVacuumFurnace);
 
+        List<GTRecipe> recipesToRemoveFromVacuumFreezer = new ArrayList<>();
+        for (GTRecipe recipe : vacuumFreezerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 半流质下界气体
+                    if (output.isFluidEqual(Materials.NetherSemiFluid.getFluid(1))) {
+                        recipesToRemoveFromVacuumFreezer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        vacuumFreezerRecipe.removeRecipes(recipesToRemoveFromVacuumFreezer);
+
+        List<GTRecipe> recipesToRemoveFromCryogenicFreezer = new ArrayList<>();
+        for (GTRecipe recipe : cryogenicFreezerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 半流质下界气体
+                    if (output.isFluidEqual(Materials.NetherSemiFluid.getFluid(1))) {
+                        recipesToRemoveFromCryogenicFreezer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        cryogenicFreezerRecipe.removeRecipes(recipesToRemoveFromCryogenicFreezer);
+
+        List<GTRecipe> recipesToRemoveChemicalBath = new ArrayList<>();
+        for (GTRecipe recipe : chemicalBathRecipe.getAllRecipes()) {
+            for (ItemStack output : recipe.mOutputs) {
+                if (output != null) {
+                    // 易碎的下界合金碎片及下界合金碎片种子
+                    if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
+                        recipesToRemoveChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        chemicalBathRecipe.removeRecipes(recipesToRemoveChemicalBath);
+
         List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ArrayList<>();
         List<ItemStack> targetOutputs = Arrays.asList(
             ItemList.Circuit_Crystalprocessor.get(1), // 晶体处理器
@@ -162,6 +212,7 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Forming Press", recipesToRemoveFromFormingPress.size());
             removedRecipeCounts.put("Vacuum Furnace", recipesToRemoveFromVacuumFurnace.size());
             removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
+            removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
 
             StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
             for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {

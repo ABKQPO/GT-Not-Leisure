@@ -13,6 +13,7 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -97,6 +98,14 @@ public class ChemicalBathRecipes implements IRecipePool {
             .specialValue(0)
             .duration(160)
             .eut(TierEU.RECIPE_HV)
+            .addTo(cBR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Netherite_Scrap_Seed.get(1))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .itemOutputs(ItemList.Brittle_Netherite_Scrap.get(3))
+            .duration(1200)
+            .eut(TierEU.RECIPE_IV)
             .addTo(cBR);
     }
 }

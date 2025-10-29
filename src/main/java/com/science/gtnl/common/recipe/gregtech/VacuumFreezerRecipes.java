@@ -5,6 +5,7 @@ import com.science.gtnl.common.material.MaterialPool;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.TierEU;
+import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 
@@ -21,6 +22,11 @@ public class VacuumFreezerRecipes implements IRecipePool {
             .duration(80)
             .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);
-
+        GTValues.RA.stdBuilder()
+            .fluidInputs(Materials.NetherAir.getFluid(1_000))
+            .fluidOutputs(Materials.NetherSemiFluid.getFluid(1_000))
+            .duration(200)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(CNCR);
     }
 }
