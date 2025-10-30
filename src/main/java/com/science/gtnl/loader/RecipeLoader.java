@@ -45,7 +45,9 @@ import com.science.gtnl.common.recipe.gregtech.FluidCannerRecipes;
 import com.science.gtnl.common.recipe.gregtech.FluidExtraction;
 import com.science.gtnl.common.recipe.gregtech.FluidExtractorRecipes;
 import com.science.gtnl.common.recipe.gregtech.FluidSolidifierRecipes;
+import com.science.gtnl.common.recipe.gregtech.FormingPressRecipes;
 import com.science.gtnl.common.recipe.gregtech.FusionReactorRecipes;
+import com.science.gtnl.common.recipe.gregtech.HammerRecipes;
 import com.science.gtnl.common.recipe.gregtech.LaserEngraverRecipes;
 import com.science.gtnl.common.recipe.gregtech.MixerRecipes;
 import com.science.gtnl.common.recipe.gregtech.PCBFactoryRecipes;
@@ -57,9 +59,6 @@ import com.science.gtnl.common.recipe.gregtech.TranscendentPlasmaMixerRecipes;
 import com.science.gtnl.common.recipe.gregtech.VacuumFreezerRecipes;
 import com.science.gtnl.common.recipe.gregtech.VacuumFurnaceRecipes;
 import com.science.gtnl.common.recipe.gregtech.multiDehydratorRecipes;
-import com.science.gtnl.common.recipe.gregtech.remove.NewAlloyBlastSmelterRecipes;
-import com.science.gtnl.common.recipe.gregtech.remove.NewFormingPressRecipes;
-import com.science.gtnl.common.recipe.gregtech.remove.NewVacuumFurnaceRecipes;
 import com.science.gtnl.common.recipe.gregtech.serverStart.CircuitAssemblerConvertRecipes;
 import com.science.gtnl.common.recipe.gregtech.serverStart.CircuitAssemblyLineRecipes;
 import com.science.gtnl.common.recipe.gtnl.AdvancedCircuitAssemblyLineRecipes;
@@ -118,6 +117,7 @@ import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
 import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;
 import com.science.gtnl.utils.recipes.RecipeUtil;
+import com.science.gtnl.utils.recipes.RemoveRecipes;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import cpw.mods.fml.common.registry.VillagerRegistry;
@@ -151,6 +151,10 @@ public class RecipeLoader {
 
     public static void loadRecipesServerStart() {
         if (recipesAdded) return;
+        if (MainConfig.enableDeleteRecipe) {
+            RemoveRecipes.removeRecipes();
+        }
+        RecipeUtil.removeMatchingRecipes(RecipePool.ConvertToCircuitAssembler, RecipeMaps.circuitAssemblerRecipes);
 
         ProcessingArrayRecipeLoader.registerDefaultGregtechMaps();
 
@@ -190,7 +194,7 @@ public class RecipeLoader {
             new InfernalCokeRecipes(), new SteamFusionReactorRecipes(), new SteamExtractinatorRecipes(),
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
-            new BotaniaManaInfusionRecipes() };
+            new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
@@ -249,10 +253,6 @@ public class RecipeLoader {
             }
         }
 
-        if (MainConfig.enableDeleteRecipe) {
-            loadNewRemoveRecipes();
-        }
-
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             AssemblyLineWithoutResearchRecipePool.loadRecipes();
         }
@@ -262,15 +262,6 @@ public class RecipeLoader {
 
     public static void loadCircuitNanitesData(long worldSeed) {
         new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
-    }
-
-    public static void loadNewRemoveRecipes() {
-        IRecipePool[] recipePools = new IRecipePool[] { new NewAlloyBlastSmelterRecipes(),
-            new NewVacuumFurnaceRecipes(), new NewFormingPressRecipes() };
-
-        for (IRecipePool recipePool : recipePools) {
-            recipePool.loadRecipes();
-        }
     }
 
     public static void loadVillageTrade() {

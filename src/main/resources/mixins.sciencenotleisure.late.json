@@ -10,7 +10,6 @@
     "AppliedEnergistics.MixinEntityTinyTNTPrimed",
     "AppliedEnergistics.MixinAdaptorIInventory",
     "AppliedEnergistics.MixinTileIOPort",
-    "Bartwork.MixinMainMod",
     "Bartwork.MixinCircuitImprintLoader",
     "Bartwork.MixinItemRegistry",
     "Bartwork.MixinMultipleMetalLoader",

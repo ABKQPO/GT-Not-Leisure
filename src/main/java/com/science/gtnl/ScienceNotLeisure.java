@@ -25,7 +25,6 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -98,11 +97,6 @@ public class ScienceNotLeisure {
         RecipeLoader.loadCompleteInit();
     }
 
-    @Mod.EventHandler
-    public void onServerStarted(FMLServerStartedEvent event) {
-        RecipeLoader.loadRecipesServerStart();
-    }
-
     // register server commands in this event handler (Remove if not needed)
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
@@ -113,6 +107,7 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandEnergyNetwork());
         event.registerServerCommand(new CommandPlaySound());
         event.registerServerCommand(new CommandSudo());
+        RecipeLoader.loadRecipesServerStart();
     }
 
     @Mod.EventHandler

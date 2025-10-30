@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
@@ -42,71 +41,54 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
 
-        // 下界合金碎片种子配方移除概率
-        GTValues.RA.stdBuilder()
-            .itemInputs(ItemList.Hot_Netherite_Scrap.get(2))
-            .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
-            .itemOutputs(
-                ItemList.Netherite_Scrap_Seed.get(1),
-                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2, missing))
-            .duration(1200)
-            .eut(TierEU.RECIPE_IV)
-            .addTo(AR);
-
         // 海晶石 蒸馏水配方
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GregtechItemList.RedAlgaeBiomass.get(32),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
             .fluidInputs(GTModHandler.getDistilledWater(8000))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 4))
-            .duration(300)
-            .eut(TierEU.RECIPE_IV)
-            .addTo(AR);
-
-        // 海晶石 1级水配方 输出x2
-        GTValues.RA.stdBuilder()
-            .itemInputs(
-                GregtechItemList.RedAlgaeBiomass.get(32),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
-            .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 16))
             .duration(300)
-            .eut(TierEU.RECIPE_LuV)
+            .eut(TierEU.RECIPE_IV)
             .addTo(AR);
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
     public void loadDeleteRecipe() {
+
+        // 下界合金碎片种子配方移除概率
         GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
             .itemInputs(ItemList.Hot_Netherite_Scrap.get(2))
             .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
             .itemOutputs(
                 ItemList.Netherite_Scrap_Seed.get(1),
-                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2, missing))
-            .outputChances(1000, 10000)
-            .duration(60 * SECONDS)
+                GTModHandler.getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2, missing))
+            .duration(300)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
 
-        GTValues.RA.stdBuilder() // Prismarine
+        // 海晶石 1级水配方 输出x2
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
             .itemInputs(
                 GregtechItemList.RedAlgaeBiomass.get(32),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
             .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 8))
-            .duration(15 * SECONDS)
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 32))
+            .duration(300)
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
 
         if (Forestry.isModLoaded()) {
             GTValues.RA.stdBuilder() // Prismarine + Comb
+                .setNEIDesc("Remove Change by GTNotLeisure")
                 .itemInputs(
                     GregtechItemList.RedAlgaeBiomass.get(32),
                     GTBees.combs.getStackForType(CombType.PRISMATIC, 32))
                 .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
-                .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 16))
+                .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 32))
                 .duration(15 * SECONDS)
                 .eut(TierEU.RECIPE_LuV)
                 .addTo(AR);

@@ -183,7 +183,7 @@ public class SubscribeEventUtils {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void EntityJoinWorldEvent(EntityJoinWorldEvent event) {
         if (event == null || !(event.entity instanceof EntityPlayerMP player) || !SideReference.Side.Server) return;
         network.sendTo(new SyncRecipePacket(), player);

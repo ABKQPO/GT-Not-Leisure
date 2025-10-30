@@ -34,6 +34,7 @@ public class RecipeBuilder {
     @Nullable
     public IRecipeMetadataStorage metadataStorage;
     public boolean skip = false;
+    public String[] neiDesc;
 
     public RecipeBuilder() {}
 
@@ -95,6 +96,11 @@ public class RecipeBuilder {
         return this;
     }
 
+    public RecipeBuilder setNEIDesc(String... neiDesc) {
+        this.neiDesc = neiDesc;
+        return this;
+    }
+
     public RecipeBuilder itemInputsAllowNulls(ItemStack... inputs) {
         if (skip) return this;
         inputsBasic = fix(inputs, false);
@@ -125,6 +131,7 @@ public class RecipeBuilder {
 
         tempRecipe.mInputs = inputItems.clone();
         tempRecipe.mOutputs = outputItems.clone();
+        tempRecipe.setNeiDesc(neiDesc);
 
         recipeMap.add(tempRecipe);
         return this;

@@ -34,7 +34,6 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 
 public class RemoveRecipes {
 
@@ -52,7 +51,6 @@ public class RemoveRecipes {
         RecipeMapBackend cryogenicFreezerRecipe = GTPPRecipeMaps.advancedFreezerRecipes.getBackend();
         RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
         RecipeMapBackend chemicalPlantRecipe = GTPPRecipeMaps.chemicalPlantRecipes.getBackend();
-        RecipeMapBackend dissolutionTankRecipe = LanthanidesRecipeMaps.dissolutionTankRecipes.getBackend();
         RecipeMapBackend mixerRecipe = RecipeMaps.mixerRecipes.getBackend();
         RecipeMapBackend mixerNonCellRecipe = GTPPRecipeMaps.mixerNonCellRecipes.getBackend();
         Map<String, Integer> removedRecipeCounts = new HashMap<>();
@@ -149,15 +147,6 @@ public class RemoveRecipes {
                     }
                 }
             }
-            for (FluidStack output : recipe.mFluidOutputs) {
-                if (output != null) {
-                    // 海晶石气
-                    if (output.isFluidEqual(Materials.PrismaticGas.getFluid(1))) {
-                        recipesToRemoveFromVacuumFurnace.add(recipe);
-                        break;
-                    }
-                }
-            }
         }
         vacuumFurnaceRecipe.removeRecipes(recipesToRemoveFromVacuumFurnace);
 
@@ -228,15 +217,6 @@ public class RemoveRecipes {
                     }
                 }
             }
-            for (FluidStack output : recipe.mFluidOutputs) {
-                if (output != null) {
-                    // 海晶石硝基苯溶液
-                    if (output.isFluidEqual(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1))) {
-                        recipesToRemoveFromChemicalBath.add(recipe);
-                        break;
-                    }
-                }
-            }
             for (ItemStack input : recipe.mInputs) {
                 if (input != null) {
                     // 易碎的下界合金碎片 高电压配方
@@ -248,21 +228,6 @@ public class RemoveRecipes {
             }
         }
         chemicalBathRecipe.removeRecipes(recipesToRemoveFromChemicalBath);
-
-        // 溶解罐
-        List<GTRecipe> recipesToRemoveFromDissolutionTank = new ArrayList<>();
-        for (GTRecipe recipe : dissolutionTankRecipe.getAllRecipes()) {
-            for (FluidStack output : recipe.mFluidOutputs) {
-                if (output != null) {
-                    // 海晶石溶液
-                    if (output.isFluidEqual(Materials.PrismarineSolution.getFluid(1))) {
-                        recipesToRemoveFromDissolutionTank.add(recipe);
-                        break;
-                    }
-                }
-            }
-        }
-        dissolutionTankRecipe.removeRecipes(recipesToRemoveFromDissolutionTank);
 
         // 搅拌机
         List<GTRecipe> recipesToRemoveFromMixer = new ArrayList<>();
@@ -335,7 +300,6 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Alloy Blast Smelter", recipesToRemoveFromAlloyBlastSmelter.size());
             removedRecipeCounts.put("Cryogenic Freezer", recipesToRemoveFromCryogenicFreezer.size());
             removedRecipeCounts.put("Chemical Bath", recipesToRemoveFromChemicalBath.size());
-            removedRecipeCounts.put("Dissolution Tank", recipesToRemoveFromDissolutionTank.size());
             removedRecipeCounts.put("Mixer", recipesToRemoveFromMixer.size());
             removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
 
