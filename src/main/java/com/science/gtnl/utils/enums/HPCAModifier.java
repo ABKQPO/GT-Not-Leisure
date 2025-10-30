@@ -6,9 +6,9 @@ import gregtech.api.enums.Textures;
 
 public enum HPCAModifier {
 
-    RED(OVERLAY_FRONT_INDICATOR_RED, 1, 3, 1, 1, 1.5, 1),
-    YELLOW(OVERLAY_FRONT_INDICATOR_YELLOW, 1.5, 1.5, 1, 1.5, 1.25, 1),
-    GREEN(OVERLAY_FRONT_INDICATOR_GREEN, 1, 1, 1, 1, 1, 1);
+    RED(OVERLAY_FRONT_INDICATOR_RED, 1, 3, 1.25, 1.25, 1.5, 1.25),
+    YELLOW(OVERLAY_FRONT_INDICATOR_YELLOW, 1.5, 1.5, 2, 1.5, 1.25, 1.5),
+    GREEN(OVERLAY_FRONT_INDICATOR_GREEN, 2, 1.25, 3, 1, 2, 1.5);
 
     public final Textures.BlockIcons.CustomIcon overlay;
     public final double computationCoefficientX;

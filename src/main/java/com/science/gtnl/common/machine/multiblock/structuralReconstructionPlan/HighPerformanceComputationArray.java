@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -112,6 +113,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     };
     public static final IStatusFunction<HighPerformanceComputationArray> COOLANT_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, 20000, 80000, 100000);
+
+    public static FluidStack superCoolant = Materials.SuperCoolant.getFluid(1);
 
     public HighPerformanceComputationArray(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -251,6 +254,17 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
             maxCurrentTemp.set(maxTemp);
             if (mMaxProgresstime > 0) {
+                ArrayList<FluidStack> storedFluids = getStoredFluids();
+                int totalSuperCoolant = 0;
+
+                if (storedFluids != null) {
+                    for (FluidStack fs : storedFluids) {
+                        if (fs != null && GTUtility.areFluidsEqual(fs, superCoolant, true)) {
+                            totalSuperCoolant += fs.amount;
+                        }
+                    }
+                }
+
                 for (int x = 0; x < this.totalLens; x++) {
                     for (int y = 0; y < 3; y++) {
                         MTEHatchRack rack = rackTable.get(x, y);
@@ -269,17 +283,27 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                             int rackComputation = rack.tickComponents(1, 1) * 5;
                             if (rackComputation > 0) {
                                 int coolantUse = (int) (rackComputation * coolantFactor / 20);
-                                boolean coolant = depleteInput(Materials.SuperCoolant.getFluid(coolantUse), false);
 
-                                rack.heat += coolant ? (int) (-rackComputation / 20d * heatFactor)
+                                double coolantRatio = totalSuperCoolant > 0
+                                    ? Math.min(1.0, (double) totalSuperCoolant / coolantUse)
+                                    : 0.0;
+
+                                rack.heat += coolantRatio > 0
+                                    ? (int) (-rackComputation / 20d * heatFactor * coolantRatio)
                                     : (int) (150 * heatFactor);
+
                                 rack.heat = Math.max(100, rack.heat);
                                 this.eAvailableData += (long) (rackComputation * computationFactor) / 4;
-                                allCoolantUs += coolantUse;
+
+                                int usedCoolant = (int) (coolantUse * coolantRatio);
+                                allCoolantUs += usedCoolant;
+
+                                totalSuperCoolant -= usedCoolant;
                             }
                         }
                     }
                 }
+
                 coolantUse.set(allCoolantUs);
                 availableData.set(this.eAvailableData);
             }
@@ -378,9 +402,10 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("HighPerformanceComputationArrayRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_00"))
-
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_01"))
-
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_Tectech_Hatch"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
