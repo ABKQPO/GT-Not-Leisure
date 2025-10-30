@@ -39,4 +39,13 @@ public record SimpleItem(Item item, int meta, NBTTagCompound nbt) {
         return result;
     }
 
+    public ItemStack toItemStack() {
+        if (this == empty || item == null) return null;
+        ItemStack stack = new ItemStack(item, 1, meta);
+        if (nbt != null) {
+            stack.setTagCompound((NBTTagCompound) nbt.copy());
+        }
+        return stack;
+    }
+
 }

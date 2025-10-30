@@ -31,7 +31,6 @@ import com.science.gtnl.common.machine.hatch.CustomMaintenanceHatch;
 import com.science.gtnl.common.machine.hatch.DebugDataAccessHatch;
 import com.science.gtnl.common.machine.hatch.DebugEnergyHatch;
 import com.science.gtnl.common.machine.hatch.DualInputHatch;
-import com.science.gtnl.common.machine.hatch.DualOutputHatch;
 import com.science.gtnl.common.machine.hatch.EnergyTransferNode;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.machine.hatch.HumongousDualInputHatch;
@@ -252,6 +251,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
+import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GlassTier;
@@ -262,6 +262,7 @@ import gregtech.common.covers.CoverSteamValve;
 import gtPlusPlus.api.objects.Logger;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
 import tectech.thing.CustomItemList;
+import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
@@ -2609,10 +2610,7 @@ public class MachineLoader {
                 ENERGY_HATCH_MAX.ID,
                 "EnergyHatchMAX",
                 StatCollector.translateToLocal("EnergyHatchMAX"),
-                14,
-                0,
-                new String[] { StatCollector.translateToLocal("Tooltip_EnergyHatch_00"),
-                    StatCollector.translateToLocal("Tooltip_EnergyHatch_01") }));
+                14));
         addItemTooltip(GTNLItemList.EnergyHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX4A.set(
@@ -2641,6 +2639,195 @@ public class MachineLoader {
                 14,
                 64));
         addItemTooltip(GTNLItemList.EnergyHatchMAX64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.DynamoHatchLV.set(ItemList.Hatch_Dynamo_LV.get(1));
+
+        GTNLItemList.DynamoHatchLV4A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_LV_4A.ID,
+                "DynamoHatchLV4A",
+                StatCollector.translateToLocal("DynamoHatchLV4A"),
+                1,
+                4));
+
+        GTNLItemList.DynamoHatchLV16A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_LV_16A.ID,
+                "DynamoHatchLV16A",
+                StatCollector.translateToLocal("DynamoHatchLV16A"),
+                1,
+                16));
+
+        GTNLItemList.DynamoHatchLV64A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_LV_64A.ID,
+                "DynamoHatchLV64A",
+                StatCollector.translateToLocal("DynamoHatchLV64A"),
+                1,
+                64));
+
+        GTNLItemList.DynamoHatchMV.set(ItemList.Hatch_Dynamo_MV.get(1));
+
+        GTNLItemList.DynamoHatchMV4A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MV_4A.ID,
+                "DynamoHatchMV4A",
+                StatCollector.translateToLocal("DynamoHatchMV4A"),
+                2,
+                4));
+
+        GTNLItemList.DynamoHatchMV16A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MV_16A.ID,
+                "DynamoHatchMV16A",
+                StatCollector.translateToLocal("DynamoHatchMV16A"),
+                2,
+                16));
+
+        GTNLItemList.DynamoHatchMV64A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MV_64A.ID,
+                "DynamoHatchMV64A",
+                StatCollector.translateToLocal("DynamoHatchMV64A"),
+                2,
+                64));
+
+        GTNLItemList.DynamoHatchHV.set(ItemList.Hatch_Dynamo_HV.get(1));
+
+        GTNLItemList.DynamoHatchHV4A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_HV_4A.ID,
+                "DynamoHatchHV4A",
+                StatCollector.translateToLocal("DynamoHatchHV4A"),
+                3,
+                4));
+
+        GTNLItemList.DynamoHatchHV16A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_HV_16A.ID,
+                "DynamoHatchHV16A",
+                StatCollector.translateToLocal("DynamoHatchHV16A"),
+                3,
+                16));
+
+        GTNLItemList.DynamoHatchHV64A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_HV_64A.ID,
+                "DynamoHatchHV64A",
+                StatCollector.translateToLocal("DynamoHatchHV64A"),
+                3,
+                64));
+
+        GTNLItemList.DynamoHatchEV.set(ItemList.Hatch_Dynamo_EV.get(1));
+
+        GTNLItemList.DynamoHatchEV4A.set(CustomItemList.eM_dynamoMulti4_EV.get(1));
+
+        GTNLItemList.DynamoHatchEV16A.set(CustomItemList.eM_dynamoMulti16_EV.get(1));
+
+        GTNLItemList.DynamoHatchEV64A.set(CustomItemList.eM_dynamoMulti64_EV.get(1));
+
+        GTNLItemList.DynamoHatchIV.set(ItemList.Hatch_Dynamo_IV.get(1));
+
+        GTNLItemList.DynamoHatchIV4A.set(CustomItemList.eM_dynamoMulti4_IV.get(1));
+
+        GTNLItemList.DynamoHatchIV16A.set(CustomItemList.eM_dynamoMulti16_IV.get(1));
+
+        GTNLItemList.DynamoHatchIV64A.set(CustomItemList.eM_dynamoMulti64_IV.get(1));
+
+        GTNLItemList.DynamoHatchLuV.set(ItemList.Hatch_Dynamo_LuV.get(1));
+
+        GTNLItemList.DynamoHatchLuV4A.set(CustomItemList.eM_dynamoMulti4_LuV.get(1));
+
+        GTNLItemList.DynamoHatchLuV16A.set(CustomItemList.eM_dynamoMulti16_LuV.get(1));
+
+        GTNLItemList.DynamoHatchLuV64A.set(CustomItemList.eM_dynamoMulti64_LuV.get(1));
+
+        GTNLItemList.DynamoHatchZPM.set(ItemList.Hatch_Dynamo_ZPM.get(1));
+
+        GTNLItemList.DynamoHatchZPM4A.set(CustomItemList.eM_dynamoMulti4_ZPM.get(1));
+
+        GTNLItemList.DynamoHatchZPM16A.set(CustomItemList.eM_dynamoMulti16_ZPM.get(1));
+
+        GTNLItemList.DynamoHatchZPM64A.set(CustomItemList.eM_dynamoMulti64_ZPM.get(1));
+
+        GTNLItemList.DynamoHatchUV.set(ItemList.Hatch_Dynamo_UV.get(1));
+
+        GTNLItemList.DynamoHatchUV4A.set(CustomItemList.eM_dynamoMulti4_UV.get(1));
+
+        GTNLItemList.DynamoHatchUV16A.set(CustomItemList.eM_dynamoMulti16_UV.get(1));
+
+        GTNLItemList.DynamoHatchUV64A.set(CustomItemList.eM_dynamoMulti64_UV.get(1));
+
+        GTNLItemList.DynamoHatchUHV.set(ItemList.Hatch_Dynamo_UHV.get(1));
+
+        GTNLItemList.DynamoHatchUHV4A.set(CustomItemList.eM_dynamoMulti4_UHV.get(1));
+
+        GTNLItemList.DynamoHatchUHV16A.set(CustomItemList.eM_dynamoMulti16_UHV.get(1));
+
+        GTNLItemList.DynamoHatchUHV64A.set(CustomItemList.eM_dynamoMulti64_UHV.get(1));
+
+        GTNLItemList.DynamoHatchUEV.set(ItemList.Hatch_Dynamo_UEV.get(1));
+
+        GTNLItemList.DynamoHatchUEV4A.set(CustomItemList.eM_dynamoMulti4_UEV.get(1));
+
+        GTNLItemList.DynamoHatchUEV16A.set(CustomItemList.eM_dynamoMulti16_UEV.get(1));
+
+        GTNLItemList.DynamoHatchUEV64A.set(CustomItemList.eM_dynamoMulti64_UEV.get(1));
+
+        GTNLItemList.DynamoHatchUIV.set(ItemList.Hatch_Dynamo_UIV.get(1));
+
+        GTNLItemList.DynamoHatchUIV4A.set(CustomItemList.eM_dynamoMulti4_UIV.get(1));
+
+        GTNLItemList.DynamoHatchUIV16A.set(CustomItemList.eM_dynamoMulti16_UIV.get(1));
+
+        GTNLItemList.DynamoHatchUIV64A.set(CustomItemList.eM_dynamoMulti64_UIV.get(1));
+
+        GTNLItemList.DynamoHatchUMV.set(ItemList.Hatch_Dynamo_UMV.get(1));
+
+        GTNLItemList.DynamoHatchUMV4A.set(CustomItemList.eM_dynamoMulti4_UMV.get(1));
+
+        GTNLItemList.DynamoHatchUMV16A.set(CustomItemList.eM_dynamoMulti16_UMV.get(1));
+
+        GTNLItemList.DynamoHatchUMV64A.set(CustomItemList.eM_dynamoMulti64_UMV.get(1));
+
+        GTNLItemList.DynamoHatchUXV.set(ItemList.Hatch_Dynamo_UXV.get(1));
+
+        GTNLItemList.DynamoHatchUXV4A.set(CustomItemList.eM_dynamoMulti4_UXV.get(1));
+
+        GTNLItemList.DynamoHatchUXV16A.set(CustomItemList.eM_dynamoMulti16_UXV.get(1));
+
+        GTNLItemList.DynamoHatchUXV64A.set(CustomItemList.eM_dynamoMulti64_UXV.get(1));
+
+        GTNLItemList.DynamoHatchMAX.set(
+            new MTEHatchDynamo(
+                DYNAMO_HATCH_MAX.ID,
+                "DynamoHatchMAX",
+                StatCollector.translateToLocal("DynamoHatchMAX"),
+                14));
+
+        GTNLItemList.DynamoHatchMAX4A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MAX_4A.ID,
+                "DynamoHatchMAX4A",
+                StatCollector.translateToLocal("DynamoHatchMAX4A"),
+                14,
+                4));
+
+        GTNLItemList.DynamoHatchMAX16A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MAX_16A.ID,
+                "DynamoHatchMAX16A",
+                StatCollector.translateToLocal("DynamoHatchMAX16A"),
+                14,
+                16));
+
+        GTNLItemList.DynamoHatchMAX64A.set(
+            new MTEHatchDynamoMulti(
+                DYNAMO_HATCH_MAX_64A.ID,
+                "DynamoHatchMAX64A",
+                StatCollector.translateToLocal("DynamoHatchMAX64A"),
+                14,
+                64));
 
         GTNLItemList.WirelessEnergyHatchLV.set(ItemList.Wireless_Hatch_Energy_LV.get(1));
 
@@ -4277,27 +4464,6 @@ public class MachineLoader {
                 14,
                 Integer.MAX_VALUE));
         addItemTooltip(GTNLItemList.LegendaryWirelessDynamoHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-    }
-
-    @Deprecated
-    public static void registerTestMachine() {
-        GTNLItemList.QuadrupleOutputHatchEV.set(
-            new DualOutputHatch(
-                21700,
-                4,
-                "QuadrupleOutputHatchEV",
-                StatCollector.translateToLocal("QuadrupleOutputHatchEV"),
-                4));
-        addItemTooltip(GTNLItemList.QuadrupleOutputHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.NinefoldOutputHatchEV.set(
-            new DualOutputHatch(
-                21701,
-                9,
-                "NinefoldOutputHatchEV",
-                StatCollector.translateToLocal("NinefoldOutputHatchEV"),
-                4));
-        addItemTooltip(GTNLItemList.NinefoldOutputHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
     }
 
     public static void registerBasicMachine() {

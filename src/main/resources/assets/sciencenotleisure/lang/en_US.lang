@@ -192,8 +192,6 @@ Tooltip_AdvancedSuperInputHatchME_02=Use the GUI to limit the minimum stack size
 Tooltip_AdvancedSuperInputHatchME_03=WARNING: Fast recipe checks can be laggy. Use with caution.
 
 EnergyHatchMAX=MAX Energy Hatch
-Tooltip_EnergyHatch_00=Energy Injector for Multiblocks
-Tooltip_EnergyHatch_01=Accepts up to 2 Amps
 
 EnergyHatchLV4A=LV 4A Energy Hatch
 EnergyHatchLV16A=LV 16A Energy Hatch
@@ -210,6 +208,24 @@ EnergyHatchHV64A=HV 64A Energy Hatch
 EnergyHatchMAX4A=MAX 4A Energy Hatch
 EnergyHatchMAX16A=MAX 16A Energy Hatch
 EnergyHatchMAX64A=MAX 64A Energy Hatch
+
+DynamoHatchMAX=MAX Dynamo Hatch
+
+DynamoHatchLV4A=LV 4A Dynamo Hatch
+DynamoHatchLV16A=LV 16A Dynamo Hatch
+DynamoHatchLV64A=LV 64A Dynamo Hatch
+
+DynamoHatchMV4A=MV 4A Dynamo Hatch
+DynamoHatchMV16A=MV 16A Dynamo Hatch
+DynamoHatchMV64A=MV 64A Dynamo Hatch
+
+DynamoHatchHV4A=HV 4A Dynamo Hatch
+DynamoHatchHV16A=HV 16A Dynamo Hatch
+DynamoHatchHV64A=HV 64A Dynamo Hatch
+
+DynamoHatchMAX4A=MAX 4A Dynamo Hatch
+DynamoHatchMAX16A=MAX 16A Dynamo Hatch
+DynamoHatchMAX64A=MAX 64A Dynamo Hatch
 
 LaserEnergyHatchIV4194304A=IV 4,194,304A/t Laser Target Hatch
 LaserEnergyHatchIV16777216A=IV 16,777,216A/t Laser Target Hatch
@@ -1121,6 +1137,8 @@ Tooltip_SteamRocket_00=Requires Molten Compressed Steam as fuel
 Tooltip_SteamRocket_01=You must be someone who plays Oxygen Not Included!
 entity.GalacticraftCore.SteamRocket.name=Steam Rocket
 schematic.rocketSteam.name=Rocket (Steam)
+
+item.DebugItem.name=Debug Item
 
 item.TestItem.name=Test Item
 Tooltip_Testitem_00=If you see this Tooltip

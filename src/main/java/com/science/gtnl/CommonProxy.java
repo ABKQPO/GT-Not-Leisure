@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.science.gtnl.common.item.ItemDebug;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
@@ -49,7 +48,6 @@ public class CommonProxy implements IGuiHandler {
             .register(new SubscribeEventUtils());
 
         NetWorkHandler.registerAllMessage();
-        MinecraftForge.EVENT_BUS.register(ItemDebug.INSTANCE);
     }
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)

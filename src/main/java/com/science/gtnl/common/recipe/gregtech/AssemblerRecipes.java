@@ -2748,6 +2748,149 @@ public class AssemblerRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
+                ItemList.Hatch_Dynamo_LV.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.Tin, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 2))
+            .itemOutputs(GTNLItemList.DynamoHatchLV4A.get(1))
+            .fluidInputs(Materials.Silver.getMolten(144))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Transformer_LV_ULV.get(1),
+                GTNLItemList.DynamoHatchLV4A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Tin, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 4))
+            .itemOutputs(GTNLItemList.DynamoHatchLV16A.get(1))
+            .fluidInputs(Materials.Electrum.getMolten(144))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.WetTransformer_LV_ULV.get(1),
+                GTNLItemList.DynamoHatchLV16A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.Tin, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 6))
+            .itemOutputs(GTNLItemList.DynamoHatchLV64A.get(1))
+            .fluidInputs(Materials.Tungsten.getMolten(144))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Hatch_Dynamo_MV.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.Copper, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Aluminium, 2))
+            .itemOutputs(GTNLItemList.DynamoHatchMV4A.get(1))
+            .fluidInputs(Materials.Silver.getMolten(144))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Transformer_MV_LV.get(1),
+                GTNLItemList.DynamoHatchMV4A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Copper, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Aluminium, 4))
+            .itemOutputs(GTNLItemList.DynamoHatchMV16A.get(1))
+            .fluidInputs(Materials.Electrum.getMolten(144))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.WetTransformer_MV_LV.get(1),
+                GTNLItemList.DynamoHatchMV16A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.Copper, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Aluminium, 6))
+            .itemOutputs(GTNLItemList.DynamoHatchMV64A.get(1))
+            .fluidInputs(Materials.Tungsten.getMolten(144))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Hatch_Dynamo_HV.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.Gold, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.StainlessSteel, 2))
+            .itemOutputs(GTNLItemList.DynamoHatchHV4A.get(1))
+            .fluidInputs(Materials.Silver.getMolten(144))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Transformer_HV_MV.get(1),
+                GTNLItemList.DynamoHatchHV4A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Gold, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.StainlessSteel, 4))
+            .itemOutputs(GTNLItemList.DynamoHatchHV16A.get(1))
+            .fluidInputs(Materials.Electrum.getMolten(144))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.WetTransformer_HV_MV.get(1),
+                GTNLItemList.DynamoHatchHV16A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.Gold, 2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.StainlessSteel, 6))
+            .itemOutputs(GTNLItemList.DynamoHatchHV64A.get(1))
+            .fluidInputs(Materials.Tungsten.getMolten(144))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.DynamoHatchMAX.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.DraconiumAwakened, 2),
+                GTOreDictUnificator
+                    .get(OrePrefixes.plate, MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter, 2))
+            .itemOutputs(GTNLItemList.DynamoHatchMAX4A.get(1))
+            .fluidInputs(Materials.Silver.getMolten(144))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_MAX)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Transformer_MAX_UXV.get(1),
+                GTNLItemList.DynamoHatchMAX4A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.DraconiumAwakened, 2),
+                GTOreDictUnificator
+                    .get(OrePrefixes.plate, MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter, 4))
+            .itemOutputs(GTNLItemList.DynamoHatchMAX16A.get(1))
+            .fluidInputs(Materials.Electrum.getMolten(144))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_MAX)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.WetTransformer_MAX_UXV.get(1),
+                GTNLItemList.DynamoHatchMAX16A.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.DraconiumAwakened, 2),
+                GTOreDictUnificator
+                    .get(OrePrefixes.plate, MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter, 6))
+            .itemOutputs(GTNLItemList.DynamoHatchMAX64A.get(1))
+            .fluidInputs(Materials.Tungsten.getMolten(144))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_MAX)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
                 GTNLItemList.ShimmerBucket.get(1),
                 GTModHandler.getModItem(OpenComputers.ID, "disassembler", 64))
             .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))

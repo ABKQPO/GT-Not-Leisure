@@ -15,7 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.item.ItemDebug;
+import com.science.gtnl.common.item.DebugItem;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;
 import com.science.gtnl.common.item.ItemRecord;
@@ -65,6 +65,7 @@ public class ItemLoader {
     public static Item fakeItemSiren;
     public static Item netherTeleporter;
     public static Item testItem;
+    public static Item debugItem;
     public static Item KFCFamily;
     public static Item twilightSword;
     public static Item circuitIntegratedPlus;
@@ -111,6 +112,7 @@ public class ItemLoader {
         fakeItemSiren = new FakeItemSiren();
         wirelessUpgradeChip = new WirelessUpgradeChip();
         testItem = new TestItem();
+        debugItem = new DebugItem();
         netherTeleporter = new NetherTeleporter();
         electricProspectorTool = new ElectricProspectorTool();
         KFCFamily = new KFCFamily(20, 20, true);
@@ -228,7 +230,7 @@ public class ItemLoader {
         GameRegistry.registerItem(physicsCape, "PhysicsCape");
         GameRegistry.registerItem(luckyHorseshoe, "LuckyHorseshoe");
         GameRegistry.registerItem(infinityCell, "InfinityCell");
-        GameRegistry.registerItem(ItemDebug.INSTANCE, "debug");
+        GameRegistry.registerItem(debugItem, "DebugItem");
 
         GTNLItemList.RecordSus.set(new ItemStack(RecordLoader.recordSus, 1));
         GTNLItemList.RecordNewHorizons.set(new ItemStack(RecordLoader.recordNewHorizons, 1));
@@ -659,6 +661,7 @@ public class ItemLoader {
                     StatCollector.translateToLocal("Tooltip_VoidCover_03") }));
 
         GTNLItemList.ManaElectricProspectorTool.set(ElectricProspectorTool.initItem(0, 25, 9999));
+        GTNLItemList.DebugElectricProspectorTool.set(ElectricProspectorTool.initItem(1, 50, Integer.MAX_VALUE));
 
         for (int i = 0; i < 14; i++) {
             GTNLItemList.WIRELESS_ENERGY_COVER[i].set(ItemList.WIRELESS_ENERGY_COVERS[i].get(1));
