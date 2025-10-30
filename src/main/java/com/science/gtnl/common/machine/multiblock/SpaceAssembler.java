@@ -170,6 +170,11 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
     }
 
     @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return 0.8 - (mParallelTier / 50.0) * Math.pow(0.90, mGlassTier);
     }
