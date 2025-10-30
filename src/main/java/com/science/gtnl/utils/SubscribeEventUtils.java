@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -42,6 +43,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.common.command.CommandTickrate;
+import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.TimeStopManager;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.packet.SoundPacket;
@@ -192,10 +194,14 @@ public class SubscribeEventUtils {
     @SubscribeEvent
     public void onPlayerLoginOut(PlayerEvent.PlayerLoggedOutEvent event) {
         TimeStopManager.setTimeStopped(false);
+        BaubleItem.removePlayer(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        if (Minecraft.getMinecraft().thePlayer != null) {
+            BaubleItem.removePlayer(Minecraft.getMinecraft().thePlayer.getUniqueID());
+        }
         // reload the config from disk (undoing the server push)
         MainConfig.reloadConfig();
     }

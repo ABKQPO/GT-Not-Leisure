@@ -69,6 +69,7 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        super.onWornTick(itemstack, player);
         if (!(player instanceof EntityPlayer)) return;
         World world = player.worldObj;
         if (!world.isRemote) {

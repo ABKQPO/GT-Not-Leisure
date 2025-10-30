@@ -40,7 +40,8 @@ public class LuckyHorseshoe extends BaubleItem {
     }
 
     @Override
-    public void onWornTick(ItemStack stack, EntityLivingBase player) {
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        super.onWornTick(itemstack, player);
         player.fallDistance = 0;
     }
 

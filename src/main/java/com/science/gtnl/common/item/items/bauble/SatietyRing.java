@@ -31,6 +31,7 @@ public class SatietyRing extends BaubleItem {
 
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        super.onWornTick(itemstack, player);
         player.addPotionEffect(new PotionEffect(Potion.field_76443_y.id, 200, 255));
         player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1200, 255));
 
@@ -42,6 +43,7 @@ public class SatietyRing extends BaubleItem {
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+        super.onUnequipped(itemstack, player);
         player.removePotionEffect(Potion.field_76443_y.id);
     }
 }

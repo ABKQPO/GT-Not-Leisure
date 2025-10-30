@@ -33,6 +33,7 @@ public class RejectionRing extends BaubleItem {
 
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        super.onWornTick(itemstack, player);
         if (player instanceof EntityPlayer) {
             World world = player.worldObj;
             double playerX = player.posX;
