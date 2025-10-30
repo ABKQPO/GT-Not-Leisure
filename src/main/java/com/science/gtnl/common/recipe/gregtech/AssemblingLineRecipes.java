@@ -24,7 +24,6 @@ import bartworks.common.loaders.ItemRegistry;
 import bartworks.system.material.WerkstoffLoader;
 import ggfab.GGItemList;
 import goodgenerator.items.GGMaterial;
-import goodgenerator.loader.Loaders;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
@@ -1125,7 +1124,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1,
             new Object[] { GTNLItemList.LargeAssembler.get(64), GTNLItemList.PreciseAssembler.get(64),
                 ItemList.AssemblingMachineUEV.get(64), GregtechItemList.NeutronPulseManipulator.get(32),
-                new ItemStack(Loaders.componentAssemblylineCasing, 16, 9),
+                ItemRefer.Compassline_Casing_UEV.get(16),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUEV, 8),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Infinity, 4),
                 MaterialsElements.STANDALONE.HYPOGEN.getPlateDense(32),
@@ -1675,7 +1674,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 ItemList.ArcFurnaceUV.get(32), new ItemStack(LanthItemList.ELECTRODE_CASING, 64),
                 new ItemStack(GregTechAPI.sBlockCasings10, 32, 6),
                 GTModHandler.getModItem(KekzTech.ID, "kekztech_lapotronicenergyunit_block", 64),
-                new ItemStack(Loaders.FRF_Coil_2, 4, 0), ItemList.Robot_Arm_UV.get(16),
+                ItemRefer.Field_Restriction_Coil_T2.get(4), ItemList.Robot_Arm_UV.get(16),
                 ItemList.Electric_Motor_UV.get(16), ItemList.Conveyor_Module_UV.get(16),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUV, 8),
                 new Object[] { OrePrefixes.circuit.get(Materials.UHV), 8 }, GregtechItemList.Laser_Lens_Special.get(1),
@@ -1696,7 +1695,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1,
             new Object[] { ItemRefer.Precise_Assembler.get(64), GTNLItemList.PreciseAssembler.get(32),
                 GTNLItemList.PreciseAssembler.get(32), ItemList.Casing_Dim_Injector.get(48),
-                new ItemStack(Loaders.componentAssemblylineCasing, 16, 9),
+                ItemRefer.Compassline_Casing_UEV.get(16),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUEV, 8),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Infinity, 4),
                 MaterialsElements.STANDALONE.HYPOGEN.getPlateDense(8),
@@ -1719,7 +1718,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1,
             new Object[] { GTNLItemList.LargeCircuitAssembler.get(64), ItemList.AssemblingMachineUV.get(64),
                 ItemList.Casing_Assembler.get(64), ItemList.SpaceElevatorBaseCasing.get(32),
-                new ItemStack(Loaders.componentAssemblylineCasing, 18, 6), ItemList.Robot_Arm_UHV.get(48),
+                ItemRefer.Compassline_Casing_ZPM.get(16), ItemList.Robot_Arm_UHV.get(48),
                 ItemList.Conveyor_Module_UHV.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UV), 64 },
                 new Object[] { OrePrefixes.circuit.get(Materials.UHV), 32 },
                 new Object[] { OrePrefixes.circuit.get(Materials.UEV), 16 },
@@ -1769,7 +1768,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UEV,
             1,
             new Object[] { GTNLItemList.UIVParallelControllerCore.get(1),
-                CustomItemList.Machine_Multi_Transformer.get(64), new ItemStack(compactFusionCoil, 64, 3),
+                CustomItemList.Machine_Multi_Transformer.get(64), ItemRefer.Compact_Fusion_Coil_T3.get(64),
                 new Object[] { OrePrefixes.circuit.get(Materials.UXV), 24 },
                 new Object[] { OrePrefixes.circuit.get(Materials.UMV), 64 },
                 new Object[] { OrePrefixes.circuit.get(Materials.UIV), 64 }, ItemList.Field_Generator_UIV.get(48),
