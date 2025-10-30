@@ -231,9 +231,19 @@ public class RemoveRecipes {
                     }
                 }
             }
+            for (ItemStack input : recipe.mInputs) {
+                if (input != null) {
+                    // 易碎的下界合金碎片 高电压配方
+                    if (input.isItemEqual(ItemList.Hot_Netherite_Scrap.get(1))) {
+                        recipesToRemoveFromChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
         }
         chemicalBathRecipe.removeRecipes(recipesToRemoveFromChemicalBath);
 
+        // 溶解罐
         List<GTRecipe> recipesToRemoveFromDissolutionTank = new ArrayList<>();
         for (GTRecipe recipe :  dissolutionTankRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {

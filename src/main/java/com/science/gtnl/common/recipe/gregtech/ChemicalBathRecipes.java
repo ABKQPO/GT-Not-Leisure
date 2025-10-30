@@ -3,7 +3,9 @@ package com.science.gtnl.common.recipe.gregtech;
 import static com.dreammaster.scripts.IScriptLoader.missing;
 import static gregtech.api.enums.Mods.DraconicEvolution;
 import static gregtech.api.enums.Mods.OpenBlocks;
+import static gregtech.api.enums.Mods.EtFuturumRequiem;
 import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -100,12 +102,24 @@ public class ChemicalBathRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_HV)
             .addTo(cBR);
 
+        // 下界合金碎片概率移除
         GTValues.RA.stdBuilder()
             .itemInputs(ItemList.Netherite_Scrap_Seed.get(1))
             .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
             .itemOutputs(ItemList.Brittle_Netherite_Scrap.get(3))
             .duration(1200)
             .eut(TierEU.RECIPE_IV)
+            .addTo(cBR);
+
+        // 下界合金碎片单步配方增产 x16
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Hot_Netherite_Scrap.get(16), ItemList.Heavy_Hellish_Mud.get(16))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(8_000))
+            .itemOutputs(
+                ItemList.Brittle_Netherite_Scrap.get(48),
+                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 16, missing))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(cBR);
     }
 }
