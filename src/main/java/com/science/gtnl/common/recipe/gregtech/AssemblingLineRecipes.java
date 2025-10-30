@@ -1316,6 +1316,27 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_MAX);
 
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            ItemList.Hatch_Dynamo_UXV.get(1),
+            768000,
+            512,
+            51200000,
+            1,
+            new Object[] { ItemList.Hull_MAXV.get(1),
+                GTOreDictUnificator.get(OrePrefixes.spring, Materials.SuperconductorUMVBase, 32),
+                ItemList.Circuit_Chip_QPIC.get(32), new Object[] { OrePrefixes.circuit.get(Materials.MAX), 2L },
+                ItemList.UHV_Coil.get(64), ItemList.Reactor_Coolant_Sp_6.get(1), ItemList.Reactor_Coolant_Sp_6.get(1),
+                ItemList.Reactor_Coolant_Sp_6.get(1), ItemList.Reactor_Coolant_Sp_6.get(1),
+                ItemList.Reactor_Coolant_Sp_6.get(1), ItemList.Reactor_Coolant_Sp_6.get(1),
+                ItemList.Reactor_Coolant_Sp_6.get(1), ItemList.Reactor_Coolant_Sp_6.get(1),
+                ItemList.Reactor_Coolant_Sp_6.get(1), ItemList.Reactor_Coolant_Sp_6.get(1),
+                ItemList.Electric_Pump_MAX.get(1) },
+            new FluidStack[] { Materials.SuperCoolant.getFluid(128000),
+                MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(23040), Materials.UUMatter.getFluid(128000) },
+            GTNLItemList.DynamoHatchMAX.get(1),
+            1000,
+            (int) TierEU.RECIPE_MAX);
+
         GTValues.RA.stdBuilder()
             .metadata(RESEARCH_ITEM, GTNLItemList.DualInputHatchEV.get(1))
             .metadata(SCANNING, new Scanning(10 * MINUTES, TierEU.RECIPE_HV))

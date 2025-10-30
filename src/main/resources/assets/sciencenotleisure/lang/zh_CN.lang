@@ -192,8 +192,6 @@ Tooltip_AdvancedSuperInputHatchME_02=在GUI配置 "自动拉取" 的最小堆叠
 Tooltip_AdvancedSuperInputHatchME_03=警告：快速配方检查可能会很卡. 请谨慎使用.
 
 EnergyHatchMAX=MAX能源仓
-Tooltip_EnergyHatch_00=为多方块机器提供能源
-Tooltip_EnergyHatch_01=最大输入2安
 
 EnergyHatchLV4A=4安LV能源仓
 EnergyHatchLV16A=16安LV能源仓
@@ -210,6 +208,24 @@ EnergyHatchHV64A=64安HV能源仓
 EnergyHatchMAX4A=4安MAX能源仓
 EnergyHatchMAX16A=16安MAX能源仓
 EnergyHatchMAX64A=64安MAX能源仓
+
+DynamoHatchMAX=MAX动力仓
+
+DynamoHatchLV4A=4安LV动力仓
+DynamoHatchLV16A=16安LV动力仓
+DynamoHatchLV64A=64安LV动力仓
+
+DynamoHatchMV4A=4安MV动力仓
+DynamoHatchMV16A=16安MV动力仓
+DynamoHatchMV64A=64安MV动力仓
+
+DynamoHatchHV4A=4安HV动力仓
+DynamoHatchHV16A=16安HV动力仓
+DynamoHatchHV64A=64安HV动力仓
+
+DynamoHatchMAX4A=4安MAX动力仓
+DynamoHatchMAX16A=16安MAX动力仓
+DynamoHatchMAX64A=64安MAX动力仓
 
 LaserEnergyHatchIV4194304A=IV 4,194,304A/t 激光靶仓
 LaserEnergyHatchIV16777216A=IV 16,777,216A/t 激光靶仓
@@ -1121,6 +1137,8 @@ Tooltip_SteamRocket_00=需要熔融压缩蒸汽作为燃料
 Tooltip_SteamRocket_01=你就是玩缺氧玩的！
 entity.GalacticraftCore.SteamRocket.name=蒸汽火箭
 schematic.rocketSteam.name=火箭(蒸汽)
+
+item.DebugItem.name=调试物品 (Debug)
 
 item.TestItem.name=测试物品
 Tooltip_Testitem_00=如果你看到了这个Tooltip

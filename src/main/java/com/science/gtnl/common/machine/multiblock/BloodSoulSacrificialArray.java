@@ -441,9 +441,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
                     .setAvailableEUt(availableVoltage * availableAmperage)
                     .setMachine(machine, protectItems, protectFluids)
                     .setRecipeLocked(recipeLockableMachine, isRecipeLocked)
-                    .setMaxParallel(
-                        machineMode == MACHINEMODE_FALLING_TOWER ? 1
-                            : Math.min(getTrueParallel(), currentEssence / needEssence))
+                    .setMaxParallel(Math.min(getTrueParallel(), currentEssence / needEssence))
                     .setEUtModifier(euModifier)
                     .enableBatchMode(batchSize)
                     .setConsumption(true)
