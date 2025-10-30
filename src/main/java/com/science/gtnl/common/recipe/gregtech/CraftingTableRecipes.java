@@ -1222,6 +1222,12 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1), 'F',
                 GregtechItemList.TransmissionComponent_LV.get(1) });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.RocketAssembler.get(1),
+            new Object[] { "ABA", "CEC", "AFA", 'A', OrePrefixes.circuit.get(Materials.IV), 'B',
+                GTModHandler.getModItem(GalacticraftCore.ID, "tile.rockerWorkbench"), 'C', ItemList.Robot_Arm_EV.get(1),
+                'D', ItemList.Casing_Gearbox_Titanium, 'E', ItemList.Machine_EV_Assembler });
+
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }
 
