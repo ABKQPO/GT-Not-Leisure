@@ -96,11 +96,14 @@ public class ScienceNotLeisure {
         proxy.completeInit(event);
         MaterialLoader.loadCompleteInit();
         RecipeLoader.loadCompleteInit();
+        // Earlier synchronization
+        // Changes caused by the asynchronous recipes of the blast furnace and helioflux melting core
+        RecipeLoader.loadRecipesServerStart();
     }
 
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
-        RecipeLoader.loadRecipesServerStart();
+//        RecipeLoader.loadRecipesServerStart();
     }
 
     // register server commands in this event handler (Remove if not needed)
