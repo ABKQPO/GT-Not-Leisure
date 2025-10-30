@@ -129,7 +129,7 @@ public class FormingPressRecipes implements IRecipePool {
             .addTo(FPR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(ItemList.Shape_Mold_Gear_Small.get(0), ItemList.Netherite_Nanoparticles.get(4))
+            .itemInputs(ItemList.Shape_Mold_Gear.get(0), ItemList.Netherite_Nanoparticles.get(4))
             .fluidInputs(Materials.InfusedGold.getMolten(576))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Netherite, 1))
             .duration(300)
