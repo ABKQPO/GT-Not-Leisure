@@ -4,32 +4,32 @@ import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import com.science.gtnl.config.MainConfig;
-import gtPlusPlus.core.material.MaterialsAlloy;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
-import gregtech.api.enums.ItemList;
-import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBees;
-
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+
 public class AutoclaveRecipes implements IRecipePool {
 
     public RecipeMap<?> AR = RecipeMaps.autoclaveRecipes;
     static ItemStack missing = new ItemStack(Blocks.fire);
+
     @Override
     public void loadRecipes() {
 

@@ -1,16 +1,16 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
-
 import com.science.gtnl.config.MainConfig;
+
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -47,10 +47,7 @@ public class VacuumFurnaceRecipes implements IRecipePool {
         // 海晶晶体 -> 海晶酸
         GTValues.RA.stdBuilder()
             .itemInputs(ItemList.Prismatic_Crystal.get(1))
-            .fluidInputs(
-                Materials.Boron.getPlasma(100),
-                Materials.LiquidNitrogen.getGas(3000)
-                )
+            .fluidInputs(Materials.Boron.getPlasma(100), Materials.LiquidNitrogen.getGas(3000))
             .fluidOutputs(Materials.PrismaticAcid.getFluid(4000))
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_IV)
@@ -59,6 +56,7 @@ public class VacuumFurnaceRecipes implements IRecipePool {
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
+
     public void loadDeleteRecipe() {
         GTValues.RA.stdBuilder() // Gasification
             .itemInputs(ItemList.Prismatic_Crystal.get(1))

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import gregtech.api.enums.MaterialsGTNH;
-import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -28,6 +26,7 @@ import com.science.gtnl.config.MainConfig;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMapBackend;
 import gregtech.api.recipe.RecipeMaps;
@@ -35,6 +34,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 
 public class RemoveRecipes {
 
@@ -251,7 +251,7 @@ public class RemoveRecipes {
 
         // 溶解罐
         List<GTRecipe> recipesToRemoveFromDissolutionTank = new ArrayList<>();
-        for (GTRecipe recipe :  dissolutionTankRecipe.getAllRecipes()) {
+        for (GTRecipe recipe : dissolutionTankRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
                     // 海晶石溶液
@@ -266,7 +266,7 @@ public class RemoveRecipes {
 
         // 搅拌机
         List<GTRecipe> recipesToRemoveFromMixer = new ArrayList<>();
-        for (GTRecipe recipe :  mixerRecipe.getAllRecipes()) {
+        for (GTRecipe recipe : mixerRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
                     // 富集下界废液
@@ -281,7 +281,7 @@ public class RemoveRecipes {
 
         // 多方块搅拌机
         List<GTRecipe> recipesToRemoveFromMixerNonCell = new ArrayList<>();
-        for (GTRecipe recipe :  mixerNonCellRecipe.getAllRecipes()) {
+        for (GTRecipe recipe : mixerNonCellRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
                     // 富集下界废液

@@ -1,22 +1,23 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeConstants.DISSOLUTION_TANK_RATIO;
+
+import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
-
 import com.science.gtnl.config.MainConfig;
+
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
-import gregtech.api.enums.MaterialsGTNH;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import gregtech.api.enums.TierEU;
-import net.minecraftforge.fluids.FluidRegistry;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 
 public class DissolutionTankRecipes implements IRecipePool {
 
@@ -38,6 +39,7 @@ public class DissolutionTankRecipes implements IRecipePool {
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
+
     public void loadDeleteRecipe() {
         GTValues.RA.stdBuilder() // Leaching
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 24))

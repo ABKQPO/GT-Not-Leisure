@@ -1,21 +1,23 @@
 package com.science.gtnl.common.recipe.gregtech;
+
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import com.science.gtnl.config.MainConfig;
+
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.config.MainConfig;
 
-import gregtech.api.recipe.RecipeMap;
-import gregtech.api.enums.TierEU;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-
+import gregtech.api.enums.TierEU;
+import gregtech.api.recipe.RecipeMap;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialMisc;
 
 public class ChemicalPlantRecipes implements IRecipePool {
+
     public RecipeMap<?> CPR = GTPPRecipeMaps.chemicalPlantRecipes;
 
     @Override
@@ -32,6 +34,7 @@ public class ChemicalPlantRecipes implements IRecipePool {
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
+
     public void loadDeleteRecipe() {
         GTValues.RA.stdBuilder() // Precipitation
             .itemInputs(MaterialMisc.STRONTIUM_HYDROXIDE.getDust(48))

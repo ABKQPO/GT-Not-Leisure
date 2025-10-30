@@ -1,10 +1,11 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 import static gregtech.api.enums.Mods.Forestry;
 import static gregtech.api.util.GTRecipeBuilder.INGOTS;
 import static gregtech.api.util.GTRecipeBuilder.NUGGETS;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
+
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
@@ -21,9 +22,9 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.core.item.ModItems;
-import gregtech.loaders.misc.GTBees;
 import gregtech.common.items.CombType;
+import gregtech.loaders.misc.GTBees;
+import gtPlusPlus.core.item.ModItems;
 
 public class BlastFurnaceRecipes implements IRecipePool {
 

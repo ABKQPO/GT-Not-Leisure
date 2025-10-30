@@ -1,14 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.EtFuturumRequiem;
-import static gregtech.api.enums.Mods.Forestry;
-import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import com.science.gtnl.config.MainConfig;
-import gregtech.api.util.GTUtility;
-import gregtech.common.items.CombType;
-import gregtech.loaders.misc.GTBees;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -16,6 +9,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import goodgenerator.items.GGMaterial;
@@ -28,6 +22,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialMisc;
@@ -244,6 +239,7 @@ public class MixerRecipes implements IRecipePool {
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
+
     public void loadDeleteRecipe() {
         GTValues.RA.stdBuilder()
             .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))

@@ -1,16 +1,16 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
-
 import com.science.gtnl.config.MainConfig;
+
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.TierEU;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 public class VacuumFreezerRecipes implements IRecipePool {
 
@@ -35,6 +35,7 @@ public class VacuumFreezerRecipes implements IRecipePool {
 
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
+
     public void loadDeleteRecipe() {
         GTValues.RA.stdBuilder()
             .fluidInputs(Materials.NetherAir.getFluid(1_000))
