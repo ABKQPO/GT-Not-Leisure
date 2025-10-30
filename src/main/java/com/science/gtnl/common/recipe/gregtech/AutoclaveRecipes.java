@@ -52,6 +52,30 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.Sapphire, 64))
+            .fluidInputs(Materials.Enderium.getMolten(9216))
+            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 8))
+            .duration(2400)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.Olivine, 64))
+            .fluidInputs(Materials.VividAlloy.getMolten(9216))
+            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 9))
+            .duration(2400)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.GreenSapphire, 64))
+            .fluidInputs(Materials.EnergeticSilver.getMolten(9216))
+            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 13))
+            .duration(2400)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
