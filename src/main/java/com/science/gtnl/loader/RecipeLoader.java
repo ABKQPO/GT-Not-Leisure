@@ -235,24 +235,6 @@ public class RecipeLoader {
             }
         }
 
-        if (MainConfig.enableAssemblingLineRecipesTimeChange) {
-            for (GTRecipe.RecipeAssemblyLine recipe : GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes) {
-                int duration = recipe.mDuration;
-
-                if (duration >= 200000) {
-                    duration /= 100;
-                } else if (duration >= 40000) {
-                    duration /= 10;
-                } else if (duration >= 10000) {
-                    duration /= 4;
-                } else if (duration >= 4000) {
-                    duration /= 2;
-                }
-
-                recipe.mDuration = Math.max(1, duration);
-            }
-        }
-
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             AssemblyLineWithoutResearchRecipePool.loadRecipes();
         }
