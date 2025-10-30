@@ -191,13 +191,13 @@ public class MixerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(MNCR);
 
-        // 海晶石溶液 工业HCL降价为HCL
+        // 海晶石溶液 工业HF降价为HF
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 24),
                 GTUtility.getIntegratedCircuit(1))
             .fluidInputs(
-                Materials.HydrochloricAcid.getFluid(4000), // HydrochloricAcid Acid
+                Materials.HydrofluoricAcid.getFluid(4000), // HydrofluoricAcid
                 FluidRegistry.getFluidStack("fluid.hydrogenperoxide", 4000)) // Hydrogen Peroxide
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 4))
             .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
