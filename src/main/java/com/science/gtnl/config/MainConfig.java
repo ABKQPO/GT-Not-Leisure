@@ -66,6 +66,7 @@ public class MainConfig {
     public static boolean enableEternalGregTechWorkshopSpiralRender = false;
     public static boolean enableVoidMinerTweak = true;
     public static boolean enableIntegratedOreFactoryChange = true;
+    public static boolean enablePurificationPlantBuff = false;
 
     // Recipe
     public static boolean enableDeleteRecipe = true;
@@ -289,6 +290,14 @@ public class MainConfig {
                 enableIntegratedOreFactoryChange,
                 "Enable Integrated Ore Factory Change, change parallel to 65536 and can use Laser Energy Hatch")
             .getBoolean(enableIntegratedOreFactoryChange);
+
+        enablePurificationPlantBuff = config
+            .get(
+                CATEGORY_MACHINE,
+                "enablePurificationPlantBuff",
+                enablePurificationPlantBuff,
+                "Enable Purification Plant Buff, add Wireless mode and max long parallels")
+            .getBoolean(enablePurificationPlantBuff);
 
         // Recipe
         enableSomethingRecipe = config

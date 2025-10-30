@@ -14,13 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.reavaritia.common.item.InfinitySword;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import thaumic.tinkerer.common.item.ItemBloodSword;
 
 @Mixin(value = ItemBloodSword.EventHandler.class, remap = false)
 public abstract class MixinItemBloodSword {
 
-    @SubscribeEvent
     @Inject(method = "onDamageTaken", at = @At("HEAD"), cancellable = true)
     public void onDamageTaken(LivingAttackEvent event, CallbackInfo ci) {
         Entity source = event.source.getSourceOfDamage();

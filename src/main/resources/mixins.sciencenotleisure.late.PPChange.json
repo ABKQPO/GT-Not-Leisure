@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5-GTNH",
+  "package": "com.science.gtnl.mixins.late.Gregtech",
+  "refmap": "mixins.sciencenotleisure.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinMTEPurificationUnitBase",
+    "MixinMTEPurificationPlant"
+  ]
+}
+

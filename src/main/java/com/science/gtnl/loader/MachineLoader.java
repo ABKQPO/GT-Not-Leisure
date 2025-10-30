@@ -4685,6 +4685,19 @@ public class MachineLoader {
             addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
             addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
         }
+
+        if (MainConfig.enablePurificationPlantBuff) {
+            addItemTooltip(
+                ItemList.Machine_Multi_PurificationPlant.get(1),
+                () -> StatCollector.translateToLocal("Tooltip_PurificationPlant_00"));
+            addItemTooltip(
+                ItemList.Machine_Multi_PurificationPlant.get(1),
+                () -> StatCollector.translateToLocal("Tooltip_PurificationPlant_01"));
+            addItemTooltip(
+                ItemList.Machine_Multi_PurificationPlant.get(1),
+                () -> StatCollector.translateToLocal("Tooltip_PurificationPlant_02"));
+            addItemTooltip(ItemList.Machine_Multi_PurificationPlant.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+        }
     }
 
     public enum GasCollectorTier {

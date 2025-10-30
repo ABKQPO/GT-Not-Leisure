@@ -786,8 +786,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                         .addChild(
                             new NumericWidget().setSetter(val -> intmaxs = (int) val)
                                 .setGetter(() -> intmaxs)
-                                .setBounds(1, 100)
-                                .setScrollValues(1, 4, 64)
+                                .setBounds(1, 10000)
+                                .setScrollValues(1, 10, 100)
                                 .setTextAlignment(Alignment.Center)
                                 .setTextColor(Color.WHITE.normal)
                                 .setSize(70, 18)

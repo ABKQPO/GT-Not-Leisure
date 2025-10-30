@@ -47,6 +47,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "after:GalacticraftMars;"
         + "required-after:gregtech;"
         + "before:TwistSpaceTechnology;"
+        + "required-after:Thaumcraft;"
         + "after:GalacticraftPlanets",
     guiFactory = "com.science.gtnl.config.ConfigGuiFactory",
     acceptedMinecraftVersions = "1.7.10")

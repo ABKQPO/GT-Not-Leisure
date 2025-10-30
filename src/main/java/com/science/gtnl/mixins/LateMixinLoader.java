@@ -30,6 +30,7 @@ public class LateMixinLoader implements ILateMixinLoader {
         addMixinCFG(
             "mixins.sciencenotleisure.late.TwistSpaceTechnology.json",
             ModList.TwistSpaceTechnology::isModLoaded);
+        addMixinCFG("mixins.sciencenotleisure.late.PPChange.json", () -> MainConfig.enablePurificationPlantBuff);
         addMixinCFG("mixins.sciencenotleisure.late.OPChange.json", () -> MainConfig.enableIntegratedOreFactoryChange);
         addMixinCFG("mixins.sciencenotleisure.late.Stick.json", () -> MainConfig.enableStickItem);
     }

@@ -1224,9 +1224,10 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RocketAssembler.get(1),
-            new Object[] { "ABA", "CEC", "AFA", 'A', OrePrefixes.circuit.get(Materials.IV), 'B',
-                GTModHandler.getModItem(GalacticraftCore.ID, "tile.rockerWorkbench"), 'C', ItemList.Robot_Arm_EV.get(1),
-                'D', ItemList.Casing_Gearbox_Titanium, 'E', ItemList.Machine_EV_Assembler });
+            new Object[] { "ABA", "CDC", "AEA", 'A', OrePrefixes.circuit.get(Materials.IV), 'B',
+                GTModHandler.getModItem(GalacticraftCore.ID, "tile.rockerWorkbench", 1), 'C',
+                ItemList.Robot_Arm_EV.get(1), 'D', ItemList.Casing_Gearbox_Titanium.get(1), 'E',
+                ItemList.Machine_EV_Assembler.get(1) });
 
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }
