@@ -224,6 +224,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
             .duration(15 * SECONDS)
             .eut(TierEU.RECIPE_IV)
-            .addTo(MCR);
+            .addTo(MNCR);
     }
 }
