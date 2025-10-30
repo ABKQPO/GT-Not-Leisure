@@ -162,7 +162,7 @@ public class RemoveRecipes {
         for (GTRecipe recipe : chemicalPlantRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
-                    // 铂泡沫
+                    // 海晶石沉淀
                     if (output.isItemEqual(ItemList.Prismarine_Precipitate.get(1))) {
                         recipesToRemoveFromChemicalPlant.add(recipe);
                         break;
@@ -217,6 +217,14 @@ public class RemoveRecipes {
                 if (output != null) {
                     // 易碎的下界合金碎片及下界合金碎片种子
                     if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
+                        recipesToRemoveFromChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    if (output.isFluidEqual(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1))) {
                         recipesToRemoveFromChemicalBath.add(recipe);
                         break;
                     }

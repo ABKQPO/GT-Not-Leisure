@@ -22,10 +22,8 @@ public class ChemicalPlantRecipes implements IRecipePool {
         GTValues.RA.stdBuilder() // Precipitation
             .itemInputs(MaterialMisc.STRONTIUM_HYDROXIDE.getDust(48))
             .itemOutputs(ItemList.Prismarine_Precipitate.get(8))
-            .fluidInputs(Materials.PrismarineRichNitrobenzeneSolution.getFluid(16000))
-            .fluidOutputs(
-                Materials.PrismarineContaminatedNitrobenzeSolution.getFluid(12000),
-                new FluidStack(FluidRegistry.getFluid("nitrobenzene"), 4000))
+            .fluidInputs(Materials.PrismarineSolution.getFluid(8000))
+            .fluidOutputs(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(6000))
             .duration(200)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CPR);
