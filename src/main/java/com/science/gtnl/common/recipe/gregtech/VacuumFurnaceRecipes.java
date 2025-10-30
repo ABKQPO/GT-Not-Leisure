@@ -6,6 +6,7 @@ import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
 
+import com.science.gtnl.config.MainConfig;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
@@ -43,15 +44,6 @@ public class VacuumFurnaceRecipes implements IRecipePool {
             .duration(2400)
             .addTo(VFR);
 
-        GTValues.RA.stdBuilder()
-            .itemInputs(ItemList.Prismatic_Crystal.get(1))
-            .fluidInputs(Materials.Boron.getPlasma(100))
-            .fluidOutputs(Materials.PrismaticGas.getFluid(1000))
-            .duration(400)
-            .eut(TierEU.RECIPE_LuV)
-            .metadata(COIL_HEAT, 7200)
-            .addTo(VFR);
-
         // 海晶晶体 -> 海晶酸
         GTValues.RA.stdBuilder()
             .itemInputs(ItemList.Prismatic_Crystal.get(1))
@@ -62,6 +54,18 @@ public class VacuumFurnaceRecipes implements IRecipePool {
             .fluidOutputs(Materials.PrismaticAcid.getFluid(4000))
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_IV)
+            .metadata(COIL_HEAT, 7200)
+            .addTo(VFR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder() // Gasification
+            .itemInputs(ItemList.Prismatic_Crystal.get(1))
+            .fluidInputs(Materials.Boron.getPlasma(100))
+            .fluidOutputs(Materials.PrismaticGas.getFluid(1000))
+            .duration(80 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
             .metadata(COIL_HEAT, 7200)
             .addTo(VFR);
     }

@@ -1,9 +1,14 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import static gregtech.api.enums.Mods.EtFuturumRequiem;
+import static gregtech.api.enums.Mods.Forestry;
+import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import com.science.gtnl.config.MainConfig;
 import gregtech.api.util.GTUtility;
+import gregtech.common.items.CombType;
+import gregtech.loaders.misc.GTBees;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -236,5 +241,23 @@ public class MixerRecipes implements IRecipePool {
             .duration(15 * SECONDS)
             .eut(TierEU.RECIPE_LuV)
             .addTo(MNCR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(MNCR);
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(MCR);
     }
 }

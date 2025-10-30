@@ -82,10 +82,12 @@ public class RemoveRecipes {
                         recipesToRemoveFromAutoClave.add(recipe);
                         break;
                     }
+                    // 下界合金种子
                     if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
                         recipesToRemoveFromAutoClave.add(recipe);
                         break;
                     }
+                    // 海晶石碎片
                     if (output.isItemEqual(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 1))) {
                         recipesToRemoveFromAutoClave.add(recipe);
                         break;
@@ -149,6 +151,7 @@ public class RemoveRecipes {
             }
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
+                    // 海晶石气
                     if (output.isFluidEqual(Materials.PrismaticGas.getFluid(1))) {
                         recipesToRemoveFromVacuumFurnace.add(recipe);
                         break;
@@ -183,6 +186,7 @@ public class RemoveRecipes {
                         recipesToRemoveFromVacuumFreezer.add(recipe);
                         break;
                     }
+                    // 海晶石酸
                     if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
                         recipesToRemoveFromVacuumFreezer.add(recipe);
                         break;
@@ -202,6 +206,7 @@ public class RemoveRecipes {
                         recipesToRemoveFromCryogenicFreezer.add(recipe);
                         break;
                     }
+                    // 海晶石酸
                     if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
                         recipesToRemoveFromCryogenicFreezer.add(recipe);
                         break;
@@ -225,6 +230,7 @@ public class RemoveRecipes {
             }
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
+                    // 海晶石硝基苯溶液
                     if (output.isFluidEqual(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1))) {
                         recipesToRemoveFromChemicalBath.add(recipe);
                         break;
@@ -248,6 +254,7 @@ public class RemoveRecipes {
         for (GTRecipe recipe :  dissolutionTankRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
+                    // 海晶石溶液
                     if (output.isFluidEqual(Materials.PrismarineSolution.getFluid(1))) {
                         recipesToRemoveFromDissolutionTank.add(recipe);
                         break;
@@ -262,6 +269,7 @@ public class RemoveRecipes {
         for (GTRecipe recipe :  mixerRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
+                    // 富集下界废液
                     if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
                         recipesToRemoveFromMixer.add(recipe);
                         break;
@@ -276,6 +284,7 @@ public class RemoveRecipes {
         for (GTRecipe recipe :  mixerNonCellRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
+                    // 富集下界废液
                     if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
                         recipesToRemoveFromMixerNonCell.add(recipe);
                         break;
@@ -323,6 +332,12 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
             removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
             removedRecipeCounts.put("Chemical Plant", recipesToRemoveFromChemicalPlant.size());
+            removedRecipeCounts.put("Alloy Blast Smelter", recipesToRemoveFromAlloyBlastSmelter.size());
+            removedRecipeCounts.put("Cryogenic Freezer", recipesToRemoveFromCryogenicFreezer.size());
+            removedRecipeCounts.put("Chemical Bath", recipesToRemoveFromChemicalBath.size());
+            removedRecipeCounts.put("Dissolution Tank", recipesToRemoveFromDissolutionTank.size());
+            removedRecipeCounts.put("Mixer", recipesToRemoveFromMixer.size());
+            removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
 
             StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
             for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {

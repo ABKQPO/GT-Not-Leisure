@@ -2,7 +2,10 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
+import com.science.gtnl.config.MainConfig;
+import gtPlusPlus.core.material.MaterialsAlloy;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -19,6 +22,8 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.common.items.CombType;
+import gregtech.loaders.misc.GTBees;
 
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 public class AutoclaveRecipes implements IRecipePool {
@@ -37,6 +42,7 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
 
+        // 下界合金碎片种子配方移除概率
         GTValues.RA.stdBuilder()
             .itemInputs(ItemList.Hot_Netherite_Scrap.get(2))
             .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
@@ -68,5 +74,42 @@ public class AutoclaveRecipes implements IRecipePool {
             .duration(300)
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Hot_Netherite_Scrap.get(2))
+            .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
+            .itemOutputs(
+                ItemList.Netherite_Scrap_Seed.get(1),
+                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2, missing))
+            .outputChances(1000, 10000)
+            .duration(60 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(AR);
+
+        GTValues.RA.stdBuilder() // Prismarine
+            .itemInputs(
+                GregtechItemList.RedAlgaeBiomass.get(32),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 32))
+            .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 8))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(AR);
+
+        if (Forestry.isModLoaded()) {
+            GTValues.RA.stdBuilder() // Prismarine + Comb
+                .itemInputs(
+                    GregtechItemList.RedAlgaeBiomass.get(32),
+                    GTBees.combs.getStackForType(CombType.PRISMATIC, 32))
+                .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
+                .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 16))
+                .duration(15 * SECONDS)
+                .eut(TierEU.RECIPE_LuV)
+                .addTo(AR);
+        }
     }
 }

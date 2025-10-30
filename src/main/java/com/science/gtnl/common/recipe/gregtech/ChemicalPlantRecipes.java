@@ -1,5 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
-
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import com.science.gtnl.config.MainConfig;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -19,12 +20,27 @@ public class ChemicalPlantRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        GTValues.RA.stdBuilder() // Precipitation
+        // 海晶石溶液单步结晶
+        GTValues.RA.stdBuilder()
             .itemInputs(MaterialMisc.STRONTIUM_HYDROXIDE.getDust(48))
             .itemOutputs(ItemList.Prismarine_Precipitate.get(8))
             .fluidInputs(Materials.PrismarineSolution.getFluid(8000))
             .fluidOutputs(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(6000))
             .duration(200)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CPR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder() // Precipitation
+            .itemInputs(MaterialMisc.STRONTIUM_HYDROXIDE.getDust(48))
+            .itemOutputs(ItemList.Prismarine_Precipitate.get(8))
+            .fluidInputs(Materials.PrismarineRichNitrobenzeneSolution.getFluid(16000))
+            .fluidOutputs(
+                Materials.PrismarineContaminatedNitrobenzeSolution.getFluid(12000),
+                new FluidStack(FluidRegistry.getFluid("nitrobenzene"), 4000))
+            .duration(40 * SECONDS)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CPR);
     }
