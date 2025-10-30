@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -54,6 +53,8 @@ public class RemoveRecipes {
         RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
         RecipeMapBackend chemicalPlantRecipe = GTPPRecipeMaps.chemicalPlantRecipes.getBackend();
         RecipeMapBackend dissolutionTankRecipe = LanthanidesRecipeMaps.dissolutionTankRecipes.getBackend();
+        RecipeMapBackend mixerRecipe = RecipeMaps.mixerRecipes.getBackend();
+        RecipeMapBackend mixerNonCellRecipe = GTPPRecipeMaps.mixerNonCellRecipes.getBackend();
         Map<String, Integer> removedRecipeCounts = new HashMap<>();
 
         // 合金冶炼炉
@@ -245,6 +246,34 @@ public class RemoveRecipes {
             }
         }
         dissolutionTankRecipe.removeRecipes(recipesToRemoveFromDissolutionTank);
+
+        // 搅拌机
+        List<GTRecipe> recipesToRemoveFromMixer = new ArrayList<>();
+        for (GTRecipe recipe :  mixerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
+                        recipesToRemoveFromMixer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        mixerRecipe.removeRecipes(recipesToRemoveFromMixer);
+
+        // 多方块搅拌机
+        List<GTRecipe> recipesToRemoveFromMixerNonCell = new ArrayList<>();
+        for (GTRecipe recipe :  mixerNonCellRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
+                        recipesToRemoveFromMixerNonCell.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        mixerNonCellRecipe.removeRecipes(recipesToRemoveFromMixerNonCell);
 
         // 电路装配线
         List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ArrayList<>();

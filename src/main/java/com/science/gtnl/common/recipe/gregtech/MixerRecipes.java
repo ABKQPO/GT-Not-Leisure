@@ -218,5 +218,23 @@ public class MixerRecipes implements IRecipePool {
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_IV)
             .addTo(MNCR);
+
+        // 富集下界废气 降压配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(MCR);
+
+        // 富集下界废气 降压配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(MNCR);
     }
 }
