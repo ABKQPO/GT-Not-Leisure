@@ -9,17 +9,20 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialMisc;
@@ -188,5 +191,69 @@ public class MixerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(MNCR);
 
+        // 海晶石溶液 工业HF降价为HF
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 24),
+                GTUtility.getIntegratedCircuit(1))
+            .fluidInputs(
+                Materials.HydrofluoricAcid.getFluid(4000), // HydrofluoricAcid
+                FluidRegistry.getFluidStack("fluid.hydrogenperoxide", 4000)) // Hydrogen Peroxide
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.CertusQuartz, 4))
+            .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(MNCR);
+
+        // 海晶石溶液 循环配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 6),
+                GTUtility.getIntegratedCircuit(2))
+            .fluidInputs(
+                Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(6000),
+                FluidRegistry.getFluidStack("fluid.hydrogenperoxide", 2000)) // Hydrogen Peroxide
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.NetherQuartz, 1))
+            .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(MNCR);
+
+        // 富集下界废气 降压配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(MCR);
+
+        // 富集下界废气 降压配方
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(MNCR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(MNCR);
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Heavy_Hellish_Mud.get(32))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .fluidOutputs(Materials.RichNetherWaste.getFluid(16_000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(MCR);
     }
 }

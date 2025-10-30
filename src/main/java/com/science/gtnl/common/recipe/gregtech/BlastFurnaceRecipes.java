@@ -1,5 +1,9 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import static gregtech.api.enums.Mods.Forestry;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.NUGGETS;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import net.minecraft.item.ItemStack;
@@ -18,6 +22,8 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import gregtech.common.items.CombType;
+import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.core.item.ModItems;
 
 public class BlastFurnaceRecipes implements IRecipePool {
@@ -65,5 +71,29 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .metadata(COIL_HEAT, 3650)
             .addTo(BFR);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTUtility.getIntegratedCircuit(1), ItemList.Brittle_Netherite_Scrap.get(1))
+            .fluidInputs(Materials.HellishMetal.getMolten(1 * INGOTS))
+            .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(1))
+            .fluidOutputs(Materials.Thaumium.getMolten(2 * NUGGETS))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_ZPM)
+            .metadata(COIL_HEAT, 7500)
+            .addTo(BFR);
+
+        if (Forestry.isModLoaded()) {
+            GTValues.RA.stdBuilder()
+                .itemInputs(
+                    GTUtility.getIntegratedCircuit(2),
+                    ItemList.Brittle_Netherite_Scrap.get(1),
+                    GTBees.combs.getStackForType(CombType.NETHERITE, 32))
+                .fluidInputs(Materials.HellishMetal.getMolten(1 * INGOTS))
+                .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(2))
+                .fluidOutputs(Materials.Thaumium.getMolten(2 * NUGGETS))
+                .duration(15 * SECONDS)
+                .eut(TierEU.RECIPE_ZPM)
+                .metadata(COIL_HEAT, 7500)
+                .addTo(BFR);
+        }
     }
 }

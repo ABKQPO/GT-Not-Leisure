@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -25,6 +26,7 @@ import com.science.gtnl.config.MainConfig;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MaterialsGTNH;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMapBackend;
 import gregtech.api.recipe.RecipeMaps;
@@ -32,6 +34,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 
 public class RemoveRecipes {
 
@@ -45,8 +48,16 @@ public class RemoveRecipes {
         RecipeMapBackend vacuumFurnaceRecipe = GTPPRecipeMaps.vacuumFurnaceRecipes.getBackend();
         RecipeMapBackend blastFurnaceRecipe = RecipeMaps.blastFurnaceRecipes.getBackend();
         RecipeMapBackend alloyBlastSmelterRecipe = GTPPRecipeMaps.alloyBlastSmelterRecipes.getBackend();
+        RecipeMapBackend vacuumFreezerRecipe = RecipeMaps.vacuumFreezerRecipes.getBackend();
+        RecipeMapBackend cryogenicFreezerRecipe = GTPPRecipeMaps.advancedFreezerRecipes.getBackend();
+        RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
+        RecipeMapBackend chemicalPlantRecipe = GTPPRecipeMaps.chemicalPlantRecipes.getBackend();
+        RecipeMapBackend dissolutionTankRecipe = LanthanidesRecipeMaps.dissolutionTankRecipes.getBackend();
+        RecipeMapBackend mixerRecipe = RecipeMaps.mixerRecipes.getBackend();
+        RecipeMapBackend mixerNonCellRecipe = GTPPRecipeMaps.mixerNonCellRecipes.getBackend();
         Map<String, Integer> removedRecipeCounts = new HashMap<>();
 
+        // 合金冶炼炉
         List<GTRecipe> recipesToRemoveFromAlloyBlastSmelter = new ArrayList<>();
         for (GTRecipe recipe : alloyBlastSmelterRecipe.getAllRecipes()) {
             for (ItemStack input : recipe.mInputs) {
@@ -61,6 +72,7 @@ public class RemoveRecipes {
         }
         alloyBlastSmelterRecipe.removeRecipes(recipesToRemoveFromAlloyBlastSmelter);
 
+        // 高压釜
         List<GTRecipe> recipesToRemoveFromAutoClave = new ArrayList<>();
         for (GTRecipe recipe : autoClaveRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
@@ -70,11 +82,22 @@ public class RemoveRecipes {
                         recipesToRemoveFromAutoClave.add(recipe);
                         break;
                     }
+                    // 下界合金种子
+                    if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
+                        recipesToRemoveFromAutoClave.add(recipe);
+                        break;
+                    }
+                    // 海晶石碎片
+                    if (output.isItemEqual(GTOreDictUnificator.get(OrePrefixes.shard, MaterialsGTNH.Prismarine, 1))) {
+                        recipesToRemoveFromAutoClave.add(recipe);
+                        break;
+                    }
                 }
             }
         }
         autoClaveRecipe.removeRecipes(recipesToRemoveFromAutoClave);
 
+        // 冲压机床
         List<GTRecipe> recipesToRemoveFromFormingPress = new ArrayList<>();
         for (GTRecipe recipe : formingPressRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
@@ -89,6 +112,7 @@ public class RemoveRecipes {
         }
         formingPressRecipe.removeRecipes(recipesToRemoveFromFormingPress);
 
+        // 工业高炉
         List<GTRecipe> recipesToRemoveFromBlastFurnace = new ArrayList<>();
         for (GTRecipe recipe : blastFurnaceRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
@@ -103,6 +127,7 @@ public class RemoveRecipes {
         }
         blastFurnaceRecipe.removeRecipes(recipesToRemoveFromBlastFurnace);
 
+        // 真空干燥炉
         List<GTRecipe> recipesToRemoveFromVacuumFurnace = new ArrayList<>();
         for (GTRecipe recipe : vacuumFurnaceRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
@@ -124,9 +149,152 @@ public class RemoveRecipes {
                     }
                 }
             }
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 海晶石气
+                    if (output.isFluidEqual(Materials.PrismaticGas.getFluid(1))) {
+                        recipesToRemoveFromVacuumFurnace.add(recipe);
+                        break;
+                    }
+                }
+            }
         }
         vacuumFurnaceRecipe.removeRecipes(recipesToRemoveFromVacuumFurnace);
 
+        // 埃克森美孚化工厂
+        List<GTRecipe> recipesToRemoveFromChemicalPlant = new ArrayList<>();
+        for (GTRecipe recipe : chemicalPlantRecipe.getAllRecipes()) {
+            for (ItemStack output : recipe.mOutputs) {
+                if (output != null) {
+                    // 海晶石沉淀
+                    if (output.isItemEqual(ItemList.Prismarine_Precipitate.get(1))) {
+                        recipesToRemoveFromChemicalPlant.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        chemicalPlantRecipe.removeRecipes(recipesToRemoveFromChemicalPlant);
+
+        // 真空冷冻机
+        List<GTRecipe> recipesToRemoveFromVacuumFreezer = new ArrayList<>();
+        for (GTRecipe recipe : vacuumFreezerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 半流质下界气体
+                    if (output.isFluidEqual(Materials.NetherSemiFluid.getFluid(1))) {
+                        recipesToRemoveFromVacuumFreezer.add(recipe);
+                        break;
+                    }
+                    // 海晶石酸
+                    if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
+                        recipesToRemoveFromVacuumFreezer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        vacuumFreezerRecipe.removeRecipes(recipesToRemoveFromVacuumFreezer);
+
+        // 凛冰冷冻机
+        List<GTRecipe> recipesToRemoveFromCryogenicFreezer = new ArrayList<>();
+        for (GTRecipe recipe : cryogenicFreezerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 半流质下界气体
+                    if (output.isFluidEqual(Materials.NetherSemiFluid.getFluid(1))) {
+                        recipesToRemoveFromCryogenicFreezer.add(recipe);
+                        break;
+                    }
+                    // 海晶石酸
+                    if (output.isFluidEqual(Materials.PrismaticAcid.getFluid(1))) {
+                        recipesToRemoveFromCryogenicFreezer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        cryogenicFreezerRecipe.removeRecipes(recipesToRemoveFromCryogenicFreezer);
+
+        // 化学浸洗机
+        List<GTRecipe> recipesToRemoveFromChemicalBath = new ArrayList<>();
+        for (GTRecipe recipe : chemicalBathRecipe.getAllRecipes()) {
+            for (ItemStack output : recipe.mOutputs) {
+                if (output != null) {
+                    // 易碎的下界合金碎片及下界合金碎片种子
+                    if (output.isItemEqual(ItemList.Netherite_Scrap_Seed.get(1))) {
+                        recipesToRemoveFromChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 海晶石硝基苯溶液
+                    if (output.isFluidEqual(Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1))) {
+                        recipesToRemoveFromChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
+            for (ItemStack input : recipe.mInputs) {
+                if (input != null) {
+                    // 易碎的下界合金碎片 高电压配方
+                    if (input.isItemEqual(ItemList.Hot_Netherite_Scrap.get(1))) {
+                        recipesToRemoveFromChemicalBath.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        chemicalBathRecipe.removeRecipes(recipesToRemoveFromChemicalBath);
+
+        // 溶解罐
+        List<GTRecipe> recipesToRemoveFromDissolutionTank = new ArrayList<>();
+        for (GTRecipe recipe : dissolutionTankRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 海晶石溶液
+                    if (output.isFluidEqual(Materials.PrismarineSolution.getFluid(1))) {
+                        recipesToRemoveFromDissolutionTank.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        dissolutionTankRecipe.removeRecipes(recipesToRemoveFromDissolutionTank);
+
+        // 搅拌机
+        List<GTRecipe> recipesToRemoveFromMixer = new ArrayList<>();
+        for (GTRecipe recipe : mixerRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 富集下界废液
+                    if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
+                        recipesToRemoveFromMixer.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        mixerRecipe.removeRecipes(recipesToRemoveFromMixer);
+
+        // 多方块搅拌机
+        List<GTRecipe> recipesToRemoveFromMixerNonCell = new ArrayList<>();
+        for (GTRecipe recipe : mixerNonCellRecipe.getAllRecipes()) {
+            for (FluidStack output : recipe.mFluidOutputs) {
+                if (output != null) {
+                    // 富集下界废液
+                    if (output.isFluidEqual(Materials.RichNetherWaste.getFluid(1))) {
+                        recipesToRemoveFromMixerNonCell.add(recipe);
+                        break;
+                    }
+                }
+            }
+        }
+        mixerNonCellRecipe.removeRecipes(recipesToRemoveFromMixerNonCell);
+
+        // 电路装配线
         List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ArrayList<>();
         List<ItemStack> targetOutputs = Arrays.asList(
             ItemList.Circuit_Crystalprocessor.get(1), // 晶体处理器
@@ -162,6 +330,14 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Forming Press", recipesToRemoveFromFormingPress.size());
             removedRecipeCounts.put("Vacuum Furnace", recipesToRemoveFromVacuumFurnace.size());
             removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
+            removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
+            removedRecipeCounts.put("Chemical Plant", recipesToRemoveFromChemicalPlant.size());
+            removedRecipeCounts.put("Alloy Blast Smelter", recipesToRemoveFromAlloyBlastSmelter.size());
+            removedRecipeCounts.put("Cryogenic Freezer", recipesToRemoveFromCryogenicFreezer.size());
+            removedRecipeCounts.put("Chemical Bath", recipesToRemoveFromChemicalBath.size());
+            removedRecipeCounts.put("Dissolution Tank", recipesToRemoveFromDissolutionTank.size());
+            removedRecipeCounts.put("Mixer", recipesToRemoveFromMixer.size());
+            removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
 
             StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
             for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {

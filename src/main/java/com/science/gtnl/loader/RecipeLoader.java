@@ -29,6 +29,7 @@ import com.science.gtnl.common.recipe.gregtech.BlastFurnaceRecipes;
 import com.science.gtnl.common.recipe.gregtech.CentrifugeRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalBathRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalDehydratorRecipes;
+import com.science.gtnl.common.recipe.gregtech.ChemicalPlantRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalRecipes;
 import com.science.gtnl.common.recipe.gregtech.CompressorRecipes;
 import com.science.gtnl.common.recipe.gregtech.CrackingRecipes;
@@ -170,18 +171,19 @@ public class RecipeLoader {
             new DesulfurizerRecipes(), new PetrochemicalPlantRecipes(), new FusionReactorRecipes(),
             new SmeltingMixingFurnaceRecipes(), new FluidExtraction(), new DigesterRecipes(),
             new DissolutionTankRecipes(), new CentrifugeRecipes(), new ChemicalDehydratorRecipes(),
-            new RareEarthCentrifugalRecipes(), new MatterFabricatorRecipes(), new TheTwilightForestRecipes(),
-            new IsaMillRecipes(), new CellRegulatorRecipes(), new VacuumFurnaceRecipes(), new FishingGroundRecipes(),
-            new DistilleryRecipes(), new ElementCopyingRecipes(), new AlloySmelterRecipes(),
-            new MolecularTransformerRecipes(), new NaquadahReactorRecipes(), new DragonEvolutionFusionCraftingRecipes(),
-            new LaserEngraverRecipes(), new BacterialVatRecipes(), new CuttingRecipes(), new BlastFurnaceRecipes(),
-            new FluidExtractorRecipes(), new DecayHastenerRecipes(), new PreciseAssemblerRecipes(),
-            new FuelRefiningComplexRecipes(), new CrackingRecipes(), new DistillationTowerRecipes(),
-            new SpaceMinerRecipes(), new SpaceDrillRecipes(), new SpaceAssemblerRecipes(), new PCBFactoryRecipes(),
-            new PlatinumBasedTreatmentRecipes(), new ShallowChemicalCouplingRecipes(), new BloodDemonInjectionRecipes(),
-            new AlchemicChemistrySetRecipes(), new AdvancedCircuitAssemblyLineRecipes(), new FallingTowerRecipes(),
-            new AssemblingLineRecipes(), new GasCollectorRecipes(), new EternalGregTechWorkshopUpgradeRecipes(),
-            new FluidCannerRecipes(), new VacuumFreezerRecipes(), new MeteorsRecipes(), new CheatOreProcessingRecipes(),
+            new ChemicalPlantRecipes(), new RareEarthCentrifugalRecipes(), new MatterFabricatorRecipes(),
+            new TheTwilightForestRecipes(), new IsaMillRecipes(), new CellRegulatorRecipes(),
+            new VacuumFurnaceRecipes(), new FishingGroundRecipes(), new DistilleryRecipes(),
+            new ElementCopyingRecipes(), new AlloySmelterRecipes(), new MolecularTransformerRecipes(),
+            new NaquadahReactorRecipes(), new DragonEvolutionFusionCraftingRecipes(), new LaserEngraverRecipes(),
+            new BacterialVatRecipes(), new CuttingRecipes(), new BlastFurnaceRecipes(), new FluidExtractorRecipes(),
+            new DecayHastenerRecipes(), new PreciseAssemblerRecipes(), new FuelRefiningComplexRecipes(),
+            new CrackingRecipes(), new DistillationTowerRecipes(), new SpaceMinerRecipes(), new SpaceDrillRecipes(),
+            new SpaceAssemblerRecipes(), new PCBFactoryRecipes(), new PlatinumBasedTreatmentRecipes(),
+            new ShallowChemicalCouplingRecipes(), new BloodDemonInjectionRecipes(), new AlchemicChemistrySetRecipes(),
+            new AdvancedCircuitAssemblyLineRecipes(), new FallingTowerRecipes(), new AssemblingLineRecipes(),
+            new GasCollectorRecipes(), new EternalGregTechWorkshopUpgradeRecipes(), new FluidCannerRecipes(),
+            new VacuumFreezerRecipes(), new MeteorsRecipes(), new CheatOreProcessingRecipes(),
             new ShapedArcaneCraftingRecipes(), new InfusionCraftingRecipes(), new ShimmerRecipes(),
             new SteamManufacturerRecipes(), new SteamCarpenterRecipe(), new LavaMakerRecipes(),
             new SteamWoodcutterRecipes(), new SteamGateAssemblerRecipes(), new CactusWonderFakeRecipes(),

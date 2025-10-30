@@ -1,19 +1,22 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static com.dreammaster.scripts.IScriptLoader.missing;
-import static gregtech.api.enums.Mods.DraconicEvolution;
-import static gregtech.api.enums.Mods.OpenBlocks;
+import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
@@ -21,6 +24,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 
 public class ChemicalBathRecipes implements IRecipePool {
 
@@ -97,6 +101,73 @@ public class ChemicalBathRecipes implements IRecipePool {
             .specialValue(0)
             .duration(160)
             .eut(TierEU.RECIPE_HV)
+            .addTo(cBR);
+
+        // 下界合金碎片概率移除 删除下界合金碎片种子产出
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Netherite_Scrap_Seed.get(1))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .itemOutputs(ItemList.Brittle_Netherite_Scrap.get(3))
+            .duration(1200)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(cBR);
+
+        // 下界合金碎片单步配方增产 x16
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Hot_Netherite_Scrap.get(16), ItemList.Heavy_Hellish_Mud.get(16))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(8_000))
+            .itemOutputs(
+                ItemList.Brittle_Netherite_Scrap.get(48),
+                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 16, missing))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_UHV)
+            .addTo(cBR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Netherite_Scrap_Seed.get(1))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(16_000))
+            .itemOutputs(ItemList.Brittle_Netherite_Scrap.get(3), ItemList.Netherite_Scrap_Seed.get(1))
+            .outputChances(5000, 5000)
+            .duration(60 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(cBR);
+
+        GTValues.RA.stdBuilder() // Extraction
+            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .fluidInputs(
+                Materials.PrismarineSolution.getFluid(1000),
+                new FluidStack(FluidRegistry.getFluid("nitrobenzene"), 2000))
+            .fluidOutputs(
+                Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1000),
+                Materials.PrismarineRichNitrobenzeneSolution.getFluid(2000))
+            .duration(15 * SECONDS)
+            .eut(TierEU.RECIPE_EV)
+            .addTo(cBR);
+
+        GTValues.RA.stdBuilder() // Looped Extraction
+            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .fluidInputs(
+                Materials.PrismarineSolution.getFluid(1000),
+                Materials.PrismarineContaminatedNitrobenzeSolution.getFluid(3000))
+            .fluidOutputs(
+                Materials.PrismarineContaminatedHydrogenPeroxide.getFluid(1000),
+                Materials.PrismarineRichNitrobenzeneSolution.getFluid(2000))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(cBR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(ItemList.Hot_Netherite_Scrap.get(16), ItemList.Heavy_Hellish_Mud.get(16))
+            .fluidInputs(Materials.PoorNetherWaste.getFluid(8_000))
+            .itemOutputs(
+                ItemList.Brittle_Netherite_Scrap.get(3),
+                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 16, missing))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(cBR);
     }
 }
