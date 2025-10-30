@@ -27,7 +27,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungsten, 3))
             .fluidInputs(Materials.Nitrogen.getGas(10000))
             .fluidOutputs(MaterialPool.Germaniumtungstennitride.getMolten(2304))
-            .specialValue(0)
             .duration(9600)
             .eut(30720)
             .addTo(aBS);
@@ -40,7 +39,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Titanium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Molybdenum, 1))
             .fluidOutputs(MaterialPool.HSLASteel.getMolten(720))
-            .specialValue(0)
             .duration(3750)
             .eut(480)
             .addTo(aBS);
@@ -51,7 +49,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Molybdenum, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Silicon, 2))
             .fluidOutputs(MaterialPool.MolybdenumDisilicide.getMolten(432))
-            .specialValue(0)
             .duration(1800)
             .eut(1920)
             .addTo(aBS);
@@ -66,7 +63,6 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1))
             .fluidOutputs(Materials.Europium.getMolten(144))
-            .specialValue(0)
             .duration(120)
             .eut(TierEU.RECIPE_LuV)
             .addTo(aBS);

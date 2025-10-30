@@ -2587,7 +2587,7 @@ Tooltip_CrackerHub_01=Each glass tier provides an additional 5% speed and power 
 Tooltip_CrackerHub_Casing=Any Radiant Naquadah Alloy Machine Block
 
 NameLargeSteamCrusher=Large Steam Crusher
-LargeSteamCrusherRecipeType=Grinder
+LargeSteamCrusherRecipeType=Macerator
 Tooltip_LargeSteamCrusher_00=900% faster than single-block grinders of the same tier.
 Tooltip_LargeSteamCrusher_01=Only consumes 80% of the normal steam requirement.
 Tooltip_LargeSteamCrusher_02=Can process up to 128 items at once.

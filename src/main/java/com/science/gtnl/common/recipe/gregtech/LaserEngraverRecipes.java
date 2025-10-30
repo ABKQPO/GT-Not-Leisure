@@ -46,7 +46,6 @@ public class LaserEngraverRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(GTNLItemList.NinefoldInputHatchUHV.get(1), ItemList.Quantum_Tank_IV.get(1))
             .itemOutputs(GTNLItemList.HumongousNinefoldInputHatch.get(1))
-            .specialValue(0)
             .duration(200)
             .eut(7864320)
             .addTo(lER);
@@ -57,7 +56,6 @@ public class LaserEngraverRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderPearl, 1L)))
             .itemOutputs(GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_NAND.get(1)))
             .fluidInputs(Materials.Grade5PurifiedWater.getFluid(100))
-            .specialValue(0)
             .duration(200)
             .eut(TierEU.RECIPE_IV)
             .addTo(lER);

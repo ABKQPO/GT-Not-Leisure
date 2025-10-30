@@ -25,7 +25,6 @@ public class DissolutionTankRecipes implements IRecipePool {
             .fluidInputs(Materials.Water.getFluid(9000), Materials.NitricAcid.getFluid(1000))
             .fluidOutputs(MaterialPool.RareEarthHydroxides.getFluidOrGas(10000))
             .metadata(DISSOLUTION_TANK_RATIO, 9)
-            .specialValue(0)
             .duration(50)
             .eut(480)
             .addTo(DTR);

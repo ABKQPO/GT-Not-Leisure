@@ -20,7 +20,6 @@ public class FluidExtraction implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(MaterialsElements.getInstance().ZIRCONIUM.getIngot(1))
             .fluidOutputs(new FluidStack(MaterialsElements.getInstance().ZIRCONIUM.getFluid(), 144))
-            .specialValue(0)
             .duration(4)
             .eut(8)
             .addTo(fER);
@@ -28,7 +27,6 @@ public class FluidExtraction implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(GTModHandler.getModItem("GalaxySpace", "barnardaClog", 64, 0))
             .fluidOutputs(MaterialPool.BarnardaCSappy.getFluidOrGas(500))
-            .specialValue(0)
             .duration(4)
             .eut(491520)
             .addTo(fER);

@@ -29,7 +29,6 @@ public class SteamCrackerRecipes implements IRecipePool {
                     .itemInputs(GTUtility.getIntegratedCircuit(circuit))
                     .fluidInputs(inputMat.getFluid(1000))
                     .fluidOutputs(getSteamCrackedFluid(outputMat, circuit, 400))
-                    .specialValue(0)
                     .duration(200)
                     .eut(30)
                     .addTo(SCR);
@@ -41,7 +40,6 @@ public class SteamCrackerRecipes implements IRecipePool {
                 .itemInputs(GTUtility.getIntegratedCircuit(circuit))
                 .fluidInputs(Materials.SulfuricGas.getGas(1000))
                 .fluidOutputs(getSteamCrackedFluid(Materials.Gas, circuit, 400))
-                .specialValue(0)
                 .duration(200)
                 .eut(30)
                 .addTo(SCR);

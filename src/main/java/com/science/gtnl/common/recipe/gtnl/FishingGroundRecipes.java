@@ -39,8 +39,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 new ItemStack(Items.fish, 8, 3))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(2500, 2500, 2500, 1000)
-            .specialValue(0)
-
             .duration(1000)
             .eut(512)
             .addTo(FGR);
@@ -57,8 +55,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 new ItemStack(Items.fish, 16, 3))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(7500, 7500, 7500, 5000)
-            .specialValue(0)
-
             .duration(1000)
             .eut(512)
             .addTo(FGR);
@@ -75,8 +71,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 new ItemStack(Items.fish, 64, 3))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(9000, 9000, 9000, 9000)
-            .specialValue(0)
-
             .duration(2000)
             .eut(512)
             .addTo(FGR);
@@ -150,8 +144,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 500,
                 100,
                 5)
-            .specialValue(0)
-
             .duration(3000)
             .eut(2048)
             .addTo(FGR);
@@ -177,8 +169,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 GTModHandler.getModItem(PamsHarvestCraft.ID, "cranberryItem", 16, missing))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(6000, 6000, 3000, 4000, 4000, 4000, 2500, 2500, 2500, 2500, 7500, 5000, 5000, 5000)
-            .specialValue(0)
-
             .duration(1500)
             .eut(2048)
             .addTo(FGR);
@@ -192,8 +182,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 GregtechItemList.GoldenBrownAlgaeBiomass.get(64),
                 GregtechItemList.RedAlgaeBiomass.get(64))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
-            .specialValue(0)
-
             .duration(200)
             .eut(2048)
             .addTo(FGR);
@@ -209,8 +197,6 @@ public class FishingGroundRecipes implements IRecipePool {
                 GTModHandler.getModItem(GalaxySpace.ID, "tcetiedandelions", 64, 4, missing),
                 GTModHandler.getModItem(GalaxySpace.ID, "tcetiedandelions", 64, 5, missing))
             .fluidInputs(FluidRegistry.getFluidStack("unknownnutrientagar", 4000))
-            .specialValue(0)
-
             .duration(1000)
             .eut(122880)
             .addTo(FGR);
@@ -278,8 +264,6 @@ public class FishingGroundRecipes implements IRecipePool {
                     2500,
                     2500,
                     2500)
-                .specialValue(0)
-
                 .duration(1000)
                 .eut(512)
                 .addTo(FGR);
@@ -346,8 +330,6 @@ public class FishingGroundRecipes implements IRecipePool {
                     7500,
                     7500,
                     7500)
-                .specialValue(0)
-
                 .duration(1000)
                 .eut(512)
                 .addTo(FGR);
@@ -414,8 +396,6 @@ public class FishingGroundRecipes implements IRecipePool {
                     9000,
                     9000,
                     9000)
-                .specialValue(0)
-
                 .duration(1000)
                 .eut(512)
                 .addTo(FGR);

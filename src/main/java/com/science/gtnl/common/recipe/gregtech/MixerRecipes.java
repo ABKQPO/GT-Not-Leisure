@@ -45,7 +45,6 @@ public class MixerRecipes implements IRecipePool {
             .itemOutputs()
             .fluidInputs(FluidRegistry.getFluidStack("ic2distilledwater", 1000))
             .fluidOutputs(MaterialPool.SilicaGelBase.getFluidOrGas(1000))
-            .specialValue(0)
             .duration(130)
             .eut(480)
             .addTo(MNCR);
@@ -55,7 +54,6 @@ public class MixerRecipes implements IRecipePool {
             .itemOutputs()
             .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(MaterialPool.SodiumNitrateSolution.getFluidOrGas(1000))
-            .specialValue(0)
             .duration(80)
             .eut(120)
             .addTo(MNCR);
@@ -67,7 +65,6 @@ public class MixerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Aluminium, 1L))
             .fluidInputs(Materials.Chlorine.getGas(1000))
             .itemOutputs(MaterialPool.ZnFeAlCl.get(OrePrefixes.dust, 4))
-            .specialValue(0)
             .duration(250)
             .eut(TierEU.RECIPE_LuV)
             .addTo(MNCR);
@@ -76,7 +73,6 @@ public class MixerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Naquadah, 2L))
             .fluidInputs(WerkstoffMaterialPool.AmmoniumNitrate.getFluidOrGas(1000))
             .fluidOutputs(GGMaterial.naquadahSolution.getFluidOrGas(1000))
-            .specialValue(0)
             .duration(400)
             .eut(TierEU.RECIPE_LuV)
             .addTo(MNCR);
@@ -91,7 +87,6 @@ public class MixerRecipes implements IRecipePool {
                 new ItemStack(Items.blaze_rod, 8))
             .itemOutputs(GTNLItemList.BlazeCube.get(1))
             .fluidInputs(FluidRegistry.getFluidStack("pyrotheum", 2000))
-            .specialValue(0)
             .duration(200)
             .eut(TierEU.RECIPE_IV)
             .addTo(MNCR);
@@ -100,7 +95,6 @@ public class MixerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.RareEarth, 1L))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 1000), Materials.HydrochloricAcid.getFluid(4000))
             .fluidOutputs(MaterialPool.NeutralisedRedMud.getFluidOrGas(2000))
-            .specialValue(0)
             .duration(100)
             .eut(TierEU.RECIPE_MV)
             .addTo(MNCR);
@@ -124,7 +118,6 @@ public class MixerRecipes implements IRecipePool {
                 Materials.StainlessSteel.getMolten(1728),
                 Materials.Iridium.getMolten(9216),
                 Materials.Osmium.getMolten(9216))
-            .specialValue(0)
             .duration(27648000)
             .eut(TierEU.RECIPE_LV)
             .addTo(MNCR);

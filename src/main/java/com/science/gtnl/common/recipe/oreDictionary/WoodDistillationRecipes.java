@@ -44,7 +44,6 @@ public class WoodDistillationRecipes implements IOreRecipeRegistrator {
                     Materials.MethylAcetate.getFluid(8),
                     new FluidStack(GTPPFluids.CoalGas, 8),
                     Materials.Ethanol.getFluid(8))
-                .specialValue(0)
                 .duration(200)
                 .eut(120)
                 .addTo(RecipePool.WoodDistillationRecipes);

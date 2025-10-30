@@ -21,7 +21,6 @@ public class VacuumFreezerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .fluidInputs(MaterialPool.EnderAir.getFluidOrGas(4000))
             .fluidOutputs(MaterialPool.LiquidEnderAir.getFluidOrGas(4000))
-            .specialValue(0)
             .duration(80)
             .eut(TierEU.RECIPE_HV)
             .addTo(VFR)

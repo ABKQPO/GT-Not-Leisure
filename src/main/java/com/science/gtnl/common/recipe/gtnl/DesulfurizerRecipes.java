@@ -22,7 +22,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(Materials.SulfuricGas.getGas(12000))
             .fluidOutputs(Materials.Gas.getGas(12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);
@@ -31,7 +30,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(Materials.SulfuricNaphtha.getFluid(12000))
             .fluidOutputs(Materials.Naphtha.getFluid(12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);
@@ -40,7 +38,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(Materials.SulfuricLightFuel.getFluid(12000))
             .fluidOutputs(Materials.LightFuel.getFluid(12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);
@@ -49,7 +46,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(Materials.SulfuricHeavyFuel.getFluid(12000))
             .fluidOutputs(Materials.HeavyFuel.getFluid(12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);
@@ -58,7 +54,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(new FluidStack(GTPPFluids.SulfuricCoalTarOil, 12000))
             .fluidOutputs(new FluidStack(GTPPFluids.Naphthalene, 12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);
@@ -67,7 +62,6 @@ public class DesulfurizerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
             .fluidInputs(Materials.NatruralGas.getGas(12000))
             .fluidOutputs(Materials.Gas.getGas(12000))
-            .specialValue(0)
             .duration(120)
             .eut(30)
             .addTo(DesR);

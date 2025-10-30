@@ -45,7 +45,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Toluene.getFluid(240),
                 Materials.Benzene.getFluid(1200),
                 Materials.Octane.getFluid(20))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -66,7 +65,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Toluene.getFluid(20),
                 Materials.Benzene.getFluid(100),
                 Materials.Octane.getFluid(20))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -87,7 +85,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Toluene.getFluid(60),
                 Materials.Benzene.getFluid(180),
                 Materials.Octane.getFluid(60))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -108,7 +105,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Toluene.getFluid(40),
                 Materials.Benzene.getFluid(200),
                 Materials.Octane.getFluid(30))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -123,7 +119,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Dimethylbenzene.getFluid(300),
                 MaterialsKevlar.IIIDimethylbenzene.getFluid(300),
                 MaterialsKevlar.IVDimethylbenzene.getFluid(300))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -149,7 +144,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.DilutedXenoxene.getFluid(1),
                 Materials.RadoxLight.getGas(80),
                 Materials.RadoxGas.getGas(20))
-            .specialValue(0)
             .duration(2000)
             .eut(1966080)
             .addTo(PPR);
@@ -163,7 +157,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 new FluidStack(GTPPFluids.Anthracene, 50),
                 new FluidStack(GTPPFluids.Kerosene, 600),
                 new FluidStack(GTPPFluids.Naphthalene, 300))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -178,7 +171,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(1000),
                 Materials.LightFuel.getFluid(450),
                 Materials.Lubricant.getFluid(750))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -193,7 +185,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(70),
                 Materials.LightFuel.getFluid(130),
                 Materials.Lubricant.getFluid(250))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -207,7 +198,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Gas.getGas(1200),
                 Materials.HeavyFuel.getFluid(300),
                 Materials.LightFuel.getFluid(1000))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -222,7 +212,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(100),
                 Materials.LightFuel.getFluid(500),
                 Materials.Lubricant.getFluid(500))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);
@@ -237,7 +226,6 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(1500),
                 Materials.LightFuel.getFluid(675),
                 Materials.Lubricant.getFluid(1125))
-            .specialValue(0)
             .duration(200)
             .eut(1920)
             .addTo(PPR);

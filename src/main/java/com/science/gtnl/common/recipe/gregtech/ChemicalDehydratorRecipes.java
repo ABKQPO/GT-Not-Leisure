@@ -1,13 +1,18 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import net.minecraftforge.fluids.FluidStack;
+
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
+import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.core.fluids.GTPPFluids;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class ChemicalDehydratorRecipes implements IRecipePool {
@@ -18,6 +23,33 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
+            .fluidInputs(MaterialPool.SilicaGelBase.getFluidOrGas(1000))
+            .itemOutputs(
+                MaterialPool.SilicaGel.get(OrePrefixes.dust, 3),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 2))
+            .duration(130)
+            .eut(480)
+            .addTo(CDNCR)
+            .addTo(CDR);
+
+        RecipeBuilder.builder()
+            .fluidInputs(new FluidStack(GTPPFluids.BoricAcid, 2000))
+            .itemOutputs(MaterialPool.BoronTrioxide.get(OrePrefixes.dust, 5))
+            .duration(200)
+            .eut(480)
+            .addTo(CDNCR)
+            .addTo(CDR);
+
+        RecipeBuilder.builder()
+            .fluidInputs(MaterialPool.PloyamicAcid.getFluidOrGas(144))
+            .itemOutputs()
+            .fluidOutputs(MaterialPool.Polyimide.getMolten(144))
+            .duration(270)
+            .eut(30)
+            .addTo(CDNCR)
+            .addTo(CDR);
+
+        RecipeBuilder.builder()
             .fluidInputs(MaterialPool.LaNdOxidesSolution.getFluidOrGas(4000))
             .itemOutputs(
                 WerkstoffMaterialPool.LanthanumOxide.get(OrePrefixes.dust, 5),
@@ -25,7 +57,6 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 MaterialPool.PraseodymiumOxide.get(OrePrefixes.dust, 5),
                 WerkstoffMaterialPool.NeodymiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
-            .specialValue(0)
             .duration(220)
             .eut(480)
             .addTo(CDNCR)
@@ -39,7 +70,6 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 WerkstoffMaterialPool.EuropiumIIIOxide.get(OrePrefixes.dust, 5),
                 MaterialPool.GadoliniumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
-            .specialValue(0)
             .duration(220)
             .eut(480)
             .addTo(CDNCR)
@@ -53,7 +83,6 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 MaterialPool.DysprosiumOxide.get(OrePrefixes.dust, 5),
                 MaterialPool.HolmiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
-            .specialValue(0)
             .duration(220)
             .eut(480)
             .addTo(CDNCR)
@@ -67,7 +96,6 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 MaterialPool.YtterbiumOxide.get(OrePrefixes.dust, 5),
                 MaterialPool.LutetiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
-            .specialValue(0)
             .duration(220)
             .eut(480)
             .addTo(CDNCR)

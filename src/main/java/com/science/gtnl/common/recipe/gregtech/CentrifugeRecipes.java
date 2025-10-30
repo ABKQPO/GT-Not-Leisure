@@ -33,7 +33,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 FluidUtils.getFluidStack(GTPPFluids.RedMud, 1000),
                 MaterialPool.FerricReeChloride.getFluidOrGas(1000),
                 Materials.Hydrogen.getGas(4000))
-            .specialValue(0)
             .duration(100)
             .eut(120)
             .addTo(CNCR);
@@ -44,7 +43,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 MaterialPool.RareEarthChlorides.getFluidOrGas(1000),
                 Materials.IronIIIChloride.getFluid(1000),
                 Materials.Water.getFluid(3000))
-            .specialValue(0)
             .duration(320)
             .eut(480)
             .addTo(CNCR);
@@ -58,7 +56,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 MaterialPool.TbHoOxidesSolution.getFluidOrGas(250),
                 MaterialPool.ErLuOxidesSolution.getFluidOrGas(250),
                 Materials.HydrochloricAcid.getFluid(1000))
-            .specialValue(0)
             .duration(200)
             .eut(480)
             .addTo(CNCR);
@@ -71,7 +68,6 @@ public class CentrifugeRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 1),
                 MaterialPool.RadiumChloride.get(OrePrefixes.dust, 1))
             .outputChances(10000, 10000, 10000, 500)
-            .specialValue(0)
             .duration(300)
             .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);

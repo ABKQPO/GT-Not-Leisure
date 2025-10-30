@@ -2587,8 +2587,8 @@ Tooltip_CrackerHub_01=每级玻璃等级额外提供5%的加速和耗电减免(�
 Tooltip_CrackerHub_Casing=任意放射硅岩合金机械方块
 
 NameLargeSteamCrusher=大型蒸汽破碎机
-LargeSteamCrusherRecipeType=研磨机
-Tooltip_LargeSteamCrusher_00=比同等级的单方块研磨机快900%
+LargeSteamCrusherRecipeType=粉碎机
+Tooltip_LargeSteamCrusher_00=比同等级的单方块粉碎机快900%
 Tooltip_LargeSteamCrusher_01=仅消耗正常需求80%的蒸汽
 Tooltip_LargeSteamCrusher_02=一次可处理多达128个物品
 Tooltip_LargeSteamCrusher_Casing=任意镀铜砖块或脱氧钢机械方块
