@@ -277,6 +277,7 @@ public enum GTNLItemList implements IItemContainer {
     ManaElectricProspectorTool,
     DebugElectricProspectorTool,
 
+    DebugItem,
     TestItem,
     KFCFamily,
     RecordSus,

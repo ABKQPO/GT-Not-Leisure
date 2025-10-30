@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,17 +27,20 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import it.unimi.dsi.fastutil.objects.Object2CharLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2CharMap;
-import it.unimi.dsi.fastutil.objects.Object2CharOpenHashMap;
 
 public class DebugItem extends Item {
 
-    public static final char[] placeholder = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    public static final char[] placeholder = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz"
+        + "0123456789"
+        + "()[]{}@#$%^&*:;<>?!").toCharArray();
 
     public DebugItem() {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "DebugItem");
         this.setUnlocalizedName("DebugItem");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
+        GTNLItemList.DebugItem.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -63,7 +67,7 @@ public class DebugItem extends Item {
     public static @NotNull StringBuilder getLog(SimpleItem[] inputs) {
         var log = new StringBuilder(
             "\nExtremeCraftingManager.getInstance()\n    .addExtremeShapedOreRecipe(\n——output——,\n");
-        Object2CharMap<SimpleItem> map = new Object2CharOpenHashMap<>();
+        Object2CharMap<SimpleItem> map = new Object2CharLinkedOpenHashMap<>();
 
         for (int i = 0; i < 9; i++) {
             log.append("    \"");
@@ -77,7 +81,8 @@ public class DebugItem extends Item {
                     log.append(map.getChar(si));
                     continue;
                 }
-                var c = placeholder[map.size()];
+
+                char c = (map.size() < placeholder.length) ? placeholder[map.size()] : '?';
                 map.put(si, c);
                 log.append(c);
             }
@@ -108,40 +113,45 @@ public class DebugItem extends Item {
     public static String resolveStackToString(ItemStack stack) {
         if (stack == null) return "null";
 
+        int[] oreIDs = OreDictionary.getOreIDs(stack);
+        if (oreIDs.length > 0) {
+            return OreDictionary.getOreName(oreIDs[0]);
+        }
+
         for (Class<?> clazz : new Class<?>[] { GTNLItemList.class, ItemList.class, tectech.thing.CustomItemList.class,
             CustomItemList.class, GregtechItemList.class, kubatech.api.enums.ItemList.class }) {
             try {
                 for (var field : clazz.getFields()) {
                     Object obj = field.get(null);
                     String s = clazz.getSimpleName() + "." + field.getName() + ".get(1)";
-                    if (obj instanceof ItemList gtItemList) {
-                        ItemStack target = gtItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    if (obj instanceof ItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof GTNLItemList gtnlItemList) {
-                        ItemStack target = gtnlItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    } else if (obj instanceof GTNLItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof tectech.thing.CustomItemList tecItemList) {
-                        ItemStack target = tecItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    } else if (obj instanceof tectech.thing.CustomItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof CustomItemList dreamcraftItemList) {
-                        ItemStack target = dreamcraftItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    } else if (obj instanceof CustomItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof GregtechItemList gtppItemList) {
-                        ItemStack target = gtppItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    } else if (obj instanceof GregtechItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof kubatech.api.enums.ItemList kubaItemList) {
-                        ItemStack target = kubaItemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target)) {
+                    } else if (obj instanceof kubatech.api.enums.ItemList itemList && itemList.hasBeenSet()) {
+                        ItemStack target = itemList.get(1);
+                        if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
                     }
