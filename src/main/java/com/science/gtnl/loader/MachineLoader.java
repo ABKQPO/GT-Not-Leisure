@@ -4698,6 +4698,11 @@ public class MachineLoader {
                 () -> StatCollector.translateToLocal("Tooltip_PurificationPlant_02"));
             addItemTooltip(ItemList.Machine_Multi_PurificationPlant.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
         }
+
+        addItemTooltip(
+            CustomItemList.Machine_Multi_Research.get(1),
+            () -> StatCollector.translateToLocal("Tooltip_ResearchStation_00"));
+        addItemTooltip(CustomItemList.Machine_Multi_Research.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
     }
 
     public enum GasCollectorTier {

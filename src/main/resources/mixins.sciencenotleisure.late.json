@@ -50,7 +50,8 @@
     "NotEnoughItems.MixinGuiContainerManager",
     "NHCoreMod.MixinBacteriaRegistry",
     "ThaumicTinkerer.MixinItemBloodSword",
-    "TecTech.MixinTTRecipeAdder"
+    "TecTech.MixinTTRecipeAdder",
+    "TecTech.MixinMTEResearchStation"
   ],
   "client": [],
   "server": []
