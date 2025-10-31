@@ -20,10 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -36,15 +34,11 @@ public class QuestLoader {
     private static final File CONFIG_QUESTS_DIR = new File("config/" + Mods.BetterQuesting.ID + "/DefaultQuests");
     private static final String RESOURCE_ORDER_PATH = "/assets/" + RESOURCE_ROOT_ID + "/quest/QuestLinesOrder.txt";
     private static final String RESOURCE_QUESTS_PREFIX = "assets/" + RESOURCE_ROOT_ID + "/quest/DefaultQuests/";
-    private static final File CONFIG_LANG_FILE = new File(
-        "config/txloader/load/" + Mods.BetterQuesting.ID + "/lang/zh_CN.lang");
-    private static final String RESOURCE_LANG_PATH = "/assets/" + RESOURCE_ROOT_ID + "/quest/lang/zh_CN.lang";
 
     public static void registry() {
         try {
             syncQuestLinesOrder();
             copyDefaultQuestsFromJar();
-            mergeLangFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -223,55 +217,6 @@ public class QuestLoader {
                 writer.write(line);
                 writer.newLine();
             }
-        }
-    }
-
-    private static void mergeLangFile() throws IOException {
-        Set<String> configSet = new HashSet<>();
-        List<String> configLines = new ArrayList<>();
-
-        if (CONFIG_LANG_FILE.exists()) {
-            try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(CONFIG_LANG_FILE), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    configLines.add(line);
-                    configSet.add(line.trim());
-                }
-            }
-        }
-
-        InputStream is = QuestLoader.class.getResourceAsStream(RESOURCE_LANG_PATH);
-        if (is == null) {
-            System.err.println("[QuestLoader] Missing lang resource: " + RESOURCE_LANG_PATH);
-            return;
-        }
-
-        List<String> newLines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!configSet.contains(line)) {
-                    configLines.add(line);
-                    newLines.add(line);
-                }
-            }
-        }
-
-        if (!newLines.isEmpty()) {
-            CONFIG_LANG_FILE.getParentFile()
-                .mkdirs();
-            try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(CONFIG_LANG_FILE), StandardCharsets.UTF_8))) {
-                for (String line : configLines) {
-                    writer.write(line);
-                    writer.newLine();
-                }
-            }
-            System.out.println("[QuestLoader] zh_CN.lang updated with " + newLines.size() + " new lines.");
-        } else {
-            System.out.println("[QuestLoader] zh_CN.lang is up-to-date.");
         }
     }
 }
