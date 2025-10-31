@@ -32,13 +32,15 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements ISurvivalConstructable {
 
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String SG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steamgate";
+    public static final String STRUCTURE_PIECE_MAIN = "main";
+    public static final String SG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steamgate";
     public static final String[][] shape = StructureUtils.readStructureFromFile(SG_STRUCTURE_FILE_PATH);
 
-    private static final int HORIZONTAL_OFF_SET = 4;
-    private static final int VERTICAL_OFF_SET = 8;
-    private static final int DEPTH_OFF_SET = 0;
+    public static final int HORIZONTAL_OFF_SET = 4;
+    public static final int VERTICAL_OFF_SET = 8;
+    public static final int DEPTH_OFF_SET = 0;
+
+    public Steamgate linkedGate;
 
     public Steamgate(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -139,7 +141,31 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
         return 0;
     }
 
-    // YOINKED all this code n im NOT giving it back
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        if (linkedGate != null) {
+            IGregTechTileEntity linkGateTE = linkedGate.getBaseMetaTileEntity();
+            NBTTagCompound controllerNBT = new NBTTagCompound();
+            controllerNBT.setInteger("x", linkGateTE.getXCoord());
+            controllerNBT.setInteger("y", linkGateTE.getYCoord());
+            controllerNBT.setInteger("z", linkGateTE.getZCoord());
+            aNBT.setTag("SteamgateLinker", controllerNBT);
+        }
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        if (aNBT.hasKey("SteamgateLinker")) {
+            NBTTagCompound controllerNBT = aNBT.getCompoundTag("SteamgateLinker");
+            int x = controllerNBT.getInteger("x");
+            int y = controllerNBT.getInteger("y");
+            int z = controllerNBT.getInteger("z");
+
+            trySetControllerFromCoord(x, y, z);
+        }
+    }
 
     @Override
     public void onLeftclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
@@ -164,15 +190,16 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (!mMachine) return false;
-        if (linkedGate == null) tryLinkDataStick(aPlayer);
-        else {
+        if (linkedGate == null) {
+            tryLinkDataStick(aPlayer);
+        } else {
             BaseMetaTileEntity gate = (BaseMetaTileEntity) linkedGate.getBaseMetaTileEntity();
             aPlayer.setPositionAndUpdate(gate.getXCoord(), gate.getYCoord() + 2, gate.getZCoord());
         }
         return true;
     }
 
-    private void tryLinkDataStick(EntityPlayer aPlayer) {
+    public void tryLinkDataStick(EntityPlayer aPlayer) {
         // Make sure the held item is a DIALING DEVICE
         ItemStack device = aPlayer.inventory.getCurrentItem();
         if (!GTNLItemList.SteamgateDialingDevice.isStackEqual(device, false, true)) {
@@ -201,23 +228,21 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
 
     }
 
-    Steamgate linkedGate;
-
-    private boolean trySetControllerFromCoord(int x, int y, int z) {
+    public boolean trySetControllerFromCoord(int x, int y, int z) {
         // Find the block at the requested coordinated and check if it is a STEAMGATE WOOOOOOOOO.
         var tileEntity = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
         if (tileEntity == null) return false;
         if (!(tileEntity instanceof IGregTechTileEntity gtTileEntity)) return false;
         var metaTileEntity = gtTileEntity.getMetaTileEntity();
-        if (!(metaTileEntity instanceof Steamgate)) return false;
+        if (!(metaTileEntity instanceof Steamgate steamgate)) return false;
         if (metaTileEntity == this) return false;
 
         // Before linking, unlink from current STEAMGATE YEAAAAAAAA
         if (linkedGate != null) {
             linkedGate.linkedGate = null;
         }
-        linkedGate = (Steamgate) metaTileEntity;
+        linkedGate = steamgate;
         linkedGate.linkedGate = this;
         return true;
     }
