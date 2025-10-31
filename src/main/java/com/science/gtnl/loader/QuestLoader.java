@@ -18,6 +18,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -50,24 +51,53 @@ public class QuestLoader {
     }
 
     private static void syncQuestLinesOrder() throws IOException {
-        List<String> modLines = readResourceLines();
-        List<String> configLines = readFileLines();
+        List<String> lines = readFileLines();
+        if (lines.isEmpty()) {
+            lines = readResourceLines();
+        }
 
-        Set<String> configSet = new HashSet<>(configLines);
         boolean modified = false;
 
-        for (String line : modLines) {
-            if (!configSet.contains(line)) {
-                configLines.add(line);
-                modified = true;
+        String lineSteamAge = "AAAAAAAAAAAAAAAAAAAAAg==";
+        String lineSuperheated = "GTNotLeisure75SteamAge==: Tier 0.75 - Superheated";
+        String lineSupercritical = "GTNotLeisure99SteamAge==: Tier 0.999... - Supercritical";
+        String lineGTNL = "GTNotLeisureQuestsLine==: GTNotLeisure";
+
+        int index = -1;
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i)
+                .trim()
+                .contains(lineSteamAge)) {
+                index = i;
+                break;
             }
         }
 
-        if (modified) {
-            writeFileLines(configLines);
-            System.out.println("[QuestLoader] QuestLinesOrder.txt updated.");
+        if (index != -1) {
+            List<String> insertList = new ArrayList<>();
+            if (!lines.contains(lineSuperheated)) insertList.add(lineSuperheated);
+            if (!lines.contains(lineSupercritical)) insertList.add(lineSupercritical);
+
+            if (!insertList.isEmpty()) {
+                lines.addAll(index + 1, insertList);
+                modified = true;
+                System.out.println("[QuestLoader] Inserted GTNotLeisure SteamAge tiers after " + lineSteamAge);
+            }
         } else {
-            System.out.println("[QuestLoader] QuestLinesOrder.txt is up-to-date.");
+            System.err.println("[QuestLoader] Match line not found: " + lineSteamAge);
+        }
+
+        if (!lines.contains(lineGTNL)) {
+            lines.add(lineGTNL);
+            modified = true;
+            System.out.println("[QuestLoader] Appended GTNotLeisureQuestsLine at the end.");
+        }
+
+        if (modified) {
+            writeFileLines(lines);
+            System.out.println("[QuestLoader] QuestLinesOrder.txt updated successfully.");
+        } else {
+            System.out.println("[QuestLoader] QuestLinesOrder.txt is already up-to-date.");
         }
     }
 
@@ -146,7 +176,7 @@ public class QuestLoader {
                 hash2 = digest.digest();
             }
 
-            return java.util.Arrays.equals(hash1, hash2);
+            return Arrays.equals(hash1, hash2);
         } catch (NoSuchAlgorithmException e) {
             throw new IOException("SHA-256 algorithm not available", e);
         }
@@ -162,8 +192,8 @@ public class QuestLoader {
 
     private static List<String> readResourceLines() throws IOException {
         List<String> lines = new ArrayList<>();
-        try (InputStream is = QuestLoader.class.getResourceAsStream(QuestLoader.RESOURCE_ORDER_PATH)) {
-            if (is == null) throw new FileNotFoundException("Missing resource: " + QuestLoader.RESOURCE_ORDER_PATH);
+        try (InputStream is = QuestLoader.class.getResourceAsStream(RESOURCE_ORDER_PATH)) {
+            if (is == null) throw new FileNotFoundException("Missing resource: " + RESOURCE_ORDER_PATH);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) lines.add(line.trim());
@@ -174,10 +204,10 @@ public class QuestLoader {
 
     private static List<String> readFileLines() throws IOException {
         List<String> lines = new ArrayList<>();
-        if (!QuestLoader.CONFIG_ORDER_FILE.exists()) return lines;
+        if (!CONFIG_ORDER_FILE.exists()) return lines;
 
         try (BufferedReader reader = new BufferedReader(
-            new InputStreamReader(new FileInputStream(QuestLoader.CONFIG_ORDER_FILE), StandardCharsets.UTF_8))) {
+            new InputStreamReader(new FileInputStream(CONFIG_ORDER_FILE), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) lines.add(line.trim());
         }
@@ -185,10 +215,10 @@ public class QuestLoader {
     }
 
     private static void writeFileLines(List<String> lines) throws IOException {
-        QuestLoader.CONFIG_ORDER_FILE.getParentFile()
+        CONFIG_ORDER_FILE.getParentFile()
             .mkdirs();
         try (BufferedWriter writer = new BufferedWriter(
-            new OutputStreamWriter(new FileOutputStream(QuestLoader.CONFIG_ORDER_FILE), StandardCharsets.UTF_8))) {
+            new OutputStreamWriter(new FileOutputStream(CONFIG_ORDER_FILE), StandardCharsets.UTF_8))) {
             for (String line : lines) {
                 writer.write(line);
                 writer.newLine();

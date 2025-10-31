@@ -1,0 +1,95 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -6960995415576065006,
+      "questIDLow:4": -4873063063506072732
+    },
+    "1:10": {
+      "questIDHigh:4": 352832547959882179,
+      "questIDLow:4": -5508228300018462831
+    },
+    "2:10": {
+      "questIDHigh:4": -2519798777437204724,
+      "questIDLow:4": -7399718129039310293
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "A marvel of engineering, comprised of an uncountable number of gears and pipes, tapping into some power which you yourself are not sure you fully understand. \n\nAs you gaze upon your creation, consider... was it worth it?\n",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21113,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "The Steamgate",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -2180483869858380840,
+  "questIDLow:4": -7225056557488928799,
+  "rewards:9": {
+    "0:10": {
+      "ignoreDisabled:1": 0,
+      "index:3": 0,
+      "rewardID:8": "bq_standard:item",
+      "rewards:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 22501,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      }
+    }
+  },
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 2,
+          "Damage:2": 21113,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 14,
+          "Damage:2": 22,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaCasing"
+        },
+        "2:10": {
+          "Count:3": 48,
+          "Damage:2": 21,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaCasing"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 81,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 8680299745933936933,
+      "questIDLow:4": -6458254966101993497
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "Ported from 3.0.0 Update by Potato2022",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 1,
+        "OreDict:8": "",
+        "id:8": "TConstruct:heartCanister"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "Credits",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -6445197801928503879,
+  "questIDLow:4": -6341285505169820995,
+  "rewards:9": {
+    "0:10": {
+      "ignoreDisabled:1": 0,
+      "index:3": 0,
+      "rewardID:8": "bq_standard:item",
+      "rewards:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "minecraft:poisonous_potato"
+        }
+      }
+    }
+  },
+  "tasks:9": {}
+}

@@ -3,17 +3,17 @@
     "betterquesting:10": {
       "bg_image:8": "",
       "bg_size:3": 256,
-      "desc:8": "引导你如何游玩本模组的内容！",
+      "desc:8": "Making new discoveries...",
       "icon:10": {
         "Count:3": 1,
-        "Damage:2": 21006,
+        "Damage:2": 21119,
         "OreDict:8": "",
         "id:8": "gregtech:gt.blockmachines"
       },
-      "name:8": "GTNotLeisure",
+      "name:8": "Tier 0.75 - Superheated",
       "visibility:8": "NORMAL"
     }
   },
-  "questLineIDHigh:4": 8342257857681770871,
-  "questLineIDLow:4": -5781164124601748805
+  "questLineIDHigh:4": -2201496072467823920,
+  "questLineIDLow:4": -8206621080768472077
 }

@@ -1,0 +1,79 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -1725388150288397082,
+      "questIDLow:4": -5408032497397437249
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "You thought that just because we were staying in the steam age, you\u0027d be free from component crafting? Don\u0027t be silly.\n\nThese hydraulic components do seem to be quite powerful...",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 89,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:MetaItem"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "You\u0027re going to LOVE this",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 3186891750874563096,
+  "questIDLow:4": -9163057863185373094,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 89,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 93,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 90,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 91,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "4:10": {
+          "Count:3": 1,
+          "Damage:2": 92,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    }
+  }
+}
