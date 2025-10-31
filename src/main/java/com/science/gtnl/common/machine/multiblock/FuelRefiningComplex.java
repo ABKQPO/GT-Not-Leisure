@@ -162,6 +162,11 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     }
 
     @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
+    @Override
     public boolean checkHatch() {
         return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None;
     }
