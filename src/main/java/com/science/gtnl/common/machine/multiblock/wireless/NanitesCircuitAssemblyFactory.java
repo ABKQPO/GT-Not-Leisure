@@ -8,7 +8,6 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 
-import gregtech.common.blocks.BlockCasings2;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -31,10 +30,8 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
-import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.casing.TTCasingsContainer;
 
 public class NanitesCircuitAssemblyFactory extends WirelessEnergyMultiMachineBase<NanitesCircuitAssemblyFactory> {
@@ -118,7 +115,7 @@ public class NanitesCircuitAssemblyFactory extends WirelessEnergyMultiMachineBas
             .addElement('A', ofBlock(sBlockCasings1, 13))
             .addElement('B', ofBlock(sBlockCasingsSE, 2))
             .addElement('C', ofBlock(sBlockCasingsSE, 0))
-            .addElement('D', ofBlock(TTCasingsContainer.sBlockCasingsTT,3))
+            .addElement('D', ofBlock(TTCasingsContainer.sBlockCasingsTT, 3))
             .addElement(
                 'E',
                 buildHatchAdder(NanitesCircuitAssemblyFactory.class)
