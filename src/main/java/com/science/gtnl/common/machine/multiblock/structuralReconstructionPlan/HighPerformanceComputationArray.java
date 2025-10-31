@@ -88,7 +88,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     public Parameters.Group.ParameterOut maxCurrentTemp, availableData, machineLens, coolantUse;
 
-    public boolean wirelessModeEnabled = false;
+    public boolean wirelessMode = false;
 
     public static final INameFunction<HighPerformanceComputationArray> LENS_NAME = (base, p) -> StatCollector
         .translateToLocal("HPCA_Info_00");
@@ -187,7 +187,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         aNBT.setInteger("totalLen", totalLens);
         aNBT.setString("randomUUID", String.valueOf(randomUUID));
         aNBT.setDouble("computation", availableData.get());
-        aNBT.setBoolean("wirelessModeEnabled", wirelessModeEnabled);
+        aNBT.setBoolean("wirelessModeEnabled", wirelessMode);
         super.saveNBTData(aNBT);
     }
 
@@ -200,12 +200,12 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
             this.eAvailableData = (long) availableData.get();
         }
         if (aNBT.hasKey("wirelessModeEnabled")) {
-            wirelessModeEnabled = aNBT.getBoolean("wirelessModeEnabled");
-            if (wirelessModeEnabled) {
+            wirelessMode = aNBT.getBoolean("wirelessModeEnabled");
+            if (wirelessMode) {
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             }
         } else {
-            wirelessModeEnabled = false;
+            wirelessMode = false;
         }
         super.loadNBTData(aNBT);
     }
@@ -433,8 +433,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
-            wirelessModeEnabled = !wirelessModeEnabled;
-            if (wirelessModeEnabled) {
+            wirelessMode = !wirelessMode;
+            if (wirelessMode) {
                 GTUtility.sendChatToPlayer(aPlayer, "Wireless mode enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
@@ -587,7 +587,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public String[] getInfoData() {
         ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        if (wirelessModeEnabled) {
+        if (wirelessMode) {
             WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
                 .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());
             data.add(StatCollector.translateToLocal("tt.infodata.qc.wireless_mode.enabled"));

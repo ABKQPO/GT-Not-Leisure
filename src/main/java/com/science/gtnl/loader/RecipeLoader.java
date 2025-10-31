@@ -11,6 +11,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.Nxer.TwistSpaceTechnology.common.recipeMap.GTCMRecipe;
 import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.AssemblyLineWithoutResearchRecipePool;
 import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.CircuitAssemblyLineWithoutImprintRecipePool;
 import com.reavaritia.ReAvaItemList;
@@ -119,6 +120,7 @@ import com.science.gtnl.utils.recipes.RecipeUtil;
 import com.science.gtnl.utils.recipes.RemoveRecipes;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import goodgenerator.loader.Loaders;
 import goodgenerator.util.CrackRecipeAdder;
@@ -234,7 +236,7 @@ public class RecipeLoader {
         }
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
-            AssemblyLineWithoutResearchRecipePool.loadRecipes();
+            loadTSTMegaAssemblyLineRecipes();
         }
 
         recipesAdded = true;
@@ -405,9 +407,23 @@ public class RecipeLoader {
 
         new CircuitAssemblyLineRecipes().loadRecipes();
 
-        if (!recipesAdded && ModList.TwistSpaceTechnology.isModLoaded()) {
-            CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
+        if (ModList.TwistSpaceTechnology.isModLoaded()) {
+            loadTSTAdvCircuitAssemblyLineRecipes();
         }
+    }
+
+    @Optional.Method(modid = "TwistSpaceTechnology")
+    public static void loadTSTMegaAssemblyLineRecipes() {
+        AssemblyLineWithoutResearchRecipePool.loadRecipes();
+        System.out.println("[GTNL] Register TwistSpaceTechnology MegaAssemblyLine recipes");
+    }
+
+    @Optional.Method(modid = "TwistSpaceTechnology")
+    public static void loadTSTAdvCircuitAssemblyLineRecipes() {
+        GTCMRecipe.advCircuitAssemblyLineRecipes.getBackend()
+            .clearRecipes();
+        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
+        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     public static void registerBuffTargetChamberRecipe() {

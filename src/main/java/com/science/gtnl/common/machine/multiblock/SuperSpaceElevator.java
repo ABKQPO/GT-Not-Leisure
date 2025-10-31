@@ -210,6 +210,23 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
+    public String[] getInfoData() {
+        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        if (wirelessMode) {
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + costingEUText
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
+        return ret.toArray(new String[0]);
+    }
+
+    @Override
     public long maxEUStore() {
         return INTERNAL_BUFFER_MULTIPLIER * super.maxEUStore();
     }

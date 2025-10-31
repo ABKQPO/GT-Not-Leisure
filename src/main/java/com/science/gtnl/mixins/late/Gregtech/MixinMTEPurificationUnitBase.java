@@ -614,7 +614,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
     @Override
     public String[] getInfoData() {
-        var ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
         // If this purification unit is linked to a controller, add this info to the scanner output.
         if (getController() != null) {
             ret.add(
@@ -640,6 +640,17 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
                 "GT5U.infodata.parallel.current",
                 "" + EnumChatFormatting.YELLOW
                     + (this.wirelessMode ? this.effectiveParallelLong : this.effectiveParallel)));
+        if (wirelessMode) {
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + costingEUText
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
         return ret.toArray(new String[0]);
     }
 

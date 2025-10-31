@@ -1,8 +1,12 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -74,5 +78,13 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     @Inject(method = "saveNBTData", at = @At("TAIL"))
     public void saveNBTData(NBTTagCompound aNBT, CallbackInfo ci) {
         aNBT.setBoolean("wirelessMode", wirelessMode);
+    }
+
+    @Override
+    public String[] getInfoData() {
+        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        if (wirelessMode)
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+        return ret.toArray(new String[0]);
     }
 }

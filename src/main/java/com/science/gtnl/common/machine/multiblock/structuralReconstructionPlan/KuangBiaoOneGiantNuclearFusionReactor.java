@@ -15,6 +15,8 @@ import static gtPlusPlus.core.block.ModBlocks.*;
 import static gtnhlanth.common.register.LanthItemList.*;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -862,6 +864,23 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 tag.setBoolean("wirelessMode", wirelessMode);
                 if (wirelessMode) tag.setString("costingEUText", costingEUText);
             }
+        }
+
+        @Override
+        public String[] getInfoData() {
+            List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+            if (wirelessMode) {
+                ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+                ret.add(
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                        + EnumChatFormatting.RESET
+                        + ": "
+                        + EnumChatFormatting.GOLD
+                        + costingEUText
+                        + EnumChatFormatting.RESET
+                        + " EU");
+            }
+            return ret.toArray(new String[0]);
         }
 
         @Override
