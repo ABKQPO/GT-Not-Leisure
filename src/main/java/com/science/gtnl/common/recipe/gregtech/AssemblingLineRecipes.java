@@ -1,8 +1,8 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static bartworks.common.loaders.ItemRegistry.*;
-import static goodgenerator.loader.Loaders.huiCircuit;
-import static gregtech.api.enums.MetaTileEntityIDs.BioLab_LuV;
+import static goodgenerator.loader.Loaders.*;
+import static gregtech.api.enums.MetaTileEntityIDs.*;
 import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTRecipeBuilder.*;
 import static gregtech.api.util.GTRecipeConstants.*;
@@ -1716,7 +1716,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             30000,
             (int) TierEU.RECIPE_UV,
             1,
-            new Object[] { GTNLItemList.LargeCircuitAssembler.get(64), ItemList.AssemblingMachineUV.get(64),
+            new Object[] { GTNLItemList.LargeCircuitAssembler.get(64), GTUtility.copyAmount(64,cal),
                 ItemList.Casing_Assembler.get(64), ItemList.SpaceElevatorBaseCasing.get(32),
                 ItemRefer.Compassline_Casing_ZPM.get(16), ItemList.Robot_Arm_UHV.get(48),
                 ItemList.Conveyor_Module_UHV.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UV), 64 },
@@ -1729,7 +1729,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             new FluidStack[] { MaterialsAlloy.INDALLOY_140.getFluidStack(64000),
                 Materials.SuperCoolant.getFluid(128000), MaterialsAlloy.TITANSTEEL.getFluidStack(9216),
                 Materials.Lubricant.getFluid(64000) },
-            GTNLItemList.NanoAssemblerMarkL.get(1),
+            GTNLItemList.NanitesCircuitAssemblyFactory.get(1),
             2400,
             (int) TierEU.RECIPE_UHV);
 
@@ -1786,6 +1786,25 @@ public class AssemblingLineRecipes implements IRecipePool {
             GTNLItemList.WirelessUpgradeChip.get(1),
             2000,
             (int) TierEU.RECIPE_UMV);
+
+        GTValues.RA.stdBuilder()
+            .metadata(RESEARCH_ITEM, CustomItemList.DATApipe.get(1))
+            .metadata(SCANNING, new Scanning(10 * MINUTES, TierEU.RECIPE_IV))
+            .itemInputs(
+                CustomItemList.Machine_Multi_Computer.get(1),
+                GTOreDictUnificator.get(OrePrefixes.circuit,Materials.UV,2),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.SuperconductorUV, 4),
+                CustomItemList.DATApipe.get(1),
+                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Polybenzimidazole, 1))
+            .fluidInputs(
+                Materials.Grade3PurifiedWater.getFluid(32000),
+                Materials.Osmium.getMolten(1296),
+                Materials.UUMatter.getFluid(2560),
+                MaterialPool.Polyetheretherketone.getMolten(1296))
+            .itemOutputs(GTNLItemList.HighPerformanceComputationArray.get(1))
+            .eut(TierEU.RECIPE_ZPM)
+            .duration(50 * SECONDS)
+            .addTo(AL);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeDistillery.get(1),
