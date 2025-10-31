@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static com.science.gtnl.utils.Utils.*;
 import static com.science.gtnl.utils.Utils.mergeArray;
 import static gregtech.api.GregTechAPI.*;
@@ -462,7 +463,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 'C',
                 buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
+                    .atLeast(Maintenance, InputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy), ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(getCasing(), getCasingMeta()))))
             .addElement('D', ofBlock(getConcrete(), getConcreteMeta()))
             .addElement('E', ofFrame(Materials.Tungsten))

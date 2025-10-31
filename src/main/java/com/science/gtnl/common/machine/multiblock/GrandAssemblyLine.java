@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
@@ -201,7 +202,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         ItemStack controllerItem = getControllerSlot();
         this.mParallelTier = getParallelTier(controllerItem);
         long energyEU = wirelessMode ? Integer.MAX_VALUE
-            : GTValues.VP[mEnergyHatchTier] * (useSingleAmp ? 1 : getMaxInputAmps() / 4); // 能源仓最大输入功率
+            : GTValues.VP[mEnergyHatchTier] * (useSingleAmp ? 1 : getMaxInputAmps() / 2); // 能源仓最大输入功率
         int maxParallel = getTrueParallel(); // 最大并行数
 
         if (energyEU <= 0) return CheckRecipeResultRegistry.POWER_OVERFLOW;
@@ -557,6 +558,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 totalMaxProgressTime = needTime;
             }
 
+            if (totalNeedEUt > energyEU * 0.95) {
+                double scale = (energyEU * 0.95) / totalNeedEUt;
+                totalNeedEUt = (long) Math.floor(totalNeedEUt * scale);
+                totalMaxProgressTime = (int) Math.ceil(totalMaxProgressTime / scale);
+            }
+
             for (Map.Entry<GTRecipe, Integer> entry : recipeParallelMap.entrySet()) {
                 GTRecipe recipe = entry.getKey();
                 int parallel = entry.getValue();
@@ -906,7 +913,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 'E',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy), DataHatchElement.DataAccess)
+                    .atLeast(
+                        InputHatch,
+                        InputBus,
+                        OutputBus,
+                        Energy.or(ExoticEnergy),
+                        ParallelCon,
+                        DataHatchElement.DataAccess)
                     .buildAndChain(
                         onElementPass(
                             x -> ++x.mCountCasing,
@@ -921,6 +934,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         OutputBus,
                         Maintenance,
                         Energy.or(ExoticEnergy),
+                        ParallelCon,
                         DataHatchElement.DataAccess)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
             .addElement('G', ofBlock(sBlockCasings2, 9))
@@ -1009,7 +1023,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     .setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
-                    .setAmperage(wirelessMode ? Long.MAX_VALUE : useSingleAmp ? 1 : getMaxInputAmps() / 4)
+                    .setAmperage(wirelessMode ? Long.MAX_VALUE : useSingleAmp ? 1 : getMaxInputAmps() / 2)
                     .setEUt(wirelessMode ? Long.MAX_VALUE : getMachineVoltageLimit());
             }
         }.setMaxParallelSupplier(this::getTrueParallel);

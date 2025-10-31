@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
@@ -128,7 +129,14 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
                 'B',
                 buildHatchAdder(WoodDistillation.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
+                    .atLeast(
+                        InputHatch,
+                        OutputHatch,
+                        InputBus,
+                        OutputBus,
+                        Maintenance,
+                        Energy.or(ExoticEnergy),
+                        ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 11))))
             .addElement('C', ofBlock(sBlockCasings2, 1))
             .addElement('D', ofBlock(sBlockCasings2, 13))

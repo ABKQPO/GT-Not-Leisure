@@ -1,7 +1,8 @@
-package com.science.gtnl.common.machine.multiblock;
+package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static goodgenerator.loader.Loaders.FRF_Coil_1;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.enums.HatchElement.*;
@@ -90,7 +91,14 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
                 'G',
                 buildHatchAdder(CircuitComponentAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
+                    .atLeast(
+                        Maintenance,
+                        InputHatch,
+                        InputBus,
+                        OutputBus,
+                        Maintenance,
+                        Energy.or(ExoticEnergy),
+                        ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
             .addElement('H', ofBlock(sBlockCasingsTT, 7))
             .addElement('I', ofBlock(sBlockCasingsTT, 8))

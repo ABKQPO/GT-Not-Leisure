@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
@@ -136,7 +137,14 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
                 'C',
                 buildHatchAdder(LargeBrewer.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
+                    .atLeast(
+                        InputHatch,
+                        OutputHatch,
+                        InputBus,
+                        OutputBus,
+                        Maintenance,
+                        Energy.or(ExoticEnergy),
+                        ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasingsMisc, 1))))
             .addElement('D', Muffler.newAny(TAE.GTPP_INDEX(1), 1))
             .build();

@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
@@ -115,7 +116,15 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
                 'A',
                 buildHatchAdder(MassFabricator.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                    .atLeast(
+                        Maintenance,
+                        InputHatch,
+                        OutputHatch,
+                        InputBus,
+                        OutputBus,
+                        Maintenance,
+                        Energy,
+                        ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 7))))
             .addElement('B', ofBlock(ModBlocks.blockCasingsMisc, 8))
             .addElement('C', ofBlock(BlockLoader.metaCasing, 2))

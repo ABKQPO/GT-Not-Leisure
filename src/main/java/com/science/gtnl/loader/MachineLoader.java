@@ -64,7 +64,6 @@ import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
 import com.science.gtnl.common.machine.multiblock.BloodSoulSacrificialArray;
 import com.science.gtnl.common.machine.multiblock.BrickedBlastFurnace;
 import com.science.gtnl.common.machine.multiblock.CheatOreProcessingFactory;
-import com.science.gtnl.common.machine.multiblock.CircuitComponentAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.ComponentAssembler;
 import com.science.gtnl.common.machine.multiblock.DecayHastener;
 import com.science.gtnl.common.machine.multiblock.Desulfurizer;
@@ -210,6 +209,7 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.V
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.VacuumFreezer;
 import com.science.gtnl.common.machine.multiblock.wireless.AdvancedMassFabricator;
 import com.science.gtnl.common.machine.multiblock.wireless.AetronPressor;
+import com.science.gtnl.common.machine.multiblock.wireless.CircuitComponentAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundDistillationFractionator;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundExtremeCoolingUnit;
 import com.science.gtnl.common.machine.multiblock.wireless.CrackerHub;

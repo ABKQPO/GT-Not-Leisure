@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
@@ -132,7 +133,14 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
                 'D',
                 buildHatchAdder(HandOfJohnDavisonRockefeller.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
+                    .atLeast(
+                        Maintenance,
+                        InputHatch,
+                        OutputHatch,
+                        InputBus,
+                        OutputBus,
+                        Energy.or(ExoticEnergy),
+                        ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
             .addElement('E', ofBlock(sBlockCasings10, 8))
             .addElement('F', ofBlock(sBlockCasings3, 10))

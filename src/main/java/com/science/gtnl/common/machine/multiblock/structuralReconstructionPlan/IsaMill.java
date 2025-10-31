@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
@@ -109,7 +110,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
                         .dot(1)
                         .build(),
                     buildHatchAdder(IsaMill.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, Maintenance, Energy.or(ExoticEnergy))
+                        .atLeast(InputBus, OutputBus, InputHatch, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),

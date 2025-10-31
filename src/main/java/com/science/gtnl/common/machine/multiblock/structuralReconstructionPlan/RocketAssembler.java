@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static com.science.gtnl.loader.BlockLoader.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
@@ -148,7 +149,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
                 'F',
                 buildHatchAdder(RocketAssembler.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
+                    .atLeast(InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 1))))
             .addElement('G', ofBlock(sBlockCasings6, 1))
             .addElement('H', ofBlock(sBlockCasings6, 3))
