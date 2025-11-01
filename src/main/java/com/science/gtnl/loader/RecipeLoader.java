@@ -151,11 +151,11 @@ public class RecipeLoader {
     }
 
     public static void loadRecipesServerStart() {
+        RecipeUtil.removeMatchingRecipes(RecipePool.ConvertToCircuitAssembler, RecipeMaps.circuitAssemblerRecipes);
         if (recipesAdded) return;
         if (MainConfig.enableDeleteRecipe) {
             RemoveRecipes.removeRecipes();
         }
-        RecipeUtil.removeMatchingRecipes(RecipePool.ConvertToCircuitAssembler, RecipeMaps.circuitAssemblerRecipes);
 
         ProcessingArrayRecipeLoader.registerDefaultGregtechMaps();
 
