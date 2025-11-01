@@ -8,14 +8,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 
 import gregtech.api.interfaces.tileentity.IVoidable;
-import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
-import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.ParallelHelper;
@@ -39,15 +36,6 @@ public abstract class MixinParallelHelper {
      */
     @Inject(method = "determineParallel", at = @At("HEAD"), remap = false)
     private void opDetermineParallel(CallbackInfo ci) {
-        if (machine instanceof MTEMultiBlockBase multiBlockBase) {
-            for (MTEHatchMaintenance maintenance : multiBlockBase.mMaintenanceHatches) {
-                if (maintenance instanceof IConfigurationMaintenance customMaintenance
-                    && customMaintenance.isConfiguration()) {
-                    recipe.mDuration = recipe.mDuration * customMaintenance.getConfigTime() / 100;
-                }
-            }
-        }
-
         if (!ModList.Overpowered.isModLoaded() && MainConfig.enableRecipeOutputChance) {
             // Compute optional bonus based on machine and current EU/t
             OptionalDouble bonusOptional = ChanceBonusManager

@@ -384,7 +384,9 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             @Nonnull
             @Override
             protected GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
-                if (enableInfinityMana) inputFluids[0] = MaterialPool.FluidMana.getFluidOrGas(Integer.MAX_VALUE);
+                if (enableInfinityMana && inputFluids != null && inputFluids.length > 0) {
+                    inputFluids[0] = MaterialPool.FluidMana.getFluidOrGas(Integer.MAX_VALUE);
+                }
                 return super.createParallelHelper(recipe).setFluidInputs(inputFluids);
             }
 
