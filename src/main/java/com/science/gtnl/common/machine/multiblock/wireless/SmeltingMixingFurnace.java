@@ -59,16 +59,16 @@ import tectech.thing.casing.BlockGTCasingsTT;
 
 public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<SmeltingMixingFurnace> {
 
-    protected GTRecipe lastRecipeToBuffer;
-    public boolean hasRequiredItem = false;
     private static final int HORIZONTAL_OFF_SET = 8;
     private static final int VERTICAL_OFF_SET = 14;
     private static final int DEPTH_OFF_SET = 0;
-    private static final int MACHINEMODE_SMF = 0;
-    private static final int MACHINEMODE_DTPF = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String SMF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/smelting_mixing_furnace";
+    private static final String SMF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/smelting_mixing_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SMF_STRUCTURE_FILE_PATH);
+    public static final int MACHINEMODE_SMF = 0;
+    public static final int MACHINEMODE_DTPF = 1;
+    public GTRecipe lastRecipeToBuffer;
+    public boolean hasRequiredItem = false;
 
     public SmeltingMixingFurnace(String aName) {
         super(aName);
@@ -84,7 +84,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SmeltingMixingFurnaceRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_00"))
@@ -248,7 +248,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4 && machineMode != MACHINEMODE_DTPF
                     && wirelessMode) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
@@ -258,7 +258,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setPerfectOC(getPerfectOC())
                     .setAmperageOC(getAmperageOC())

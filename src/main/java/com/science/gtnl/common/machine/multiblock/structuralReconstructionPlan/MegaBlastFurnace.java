@@ -61,7 +61,7 @@ import gtPlusPlus.core.block.ModBlocks;
 public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String MBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mega_blast_furnace";
+    private static final String MBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mega_blast_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(MBF_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 11;
     private static final int VERTICAL_OFF_SET = 41;

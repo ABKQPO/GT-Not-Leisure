@@ -51,31 +51,31 @@ import gregtech.common.tileentities.machines.MTEHatchOutputME;
 
 public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implements ISurvivalConstructable {
 
-    private static final int MACHINEMODE_TOWER = 0;
-    private static final int MACHINEMODE_DISTILLERY = 1;
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 0;
     private static final int DEPTH_OFF_SET = 0;
-    protected static final String STRUCTURE_PIECE_BASE = "base";
-    protected static final String STRUCTURE_PIECE_LAYER = "layer";
-    protected static final String STRUCTURE_PIECE_LAYER_HINT = "layerHint";
-    protected static final String STRUCTURE_PIECE_TOP_HINT = "topHint";
-    protected static final String STRUCTURE_PIECE_TOP = "top";
-    public static final String LDB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/base";
-    public static final String LDL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/layer";
-    public static final String LDLH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String STRUCTURE_PIECE_BASE = "base";
+    private static final String STRUCTURE_PIECE_LAYER = "layer";
+    private static final String STRUCTURE_PIECE_LAYER_HINT = "layerHint";
+    private static final String STRUCTURE_PIECE_TOP_HINT = "topHint";
+    private static final String STRUCTURE_PIECE_TOP = "top";
+    private static final String LDB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/base";
+    private static final String LDL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/layer";
+    private static final String LDLH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/large_distillery/layer_hint";
-    public static final String LDTH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String LDTH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/large_distillery/top_hint";
-    public static final String LDT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/top";
+    private static final String LDT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_distillery/top";
     private static final String[][] shape_base = StructureUtils.readStructureFromFile(LDB_STRUCTURE_FILE_PATH);
     private static final String[][] shape_layer = StructureUtils.readStructureFromFile(LDL_STRUCTURE_FILE_PATH);
     private static final String[][] shape_layer_hint = StructureUtils.readStructureFromFile(LDLH_STRUCTURE_FILE_PATH);
     private static final String[][] shape_top_hint = StructureUtils.readStructureFromFile(LDTH_STRUCTURE_FILE_PATH);
     private static final String[][] shape_top = StructureUtils.readStructureFromFile(LDT_STRUCTURE_FILE_PATH);
+    public static final int MACHINEMODE_TOWER = 0;
+    public static final int MACHINEMODE_DISTILLERY = 1;
 
-    protected final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
-    protected int mHeight;
+    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
+    public int mHeight;
 
     public LargeDistillery(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -96,7 +96,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeDistilleryRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeDistillery_00"))
@@ -186,17 +186,17 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         return true;
     }
 
-    protected void onCasingFound() {
+    public void onCasingFound() {
         mCountCasing++;
     }
 
-    protected int getCurrentLayerOutputHatchCount() {
+    public int getCurrentLayerOutputHatchCount() {
         return mOutputHatchesByLayer.size() < mHeight || mHeight <= 0 ? 0
             : mOutputHatchesByLayer.get(mHeight - 1)
                 .size();
     }
 
-    protected boolean addLayerOutputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+    public boolean addLayerOutputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         if (aTileEntity == null || aTileEntity.isDead()
             || !(aTileEntity.getMetaTileEntity() instanceof MTEHatchOutput tHatch)) return false;
         while (mOutputHatchesByLayer.size() < mHeight) mOutputHatchesByLayer.add(new ArrayList<>());
@@ -211,7 +211,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 
@@ -314,7 +314,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    protected void addFluidOutputs(FluidStack[] outputFluids) {
+    public void addFluidOutputs(FluidStack[] outputFluids) {
         for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
             final FluidStack fluidStack = outputFluids[i];
             if (fluidStack == null) continue;
@@ -409,7 +409,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    protected SoundResource getProcessStartSound() {
+    public SoundResource getProcessStartSound() {
         return SoundResource.GT_MACHINES_DISTILLERY_LOOP;
     }
 

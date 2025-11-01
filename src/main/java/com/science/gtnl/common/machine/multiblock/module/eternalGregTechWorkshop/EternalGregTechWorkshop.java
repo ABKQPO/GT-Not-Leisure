@@ -108,54 +108,54 @@ import tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon;
 public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWorkshop> implements INEIPreviewModifier {
 
     // 75 x 19 x 75
-    public static final String STRUCTURE_PIECE_MAIN_TOP = "main_top";
-    public final int HORIZONTAL_OFF_SET_TOP = 37;
-    public final int VERTICAL_OFF_SET_TOP = 46;
-    public final int DEPTH_OFF_SET_TOP = 11;
+    private static final String STRUCTURE_PIECE_MAIN_TOP = "main_top";
+    private static final int HORIZONTAL_OFF_SET_TOP = 37;
+    private static final int VERTICAL_OFF_SET_TOP = 46;
+    private static final int DEPTH_OFF_SET_TOP = 11;
 
     // 53 x 22 x 53
-    public static final String STRUCTURE_PIECE_MAIN_UP = "main_up";
-    public final int HORIZONTAL_OFF_SET_UP = 26;
-    public final int VERTICAL_OFF_SET_UP = 27;
-    public final int DEPTH_OFF_SET_UP = 0;
+    private static final String STRUCTURE_PIECE_MAIN_UP = "main_up";
+    private static final int HORIZONTAL_OFF_SET_UP = 26;
+    private static final int VERTICAL_OFF_SET_UP = 27;
+    private static final int DEPTH_OFF_SET_UP = 0;
 
     // 53 x 11 x 53
-    public static final String STRUCTURE_PIECE_MAIN = "main";
-    public final int HORIZONTAL_OFF_SET = 26;
-    public final int VERTICAL_OFF_SET = 5;
-    public final int DEPTH_OFF_SET = 1;
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final int HORIZONTAL_OFF_SET = 26;
+    private static final int VERTICAL_OFF_SET = 5;
+    private static final int DEPTH_OFF_SET = 1;
 
     // 53 x 22 x 53
-    public static final String STRUCTURE_PIECE_MAIN_DOWN = "main_down";
-    public final int HORIZONTAL_OFF_SET_DOWN = 26;
-    public final int VERTICAL_OFF_SET_DOWN = -6;
-    public final int DEPTH_OFF_SET_DOWN = 0;
+    private static final String STRUCTURE_PIECE_MAIN_DOWN = "main_down";
+    private static final int HORIZONTAL_OFF_SET_DOWN = 26;
+    private static final int VERTICAL_OFF_SET_DOWN = -6;
+    private static final int DEPTH_OFF_SET_DOWN = 0;
 
     // 75 x 22 x 75
-    public static final String STRUCTURE_PIECE_MAIN_BOTTOM = "main_bottom";
-    public final int HORIZONTAL_OFF_SET_BOTTOM = 37;
-    public final int VERTICAL_OFF_SET_BOTTOM = -28;
-    public final int DEPTH_OFF_SET_BOTTOM = 11;
+    private static final String STRUCTURE_PIECE_MAIN_BOTTOM = "main_bottom";
+    private static final int HORIZONTAL_OFF_SET_BOTTOM = 37;
+    private static final int VERTICAL_OFF_SET_BOTTOM = -28;
+    private static final int DEPTH_OFF_SET_BOTTOM = 11;
 
     // 63 x 7 x 63
-    public static final String STRUCTURE_PIECE_MAIN_EXTRA = "main_extra";
-    public static final String STRUCTURE_PIECE_MAIN_EXTRA_AIR = "main_extra_air";
-    public final int HORIZONTAL_OFF_SET_EXTRA = 31;
-    public final int VERTICAL_OFF_SET_EXTRA_UP = 14;
-    public final int VERTICAL_OFF_SET_EXTRA_DOWN = -8;
-    public final int DEPTH_OFF_SET_EXTRA = 5;
+    private static final String STRUCTURE_PIECE_MAIN_EXTRA = "main_extra";
+    private static final String STRUCTURE_PIECE_MAIN_EXTRA_AIR = "main_extra_air";
+    private static final int HORIZONTAL_OFF_SET_EXTRA = 31;
+    private static final int VERTICAL_OFF_SET_EXTRA_UP = 14;
+    private static final int VERTICAL_OFF_SET_EXTRA_DOWN = -8;
+    private static final int DEPTH_OFF_SET_EXTRA = 5;
 
-    public static final String EGTWT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/top";
-    public static final String EGTWU_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWU_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/up";
-    public static final String EGTWC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/center";
-    public static final String EGTWD_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWD_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/down";
-    public static final String EGTWB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/bottom";
-    public static final String EGTWE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String EGTWE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/extra";
     private static final String[][] shape_top = StructureUtils.readStructureFromFile(EGTWT_STRUCTURE_FILE_PATH);
     private static final String[][] shape_up = StructureUtils.readStructureFromFile(EGTWU_STRUCTURE_FILE_PATH);

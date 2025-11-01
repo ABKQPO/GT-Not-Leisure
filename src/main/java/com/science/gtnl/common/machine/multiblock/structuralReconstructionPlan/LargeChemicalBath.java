@@ -51,14 +51,14 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LCB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_chemical_bath";
-    private static final int MACHINEMODE_OREWASH = 0;
-    private static final int MACHINEMODE_SIMPLEWASH = 1;
-    private static final int MACHINEMODE_CHEMBATH = 2;
+    private static final String LCB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_chemical_bath";
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 1;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LCB_STRUCTURE_FILE_PATH);
+    public static final int MACHINEMODE_OREWASH = 0;
+    public static final int MACHINEMODE_SIMPLEWASH = 1;
+    public static final int MACHINEMODE_CHEMBATH = 2;
 
     public LargeChemicalBath(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

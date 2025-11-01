@@ -39,7 +39,8 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
     implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String FCR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/flotation_cell_regulator";
+    private static final String FCR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+        + "multiblock/flotation_cell_regulator";
     private static final int HORIZONTAL_OFF_SET = 6;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 1;

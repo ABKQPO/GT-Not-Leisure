@@ -47,7 +47,8 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String DFC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/draconic_fusion_crafting";
+    private static final String DFC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+        + "multiblock/draconic_fusion_crafting";
     private static final int HORIZONTAL_OFF_SET = 14;
     private static final int VERTICAL_OFF_SET = 33;
     private static final int DEPTH_OFF_SET = 5;

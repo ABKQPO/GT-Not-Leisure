@@ -110,12 +110,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public String costingEUText = ZERO_STRING;
     public UUID ownerUUID;
     public boolean wirelessMode = false;
-    public static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String GAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/grand_assembly_line";
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String GAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/grand_assembly_line";
     private static final String[][] shape = StructureUtils.readStructureFromFile(GAL_STRUCTURE_FILE_PATH);
-    public final int HORIZONTAL_OFF_SET = 46;
-    public final int VERTICAL_OFF_SET = 2;
-    public final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 46;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
     public final ArrayList<MTEHatchDataAccess> mDataAccessHatches = new ArrayList<>();
     public boolean isDualInputHatch = false;
     public boolean useSingleAmp = true;

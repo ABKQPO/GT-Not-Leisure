@@ -41,13 +41,13 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LP_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_packer";
+    private static final String LP_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_packer";
     private static final int HORIZONTAL_OFF_SET = 1;
     private static final int VERTICAL_OFF_SET = 1;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LP_STRUCTURE_FILE_PATH);
-    private static final int MACHINEMODE_PACKAGER = 0;
-    private static final int MACHINEMODE_UNPACKAGER = 1;
+    public static final int MACHINEMODE_PACKAGER = 0;
+    public static final int MACHINEMODE_UNPACKAGER = 1;
 
     public LargePacker(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

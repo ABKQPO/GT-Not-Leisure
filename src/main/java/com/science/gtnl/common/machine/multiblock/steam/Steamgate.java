@@ -32,13 +32,13 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements ISurvivalConstructable {
 
-    public static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String SG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steamgate";
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String SG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steamgate";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SG_STRUCTURE_FILE_PATH);
 
-    public static final int HORIZONTAL_OFF_SET = 4;
-    public static final int VERTICAL_OFF_SET = 8;
-    public static final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 8;
+    private static final int DEPTH_OFF_SET = 0;
 
     public Steamgate linkedGate;
 

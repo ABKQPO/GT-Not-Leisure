@@ -43,10 +43,10 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcaneAssembler>
     implements ISurvivalConstructable {
 
-    private static final int ShapedArcaneCrafting = 0;
-    private static final int InfusionCrafting = 1;
+    public static final int ShapedArcaneCrafting = 0;
+    public static final int InfusionCrafting = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LAA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String LAA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/industrial_arcane_assembler";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LAA_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 9;

@@ -44,13 +44,13 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LEM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_electromagnet";
-    private static final int MACHINEMODE_ELECTROMAGNETIC = 0;
-    private static final int MACHINEMODE_POLARIZER = 1;
+    private static final String LEM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_electromagnet";
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 1;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LEM_STRUCTURE_FILE_PATH);
+    public static final int MACHINEMODE_ELECTROMAGNETIC = 0;
+    public static final int MACHINEMODE_POLARIZER = 1;
 
     public LargeElectromagnet(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

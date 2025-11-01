@@ -1,10 +1,6 @@
 import os
-import re
 
-def replace_public_file_paths(root_folder):
-    # re.DOTALL 允许 . 匹配换行
-    pattern = re.compile(r'\bpublic\b(.*\b_FILE_PATH\b.*?;)', re.DOTALL)
-
+def replace_text_in_java_files(root_folder, old_text, new_text):
     for dirpath, dirnames, filenames in os.walk(root_folder):
         for filename in filenames:
             if filename.endswith(".java"):
@@ -12,13 +8,17 @@ def replace_public_file_paths(root_folder):
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read()
 
-                # 替换 public 为 private
-                new_content, count = pattern.subn(r'private\1', content)
-                if count > 0:
+                if old_text in content:
+                    new_content = content.replace(old_text, new_text)
                     with open(file_path, 'w', encoding='utf-8') as file:
                         file.write(new_content)
-                    print(f"Replaced {count} occurrence(s) in: {file_path}")
+                    print(f"Replaced text in: {file_path}")
 
 if __name__ == "__main__":
     target_folder = "E:/Github/GT-Not-Leisure/src/main/java/com"
-    replace_public_file_paths(target_folder)
+
+    text_to_replace = """protected """
+
+    replacement_text = """public """
+
+    replace_text_in_java_files(target_folder, text_to_replace, replacement_text)

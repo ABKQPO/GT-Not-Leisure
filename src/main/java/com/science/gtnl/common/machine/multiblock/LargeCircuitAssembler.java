@@ -39,7 +39,7 @@ public class LargeCircuitAssembler extends GTMMultiMachineBase<LargeCircuitAssem
     implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LCA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_circuit_assembler";
+    private static final String LCA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_circuit_assembler";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LCA_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 5;
     private static final int VERTICAL_OFF_SET = 1;

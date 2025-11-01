@@ -61,10 +61,10 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine> {
 
-    private final NineIndustrialMultiMachineManager modeManager = new NineIndustrialMultiMachineManager();
+    public NineIndustrialMultiMachineManager modeManager = new NineIndustrialMultiMachineManager();
     public static final String[] aToolTipNames = new String[108];
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String NIMM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String NIMM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/nine_industrial_multi_machine";
     private static final String[][] shape = StructureUtils.readStructureFromFile(NIMM_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 14;
