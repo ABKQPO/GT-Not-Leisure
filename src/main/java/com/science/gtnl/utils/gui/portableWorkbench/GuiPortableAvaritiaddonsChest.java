@@ -25,7 +25,7 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(final float par1, final int par2, final int par3) {
+    public void drawGuiContainerBackgroundLayer(final float par1, final int par2, final int par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager()
             .bindTexture(avaritiaddonsChestGui);
@@ -39,7 +39,7 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(final int p_146979_1_, final int p_146979_2_) {
+    public void drawGuiContainerForegroundLayer(final int p_146979_1_, final int p_146979_2_) {
         fontRendererObj.drawString(StatCollector.translateToLocal(getContainerName()), 7, 7, 0x404040);
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 169, 183, 0x404040);
     }

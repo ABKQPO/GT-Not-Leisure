@@ -77,11 +77,11 @@ public class EntityExtremeAnvil extends Entity {
     /**
      * Returns if this entity triggers Block.onEntityWalking on the blocks they walk on.
      */
-    protected boolean canTriggerWalking() {
+    public boolean canTriggerWalking() {
         return false;
     }
 
-    protected void entityInit() {}
+    public void entityInit() {}
 
     /**
      * Returns true if other Entities should be prevented from moving through this Entity.
@@ -208,7 +208,7 @@ public class EntityExtremeAnvil extends Entity {
      * Called when the mob is falling. Calculates and applies fall damage.
      */
     @Override
-    protected void fall(float distance) {
+    public void fall(float distance) {
         if (this.hurtEntities) {
             int i = MathHelper.ceiling_float_int(distance - 1.0F);
 
@@ -244,7 +244,7 @@ public class EntityExtremeAnvil extends Entity {
      * Protected helper method to write subclass entity data to NBT.
      */
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(NBTTagCompound tagCompound) {
         tagCompound.setByte("Tile", (byte) Block.getIdFromBlock(this.blockType));
         tagCompound.setInteger("TileID", Block.getIdFromBlock(this.blockType));
         tagCompound.setByte("Data", (byte) this.blockMetadata);
@@ -265,7 +265,7 @@ public class EntityExtremeAnvil extends Entity {
      * Protected helper method to read subclass entity data from NBT.
      */
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tagCompound) {
+    public void readEntityFromNBT(NBTTagCompound tagCompound) {
         if (tagCompound.hasKey("TileID", 99)) {
             this.blockType = Block.getBlockById(tagCompound.getInteger("TileID"));
         } else {

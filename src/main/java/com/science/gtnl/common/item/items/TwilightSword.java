@@ -166,7 +166,7 @@ public class TwilightSword extends ItemSword implements playSound {
             .setDamageBypassesArmor();
         public static final DamageSource VOID = new DamageSourceTwilight("twilight_void").setDamageBypassesArmor();
 
-        protected DamageSourceTwilight(String name) {
+        public DamageSourceTwilight(String name) {
             super(name);
         }
 

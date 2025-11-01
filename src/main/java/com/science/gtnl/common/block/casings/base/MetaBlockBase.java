@@ -28,7 +28,7 @@ public class MetaBlockBase extends Block {
 
     public String unlocalizedName;
 
-    protected MetaBlockBase(Material materialIn) {
+    public MetaBlockBase(Material materialIn) {
         super(materialIn);
     }
 

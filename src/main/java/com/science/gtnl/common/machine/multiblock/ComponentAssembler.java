@@ -123,7 +123,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("ComponentAssemblerRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_00"))
@@ -197,7 +197,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.mSpecialValue > mCasingTier + 1) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipe.mSpecialValue);
                 }
@@ -206,7 +206,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -225,7 +225,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(

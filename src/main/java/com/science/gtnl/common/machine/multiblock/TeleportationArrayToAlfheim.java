@@ -203,7 +203,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     @Override
     @Nonnull
-    protected CheckRecipeResult doCheckRecipe() {
+    public CheckRecipeResult doCheckRecipe() {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 
         ArrayList<FluidStack> manaHatchStored = new ArrayList<>();
@@ -420,7 +420,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("TeleportationArrayToAlfheimRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_00"))
@@ -533,7 +533,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
             @Nonnull
             @Override
-            protected GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
                 if (enableInfinityMana && inputFluids != null && inputFluids.length > 0) {
                     inputFluids[0] = MaterialPool.FluidMana.getFluidOrGas(Integer.MAX_VALUE);
                 }
@@ -542,13 +542,13 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 return super.validateRecipe(recipeWithMultiplier(recipe, inputFluids));
             }
         };
     }
 
-    protected GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs) {
+    public GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs) {
         if (recipe == null || fluidInputs == null) {
             return recipe;
         }

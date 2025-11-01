@@ -203,14 +203,14 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(mHeatingCapacity)

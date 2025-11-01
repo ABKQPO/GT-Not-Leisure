@@ -207,7 +207,7 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamChemicalBathRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_00"))

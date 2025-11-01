@@ -107,7 +107,7 @@ public class TypeFilteredInputBusME extends MTEHatchInputBusME {
     }
 
     @Override
-    protected void refreshItemList() {
+    public void refreshItemList() {
         AENetworkProxy proxy = getProxy();
         try {
             String combinedFilter = buildFilterString();
@@ -196,7 +196,7 @@ public class TypeFilteredInputBusME extends MTEHatchInputBusME {
     }
 
     @Override
-    protected ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
+    public ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
         final int WIDTH = 78;
         final int HEIGHT = 237;
         final int PARENT_WIDTH = getGUIWidth();

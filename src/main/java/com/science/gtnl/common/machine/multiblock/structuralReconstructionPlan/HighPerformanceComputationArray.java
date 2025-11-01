@@ -139,7 +139,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    protected void parametersInstantiation_EM() {
+    public void parametersInstantiation_EM() {
         Parameters.Group hatch_0 = parametrization.getGroup(0);
         Parameters.Group hatch_1 = parametrization.getGroup(1);
         machineLens = hatch_0.makeOutParameter(0, 0, LENS_NAME, LENS_STATUS);
@@ -356,7 +356,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     @NotNull
-    protected CheckRecipeResult checkProcessing_EM() {
+    public CheckRecipeResult checkProcessing_EM() {
         parametrization.setToDefaults(false, true);
         double maxTemp = 0;
         mEUt = -(int) V[7];
@@ -456,7 +456,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.TECTECH_MACHINES_FX_HIGH_FREQ;
     }
 
@@ -475,7 +475,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    protected void extraExplosions_EM() {
+    public void extraExplosions_EM() {
         for (MetaTileEntity tTileEntity : mRackHatchs) {
             tTileEntity.getBaseMetaTileEntity()
                 .doExplosion(V[8]);
@@ -483,7 +483,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    protected long getAvailableData_EM() {
+    public long getAvailableData_EM() {
         return this.eAvailableData;
     }
 
@@ -498,7 +498,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    protected void afterRecipeCheckFailed() {
+    public void afterRecipeCheckFailed() {
         super.afterRecipeCheckFailed();
         for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()

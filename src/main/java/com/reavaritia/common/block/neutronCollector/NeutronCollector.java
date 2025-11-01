@@ -28,12 +28,12 @@ public class NeutronCollector extends AbstractNeutronCollector {
     }
 
     @Override
-    protected String getTexturePrefix() {
+    public String getTexturePrefix() {
         return texturePrefix;
     }
 
     @Override
-    protected TileEntity createCollectorTileEntity() {
+    public TileEntity createCollectorTileEntity() {
         return new TileEntityNeutronCollector(energy, tier, tileEntityName);
     }
 }

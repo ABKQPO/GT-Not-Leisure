@@ -49,13 +49,13 @@ public class EGTWUpgradeCostFrontend extends RecipeMapFrontend {
     }
 
     @Override
-    protected void drawDurationInfo(RecipeDisplayInfo recipeInfo) {}
+    public void drawDurationInfo(RecipeDisplayInfo recipeInfo) {}
 
     @Override
-    protected void drawEnergyInfo(RecipeDisplayInfo recipeInfo) {}
+    public void drawEnergyInfo(RecipeDisplayInfo recipeInfo) {}
 
     @Override
-    protected void drawSpecialInfo(RecipeDisplayInfo recipeInfo) {
+    public void drawSpecialInfo(RecipeDisplayInfo recipeInfo) {
         String upgradeName = recipeInfo.recipe.getMetadataOrDefault(FOG_UPGRADE_NAME_SHORT, "");
         int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(upgradeName);
         if (width % 2 == 1) width -= 1;

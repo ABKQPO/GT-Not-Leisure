@@ -115,7 +115,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
 
     @Override
     @NotNull
-    protected CheckRecipeResult checkProcessing_EM() {
+    public CheckRecipeResult checkProcessing_EM() {
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = 1;
         List<ItemStack> toStore = new ArrayList<>();
@@ -268,7 +268,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
         return true;
     }
 
-    protected long getMaxStoredEU() {
+    public long getMaxStoredEU() {
         long maxStoredEU = 0;
 
         for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
@@ -288,7 +288,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
         return maxStoredEU;
     }
 
-    protected void setEUValue(long newEnergyValue) {
+    public void setEUValue(long newEnergyValue) {
         long maxStoredEU = 0;
         MTEHatchEnergy targetEnergyHatch = null;
         MTEHatchEnergyMulti targetEnergyMulti = null;
@@ -395,7 +395,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
     }
 
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.TECTECH_MACHINES_FX_WHOOUM;
     }
 
@@ -421,7 +421,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable {
     }
 
     @Override
-    protected void chargeController_EM(IGregTechTileEntity aBaseMetaTileEntity) {}
+    public void chargeController_EM(IGregTechTileEntity aBaseMetaTileEntity) {}
 
     @Override
     public void checkMaintenance() {}

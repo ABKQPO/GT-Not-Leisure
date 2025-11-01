@@ -662,7 +662,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamOreProcessorModuleRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_00"))

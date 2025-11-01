@@ -72,8 +72,8 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
-    protected int mCasingTier = -1;
-    protected int mMachineTier = -1;
+    public int mCasingTier = -1;
+    public int mMachineTier = -1;
 
     public PrecisionAssembler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -312,7 +312,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(
@@ -344,7 +344,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
             @Nonnull
             @Override
-            protected CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (machineMode == 1) {
                     if (recipe.mSpecialValue > (Math.max(0, mCasingTier + 1))) {
                         return CheckRecipeResultRegistry.insufficientMachineTier(recipe.mSpecialValue);
@@ -355,7 +355,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setPerfectOC(getPerfectOC())
                     .setEUtDiscount(getEUtDiscount())

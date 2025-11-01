@@ -236,7 +236,7 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamCrusherRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_00"))

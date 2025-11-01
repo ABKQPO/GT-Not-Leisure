@@ -30,7 +30,7 @@ public class NeutronCollectorGUI extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String s = getLocalizedName();
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
         this.fontRendererObj
@@ -54,7 +54,7 @@ public class NeutronCollectorGUI extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager()
             .bindTexture(GuiTextures);

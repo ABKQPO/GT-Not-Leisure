@@ -176,14 +176,14 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 return recipe.mSpecialValue <= tierCasing ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientMachineTier(recipe.mSpecialValue);
             }
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setPerfectOC(getPerfectOC())
                     .setEUtDiscount(getEUtDiscount())

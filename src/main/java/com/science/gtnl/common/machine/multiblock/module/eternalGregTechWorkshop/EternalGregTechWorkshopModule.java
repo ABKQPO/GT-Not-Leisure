@@ -73,29 +73,29 @@ import tectech.thing.gui.TecTechUITextures;
 
 public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<EternalGregTechWorkshopModule> {
 
-    protected UUID ownerUUID;
-    protected boolean isConnected = false;
-    protected double mEUtDiscount = 1;
-    protected double mSpeedBoost = 1;
-    protected int maxParallel = 1;
-    protected int mHeatingCapacity = 0;
-    protected int tCountCasing = 0;
+    public UUID ownerUUID;
+    public boolean isConnected = false;
+    public double mEUtDiscount = 1;
+    public double mSpeedBoost = 1;
+    public int maxParallel = 1;
+    public int mHeatingCapacity = 0;
+    public int tCountCasing = 0;
     @Setter
     @Getter
-    protected long maxUseEUt = 0;
+    public long maxUseEUt = 0;
     @Setter
     @Getter
-    protected BigInteger powerTally = BigInteger.ZERO;
+    public BigInteger powerTally = BigInteger.ZERO;
     @Getter
     @Setter
-    protected long recipeTally = 0;
-    protected long EUt = 0;
-    protected int currentParallel = 0;
+    public long recipeTally = 0;
+    public long EUt = 0;
+    public int currentParallel = 0;
 
-    protected static final String STRUCTURE_PIECE_MAIN = "main";
-    protected static final String EGTWM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    public static final String STRUCTURE_PIECE_MAIN = "main";
+    public static final String EGTWM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/module";
-    protected static final String[][] shape = StructureUtils.readStructureFromFile(EGTWM_STRUCTURE_FILE_PATH);
+    public static final String[][] shape = StructureUtils.readStructureFromFile(EGTWM_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 3;
     private static final int DEPTH_OFF_SET = 0;
@@ -171,7 +171,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
 
             @NotNull
             @Override
-            protected CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
                 if (!addEUToGlobalEnergyMap(ownerUUID, -calculatedEut * duration)) {
                     return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
                 }
@@ -189,7 +189,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(getHeat())
                     .setEUtDiscount(getEUtDiscount())
@@ -468,7 +468,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
             StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modulestatus") + " " + status);
     }
 
-    protected ModularWindow createGeneralInfoWindow(final EntityPlayer player) {
+    public ModularWindow createGeneralInfoWindow(final EntityPlayer player) {
         return EternalGregTechWorkshopUI.createGeneralInfoWindow();
     }
 

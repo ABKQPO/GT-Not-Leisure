@@ -309,7 +309,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("BloodSoulSacrificialArrayRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_00"))
@@ -431,7 +431,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
             @Nonnull
             @Override
-            protected GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
 
                 currentEssence = SoulNetworkHandler.getCurrentEssence(getOwner());
                 int needEssence = (int) (recipe.mSpecialValue * (1 - mParallelTier / 50.0));
@@ -451,7 +451,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
 
                 if (isCreativeOrb) {
                     return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -468,7 +468,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return GTNL_OverclockCalculator.ofNoOverclock(recipe)
                     .setExtraDurationModifier(mConfigSpeedBoost)
                     .setDurationModifier(getDurationModifier());

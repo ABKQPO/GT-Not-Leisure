@@ -17,7 +17,7 @@ import codechicken.nei.recipe.ICraftingHandler;
 @Mixin(value = GuiCraftingRecipe.class, remap = false)
 public abstract class MixinGuiCraftingRecipe extends GuiRecipe<ICraftingHandler> {
 
-    protected MixinGuiCraftingRecipe(GuiScreen prevgui) {
+    public MixinGuiCraftingRecipe(GuiScreen prevgui) {
         super(prevgui);
     }
 

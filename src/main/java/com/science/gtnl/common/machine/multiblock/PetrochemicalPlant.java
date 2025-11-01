@@ -108,7 +108,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("PetrochemicalPlantRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_00"))

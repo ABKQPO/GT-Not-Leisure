@@ -371,7 +371,7 @@ public class ElectricProspectorTool extends Item {
         return true;
     }
 
-    protected void prospectChunks(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ,
+    public void prospectChunks(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ,
         SplittableRandom aRandom, int chance) {
         int bX = aX;
         int bZ = aZ;
@@ -487,7 +487,7 @@ public class ElectricProspectorTool extends Item {
     }
 
     // Used by Electric scanner when scanning the chunk whacked by the scanner. 100% chance find rate
-    protected void prospectSingleChunk(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ) {
+    public void prospectSingleChunk(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ) {
         ores = new HashMap<>();
         aPlayer.addChatMessage(
             new ChatComponentText(
@@ -520,7 +520,7 @@ public class ElectricProspectorTool extends Item {
         }
     }
 
-    protected void processOreProspecting(ItemStack aStack, EntityPlayer aPlayer, Chunk aChunk, TileEntity aTileEntity,
+    public void processOreProspecting(ItemStack aStack, EntityPlayer aPlayer, Chunk aChunk, TileEntity aTileEntity,
         ItemData tAssotiation, SplittableRandom aRandom, int chance) {
         if (aTileEntity != null) {
             if (aTileEntity instanceof TileEntityOres gt_entity) {

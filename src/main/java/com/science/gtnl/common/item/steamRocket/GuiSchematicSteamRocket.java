@@ -49,7 +49,7 @@ public class GuiSchematicSteamRocket extends GuiContainerGC implements ISchemati
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button) {
         if (button.enabled) {
             switch (button.id) {
                 case 0: {
@@ -65,7 +65,7 @@ public class GuiSchematicSteamRocket extends GuiContainerGC implements ISchemati
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.fontRendererObj
             .drawString(EnumColor.WHITE + GCCoreUtil.translate("schematic.rocketSteam.name"), 7, 7, 0x404040);
         this.fontRendererObj
@@ -73,7 +73,7 @@ public class GuiSchematicSteamRocket extends GuiContainerGC implements ISchemati
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.mc.renderEngine.bindTexture(GuiSchematicSteamRocket.GUI_TEXTURE);
         int x = (this.width - this.xSize) / 2;

@@ -21,7 +21,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity implements ITileEntityTickAcceleration {
 
     @Shadow
-    protected MetaTileEntity mMetaTileEntity;
+    public MetaTileEntity mMetaTileEntity;
 
     @Override
     @SideOnly(Side.CLIENT)

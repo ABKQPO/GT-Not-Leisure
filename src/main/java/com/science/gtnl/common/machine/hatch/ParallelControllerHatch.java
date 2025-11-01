@@ -29,8 +29,8 @@ import lombok.Getter;
 @Getter
 public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLogo {
 
-    protected int maxParallel;
-    protected int parallel = 1;
+    public int maxParallel;
+    public int parallel = 1;
 
     public ParallelControllerHatch(int aID, String aName, String aNameRegional, int aTier, ITexture... aTextures) {
         super(

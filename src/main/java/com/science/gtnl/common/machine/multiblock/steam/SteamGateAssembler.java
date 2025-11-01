@@ -47,7 +47,7 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_00"))

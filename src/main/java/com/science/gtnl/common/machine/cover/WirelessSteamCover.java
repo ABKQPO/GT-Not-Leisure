@@ -127,7 +127,7 @@ public class WirelessSteamCover extends CoverLegacyData {
     }
 
     @Override
-    protected @NotNull CoverGui<?> getCoverGui() {
+    public @NotNull CoverGui<?> getCoverGui() {
         return new WirelessSteamCoverGui(this);
     }
 

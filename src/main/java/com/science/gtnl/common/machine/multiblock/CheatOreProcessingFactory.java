@@ -154,7 +154,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
         return checkProcessing_wirelessMode();
     }
 
-    protected CheckRecipeResult checkProcessing_wirelessMode() {
+    public CheckRecipeResult checkProcessing_wirelessMode() {
 
         CheckRecipeResult result = OP_Process_Wireless();
         if (!result.wasSuccessful()) return result;
@@ -195,7 +195,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     }
 
     @Override
-    protected boolean supportsCraftingMEBuffer() {
+    public boolean supportsCraftingMEBuffer() {
         return false;
     }
 
@@ -246,7 +246,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("CheatOreProcessingFactoryRecipeType"))
             .addSeparator()

@@ -24,7 +24,7 @@ import gregtech.api.enums.Textures;
 
 public class BlockLaserBeacon extends Block implements ITileEntityProvider {
 
-    protected IIcon topBlockIcon;
+    public IIcon topBlockIcon;
     public static IIcon[] textures;
 
     public BlockLaserBeacon() {

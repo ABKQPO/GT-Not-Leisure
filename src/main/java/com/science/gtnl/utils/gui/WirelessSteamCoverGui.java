@@ -29,7 +29,7 @@ public class WirelessSteamCoverGui extends CoverGui<WirelessSteamCover> {
     }
 
     @Override
-    protected String getGuiId() {
+    public String getGuiId() {
         return "cover.wireless_steam";
     }
 

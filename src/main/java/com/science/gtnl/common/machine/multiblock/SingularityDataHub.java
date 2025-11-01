@@ -472,7 +472,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
-    protected long getActualEnergyUsage() {
+    public long getActualEnergyUsage() {
         return wirelessMode ? TierEU.RECIPE_MAX / 20 : super.getActualEnergyUsage();
     }
 

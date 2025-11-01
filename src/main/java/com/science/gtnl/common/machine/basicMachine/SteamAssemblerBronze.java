@@ -139,7 +139,7 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     }
 
     @Override
-    protected void addProgressBar(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
+    public void addProgressBar(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
         builder.widget(
             setNEITransferRect(
                 new ProgressBar()
@@ -153,7 +153,7 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     }
 
     @Override
-    protected void addProgressBarSpecialTextures(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
+    public void addProgressBarSpecialTextures(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
 
         for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
             builder.widget(

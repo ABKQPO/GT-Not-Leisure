@@ -35,7 +35,7 @@ public class SuspiciousStew extends ItemFood {
     }
 
     @Override
-    protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
+    public void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
         super.onFoodEaten(stack, world, player);
         if (stack.hasTagCompound() && stack.getTagCompound()
             .hasKey("flowerKey")) {

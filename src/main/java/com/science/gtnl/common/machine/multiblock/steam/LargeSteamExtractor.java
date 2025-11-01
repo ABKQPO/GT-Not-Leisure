@@ -222,7 +222,7 @@ public class LargeSteamExtractor extends SteamMultiMachineBase<LargeSteamExtract
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamExtractorRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_00"))

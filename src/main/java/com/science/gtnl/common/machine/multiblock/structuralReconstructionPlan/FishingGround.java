@@ -149,7 +149,7 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && f.isNotFlipped();
     }
 

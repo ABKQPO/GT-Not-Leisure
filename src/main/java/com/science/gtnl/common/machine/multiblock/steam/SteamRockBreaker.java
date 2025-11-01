@@ -210,7 +210,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && f.isNotFlipped();
     }
 
@@ -220,7 +220,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_00"))
@@ -242,7 +242,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_ELECTROFURNACE_LOOP;
     }
 

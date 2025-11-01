@@ -44,27 +44,27 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 public abstract class PhotovoltaicPowerStation extends MultiMachineBase<PhotovoltaicPowerStation>
     implements ISurvivalConstructable {
 
-    protected int tCountCasing;
-    protected int fuelConsumption;
+    public int tCountCasing;
+    public int fuelConsumption;
 
-    protected abstract long getOutputEUt();
+    public abstract long getOutputEUt();
 
-    protected abstract int getCasingTextureIndex();
+    public abstract int getCasingTextureIndex();
 
-    protected abstract Block getCasingBlock();
+    public abstract Block getCasingBlock();
 
-    protected abstract int getCasingMeta();
+    public abstract int getCasingMeta();
 
-    protected abstract Block getPhotovoltaicBlock();
+    public abstract Block getPhotovoltaicBlock();
 
-    protected abstract int getPhotovoltaicMeta();
+    public abstract int getPhotovoltaicMeta();
 
-    protected static final String STRUCTURE_PIECE_MAIN = "main";
+    public static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String PPS_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/photovoltaic_power_station";
     private static final String[][] shape = StructureUtils.readStructureFromFile(PPS_STRUCTURE_FILE_PATH);
-    protected static final int HORIZONTAL_OFF_SET = 4;
-    protected static final int VERTICAL_OFF_SET = 4;
+    public static final int HORIZONTAL_OFF_SET = 4;
+    public static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 2;
 
     public PhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -257,7 +257,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
@@ -274,32 +274,32 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected Block getCasingBlock() {
+        public Block getCasingBlock() {
             return sBlockCasings2;
         }
 
         @Override
-        protected int getCasingMeta() {
+        public int getCasingMeta() {
             return 0;
         }
 
         @Override
-        protected Block getPhotovoltaicBlock() {
+        public Block getPhotovoltaicBlock() {
             return BlockLoader.metaCasing;
         }
 
         @Override
-        protected int getPhotovoltaicMeta() {
+        public int getPhotovoltaicMeta() {
             return 9;
         }
 
         @Override
-        protected long getOutputEUt() {
+        public long getOutputEUt() {
             return TierEU.LV * 32;
         }
 
         @Override
-        protected int getCasingTextureIndex() {
+        public int getCasingTextureIndex() {
             return StructureUtils.getTextureIndex(sBlockCasings2, 0);
         }
 
@@ -320,7 +320,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
@@ -337,32 +337,32 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected Block getCasingBlock() {
+        public Block getCasingBlock() {
             return sBlockCasings4;
         }
 
         @Override
-        protected int getCasingMeta() {
+        public int getCasingMeta() {
             return 2;
         }
 
         @Override
-        protected Block getPhotovoltaicBlock() {
+        public Block getPhotovoltaicBlock() {
             return BlockLoader.metaCasing;
         }
 
         @Override
-        protected int getPhotovoltaicMeta() {
+        public int getPhotovoltaicMeta() {
             return 10;
         }
 
         @Override
-        protected long getOutputEUt() {
+        public long getOutputEUt() {
             return TierEU.MV * 32;
         }
 
         @Override
-        protected int getCasingTextureIndex() {
+        public int getCasingTextureIndex() {
             return StructureUtils.getTextureIndex(sBlockCasings4, 2);
         }
 
@@ -383,7 +383,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
@@ -400,32 +400,32 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
-        protected Block getCasingBlock() {
+        public Block getCasingBlock() {
             return sBlockCasings4;
         }
 
         @Override
-        protected int getCasingMeta() {
+        public int getCasingMeta() {
             return 0;
         }
 
         @Override
-        protected Block getPhotovoltaicBlock() {
+        public Block getPhotovoltaicBlock() {
             return BlockLoader.metaCasing;
         }
 
         @Override
-        protected int getPhotovoltaicMeta() {
+        public int getPhotovoltaicMeta() {
             return 11;
         }
 
         @Override
-        protected long getOutputEUt() {
+        public long getOutputEUt() {
             return TierEU.HV * 32;
         }
 
         @Override
-        protected int getCasingTextureIndex() {
+        public int getCasingTextureIndex() {
             return StructureUtils.getTextureIndex(sBlockCasings4, 0);
         }
 

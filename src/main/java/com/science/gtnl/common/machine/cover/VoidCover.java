@@ -277,7 +277,7 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     }
 
     @Override
-    protected void readDataFromNbt(NBTBase nbt) {
+    public void readDataFromNbt(NBTBase nbt) {
         if (nbt instanceof NBTTagCompound compound) {
             this.coverData = compound.getInteger("CoverData");
             this.isInputMode = compound.getBoolean("isInputMode");
@@ -310,7 +310,7 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     }
 
     @Override
-    protected @NotNull NBTBase saveDataToNbt() {
+    public @NotNull NBTBase saveDataToNbt() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("CoverData", this.coverData);
         compound.setBoolean("isInputMode", this.isInputMode);

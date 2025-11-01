@@ -193,7 +193,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 
@@ -203,7 +203,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(getMachineHeat())
                     .setHeatOC(getHeatOC())
@@ -214,7 +214,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
             }
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (checkForNitricAcid()) {
                     return recipe.mSpecialValue <= getMCoilLevel().getHeat() ? CheckRecipeResultRegistry.SUCCESSFUL
                         : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);

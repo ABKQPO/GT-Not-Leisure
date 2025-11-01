@@ -50,7 +50,7 @@ public abstract class MixinWirelessTerminalGuiObject implements RCWirelessTermin
     public abstract int getInventorySlot();
 
     @Shadow
-    protected abstract boolean testWap(IWirelessAccessPoint wap);
+    public abstract boolean testWap(IWirelessAccessPoint wap);
 
     @Shadow
     @Final

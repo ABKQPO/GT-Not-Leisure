@@ -65,7 +65,7 @@ public class NanitesInputBus extends MTEHatchInputBus {
     }
 
     @Override
-    protected boolean limitedAllowPutStack(int aIndex, ItemStack aStack) {
+    public boolean limitedAllowPutStack(int aIndex, ItemStack aStack) {
         boolean isNanite = false;
         int[] oreIds = OreDictionary.getOreIDs(aStack);
         for (int id : oreIds) {

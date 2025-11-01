@@ -227,7 +227,7 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamSifterRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamSifter_00"))

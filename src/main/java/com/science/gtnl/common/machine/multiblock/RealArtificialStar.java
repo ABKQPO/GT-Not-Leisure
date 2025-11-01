@@ -304,7 +304,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         return CheckRecipeResultRegistry.GENERATING;
     }
 
-    protected ItemStack[] getRecovers(long amount) {
+    public ItemStack[] getRecovers(long amount) {
         if (amount <= Integer.MAX_VALUE) {
             return new ItemStack[] { StellarConstructionFrameMaterial.get((int) amount) };
         } else {
@@ -320,7 +320,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         }
     }
 
-    protected ItemStack[] getRecoversTST(long amount) {
+    public ItemStack[] getRecoversTST(long amount) {
         if (amount <= Integer.MAX_VALUE && TwistSpaceTechnology.isModLoaded()) {
             return new ItemStack[] {
                 GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", Integer.MAX_VALUE, 17) };
@@ -419,7 +419,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
-    protected boolean supportsCraftingMEBuffer() {
+    public boolean supportsCraftingMEBuffer() {
         return false;
     }
 
@@ -576,7 +576,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("Tooltip_RealArtificialStar_MachineType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_00"))

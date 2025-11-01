@@ -256,7 +256,7 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamCuttingRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCutting_00"))

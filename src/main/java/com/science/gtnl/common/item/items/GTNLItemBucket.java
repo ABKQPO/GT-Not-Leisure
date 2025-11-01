@@ -33,7 +33,7 @@ public class GTNLItemBucket extends ItemBucket {
 
     private String fluidName;
 
-    protected GTNLItemBucket(Block block, String fluidName) {
+    public GTNLItemBucket(Block block, String fluidName) {
         super(block);
         this.fluidName = fluidName;
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -43,7 +43,7 @@ public class GTNLItemBucket extends ItemBucket {
         setTextureName(RESOURCE_ROOT_ID + ":" + str);
     }
 
-    protected void init() {
+    public void init() {
         GameRegistry.registerItem(this, StringUtils.capitalize(fluidName) + "Bucket");
     }
 }

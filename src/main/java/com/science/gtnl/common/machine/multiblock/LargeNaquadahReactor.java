@@ -82,7 +82,7 @@ public class LargeNaquadahReactor extends TTMultiblockBase implements IConstruct
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeNaquadahReactorRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_00"))
@@ -155,12 +155,12 @@ public class LargeNaquadahReactor extends TTMultiblockBase implements IConstruct
     }
 
     @Override
-    protected ProcessingLogic createProcessingLogic() {
+    public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setNoOverclock(true);
             }
         }.setMaxParallelSupplier(this::getMaxParallelRecipes);

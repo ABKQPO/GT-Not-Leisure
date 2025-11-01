@@ -217,12 +217,12 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && f.isNotFlipped();
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("EdenGardenRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_00"))
@@ -405,7 +405,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    protected void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
         buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
@@ -517,7 +517,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.widget(
             new FakeSyncWidget.BooleanSyncer(
                 () -> this.mode == GreenHouseModes.IC2,

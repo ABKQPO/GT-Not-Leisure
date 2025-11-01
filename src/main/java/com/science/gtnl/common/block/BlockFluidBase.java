@@ -15,16 +15,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockFluidBase extends BlockFluidClassic {
 
-    protected Fluid fluid;
+    public Fluid fluid;
 
-    protected BlockFluidBase(Fluid fluid, Material material) {
+    public BlockFluidBase(Fluid fluid, Material material) {
         super(fluid, material);
         this.fluid = fluid;
         this.setBlockName(fluid.getUnlocalizedName());
     }
 
     @SideOnly(Side.CLIENT)
-    protected IIcon[] icons;
+    public IIcon[] icons;
 
     @Override
     @SideOnly(Side.CLIENT)

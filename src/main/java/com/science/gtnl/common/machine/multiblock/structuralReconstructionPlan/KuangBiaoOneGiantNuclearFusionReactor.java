@@ -357,7 +357,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setPerfectOC(getPerfectOC())
                     .setEUtDiscount(getEUtDiscount())
@@ -366,7 +366,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 long powerToStart = recipe.getMetadataOrDefault(GTRecipeConstants.FUSION_THRESHOLD, 0L);
                 if (!mRunningOnLoad) {
                     if (powerToStart > mEUStore) {
@@ -412,7 +412,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_FUSION_LOOP;
     }
 
@@ -902,7 +902,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
                 @NotNull
                 @Override
-                protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                     GTNL_OverclockCalculator logic = super.createOverclockCalculator(recipe)
                         .setExtraDurationModifier(mConfigSpeedBoost)
                         .setAmperageOC(true)
@@ -924,7 +924,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
                 @NotNull
                 @Override
-                protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+                public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                     long powerToStart = recipe.getMetadataOrDefault(GTRecipeConstants.FUSION_THRESHOLD, 0L);
                     if (!mRunningOnLoad) {
                         if (!wirelessMode && powerToStart > mEUStore) {

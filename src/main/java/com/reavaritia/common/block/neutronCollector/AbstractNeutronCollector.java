@@ -28,9 +28,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class AbstractNeutronCollector extends BlockContainer {
 
-    protected IIcon bottom, front, sideLeft, sideRight, side, topFacingNorth, topFacingSouth, topFacingWest,
-        topFacingEast;
-    protected final String blockName;
+    public IIcon bottom, front, sideLeft, sideRight, side, topFacingNorth, topFacingSouth, topFacingWest, topFacingEast;
+    public final String blockName;
 
     public AbstractNeutronCollector(String blockName) {
         super(Material.iron);
@@ -42,9 +41,9 @@ public abstract class AbstractNeutronCollector extends BlockContainer {
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
     }
 
-    protected abstract String getTexturePrefix(); // e.g., "DenseNeutronCollector"
+    public abstract String getTexturePrefix(); // e.g., "DenseNeutronCollector"
 
-    protected abstract TileEntity createCollectorTileEntity();
+    public abstract TileEntity createCollectorTileEntity();
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {

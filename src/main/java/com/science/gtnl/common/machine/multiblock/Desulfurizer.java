@@ -201,7 +201,7 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(

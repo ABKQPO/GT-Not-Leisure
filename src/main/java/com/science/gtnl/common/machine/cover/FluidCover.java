@@ -81,7 +81,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    protected void readDataFromNbt(NBTBase nbt) {
+    public void readDataFromNbt(NBTBase nbt) {
         if (nbt instanceof NBTTagCompound compound) {
             this.coverData = compound.getInteger("CoverData");
             this.description = compound.getString("Description");
@@ -99,7 +99,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    protected @NotNull NBTBase saveDataToNbt() {
+    public @NotNull NBTBase saveDataToNbt() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("CoverData", this.coverData);
         compound.setString("Description", this.description);

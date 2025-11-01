@@ -22,7 +22,7 @@ public abstract class MixinResearchStationAcceleration extends TTMultiblockBase 
         return true;
     }
 
-    protected MixinResearchStationAcceleration(int aID, String aName, String aNameRegional) {
+    public MixinResearchStationAcceleration(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 }

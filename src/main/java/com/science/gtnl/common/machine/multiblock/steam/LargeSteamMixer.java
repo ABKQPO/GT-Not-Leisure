@@ -261,7 +261,7 @@ public class LargeSteamMixer extends SteamMultiMachineBase<LargeSteamMixer> impl
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamMixerRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamMixer_00"))

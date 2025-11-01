@@ -73,12 +73,12 @@ public class EntityPlayerLeashKnot extends EntityLeashKnot {
     }
 
     @Override
-    protected boolean canTriggerWalking() {
+    public boolean canTriggerWalking() {
         return false;
     }
 
     @Override
-    protected void entityInit() {}
+    public void entityInit() {}
 
     @Override
     public void readEntityFromNBT(NBTTagCompound tag) {

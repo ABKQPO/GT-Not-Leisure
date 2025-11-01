@@ -123,7 +123,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("Tooltip_MegaBlastFurnaceRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_MegaBlastFurnace_00"))
@@ -230,7 +230,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(getMachineHeat())
@@ -242,7 +242,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
             }
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -356,7 +356,7 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MEGA_BLAST_FURNACE_LOOP;
     }
 

@@ -119,7 +119,7 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(SteamFusionTierKey.INSTANCE, 0) != 0) {
                     return SimpleCheckRecipeResult.ofFailure("metadata.steamfusion");
                 }
@@ -128,7 +128,7 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
@@ -156,7 +156,7 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_00"))

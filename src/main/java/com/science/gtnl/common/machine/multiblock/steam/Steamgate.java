@@ -102,7 +102,7 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_01"))

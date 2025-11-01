@@ -22,9 +22,9 @@ import gregtech.api.interfaces.IRecipeMap;
 
 public class InfusionCraftingRecipes implements IRecipePool {
 
-    protected ItemStack[] itemsUnconsumed = new ItemStack[] { new ItemStack(bigPearl) };
+    public ItemStack[] itemsUnconsumed = new ItemStack[] { new ItemStack(bigPearl) };
 
-    protected ItemStack[] checkInputSpecial(ItemStack... itemStacks) {
+    public ItemStack[] checkInputSpecial(ItemStack... itemStacks) {
         baseLoop: for (ItemStack i : itemStacks) {
             for (ItemStack u : itemsUnconsumed) {
                 if (Utils.metaItemEqual(i, u)) {
@@ -36,9 +36,9 @@ public class InfusionCraftingRecipes implements IRecipePool {
         return itemStacks;
     }
 
-    protected Set<Item> skips;
+    public Set<Item> skips;
 
-    protected boolean shouldSkip(Item item) {
+    public boolean shouldSkip(Item item) {
         if (null == skips) {
             skips = new HashSet<>();
             skips.add(itemJarNode);

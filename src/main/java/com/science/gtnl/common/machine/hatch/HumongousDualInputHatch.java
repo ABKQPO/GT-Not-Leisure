@@ -204,7 +204,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
     }
 
     @Override
-    protected void fillStacksIntoFirstSlots() {
+    public void fillStacksIntoFirstSlots() {
         final int L = mInventory.length - 1;
         HashMap<GTUtility.ItemId, Integer> slots = new HashMap<>(L);
         HashMap<GTUtility.ItemId, ItemStack> stacks = new HashMap<>(L);

@@ -30,7 +30,7 @@ public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
 
     @SuppressWarnings("PointlessArithmeticExpression")
     @Override
-    protected void addUIWidgets(ModularWindow.Builder builder) {
+    public void addUIWidgets(ModularWindow.Builder builder) {
         builder
             .widget(
                 new CoverDataControllerWidget.CoverDataIndexedControllerWidget_ToggleButtons<>(

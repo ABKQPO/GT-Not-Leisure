@@ -20,15 +20,15 @@ import micdoodle8.mods.galacticraft.api.prefab.entity.EntitySpaceshipBase;
 
 public class ItemSteamRocketRenderer implements IItemRenderer {
 
-    protected static final ResourceLocation chestTexture = new ResourceLocation("textures/entity/chest/normal.png");
+    public static final ResourceLocation chestTexture = new ResourceLocation("textures/entity/chest/normal.png");
 
-    protected EntitySpaceshipBase spaceship;
-    protected ModelBase modelSpaceship;
-    protected final ModelChest chestModel = new ModelChest();
+    public EntitySpaceshipBase spaceship;
+    public ModelBase modelSpaceship;
+    public final ModelChest chestModel = new ModelChest();
 
-    protected static RenderItem drawItems = new RenderItem();
+    public static RenderItem drawItems = new RenderItem();
 
-    protected ResourceLocation texture;
+    public ResourceLocation texture;
 
     public ItemSteamRocketRenderer(EntitySpaceshipBase spaceship, ModelBase model, ResourceLocation texture) {
         this.spaceship = spaceship;
@@ -36,7 +36,7 @@ public class ItemSteamRocketRenderer implements IItemRenderer {
         this.texture = texture;
     }
 
-    protected void renderSpaceship(ItemRenderType type, RenderBlocks render, ItemStack item, float translateX,
+    public void renderSpaceship(ItemRenderType type, RenderBlocks render, ItemStack item, float translateX,
         float translateY, float translateZ) {
         GL11.glPushMatrix();
 

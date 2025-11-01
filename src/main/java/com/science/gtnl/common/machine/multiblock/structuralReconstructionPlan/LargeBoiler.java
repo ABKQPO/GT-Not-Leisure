@@ -155,7 +155,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @Override
-    protected boolean filtersFluid() {
+    public boolean filtersFluid() {
         return false;
     }
 
@@ -380,7 +380,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
                 .addSeparator()
@@ -464,7 +464,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
                 .addSeparator()
@@ -548,7 +548,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
                 .addSeparator()
@@ -632,7 +632,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        protected MultiblockTooltipBuilder createTooltip() {
+        public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
             tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
                 .addSeparator()

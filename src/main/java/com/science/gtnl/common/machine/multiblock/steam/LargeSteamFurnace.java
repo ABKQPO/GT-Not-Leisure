@@ -168,7 +168,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamFurnaceRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_00"))
@@ -216,7 +216,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(0.5 * tierMachine * (1 << (2 * Math.min(4, recipeOcCount))))
                     .setDurationModifier(1.0 / 10.0 / tierMachine / (1 << Math.min(4, recipeOcCount)))

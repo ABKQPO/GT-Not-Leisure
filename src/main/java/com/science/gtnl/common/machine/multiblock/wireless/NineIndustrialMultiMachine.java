@@ -258,7 +258,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
             @Nonnull
             @Override
-            protected Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
+            public Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
                 ItemStack circuit = getCircuit(inputItems);
                 if (circuit == null) {
                     return Stream.empty();
@@ -280,7 +280,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
             @Nonnull
             @Override
-            protected GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
                 return new GTNL_ParallelHelper().setRecipe(recipe)
                     .setAvailableEUt(Long.MAX_VALUE)
                     .setMachine(machine, protectItems, protectFluids)

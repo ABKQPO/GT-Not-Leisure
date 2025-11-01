@@ -116,7 +116,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
             RecipeMap<?> currentRecipeMap = RecipeMaps.fluidSolidifierRecipes;
 
             @Override
-            protected RecipeMap<?> getCurrentRecipeMap() {
+            public RecipeMap<?> getCurrentRecipeMap() {
                 lastRecipeMap = currentRecipeMap;
                 return currentRecipeMap;
             }
@@ -159,7 +159,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -180,7 +180,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
 
     @Nonnull
     @Override
-    protected CheckRecipeResult checkRecipeForCustomHatches(CheckRecipeResult lastResult) {
+    public CheckRecipeResult checkRecipeForCustomHatches(CheckRecipeResult lastResult) {
         for (MTEHatchInput solidifierHatch : mInputHatches) {
             if (solidifierHatch instanceof HumongousSolidifierHatch hatch) {
                 List<ItemStack> items = hatch.getNonConsumableItems();

@@ -122,7 +122,7 @@ public class EntitySteamRocket extends EntityTieredRocket {
         }
     }
 
-    protected void spawnParticles(boolean launched) {
+    public void spawnParticles(boolean launched) {
         if (!this.isDead) {
             double x1 = 2 * Math.cos(this.rotationYaw * Math.PI / 180.0D)
                 * Math.sin(this.rotationPitch * Math.PI / 180.0D);
@@ -221,12 +221,12 @@ public class EntitySteamRocket extends EntityTieredRocket {
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
         super.writeEntityToNBT(par1NBTTagCompound);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
+    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
         super.readEntityFromNBT(par1NBTTagCompound);
     }
 

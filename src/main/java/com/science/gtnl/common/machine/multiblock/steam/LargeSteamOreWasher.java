@@ -221,7 +221,7 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamOreWasherRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_00"))
@@ -242,7 +242,7 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_STEAM_WASHER_LOOP;
     }
 

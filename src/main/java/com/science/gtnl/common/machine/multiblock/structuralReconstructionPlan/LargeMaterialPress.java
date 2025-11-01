@@ -180,7 +180,7 @@ public class LargeMaterialPress extends GTMMultiMachineBase<LargeMaterialPress> 
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(CompressionTierKey.INSTANCE, 0) != 0) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
@@ -189,7 +189,7 @@ public class LargeMaterialPress extends GTMMultiMachineBase<LargeMaterialPress> 
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());

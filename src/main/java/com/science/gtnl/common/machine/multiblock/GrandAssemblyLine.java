@@ -135,7 +135,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("GrandAssemblyLineRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_00"))
@@ -1018,7 +1018,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return GTNL_OverclockCalculator.ofNoOverclock(recipe)
                     .setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
@@ -1064,7 +1064,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         super.addUIWidgets(builder, buildContext);
     }
 
-    protected ModularWindow createParallelWindow(final EntityPlayer player) {
+    public ModularWindow createParallelWindow(final EntityPlayer player) {
         final int WIDTH = 158;
         final int HEIGHT = 52;
         final int PARENT_WIDTH = getGUIWidth();

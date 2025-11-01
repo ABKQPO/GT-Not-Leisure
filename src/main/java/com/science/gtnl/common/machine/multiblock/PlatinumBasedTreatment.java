@@ -98,7 +98,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("PlatinumBasedTreatmentRecipes"))
             .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_00"))
@@ -257,12 +257,12 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MEGA_BLAST_FURNACE_LOOP;
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(useSingleAmp ? 1 : getMaxInputAmps());

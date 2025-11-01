@@ -31,7 +31,7 @@ public class EntityBlazeFireball extends EntitySmallFireball {
     }
 
     @Override
-    protected void onImpact(MovingObjectPosition mop) {
+    public void onImpact(MovingObjectPosition mop) {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             int x = mop.blockX;
             int y = mop.blockY;

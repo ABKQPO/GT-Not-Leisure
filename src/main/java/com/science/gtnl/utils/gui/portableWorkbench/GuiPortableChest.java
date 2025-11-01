@@ -27,7 +27,7 @@ public class GuiPortableChest extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
+    public void drawGuiContainerBackgroundLayer(float f, int i, int j) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager()
             .bindTexture(type.guiResourceList.location);

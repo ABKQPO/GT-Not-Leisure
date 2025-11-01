@@ -177,7 +177,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_00"))
@@ -196,7 +196,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_ELECTROFURNACE_LOOP;
     }
 }

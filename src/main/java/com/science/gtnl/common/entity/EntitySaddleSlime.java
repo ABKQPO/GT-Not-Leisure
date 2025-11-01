@@ -34,7 +34,7 @@ public class EntitySaddleSlime extends EntitySlime {
     }
 
     @Override
-    protected void updateEntityActionState() {
+    public void updateEntityActionState() {
         if (riddenByEntity instanceof EntityPlayer && getSaddle()) {
             setJumping(false);
             moveForward = 0.0F;
@@ -187,7 +187,7 @@ public class EntitySaddleSlime extends EntitySlime {
     }
 
     @Override
-    protected Item getDropItem() {
+    public Item getDropItem() {
         return null;
     }
 
@@ -197,12 +197,12 @@ public class EntitySaddleSlime extends EntitySlime {
     }
 
     @Override
-    protected boolean canDamagePlayer() {
+    public boolean canDamagePlayer() {
         return false;
     }
 
     @Override
-    protected int getAttackStrength() {
+    public int getAttackStrength() {
         return 0;
     }
 }

@@ -148,7 +148,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         }
     }
 
-    protected ITexture getBaseTexture(int colorIndex) {
+    public ITexture getBaseTexture(int colorIndex) {
         return Textures.BlockIcons.MACHINE_CASINGS[mTier][colorIndex + 1];
     }
 
@@ -256,7 +256,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    protected FluidSlotWidget createFluidSlot() {
+    public FluidSlotWidget createFluidSlot() {
         return super.createFluidSlot().setFilter(mLockedFluids::contains);
     }
 }

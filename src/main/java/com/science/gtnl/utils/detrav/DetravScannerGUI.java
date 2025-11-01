@@ -48,7 +48,7 @@ public class DetravScannerGUI extends GuiScreen {
     public int lastClickX = -1, lastClickY = -1;
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    public void mouseClicked(int mouseX, int mouseY, int button) {
         long currentTime = System.currentTimeMillis();
 
         if (button == 0) {

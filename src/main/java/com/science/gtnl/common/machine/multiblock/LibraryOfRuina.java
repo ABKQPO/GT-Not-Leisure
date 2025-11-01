@@ -213,7 +213,7 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 

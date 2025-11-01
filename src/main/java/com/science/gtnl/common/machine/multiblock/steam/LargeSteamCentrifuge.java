@@ -227,7 +227,7 @@ public class LargeSteamCentrifuge extends SteamMultiMachineBase<LargeSteamCentri
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamCentrifugeRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCentrifuge_00"))

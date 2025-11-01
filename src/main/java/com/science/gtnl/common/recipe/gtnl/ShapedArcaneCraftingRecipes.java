@@ -24,7 +24,7 @@ import gregtech.api.interfaces.IRecipeMap;
 
 public class ShapedArcaneCraftingRecipes implements IRecipePool {
 
-    protected Set<Item> skips;
+    public Set<Item> skips;
 
     private static final List<String> BLACKLISTED_OREDICT_NAMES = Arrays.asList(
         "craftingToolScrewdriver",
@@ -37,7 +37,7 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
         "craftingToolWireCutter",
         "craftingToolBlade");
 
-    protected boolean shouldSkip(Item item) {
+    public boolean shouldSkip(Item item) {
         if (null == skips) {
             skips = new HashSet<>();
             skips.add(itemJarNode);

@@ -11,7 +11,7 @@ public class CircuitNanitesDataSpecialValue extends RecipeMetadataKey<CircuitNan
 
     public static final CircuitNanitesDataSpecialValue INSTANCE = new CircuitNanitesDataSpecialValue();
 
-    protected CircuitNanitesDataSpecialValue() {
+    public CircuitNanitesDataSpecialValue() {
         super(CircuitNanitesRecipeData.class, "circuit_nanites_data");
     }
 

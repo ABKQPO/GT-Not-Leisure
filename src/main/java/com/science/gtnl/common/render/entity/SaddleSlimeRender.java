@@ -26,7 +26,7 @@ public class SaddleSlimeRender extends RenderLiving {
         this.scaleModel = scaleModel;
     }
 
-    protected int renderSlimePass(EntitySlime entitySlime, int renderPass, float partialTicks) {
+    public int renderSlimePass(EntitySlime entitySlime, int renderPass, float partialTicks) {
         if (entitySlime.isInvisible()) {
             return 0;
         } else if (renderPass == 0) {
@@ -44,7 +44,7 @@ public class SaddleSlimeRender extends RenderLiving {
         return -1;
     }
 
-    protected void applySlimeScaling(EntitySlime entitySlime, float partialTicks) {
+    public void applySlimeScaling(EntitySlime entitySlime, float partialTicks) {
         float slimeSize = (float) entitySlime.getSlimeSize();
         float squishInterpolated = (entitySlime.prevSquishFactor
             + (entitySlime.squishFactor - entitySlime.prevSquishFactor) * partialTicks) / (slimeSize * 0.5F + 1.0F);
@@ -54,17 +54,17 @@ public class SaddleSlimeRender extends RenderLiving {
     }
 
     @Override
-    protected void preRenderCallback(EntityLivingBase entityLiving, float partialTicks) {
+    public void preRenderCallback(EntityLivingBase entityLiving, float partialTicks) {
         this.applySlimeScaling((EntitySlime) entityLiving, partialTicks);
     }
 
     @Override
-    protected int shouldRenderPass(EntityLivingBase entityLiving, int pass, float partialTicks) {
+    public int shouldRenderPass(EntityLivingBase entityLiving, int pass, float partialTicks) {
         return this.renderSlimePass((EntitySlime) entityLiving, pass, partialTicks);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
+    public ResourceLocation getEntityTexture(Entity entity) {
         return SLIME_TEXTURE;
     }
 }

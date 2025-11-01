@@ -184,7 +184,7 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUt(getMaxInputEu())
                     .setAmperage(1)

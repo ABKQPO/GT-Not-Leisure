@@ -62,7 +62,7 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("GenerationEarthEngineRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_00"))
@@ -137,7 +137,7 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d == ForgeDirection.UP;
     }
 

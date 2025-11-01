@@ -181,7 +181,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(3601)
                     .setRecipeHeat(0)
@@ -193,7 +193,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(useSingleAmp ? 1 : getMaxInputAmps());

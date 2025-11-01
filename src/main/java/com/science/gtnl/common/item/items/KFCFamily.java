@@ -30,7 +30,7 @@ public class KFCFamily extends ItemFood {
     }
 
     @Override
-    protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
+    public void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
         super.onFoodEaten(stack, world, player);
         if (!world.isRemote) {
             player.addPotionEffect(new PotionEffect(EffectLoader.perfect_physique.getId(), 86400 * 20, 1));

@@ -100,7 +100,7 @@ public class GameSudoku extends BoardLootGame<GameSudoku> {
     }
 
     @Override
-    protected void triggerGameWin() {
+    public void triggerGameWin() {
         super.triggerGameWin();
         RewardUtils.spawnFourStagedReward(
             (WorldServer) getWorld(),
@@ -111,7 +111,7 @@ public class GameSudoku extends BoardLootGame<GameSudoku> {
     }
 
     @Override
-    protected void triggerGameLose() {
+    public void triggerGameLose() {
         super.triggerGameLose();
         WorldExt.explode(
             getWorld(),
@@ -161,7 +161,7 @@ public class GameSudoku extends BoardLootGame<GameSudoku> {
         public static final String ID = "waiting";
 
         @Override
-        protected void onClick(EntityPlayer player, Pos2i pos, MouseClickType type) {
+        public void onClick(EntityPlayer player, Pos2i pos, MouseClickType type) {
             if (!isServerSide()) return;
             if (!board.isGenerated()) {
                 int blanks = configSnapshot.getStageByIndex(currentLevel)

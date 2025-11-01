@@ -90,7 +90,7 @@ public class OredictInputBusME extends MTEHatchInputBusME {
     }
 
     @Override
-    protected void refreshItemList() {
+    public void refreshItemList() {
         AENetworkProxy proxy = getProxy();
         try {
             Predicate<IAEItemStack> oreFilterList = hasOreDict() ? OreFilteredList.makeFilter(oreDict) : null;
@@ -161,7 +161,7 @@ public class OredictInputBusME extends MTEHatchInputBusME {
     }
 
     @Override
-    protected ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
+    public ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
         final int WIDTH = 78;
         final int HEIGHT = 169;
         final int PARENT_WIDTH = getGUIWidth();

@@ -112,7 +112,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) {
+    public void keyTyped(char typedChar, int keyCode) {
         if (this.itemNameTextField.textboxKeyTyped(typedChar, keyCode)) {
             this.updateItemName();
         } else {
@@ -137,7 +137,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         this.itemNameTextField.mouseClicked(mouseX, mouseY, mouseButton);
 
@@ -175,7 +175,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = this.getLocalizedName();
         this.fontRendererObj
             .drawString(title, (this.xSize - this.fontRendererObj.getStringWidth(title)) / 2, 6, 0x404040);
@@ -184,7 +184,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager()
             .bindTexture(ANVIL_TEXTURE);

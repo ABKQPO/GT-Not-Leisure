@@ -80,7 +80,7 @@ public class NullPointerExceptionRender extends Render {
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     @Override
-    protected ResourceLocation getEntityTexture(Entity p_110775_1_) {
+    public ResourceLocation getEntityTexture(Entity p_110775_1_) {
         return arrowTextures;
     }
 

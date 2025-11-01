@@ -423,7 +423,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      * @return Recipemap to use now
      */
     @Override
-    protected RecipeMap<?> getCurrentRecipeMap() {
+    public RecipeMap<?> getCurrentRecipeMap() {
         RecipeMap<?> recipeMap;
         if (recipeMapSupplier == null) {
             recipeMap = null;
@@ -598,7 +598,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      */
     @Nonnull
     @Override
-    protected Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
+    public Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
         if (map == null) {
             return Stream.empty();
         }
@@ -615,7 +615,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      */
     @Nonnull
     @Override
-    protected CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+    public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
@@ -624,7 +624,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      */
     @Nonnull
     @Override
-    protected GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+    public GTNL_ParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
         return new GTNL_ParallelHelper().setRecipe(recipe)
             .setItemInputs(inputItems)
             .setFluidInputs(inputFluids)
@@ -643,7 +643,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      */
     @Nonnull
     @Override
-    protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+    public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
         return new GTNL_OverclockCalculator().setRecipeEUt(recipe.mEUt)
             .setAmperage(availableAmperage)
             .setEUt(availableVoltage)
@@ -668,7 +668,7 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
      */
     @Nonnull
     @Override
-    protected CheckRecipeResult onRecipeStart(@Nonnull GTRecipe recipe) {
+    public CheckRecipeResult onRecipeStart(@Nonnull GTRecipe recipe) {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 

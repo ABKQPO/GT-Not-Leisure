@@ -227,7 +227,7 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(CompressionTierKey.INSTANCE, 0) != 0) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
@@ -236,7 +236,7 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
@@ -262,7 +262,7 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamCompressorRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_00"))

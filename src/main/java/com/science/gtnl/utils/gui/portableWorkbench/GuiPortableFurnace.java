@@ -25,7 +25,7 @@ public class GuiPortableFurnace extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = I18n.format("container.furnace");
         this.fontRendererObj
             .drawString(title, this.xSize / 2 - this.fontRendererObj.getStringWidth(title) / 2, 6, 4210752);
@@ -33,7 +33,7 @@ public class GuiPortableFurnace extends GuiContainer {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         this.mc.getTextureManager()
             .bindTexture(furnaceGuiTextures);

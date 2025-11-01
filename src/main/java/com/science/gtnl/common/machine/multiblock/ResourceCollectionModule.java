@@ -187,7 +187,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         long recipePower;
 
         if (processingLogicEU <= 0) {
@@ -216,7 +216,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
 
                 if (parallelSetting.get() > getMaxParallelRecipes()) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
@@ -267,7 +267,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setAmperageOC(false)
                     .setDurationDecreasePerOC(2)
                     .setEUtIncreasePerOC(4)

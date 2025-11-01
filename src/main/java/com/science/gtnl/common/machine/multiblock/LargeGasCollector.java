@@ -96,7 +96,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
 
     @Override
     @Nonnull
-    protected CheckRecipeResult doCheckRecipe() {
+    public CheckRecipeResult doCheckRecipe() {
         for (ItemStack item : getAllStoredInputs()) {
             if (item != null) {
                 if (Objects.equals(item.getItem(), ItemList.Circuit_Integrated.getItem())) {
@@ -289,7 +289,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d == ForgeDirection.UP;
     }
 }

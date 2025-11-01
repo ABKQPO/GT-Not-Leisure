@@ -24,7 +24,7 @@ public class RenderChronarchClock extends Render {
     private static final IModelCustom model = AdvancedModelLoader.loadModel(MODEL);
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
+    public ResourceLocation getEntityTexture(Entity entity) {
         return TEXTURE;
     }
 

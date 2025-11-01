@@ -143,13 +143,13 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
     }
 
     @Override
-    protected FluidSlotWidget createFluidInputSlot(IDrawable[] backgrounds, Pos2d pos) {
+    public FluidSlotWidget createFluidInputSlot(IDrawable[] backgrounds, Pos2d pos) {
         return (FluidSlotWidget) new FluidSlotWidget(fluidTank).setBackground(backgrounds)
             .setPos(pos);
     }
 
     @Override
-    protected void addProgressBar(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
+    public void addProgressBar(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
         builder.widget(
             setNEITransferRect(
                 new ProgressBar()
@@ -163,7 +163,7 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
     }
 
     @Override
-    protected void addProgressBarSpecialTextures(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
+    public void addProgressBarSpecialTextures(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
 
         for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
             builder.widget(

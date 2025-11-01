@@ -28,7 +28,7 @@ public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
     }
 
     @Override
-    protected void addUIWidgets(ModularWindow.Builder builder) {
+    public void addUIWidgets(ModularWindow.Builder builder) {
         if (!(getCover() instanceof VoidCover cover)) return;
         SlotGroup slotGroup = SlotGroup.ofItemHandler(cover.lockedInventoryHandler, 10)
             .startFromSlot(0)
@@ -81,12 +81,12 @@ public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
     }
 
     @Override
-    protected int getGUIWidth() {
+    public int getGUIWidth() {
         return 190;
     }
 
     @Override
-    protected int getGUIHeight() {
+    public int getGUIHeight() {
         return 125;
     }
 }

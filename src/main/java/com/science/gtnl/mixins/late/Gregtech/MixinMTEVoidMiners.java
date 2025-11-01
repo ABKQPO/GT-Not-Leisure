@@ -75,7 +75,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         int[] structureBlock = switch (TIER_MULTIPLIER) {
             case 2 -> new int[] { 9, 13, 8 };
             case 3 -> new int[] { 9, 16, 9 };

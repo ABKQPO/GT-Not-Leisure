@@ -19,7 +19,7 @@ import codechicken.nei.recipe.IUsageHandler;
 @Mixin(value = GuiUsageRecipe.class, remap = false)
 public abstract class MixinGuiUsageRecipe extends GuiRecipe<IUsageHandler> {
 
-    protected MixinGuiUsageRecipe(GuiScreen prevgui) {
+    public MixinGuiUsageRecipe(GuiScreen prevgui) {
         super(prevgui);
     }
 

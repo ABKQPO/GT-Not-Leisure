@@ -204,7 +204,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamApiaryModuleRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_00"))
@@ -723,7 +723,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
 
-    protected ModularWindow createConfigurationWindow(final EntityPlayer player) {
+    public ModularWindow createConfigurationWindow(final EntityPlayer player) {
         ModularWindow.Builder builder = ModularWindow.builder(200, 100);
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
 
@@ -807,7 +807,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
-    protected Widget generateCurrentRecipeInfoWidget() {
+    public Widget generateCurrentRecipeInfoWidget() {
         DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
         if (mOutputItems == null || GUIDropProgress == null) return processingDetails;
         LinkedHashMap<ItemStack, Double> sortedMap = GUIDropProgress.entrySet()
@@ -856,7 +856,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.widget(new FakeSyncWidget<>(() -> {
             HashMap<ItemStack, Double> ret = new HashMap<>();
             HashMap<GTUtility.ItemId, Double> dropProgress = new HashMap<>();
@@ -924,7 +924,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MEGA_INDUSTRIAL_APIARY_LOOP;
     }
 }

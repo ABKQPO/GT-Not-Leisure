@@ -204,7 +204,7 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MULTI_ORE_WASHER_PLANT_LOOP;
     }
 

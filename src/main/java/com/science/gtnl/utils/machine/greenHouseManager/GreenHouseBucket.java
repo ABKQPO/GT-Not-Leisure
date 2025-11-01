@@ -23,10 +23,10 @@ import lombok.Getter;
 
 public abstract class GreenHouseBucket {
 
-    protected ItemStack seed;
+    public ItemStack seed;
     @Getter
-    protected int seedCount;
-    protected ItemStack[] supportItems;
+    public int seedCount;
+    public ItemStack[] supportItems;
 
     public static int NUMBER_OF_DROPS_TO_SIMULATE = 5;
 
@@ -118,7 +118,7 @@ public abstract class GreenHouseBucket {
         return sb.toString();
     }
 
-    protected void getAdditionalInfoData(StringBuilder sb) {}
+    public void getAdditionalInfoData(StringBuilder sb) {}
 
     public int tryAddSeed(IGreenHouse greenhouse, ItemStack input, int maxConsume, boolean simulate) {
         // Abort is input if empty
@@ -204,7 +204,7 @@ public abstract class GreenHouseBucket {
      *
      * @return the identifier for this bucket type.
      */
-    protected abstract String getNBTIdentifier();
+    public abstract String getNBTIdentifier();
 
     /**
      * Adds item drops to the item tracker.

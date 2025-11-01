@@ -142,7 +142,7 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 
@@ -183,7 +183,7 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MULTI_ORE_WASHER_PLANT_LOOP;
     }
 

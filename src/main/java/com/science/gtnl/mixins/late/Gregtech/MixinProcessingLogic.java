@@ -22,10 +22,10 @@ import gregtech.api.util.ParallelHelper;
 public class MixinProcessingLogic {
 
     @Shadow
-    protected IVoidable machine;
+    public IVoidable machine;
 
     @Shadow
-    protected int duration;
+    public int duration;
 
     @Inject(method = "applyRecipe", at = @At("TAIL"))
     private void modifyRecipeBeforeValidation(GTRecipe recipe, ParallelHelper helper, OverclockCalculator calculator,

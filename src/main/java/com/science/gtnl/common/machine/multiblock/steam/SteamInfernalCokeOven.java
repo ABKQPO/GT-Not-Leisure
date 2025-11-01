@@ -194,7 +194,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamInfernalCokeOven_00"))
@@ -222,7 +222,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_MACERATOR_OP;
     }
 

@@ -107,12 +107,12 @@ public class Replicator extends MTEBasicMachine {
     }
 
     @Override
-    protected boolean hasEnoughEnergyToCheckRecipe() {
+    public boolean hasEnoughEnergyToCheckRecipe() {
         return true;
     }
 
     @Override
-    protected boolean drainEnergyForProcess(long aEUt) {
+    public boolean drainEnergyForProcess(long aEUt) {
         return true;
     }
 

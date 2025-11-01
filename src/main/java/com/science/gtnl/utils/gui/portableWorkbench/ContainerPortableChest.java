@@ -25,7 +25,7 @@ public class ContainerPortableChest extends Container implements ISortableContai
     public int rows;
     public int cols;
     public ItemStack itemStack;
-    protected final String portableID;
+    public final String portableID;
     private final PortableItem.PortableType type;
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, GuiPortableChest.GUI type) {

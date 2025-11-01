@@ -439,7 +439,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         return false;
     }
 
-    protected void afterRecipeCheckFailed() {
+    public void afterRecipeCheckFailed() {
         mOutputItems = null;
         mOutputFluids = null;
         mEfficiency = 0;
@@ -448,7 +448,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         mMaxProgresstime = 0;
     }
 
-    protected void addClassicOutputs() {
+    public void addClassicOutputs() {
         if (mOutputItems != null) {
             for (ItemStack tStack : mOutputItems) {
                 if (tStack != null) {
@@ -746,7 +746,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_EYE_OF_HARMONY_LOOP;
     }
 

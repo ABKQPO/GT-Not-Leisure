@@ -93,7 +93,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnaceRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_00"))
@@ -157,7 +157,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(getMachineHeat())
@@ -168,7 +168,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
             }
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -260,7 +260,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MEGA_BLAST_FURNACE_LOOP;
     }
 

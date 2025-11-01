@@ -134,7 +134,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     }
 
     @Override
-    protected FluidSlotWidget createFluidSlot() {
+    public FluidSlotWidget createFluidSlot() {
         return super.createFluidSlot().setFilter(mLockedFluids::contains);
     }
 

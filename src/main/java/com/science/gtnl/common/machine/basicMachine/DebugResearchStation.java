@@ -117,12 +117,12 @@ public class DebugResearchStation extends MTEBasicMachine {
     }
 
     @Override
-    protected boolean hasEnoughEnergyToCheckRecipe() {
+    public boolean hasEnoughEnergyToCheckRecipe() {
         return true;
     }
 
     @Override
-    protected boolean drainEnergyForProcess(long aEUt) {
+    public boolean drainEnergyForProcess(long aEUt) {
         return true;
     }
 
@@ -218,7 +218,7 @@ public class DebugResearchStation extends MTEBasicMachine {
     }
 
     @Override
-    protected boolean allowPutStackValidated(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+    public boolean allowPutStackValidated(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
         ItemStack aStack) {
         return super.allowPutStackValidated(aBaseMetaTileEntity, aIndex, side, aStack)
             && getRecipeMap().containsInput(aStack);

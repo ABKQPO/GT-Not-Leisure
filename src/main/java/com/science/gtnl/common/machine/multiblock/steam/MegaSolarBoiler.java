@@ -192,7 +192,7 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
 
         screenElements.widget(
@@ -267,7 +267,7 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_MACERATOR_OP;
     }
 

@@ -30,14 +30,14 @@ import lombok.Setter;
 
 public class CustomMaintenanceHatch extends MTEHatchMaintenance implements IConfigurationMaintenance, IAddGregtechLogo {
 
-    protected int mMinConfigTime;
-    protected int mMaxConfigTime;
-    protected int mConfigTime = 100;
+    public int mMinConfigTime;
+    public int mMaxConfigTime;
+    public int mConfigTime = 100;
 
     @Getter
     @Setter
-    protected int mCleanroomTier;
-    protected String[] mDescription;
+    public int mCleanroomTier;
+    public String[] mDescription;
 
     public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aCleanroomTier, int aTier) {
         super(aID, aName, aNameRegional, aTier);

@@ -47,7 +47,7 @@ public class SteamFlightModule extends SteamElevatorModule {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamFlightModuleRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_00"))

@@ -113,7 +113,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("AdvancedInfiniteDrillerRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_00"))
@@ -185,7 +185,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 
@@ -280,7 +280,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return GTNL_OverclockCalculator.ofNoOverclock(recipe)
                     .setExtraDurationModifier(mConfigSpeedBoost);
             }

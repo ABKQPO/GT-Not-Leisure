@@ -18,8 +18,8 @@ public class SteamRocketRender extends Render {
 
     private final ResourceLocation spaceshipTexture;
 
-    protected ModelBase modelSpaceship;
-    protected IModelCustom modelSpaceshipObj;
+    public ModelBase modelSpaceship;
+    public IModelCustom modelSpaceshipObj;
 
     public SteamRocketRender(ModelBase spaceshipModel, String textureDomain, String texture) {
         this(new ResourceLocation(textureDomain, "textures/model/" + texture + ".png"));
@@ -31,12 +31,12 @@ public class SteamRocketRender extends Render {
         this.shadowSize = 2F;
     }
 
-    protected ResourceLocation resourceLocation() {
+    public ResourceLocation resourceLocation() {
         return this.spaceshipTexture;
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity par1Entity) {
+    public ResourceLocation getEntityTexture(Entity par1Entity) {
         return this.resourceLocation();
     }
 

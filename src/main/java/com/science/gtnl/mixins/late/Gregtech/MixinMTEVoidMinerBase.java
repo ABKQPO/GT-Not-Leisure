@@ -51,15 +51,15 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
 
     @Shadow
     @Final
-    protected byte TIER_MULTIPLIER;
+    public byte TIER_MULTIPLIER;
     @Unique
     public long lEUt;
 
     @Shadow
-    protected abstract int getMinTier();
+    public abstract int getMinTier();
 
     @Shadow
-    protected abstract ItemStack nextOre();
+    public abstract ItemStack nextOre();
 
     @Shadow
     private boolean mBlacklist;
@@ -331,7 +331,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
         if (!GTNL$enableMixin) return;
         screenElements.widget(

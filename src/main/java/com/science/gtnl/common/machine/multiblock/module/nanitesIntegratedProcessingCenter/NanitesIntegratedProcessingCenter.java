@@ -269,7 +269,7 @@ public class NanitesIntegratedProcessingCenter
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 setEUtDiscount = 1 - (mParallelTier / 50.0) * Math.pow(0.80, getMCoilLevel().getTier());
                 setDurationModifier = Math.pow(0.75, mParallelTier) * Math.pow(0.80, getMCoilLevel().getTier());
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
@@ -280,7 +280,7 @@ public class NanitesIntegratedProcessingCenter
             }
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4 && wirelessMode) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }

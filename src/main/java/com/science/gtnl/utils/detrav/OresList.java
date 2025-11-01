@@ -34,12 +34,12 @@ public class OresList extends GuiScrollingList {
     }
 
     @Override
-    protected int getSize() {
+    public int getSize() {
         return keys.size();
     }
 
     @Override
-    protected void elementClicked(int index, boolean doubleClick) {
+    public void elementClicked(int index, boolean doubleClick) {
         selected = index;
         if (doubleClick) this.invert = !this.invert;
 
@@ -47,15 +47,15 @@ public class OresList extends GuiScrollingList {
     }
 
     @Override
-    protected boolean isSelected(int index) {
+    public boolean isSelected(int index) {
         return selected == index;
     }
 
     @Override
-    protected void drawBackground() {}
+    public void drawBackground() {}
 
     @Override
-    protected void drawSlot(int slotIdx, int entryRight, int slotTop, int slotBuffer, Tessellator tess) {
+    public void drawSlot(int slotIdx, int entryRight, int slotTop, int slotBuffer, Tessellator tess) {
         parent.drawString(
             parent.mc.fontRenderer,
             parent.mc.fontRenderer.trimStringToWidth(keys.get(slotIdx), listWidth - 10),

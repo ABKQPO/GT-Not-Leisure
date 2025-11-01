@@ -199,7 +199,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     @Override
-    protected void runMachine(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+    public void runMachine(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (mMaxProgresstime > 0 && doRandomMaintenanceDamage()) {
             if (onRunningTick(mInventory[1])) {
                 markDirty();
@@ -250,7 +250,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
     }
 
-    protected boolean shouldCheckRecipeThisTick(long aTick) {
+    public boolean shouldCheckRecipeThisTick(long aTick) {
         // do a recipe check if any crafting input hatch just got pushed in items
         boolean shouldCheck = false;
         // check all of them (i.e. do not return early) to reset the state of all of them.
@@ -306,12 +306,12 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      * If this machine doesn't use recipemap or does some complex things, override {@link #checkProcessing()}.
      */
     @ApiStatus.OverrideOnly
-    protected ProcessingLogic createProcessingLogic() {
+    public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
                     .setMachineHeat(getMachineHeat())
@@ -384,7 +384,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      */
     @Deprecated
     @ApiStatus.OverrideOnly
-    protected double getEuModifier() {
+    public double getEuModifier() {
         return 1.0F;
     }
 
@@ -395,7 +395,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      */
     @Deprecated
     @ApiStatus.OverrideOnly
-    protected double getSpeedBonus() {
+    public double getSpeedBonus() {
         return 1.0F;
     }
 
@@ -427,11 +427,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return Collections.max(ampsList);
     }
 
-    protected long getMachineVoltageLimit() {
+    public long getMachineVoltageLimit() {
         return GTValues.V[mEnergyHatchTier];
     }
 
-    protected int checkEnergyHatchTier() {
+    public int checkEnergyHatchTier() {
         int tier = 0;
         for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
             tier = Math.max(tHatch.mTier, tier);
@@ -452,7 +452,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return 0;
     }
 
-    protected List<SlotWidget> slotWidgets = new ArrayList<>(1);
+    public List<SlotWidget> slotWidgets = new ArrayList<>(1);
 
     public void createInventorySlots() {
         final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
@@ -543,7 +543,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             .setSize(12, 12);
     }
 
-    protected void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
 
     }
 
@@ -582,7 +582,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     @Nonnull
-    protected CheckRecipeResult doCheckRecipe() {
+    public CheckRecipeResult doCheckRecipe() {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 
         // check crafting input hatches first

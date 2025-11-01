@@ -108,7 +108,7 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("CircuitComponentAssemblyLineRecipes"))
             .addInfo(StatCollector.translateToLocal("Tooltip_CircuitComponentAssemblyLine_00"))

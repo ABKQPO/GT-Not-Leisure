@@ -32,17 +32,17 @@ import gregtech.api.util.recipe.Scanning;
 public class MixinGTRecipeBuilder {
 
     @Shadow
-    protected ItemStack[] outputs;
+    public ItemStack[] outputs;
 
     @Shadow
     @Nullable
-    protected IRecipeMetadataStorage metadataStorage;
+    public IRecipeMetadataStorage metadataStorage;
 
     @Shadow
-    protected int duration;
+    public int duration;
 
     @Shadow
-    protected int eut;
+    public int eut;
 
     private static boolean cdddddd = true;
 

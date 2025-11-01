@@ -124,7 +124,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_00"))
@@ -481,7 +481,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.setSynced(false)
             .setSpace(0)
             .setPos(10, 7);

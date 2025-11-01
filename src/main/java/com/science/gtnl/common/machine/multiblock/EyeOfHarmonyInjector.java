@@ -58,7 +58,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         super(aID, aName, aNameRegional);
     }
 
-    protected EyeOfHarmonyInjector(String aName) {
+    public EyeOfHarmonyInjector(String aName) {
         super(aName);
     }
 
@@ -310,7 +310,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, maxFluidAmount / 2, maxFluidAmount, maxFluidAmount);
 
     @Override
-    protected void parametersInstantiation_EM() {
+    public void parametersInstantiation_EM() {
         super.parametersInstantiation_EM();
         Parameters.Group hatch_0 = parametrization.getGroup(0, false);
         maxFluidAmountSetting = hatch_0
@@ -318,7 +318,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("EyeOfHarmonyInjectorRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_00"))

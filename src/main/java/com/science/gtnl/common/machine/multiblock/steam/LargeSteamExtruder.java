@@ -251,7 +251,7 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeSteamExtruderRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_00"))

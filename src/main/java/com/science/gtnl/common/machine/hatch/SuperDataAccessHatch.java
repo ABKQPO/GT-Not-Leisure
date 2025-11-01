@@ -85,7 +85,7 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    public void onContentsChanged(int slot) {
         cachedRecipes = null;
     }
 
@@ -179,7 +179,7 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
             ItemStackHandler inventoryHandler = new ItemStackHandler(mInventory) {
 
                 @Override
-                protected void onContentsChanged(int slot) {
+                public void onContentsChanged(int slot) {
                     SuperDataAccessHatch.this.onContentsChanged(slot);
                 }
             };

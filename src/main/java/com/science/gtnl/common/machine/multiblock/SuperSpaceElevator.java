@@ -96,11 +96,11 @@ public class SuperSpaceElevator extends TTMultiblockBase
     /** List of project modules in this elevator */
     public ArrayList<TileEntityModuleBase> mProjectModuleHatches = new ArrayList<>();
     /** TE of the cable */
-    protected TileEntitySpaceElevatorCable elevatorCable;
+    public TileEntitySpaceElevatorCable elevatorCable;
     /** Motor tier of the Space Elevator */
     @Getter
     @Setter
-    protected int motorTier = 0;
+    public int motorTier = 0;
     /** Flag if the chunks of the machine are loaded by it */
     private boolean isLoadedChunk;
     /** Interval in which the modules will be supplied with power in ticks */
@@ -133,7 +133,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
         useLongPower = true;
     }
 
-    protected SuperSpaceElevator(String aName) {
+    public SuperSpaceElevator(String aName) {
         super(aName);
         useLongPower = true;
     }
@@ -536,7 +536,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.TECTECH_MACHINES_FX_WHOOUM;
     }
 
@@ -578,7 +578,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.setSynced(false)
             .setSpace(0)
             .setPos(10, 7);
@@ -652,7 +652,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
-    protected ButtonWidget createSafeVoidButton() {
+    public ButtonWidget createSafeVoidButton() {
         return null;
     }
 

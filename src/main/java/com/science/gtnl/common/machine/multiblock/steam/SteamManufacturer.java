@@ -128,7 +128,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_00"))
@@ -143,7 +143,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(V[9]);
         // We need to trick the GT_ParallelHelper we have enough amps for all recipe parallels.
         logic.setAvailableAmperage(getTrueParallel());

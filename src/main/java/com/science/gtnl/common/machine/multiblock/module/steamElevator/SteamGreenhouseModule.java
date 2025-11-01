@@ -114,7 +114,7 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamGreenhouseModuleRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_00"))
@@ -336,7 +336,7 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
 
     public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode.createGreenhouseUI(MUIContainer_Greenhouse::new);
 
-    protected void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
         buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
@@ -480,7 +480,7 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     }
 
     @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.widget(
             new FakeSyncWidget.BooleanSyncer(
                 () -> this.mode == GreenHouseModes.IC2,

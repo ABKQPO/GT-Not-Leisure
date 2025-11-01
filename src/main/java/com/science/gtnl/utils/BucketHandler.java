@@ -71,7 +71,7 @@ public class BucketHandler {
     // }
     // }
     //
-    // protected void addTooltipForFluid(List list, Fluid fluid) {
+    // public void addTooltipForFluid(List list, Fluid fluid) {
     // if(fluid != null) {
     // Fuel fuel = IronEngineFuel.getFuelForFluid(fluid);
     // if(fuel != null) {

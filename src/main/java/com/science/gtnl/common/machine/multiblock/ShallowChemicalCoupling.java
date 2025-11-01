@@ -98,7 +98,7 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("ShallowChemicalCouplingRecipes"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_00"))
@@ -178,14 +178,14 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
         return new GTNL_ProcessingLogic() {
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(getMachineHeat())

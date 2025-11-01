@@ -111,7 +111,7 @@ public class ExtremeRecipeImporter implements IRecipePool {
         }
     }
 
-    protected Object[] sortOutInputs(Object... in) {
+    public Object[] sortOutInputs(Object... in) {
         Map<Object, Integer> inputsMap = new LinkedHashMap<>();
         for (Object o : in) {
             if (o == null) continue;

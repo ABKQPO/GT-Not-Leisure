@@ -45,12 +45,12 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
     long wirelessEUt = 0;
 
     @Override
-    protected ProcessingLogic createProcessingLogic() {
+    public ProcessingLogic createProcessingLogic() {
         return new ProcessingLogic() {
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
 
                 if (recipe.mEUt > getProcessingVoltage()) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
@@ -65,7 +65,7 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
 
             @NotNull
             @Override
-            protected OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUt(getSafeProcessingVoltage())
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setHeatOC(true)
@@ -78,7 +78,7 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
 
             @NotNull
             @Override
-            protected CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
                 if (!addEUToGlobalEnergyMap(userUUID, -calculatedEut * duration)) {
                     return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
                 }
@@ -96,7 +96,7 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(Long.MAX_VALUE);
         logic.setAvailableAmperage(Integer.MAX_VALUE);
         logic.setAmperageOC(false);

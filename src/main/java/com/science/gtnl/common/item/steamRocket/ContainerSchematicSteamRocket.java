@@ -165,7 +165,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
     }
 
     @Override
-    protected ItemStack findMatchingRecipe() {
+    public ItemStack findMatchingRecipe() {
         return RocketAssemblerRecipes.findMatchingSpaceshipSteamRecipe(this.craftMatrix);
     }
 }

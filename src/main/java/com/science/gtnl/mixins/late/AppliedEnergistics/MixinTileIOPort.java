@@ -40,17 +40,17 @@ public abstract class MixinTileIOPort extends AENetworkInvTile
     private int[] moveQueue;
 
     @Shadow
-    protected abstract boolean moveSlot(final int x);
+    public abstract boolean moveSlot(final int x);
 
     @Shadow
-    protected abstract IMEInventory getInv(final ItemStack is, final StorageChannel chan);
+    public abstract IMEInventory getInv(final ItemStack is, final StorageChannel chan);
 
     @Shadow
-    protected abstract long transferContents(final IEnergySource energy, final IMEInventory src,
+    public abstract long transferContents(final IEnergySource energy, final IMEInventory src,
         final IMEInventory destination, long itemsToMove, final StorageChannel chan);
 
     @Shadow
-    protected abstract boolean shouldMove(final IMEInventory<IAEItemStack> itemInv,
+    public abstract boolean shouldMove(final IMEInventory<IAEItemStack> itemInv,
         final IMEInventory<IAEFluidStack> fluidInv, final boolean didWork);
 
     @Override

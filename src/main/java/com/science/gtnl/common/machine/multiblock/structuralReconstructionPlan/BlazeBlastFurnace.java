@@ -85,7 +85,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("BlazeBlastFurnaceRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_00"))
@@ -253,7 +253,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(getMachineHeat())
@@ -263,7 +263,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             }
 
             @Override
-            protected @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -320,12 +320,12 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected SoundResource getActivitySoundLoop() {
+    public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_ADV_FREEZER_LOOP;
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
         logic.setAvailableVoltage(getMachineVoltageLimit());
         logic.setAvailableAmperage(

@@ -41,7 +41,7 @@ public class SteamWeatherModule extends SteamElevatorModule {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamWeatherModuleRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_00"))

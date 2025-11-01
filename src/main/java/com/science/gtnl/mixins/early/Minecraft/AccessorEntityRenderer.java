@@ -35,7 +35,7 @@ public interface AccessorEntityRenderer {
     @Accessor("mc")
     void setMinecraft(Minecraft value);
 
-    // Static final fields (must be public or protected in target class, or Mixin must be able to force access)
+    // Static final fields (must be public or public in target class, or Mixin must be able to force access)
     @Accessor("shaderCount")
     static int getShaderCount() {
         throw new UnsupportedOperationException();

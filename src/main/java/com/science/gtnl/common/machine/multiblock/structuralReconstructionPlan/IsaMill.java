@@ -72,7 +72,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("IsaMillRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_IsaMill_00"))
@@ -332,7 +332,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
 
                 int recipeReq = recipe.getMetadataOrDefault(IsaMillTierKey.INSTANCE, 0);
                 millingBall = findMillingBall(recipeReq);
@@ -356,7 +356,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setPerfectOC(getPerfectOC())
                     .setEUtDiscount(getEUtDiscount())

@@ -49,7 +49,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
 
     private static final String aTextEmptyRow = "   ";
     private static final List<ItemStack> ALL_VARIANTS = new ArrayList<>(MAX_CIRCUIT_NUMBER + 1);
-    protected final IIcon[] mIconDamage = new IIcon[25];
+    public final IIcon[] mIconDamage = new IIcon[25];
 
     public CircuitIntegratedPlus() {
         this.setHasSubtypes(true);

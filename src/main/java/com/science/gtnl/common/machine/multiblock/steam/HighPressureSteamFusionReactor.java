@@ -123,7 +123,7 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_00"))

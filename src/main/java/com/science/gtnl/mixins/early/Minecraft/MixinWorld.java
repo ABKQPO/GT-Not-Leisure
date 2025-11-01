@@ -37,7 +37,7 @@ public abstract class MixinWorld {
     @Shadow
     public List<Entity> loadedEntityList;
     @Shadow
-    protected List<Entity> unloadedEntityList;
+    public List<Entity> unloadedEntityList;
     @Shadow
     private boolean field_147481_N;
     @Shadow
@@ -47,7 +47,7 @@ public abstract class MixinWorld {
     @Shadow
     private List addedTileEntityList;
     @Shadow
-    protected IChunkProvider chunkProvider;
+    public IChunkProvider chunkProvider;
 
     @Inject(method = "updateEntities", at = @At("HEAD"), cancellable = true, remap = true)
     public void mixin$updateEntities(CallbackInfo ci) {

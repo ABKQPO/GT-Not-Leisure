@@ -73,7 +73,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("ColdIceFreezerRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_00"))

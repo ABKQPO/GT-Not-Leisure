@@ -239,7 +239,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("SteamBeaconModuleRecipeType"));
         switch (mTier) {

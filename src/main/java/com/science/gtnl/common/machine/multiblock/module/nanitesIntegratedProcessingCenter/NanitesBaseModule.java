@@ -21,17 +21,17 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends WirelessEnergyMultiMachineBase<T> {
 
-    protected boolean isConnected = false;
-    protected boolean isOreModule = false;
-    protected boolean isBioModule = false;
-    protected boolean isPolModule = false;
-    protected double setEUtDiscount = 0;
-    protected double setDurationModifier = 0;
-    protected int setMaxParallel = 0;
-    private static final int HORIZONTAL_OFF_SET = 7;
-    private static final int VERTICAL_OFF_SET = 17;
-    private static final int DEPTH_OFF_SET = 0;
-    protected int mHeatingCapacity = 0;
+    public boolean isConnected = false;
+    public boolean isOreModule = false;
+    public boolean isBioModule = false;
+    public boolean isPolModule = false;
+    public double setEUtDiscount = 0;
+    public double setDurationModifier = 0;
+    public int setMaxParallel = 0;
+    public static final int HORIZONTAL_OFF_SET = 7;
+    public static final int VERTICAL_OFF_SET = 17;
+    public static final int DEPTH_OFF_SET = 0;
+    public int mHeatingCapacity = 0;
 
     public NanitesBaseModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -92,7 +92,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
 
             @Nonnull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(mHeatingCapacity)
@@ -103,7 +103,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
 
             @NotNull
             @Override
-            protected CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4 && wirelessMode) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }

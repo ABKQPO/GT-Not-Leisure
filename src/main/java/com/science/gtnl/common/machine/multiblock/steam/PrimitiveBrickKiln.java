@@ -217,7 +217,7 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("PrimitiveBrickKilnRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_PrimitiveBrickKiln_00"))

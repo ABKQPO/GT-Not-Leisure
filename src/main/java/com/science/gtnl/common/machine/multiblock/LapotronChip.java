@@ -65,7 +65,7 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LapotronChipRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_00"))

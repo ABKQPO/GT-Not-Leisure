@@ -81,19 +81,19 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     implements IWirelessMode {
 
     @Shadow
-    protected ArrayList<FluidStack> storedFluids;
+    public ArrayList<FluidStack> storedFluids;
 
     @Shadow
     public abstract CheckRecipeResult overrideRecipeCheck();
 
     @Shadow
-    protected GTRecipe currentRecipe;
+    public GTRecipe currentRecipe;
 
     @Shadow
-    protected int effectiveParallel;
+    public int effectiveParallel;
 
     @Shadow
-    protected int maxParallel;
+    public int maxParallel;
 
     @Shadow
     public abstract long getBasePowerUsage();
@@ -111,7 +111,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     @Shadow
     private int controllerZ;
     @Shadow
-    protected float currentRecipeChance;
+    public float currentRecipeChance;
 
     @Shadow
     public abstract float calculateFinalSuccessChance();
@@ -157,7 +157,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     }
 
     @Override
-    protected boolean supportsCraftingMEBuffer() {
+    public boolean supportsCraftingMEBuffer() {
         return wirelessMode;
     }
 

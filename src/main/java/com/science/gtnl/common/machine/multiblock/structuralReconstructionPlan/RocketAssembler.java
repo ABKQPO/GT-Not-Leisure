@@ -182,7 +182,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && f.isNotFlipped();
     }
 
@@ -207,12 +207,12 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    protected ProcessingLogic createProcessingLogic() {
+    public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
 
             @Override
             @Nonnull
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
                     .setMachineHeat(getMachineHeat())

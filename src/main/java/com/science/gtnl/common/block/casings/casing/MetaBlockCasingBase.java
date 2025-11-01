@@ -56,7 +56,7 @@ public abstract class MetaBlockCasingBase extends MetaCasingBase implements ICas
     }
 
     @Override
-    protected boolean canSilkHarvest() {
+    public boolean canSilkHarvest() {
         return false;
     }
 

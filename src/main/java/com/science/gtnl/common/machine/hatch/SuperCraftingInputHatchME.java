@@ -124,14 +124,14 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public static class PatternSlot<P extends IMetaTileEntity & IDualInputHatch>
         implements IDualInputInventoryWithPattern {
 
-        protected final P parentMTE;
-        protected final ItemStack pattern;
+        public final P parentMTE;
+        public final ItemStack pattern;
         @Getter
-        protected final ICraftingPatternDetails patternDetails;
-        protected final GTUtility.ItemId patternItemId;
+        public final ICraftingPatternDetails patternDetails;
+        public final GTUtility.ItemId patternItemId;
 
-        protected final List<ItemStack> itemInventory;
-        protected final List<FluidStack> fluidInventory;
+        public final List<ItemStack> itemInventory;
+        public final List<FluidStack> fluidInventory;
 
         public PatternSlot(ItemStack pattern, P parent) {
             this(pattern, null, parent);
@@ -838,7 +838,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
             .widgetCreator(slot -> new SlotWidget(slot) {
 
                 @Override
-                protected ItemStack getItemStackForRendering(Slot slotIn) {
+                public ItemStack getItemStackForRendering(Slot slotIn) {
                     ItemStack stack = slot.getStack();
                     if (stack == null || !(stack.getItem() instanceof ItemEncodedPattern patternItem)) {
                         return stack;
@@ -1159,7 +1159,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         return true;
     }
 
-    protected ModularWindow createSlotManualWindow(final EntityPlayer player) {
+    public ModularWindow createSlotManualWindow(final EntityPlayer player) {
         final int WIDTH = 176;
         final int HEIGHT = 86;
         final int PARENT_WIDTH = getGUIWidth();

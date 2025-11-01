@@ -88,7 +88,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
     }
 
     @Override
-    protected void getCheckedSubItems(final Item sameItem, final CreativeTabs creativeTab,
+    public void getCheckedSubItems(final Item sameItem, final CreativeTabs creativeTab,
         final List<ItemStack> itemStacks) {
         itemStacks.add(ItemLoader.infinityDyeCell);
         itemStacks.add(ItemLoader.infinityCobblestoneCell);
@@ -345,7 +345,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
     }
 
     @SideOnly(Side.CLIENT)
-    protected void addCheckedInformation(final ItemStack stack, final EntityPlayer player, final List<String> lines,
+    public void addCheckedInformation(final ItemStack stack, final EntityPlayer player, final List<String> lines,
         final boolean displayMoreInfo) {
         if (GuiScreen.isCtrlKeyDown()) {
             if (stack.hasTagCompound()) {
@@ -617,7 +617,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         }
 
         @Override
-        protected void loadCellFluids() {
+        public void loadCellFluids() {
             if (this.cellFluids == null) {
                 this.cellFluids = AEApi.instance()
                     .storage()

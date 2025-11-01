@@ -42,13 +42,13 @@ public class EntityChronarchClock extends Entity {
     }
 
     @Override
-    protected void entityInit() {}
+    public void entityInit() {}
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tag) {}
+    public void readEntityFromNBT(NBTTagCompound tag) {}
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tag) {}
+    public void writeEntityToNBT(NBTTagCompound tag) {}
 
     @Override
     public void onUpdate() {

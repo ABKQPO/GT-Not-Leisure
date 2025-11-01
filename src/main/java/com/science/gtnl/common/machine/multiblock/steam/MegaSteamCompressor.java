@@ -129,7 +129,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    protected MultiblockTooltipBuilder createTooltip() {
+    public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
             .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_00"))
@@ -193,7 +193,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
             @NotNull
             @Override
-            protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -201,7 +201,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
             @NotNull
             @Override
-            protected CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
+            public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
                 createRenderBlock();
                 return super.onRecipeStart(recipe);
             }
@@ -231,7 +231,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    protected void setProcessingLogicPower(ProcessingLogic logic) {
+    public void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(V[3]);
         // We need to trick the GT_ParallelHelper we have enough amps for all recipe parallels.
         logic.setAvailableAmperage(getTrueParallel());
@@ -250,7 +250,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    protected IAlignmentLimits getInitialAlignmentLimits() {
+    public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d != ForgeDirection.UP && d != ForgeDirection.DOWN;
     }
 
