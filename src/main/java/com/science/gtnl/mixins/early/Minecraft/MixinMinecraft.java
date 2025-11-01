@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.early.Minecraft;
 
-import java.util.Queue;
 import java.util.concurrent.Callable;
 
 import net.minecraft.client.Minecraft;
@@ -32,7 +31,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Timer;
 import net.minecraft.world.EnumDifficulty;
@@ -64,9 +62,6 @@ public abstract class MixinMinecraft {
     @Final
     @Shadow
     public Profiler mcProfiler;
-    @Final
-    @Shadow
-    public Queue field_152351_aB;
     @Shadow
     public int rightClickDelayTimer;
     @Shadow
@@ -89,8 +84,6 @@ public abstract class MixinMinecraft {
     public long systemTime;
     @Shadow
     public GameSettings gameSettings;
-    @Shadow
-    public MovingObjectPosition objectMouseOver;
     @Shadow
     public boolean inGameHasFocus;
     @Shadow
