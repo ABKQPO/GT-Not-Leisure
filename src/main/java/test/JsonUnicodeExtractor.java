@@ -1,9 +1,17 @@
 package test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.regex.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class JsonUnicodeExtractor {
@@ -12,7 +20,7 @@ public class JsonUnicodeExtractor {
         if (s == null) return null;
         Pattern pattern = Pattern.compile("\\\\u([0-9a-fA-F]{4})");
         Matcher matcher = pattern.matcher(s);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
             try {
                 int code = Integer.parseInt(matcher.group(1), 16);
@@ -47,7 +55,6 @@ public class JsonUnicodeExtractor {
         return new String[] { name, desc };
     }
 
-    // 处理单个 JSON 文件
     public static String[] processJsonFile(File file) {
         String filename = file.getName();
         if (!filename.contains("-")) {
