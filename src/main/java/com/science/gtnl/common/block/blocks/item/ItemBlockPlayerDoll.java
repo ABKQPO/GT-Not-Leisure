@@ -188,8 +188,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                             val -> { setEnableElytra(getCurrentItem(), val); }),
                         builder)
                     .setPos(64, 66)
-                    .setSize(36, 12))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_03")).setPos(105, 68));
+                    .setSize(16, 16))
+                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_03")).setPos(85, 68));
 
             builder.widget(
                 new VanillaButtonWidget().setDisplayString(StatCollector.translateToLocal("Tooltip_PlayerDoll_01"))
