@@ -1,4 +1,4 @@
-package test.java.science.gtnl;
+package science.gtnl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +20,7 @@ public class JsonUnicodeExtractor {
         if (s == null) return null;
         Pattern pattern = Pattern.compile("\\\\u([0-9a-fA-F]{4})");
         Matcher matcher = pattern.matcher(s);
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             try {
                 int code = Integer.parseInt(matcher.group(1), 16);
