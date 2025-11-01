@@ -46,7 +46,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 3;
     private static final int DEPTH_OFF_SET = 0;
-    public float speedup = 1;
+    public double speedup = 1;
     public int runningTickCounter = 0;
 
     public SteamInfernalCokeOven(String aName) {
@@ -211,13 +211,13 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setFloat("steam", speedup);
+        aNBT.setDouble("speedup", speedup);
     }
 
     @Override
     public void loadNBTData(final NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        speedup = aNBT.getFloat("steam");
+        speedup = aNBT.getDouble("speedup");
     }
 
     @SideOnly(Side.CLIENT)

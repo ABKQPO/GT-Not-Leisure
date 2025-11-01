@@ -227,8 +227,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
         if (this.mStartUpCheck < 0) {
             startRecipeProcessing();
             if (this.mMaxProgresstime > 0 && aTick % 20 == 0) {
-                int tier = GTUtility.getTier(-lEUt);
-                int baseAmount = 10 * (1 << (2 * tier));
+                int baseAmount = 10 * GTUtility.getTier(-lEUt) * GTUtility.getTier(-lEUt);
                 if (!this.depleteInputFromRestrictedHatches(this.mFluidIceInputHatch, baseAmount)) {
                     this.causeMaintenanceIssue();
                     this.stopMachine(
