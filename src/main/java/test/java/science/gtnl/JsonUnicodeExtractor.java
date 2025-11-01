@@ -1,4 +1,4 @@
-package test;
+package test.java.science.gtnl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
