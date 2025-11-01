@@ -2457,11 +2457,11 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
-                GTNLItemList.BreelPlatedCasing.get(16),
+                GTNLItemList.BreelPlatedCasing.get(12),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 2),
-                GTNLItemList.HydraulicMotor.get(12),
-                GTNLItemList.HydraulicPump.get(18),
-                GTNLItemList.SteelTurbine.get(16))
+                GTNLItemList.HydraulicMotor.get(8),
+                GTNLItemList.HydraulicPump.get(12),
+                GTNLItemList.SteelTurbine.get(12))
             .itemOutputs(GTNLItemList.SteamOilDrillModuleI.get(1))
             .duration(300)
             .eut(28)
@@ -2470,11 +2470,11 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTNLItemList.SteamOilDrillModuleI.get(1),
-                GTNLItemList.HyperPressureBreelCasing.get(16),
+                GTNLItemList.HyperPressureBreelCasing.get(12),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.MV, 4),
-                GTNLItemList.HydraulicPump.get(6),
-                GTNLItemList.HydraulicRegulator.get(12),
-                GTNLItemList.CompressedSteamTurbine.get(16))
+                GTNLItemList.HydraulicPump.get(4),
+                GTNLItemList.HydraulicRegulator.get(6),
+                GTNLItemList.CompressedSteamTurbine.get(12))
             .itemOutputs(GTNLItemList.SteamOilDrillModuleII.get(1))
             .duration(300)
             .eut(80)
@@ -2482,11 +2482,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTNLItemList.SteamOilDrillModuleII.get(4),
+                GTNLItemList.SteamOilDrillModuleII.get(1),
                 GTNLItemList.HyperPressureBreelCasing.get(16),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4),
-                GTNLItemList.HydraulicRegulator.get(12),
-                GTNLItemList.HydraulicVaporGenerator.get(6),
+                GTNLItemList.HydraulicRegulator.get(8),
+                GTNLItemList.HydraulicVaporGenerator.get(3),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.StainlessSteel, 12))
             .itemOutputs(GTNLItemList.SteamOilDrillModuleIII.get(1))
             .duration(300)
