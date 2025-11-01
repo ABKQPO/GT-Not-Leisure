@@ -88,9 +88,9 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     private static final String NPPRTh_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/nano_phagocytosis_plant_ring_three";
     private static final String[][] shape = StructureUtils.readStructureFromFile(NPP_STRUCTURE_FILE_PATH);
-    private static final String[][] shapeRingOne = StructureUtils.readStructureFromFile(NPPRO_STRUCTURE_FILE_PATH);
-    private static final String[][] shapeRingTwo = StructureUtils.readStructureFromFile(NPPRT_STRUCTURE_FILE_PATH);
-    private static final String[][] shapeRingThree = StructureUtils.readStructureFromFile(NPPRTh_STRUCTURE_FILE_PATH);
+    public static final String[][] shapeRingOne = StructureUtils.readStructureFromFile(NPPRO_STRUCTURE_FILE_PATH);
+    public static final String[][] shapeRingTwo = StructureUtils.readStructureFromFile(NPPRT_STRUCTURE_FILE_PATH);
+    public static final String[][] shapeRingThree = StructureUtils.readStructureFromFile(NPPRTh_STRUCTURE_FILE_PATH);
     private static final String[][] shapeRingOneAir = replaceLetters(shapeRingOne, "Z");
     private static final String[][] shapeRingTwoAir = replaceLetters(shapeRingTwo, "Z");
     private static final String[][] shapeRingThreeAir = replaceLetters(shapeRingThree, "Z");
