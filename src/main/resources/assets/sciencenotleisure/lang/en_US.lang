@@ -74,6 +74,8 @@ tc.research_name.gtnl.timeStopPocketWatch=Time Stop Pocket Watch
 tc.research_text.gtnl.timeStopPocketWatch=Mastering the Secret of Time
 tc.research_text.gtnl.timeStopPocketWatch.1=In the ancient manuscripts of the Chronomantic school, records of the “Time Stop Pocket Watch” are scarce. It is said to have been first crafted by an alchemist weary of war and noise, longing to capture eternity within the flow of time. The construction of the watch itself is not complex—the true challenge lies in imbuing it with the essence of stillness. Rumors tell that the infusion must take place on the darkest night of the lunar cycle, surrounded by silent temporal crystals and hushed metals. Every thought of the practitioner must be held in perfect focus, lest the ritual turn awry and time itself lash back. If the ritual succeeds, one may briefly freeze the world’s flow at this very moment—but beware: time is never truly mastered. It merely waits for the moment to retaliate.
 
+Tooltip_ResearchStation_00=Mark item in GUI to designate the research target
+
 Tooltip_PurificationPlant_00=Enters Wireless Mode when linked to an Absolute Baryonic Perfection Purification Unit without energy hatches.
 Tooltip_PurificationPlant_01=In Wireless Mode, all linked units gain Long parallel capacity.
 Tooltip_PurificationPlant_02=Allows item and fluid access from the assembly hatch.
@@ -874,7 +876,7 @@ tile.playerDoll.name=Doll
 Tooltip_PlayerDoll_00=Set the official player name
 Tooltip_PlayerDoll_01=Confirm
 Tooltip_PlayerDoll_02=Set the online skin link
-Tooltip_PlayerDoll_03=Toggle elytra rendering, 0 for false, 1 for true
+Tooltip_PlayerDoll_03=Toggle elytra rendering
 Tooltip_PlayerDoll_04=Set the online cape link
 Waila_TileEntityPlayerDoll_00=Official Player Name: 
 Waila_TileEntityPlayerDoll_01=Online Skin Link: 

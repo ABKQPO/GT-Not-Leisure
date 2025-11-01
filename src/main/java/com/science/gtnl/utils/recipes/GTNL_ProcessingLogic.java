@@ -14,11 +14,15 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.mixins.late.Gregtech.AccessorProcessingLogic;
 
 import gregtech.api.interfaces.tileentity.IRecipeLockable;
 import gregtech.api.interfaces.tileentity.IVoidable;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
+import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.objects.GTDualInputPattern;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -551,6 +555,20 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
             return CheckRecipeResultRegistry.DURATION_OVERFLOW;
         }
         duration = (int) finalDuration;
+
+        if (machine instanceof MTEMultiBlockBase mte) {
+            try {
+                for (MTEHatchMaintenance maintenance : mte.mMaintenanceHatches) {
+                    if (maintenance instanceof IConfigurationMaintenance customMaintenance
+                        && customMaintenance.isConfiguration()) {
+                        duration = (int) Math.max(1, duration * customMaintenance.getConfigTime() / 100.0);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                ScienceNotLeisure.LOG.warn("Error reading IConfigurationMaintenance from MTE: {}", mte, e);
+            }
+        }
 
         CheckRecipeResult hookResult = onRecipeStart(recipe);
         if (!hookResult.wasSuccessful()) {

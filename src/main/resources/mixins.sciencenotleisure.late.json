@@ -41,6 +41,7 @@
     "Gregtech.MixinMTEMultiBlockBase",
     "Gregtech.MixinMTELightningRod",
     "Gregtech.MixinMTEHatchDataAccess",
+    "Gregtech.MixinProcessingLogic",
     "Gregtech.AssLineRemover.MixinGTMod",
     "Gregtech.AssLineRemover.MixinGTRecipeBuilder",
     "Gregtech.AssLineRemover.MixinTTRecipeAdder",
@@ -50,7 +51,8 @@
     "NotEnoughItems.MixinGuiContainerManager",
     "NHCoreMod.MixinBacteriaRegistry",
     "ThaumicTinkerer.MixinItemBloodSword",
-    "TecTech.MixinTTRecipeAdder"
+    "TecTech.MixinTTRecipeAdder",
+    "TecTech.MixinMTEResearchStation"
   ],
   "client": [],
   "server": []

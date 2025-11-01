@@ -13,18 +13,23 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.screen.IItemWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.VanillaButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.SoundResource;
 import gregtech.api.gui.modularui.GTUIInfos;
 import gregtech.api.gui.modularui.GTUITextures;
 
@@ -103,16 +108,28 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
         return new PlayerDollUIFactory(buildContext).createWindow();
     }
 
-    public static class PlayerDollUIFactory {
-
-        private final UIBuildContext buildContext;
-
-        public PlayerDollUIFactory(UIBuildContext buildContext) {
-            this.buildContext = buildContext;
-        }
+    @Desugar
+    public record PlayerDollUIFactory(UIBuildContext buildContext) {
 
         public ModularWindow createWindow() {
             ModularWindow.Builder builder = ModularWindow.builder(300, 97);
+            builder.widget(
+                new FakeSyncWidget.StringSyncer(
+                    () -> getSkullOwner(getCurrentItem()),
+                    val -> setSkullOwner(getCurrentItem(), val)));
+            builder.widget(
+                new FakeSyncWidget.StringSyncer(
+                    () -> getSkinHttp(getCurrentItem()),
+                    val -> setSkinHttp(getCurrentItem(), val)));
+            builder.widget(
+                new FakeSyncWidget.StringSyncer(
+                    () -> getCapeHttp(getCurrentItem()),
+                    val -> setCapeHttp(getCurrentItem(), val)));
+            builder.widget(
+                new FakeSyncWidget.BooleanSyncer(
+                    () -> getEnableElytra(getCurrentItem()),
+                    val -> setEnableElytra(getCurrentItem(), val)));
+
             builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
 
             TextFieldWidget playerNameField = new TextFieldWidget();
@@ -150,19 +167,29 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                     .setSize(197, 12))
                 .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_04")).setPos(208, 46));
 
-            TextFieldWidget elytraStateField = new TextFieldWidget();
             builder.widget(
-                elytraStateField.setGetter(() -> getEnableElytra(getCurrentItem()) ? "1" : "0")
-                    .setSetter(value -> {
-                        boolean enableElytra = "1".equals(value);
-                        setEnableElytra(getCurrentItem(), enableElytra);
+                new ButtonWidget().setOnClick(
+                    (clickData, widget) -> { setEnableElytra(getCurrentItem(), !getEnableElytra(getCurrentItem())); })
+                    .setPlayClickSoundResource(
+                        () -> getEnableElytra(getCurrentItem()) ? SoundResource.GUI_BUTTON_UP.resourceLocation
+                            : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
+                    .setBackground(() -> {
+                        if (getEnableElytra(getCurrentItem())) {
+                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD_PRESSED,
+                                GTUITextures.OVERLAY_BUTTON_POWER_SWITCH_ON };
+                        } else {
+                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
+                                GTUITextures.OVERLAY_BUTTON_POWER_SWITCH_OFF };
+                        }
                     })
-                    .setTextColor(Color.WHITE.dark(1))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
+                    .attachSyncer(
+                        new FakeSyncWidget.BooleanSyncer(
+                            () -> getEnableElytra(getCurrentItem()),
+                            val -> { setEnableElytra(getCurrentItem(), val); }),
+                        builder)
                     .setPos(64, 66)
-                    .setSize(36, 12))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_03")).setPos(105, 68));
+                    .setSize(16, 16))
+                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_03")).setPos(85, 68));
 
             builder.widget(
                 new VanillaButtonWidget().setDisplayString(StatCollector.translateToLocal("Tooltip_PlayerDoll_01"))
@@ -180,7 +207,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             return builder.build();
         }
 
-        private String getSkullOwner(ItemStack stack) {
+        public String getSkullOwner(ItemStack stack) {
             if (stack.hasTagCompound()) {
                 NBTTagCompound nbt = stack.getTagCompound();
                 if (nbt.hasKey("SkullOwner", 8)) {
@@ -190,7 +217,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             return "";
         }
 
-        private void setSkullOwner(ItemStack stack, String playerName) {
+        public void setSkullOwner(ItemStack stack, String playerName) {
             NBTTagCompound nbt = stack.getTagCompound();
             if (nbt == null) {
                 stack.setTagCompound(nbt = new NBTTagCompound());
@@ -198,7 +225,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             nbt.setString("SkullOwner", playerName);
         }
 
-        private String getSkinHttp(ItemStack stack) {
+        public String getSkinHttp(ItemStack stack) {
             if (stack.hasTagCompound()) {
                 NBTTagCompound nbt = stack.getTagCompound();
                 if (nbt.hasKey("SkinHttp", 8)) {
@@ -208,7 +235,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             return "";
         }
 
-        private void setSkinHttp(ItemStack stack, String skinHttp) {
+        public void setSkinHttp(ItemStack stack, String skinHttp) {
             NBTTagCompound nbt = stack.getTagCompound();
             if (nbt == null) {
                 stack.setTagCompound(nbt = new NBTTagCompound());
@@ -216,7 +243,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             nbt.setString("SkinHttp", skinHttp);
         }
 
-        private String getCapeHttp(ItemStack stack) {
+        public String getCapeHttp(ItemStack stack) {
             if (stack.hasTagCompound()) {
                 NBTTagCompound nbt = stack.getTagCompound();
                 if (nbt.hasKey("CapeHttp", 8)) {
@@ -226,7 +253,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             return "";
         }
 
-        private void setCapeHttp(ItemStack stack, String skinHttp) {
+        public void setCapeHttp(ItemStack stack, String skinHttp) {
             NBTTagCompound nbt = stack.getTagCompound();
             if (nbt == null) {
                 stack.setTagCompound(nbt = new NBTTagCompound());
@@ -234,7 +261,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             nbt.setString("CapeHttp", skinHttp);
         }
 
-        private boolean getEnableElytra(ItemStack stack) {
+        public boolean getEnableElytra(ItemStack stack) {
             if (stack.hasTagCompound()) {
                 NBTTagCompound nbt = stack.getTagCompound();
                 if (nbt.hasKey("enableElytra", 1)) {
@@ -244,7 +271,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             return false;
         }
 
-        private void setEnableElytra(ItemStack stack, boolean enableElytra) {
+        public void setEnableElytra(ItemStack stack, boolean enableElytra) {
             NBTTagCompound nbt = stack.getTagCompound();
             if (nbt == null) {
                 stack.setTagCompound(nbt = new NBTTagCompound());
@@ -252,7 +279,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             nbt.setBoolean("enableElytra", enableElytra);
         }
 
-        private ItemStack getCurrentItem() {
+        public ItemStack getCurrentItem() {
             return buildContext.getPlayer().inventory.getCurrentItem();
         }
     }

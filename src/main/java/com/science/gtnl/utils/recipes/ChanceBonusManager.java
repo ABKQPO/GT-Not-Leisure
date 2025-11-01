@@ -21,7 +21,7 @@ import gregtech.api.util.GTUtility;
 // Original code from Overpowered Mod. MIT License. 2025/4/18
 public class ChanceBonusManager {
 
-    public static final LinkedList<ChanceBonusProvider> bonusProviders = new LinkedList<>();
+    public static LinkedList<ChanceBonusProvider> bonusProviders = new LinkedList<>();
     public static CustomChanceBonusProvider customProvider = new CustomChanceBonusProvider();
 
     public interface ChanceBonusProvider {

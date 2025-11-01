@@ -11,15 +11,12 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IRecipeLockable;
 import gregtech.api.interfaces.tileentity.IVoidable;
-import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
-import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -406,15 +403,6 @@ public class GTNL_ParallelHelper extends ParallelHelper {
      */
     @Override
     public void determineParallel() {
-        if (machine instanceof MTEMultiBlockBase multiBlockBase) {
-            for (MTEHatchMaintenance maintenance : multiBlockBase.mMaintenanceHatches) {
-                if (maintenance instanceof IConfigurationMaintenance customMaintenance
-                    && customMaintenance.isConfiguration()) {
-                    recipe.mDuration = recipe.mDuration * customMaintenance.getConfigTime() / 100;
-                }
-            }
-        }
-
         if (!ModList.Overpowered.isModLoaded() && MainConfig.enableRecipeOutputChance) {
             // Compute optional bonus based on machine and current EU/t
             OptionalDouble bonusOptional = ChanceBonusManager

@@ -1716,7 +1716,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             30000,
             (int) TierEU.RECIPE_UV,
             1,
-            new Object[] { GTNLItemList.LargeCircuitAssembler.get(64), GTUtility.copyAmount(64,cal),
+            new Object[] { GTNLItemList.LargeCircuitAssembler.get(64), GTUtility.copyAmount(64, cal),
                 ItemList.Casing_Assembler.get(64), ItemList.SpaceElevatorBaseCasing.get(32),
                 ItemRefer.Compassline_Casing_ZPM.get(16), ItemList.Robot_Arm_UHV.get(48),
                 ItemList.Conveyor_Module_UHV.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UV), 64 },
@@ -1792,7 +1792,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .metadata(SCANNING, new Scanning(10 * MINUTES, TierEU.RECIPE_IV))
             .itemInputs(
                 CustomItemList.Machine_Multi_Computer.get(1),
-                GTOreDictUnificator.get(OrePrefixes.circuit,Materials.UV,2),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 2),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.SuperconductorUV, 4),
                 CustomItemList.DATApipe.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Polybenzimidazole, 1))

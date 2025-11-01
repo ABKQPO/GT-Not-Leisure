@@ -74,6 +74,8 @@ tc.research_name.gtnl.timeStopPocketWatch=岁月静滞怀表
 tc.research_text.gtnl.timeStopPocketWatch=掌握时间的秘密
 tc.research_text.gtnl.timeStopPocketWatch.1=在古老的时间学派手稿中，有关「岁月静滞怀表」的记载寥寥无几。据说，它最早是由一位厌倦战争与喧嚣的炼金术士打造，他渴望在流逝中捕捉永恒。怀表的构造并不复杂，真正的难点在于为其注入“停滞”的本质。传闻整个仪式必须在月相最黯淡之夜进行，四周环绕以安静的时空晶体与沉默的金属，施术者的每一缕意念都必须精确控制，否则整个注魔仪式会使时间本身反噬施法者。若仪式成功，便可暂时将世界之流冻结于此刻，但切记：时间从不会真正被掌控，它只是在等待反扑的时机。
 
+Tooltip_ResearchStation_00=在GUI内标记物品来指定研究目标
+
 Tooltip_PurificationPlant_00=当连接绝对重子完美净化单元且不安装能源仓时将进入无线模式
 Tooltip_PurificationPlant_01=在无线模式下，所有连接此净水厂的净化单元最大并行提升为Long
 Tooltip_PurificationPlant_02=同时可以从总成获取物品和流体
@@ -874,7 +876,7 @@ tile.playerDoll.name=玩偶
 Tooltip_PlayerDoll_00=设置正版玩家名
 Tooltip_PlayerDoll_01=确认
 Tooltip_PlayerDoll_02=设置在线皮肤链接
-Tooltip_PlayerDoll_03=切换鞘翅渲染，0为false，1为true
+Tooltip_PlayerDoll_03=切换鞘翅渲染
 Tooltip_PlayerDoll_04=设置在线披风链接
 Waila_TileEntityPlayerDoll_00=正版玩家名：
 Waila_TileEntityPlayerDoll_01=在线皮肤链接：
