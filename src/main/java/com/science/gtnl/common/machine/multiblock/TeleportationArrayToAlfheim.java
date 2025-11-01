@@ -222,14 +222,6 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
                 if (!slot.isEmpty()) {
                     // try to cache the possible recipes from pattern
-                    if (slot instanceof IDualInputInventoryWithPattern withPattern) {
-                        if (!processingLogic.tryCachePossibleRecipesFromPattern(withPattern)) {
-                            // move on to next slots if it returns false, which means there is no possible recipes with
-                            // given pattern.
-                            continue;
-                        }
-                    }
-
                     processingLogic.setInputItems(ArrayUtils.addAll(sharedItems, slot.getItemInputs()));
 
                     List<FluidStack> fluids = new ArrayList<>(Arrays.asList(slot.getFluidInputs()));
@@ -545,7 +537,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 return super.validateRecipe(recipeWithMultiplier(recipe, inputFluids));
             }
-        };
+        }.setMaxTierSkips(getTrueParallel());
     }
 
     public GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs) {
