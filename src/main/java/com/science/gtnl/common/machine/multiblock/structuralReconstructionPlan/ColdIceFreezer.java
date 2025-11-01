@@ -9,6 +9,7 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.api.util.GTUtility.validMTEList;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import net.minecraft.item.ItemStack;
@@ -50,11 +51,13 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String CIF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/cold_ice_freeze";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(CIF_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 2;
-    protected final int VERTICAL_OFF_SET = 2;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String CIF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/cold_ice_freeze";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(CIF_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
+
+    public ArrayList<CustomFluidHatch> mFluidIceInputHatch = new ArrayList<>();
 
     public ColdIceFreezer(final int aID, final String aName, final String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -251,5 +254,20 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
             useSingleAmp ? 1
                 : ExoticEnergyInputHelper.getMaxWorkingInputAmpsMulti(getExoticAndNormalEnergyHatchList()));
         logic.setAmperageOC(!mExoticEnergyHatches.isEmpty() || mEnergyHatches.size() != 1);
+    }
+
+    public boolean addFluidIceInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity == null) {
+            return false;
+        } else {
+            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
+                .getMetaTileID() == 21502) {
+                hatch.updateTexture(aBaseCasingIndex);
+                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
+                return addToMachineListInternal(mFluidIceInputHatch, aTileEntity, aBaseCasingIndex);
+            }
+        }
+        return false;
     }
 }

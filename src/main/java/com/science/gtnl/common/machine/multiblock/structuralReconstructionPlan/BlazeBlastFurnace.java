@@ -9,6 +9,7 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.validMTEList;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -60,12 +61,15 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String BBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/blaze_blast_furnace";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(BBF_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 3;
-    protected final int VERTICAL_OFF_SET = 3;
-    protected final int DEPTH_OFF_SET = 1;
+    private static final String BBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/blaze_blast_furnace";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(BBF_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 3;
+    private static final int DEPTH_OFF_SET = 1;
+
     public int mMultiTier = 1;
+
+    public ArrayList<CustomFluidHatch> mFluidBlazeInputHatch = new ArrayList<>();
 
     public BlazeBlastFurnace(final int aID, final String aName, final String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -396,5 +400,20 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                 + getAveragePollutionPercentage()
                 + EnumChatFormatting.RESET
                 + " %" };
+    }
+
+    public boolean addFluidBlazeInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity == null) {
+            return false;
+        } else {
+            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
+                .getMetaTileID() == 21503) {
+                hatch.updateTexture(aBaseCasingIndex);
+                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
+                return addToMachineListInternal(mFluidBlazeInputHatch, aTileEntity, aBaseCasingIndex);
+            }
+        }
+        return false;
     }
 }

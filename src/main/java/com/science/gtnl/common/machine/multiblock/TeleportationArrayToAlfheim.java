@@ -8,8 +8,11 @@ import static gregtech.api.enums.Mods.Botania;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTUtility.validMTEList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -24,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
@@ -33,6 +37,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
+import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.config.MainConfig;
@@ -44,13 +49,14 @@ import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
 import com.science.gtnl.utils.recipes.GTNL_ParallelHelper;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
-import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.implementations.MTEHatchInput;
+import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -60,25 +66,31 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.tileentities.machines.IDualInputHatch;
+import gregtech.common.tileentities.machines.IDualInputInventory;
+import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
+import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.TTCasingsContainer;
 
 public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationArrayToAlfheim> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String TATA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String TATA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/teleportation_array_to_alfheim";
-    protected final int HORIZONTAL_OFF_SET = 11;
-    protected final int VERTICAL_OFF_SET = 15;
-    protected final int DEPTH_OFF_SET = 2;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(TATA_STRUCTURE_FILE_PATH);
-    private static final int PORTAL_MODE = 0;
-    private static final int NATURE_MODE = 1;
-    private static final int MANA_MODE = 2;
-    private static final int RUNE_MODE = 3;
-    private boolean enableInfinityMana = false;
-    private static final ItemStack asgardandelion = ItemUtils
+    private final int HORIZONTAL_OFF_SET = 11;
+    private final int VERTICAL_OFF_SET = 15;
+    private final int DEPTH_OFF_SET = 2;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(TATA_STRUCTURE_FILE_PATH);
+    public static final int PORTAL_MODE = 0;
+    public static final int NATURE_MODE = 1;
+    public static final int MANA_MODE = 2;
+    public static final int RUNE_MODE = 3;
+    public boolean enableInfinityMana = false;
+    public static final ItemStack asgardandelion = ItemUtils
         .getItemStack(Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
+
+    public ArrayList<CustomFluidHatch> mFluidManaInputHatch = new ArrayList<>();
 
     public TeleportationArrayToAlfheim(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -189,6 +201,144 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
         return super.checkProcessing();
     }
 
+    @Override
+    @Nonnull
+    protected CheckRecipeResult doCheckRecipe() {
+        CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
+
+        ArrayList<FluidStack> manaHatchStored = new ArrayList<>();
+        for (CustomFluidHatch tHatch : mFluidManaInputHatch) {
+            FluidStack fillableStack = tHatch.getFillableStack();
+            if (fillableStack != null) {
+                manaHatchStored.add(fillableStack);
+            }
+        }
+
+        // check crafting input hatches first
+        for (IDualInputHatch dualInputHatch : mDualInputHatches) {
+            ItemStack[] sharedItems = dualInputHatch.getSharedItems();
+            for (var it = dualInputHatch.inventories(); it.hasNext();) {
+                IDualInputInventory slot = it.next();
+
+                if (!slot.isEmpty()) {
+                    // try to cache the possible recipes from pattern
+                    if (slot instanceof IDualInputInventoryWithPattern withPattern) {
+                        if (!processingLogic.tryCachePossibleRecipesFromPattern(withPattern)) {
+                            // move on to next slots if it returns false, which means there is no possible recipes with
+                            // given pattern.
+                            continue;
+                        }
+                    }
+
+                    processingLogic.setInputItems(ArrayUtils.addAll(sharedItems, slot.getItemInputs()));
+
+                    List<FluidStack> fluids = new ArrayList<>(Arrays.asList(slot.getFluidInputs()));
+                    if (!manaHatchStored.isEmpty()) fluids.addAll(manaHatchStored);
+                    if (enableInfinityMana) {
+                        fluids.add(MaterialPool.FluidMana.getFluidOrGas(Integer.MAX_VALUE));
+                    }
+                    processingLogic.setInputFluids(fluids);
+
+                    CheckRecipeResult foundResult = processingLogic.process();
+                    if (foundResult.wasSuccessful()) {
+                        return foundResult;
+                    }
+                    if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
+                        // Recipe failed in interesting way, so remember that and continue searching
+                        result = foundResult;
+                    }
+                }
+            }
+        }
+
+        result = checkRecipeForCustomHatches(result);
+        if (result.wasSuccessful()) {
+            return result;
+        }
+
+        // Use hatch colors if any; fallback to color 1 otherwise.
+        short hatchColors = getHatchColors();
+        boolean doColorChecking = hatchColors != 0;
+        if (!doColorChecking) hatchColors = 0b1;
+
+        for (byte color = 0; color < (doColorChecking ? 16 : 1); color++) {
+            if (isColorAbsent(hatchColors, color)) continue;
+            List<FluidStack> fluids = new ArrayList<>(getStoredFluidsForColor(Optional.of(color)));
+            if (!manaHatchStored.isEmpty()) fluids.addAll(manaHatchStored);
+            if (enableInfinityMana) {
+                fluids.add(MaterialPool.FluidMana.getFluidOrGas(Integer.MAX_VALUE));
+            }
+            processingLogic.setInputFluids(fluids);
+
+            if (isInputSeparationEnabled()) {
+                if (mInputBusses.isEmpty()) {
+                    CheckRecipeResult foundResult = processingLogic.process();
+                    if (foundResult.wasSuccessful()) return foundResult;
+                    // Recipe failed in interesting way, so remember that and continue searching
+                    if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) result = foundResult;
+                } else {
+                    for (MTEHatchInputBus bus : mInputBusses) {
+                        if (bus instanceof MTEHatchCraftingInputME || bus instanceof SuperCraftingInputHatchME)
+                            continue;
+                        byte busColor = bus.getColor();
+                        if (busColor != -1 && busColor != color) continue;
+                        List<ItemStack> inputItems = new ArrayList<>();
+                        for (int i = bus.getSizeInventory() - 1; i >= 0; i--) {
+                            ItemStack stored = bus.getStackInSlot(i);
+                            if (stored != null) inputItems.add(stored);
+                        }
+                        if (canUseControllerSlotForRecipe() && getControllerSlot() != null) {
+                            inputItems.add(getControllerSlot());
+                        }
+                        processingLogic.setInputItems(inputItems);
+                        CheckRecipeResult foundResult = processingLogic.process();
+                        if (foundResult.wasSuccessful()) return foundResult;
+                        // Recipe failed in interesting way, so remember that and continue searching
+                        if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) result = foundResult;
+                    }
+                }
+            } else {
+                List<ItemStack> inputItems = getStoredInputsForColor(Optional.of(color));
+                if (canUseControllerSlotForRecipe() && getControllerSlot() != null) {
+                    inputItems.add(getControllerSlot());
+                }
+                processingLogic.setInputItems(inputItems);
+                CheckRecipeResult foundResult = processingLogic.process();
+                if (foundResult.wasSuccessful()) return foundResult;
+                // Recipe failed in interesting way, so remember that
+                if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) result = foundResult;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
+        if (aLiquid == null) return false;
+        for (MTEHatchInput tHatch : validMTEList(mInputHatches)) {
+            setHatchRecipeMap(tHatch);
+            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
+            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
+                if (simulate) {
+                    return true;
+                }
+                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
+                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
+            }
+        }
+        for (CustomFluidHatch tHatch : validMTEList(mFluidManaInputHatch)) {
+            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
+            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
+                if (simulate) {
+                    return true;
+                }
+                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
+                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
+            }
+        }
+        return false;
+    }
+
     public void triggerExplosion(IGregTechTileEntity aBaseMetaTileEntity, float strength) {
         if (MainConfig.enablePortalToAlfheimBigBoom) {
             ProcessHandler.addProcess(
@@ -255,7 +405,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                         .dot(1)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings8, 10))
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(GregTechAPI.sBlockCasings8, 10)),
+                    onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10)),
                     buildHatchAdder(TeleportationArrayToAlfheim.class)
                         .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
                         .hatchId(21501)
@@ -428,5 +578,20 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public String getMachineModeName() {
         return StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + machineMode);
+    }
+
+    public boolean addFluidManaInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity == null) {
+            return false;
+        } else {
+            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
+                .getMetaTileID() == 21501) {
+                hatch.updateTexture(aBaseCasingIndex);
+                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
+                return addToMachineListInternal(mFluidManaInputHatch, aTileEntity, aBaseCasingIndex);
+            }
+        }
+        return false;
     }
 }

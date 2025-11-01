@@ -98,9 +98,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     public ArrayList<MTEHatch> mExoticDynamoHatches = new ArrayList<>();
     public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
-    public ArrayList<CustomFluidHatch> mFluidIceInputHatch = new ArrayList<>();
-    public ArrayList<CustomFluidHatch> mFluidBlazeInputHatch = new ArrayList<>();
-    public ArrayList<CustomFluidHatch> mFluidManaInputHatch = new ArrayList<>();
 
     public GTCoilTracker.MultiCoilLease coilLease = null;
 
@@ -758,8 +755,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         this.mExoticEnergyHatches.clear();
         this.mExoticDynamoHatches.clear();
         this.mParallelControllerHatches.clear();
-        this.mFluidManaInputHatch.clear();
-        this.mFluidIceInputHatch.clear();
         mCountCasing = 0;
         mParallelTier = 0;
         mEnergyHatchTier = 0;
@@ -1208,51 +1203,4 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
         return false;
     }
-
-    public boolean addFluidManaInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) {
-            return false;
-        } else {
-            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
-                .getMetaTileID() == 21501) {
-                hatch.updateTexture(aBaseCasingIndex);
-                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
-                return addToMachineListInternal(mFluidManaInputHatch, aTileEntity, aBaseCasingIndex);
-            }
-        }
-        return false;
-    }
-
-    public boolean addFluidIceInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) {
-            return false;
-        } else {
-            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
-                .getMetaTileID() == 21502) {
-                hatch.updateTexture(aBaseCasingIndex);
-                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
-                return addToMachineListInternal(mFluidIceInputHatch, aTileEntity, aBaseCasingIndex);
-            }
-        }
-        return false;
-    }
-
-    public boolean addFluidBlazeInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) {
-            return false;
-        } else {
-            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-            if (aMetaTileEntity instanceof CustomFluidHatch hatch && aMetaTileEntity.getBaseMetaTileEntity()
-                .getMetaTileID() == 21503) {
-                hatch.updateTexture(aBaseCasingIndex);
-                hatch.updateCraftingIcon(this.getMachineCraftingIcon());
-                return addToMachineListInternal(mFluidBlazeInputHatch, aTileEntity, aBaseCasingIndex);
-            }
-        }
-        return false;
-    }
-
-    // endregion
 }
