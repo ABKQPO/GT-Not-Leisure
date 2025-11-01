@@ -554,13 +554,14 @@ public class GTNL_ProcessingLogic extends ProcessingLogic {
         if (finalDuration >= Integer.MAX_VALUE) {
             return CheckRecipeResultRegistry.DURATION_OVERFLOW;
         }
+        duration = (int) finalDuration;
 
         if (machine instanceof MTEMultiBlockBase mte) {
             try {
                 for (MTEHatchMaintenance maintenance : mte.mMaintenanceHatches) {
                     if (maintenance instanceof IConfigurationMaintenance customMaintenance
                         && customMaintenance.isConfiguration()) {
-                        duration = (int) Math.max(1, finalDuration * customMaintenance.getConfigTime() / 100.0);
+                        duration = (int) Math.max(1, duration * customMaintenance.getConfigTime() / 100.0);
                         break;
                     }
                 }
