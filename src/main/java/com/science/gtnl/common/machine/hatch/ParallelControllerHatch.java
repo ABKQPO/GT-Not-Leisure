@@ -132,7 +132,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         if (mTier <= 1) {
             return 1;
         } else {
-            return (int) Math.pow(4, mTier - 2);
+            return 1 << (2 * (mTier - 2));
         }
     }
 

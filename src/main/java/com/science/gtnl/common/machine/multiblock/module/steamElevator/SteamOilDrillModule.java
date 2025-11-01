@@ -53,8 +53,8 @@ public class SteamOilDrillModule extends SteamElevatorModule {
             .addInfo(
                 StatCollector.translateToLocalFormatted(
                     "Tooltip_SteamOilDrillModule_03",
-                    (int) (500d * Math.pow(2, mTier - 2)),
-                    (int) (2500d * Math.pow(2, mTier - 2))))
+                    500 * (1 << Math.max(0, mTier - 2)),
+                    2500 * (1 << Math.max(0, mTier - 2))))
             .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamOilDrillModule_04", 1200 / (mTier - 1)))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
@@ -83,7 +83,8 @@ public class SteamOilDrillModule extends SteamElevatorModule {
                 continue;
             }
 
-            int amount = (int) (500d * Math.pow(2, mTier - 2) * (1 + tAmountRNG.nextInt(4)));
+            int base = 500 * (1 << Math.max(0, mTier - 2));
+            int amount = base * (1 + tAmountRNG.nextInt(4));
             fluidStack.add(new FluidStack(uoFluid.getFluid(), amount));
         }
 

@@ -205,9 +205,9 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         mParallelTier = getParallelTier(getControllerSlot());
         if (mParallelTier <= 1) {
             return 8;
-        } else {
-            return (int) Math.pow(4, mParallelTier - 2);
         }
+
+        return 1 << (2 * (mParallelTier - 2));
     }
 
     @Override

@@ -218,8 +218,8 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
             @Nonnull
             protected GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
-                    .setEUtDiscount(0.5 * tierMachine * Math.pow(4, Math.min(4, recipeOcCount)))
-                    .setDurationModifier(1.0 / 10.0 / tierMachine / Math.pow(2, Math.min(4, recipeOcCount)))
+                    .setEUtDiscount(0.5 * tierMachine * (1 << (2 * Math.min(4, recipeOcCount))))
+                    .setDurationModifier(1.0 / 10.0 / tierMachine / (1 << Math.min(4, recipeOcCount)))
                     .setMaxTierSkips(0)
                     .setMaxOverclocks(0);
             }
@@ -449,8 +449,8 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
         this.mEfficiency = 10000 - (getIdealStatus() - getRepairStatus()) * 1000;
         this.mEfficiencyIncrease = 10000;
-        this.mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax / Math.pow(2, recipeOcCount));
-        this.lEUt = (long) (VP[GTUtility.getTier(calculator.getConsumption())] * Math.pow(4, recipeOcCount));
+        this.mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax / (1 << recipeOcCount));
+        this.lEUt = VP[GTUtility.getTier(calculator.getConsumption())] * (1L << (2 * recipeOcCount));
         if (this.lEUt > 0) {
             this.lEUt = -this.lEUt;
         }

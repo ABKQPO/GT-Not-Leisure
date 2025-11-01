@@ -916,7 +916,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
                     if (wirelessMode) {
                         logic.setEUt(V[Math.min(mParallelTier + 1, 14)]);
-                        logic.setAmperage((long) Math.pow(4, mParallelTier) * 8L - 2L);
+                        logic.setAmperage((8L << (2 * mParallelTier)) - 2L);
                         logic.setAmperageOC(false);
                     }
                     return logic;
@@ -958,17 +958,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             if (maxParallelStored >= 0) {
                 return maxParallelStored;
             }
+
             if (mParallelControllerHatches.size() == 1) {
-                for (ParallelControllerHatch module : mParallelControllerHatches) {
-                    mParallelTier = module.mTier;
-                    return module.getParallel();
-                }
+                ParallelControllerHatch module = mParallelControllerHatches.get(0);
+                mParallelTier = module.mTier;
+                return 16 << (2 * (module.mTier - 2));
             } else if (mParallelTier <= 1) {
                 return 8;
             } else {
-                return (int) Math.pow(4, mParallelTier - 2) * 16;
+                return 16 << (2 * (mParallelTier - 2));
             }
-            return 8;
         }
 
         @Override

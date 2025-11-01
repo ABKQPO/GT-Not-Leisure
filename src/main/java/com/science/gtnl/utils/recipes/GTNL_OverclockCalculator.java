@@ -350,7 +350,7 @@ public class GTNL_OverclockCalculator extends OverclockCalculator {
     @Override
     public boolean getAllowedTierSkip() {
         if (this.maxTierSkip == Integer.MAX_VALUE) return true;
-        return recipeEUt <= machineVoltage * Math.pow(4, maxTierSkip);
+        return recipeEUt <= machineVoltage * (1L << (2 * maxTierSkip));
     }
 
     @Override

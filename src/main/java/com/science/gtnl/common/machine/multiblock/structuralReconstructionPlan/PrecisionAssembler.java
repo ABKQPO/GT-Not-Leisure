@@ -384,7 +384,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     @Override
     public int getMaxParallelRecipes() {
         if (mGlassTier > 0) {
-            return (int) Math.pow(2, mGlassTier) + mCasingTier * 64;
+            return (1 << mGlassTier) + mCasingTier * 64;
         } else {
             return 0;
         }

@@ -137,7 +137,7 @@ public class ExtraSpawnerAnimals {
                                             float distZ = spawnZ - (float) spawnPoint.posZ;
                                             float distanceSquared = distX * distX + distY * distY + distZ * distZ;
 
-                                            if (distanceSquared >= Math.pow(MAX_SPAWN_DISTANCE, 2)) {
+                                            if (distanceSquared >= MAX_SPAWN_DISTANCE * MAX_SPAWN_DISTANCE) {
                                                 try {
                                                     BiomeGenBase.SpawnListEntry spawnEntry = world
                                                         .spawnRandomCreature(creatureType, newX, newY, newZ);

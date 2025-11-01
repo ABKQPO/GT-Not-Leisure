@@ -78,18 +78,18 @@ public class ItemMeteorMinerMachineRender implements IItemRenderer {
 
         // 0.01f magic number to shrink sphere obj down.
         // Size obtained from the multis current recipe.
-        float scale = 0.01f;
+        double scale = 0.01f;
 
         // Put each subsequent layer further out.
         scale *= Math.pow(1.04f, layer);
 
         // Scale the star up in the x, y and z directions.
-        GL11.glScalef(scale, scale, scale);
+        GL11.glScaled(scale, scale, scale);
 
         switch (layer) {
-            case 0 -> GL11.glRotatef(130 + (System.currentTimeMillis() / 64) % 360, 0F, 1F, 1F);
-            case 1 -> GL11.glRotatef(-49 + (System.currentTimeMillis() / 64) % 360, 1F, 1F, 0F);
-            case 2 -> GL11.glRotatef(67 + (System.currentTimeMillis() / 64) % 360, 1F, 0F, 1F);
+            case 0 -> GL11.glRotated(130 + (System.currentTimeMillis() / 64d) % 360, 0F, 1F, 1F);
+            case 1 -> GL11.glRotated(-49 + (System.currentTimeMillis() / 64d) % 360, 1F, 1F, 0F);
+            case 2 -> GL11.glRotated(67 + (System.currentTimeMillis() / 64d) % 360, 1F, 0F, 1F);
         }
 
         // Set colour and alpha (transparency) of the star layer.

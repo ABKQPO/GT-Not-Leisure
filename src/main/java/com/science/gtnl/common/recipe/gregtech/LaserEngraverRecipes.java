@@ -112,7 +112,7 @@ public class LaserEngraverRecipes implements IRecipePool {
                 GTValues.RA.stdBuilder()
                     .itemInputs(
                         energyHatch[j >= 4 && i >= 4 ? j - 4 : j][hatchIndex].get(1),
-                        energyCover[j].get((long) Math.min(Math.pow(2, i >= 2 ? i - 2 : i), 4)),
+                        energyCover[j].get(Math.min(1L << (i >= 2 ? i - 2 : i), 4L)),
                         energyDetector)
                     .itemOutputs(GTNLItemList.WIRELESS_ENERGY_HATCHES[j][i].get(1))
                     .duration(200)

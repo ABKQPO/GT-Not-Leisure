@@ -725,6 +725,10 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Bronze, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Steel, 1) });
 
+        GTModHandler.addShapelessCraftingRecipe(
+            new ItemStack(Blocks.planks, 2),
+            new Object[] { GTModHandler.getModItem(IndustrialCraft2.ID, "blockRubWood", 1) });
+
         GTModHandler.addCraftingRecipe(
             GTNLItemList.VibrationSafeCasing.get(1),
             new Object[] { "AAA", "BCB", "AAA", 'A',

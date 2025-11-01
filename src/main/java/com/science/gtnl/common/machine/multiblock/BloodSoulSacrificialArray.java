@@ -95,21 +95,21 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public int getMaxParallelRecipes() {
         mParallelTier = getParallelTier(getControllerSlot());
+
         if (mParallelControllerHatches.size() == 1) {
-            for (ParallelControllerHatch module : mParallelControllerHatches) {
-                mParallelTier = module.mTier;
-                return module.getParallel();
-            }
+            ParallelControllerHatch module = mParallelControllerHatches.get(0);
+            mParallelTier = module.mTier;
+
+            int baseParallel = module.getParallel();
+            return getRecipeMap() == RecipePool.FallingTowerRecipes ? baseParallel / 4 : baseParallel * 4;
         }
+
         if (mParallelTier <= 1) {
             return 8;
-        } else {
-            if (this.getRecipeMap() == RecipePool.FallingTowerRecipes) {
-                return (int) Math.pow(4, mParallelTier - 2) / 16;
-            } else {
-                return (int) Math.pow(4, mParallelTier - 2) * 4;
-            }
         }
+
+        int base = 1 << (2 * (mParallelTier - 2));
+        return getRecipeMap() == RecipePool.FallingTowerRecipes ? base / 4 : base * 4;
     }
 
     @Override

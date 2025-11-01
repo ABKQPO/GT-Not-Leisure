@@ -484,12 +484,12 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @ApiStatus.OverrideOnly
     public double getEUtDiscount() {
-        return 1 * Math.pow(4, Math.min(4, recipeOcCount));
+        return (1 << (2 * Math.min(4, recipeOcCount)));
     }
 
     @ApiStatus.OverrideOnly
     public double getDurationModifier() {
-        return 1 / Math.pow(2, Math.min(4, recipeOcCount));
+        return 1.0 / (1 << Math.min(4, recipeOcCount));
     }
 
     @Override

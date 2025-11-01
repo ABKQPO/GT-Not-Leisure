@@ -196,16 +196,16 @@ public class ChemicalPlant extends GTMMultiMachineBase<ChemicalPlant> implements
     public int getMaxParallelRecipes() {
         mParallelTier = getParallelTier(getControllerSlot());
         if (mParallelControllerHatches.size() == 1) {
-            for (ParallelControllerHatch module : mParallelControllerHatches) {
-                mParallelTier = module.mTier;
-                return module.getParallel();
-            }
+            ParallelControllerHatch module = mParallelControllerHatches.get(0);
+            mParallelTier = module.mTier;
+            return Math.min(module.getParallel(), 1024);
         }
+
         int maxRecipes;
         if (mParallelTier <= 2) {
             maxRecipes = 8;
         } else {
-            maxRecipes = (int) Math.pow(4, mParallelTier - 2);
+            maxRecipes = 1 << (2 * (mParallelTier - 2));
         }
         return Math.min(maxRecipes, 1024);
     }

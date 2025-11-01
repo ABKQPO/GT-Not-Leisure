@@ -249,7 +249,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
         }
         tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_02") + (int) Math.pow(2, 5 + mTier))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_02") + (1 << (5 + mTier)))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_04"))
             .addSeparator()

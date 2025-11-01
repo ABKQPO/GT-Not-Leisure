@@ -239,7 +239,7 @@ public class LargeSteamMixer extends SteamMultiMachineBase<LargeSteamMixer> impl
 
     @Override
     public double getDurationModifier() {
-        return (1 / 0.67 / tierMachine - (enableHVRecipe ? 0.25 : 0)) / Math.pow(2, Math.min(4, recipeOcCount));
+        return (1 / 0.67 / tierMachine - (enableHVRecipe ? 0.25 : 0)) / (1 << Math.min(4, recipeOcCount));
     }
 
     @Override

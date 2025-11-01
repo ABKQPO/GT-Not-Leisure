@@ -3118,34 +3118,32 @@ public class AssemblerRecipes implements IRecipePool {
                 GTValues.RA.stdBuilder()
                     .itemInputsUnsafe(
                         ItemUtils.HULL[j + 4].get(1),
-                        GTUtility.copyAmountUnsafe(
-                            (int) Math.pow(2, i),
-                            GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 1)),
-                        GTUtility.copyAmountUnsafe((int) Math.pow(2, i), ItemUtils.SENSOR[j + 4].get(1)),
-                        GTUtility.copyAmountUnsafe((int) Math.pow(2, i), ItemUtils.ELECTRIC_PUMP[j + 4].get(1)),
+                        GTUtility
+                            .copyAmountUnsafe(1 << i, GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 1)),
+                        GTUtility.copyAmountUnsafe(1 << i, ItemUtils.SENSOR[j + 4].get(1)),
+                        GTUtility.copyAmountUnsafe(1 << i, ItemUtils.ELECTRIC_PUMP[j + 4].get(1)),
                         GTUtility
                             .copyAmountUnsafe(quantity, GTOreDictUnificator.get(prefix, ItemUtils.CABLE[j + 4], 1)),
                         GTUtility.getIntegratedCircuit(i + 1))
                     .itemOutputs(GTNLItemList.LASER_ENERGY_HATCH[j][i].get(1))
                     .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                    .duration((long) (50 * Math.pow(2, i)))
+                    .duration(50L << i)
                     .eut(GTValues.VP[j + 5])
                     .addTo(As);
 
                 GTValues.RA.stdBuilder()
                     .itemInputsUnsafe(
                         ItemUtils.HULL[j + 4].get(1),
-                        GTUtility.copyAmountUnsafe(
-                            (int) Math.pow(2, i),
-                            GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 1)),
-                        GTUtility.copyAmountUnsafe((int) Math.pow(2, i), ItemUtils.EMITTER[j + 4].get(1)),
-                        GTUtility.copyAmountUnsafe((int) Math.pow(2, i), ItemUtils.ELECTRIC_PUMP[j + 4].get(1)),
+                        GTUtility
+                            .copyAmountUnsafe(1 << i, GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 1)),
+                        GTUtility.copyAmountUnsafe(1 << i, ItemUtils.EMITTER[j + 4].get(1)),
+                        GTUtility.copyAmountUnsafe(1 << i, ItemUtils.ELECTRIC_PUMP[j + 4].get(1)),
                         GTUtility
                             .copyAmountUnsafe(quantity, GTOreDictUnificator.get(prefix, ItemUtils.CABLE[j + 4], 1)),
                         GTUtility.getIntegratedCircuit(i + 1))
                     .itemOutputs(GTNLItemList.LASER_DYNAMO_HATCH[j][i].get(1))
                     .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                    .duration((long) (50 * Math.pow(2, i)))
+                    .duration(50L << i)
                     .eut(GTValues.VP[j + 5])
                     .addTo(As);
             }

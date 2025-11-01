@@ -690,7 +690,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             .widget(
                 new NumericWidget().setSetter(val -> recipeOcCount = clampRecipeOcCount((int) val))
                     .setGetter(() -> {
-                        mMaxSlots = (int) (8 * Math.pow(2, Math.min(4, recipeOcCount)));
+                        mMaxSlots = 8 << Math.min(4, recipeOcCount);
                         return clampRecipeOcCount(recipeOcCount);
                     })
                     .setBounds(0, Integer.MAX_VALUE)

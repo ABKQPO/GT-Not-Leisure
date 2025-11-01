@@ -66,7 +66,7 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
 
     @Override
     public double getEUtDiscount() {
-        return 0.5 * Math.pow(4, Math.min(4, recipeOcCount));
+        return 0.5 * (1 << (2 * Math.min(4, recipeOcCount)));
     }
 
     @Override

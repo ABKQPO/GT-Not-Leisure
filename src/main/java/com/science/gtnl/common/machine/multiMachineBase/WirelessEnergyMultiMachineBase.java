@@ -310,7 +310,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public void setProcessingLogicPower(ProcessingLogic logic) {
         if (wirelessMode) {
             logic.setAvailableVoltage(V[Math.min(mParallelTier + 1, 14)]);
-            logic.setAvailableAmperage((long) Math.pow(4, mParallelTier) * 8L - 2L);
+            logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
             logic.setAmperageOC(false);
             logic.enablePerfectOverclock();
         } else {
@@ -327,17 +327,16 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         if (maxParallelStored >= 0) {
             return maxParallelStored;
         }
+
         if (mParallelControllerHatches.size() == 1) {
-            for (ParallelControllerHatch module : mParallelControllerHatches) {
-                mParallelTier = module.mTier;
-                return module.getParallel() * 16;
-            }
+            ParallelControllerHatch module = mParallelControllerHatches.get(0);
+            mParallelTier = module.mTier;
+            return module.getParallel() << 4;
         } else if (mParallelTier <= 1) {
             return 8;
         } else {
-            return (int) Math.pow(4, mParallelTier - 2) * 16;
+            return 1 << (2 * (mParallelTier - 2) + 4);
         }
-        return 8;
     }
 
     public boolean getDefaultWirelessMode() {

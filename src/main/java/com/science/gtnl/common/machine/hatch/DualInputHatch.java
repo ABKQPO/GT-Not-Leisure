@@ -411,7 +411,7 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     public static int getCapacityPerTank(int aTier) {
-        return (int) Math.pow(2, aTier - 1) * 8000;
+        return (1 << (aTier - 1)) * 8000;
     }
 
     @Override

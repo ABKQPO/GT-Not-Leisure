@@ -17,7 +17,7 @@ public abstract class MixinMTELightningRod extends MTETieredMachineBlock {
 
     @Override
     public long maxEUStore() {
-        return (long) (50000000 * Math.pow(4, mTier - 3));
+        return 50_000_000L * (1L << (2 * (mTier - 3)));
     }
 
     @Override

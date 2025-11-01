@@ -248,7 +248,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         }
 
         mMaxProgresstime = (int) (recipeObject.getRecipeTimeInTicks() * 0.1
-            / Math.max(1, pow(2, currentCircuitMultiplier)));
+            / Math.max(1, 1 << currentCircuitMultiplier));
 
         calculateInputFluidExcessValues(recipeObject.getHydrogenRequirement(), recipeObject.getHeliumRequirement());
         // If pityChance needs to be reset, it will be set to Double.MIN_Value at the end of the recipe.

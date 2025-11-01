@@ -304,17 +304,20 @@ public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implem
     @Override
     public int getMaxParallelRecipes() {
         mParallelTier = getParallelTier(getControllerSlot());
+
+        int baseParallel;
         if (mParallelControllerHatches.size() == 1) {
-            for (ParallelControllerHatch module : mParallelControllerHatches) {
-                mParallelTier = module.mTier;
-                return module.getParallel();
-            }
-        }
-        if (mParallelTier <= 2) {
-            return 8;
+            ParallelControllerHatch module = mParallelControllerHatches.get(0);
+            mParallelTier = module.mTier;
+            baseParallel = module.getParallel();
+        } else if (mParallelTier <= 2) {
+            baseParallel = 8;
         } else {
-            return (int) Math.pow(4, mParallelTier - 3) * 512 - 1;
+            baseParallel = 1 << (2 * (mParallelTier - 3));
         }
+
+        long total = (long) baseParallel * 512L - 1L;
+        return (int) Math.min(total, Integer.MAX_VALUE);
     }
 
     @Override

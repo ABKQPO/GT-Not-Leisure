@@ -43,7 +43,7 @@ public class FallingTowerRecipes implements IRecipePool {
                 .itemOutputs(outputs)
                 .specialValue(data.cost)
                 .eut(0)
-                .duration(data.getTotalExpectedAmount())
+                .duration(data.getTotalExpectedAmount() / 2)
                 .addTo(BSTR);
         }
     }

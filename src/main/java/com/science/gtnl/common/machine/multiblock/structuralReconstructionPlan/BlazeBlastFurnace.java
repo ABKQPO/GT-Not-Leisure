@@ -302,7 +302,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
         if (this.mStartUpCheck < 0) {
             startRecipeProcessing();
             if (this.mMaxProgresstime > 0 && aTick % 20 == 0) {
-                int baseAmount = (int) (10 * Math.pow(GTUtility.getTier(-lEUt), 2)) * mMultiTier;
+                int baseAmount = 10 * ((1 << GTUtility.getTier(-lEUt)) * (1 << GTUtility.getTier(-lEUt))) * mMultiTier;
                 if (!this.depleteInputFromRestrictedHatches(this.mFluidBlazeInputHatch, baseAmount)) {
                     this.causeMaintenanceIssue();
                     this.stopMachine(
