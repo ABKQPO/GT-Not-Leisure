@@ -57,7 +57,7 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String MVDF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/mega_vacuum_drying_furnace";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(MVDF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(MVDF_STRUCTURE_FILE_PATH);
 
     public MegaVacuumDryingFurnace(String aName) {
         super(aName);

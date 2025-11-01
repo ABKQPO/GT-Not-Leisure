@@ -46,7 +46,7 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SFR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_fusion_reactor";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SFR_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SFR_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 7;
     private static final int VERTICAL_OFF_SET = 1;
     private static final int DEPTH_OFF_SET = 12;

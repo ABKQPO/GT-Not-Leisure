@@ -38,13 +38,13 @@ import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String MM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mega_mixer";
-    protected final int HORIZONTAL_OFF_SET = 5;
-    protected final int VERTICAL_OFF_SET = 7;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String MM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mega_mixer";
+    private static final int HORIZONTAL_OFF_SET = 5;
+    private static final int VERTICAL_OFF_SET = 7;
+    private static final int DEPTH_OFF_SET = 0;
     public double runningSpeedBoost;
     public int runningTickCounter = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(MM_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(MM_STRUCTURE_FILE_PATH);
 
     public MegaMixer(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

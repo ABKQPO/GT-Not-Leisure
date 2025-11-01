@@ -77,9 +77,9 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String L_INCUBATOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_incubator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(L_INCUBATOR_STRUCTURE_FILE_PATH);
-    private final int HORIZONTAL_OFF_SET = 6;
-    private final int VERTICAL_OFF_SET = 7;
-    private final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 6;
+    private static final int VERTICAL_OFF_SET = 7;
+    private static final int DEPTH_OFF_SET = 0;
 
     public LargeIncubator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

@@ -41,12 +41,12 @@ import tectech.thing.casing.TTCasingsContainer;
 public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngine>
     implements ISurvivalConstructable, INEIPreviewModifier {
 
-    protected final int HORIZONTAL_OFF_SET = 321;
-    protected final int VERTICAL_OFF_SET = 321;
-    protected final int DEPTH_OFF_SET = 17;
+    private static final int HORIZONTAL_OFF_SET = 321;
+    private static final int VERTICAL_OFF_SET = 321;
+    private static final int DEPTH_OFF_SET = 17;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String GEE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/generation_earth_engine";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(GEE_STRUCTURE_FILE_PATH);
+    private static final String GEE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/generation_earth_engine";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(GEE_STRUCTURE_FILE_PATH);
 
     public GenerationEarthEngine(String aName) {
         super(aName);

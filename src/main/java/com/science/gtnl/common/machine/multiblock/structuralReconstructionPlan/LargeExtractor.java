@@ -46,10 +46,10 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     public static final String LC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_extractor";
     private static final int MACHINEMODE_EXTRA = 0;
     private static final int MACHINEMODE_FLUID = 1;
-    protected final int HORIZONTAL_OFF_SET = 2;
-    protected final int VERTICAL_OFF_SET = 1;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LC_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 1;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LC_STRUCTURE_FILE_PATH);
 
     public LargeExtractor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

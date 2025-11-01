@@ -44,7 +44,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SMP_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/superconducting_magnetic_presser";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SMP_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SMP_STRUCTURE_FILE_PATH);
 
     public SuperconductingMagneticPresser(String aName) {
         super(aName);

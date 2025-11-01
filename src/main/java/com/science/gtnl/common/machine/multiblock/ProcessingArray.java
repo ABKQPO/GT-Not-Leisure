@@ -71,12 +71,12 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     public RecipeMap<?> mLastRecipeMap;
     public ItemStack lastControllerStack;
     public int tTier = 0;
-    public int horizontalOffset = 2;
-    public int verticalOffset = 3;
-    public int depthOffset = 0;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 3;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String PA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/processing_array";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(PA_STRUCTURE_FILE_PATH);
+    private static final String PA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/processing_array";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(PA_STRUCTURE_FILE_PATH);
 
     public ProcessingArray(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -332,7 +332,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public void construct(ItemStack aStack, boolean aHintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, aStack, aHintsOnly, horizontalOffset, verticalOffset, depthOffset);
+        buildPiece(STRUCTURE_PIECE_MAIN, aStack, aHintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
@@ -341,9 +341,9 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
-            horizontalOffset,
-            verticalOffset,
-            depthOffset,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
             elementBudget,
             env,
             false,
@@ -385,7 +385,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, horizontalOffset, verticalOffset, depthOffset) || !checkHatch()) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
             return false;
         }
         setTierAndMult();

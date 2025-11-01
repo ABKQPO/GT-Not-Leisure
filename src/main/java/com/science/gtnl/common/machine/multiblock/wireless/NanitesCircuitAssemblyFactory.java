@@ -42,7 +42,7 @@ public class NanitesCircuitAssemblyFactory extends WirelessEnergyMultiMachineBas
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String NCAF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/nanites_circuit_assembly_factory";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(NCAF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(NCAF_STRUCTURE_FILE_PATH);
 
     public NanitesCircuitAssemblyFactory(String aName) {
         super(aName);

@@ -51,10 +51,10 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SCC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/shallow_chemical_coupling";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SCC_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 3;
-    protected final int VERTICAL_OFF_SET = 9;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SCC_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 9;
+    private static final int DEPTH_OFF_SET = 0;
 
     public ShallowChemicalCoupling(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

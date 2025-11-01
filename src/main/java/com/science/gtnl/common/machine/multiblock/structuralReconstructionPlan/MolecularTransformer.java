@@ -37,10 +37,10 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String MT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/molecular_transformer";
-    protected final int HORIZONTAL_OFF_SET = 4;
-    protected final int VERTICAL_OFF_SET = 9;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(MT_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 9;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(MT_STRUCTURE_FILE_PATH);
 
     public MolecularTransformer(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

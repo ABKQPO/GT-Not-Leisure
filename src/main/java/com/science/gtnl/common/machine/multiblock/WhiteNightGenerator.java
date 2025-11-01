@@ -55,10 +55,13 @@ import tectech.thing.casing.TTCasingsContainer;
 
 public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
 
-    protected boolean wirelessMode = false;
+    private static final int HORIZONTAL_OFF_SET = 49;
+    private static final int VERTICAL_OFF_SET = 55;
+    private static final int DEPTH_OFF_SET = 26;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String WNG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/white_night_generator";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(WNG_STRUCTURE_FILE_PATH);
+    private static final String WNG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/white_night_generator";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(WNG_STRUCTURE_FILE_PATH);
+    public boolean wirelessMode = false;
     public int multiTier = 0;
     public String ownerName;
     public UUID ownerUUID;
@@ -219,10 +222,6 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
             false,
             true);
     }
-
-    protected final int HORIZONTAL_OFF_SET = 49;
-    protected final int VERTICAL_OFF_SET = 55;
-    protected final int DEPTH_OFF_SET = 26;
 
     @Override
     public IStructureDefinition<WhiteNightGenerator> getStructureDefinition() {

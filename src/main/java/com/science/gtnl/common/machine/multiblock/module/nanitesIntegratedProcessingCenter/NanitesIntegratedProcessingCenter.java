@@ -53,16 +53,16 @@ import gtnhlanth.common.register.LanthItemList;
 public class NanitesIntegratedProcessingCenter
     extends WirelessEnergyMultiMachineBase<NanitesIntegratedProcessingCenter> {
 
-    private final int HORIZONTAL_OFF_SET = 15;
-    private final int VERTICAL_OFF_SET = 20;
-    private final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 15;
+    private static final int VERTICAL_OFF_SET = 20;
+    private static final int DEPTH_OFF_SET = 0;
     private double setEUtDiscount = 1;
     private double setDurationModifier = 1;
     public ArrayList<NanitesBaseModule<?>> moduleHatches = new ArrayList<>();
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String NIPC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/nanites_integrated_processing_center";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(NIPC_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(NIPC_STRUCTURE_FILE_PATH);
 
     public NanitesIntegratedProcessingCenter(String aName) {
         super(aName);

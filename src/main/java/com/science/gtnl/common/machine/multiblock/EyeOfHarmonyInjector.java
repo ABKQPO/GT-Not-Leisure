@@ -205,12 +205,12 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         return Output;
     }
 
-    protected final int HORIZONTAL_OFF_SET = 26;
-    protected final int VERTICAL_OFF_SET = 6;
-    protected final int DEPTH_OFF_SET = 1;
+    private static final int HORIZONTAL_OFF_SET = 26;
+    private static final int VERTICAL_OFF_SET = 6;
+    private static final int DEPTH_OFF_SET = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String EOHI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/eye_of_harmony_injector";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(EOHI_STRUCTURE_FILE_PATH);
+    private static final String EOHI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/eye_of_harmony_injector";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(EOHI_STRUCTURE_FILE_PATH);
 
     @Override
     public IStructureDefinition<? extends EyeOfHarmonyInjector> getStructure_EM() {

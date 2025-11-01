@@ -55,10 +55,10 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     private static final int MACHINEMODE_OREWASH = 0;
     private static final int MACHINEMODE_SIMPLEWASH = 1;
     private static final int MACHINEMODE_CHEMBATH = 2;
-    protected final int HORIZONTAL_OFF_SET = 2;
-    protected final int VERTICAL_OFF_SET = 1;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LCB_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 1;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LCB_STRUCTURE_FILE_PATH);
 
     public LargeChemicalBath(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

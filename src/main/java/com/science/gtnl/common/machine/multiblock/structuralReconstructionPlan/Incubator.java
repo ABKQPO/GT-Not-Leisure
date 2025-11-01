@@ -97,9 +97,9 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String INCUBATOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/incubator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(INCUBATOR_STRUCTURE_FILE_PATH);
-    private final int HORIZONTAL_OFF_SET = 2;
-    private final int VERTICAL_OFF_SET = 4;
-    private final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
 
     public Incubator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

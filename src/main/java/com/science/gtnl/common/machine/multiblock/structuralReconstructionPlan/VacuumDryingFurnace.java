@@ -49,10 +49,10 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     private static final int MACHINEMODE_DEHYDRATOR = 1;
     private static final int MACHINEMODE_COLD_TRAP = 2;
     private static final int MACHINEMODE_NUCLEAR_SALT = 3;
-    protected final int HORIZONTAL_OFF_SET = 1;
-    protected final int VERTICAL_OFF_SET = 4;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(VDF_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 1;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(VDF_STRUCTURE_FILE_PATH);
 
     public VacuumDryingFurnace(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

@@ -46,10 +46,10 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SMC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_mega_compressor";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SMC_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 17;
-    protected final int VERTICAL_OFF_SET = 27;
-    protected final int DEPTH_OFF_SET = 10;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SMC_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 17;
+    private static final int VERTICAL_OFF_SET = 27;
+    private static final int DEPTH_OFF_SET = 10;
 
     public MegaSteamCompressor(String aName) {
         super(aName);

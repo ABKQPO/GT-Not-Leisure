@@ -112,7 +112,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public boolean wirelessMode = false;
     public static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String GAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/grand_assembly_line";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(GAL_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(GAL_STRUCTURE_FILE_PATH);
     public final int HORIZONTAL_OFF_SET = 46;
     public final int VERTICAL_OFF_SET = 2;
     public final int DEPTH_OFF_SET = 0;

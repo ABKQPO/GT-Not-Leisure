@@ -54,7 +54,7 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String CDF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/compound_distillation_fractionator";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(CDF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(CDF_STRUCTURE_FILE_PATH);
 
     public CompoundDistillationFractionator(String aName) {
         super(aName);

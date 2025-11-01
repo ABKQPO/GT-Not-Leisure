@@ -38,10 +38,10 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String FG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/fishing_ground";
-    protected final int HORIZONTAL_OFF_SET = 6;
-    protected final int VERTICAL_OFF_SET = 2;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(FG_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 6;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(FG_STRUCTURE_FILE_PATH);
 
     public FishingGround(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

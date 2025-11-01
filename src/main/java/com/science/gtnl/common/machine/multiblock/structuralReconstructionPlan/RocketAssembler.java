@@ -51,10 +51,10 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String RA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/rocket_assembler";
-    protected final int HORIZONTAL_OFF_SET = 8;
-    protected final int VERTICAL_OFF_SET = 21;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(RA_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 8;
+    private static final int VERTICAL_OFF_SET = 21;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(RA_STRUCTURE_FILE_PATH);
 
     public boolean enableRender = true;
 

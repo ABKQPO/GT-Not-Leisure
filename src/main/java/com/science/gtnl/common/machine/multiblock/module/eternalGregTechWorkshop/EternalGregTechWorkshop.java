@@ -157,13 +157,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         + "multiblock/eternal_gregTech_workshop/bottom";
     public static final String EGTWE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/extra";
-    public static final String[][] shape_top = StructureUtils.readStructureFromFile(EGTWT_STRUCTURE_FILE_PATH);
-    public static final String[][] shape_up = StructureUtils.readStructureFromFile(EGTWU_STRUCTURE_FILE_PATH);
-    public static final String[][] shape = StructureUtils.readStructureFromFile(EGTWC_STRUCTURE_FILE_PATH);
-    public static final String[][] shape_down = StructureUtils.readStructureFromFile(EGTWD_STRUCTURE_FILE_PATH);
-    public static final String[][] shape_bottom = StructureUtils.readStructureFromFile(EGTWB_STRUCTURE_FILE_PATH);
+    private static final String[][] shape_top = StructureUtils.readStructureFromFile(EGTWT_STRUCTURE_FILE_PATH);
+    private static final String[][] shape_up = StructureUtils.readStructureFromFile(EGTWU_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(EGTWC_STRUCTURE_FILE_PATH);
+    private static final String[][] shape_down = StructureUtils.readStructureFromFile(EGTWD_STRUCTURE_FILE_PATH);
+    private static final String[][] shape_bottom = StructureUtils.readStructureFromFile(EGTWB_STRUCTURE_FILE_PATH);
     public static final String[][] shape_extra = StructureUtils.readStructureFromFile(EGTWE_STRUCTURE_FILE_PATH);
-    public static final String[][] shape_extra_air = StructureUtils.replaceLetters(shape_extra, "a");
+    private static final String[][] shape_extra_air = StructureUtils.replaceLetters(shape_extra, "a");
 
     public int tCountCasing = 0;
     public int mHeatingCapacity = 0;

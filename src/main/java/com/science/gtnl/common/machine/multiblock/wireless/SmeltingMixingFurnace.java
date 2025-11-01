@@ -61,14 +61,14 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     protected GTRecipe lastRecipeToBuffer;
     public boolean hasRequiredItem = false;
-    protected final int HORIZONTAL_OFF_SET = 8;
-    protected final int VERTICAL_OFF_SET = 14;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 8;
+    private static final int VERTICAL_OFF_SET = 14;
+    private static final int DEPTH_OFF_SET = 0;
     private static final int MACHINEMODE_SMF = 0;
     private static final int MACHINEMODE_DTPF = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String SMF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/smelting_mixing_furnace";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SMF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SMF_STRUCTURE_FILE_PATH);
 
     public SmeltingMixingFurnace(String aName) {
         super(aName);

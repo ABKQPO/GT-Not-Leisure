@@ -45,8 +45,8 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
     }
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_sifter";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
+    private static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_sifter";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
 
     public LargeSteamSifter(String aName) {
         super(aName);
@@ -56,9 +56,9 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
         super(aID, aName, aNameRegional);
     }
 
-    protected final int HORIZONTAL_OFF_SET = 2;
-    protected final int VERTICAL_OFF_SET = 5;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 5;
+    private static final int DEPTH_OFF_SET = 0;
 
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,

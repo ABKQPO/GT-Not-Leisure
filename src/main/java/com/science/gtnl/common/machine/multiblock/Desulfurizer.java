@@ -33,11 +33,11 @@ import gregtech.common.misc.GTStructureChannels;
 public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String Desu_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/desulfurizer";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(Desu_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 3;
-    protected final int VERTICAL_OFF_SET = 4;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String Desu_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/desulfurizer";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(Desu_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
 
     public Desulfurizer(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

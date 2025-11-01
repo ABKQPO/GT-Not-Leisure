@@ -39,7 +39,7 @@ public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
     private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String HR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/heavy_rolling";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(HR_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(HR_STRUCTURE_FILE_PATH);
 
     public HeavyRolling(String aName) {
         super(aName);

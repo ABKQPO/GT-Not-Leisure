@@ -68,10 +68,10 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     public static final String LPA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/precise_assembler";
     private static final int MACHINEMODE_ASSEMBLER = 0;
     private static final int MACHINEMODE_PRECISION = 1;
-    protected final int HORIZONTAL_OFF_SET = 4;
-    protected final int VERTICAL_OFF_SET = 4;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
     protected int mCasingTier = -1;
     protected int mMachineTier = -1;
 

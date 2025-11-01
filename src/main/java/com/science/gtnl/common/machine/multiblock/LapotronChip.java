@@ -43,13 +43,13 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
     public int tierGlass1 = -1;
     public int tierGlass2 = -1;
 
-    protected final int HORIZONTAL_OFF_SET = 88;
-    protected final int VERTICAL_OFF_SET = 97;
-    protected final int DEPTH_OFF_SET = 11;
+    private static final int HORIZONTAL_OFF_SET = 88;
+    private static final int VERTICAL_OFF_SET = 97;
+    private static final int DEPTH_OFF_SET = 11;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String LC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/lapotron_chip";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LC_STRUCTURE_FILE_PATH);
+    private static final String LC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/lapotron_chip";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LC_STRUCTURE_FILE_PATH);
 
     public LapotronChip(String aName) {
         super(aName);

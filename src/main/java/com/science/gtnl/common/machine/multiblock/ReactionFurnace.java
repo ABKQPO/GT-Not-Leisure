@@ -46,11 +46,11 @@ import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String RF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/reaction_furnace";
-    protected final int HORIZONTAL_OFF_SET = 15;
-    protected final int VERTICAL_OFF_SET = 18;
-    protected final int DEPTH_OFF_SET = 3;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(RF_STRUCTURE_FILE_PATH);
+    private static final String RF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/reaction_furnace";
+    private static final int HORIZONTAL_OFF_SET = 15;
+    private static final int VERTICAL_OFF_SET = 18;
+    private static final int DEPTH_OFF_SET = 3;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(RF_STRUCTURE_FILE_PATH);
 
     public ReactionFurnace(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

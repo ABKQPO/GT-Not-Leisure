@@ -48,10 +48,10 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String LAA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/industrial_arcane_assembler";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LAA_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 9;
-    protected final int VERTICAL_OFF_SET = 9;
-    protected final int DEPTH_OFF_SET = 3;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LAA_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 9;
+    private static final int VERTICAL_OFF_SET = 9;
+    private static final int DEPTH_OFF_SET = 3;
 
     public IndustrialArcaneAssembler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

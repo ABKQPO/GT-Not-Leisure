@@ -96,9 +96,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     protected static final String EGTWM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/module";
     protected static final String[][] shape = StructureUtils.readStructureFromFile(EGTWM_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 4;
-    protected final int VERTICAL_OFF_SET = 3;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 3;
+    private static final int DEPTH_OFF_SET = 0;
 
     public EternalGregTechWorkshopModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

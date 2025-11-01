@@ -32,7 +32,7 @@ public class OreExtractionModule extends NanitesBaseModule<OreExtractionModule> 
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String OEM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/ore_extraction_module";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(OEM_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(OEM_STRUCTURE_FILE_PATH);
 
     public OreExtractionModule(String aName) {
         super(aName);

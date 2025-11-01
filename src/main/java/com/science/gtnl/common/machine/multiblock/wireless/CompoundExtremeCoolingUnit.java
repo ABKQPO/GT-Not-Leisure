@@ -54,7 +54,7 @@ public class CompoundExtremeCoolingUnit extends WirelessEnergyMultiMachineBase<C
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String UECN_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/compound_extreme_cooling_unit";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(UECN_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(UECN_STRUCTURE_FILE_PATH);
 
     public CompoundExtremeCoolingUnit(String aName) {
         super(aName);

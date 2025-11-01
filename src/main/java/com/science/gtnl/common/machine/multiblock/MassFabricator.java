@@ -34,9 +34,9 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String MF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/mass_fabricator";
-    private final int HORIZONTAL_OFF_SET = 2;
-    private final int VERTICAL_OFF_SET = 4;
-    private final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(MF_STRUCTURE_FILE_PATH);
 
     public MassFabricator(int aID, String aName, String aNameRegional) {

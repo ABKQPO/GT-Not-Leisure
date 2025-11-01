@@ -51,12 +51,12 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String COPF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String COPF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/cheat_ore_processing_factory";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(COPF_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 20;
-    protected final int VERTICAL_OFF_SET = 24;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(COPF_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 20;
+    private static final int VERTICAL_OFF_SET = 24;
+    private static final int DEPTH_OFF_SET = 0;
 
     public CheatOreProcessingFactory(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

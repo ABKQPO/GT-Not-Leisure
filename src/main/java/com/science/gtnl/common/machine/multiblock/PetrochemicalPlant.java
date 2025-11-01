@@ -45,11 +45,11 @@ import kekztech.common.Blocks;
 public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String PP_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/petrochemical_plant";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(PP_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 22;
-    protected final int VERTICAL_OFF_SET = 56;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String PP_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/petrochemical_plant";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(PP_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 22;
+    private static final int VERTICAL_OFF_SET = 56;
+    private static final int DEPTH_OFF_SET = 0;
 
     public PetrochemicalPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

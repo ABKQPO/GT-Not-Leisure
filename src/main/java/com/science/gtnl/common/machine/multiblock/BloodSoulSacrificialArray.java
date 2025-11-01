@@ -71,15 +71,15 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacrificialArray> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String BSSA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String BSSA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/blood_soul_sacrificial_array";
-    protected final int HORIZONTAL_OFF_SET = 16;
-    protected final int VERTICAL_OFF_SET = 10;
-    protected final int DEPTH_OFF_SET = 9;
+    private static final int HORIZONTAL_OFF_SET = 16;
+    private static final int VERTICAL_OFF_SET = 10;
+    private static final int DEPTH_OFF_SET = 9;
     public boolean isCreativeOrb = false;
     public boolean enableRender = true;
     public int currentEssence = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(BSSA_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(BSSA_STRUCTURE_FILE_PATH);
     private static final int MACHINEMODE_BLOOD_DEMON = 0;
     private static final int MACHINEMODE_FALLING_TOWER = 1;
     private static final int MACHINEMODE_ALCHEMIC = 2;

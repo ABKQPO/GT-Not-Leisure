@@ -94,7 +94,7 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
     private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String HC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/horizontal_compressor";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(HC_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(HC_STRUCTURE_FILE_PATH);
 
     public HorizontalCompressor(String aName) {
         super(aName);

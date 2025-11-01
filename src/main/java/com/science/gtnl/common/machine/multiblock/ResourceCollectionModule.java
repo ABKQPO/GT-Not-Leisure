@@ -73,7 +73,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     private static final int MACHINEMODE_DRILL = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/space_module";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SM_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SM_STRUCTURE_FILE_PATH);
     public final ItemStack MiningDroneMkVIII = ItemList.MiningDroneUV.get(16);
     public final ItemStack MiningDroneMkIX = ItemList.MiningDroneUHV.get(16);
     public final ItemStack MiningDroneMkX = ItemList.MiningDroneUEV.get(16);

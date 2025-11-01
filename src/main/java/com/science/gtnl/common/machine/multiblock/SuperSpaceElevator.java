@@ -120,8 +120,8 @@ public class SuperSpaceElevator extends TTMultiblockBase
         + "multiblock/super_space_elevator_base";
     private static final String SSEE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/super_space_elevator_extended";
-    public static final String[][] shapeBase = StructureUtils.readStructureFromFile(SSEB_STRUCTURE_FILE_PATH);
-    public static final String[][] shapeExtended = StructureUtils.readStructureFromFile(SSEE_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeBase = StructureUtils.readStructureFromFile(SSEB_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeExtended = StructureUtils.readStructureFromFile(SSEE_STRUCTURE_FILE_PATH);
 
     private int tCountCasing = 0;
     private boolean wirelessMode = false;

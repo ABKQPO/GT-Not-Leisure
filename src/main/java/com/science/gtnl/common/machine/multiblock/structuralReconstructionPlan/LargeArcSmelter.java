@@ -47,10 +47,10 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
     public static final String LAS_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_arc_smelter";
     private static final int MACHINEMODE_ARC = 0;
     private static final int MACHINEMODE_PLSAMA = 1;
-    protected final int HORIZONTAL_OFF_SET = 2;
-    protected final int VERTICAL_OFF_SET = 2;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LAS_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LAS_STRUCTURE_FILE_PATH);
 
     public LargeArcSmelter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

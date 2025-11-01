@@ -37,10 +37,10 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LBL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_bio_lab";
-    private final int HORIZONTAL_OFF_SET = 3;
-    private final int VERTICAL_OFF_SET = 2;
-    private final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(LBL_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LBL_STRUCTURE_FILE_PATH);
 
     public LargeBioLab(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

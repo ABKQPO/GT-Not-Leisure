@@ -48,7 +48,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String IAF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/integrated_assembly_facility";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(IAF_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(IAF_STRUCTURE_FILE_PATH);
 
     public IntegratedAssemblyFacility(String aName) {
         super(aName);

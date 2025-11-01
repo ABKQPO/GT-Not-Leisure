@@ -28,9 +28,9 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     protected double setEUtDiscount = 0;
     protected double setDurationModifier = 0;
     protected int setMaxParallel = 0;
-    protected final int HORIZONTAL_OFF_SET = 7;
-    protected final int VERTICAL_OFF_SET = 17;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 7;
+    private static final int VERTICAL_OFF_SET = 17;
+    private static final int DEPTH_OFF_SET = 0;
     protected int mHeatingCapacity = 0;
 
     public NanitesBaseModule(int aID, String aName, String aNameRegional) {

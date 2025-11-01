@@ -44,7 +44,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String STRUCTURE_PIECE_MAIN_SURVIVAL = "main_survival";
     private static final String SRB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_rock_breaker";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(SRB_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SRB_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 5;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;

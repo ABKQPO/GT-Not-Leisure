@@ -90,10 +90,10 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String KBFR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/kuang_biao_giant_nuclear_fusion_reactor";
-    protected final int HORIZONTAL_OFF_SET = 19;
-    protected final int VERTICAL_OFF_SET = 14;
-    protected final int DEPTH_OFF_SET = 0;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(KBFR_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 19;
+    private static final int VERTICAL_OFF_SET = 14;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(KBFR_STRUCTURE_FILE_PATH);
 
     public float rotation = 0;
     public float prevRotation = 0;

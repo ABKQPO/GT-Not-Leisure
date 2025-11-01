@@ -42,9 +42,9 @@ public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRa
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String AREC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/advanced_rare_earth_centrifugal";
-    private final int HORIZONTAL_OFF_SET = 11;
-    private final int VERTICAL_OFF_SET = 11;
-    private final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 11;
+    private static final int VERTICAL_OFF_SET = 11;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(AREC_STRUCTURE_FILE_PATH);
 
     public AdvancedRareEarthCentrifugal(int aID, String aName, String aNameRegional) {

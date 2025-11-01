@@ -38,12 +38,12 @@ import tectech.thing.casing.TTCasingsContainer;
 
 public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
-    protected final int HORIZONTAL_OFF_SET = 7;
-    protected final int VERTICAL_OFF_SET = 21;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final int HORIZONTAL_OFF_SET = 7;
+    private static final int VERTICAL_OFF_SET = 21;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String CrH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/cracker_hub";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(CrH_STRUCTURE_FILE_PATH);
+    private static final String[][] shape = StructureUtils.readStructureFromFile(CrH_STRUCTURE_FILE_PATH);
 
     public CrackerHub(String aName) {
         super(aName);

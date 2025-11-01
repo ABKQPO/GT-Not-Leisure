@@ -47,10 +47,10 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String ACAL_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/advanced_circuit_assembly_line";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(ACAL_STRUCTURE_FILE_PATH);
-    protected final int HORIZONTAL_OFF_SET = 0;
-    protected final int VERTICAL_OFF_SET = 2;
-    protected final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(ACAL_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 0;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
     private float speedup = 1;
     public int casingTier;
     private int runningTickCounter = 0;

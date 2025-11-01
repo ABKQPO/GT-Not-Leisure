@@ -97,9 +97,9 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public boolean wirelessMode = false;
     public String costingEUText = ZERO_STRING;
 
-    private final int HORIZONTAL_OFF_SET = 17;
-    private final int VERTICAL_OFF_SET = 39;
-    private final int DEPTH_OFF_SET = 14;
+    private static final int HORIZONTAL_OFF_SET = 17;
+    private static final int VERTICAL_OFF_SET = 39;
+    private static final int DEPTH_OFF_SET = 14;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_elevator";

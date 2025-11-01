@@ -48,10 +48,10 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String DFC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/draconic_fusion_crafting";
-    protected final int HORIZONTAL_OFF_SET = 14;
-    protected final int VERTICAL_OFF_SET = 33;
-    protected final int DEPTH_OFF_SET = 5;
-    public static final String[][] shape = StructureUtils.readStructureFromFile(DFC_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 14;
+    private static final int VERTICAL_OFF_SET = 33;
+    private static final int DEPTH_OFF_SET = 5;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(DFC_STRUCTURE_FILE_PATH);
     public int tierCasing = -1;
 
     public DraconicFusionCrafting(int aID, String aName, String aNameRegional) {
