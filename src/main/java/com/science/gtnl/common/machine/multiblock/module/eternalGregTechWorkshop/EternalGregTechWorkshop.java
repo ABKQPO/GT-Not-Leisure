@@ -157,13 +157,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         + "multiblock/eternal_gregTech_workshop/bottom";
     private static final String EGTWE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/eternal_gregTech_workshop/extra";
-    private static final String[][] shape_top = StructureUtils.readStructureFromFile(EGTWT_STRUCTURE_FILE_PATH);
-    private static final String[][] shape_up = StructureUtils.readStructureFromFile(EGTWU_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeTop = StructureUtils.readStructureFromFile(EGTWT_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeUp = StructureUtils.readStructureFromFile(EGTWU_STRUCTURE_FILE_PATH);
     private static final String[][] shape = StructureUtils.readStructureFromFile(EGTWC_STRUCTURE_FILE_PATH);
-    private static final String[][] shape_down = StructureUtils.readStructureFromFile(EGTWD_STRUCTURE_FILE_PATH);
-    private static final String[][] shape_bottom = StructureUtils.readStructureFromFile(EGTWB_STRUCTURE_FILE_PATH);
-    public static final String[][] shape_extra = StructureUtils.readStructureFromFile(EGTWE_STRUCTURE_FILE_PATH);
-    private static final String[][] shape_extra_air = StructureUtils.replaceLetters(shape_extra, "a");
+    private static final String[][] shapeDown = StructureUtils.readStructureFromFile(EGTWD_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeBottom = StructureUtils.readStructureFromFile(EGTWB_STRUCTURE_FILE_PATH);
+    public static final String[][] shapeExtra = StructureUtils.readStructureFromFile(EGTWE_STRUCTURE_FILE_PATH);
+    private static final String[][] shapeExtraAir = StructureUtils.replaceLetters(shapeExtra, "a");
 
     public int tCountCasing = 0;
     public int mHeatingCapacity = 0;
@@ -397,13 +397,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     @Override
     public IStructureDefinition<EternalGregTechWorkshop> getStructureDefinition() {
         return StructureDefinition.<EternalGregTechWorkshop>builder()
-            .addShape(STRUCTURE_PIECE_MAIN_TOP, transpose(shape_top))
-            .addShape(STRUCTURE_PIECE_MAIN_UP, transpose(shape_up))
+            .addShape(STRUCTURE_PIECE_MAIN_TOP, transpose(shapeTop))
+            .addShape(STRUCTURE_PIECE_MAIN_UP, transpose(shapeUp))
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addShape(STRUCTURE_PIECE_MAIN_DOWN, transpose(shape_down))
-            .addShape(STRUCTURE_PIECE_MAIN_BOTTOM, transpose(shape_bottom))
-            .addShape(STRUCTURE_PIECE_MAIN_EXTRA, transpose(shape_extra))
-            .addShape(STRUCTURE_PIECE_MAIN_EXTRA_AIR, transpose(shape_extra_air))
+            .addShape(STRUCTURE_PIECE_MAIN_DOWN, transpose(shapeDown))
+            .addShape(STRUCTURE_PIECE_MAIN_BOTTOM, transpose(shapeBottom))
+            .addShape(STRUCTURE_PIECE_MAIN_EXTRA, transpose(shapeExtra))
+            .addShape(STRUCTURE_PIECE_MAIN_EXTRA_AIR, transpose(shapeExtraAir))
             .addElement('A', ofBlock(TTCasingsContainer.GodforgeCasings, 0))
             .addElement('B', ofBlock(Loaders.componentAssemblylineCasing, 12))
             .addElement('C', ofBlock(GregTechAPI.sBlockCasings1, 13))

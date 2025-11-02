@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
@@ -22,6 +23,7 @@ import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class FuelRefiningComplexRecipes implements IRecipePool {
 
+    public FuelRefiningTierKey FUEL_REFINING_TIER = FuelRefiningTierKey.INSTANCE;
     public RecipeMap<?> FCR = RecipePool.FuelRefiningComplexRecipes;
 
     @Override
@@ -282,6 +284,22 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
             .duration(400)
             .metadata(COIL_HEAT, 6700)
             .eut(TierEU.RECIPE_IV)
+            .addTo(FCR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 44L))
+            .fluidInputs(
+                Materials.Oxygen.getGas(12000),
+                Materials.Nitrogen.getGas(8000),
+                Materials.Naphtha.getFluid(16000),
+                Materials.Gas.getGas(2000),
+                Materials.Toluene.getFluid(4000),
+                Materials.Octane.getFluid(3000))
+            .fluidOutputs(Materials.GasolinePremium.getFluid(50000))
+            .duration(1200)
+            .metadata(COIL_HEAT, 9500)
+            .metadata(FUEL_REFINING_TIER, 1)
+            .eut(TierEU.RECIPE_ZPM)
             .addTo(FCR);
     }
 }

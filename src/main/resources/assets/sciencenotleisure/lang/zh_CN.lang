@@ -1492,6 +1492,15 @@ Tooltip_MassFabricator_Casing=任意ZPM机械方块
 NameFuelRefiningComplex=燃料精炼复合体
 FuelRefiningComplexRecipeType=燃料精炼复合体
 gtnl.recipe.FuelRefiningComplexRecipes=燃料精炼复合体
+FuelRefiningTierKey=需要%s级线圈
+
+NameAtomicEnergyExcitationPlant=原子能激发工厂
+AtomicEnergyExcitationPlantRecipeType=燃料精炼复合体
+Tooltip_AtomicEnergyExcitationPlant_00=每超过配方温度900K，耗能均将乘以95%(不计超频)
+Tooltip_AtomicEnergyExcitationPlant_01=每超过配方温度1800K，将进行一次无损超频
+Tooltip_AtomicEnergyExcitationPlant_02=使用螺丝刀开启/关闭动画特效
+AtomicEnergyExcitationPlant_Render_Enabled=开启渲染
+AtomicEnergyExcitationPlant_Render_Disabled=关闭渲染
 
 NameHorizontalCompressor=卧式压缩机
 HorizontalCompressorRecipeType=压缩机

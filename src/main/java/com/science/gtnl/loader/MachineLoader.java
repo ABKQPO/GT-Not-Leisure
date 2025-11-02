@@ -61,6 +61,7 @@ import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.common.machine.multiblock.AdvancedInfiniteDriller;
 import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
+import com.science.gtnl.common.machine.multiblock.AtomicEnergyExcitationPlant;
 import com.science.gtnl.common.machine.multiblock.BloodSoulSacrificialArray;
 import com.science.gtnl.common.machine.multiblock.BrickedBlastFurnace;
 import com.science.gtnl.common.machine.multiblock.CheatOreProcessingFactory;
@@ -274,6 +275,13 @@ public class MachineLoader {
     public static ItemStack SuperSpaceElevator;
 
     public static void registerMachines() {
+
+        GTNLItemList.AtomicEnergyExcitationPlant.set(
+            new AtomicEnergyExcitationPlant(
+                ATOMIC_ENERGY_EXCITATION_PLANT.ID,
+                "AtomicEnergyExcitationPlant",
+                StatCollector.translateToLocal("NameAtomicEnergyExcitationPlant")));
+        addItemTooltip(GTNLItemList.AtomicEnergyExcitationPlant.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.EdenGarden
             .set(new EdenGarden(EDEN_GARDEN.ID, "EdenGarden", StatCollector.translateToLocal("NameEdenGarden")));
@@ -1370,63 +1378,63 @@ public class MachineLoader {
         GTNLItemList.FOGAlloySmelterModule.set(
             new FOGAlloySmelterModule(
                 FOG_ALLOY_SMELTER_MODULE.ID,
-                "NameFOGAlloySmelterModule",
+                "FOGAlloySmelterModule",
                 StatCollector.translateToLocal("NameFOGAlloySmelterModule")));
         addItemTooltip(GTNLItemList.FOGAlloySmelterModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.FOGAlloyBlastSmelterModule.set(
             new FOGAlloyBlastSmelterModule(
                 FOG_ALLOY_BLAST_SMELTER_MODULE.ID,
-                "NameFOGAlloyBlastSmelterModule",
+                "FOGAlloyBlastSmelterModule",
                 StatCollector.translateToLocal("NameFOGAlloyBlastSmelterModule")));
         addItemTooltip(GTNLItemList.FOGAlloyBlastSmelterModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.FOGExtractorModule.set(
             new FOGExtractorModule(
                 FOG_EXTRACTOR_MODULE.ID,
-                "NameFOGExtractorModule",
+                "FOGExtractorModule",
                 StatCollector.translateToLocal("NameFOGExtractorModule")));
         addItemTooltip(GTNLItemList.FOGExtractorModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SteamEntityCrusherModule.set(
             new SteamEntityCrusherModule(
                 STEAM_ENTITY_CRUSHER_MODULE.ID,
-                "NameSteamEntityCrusherModule",
+                "SteamEntityCrusherModule",
                 StatCollector.translateToLocal("NameSteamEntityCrusherModule")));
         addItemTooltip(GTNLItemList.SteamEntityCrusherModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SteamApiaryModule.set(
             new SteamApiaryModule(
                 STEAM_APIARY_MODULE.ID,
-                "NameSteamApiaryModule",
+                "SteamApiaryModule",
                 StatCollector.translateToLocal("NameSteamApiaryModule")));
         addItemTooltip(GTNLItemList.SteamApiaryModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SteamBeeBreedingModule.set(
             new SteamBeeBreedingModule(
                 STEAM_BEE_BREEDING_MODULE.ID,
-                "NameSteamBeeBreedingModule",
+                "SteamBeeBreedingModule",
                 StatCollector.translateToLocal("NameSteamBeeBreedingModule")));
         addItemTooltip(GTNLItemList.SteamBeeBreedingModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SteamGreenhouseModule.set(
             new SteamGreenhouseModule(
                 STEAM_GREENHOUSE_MODULE.ID,
-                "NameSteamGreenhouseModule",
+                "SteamGreenhouseModule",
                 StatCollector.translateToLocal("NameSteamGreenhouseModule")));
         addItemTooltip(GTNLItemList.SteamGreenhouseModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.RocketAssembler.set(
             new RocketAssembler(
                 ROCKET_ASSEMBLER.ID,
-                "NameRocketAssembler",
+                "RocketAssembler",
                 StatCollector.translateToLocal("NameRocketAssembler")));
         addItemTooltip(GTNLItemList.RocketAssembler.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.SteamOilDrillModuleI.set(
             new SteamOilDrillModule(
                 STEAM_OIL_DRILL_MODULE_I.ID,
-                "NameSteamOilDrillModuleI",
+                "SteamOilDrillModuleI",
                 StatCollector.translateToLocal("NameSteamOilDrillModuleI"),
                 2));
         addItemTooltip(GTNLItemList.SteamOilDrillModuleI.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
@@ -1434,7 +1442,7 @@ public class MachineLoader {
         GTNLItemList.SteamOilDrillModuleII.set(
             new SteamOilDrillModule(
                 STEAM_OIL_DRILL_MODULE_II.ID,
-                "NameSteamOilDrillModuleII",
+                "SteamOilDrillModuleII",
                 StatCollector.translateToLocal("NameSteamOilDrillModuleII"),
                 3));
         addItemTooltip(GTNLItemList.SteamOilDrillModuleII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
@@ -1442,7 +1450,7 @@ public class MachineLoader {
         GTNLItemList.SteamOilDrillModuleIII.set(
             new SteamOilDrillModule(
                 STEAM_OIL_DRILL_MODULE_III.ID,
-                "NameSteamOilDrillModuleIII",
+                "SteamOilDrillModuleIII",
                 StatCollector.translateToLocal("NameSteamOilDrillModuleIII"),
                 4));
         addItemTooltip(GTNLItemList.SteamOilDrillModuleIII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
@@ -1450,53 +1458,50 @@ public class MachineLoader {
         GTNLItemList.AdvancedRareEarthCentrifugal.set(
             new AdvancedRareEarthCentrifugal(
                 ADVANCED_RARE_EARTH_CENTRIFUGAL.ID,
-                "NameAdvancedRareEarthCentrifugal",
+                "AdvancedRareEarthCentrifugal",
                 StatCollector.translateToLocal("NameAdvancedRareEarthCentrifugal")));
         addItemTooltip(GTNLItemList.AdvancedRareEarthCentrifugal.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.MassFabricator.set(
             new MassFabricator(
                 MASS_FABRICATOR.ID,
-                "NameMassFabricator",
+                "MassFabricator",
                 StatCollector.translateToLocal("NameMassFabricator")));
         addItemTooltip(GTNLItemList.MassFabricator.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.AdvancedMassFabricator.set(
             new AdvancedMassFabricator(
                 ADVANCED_MASS_FABRICATOR.ID,
-                "NameAdvancedMassFabricator",
+                "AdvancedMassFabricator",
                 StatCollector.translateToLocal("NameAdvancedMassFabricator")));
         addItemTooltip(GTNLItemList.AdvancedMassFabricator.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.HorizontalCompressor.set(
             new HorizontalCompressor(
                 HORIZONTAL_COMPRESSOR.ID,
-                "NameHorizontalCompressor",
+                "HorizontalCompressor",
                 StatCollector.translateToLocal("NameHorizontalCompressor")));
         addItemTooltip(GTNLItemList.HorizontalCompressor.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.MegaVacuumDryingFurnace.set(
             new MegaVacuumDryingFurnace(
                 MEGA_VACUUM_DRYING_FURNACE.ID,
-                "NameMegaVacuumDryingFurnace",
+                "MegaVacuumDryingFurnace",
                 StatCollector.translateToLocal("NameMegaVacuumDryingFurnace")));
         addItemTooltip(GTNLItemList.MegaVacuumDryingFurnace.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.MegaBathTank.set(
-            new MegaBathTank(
-                MEGA_BATH_TANK.ID,
-                "NameMegaBathTank",
-                StatCollector.translateToLocal("NameMegaBathTank")));
+            new MegaBathTank(MEGA_BATH_TANK.ID, "MegaBathTank", StatCollector.translateToLocal("NameMegaBathTank")));
         addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.MegaCanner
-            .set(new MegaCanner(MEGA_CANNER.ID, "NameMegaCanner", StatCollector.translateToLocal("NameMegaCanner")));
+            .set(new MegaCanner(MEGA_CANNER.ID, "MegaCanner", StatCollector.translateToLocal("NameMegaCanner")));
         addItemTooltip(GTNLItemList.MegaCanner.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.CompoundDistillationFractionator.set(
             new CompoundDistillationFractionator(
                 COMPOUND_DISTILLATION_FRACTIONATOR.ID,
-                "NameCompoundDistillationFractionator",
+                "CompoundDistillationFractionator",
                 StatCollector.translateToLocal("NameCompoundDistillationFractionator")));
         addItemTooltip(GTNLItemList.CompoundDistillationFractionator.get(1), AnimatedText.SNL_QYZG);
 

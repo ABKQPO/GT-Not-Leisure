@@ -26,6 +26,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
@@ -102,7 +103,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
         tt.addMachineType(StatCollector.translateToLocal("FuelRefiningComplexRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Tectech_Hatch"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_04"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
@@ -162,11 +163,6 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     }
 
     @Override
-    public boolean checkEnergyHatch() {
-        return true;
-    }
-
-    @Override
     public boolean checkHatch() {
         return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None;
     }
@@ -204,6 +200,10 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningTierKey.INSTANCE, 0);
+                if (recipeReq > 0) {
+                    return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
+                }
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -223,7 +223,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
 
     @Override
     public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
+        return 1 - (mParallelTier / 50.0);
     }
 
     @Override

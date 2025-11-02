@@ -27,6 +27,7 @@ import com.science.gtnl.utils.gui.recipe.SteamGateAssemblerFrontend;
 import com.science.gtnl.utils.gui.recipe.SteamLogoFrontend;
 import com.science.gtnl.utils.recipes.CircuitNanitesDataSpecialValue;
 import com.science.gtnl.utils.recipes.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
 import com.science.gtnl.utils.recipes.IsaMillTierKey;
 import com.science.gtnl.utils.recipes.NaquadahReactorSpecialValue;
 import com.science.gtnl.utils.recipes.RealArtificialStarSpecialValue;
@@ -333,6 +334,10 @@ public class RecipePool {
             builder -> builder.setDisplayStack(GTNLItemList.FuelRefiningComplex.get(1))
                 .setMaxRecipesPerPage(1))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
+        .neiRecipeComparator(
+            Comparator
+                .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(FuelRefiningTierKey.INSTANCE, 0))
+                .thenComparing(GTRecipe::compareTo))
         .build();
 
     public static RecipeMap<RecipeMapBackend> SpaceMinerRecipes = RecipeMapBuilder.of("gtnl.recipe.SpaceMinerRecipes")

@@ -40,7 +40,7 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
             .addMapping('V', TTCasingsContainer.TimeAccelerationFieldGenerator, 8)
             .addMapping('W', TTCasingsContainer.sBlockCasingsBA0, 11);
 
-        ring = ringStructure.assignStructure(EternalGregTechWorkshop.shape_extra)
+        ring = ringStructure.assignStructure(EternalGregTechWorkshop.shapeExtra)
             .build();
 
         fadeBypassProgram = new ShaderProgram(

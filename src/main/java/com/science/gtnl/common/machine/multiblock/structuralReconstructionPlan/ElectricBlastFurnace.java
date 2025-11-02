@@ -182,7 +182,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
     @Override
     public double getDurationModifier() {
-        return 1.0 / 1.25 * Math.pow(0.95, getMCoilLevel().getTier());
+        return 1.0 / 1.25;
     }
 
     @Override

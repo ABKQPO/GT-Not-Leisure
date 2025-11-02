@@ -1492,6 +1492,15 @@ Tooltip_MassFabricator_Casing=Any ZPM Casing
 NameFuelRefiningComplex=Fuel Refining Complex
 FuelRefiningComplexRecipeType=Fuel Refining Complex
 gtnl.recipe.FuelRefiningComplexRecipes=Fuel Refining Complex
+FuelRefiningTierKey=Requires %s tier coils
+
+NameAtomicEnergyExcitationPlant=Atomic Energy Excitation Plant
+AtomicEnergyExcitationPlantRecipeType=Fuel Refining Complex
+Tooltip_AtomicEnergyExcitationPlant_00=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
+Tooltip_AtomicEnergyExcitationPlant_01=For every 1800K above the recipe temperature, perform one lossless overclock
+Tooltip_AtomicEnergyExcitationPlant_02=Use a screwdriver to turn on/off the animation effects.
+AtomicEnergyExcitationPlant_Render_Enabled=Enabled Render
+AtomicEnergyExcitationPlant_Render_Disabled=Disabled Render
 
 NameHorizontalCompressor=Horizontal Compressor
 HorizontalCompressorRecipeType=Compressor
