@@ -100,7 +100,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
     @Override
     public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
-        if (!isRenderActive || !enableRender) return;
+        if (!mMachine || !isRenderActive || !enableRender) return;
         AtomicEnergyExcitationPlantRenderer.renderTileEntity(this, x, y, z, timeSinceLastTick);
     }
 
