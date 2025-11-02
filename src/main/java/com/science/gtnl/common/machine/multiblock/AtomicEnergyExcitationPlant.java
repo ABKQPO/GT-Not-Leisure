@@ -82,7 +82,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     public int machineTier = -1;
 
     public boolean enableRender = true;
-    public boolean isRenderActive;
+    public boolean isRenderActive = false;
     public float rotation = 0;
 
     public AtomicEnergyExcitationPlant(int aID, String aName, String aNameRegional) {
@@ -100,7 +100,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
     @Override
     public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
-        if (!mMachine || !isRenderActive || !enableRender) return;
+        if (!mMachine || !enableRender) return;
         AtomicEnergyExcitationPlantRenderer.renderTileEntity(this, x, y, z, timeSinceLastTick);
     }
 
