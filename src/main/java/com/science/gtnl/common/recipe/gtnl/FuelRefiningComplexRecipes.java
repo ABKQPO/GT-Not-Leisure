@@ -286,20 +286,20 @@ public class FuelRefiningComplexRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(FCR);
 
-        GTValues.RA.stdBuilder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 44L))
-            .fluidInputs(
-                Materials.Oxygen.getGas(12000),
-                Materials.Nitrogen.getGas(8000),
-                Materials.Naphtha.getFluid(16000),
-                Materials.Gas.getGas(2000),
-                Materials.Toluene.getFluid(4000),
-                Materials.Octane.getFluid(3000))
-            .fluidOutputs(Materials.GasolinePremium.getFluid(50000))
-            .duration(1200)
-            .metadata(COIL_HEAT, 9500)
-            .metadata(FUEL_REFINING_TIER, 1)
-            .eut(TierEU.RECIPE_ZPM)
-            .addTo(FCR);
+        // GTValues.RA.stdBuilder()
+        // .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 44L))
+        // .fluidInputs(
+        // Materials.Oxygen.getGas(12000),
+        // Materials.Nitrogen.getGas(8000),
+        // Materials.Naphtha.getFluid(16000),
+        // Materials.Gas.getGas(2000),
+        // Materials.Toluene.getFluid(4000),
+        // Materials.Octane.getFluid(3000))
+        // .fluidOutputs(Materials.GasolinePremium.getFluid(50000))
+        // .duration(1200)
+        // .metadata(COIL_HEAT, 9500)
+        // .metadata(FUEL_REFINING_TIER, 1)
+        // .eut(TierEU.RECIPE_ZPM)
+        // .addTo(FCR);
     }
 }
