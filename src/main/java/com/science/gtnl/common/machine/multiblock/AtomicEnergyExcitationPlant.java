@@ -45,6 +45,7 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -99,24 +100,28 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     @Override
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
+    }
+
+    @Override
     public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
-        if (!mMachine || !isRenderActive || !enableRender) return;
+        if (!isRenderActive || !enableRender) return;
         AtomicEnergyExcitationPlantRenderer.renderTileEntity(this, x, y, z, timeSinceLastTick);
     }
 
     @Override
     public void onValueUpdate(byte aValue) {
-        mMachine = (aValue & 0x01) != 0;
-        isRenderActive = (aValue & 0x02) != 0;
-        enableRender = (aValue & 0x03) != 0;
+        isRenderActive = (aValue & 0x01) != 0;
+        enableRender = (aValue & 0x02) != 0;
     }
 
     @Override
     public byte getUpdateData() {
         byte data = 0;
-        if (mMachine) data |= 0x01;
-        if (isRenderActive) data |= 0x02;
-        if (enableRender) data |= 0x03;
+        if (isRenderActive) data |= 0x01;
+        if (enableRender) data |= 0x02;
         return data;
     }
 
@@ -349,6 +354,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             destroySphere();
             isRenderActive = true;
         }
+        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
 
         return true;
     }

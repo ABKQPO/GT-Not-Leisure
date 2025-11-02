@@ -37,6 +37,7 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
@@ -192,7 +193,12 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
             return false;
         }
         setupParameters();
-        return mCountCasing >= 1;
+        if (mCountCasing >= 1) {
+            getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

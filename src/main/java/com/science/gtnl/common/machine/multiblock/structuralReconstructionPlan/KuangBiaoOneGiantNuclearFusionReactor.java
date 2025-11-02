@@ -64,6 +64,7 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.recipe.RecipeMap;
@@ -130,15 +131,13 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
     @Override
     public void onValueUpdate(byte aValue) {
-        mMachine = (aValue & 0x01) != 0;
-        enableRender = (aValue & 0x02) != 0;
+        enableRender = (aValue & 0x01) != 0;
     }
 
     @Override
     public byte getUpdateData() {
         byte data = 0;
-        if (mMachine) data |= 0x01;
-        if (enableRender) data |= 0x02;
+        if (enableRender) data |= 0x01;
         return data;
     }
 
@@ -847,6 +846,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
             super.onFirstTick(aBaseMetaTileEntity);
             this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+            getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
         }
 
         @Override
