@@ -1498,7 +1498,7 @@ NameAtomicEnergyExcitationPlant=Atomic Energy Excitation Plant
 AtomicEnergyExcitationPlantRecipeType=Fuel Refining Complex
 Tooltip_AtomicEnergyExcitationPlant_00=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
 Tooltip_AtomicEnergyExcitationPlant_01=For every 1800K above the recipe temperature, perform one lossless overclock
-Tooltip_AtomicEnergyExcitationPlant_02=Use a screwdriver to turn on/off the animation effects.
+Tooltip_AtomicEnergyExcitationPlant_02=Use a wire cutter to turn on/off the animation effects.
 AtomicEnergyExcitationPlant_Render_Enabled=Enabled Render
 AtomicEnergyExcitationPlant_Render_Disabled=Disabled Render
 
@@ -1532,7 +1532,7 @@ Tooltip_KuangBiaoOneGiantNuclearFusionReactor_02=Only requires %%s%% of the reci
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03=Does not consume recipe startup energy, but you still need the corresponding startup energy to turn it on
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04=Energy storage limit:
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05=Fusion cannot be performed when the recipe voltage exceeds %s
-Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06=Use a screwdriver to turn on/off the animation effects.
+Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06=Use a wire cutter to turn on/off the animation effects.
 Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing=Any fusion machine block
 KuangBiaoOneGiantNuclearFusionReactor_Render_Enabled=Enabled Render
 KuangBiaoOneGiantNuclearFusionReactor_Render_Disabled=Disabled Render
@@ -1599,7 +1599,7 @@ NameRocketAssembler=Rocket Assembler
 gtnl.recipe.RocketAssemblerRecipes=Rocket Assembler
 RocketAssemblerRecipeType=Rocket Assembler
 Tooltip_RocketAssembler_00=§d§lI have a space dream
-Tooltip_RocketAssembler_01=Use a screwdriver to turn on/off the animation effects.
+Tooltip_RocketAssembler_01=Use a wire cutter to turn on/off the animation effects.
 Tooltip_RocketAssembler_Casing=Any clean stainless steel machine block
 RocketAssembler_Render_Enabled=Enabled Render
 RocketAssembler_Render_Disabled=Disabled Render
@@ -3149,7 +3149,7 @@ Tooltip_RealArtificialStar_05=At the same time, higher levels will increase the 
 Tooltip_RealArtificialStar_06=Maintaining continuous operation will also increase energy output.
 Tooltip_RealArtificialStar_07=Only one input bus is allowed and must be installed.
 Tooltip_RealArtificialStar_08=Energy will be output directly to the wireless EU network.
-Tooltip_RealArtificialStar_09=Use a screwdriver to turn on/off the animation effects.
+Tooltip_RealArtificialStar_09=Use a wire cutter to turn on/off the animation effects.
 Tooltip_RealArtificialStar_02_01=Output coefficient = Time Field Level^0.25 * Space Field Level^0.25 * 1.588186^(Stability Field Level - 2)
 Tooltip_RealArtificialStar_02_02=Actual output EU = Recipe value * Output coefficient * Continuous operation bonus coefficient
 Tooltip_RealArtificialStar_02_03=Material recycling probability = Time Field Level * Space Field Level * Stability Field Level / 1000

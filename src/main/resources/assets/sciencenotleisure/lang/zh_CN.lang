@@ -1498,7 +1498,7 @@ NameAtomicEnergyExcitationPlant=原子能激发工厂
 AtomicEnergyExcitationPlantRecipeType=燃料精炼复合体
 Tooltip_AtomicEnergyExcitationPlant_00=每超过配方温度900K，耗能均将乘以95%(不计超频)
 Tooltip_AtomicEnergyExcitationPlant_01=每超过配方温度1800K，将进行一次无损超频
-Tooltip_AtomicEnergyExcitationPlant_02=使用螺丝刀开启/关闭动画特效
+Tooltip_AtomicEnergyExcitationPlant_02=使用剪线钳开启/关闭动画特效
 AtomicEnergyExcitationPlant_Render_Enabled=开启渲染
 AtomicEnergyExcitationPlant_Render_Disabled=关闭渲染
 
@@ -1532,7 +1532,7 @@ Tooltip_KuangBiaoOneGiantNuclearFusionReactor_02=只需要使用配方要求功�
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03=无需消耗配方启动能量，但你仍然需要相应的启动能量来开机
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04=储能上限：
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05=当配方需求电压超过%s§r§7时，无法进行聚变
-Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06=使用螺丝刀开启/关闭动画特效
+Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06=使用剪线钳开启/关闭动画特效
 Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing=任意聚变机械方块
 KuangBiaoOneGiantNuclearFusionReactor_Render_Enabled=开启渲染
 KuangBiaoOneGiantNuclearFusionReactor_Render_Disabled=关闭渲染
@@ -1599,7 +1599,7 @@ NameRocketAssembler=火箭组装厂
 gtnl.recipe.RocketAssemblerRecipes=火箭组装厂
 RocketAssemblerRecipeType=火箭组装厂
 Tooltip_RocketAssembler_00=§d§l我有一个航天梦
-Tooltip_RocketAssembler_01=使用螺丝刀开启/关闭动画特效
+Tooltip_RocketAssembler_01=使用剪线钳开启/关闭动画特效
 Tooltip_RocketAssembler_Casing=任意洁净不锈钢机械方块
 RocketAssembler_Render_Enabled=开启渲染
 RocketAssembler_Render_Disabled=关闭渲染
@@ -3151,7 +3151,7 @@ Tooltip_RealArtificialStar_05=同时，更高等级会提高回收原料的概�
 Tooltip_RealArtificialStar_06=保持连续运行也会提高能量输出.
 Tooltip_RealArtificialStar_07=只允许且必须安装一个输入总线.
 Tooltip_RealArtificialStar_08=能量将直接输出到无线EU网络.
-Tooltip_RealArtificialStar_09=使用螺丝刀开启/关闭动画特效.
+Tooltip_RealArtificialStar_09=使用剪线钳开启/关闭动画特效.
 Tooltip_RealArtificialStar_02_01=输出系数 = 时间场等级^0.25 * 空间场等级^0.25 * 1.588186^(稳定场等级 - 2)
 Tooltip_RealArtificialStar_02_02=实际输出EU = 配方数值 * 输出系数 * 连续运行奖励系数
 Tooltip_RealArtificialStar_02_03=原料回收概率 = 时间场等级 * 空间场等级 * 稳定场等级 / 1000

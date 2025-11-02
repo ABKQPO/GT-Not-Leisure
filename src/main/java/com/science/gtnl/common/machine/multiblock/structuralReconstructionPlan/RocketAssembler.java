@@ -78,6 +78,20 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
+    public void onValueUpdate(byte aValue) {
+        mMachine = (aValue & 0x01) != 0;
+        enableRender = (aValue & 0x02) != 0;
+    }
+
+    @Override
+    public byte getUpdateData() {
+        byte data = 0;
+        if (mMachine) data |= 0x01;
+        if (enableRender) data |= 0x02;
+        return data;
+    }
+
+    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
@@ -244,8 +258,8 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
@@ -253,6 +267,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
                 StatCollector
                     .translateToLocal("RocketAssembler_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
         }
+        return true;
     }
 
     @Override

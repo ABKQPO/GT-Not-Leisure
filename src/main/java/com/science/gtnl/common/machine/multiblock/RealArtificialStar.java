@@ -187,8 +187,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
@@ -196,6 +196,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                 StatCollector
                     .translateToLocal("RealArtificialStar_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
         }
+        return true;
     }
 
     @Override

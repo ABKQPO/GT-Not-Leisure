@@ -129,6 +129,20 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @Override
+    public void onValueUpdate(byte aValue) {
+        mMachine = (aValue & 0x01) != 0;
+        enableRender = (aValue & 0x02) != 0;
+    }
+
+    @Override
+    public byte getUpdateData() {
+        byte data = 0;
+        if (mMachine) data |= 0x01;
+        if (enableRender) data |= 0x02;
+        return data;
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
@@ -228,8 +242,8 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
@@ -237,6 +251,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 StatCollector.translateToLocal(
                     "KuangBiaoOneGiantNuclearFusionReactor_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
         }
+        return true;
     }
 
     @Override
