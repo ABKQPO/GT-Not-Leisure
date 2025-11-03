@@ -254,6 +254,11 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     }
 
     @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
+    @Override
     public void setupParameters() {
         super.setupParameters();
         this.mHeatingCapacity = (int) this.getMCoilLevel()
