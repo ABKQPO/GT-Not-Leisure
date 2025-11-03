@@ -4590,7 +4590,7 @@ public class MachineLoader {
 
     public static void registerWireAndPipe() {
         MaterialUtils.registerWires(STAR_GATE_WIRE.ID, MaterialPool.Stargate, 2147483647, 2147483647, 0, false);
-        MaterialUtils.registerItemPipe(BLUE_ALLOY_PIPE.ID, Materials.BlueAlloy, 4, 512, false, 20);
+        MaterialUtils.registerItemPipe(BLUE_ALLOY_PIPE.ID, Materials.BlueAlloy, 8, 2048, false, 20);
         MaterialUtils.registerFluidPipes(COMPRESSED_STEAM_PIPE.ID, MaterialPool.CompressedSteam, 250000, 10000, true);
         MaterialUtils.registerFluidPipes(STRONZE_PIPE.ID, MaterialPool.Stronze, 15000, 10000, true);
         MaterialUtils.registerFluidPipes(BREEL_PIPE.ID, MaterialPool.Breel, 10000, 10000, true);
