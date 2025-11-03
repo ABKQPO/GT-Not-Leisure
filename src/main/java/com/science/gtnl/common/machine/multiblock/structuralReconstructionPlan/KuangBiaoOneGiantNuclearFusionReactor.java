@@ -918,9 +918,12 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 @NotNull
                 @Override
                 public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                    GTNL_OverclockCalculator logic = super.createOverclockCalculator(recipe)
-                        .setExtraDurationModifier(mConfigSpeedBoost)
-                        .setAmperageOC(true)
+                    if (wirelessMode) {
+                        availableAmperage = (8L << (2 * mParallelTier)) - 2L;
+                        availableVoltage = V[Math.min(mParallelTier + 1, 14)];
+                    }
+                    return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                        .setAmperageOC(!wirelessMode)
                         .setDurationDecreasePerOC(4)
                         .setEUtIncreasePerOC(4)
                         .setAmperage(availableAmperage)
@@ -928,13 +931,6 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                         .setEUt(availableVoltage)
                         .setEUtDiscount(0.4 - (mParallelTier / 50.0))
                         .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier));
-
-                    if (wirelessMode) {
-                        logic.setEUt(V[Math.min(mParallelTier + 1, 14)]);
-                        logic.setAmperage((8L << (2 * mParallelTier)) - 2L);
-                        logic.setAmperageOC(false);
-                    }
-                    return logic;
                 }
 
                 @NotNull
@@ -945,7 +941,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                         if (!wirelessMode && powerToStart > mEUStore) {
                             return CheckRecipeResultRegistry.insufficientStartupPower(BigInteger.valueOf(powerToStart));
                         }
-                        if (recipe.mEUt > GTValues.V[getRecipeMaxTier() + 1]) {
+                        if (recipe.mEUt > V[getRecipeMaxTier() + 1]) {
                             return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                         }
                     }
@@ -958,9 +954,9 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                     CheckRecipeResult result = super.process();
                     if (mRunningOnLoad) mRunningOnLoad = false;
                     if (result.wasSuccessful()) {
-                        KuangBiaoOneGiantNuclearFusionReactor.UEVTier.this.mLastRecipe = lastRecipe;
+                        UEVTier.this.mLastRecipe = lastRecipe;
                     } else {
-                        KuangBiaoOneGiantNuclearFusionReactor.UEVTier.this.mLastRecipe = null;
+                        UEVTier.this.mLastRecipe = null;
                     }
                     return result;
                 }
