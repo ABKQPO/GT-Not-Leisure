@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -250,7 +251,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         int maxParallel, int limit) {
         long totalNeedEUt = 0; // 累加的总功率
         int totalMaxProgressTime = 0; // 累加的最大时间
-        int powerParallel = 0;
         int circuitOC = -1; // 电路板限制超频次数
         int perfectOCTime = (mParallelTier >= 11) ? 4 : 2;
         costingEUText = ZERO_STRING;
@@ -276,134 +276,14 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         List<GTRecipe.RecipeAssemblyLine> validRecipes = new ObjectArrayList<>();
         findRecipe(validRecipes, energyEU);
         if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+        validRecipes.removeIf(
+            recipe -> recipe.mInputs == null || Arrays.stream(recipe.mInputs)
+                .anyMatch(Objects::isNull)
+                || recipe.mFluidInputs == null
+                || Arrays.stream(recipe.mFluidInputs)
+                    .anyMatch(Objects::isNull)
+                || recipe.mOutput == null);
         validRecipes.sort(Comparator.comparingInt(recipe -> recipe.mEUt));
-
-        List<GTRecipe> overclockedRecipes = new ObjectArrayList<>();
-
-        double maxBatchFactor = 1.0;
-        for (GTRecipe.RecipeAssemblyLine recipe : validRecipes) {
-            ItemStack[] inputItems;
-            FluidStack[] inputFluids;
-            ItemStack outputItem;
-
-            try {
-                inputItems = Arrays
-                    .stream(
-                        Objects.requireNonNull(recipe.mInputs, "Inputs is null: " + Arrays.toString(recipe.mInputs)))
-                    .map(Objects::requireNonNull)
-                    .map(ItemStack::copy)
-                    .toArray(ItemStack[]::new);
-
-                inputFluids = Arrays
-                    .stream(
-                        Objects.requireNonNull(
-                            recipe.mFluidInputs,
-                            "FluidInputs is null: " + Arrays.toString(recipe.mFluidInputs)))
-                    .map(Objects::requireNonNull)
-                    .map(FluidStack::copy)
-                    .toArray(FluidStack[]::new);
-
-                outputItem = Objects.requireNonNull(recipe.mOutput, "Output is null: " + recipe.mOutput)
-                    .copy();
-            } catch (Throwable t) {
-                System.err.println("[GTNL] Failed to copy recipe: " + recipe);
-                t.printStackTrace();
-                continue;
-            }
-
-            int overclockCount = 0;
-            long energyRatio = energyEU / Math.max(1, recipe.mEUt);
-            long threshold = 1;
-            int adjustedTime;
-            int adjustedPower;
-            BigInteger adjustedPowerBigInt;
-
-            if (wirelessMode) {
-                val IntMax = BigInteger.valueOf(Integer.MAX_VALUE);
-                val big4 = BigInteger.valueOf(4);
-                adjustedTime = minRecipeTime;
-                adjustedPowerBigInt = BigInteger.valueOf((long) recipe.mEUt * recipe.mDuration / adjustedTime);
-                while (adjustedPowerBigInt.compareTo(IntMax) > 0) {
-                    adjustedPowerBigInt = adjustedPowerBigInt.divide(big4);
-                    adjustedTime *= 4;
-                }
-                adjustedPower = adjustedPowerBigInt.min(IntMax)
-                    .intValue();
-            } else {
-                while (energyRatio >= threshold * 4) {
-                    overclockCount++;
-                    threshold *= 4;
-                }
-                if (circuitOC >= 0) {
-                    overclockCount = Math.min(overclockCount, circuitOC);
-                }
-                adjustedPower = recipe.mEUt;
-                adjustedTime = recipe.mDuration;
-                while ((adjustedPower * 4L > Integer.MAX_VALUE || adjustedTime / perfectOCTime > 0)
-                    && overclockCount > 0) {
-                    overclockCount--;
-                    adjustedPower *= 4;
-                    adjustedTime /= perfectOCTime;
-                }
-            }
-
-            adjustedTime = Math.max(1, adjustedTime);
-            adjustedPower = Math.max(1, adjustedPower);
-
-            long totalEnergy = (long) adjustedPower * adjustedTime;
-            double d = (double) totalEnergy / energyEU;
-
-            if (d >= limit) {
-                if (energyEU > Integer.MAX_VALUE) {
-                    adjustedPower = Integer.MAX_VALUE;
-                    d = (double) totalEnergy / Integer.MAX_VALUE;
-                } else {
-                    adjustedPower = (int) energyEU;
-                }
-                adjustedTime = (int) Math.max(limit, d);
-            } else {
-                adjustedPower = (int) ((energyEU * d) / limit);
-                adjustedTime = limit;
-            }
-
-            adjustedTime = Math.max(1, adjustedTime);
-            adjustedPower = Math.max(1, adjustedPower);
-
-            double batchFactor = 1.0;
-            if (adjustedTime < 128 && batchMode) {
-                double timeFactor = 128.0 / adjustedTime;
-                double energyFactor = (double) energyEU / adjustedPower;
-                double newPower = adjustedPower * timeFactor;
-                if (newPower > energyEU) {
-                    batchFactor = energyFactor;
-                    adjustedPower = (int) Math.min(Integer.MAX_VALUE, adjustedPower * batchFactor);
-                    adjustedTime = (int) Math.max(1, adjustedTime * batchFactor);
-                } else {
-                    batchFactor = timeFactor;
-                    adjustedPower = (int) Math.min(Integer.MAX_VALUE, newPower);
-                    adjustedTime = 128;
-                }
-            }
-
-            maxBatchFactor = Math.max(maxBatchFactor, batchFactor);
-
-            GTRecipe overclockedRecipe = new GTRecipe(
-                true,
-                inputItems,
-                new ItemStack[] { outputItem },
-                null,
-                Arrays.stream(new int[inputItems.length])
-                    .map(i -> 10000)
-                    .toArray(),
-                inputFluids,
-                null,
-                adjustedTime,
-                adjustedPower,
-                0);
-
-            overclockedRecipes.add(overclockedRecipe);
-            powerParallel = (int) Math.min(Integer.MAX_VALUE, energyEU / recipe.mEUt);
-        }
 
         // 遍历每个输入仓
         for (IDualInputInventory inventory : inputInventories) {
@@ -416,12 +296,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 continue;
             }
 
-            // 将当前输入仓的物品和流体转换为列表
-
-            maxParallel = (int) (maxParallel * maxBatchFactor);
-
             // 第四步：处理配方并行逻辑
-            Object2IntMap<GTRecipe> recipeParallelMap = new Object2IntOpenHashMap<>();
+            Object2IntMap<GTRecipe.RecipeAssemblyLine> recipeParallelMap = new Object2IntOpenHashMap<>();
             int remainingMaxParallel = maxParallel; // 剩余的最大并行数
             boolean hasValidRecipe = false;
 
@@ -429,7 +305,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             Object2IntMap<GTUtility.ItemId> itemAllocated = new Object2IntOpenHashMap<>();
             Reference2IntMap<Fluid> fluidAllocated = new Reference2IntOpenHashMap<>();
 
-            for (GTRecipe recipe : overclockedRecipes) {
+            for (GTRecipe.RecipeAssemblyLine recipe : validRecipes) {
                 // 提取所需的物品和流体
                 ItemStack[] requiredItems = recipe.mInputs;
                 FluidStack[] requiredFluids = recipe.mFluidInputs;
@@ -497,9 +373,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 // 取较小的并行数作为当前配方的并行数 (RecipeParallel)
                 int recipeParallel = Math.min(finalItemParallel, finalFluidParallel);
 
-                // 使用功率并行数限制 RecipeParallel
-                if (!wirelessMode) recipeParallel = Math.min(recipeParallel, powerParallel);
-
                 // 检查剩余的最大并行数
                 if (recipeParallel > remainingMaxParallel) {
                     recipeParallel = remainingMaxParallel; // 如果超出剩余并行数，则设置为剩余并行数
@@ -544,11 +417,137 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 continue;
             }
 
+            Object2IntMap<GTRecipe> overclockedRecipes = new Object2IntOpenHashMap<>();
+
+            for (var entry : recipeParallelMap.object2IntEntrySet()) {
+                GTRecipe.RecipeAssemblyLine recipe = entry.getKey();
+                ItemStack[] inputItems;
+                FluidStack[] inputFluids;
+                ItemStack outputItem;
+
+                try {
+                    inputItems = Arrays.stream(
+                        Objects.requireNonNull(recipe.mInputs, "Inputs is null: " + Arrays.toString(recipe.mInputs)))
+                        .map(Objects::requireNonNull)
+                        .map(ItemStack::copy)
+                        .toArray(ItemStack[]::new);
+
+                    inputFluids = Arrays
+                        .stream(
+                            Objects.requireNonNull(
+                                recipe.mFluidInputs,
+                                "FluidInputs is null: " + Arrays.toString(recipe.mFluidInputs)))
+                        .map(Objects::requireNonNull)
+                        .map(FluidStack::copy)
+                        .toArray(FluidStack[]::new);
+
+                    outputItem = Objects.requireNonNull(recipe.mOutput, "Output is null: " + recipe.mOutput)
+                        .copy();
+                } catch (Throwable t) {
+                    System.err.println("[GTNL] Failed to copy recipe: " + recipe);
+                    t.printStackTrace();
+                    continue;
+                }
+
+                int overclockCount = 0;
+                long energyRatio = energyEU / Math.max(1, recipe.mEUt);
+                long threshold = 1;
+                int adjustedTime;
+                int adjustedPower;
+                BigInteger adjustedPowerBigInt;
+
+                if (wirelessMode) {
+                    val IntMax = BigInteger.valueOf(Integer.MAX_VALUE);
+                    val big4 = BigInteger.valueOf(4);
+                    adjustedTime = minRecipeTime;
+                    adjustedPowerBigInt = BigInteger.valueOf((long) recipe.mEUt * recipe.mDuration / adjustedTime);
+                    while (adjustedPowerBigInt.compareTo(IntMax) > 0) {
+                        adjustedPowerBigInt = adjustedPowerBigInt.divide(big4);
+                        adjustedTime *= 4;
+                    }
+                    adjustedPower = adjustedPowerBigInt.min(IntMax)
+                        .intValue();
+                } else {
+                    while (energyRatio >= threshold * 4) {
+                        overclockCount++;
+                        threshold *= 4;
+                    }
+                    if (circuitOC >= 0) {
+                        overclockCount = Math.min(overclockCount, circuitOC);
+                    }
+                    adjustedPower = recipe.mEUt;
+                    adjustedTime = recipe.mDuration;
+                    while ((adjustedPower * 4L > Integer.MAX_VALUE || adjustedTime / perfectOCTime > 0)
+                        && overclockCount > 0) {
+                        overclockCount--;
+                        adjustedPower *= 4;
+                        adjustedTime /= perfectOCTime;
+                    }
+                }
+
+                adjustedTime = Math.max(1, adjustedTime);
+                adjustedPower = Math.max(1, adjustedPower);
+
+                long totalEnergy = (long) adjustedPower * adjustedTime;
+                double d = (double) totalEnergy / energyEU;
+
+                if (d >= limit) {
+                    if (energyEU > Integer.MAX_VALUE) {
+                        adjustedPower = Integer.MAX_VALUE;
+                        d = (double) totalEnergy / Integer.MAX_VALUE;
+                    } else {
+                        adjustedPower = (int) energyEU;
+                    }
+                    adjustedTime = (int) Math.max(limit, d);
+                } else {
+                    adjustedPower = (int) ((energyEU * d) / limit);
+                    adjustedTime = limit;
+                }
+
+                adjustedTime = Math.max(1, adjustedTime);
+                adjustedPower = Math.max(1, adjustedPower);
+
+                double batchFactor;
+                if (adjustedTime < 128 && batchMode) {
+                    double timeFactor = 128.0 / adjustedTime;
+                    double energyFactor = (double) energyEU / adjustedPower;
+                    double newPower = adjustedPower * timeFactor;
+                    if (newPower > energyEU) {
+                        batchFactor = energyFactor;
+                        adjustedPower = (int) Math.min(Integer.MAX_VALUE, adjustedPower * batchFactor);
+                        adjustedTime = (int) Math.max(1, adjustedTime * batchFactor);
+                    } else {
+                        adjustedPower = (int) Math.min(Integer.MAX_VALUE, newPower);
+                        adjustedTime = 128;
+                    }
+                }
+
+                GTRecipe overclockedRecipe = new GTRecipe(
+                    true,
+                    inputItems,
+                    new ItemStack[] { outputItem },
+                    null,
+                    Arrays.stream(new int[inputItems.length])
+                        .map(i -> 10000)
+                        .toArray(),
+                    inputFluids,
+                    null,
+                    adjustedTime,
+                    adjustedPower,
+                    0);
+
+                int powerParallel = entry.getIntValue();
+
+                if (!wirelessMode) powerParallel = (int) Math.min(powerParallel, energyEU / recipe.mEUt);
+
+                overclockedRecipes.put(overclockedRecipe, powerParallel);
+            }
+
             // 第五步：计算总耗电和时间
             long needEU = 0;
             int needTime = 0;
 
-            for (var entry : recipeParallelMap.object2IntEntrySet()) {
+            for (var entry : overclockedRecipes.object2IntEntrySet()) {
                 GTRecipe recipe = entry.getKey();
                 long parallel = entry.getIntValue();
                 if (wirelessMode) {
@@ -564,6 +563,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             if (wirelessMode && !addEUToGlobalEnergyMap(ownerUUID, costingEU.multiply(NEGATIVE_ONE))) {
                 return CheckRecipeResultRegistry.insufficientPower(costingEU.longValue());
             }
+
+            totalNeedEUt = needEU / needTime;
+            totalMaxProgressTime = needTime;
 
             if (!wirelessMode && !batchMode) {
                 long needEUt = needEU / needTime;
@@ -592,7 +594,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 totalMaxProgressTime = (int) Math.ceil(totalMaxProgressTime / scale);
             }
 
-            for (var entry : recipeParallelMap.object2IntEntrySet()) {
+            for (var entry : overclockedRecipes.object2IntEntrySet()) {
                 GTRecipe recipe = entry.getKey();
                 int parallel = entry.getIntValue();
 
@@ -612,7 +614,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
             }
 
-            for (var entry : recipeParallelMap.object2IntEntrySet()) {
+            for (var entry : overclockedRecipes.object2IntEntrySet()) {
                 GTRecipe recipe = entry.getKey();
                 int parallel = entry.getIntValue();
 
@@ -794,6 +796,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         if (required == null || amount <= 0 || allInputs == null) return 0;
 
         long matchedCount = 0;
+        Set<ItemStack> alreadyMatched = new HashSet<>();
 
         for (ItemStack input : allInputs) {
             if (input != null) {
@@ -803,6 +806,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 if (match) {
                     matchedCount += input.stackSize;
+                    alreadyMatched.add(input);
 
                     if (!simulate) {
                         int toConsume = (int) Math.min(input.stackSize, Math.min(amount, Integer.MAX_VALUE));
@@ -823,8 +827,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 for (ItemStack oreDictItem : oreDictItems) {
                     for (ItemStack input : allInputs) {
-                        if (input != null && OreDictionary.itemMatches(oreDictItem, input, false)) {
+                        if (input != null && !alreadyMatched.contains(input)
+                            && OreDictionary.itemMatches(oreDictItem, input, false)) {
                             matchedCount += input.stackSize;
+                            alreadyMatched.add(input);
 
                             if (!simulate) {
                                 int toConsume = (int) Math.min(input.stackSize, Math.min(amount, Integer.MAX_VALUE));
