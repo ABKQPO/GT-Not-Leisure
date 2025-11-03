@@ -537,10 +537,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 GTRecipe recipe = entry.getKey();
                 long parallel = entry.getValue();
                 if (wirelessMode) {
-                    costingEU = BigInteger.valueOf(recipe.mEUt)
-                        .multiply(BigInteger.valueOf(recipe.mDuration))
-                        .multiply(BigInteger.valueOf(parallel));
-
+                    costingEU = costingEU.add(
+                        BigInteger.valueOf(recipe.mEUt)
+                            .multiply(BigInteger.valueOf(recipe.mDuration))
+                            .multiply(BigInteger.valueOf(parallel)));
                 } else {
                     needEU += (long) recipe.mEUt * recipe.mDuration * parallel;
                 }
