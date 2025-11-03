@@ -660,7 +660,7 @@ public class ItemLoader {
                     StatCollector.translateToLocal("Tooltip_VoidCover_02"),
                     StatCollector.translateToLocal("Tooltip_VoidCover_03") }));
 
-        GTNLItemList.ManaElectricProspectorTool.set(ElectricProspectorTool.initItem(0, 25, 9999));
+        GTNLItemList.ManaElectricProspectorTool.set(ElectricProspectorTool.initItem(0, 10, 9999));
         GTNLItemList.DebugElectricProspectorTool.set(ElectricProspectorTool.initItem(1, 50, Integer.MAX_VALUE));
 
         for (int i = 0; i < 14; i++) {

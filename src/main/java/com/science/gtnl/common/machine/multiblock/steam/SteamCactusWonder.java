@@ -212,14 +212,14 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     public void outputSteam() {
         if (fueledAmount > 0) {
             if (currentSteam == 1) {
-                addOutput(Materials.Steam.getGas((int) Math.min(3200, fueledAmount)));
-                fueledAmount -= (int) Math.min(3200, fueledAmount);
+                addOutput(Materials.Steam.getGas((int) Math.min(320000, fueledAmount)));
+                fueledAmount -= (int) Math.min(320000, fueledAmount);
             } else if (currentSteam == 2) {
-                addOutput(FluidUtils.getSuperHeatedSteam((int) Math.min(6400, fueledAmount)));
-                fueledAmount -= (int) Math.min(6400, fueledAmount);
+                addOutput(FluidUtils.getSuperHeatedSteam((int) Math.min(640000, fueledAmount)));
+                fueledAmount -= (int) Math.min(640000, fueledAmount);
             } else if (currentSteam == 3) {
-                addOutput(Materials.DenseSupercriticalSteam.getGas((int) Math.min(25600, fueledAmount)));
-                fueledAmount -= (int) Math.min(25600, fueledAmount);
+                addOutput(Materials.DenseSupercriticalSteam.getGas((int) Math.min(2560000, fueledAmount)));
+                fueledAmount -= (int) Math.min(2560000, fueledAmount);
             }
 
             if (fueledAmount <= 0) {

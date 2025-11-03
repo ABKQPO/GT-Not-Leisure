@@ -244,7 +244,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.text.AnimatedText;
 
 import bartworks.common.loaders.ItemRegistry;
-import goodgenerator.util.CrackRecipeAdder;
 import gregtech.api.covers.CoverRegistry;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
@@ -4590,14 +4589,11 @@ public class MachineLoader {
     }
 
     public static void registerWireAndPipe() {
-        CrackRecipeAdder.registerWire(STAR_GATE_WIRE.ID, MaterialPool.Stargate, 2147483647, 2147483647, 0, true);
-        MaterialUtils.generateGTFluidPipes(Materials.BlueAlloy, BLUE_ALLOY_PIPE.ID, 4000, 3000, true);
-        CrackRecipeAdder.registerPipe(COMPRESSED_STEAM_PIPE.ID, MaterialPool.CompressedSteam, 250000, 10000, true);
-        CrackRecipeAdder.registerPipe(STRONZE_PIPE.ID, MaterialPool.Stronze, 15000, 10000, true);
-        CrackRecipeAdder.registerPipe(BREEL_PIPE.ID, MaterialPool.Breel, 10000, 10000, true);
-        // 这个可用 MaterialUtils.generateNonGTFluidPipes(GregtechOrePrefixes.GT_Materials.Void, 22013, 500, 2000,
-        // true);
-        // 这个渲染炸了 MaterialUtils.registerPipeGTPP(22020, MaterialsAlloy.BLOODSTEEL, 123, 123, true);
+        MaterialUtils.registerWires(STAR_GATE_WIRE.ID, MaterialPool.Stargate, 2147483647, 2147483647, 0, false);
+        MaterialUtils.registerItemPipe(BLUE_ALLOY_PIPE.ID, Materials.BlueAlloy, 4, 512, false, 20);
+        MaterialUtils.registerFluidPipes(COMPRESSED_STEAM_PIPE.ID, MaterialPool.CompressedSteam, 250000, 10000, true);
+        MaterialUtils.registerFluidPipes(STRONZE_PIPE.ID, MaterialPool.Stronze, 15000, 10000, true);
+        MaterialUtils.registerFluidPipes(BREEL_PIPE.ID, MaterialPool.Breel, 10000, 10000, true);
     }
 
     private static void registerCovers() {

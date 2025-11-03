@@ -41,7 +41,6 @@ public class MaterialLoader {
     public static void loadPreInit() {
         EffectLoader.registry();
         EntityLoader.registry();
-        LanguageLoader.registry();
         if (Mods.BetterQuesting.isModLoaded() && MainConfig.enableDebugMode) {
             QuestLoader.registry();
         }
@@ -97,6 +96,8 @@ public class MaterialLoader {
         if (MainConfig.enableStickItem) {
             RecipeLoader.loadVillageTrade();
         }
+
+        LanguageLoader.registry();
     }
 
     @Optional.Method(modid = "bogosorter")
