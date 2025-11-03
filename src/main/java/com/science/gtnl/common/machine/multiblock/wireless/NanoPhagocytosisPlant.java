@@ -47,20 +47,10 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
-import tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor;
-import tectech.thing.metaTileEntity.multi.godforge.color.StarColorStorage;
 
 public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPhagocytosisPlant>
     implements INEIPreviewModifier {
 
-    private static final int DEFAULT_STAR_SIZE = 20;
-    private final StarColorStorage starColors = new StarColorStorage();
-    private static final String DEFAULT_STAR_COLOR = ForgeOfGodsStarColor.DEFAULT.getName();
-    private String selectedStarColor = DEFAULT_STAR_COLOR;
-    private int starSize = DEFAULT_STAR_SIZE;
-    private boolean neiEnableRender;
-    private boolean enableRender;
-    private boolean isRenderActive;
     private static final int HORIZONTAL_OFF_SET = 10;
     private static final int VERTICAL_OFF_SET = 22;
     private static final int DEPTH_OFF_SET = 0;
@@ -94,6 +84,10 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     private static final String[][] shapeRingOneAir = replaceLetters(shapeRingOne, "Z");
     private static final String[][] shapeRingTwoAir = replaceLetters(shapeRingTwo, "Z");
     private static final String[][] shapeRingThreeAir = replaceLetters(shapeRingThree, "Z");
+
+    public boolean neiEnableRender;
+    public boolean enableRender;
+    public boolean isRenderActive;
 
     public NanoPhagocytosisPlant(String aName) {
         super(aName);
@@ -175,7 +169,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
                 withChannel(
                     "enableRender",
                     ofBlocksTiered(
-                        (block, meta) -> block == BlockQuantumGlass.INSTANCE ? 1 : null,
+                        (block, meta) -> block instanceof BlockQuantumGlass ? 1 : null,
                         ImmutableList.of(Pair.of(BlockQuantumGlass.INSTANCE, 0)),
                         -1,
                         (t, m) -> {},
@@ -254,10 +248,6 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        if (ChannelDataAccessor.hasSubChannel(stackSize, "enableRender")
-            && ChannelDataAccessor.getChannelData(stackSize, "enableRender") > 0) {
-            neiEnableRender = true;
-        }
         int realBudget = elementBudget >= 2000 ? elementBudget : Math.min(2000, elementBudget * 5);
 
         int built;
@@ -339,17 +329,13 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         return null;
     }
 
-    private void updateRenderer() {
+    public void updateRenderer() {
         TileEntityNanoPhagocytosisPlant tile = getRenderer();
         if (tile == null) return;
-
-        tile.setStarRadius(starSize);
-        tile.setColor(starColors.getByName(selectedStarColor));
-
         tile.updateToClient();
     }
 
-    private void createRenderer() {
+    public void createRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
 
         this.getBaseMetaTileEntity()
@@ -374,7 +360,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         enableWorking();
     }
 
-    private void destroyRenderer() {
+    public void destroyRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
         this.getBaseMetaTileEntity()
             .getWorld()
@@ -388,7 +374,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         disableWorking();
     }
 
-    private ChunkCoordinates getRenderPos() {
+    public ChunkCoordinates getRenderPos() {
         IGregTechTileEntity tile = this.getBaseMetaTileEntity();
         int x = tile.getXCoord();
         int y = tile.getYCoord();
@@ -404,7 +390,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         return new ChunkCoordinates((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset));
     }
 
-    private void destroyFirstRing() {
+    public void destroyFirstRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_ONE_AIR,
             null,
@@ -414,7 +400,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             DEPTH_OFF_SET_RING_ONE);
     }
 
-    private void destroySecondRing() {
+    public void destroySecondRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_TWO_AIR,
             null,
@@ -424,7 +410,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             DEPTH_OFF_SET_RING_TWO);
     }
 
-    private void destroyThirdRing() {
+    public void destroyThirdRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_THREE_AIR,
             null,
@@ -434,7 +420,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             DEPTH_OFF_SET_RING_THREE);
     }
 
-    private void buildFirstRing() {
+    public void buildFirstRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_ONE,
             null,
@@ -444,7 +430,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             DEPTH_OFF_SET_RING_ONE);
     }
 
-    private void buildSecondRing() {
+    public void buildSecondRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_TWO,
             null,
@@ -454,7 +440,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             DEPTH_OFF_SET_RING_TWO);
     }
 
-    private void buildThirdRing() {
+    public void buildThirdRing() {
         buildPiece(
             STRUCTURE_PIECE_MAIN_RING_THREE,
             null,
@@ -541,14 +527,11 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         super.saveNBTData(aNBT);
         aNBT.setBoolean("isRenderActive", isRenderActive);
         aNBT.setBoolean("enableRender", enableRender);
-        aNBT.setString("selectedStarColor", selectedStarColor);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        if (aNBT.hasKey("starSize")) starSize = aNBT.getInteger("starSize");
-        if (aNBT.hasKey("selectedStarColor")) selectedStarColor = aNBT.getString("selectedStarColor");
         isRenderActive = aNBT.getBoolean("isRenderActive");
         enableRender = aNBT.getBoolean("enableRender");
     }

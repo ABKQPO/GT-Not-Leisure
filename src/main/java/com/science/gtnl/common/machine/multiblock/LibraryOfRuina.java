@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static goodgenerator.loader.Loaders.gravityStabilizationCasing;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Mods.*;
@@ -17,10 +16,12 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.dreammaster.gthandler.CustomItemList;
+import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
+import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -31,8 +32,8 @@ import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import goodgenerator.loader.Loaders;
 import gregtech.api.enums.Textures;
-import gregtech.api.interfaces.INEIPreviewModifier;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -41,8 +42,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
-    implements ISurvivalConstructable, INEIPreviewModifier {
+public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/library_of_ruina";
@@ -148,7 +148,16 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
     public IStructureDefinition<LibraryOfRuina> getStructureDefinition() {
         return StructureDefinition.<LibraryOfRuina>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(gravityStabilizationCasing))
+            .addElement(
+                'A',
+                withChannel(
+                    "enableRender",
+                    ofBlocksTiered(
+                        (block, meta) -> block == Loaders.gravityStabilizationCasing ? 1 : null,
+                        ImmutableList.of(Pair.of(Loaders.gravityStabilizationCasing, 0)),
+                        -1,
+                        (t, m) -> {},
+                        t -> -1)))
             .addElement('B', ofBlock(BlockLoader.metaCasing, 13))
             .addElement('C', ofBlock(sBlockCasingsSE, 1))
             .addElement(
@@ -180,23 +189,20 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
     }
 
     @Override
-    public void onPreviewConstruct(@NotNull ItemStack trigger) {
-        if (trigger.stackSize > 1) {
-            buildPiece(STRUCTURE_PIECE_MAIN, trigger, false, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-        }
-    }
-
-    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+        if ((ChannelDataAccessor.hasSubChannel(stackSize, "enableRender")
+            && ChannelDataAccessor.getChannelData(stackSize, "enableRender") > 0) || stackSize.stackSize > 1) {
+            buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+        }
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (this.mMachine) return -1;
-        int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
+        if ((ChannelDataAccessor.hasSubChannel(stackSize, "enableRender")
+            && ChannelDataAccessor.getChannelData(stackSize, "enableRender") > 0) || stackSize.stackSize > 1) {
+            int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
 
-        if (stackSize.stackSize > 1) {
             return this.survivalBuildPiece(
                 STRUCTURE_PIECE_MAIN,
                 stackSize,
@@ -207,9 +213,8 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
                 env,
                 false,
                 true);
-        } else {
-            return -1;
         }
+        return 0;
     }
 
     @Override
@@ -225,7 +230,7 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina>
         }
         replaceWaterWithPortal();
         setupParameters();
-        return mCountCasing >= 920;
+        return mCountCasing >= 850;
     }
 
     @Override

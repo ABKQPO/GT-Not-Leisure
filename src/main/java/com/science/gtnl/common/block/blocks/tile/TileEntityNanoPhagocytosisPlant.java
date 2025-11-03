@@ -18,38 +18,36 @@ import tectech.thing.metaTileEntity.multi.godforge.color.StarColorSetting;
 
 public class TileEntityNanoPhagocytosisPlant extends TileEntity {
 
-    private float radius = 1;
-    private float rotationSpeed = 10;
+    public float radius = 1;
+    public float rotationSpeed = 10;
     @Getter
     public float rotAngle = 0, rotAxisX = 1, rotAxisY = 0, rotAxisZ = 0;
-    private AxisAlignedBB renderBoundingBox;
+    public AxisAlignedBB renderBoundingBox;
 
-    private ForgeOfGodsStarColor starColor = ForgeOfGodsStarColor.DEFAULT;
+    public ForgeOfGodsStarColor starColor = ForgeOfGodsStarColor.DEFAULT;
 
     // current color data
-    private int currentColor = Color.rgb(DEFAULT_RED, DEFAULT_GREEN, DEFAULT_BLUE);
+    public int currentColor = Color.rgb(DEFAULT_RED, DEFAULT_GREEN, DEFAULT_BLUE);
     @Getter
     public float gamma = DEFAULT_GAMMA;
 
     // interpolation color data
-    private int cycleStep;
-    private int interpIndex;
-    private int interpA;
-    private int interpB;
-    private float interpGammaA;
-    private float interpGammaB;
+    public int cycleStep;
+    public int interpA;
+    public int interpB;
+    public float interpGammaA;
+    public float interpGammaB;
 
-    private static final String NBT_TAG = "NPPRender:";
-    private static final String ROTATION_SPEED_NBT_TAG = NBT_TAG + "ROTATION";
-    private static final String SIZE_NBT_TAG = NBT_TAG + "RADIUS";
-    private static final String ROT_ANGLE_NBT_TAG = NBT_TAG + "ROT_ANGLE";
-    private static final String ROT_AXIS_X_NBT_TAG = NBT_TAG + "ROT_AXIS_X";
-    private static final String ROT_AXIS_Y_NBT_TAG = NBT_TAG + "ROT_AXIS_Y";
-    private static final String ROT_AXIS_Z_NBT_TAG = NBT_TAG + "ROT_AXIS_Z";
-    private static final String STAR_COLOR_TAG = NBT_TAG + "STAR_COLOR";
+    public static final String NBT_TAG = "NPPRender:";
+    public static final String ROTATION_SPEED_NBT_TAG = NBT_TAG + "ROTATION";
+    public static final String SIZE_NBT_TAG = NBT_TAG + "RADIUS";
+    public static final String ROT_ANGLE_NBT_TAG = NBT_TAG + "ROT_ANGLE";
+    public static final String ROT_AXIS_X_NBT_TAG = NBT_TAG + "ROT_AXIS_X";
+    public static final String ROT_AXIS_Y_NBT_TAG = NBT_TAG + "ROT_AXIS_Y";
+    public static final String ROT_AXIS_Z_NBT_TAG = NBT_TAG + "ROT_AXIS_Z";
 
-    private static final double RING_RADIUS = 63;
-    private static final double BEAM_LENGTH = 59;
+    public static final double RING_RADIUS = 63;
+    public static final double BEAM_LENGTH = 59;
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -77,14 +75,6 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
         return Double.MAX_VALUE;
     }
 
-    public void setStarRadius(float size) {
-        this.radius = size;
-    }
-
-    public float getStarRadius() {
-        return radius;
-    }
-
     public float getColorR() {
         return Color.getRedF(currentColor);
     }
@@ -95,26 +85,6 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
 
     public float getColorB() {
         return Color.getBlueF(currentColor);
-    }
-
-    public void setColor(ForgeOfGodsStarColor color) {
-        this.starColor = color;
-        if (this.starColor == null) {
-            this.starColor = ForgeOfGodsStarColor.DEFAULT;
-        }
-
-        StarColorSetting colorSetting = starColor.getColor(0);
-        currentColor = Color.rgb(colorSetting.getColorR(), colorSetting.getColorG(), colorSetting.getColorB());
-        gamma = colorSetting.getGamma();
-
-        if (starColor.numColors() > 1) {
-            cycleStep = 0;
-            interpA = currentColor;
-            interpGammaA = gamma;
-            colorSetting = starColor.getColor(1);
-            interpB = Color.rgb(colorSetting.getColorR(), colorSetting.getColorG(), colorSetting.getColorB());
-            interpGammaB = colorSetting.getGamma();
-        }
     }
 
     public void setRenderRotation(ForgeDirection direction) {
@@ -159,21 +129,17 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
         }
     }
 
-    private void interpolateColors() {
+    public void interpolateColors() {
         float position = cycleStep / 255.0f;
         currentColor = Color.interpolate(interpA, interpB, position);
         gamma = interpGammaA + (interpGammaB - interpGammaA) * position;
     }
 
-    private void cycleStarColors() {
+    public void cycleStarColors() {
         interpA = interpB;
         interpGammaA = interpGammaB;
 
-        interpIndex++;
-        if (interpIndex >= starColor.numColors()) {
-            interpIndex = 0;
-        }
-        StarColorSetting nextColor = starColor.getColor(interpIndex);
+        StarColorSetting nextColor = starColor.getColor(0);
 
         interpB = Color.rgb(nextColor.getColorR(), nextColor.getColorG(), nextColor.getColorB());
         interpGammaB = nextColor.getGamma();
@@ -188,7 +154,6 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
         compound.setFloat(ROT_AXIS_X_NBT_TAG, rotAxisX);
         compound.setFloat(ROT_AXIS_Y_NBT_TAG, rotAxisY);
         compound.setFloat(ROT_AXIS_Z_NBT_TAG, rotAxisZ);
-        compound.setTag(STAR_COLOR_TAG, starColor.serializeToNBT());
     }
 
     @Override
@@ -201,10 +166,6 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
         rotAxisX = compound.getFloat(ROT_AXIS_X_NBT_TAG);
         rotAxisY = compound.getFloat(ROT_AXIS_Y_NBT_TAG);
         rotAxisZ = compound.getFloat(ROT_AXIS_Z_NBT_TAG);
-
-        if (compound.hasKey(STAR_COLOR_TAG)) {
-            setColor(ForgeOfGodsStarColor.deserialize(compound.getCompoundTag(STAR_COLOR_TAG)));
-        }
     }
 
     @Override

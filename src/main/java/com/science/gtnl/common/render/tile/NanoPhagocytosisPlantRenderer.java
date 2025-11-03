@@ -129,7 +129,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         starModelMatrix.clear();
         starModelMatrix.translate(cx, cy, cz);
 
-        size *= tile.getStarRadius();
+        size *= 20;
 
         timer *= 10;
 
