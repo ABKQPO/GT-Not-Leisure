@@ -35,13 +35,5 @@ public class FluidSolidifierRecipes implements IRecipePool {
             .duration(800)
             .eut(TierEU.RECIPE_UMV)
             .addTo(FSR);
-
-        GTValues.RA.stdBuilder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.block, Materials.BorosilicateGlass, 1))
-            .fluidInputs(MaterialsUEVplus.QuarkGluonPlasma.getFluid(1152))
-            .itemOutputs(GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1))
-            .duration(800)
-            .eut(TierEU.RECIPE_UXV)
-            .addTo(FSR);
     }
 }
