@@ -1825,7 +1825,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(96000),
                 Materials.CosmicNeutronium.getMolten(9216), MaterialPool.Polyetheretherketone.getMolten(32000),
                 Materials.SuperCoolant.getFluid(256000) },
-            GTNLItemList.WirelessUpgradeChip.get(1),
+            GTNLItemList.CompoundDistillationFractionator.get(1),
             2000,
             (int) TierEU.RECIPE_UEV);
     }
