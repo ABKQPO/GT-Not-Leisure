@@ -44,7 +44,7 @@ public class QuestLoader {
         }
     }
 
-    private static void syncQuestLinesOrder() throws IOException {
+    public static void syncQuestLinesOrder() throws IOException {
         List<String> lines = readFileLines();
         if (lines.isEmpty()) {
             lines = readResourceLines();
@@ -95,7 +95,7 @@ public class QuestLoader {
         }
     }
 
-    private static void copyDefaultQuestsFromJar() throws IOException {
+    public static void copyDefaultQuestsFromJar() throws IOException {
         String path = Objects.requireNonNull(
             QuestLoader.class.getResource(
                 "/" + QuestLoader.class.getName()
@@ -151,7 +151,7 @@ public class QuestLoader {
         }
     }
 
-    private static boolean compareFileContent(InputStream in1, File file2) throws IOException {
+    public static boolean compareFileContent(InputStream in1, File file2) throws IOException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
@@ -176,7 +176,7 @@ public class QuestLoader {
         }
     }
 
-    private static void copyStream(InputStream in, OutputStream out) throws IOException {
+    public static void copyStream(InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[4096];
         int len;
         while ((len = in.read(buf)) != -1) {
@@ -184,7 +184,7 @@ public class QuestLoader {
         }
     }
 
-    private static List<String> readResourceLines() throws IOException {
+    public static List<String> readResourceLines() throws IOException {
         List<String> lines = new ArrayList<>();
         try (InputStream is = QuestLoader.class.getResourceAsStream(RESOURCE_ORDER_PATH)) {
             if (is == null) throw new FileNotFoundException("Missing resource: " + RESOURCE_ORDER_PATH);
@@ -196,7 +196,7 @@ public class QuestLoader {
         return lines;
     }
 
-    private static List<String> readFileLines() throws IOException {
+    public static List<String> readFileLines() throws IOException {
         List<String> lines = new ArrayList<>();
         if (!CONFIG_ORDER_FILE.exists()) return lines;
 
@@ -208,7 +208,7 @@ public class QuestLoader {
         return lines;
     }
 
-    private static void writeFileLines(List<String> lines) throws IOException {
+    public static void writeFileLines(List<String> lines) throws IOException {
         CONFIG_ORDER_FILE.getParentFile()
             .mkdirs();
         try (BufferedWriter writer = new BufferedWriter(

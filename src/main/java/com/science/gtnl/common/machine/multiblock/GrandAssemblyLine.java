@@ -422,6 +422,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 // 计算物品并行数 (ItemParallel)，考虑已分配的数量和矿辞匹配
                 long itemParallel = Long.MAX_VALUE;
                 for (ItemStack input : requiredItems) {
+                    if (itemParallel <= 0) {
+                        break;
+                    }
                     int required = input.stackSize;
                     if (required <= 0) continue;
 
@@ -438,6 +441,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     itemParallel = Math.min(itemParallel, parallelForItem);
                 }
 
+                if (itemParallel <= 0) {
+                    continue;
+                }
+
                 // 检查 itemParallel 是否超过 int 最大值
                 if (itemParallel > Integer.MAX_VALUE) {
                     itemParallel = Integer.MAX_VALUE;
@@ -446,6 +453,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 // 计算流体并行数 (FluidParallel)，考虑已分配的数量
                 long fluidParallel = Long.MAX_VALUE;
                 for (FluidStack fluid : requiredFluids) {
+                    if (fluidParallel <= 0) {
+                        break;
+                    }
                     Fluid fluidType = fluid.getFluid();
                     long availableOriginal = depleteInputLong(fluid, 1, allFluids, true);
                     long allocated = fluidAllocated.getOrDefault(fluidType, 0);
@@ -454,6 +464,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     if (required <= 0) continue;
                     long parallelForFluid = available / required;
                     fluidParallel = Math.min(fluidParallel, parallelForFluid);
+                }
+
+                if (fluidParallel <= 0) {
+                    continue;
                 }
 
                 // 检查 fluidParallel 是否超过 int 最大值

@@ -4596,7 +4596,7 @@ public class MachineLoader {
         MaterialUtils.registerFluidPipes(BREEL_PIPE.ID, MaterialPool.Breel, 10000, 10000, true);
     }
 
-    private static void registerCovers() {
+    public static void registerCovers() {
         CoverRegistry.registerCover(
             GTNLItemList.HydraulicPump.get(1L),
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(OVERLAY_PUMP)),
