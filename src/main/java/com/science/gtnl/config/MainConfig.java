@@ -18,8 +18,6 @@ public class MainConfig {
     public static final String CATEGORY_MACHINE = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER + "machine";
     public static final String CATEGORY_RE_AVARITIA = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER
         + "re_avaritia";
-    public static final String CATEGORY_BLOOD_MAGIC = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER
-        + "blood_magic";
     public static final String CATEGORY_RECIPE = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER + "recipe";
     public static final String CATEGORY_TICK_RATE = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER + "tickrate";
     public static final String CATEGORY_PLAYER_DOLL = CATEGORY_GTNL_CONFIG + Configuration.CATEGORY_SPLITTER
@@ -47,7 +45,6 @@ public class MainConfig {
         + "infinity_sword";
     public static final String SUB_CATEGORY_CHRONARCHS_CLOCK = CATEGORY_RE_AVARITIA + Configuration.CATEGORY_SPLITTER
         + "chronarch_clock";
-    public static final String SUB_CATEGORY_METEOR = CATEGORY_BLOOD_MAGIC + Configuration.CATEGORY_SPLITTER + "meteor";
 
     // Machine
     public static boolean enableRecipeOutputChance = true;
@@ -79,7 +76,6 @@ public class MainConfig {
     public static float defaultTickrate = 20.0f;
     public static float minTickrate = 0.1f;
     public static float maxTickrate = 1000f;
-    public static boolean showTickrateMessages = true;
 
     // Player Doll
     public static boolean enableCustomPlayerDoll = true;
@@ -356,14 +352,6 @@ public class MainConfig {
                 maxTickrate,
                 "Maximum tickrate from servers. Prevents really high tickrate values.")
             .getDouble(maxTickrate);
-
-        showTickrateMessages = config
-            .get(
-                CATEGORY_TICK_RATE,
-                "show-messages",
-                showTickrateMessages,
-                "If it will show log messages in the console and the game")
-            .getBoolean(showTickrateMessages);
 
         // Player Doll
         enableCustomPlayerDoll = config

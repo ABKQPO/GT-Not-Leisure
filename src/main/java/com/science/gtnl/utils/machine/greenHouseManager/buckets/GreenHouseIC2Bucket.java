@@ -6,8 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucketFactory;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
+import com.science.gtnl.utils.machine.greenHouseManager.IGreenHouseBucketFactory;
 
 import gregtech.api.enums.ItemList;
 import ic2.api.crops.CropCard;
@@ -17,11 +17,11 @@ import ic2.core.crop.TileEntityCrop;
 
 public class GreenHouseIC2Bucket extends GreenHouseBucket {
 
-    public final static GreenHouseBucketFactory factory = new Factory();
+    public final static IGreenHouseBucketFactory factory = new Factory();
     public static final String NBT_IDENTIFIER = "IC2";
     public static final int REVISION_NUMBER = 0;
 
-    public static class Factory implements GreenHouseBucketFactory {
+    public static class Factory implements IGreenHouseBucketFactory {
 
         @Override
         public String getNBTIdentifier() {

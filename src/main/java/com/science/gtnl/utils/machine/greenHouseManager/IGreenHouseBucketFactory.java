@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.api.IGreenHouse;
 
-public interface GreenHouseBucketFactory {
+public interface IGreenHouseBucketFactory {
 
     String getNBTIdentifier();
 

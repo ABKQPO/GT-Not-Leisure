@@ -50,16 +50,16 @@ public class CommandTickrate extends CommandBase {
     }
 
     @Override
-    public List getCommandAliases() {
+    public List<String> getCommandAliases() {
         return aliases;
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length < 1) {
             return null;
         }
-        List<String> tab = new ArrayList<String>();
+        List<String> tab = new ArrayList<>();
         if (args.length == 1) {
             tab.addAll(suggestedTickrateValues);
             float defaultTickrate = MainConfig.defaultTickrate;
@@ -100,7 +100,6 @@ public class CommandTickrate extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        boolean showMessages = MainConfig.showTickrateMessages;
         if (args.length < 1) {
             chat(
                 sender,
@@ -114,7 +113,7 @@ public class CommandTickrate extends CommandBase {
                     float tickrate = Float.parseFloat(rules.getGameRuleStringValue(GTNLEarlyCoreMod.GAME_RULE));
                     chat(sender, c("Current Map Tickrate: ", 'f', 'l'), c(tickrate + " ticks per second", 'a'));
                 }
-            } catch (Exception ex) {}
+            } catch (Exception ignored) {}
             chat(sender, c("Default Tickrate: ", 'f', 'l'), c(MainConfig.defaultTickrate + " ticks per second", 'e'));
             chat(
                 sender,
@@ -221,16 +220,15 @@ public class CommandTickrate extends CommandBase {
             if (update) {
                 TickrateAPI.changeTickrate(ticksPerSecond);
             }
-            if (showMessages) chat(
-                sender,
-                c("Default tickrate successfully changed to", 'a'),
-                c(" " + ticksPerSecond, 'f'),
-                c(".", 'a'));
+            chat(sender, c("Default tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
             return;
         } else if ((args[0].equalsIgnoreCase("setmap")) && (args.length > 1)) {
             boolean update = true;
             for (String s : args) {
-                if (s.equalsIgnoreCase("--dontupdate")) update = false;
+                if (s.equalsIgnoreCase("--dontupdate")) {
+                    update = false;
+                    break;
+                }
             }
             float ticksPerSecond;
             try {
@@ -248,8 +246,7 @@ public class CommandTickrate extends CommandBase {
             if (update) {
                 TickrateAPI.changeTickrate(ticksPerSecond);
             }
-            if (showMessages)
-                chat(sender, c("Map tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
+            chat(sender, c("Map tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
             return;
         } else if (args[0].equalsIgnoreCase("freeze")) {
             if (TimeStopManager.isTimeStopped()) {
@@ -282,22 +279,17 @@ public class CommandTickrate extends CommandBase {
 
         if ((args.length < 2) || (args[1].equalsIgnoreCase("all"))) {
             TickrateAPI.changeTickrate(ticksPerSecond);
-            if (showMessages)
-                chat(sender, c("Tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
+            chat(sender, c("Tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
         } else if (args[1].equalsIgnoreCase("client")) {
             TickrateAPI.changeClientTickrate(ticksPerSecond);
-            if (showMessages) chat(
+            chat(
                 sender,
                 c("All connected players client tickrate successfully changed to", 'a'),
                 c(" " + ticksPerSecond, 'f'),
                 c(".", 'a'));
         } else if (args[1].equalsIgnoreCase("server")) {
             TickrateAPI.changeServerTickrate(ticksPerSecond);
-            if (showMessages) chat(
-                sender,
-                c("Server tickrate successfully changed to", 'a'),
-                c(" " + ticksPerSecond, 'f'),
-                c(".", 'a'));
+            chat(sender, c("Server tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
         } else {
             EntityPlayer p = MinecraftServer.getServer()
                 .getConfigurationManager()
@@ -307,7 +299,7 @@ public class CommandTickrate extends CommandBase {
                 return;
             }
             TickrateAPI.changeClientTickrate(p, ticksPerSecond);
-            if (showMessages) chat(
+            chat(
                 sender,
                 c(p.getCommandSenderName() + "'s client tickrate successfully changed to", 'a'),
                 c(" " + ticksPerSecond, 'f'),
@@ -349,11 +341,11 @@ public class CommandTickrate extends CommandBase {
         EnumChatFormatting[] formattings = new EnumChatFormatting[chars.length];
         int i = 0;
         for (char c : chars) {
-            enums: for (EnumChatFormatting f : EnumChatFormatting.values()) {
+            for (EnumChatFormatting f : EnumChatFormatting.values()) {
                 if (f.toString()
-                    .equals("\u00a7" + c)) {
+                    .equals("§" + c)) {
                     formattings[i] = f;
-                    break enums;
+                    break;
                 }
             }
             i++;

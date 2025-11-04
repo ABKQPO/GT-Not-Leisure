@@ -9,6 +9,7 @@
     "Forge.MixinFMLProxyPacket",
     "Forge.MixinForgeHook",
     "Gregtech.AccessorMTETieredMachineBlock",
+    "Minecraft.AccessorMinecraft",
     "Minecraft.AccessorGuiChat",
     "Minecraft.AccessorFoodStats",
     "Minecraft.AccessorEntityLivingBase",

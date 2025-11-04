@@ -26,19 +26,8 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeTickrate(float ticksPerSecond) {
-        changeTickrate(ticksPerSecond, MainConfig.showTickrateMessages);
-    }
-
-    /**
-     * Let you change the client & server tickrate
-     * Can only be called from server-side. Can also be called from client-side if is singleplayer.
-     *
-     * @param ticksPerSecond Tickrate to be set
-     * @param log            If should send console logs
-     */
-    public static void changeTickrate(float ticksPerSecond, boolean log) {
-        changeServerTickrate(ticksPerSecond, log);
-        changeClientTickrate(ticksPerSecond, log);
+        changeServerTickrate(ticksPerSecond);
+        changeClientTickrate(ticksPerSecond);
     }
 
     /**
@@ -48,18 +37,7 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeServerTickrate(float ticksPerSecond) {
-        changeServerTickrate(ticksPerSecond, MainConfig.showTickrateMessages);
-    }
-
-    /**
-     * Let you change the server tickrate
-     * Can only be called from server-side. Can also be called from client-side if is singleplayer.
-     *
-     * @param ticksPerSecond Tickrate to be set
-     * @param log            If should send console logs
-     */
-    public static void changeServerTickrate(float ticksPerSecond, boolean log) {
-        GTNLEarlyCoreMod.INSTANCE.updateServerTickrate(ticksPerSecond, log);
+        GTNLEarlyCoreMod.INSTANCE.updateServerTickrate(ticksPerSecond);
     }
 
     /**
@@ -69,24 +47,13 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeClientTickrate(float ticksPerSecond) {
-        changeClientTickrate(ticksPerSecond, MainConfig.showTickrateMessages);
-    }
-
-    /**
-     * Let you change the all clients tickrate
-     * Can be called either from server-side or client-side
-     *
-     * @param ticksPerSecond Tickrate to be set
-     * @param log            If should send console logs
-     */
-    public static void changeClientTickrate(float ticksPerSecond, boolean log) {
         MinecraftServer server = MinecraftServer.getServer();
         if ((server != null) && (server.getConfigurationManager() != null)) { // Is a server or singleplayer
             for (EntityPlayer p : server.getConfigurationManager().playerEntityList) {
-                changeClientTickrate(p, ticksPerSecond, log);
+                changeClientTickrate(p, ticksPerSecond);
             }
         } else { // Is in menu or a player connected in a server. We can say this is client.
-            changeClientTickrate(null, ticksPerSecond, log);
+            changeClientTickrate(null, ticksPerSecond);
         }
     }
 
@@ -99,24 +66,11 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond) {
-        changeClientTickrate(player, ticksPerSecond, MainConfig.showTickrateMessages);
-    }
-
-    /**
-     * Let you change the all clients tickrate
-     * Can be called either from server-side or client-side.
-     * Will only take effect in the client-side if the player is Minecraft.thePlayer
-     *
-     * @param player         The Player
-     * @param ticksPerSecond Tickrate to be set
-     * @param log            If should send console logs
-     */
-    public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond, boolean log) {
         if ((player == null) || (player.worldObj.isRemote)) { // Client
             if (FMLCommonHandler.instance()
                 .getSide() != Side.CLIENT) return;
             if ((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
-            GTNLEarlyCoreMod.INSTANCE.updateClientTickrate(ticksPerSecond, log);
+            GTNLEarlyCoreMod.INSTANCE.updateClientTickrate(ticksPerSecond);
         } else { // Server
             network.sendTo(new TickratePacket(ticksPerSecond), (EntityPlayerMP) player);
         }

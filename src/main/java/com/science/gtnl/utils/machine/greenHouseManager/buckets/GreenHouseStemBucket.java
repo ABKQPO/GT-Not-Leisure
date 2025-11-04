@@ -12,21 +12,21 @@ import net.minecraftforge.common.IPlantable;
 
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucketFactory;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
+import com.science.gtnl.utils.machine.greenHouseManager.IGreenHouseBucketFactory;
 
 import gregtech.mixin.interfaces.accessors.IBlockStemAccessor;
 
 public class GreenHouseStemBucket extends GreenHouseBucket {
 
-    public static final GreenHouseBucketFactory factory = new Factory();
+    public static final IGreenHouseBucketFactory factory = new Factory();
     private static final String NBT_IDENTIFIER = "STEM";
     private static final int REVISION_NUMBER = 0;
 
     private boolean isValid = false;
     private GreenHouseDropTable drops = new GreenHouseDropTable();
 
-    public static class Factory implements GreenHouseBucketFactory {
+    public static class Factory implements IGreenHouseBucketFactory {
 
         @Override
         public String getNBTIdentifier() {

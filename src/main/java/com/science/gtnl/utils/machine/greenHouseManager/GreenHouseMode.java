@@ -68,11 +68,11 @@ public abstract class GreenHouseMode {
     /**
      * Used to resolve factory type to an identifier.
      */
-    private final HashMap<String, GreenHouseBucketFactory> factories;
+    private final HashMap<String, IGreenHouseBucketFactory> factories;
     /**
      * A way to have other mods submit custom buckets that can be prioritized over our default buckets
      */
-    private final LinkedList<GreenHouseBucketFactory> orderedFactories;
+    private final LinkedList<IGreenHouseBucketFactory> orderedFactories;
 
     public GreenHouseMode() {
         this.factories = new HashMap<>();
@@ -85,7 +85,7 @@ public abstract class GreenHouseMode {
      *
      * @param factory The bucket factory to add.
      */
-    public void addLowPriorityFactory(GreenHouseBucketFactory factory) {
+    public void addLowPriorityFactory(IGreenHouseBucketFactory factory) {
         String factoryId = factory.getNBTIdentifier();
         dealWithDuplicateFactoryId(factoryId);
         // add factory as lowest priority
@@ -99,7 +99,7 @@ public abstract class GreenHouseMode {
      *
      * @param factory The bucket factory to add.
      */
-    public void addHighPriorityFactory(GreenHouseBucketFactory factory) {
+    public void addHighPriorityFactory(IGreenHouseBucketFactory factory) {
         String factoryId = factory.getNBTIdentifier();
         dealWithDuplicateFactoryId(factoryId);
         // add factory as lowest priority
@@ -124,7 +124,7 @@ public abstract class GreenHouseMode {
     /**
      * Attempts to create a new bucket from a given item. Returns if the item cannot be inserted into the EIG.
      *
-     * @see GreenHouseBucketFactory#tryCreateBucket(IGreenHouse, ItemStack)
+     * @see IGreenHouseBucketFactory#tryCreateBucket(IGreenHouse, ItemStack)
      * @param greenhouse The {@link IGreenHouse} that will contain the seed.
      * @param input      The {@link ItemStack} for the input item.
      * @param maxConsume The maximum amount of items to consume.
@@ -137,7 +137,7 @@ public abstract class GreenHouseMode {
         if (input == null) return null;
         maxConsume = Math.min(input.stackSize, maxConsume);
         if (maxConsume <= 0) return null;
-        for (GreenHouseBucketFactory factory : this.orderedFactories) {
+        for (IGreenHouseBucketFactory factory : this.orderedFactories) {
             GreenHouseBucket bucket = factory.tryCreateBucket(greenhouse, input);
             if (bucket == null || !bucket.isValid()) continue;
             if (!simulate) input.stackSize--;
@@ -151,7 +151,7 @@ public abstract class GreenHouseMode {
     /**
      * Restores the buckets of an EIG for the given mode.
      *
-     * @see GreenHouseBucketFactory#restore(NBTTagCompound)
+     * @see IGreenHouseBucketFactory#restore(NBTTagCompound)
      * @param bucketNBTList The
      */
     public void restoreBuckets(NBTTagList bucketNBTList, List<GreenHouseBucket> loadTo) {
@@ -168,7 +168,7 @@ public abstract class GreenHouseMode {
             }
             // identify bucket type
             String bucketType = bucketNBT.getString("type");
-            GreenHouseBucketFactory factory = factories.getOrDefault(bucketType, null);
+            IGreenHouseBucketFactory factory = factories.getOrDefault(bucketType, null);
             if (factory == null) {
                 error("failed to find EIG bucket factory for type: " + bucketType);
                 continue;

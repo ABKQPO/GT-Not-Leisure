@@ -50,6 +50,7 @@
     "ModularUI.FluidSlotWidgetMixin",
     "NotEnoughItems.MixinGuiContainerManager",
     "NHCoreMod.MixinBacteriaRegistry",
+    "ThaumicTinkerer.AccessorAspectCropLootManager",
     "ThaumicTinkerer.MixinItemBloodSword",
     "TecTech.MixinTTRecipeAdder",
     "TecTech.MixinMTEResearchStation"

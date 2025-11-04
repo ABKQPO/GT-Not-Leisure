@@ -45,7 +45,6 @@ public class ConfigData {
         enableAprilFoolRecipe = MainConfig.enableAprilFool;
         enableShowDelRecipeTitle = MainConfig.enableShowDelRecipeTitle;
         enableSomethingRecipe = MainConfig.enableSomethingRecipe;
-        showTickrateMessages = MainConfig.showTickrateMessages;
         enableShowJoinMessage = MainConfig.enableShowJoinMessage;
         enableShowAddMods = MainConfig.enableShowAddMods;
         enableDebugMode = MainConfig.enableDebugMode;
@@ -56,7 +55,6 @@ public class ConfigData {
         MainConfig.enableAprilFool = enableAprilFoolRecipe;
         MainConfig.enableShowDelRecipeTitle = enableShowDelRecipeTitle;
         MainConfig.enableSomethingRecipe = enableSomethingRecipe;
-        MainConfig.showTickrateMessages = showTickrateMessages;
         MainConfig.enableShowJoinMessage = enableShowJoinMessage;
         MainConfig.enableShowAddMods = enableShowAddMods;
         MainConfig.enableDebugMode = enableDebugMode;

@@ -1,7 +1,6 @@
 package com.science.gtnl.asm;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.EarlyMixinLoader;
+import com.science.gtnl.mixins.early.Minecraft.AccessorMinecraft;
 
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -81,42 +82,25 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader, I
         return null;
     }
 
-    private Field clientTimer = null;
-
     @SideOnly(Side.CLIENT)
-    public void updateClientTickrate(float tickrate, boolean log) {
+    public void updateClientTickrate(float tickrate) {
         if (!TickrateAPI.isValidTickrate(tickrate)) {
             GTNLEarlyCoreMod.LOGGER.info("Ignoring invalid tickrate: {}", tickrate);
             return;
         }
-        if (log) LOGGER.info("Updating client tickrate to {}", tickrate);
+        if (MainConfig.enableDebugMode) LOGGER.info("Updating client tickrate to {}", tickrate);
         TICKS_PER_SECOND = tickrate;
         Minecraft mc = Minecraft.getMinecraft();
         if (mc == null) return; // Oops!
-        try {
-            if (clientTimer == null) {
-                GTNLEarlyCoreMod.LOGGER.info("Creating reflection instances...");
-                for (Field f : mc.getClass()
-                    .getDeclaredFields()) {
-                    if (f.getType() == Timer.class) {
-                        clientTimer = f;
-                        clientTimer.setAccessible(true);
-                        break;
-                    }
-                }
-            }
-            clientTimer.set(mc, new Timer(TICKS_PER_SECOND));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        ((AccessorMinecraft) mc).setTimer(new Timer(TICKS_PER_SECOND));
     }
 
-    public void updateServerTickrate(float tickrate, boolean log) {
+    public void updateServerTickrate(float tickrate) {
         if (!TickrateAPI.isValidTickrate(tickrate)) {
             GTNLEarlyCoreMod.LOGGER.info("Ignoring invalid tickrate: {}", tickrate);
             return;
         }
-        if (log) LOGGER.info("Updating server tickrate to {}", tickrate);
+        if (MainConfig.enableDebugMode) LOGGER.info("Updating server tickrate to {}", tickrate);
         MILISECONDS_PER_TICK = (long) (1000L / tickrate);
     }
 

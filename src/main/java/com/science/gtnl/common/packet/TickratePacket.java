@@ -57,7 +57,7 @@ public class TickratePacket implements IMessage {
 
             if (FMLCommonHandler.instance()
                 .getSide() != Side.SERVER) {
-                GTNLEarlyCoreMod.INSTANCE.updateClientTickrate(tickrate, MainConfig.showTickrateMessages);
+                GTNLEarlyCoreMod.INSTANCE.updateClientTickrate(tickrate);
             }
             return null;
         }

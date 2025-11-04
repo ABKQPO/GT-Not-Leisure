@@ -67,7 +67,7 @@ public class MaterialLoader {
 
     public static void loadPostInit() {
         MilledOre.registry();
-        GreenHouseBucket.LoadEIGBuckets();
+        GreenHouseBucket.LoadGreenHouseBuckets();
         MachineLoader.registry();
         AchievementsLoader.registry();
 
