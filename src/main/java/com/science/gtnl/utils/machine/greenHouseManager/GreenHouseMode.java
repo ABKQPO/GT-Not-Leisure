@@ -38,7 +38,7 @@ public abstract class GreenHouseMode {
 
     public static int EIG_BALANCE_IC2_ACCELERATOR_TIER = VoltageIndex.EV;
     public static int EIG_BALANCE_REGULAR_MODE_MIN_TIER = VoltageIndex.EV;
-    public static double EIG_BALANCE_MAX_FERTILIZER_BOOST = 1.0d;
+    public static double EIG_BALANCE_MAX_FERTILIZER_BOOST = 10d;
     public static int CONFIGURATION_WINDOW_ID = 10;
 
     public abstract int getUIIndex();

@@ -77,7 +77,7 @@ public class GreenHouseInfusedSeedBucket extends GreenHouseBucket {
         int ordoTendency = ItemInfusedSeeds.getAspectTendencies(this.seed)
             .getAmount(Aspect.ORDER);
         if (ordoTendency > 0) {
-            double addNewDropChance = (double) ordoTendency / 75;
+            double addNewDropChance = (double) ordoTendency / 10;
             double stopNewDropChance = 1.0 - addNewDropChance;
 
             double expectedAdditionalPerSeed = (stopNewDropChance > 0) ? addNewDropChance / stopNewDropChance : 0;
@@ -98,7 +98,7 @@ public class GreenHouseInfusedSeedBucket extends GreenHouseBucket {
             ItemStack item = aspectDrops.keySet()
                 .iterator()
                 .next();
-            tracker.addDrop(item.copy(), multiplier * totalDrop * item.stackSize);
+            tracker.addDrop(item.copy(), multiplier * totalDrop * item.stackSize * 2);
             return;
         }
 
