@@ -14,9 +14,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 
+import com.gtnewhorizons.modularui.api.drawable.Text;
+import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
+import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
+import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.gtnewhorizons.modularui.api.math.Pos2d;
+import com.gtnewhorizons.modularui.api.widget.Interactable;
+import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
+import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotGroup;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -80,7 +93,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public static int STATUS_WINDOW_ID = 10;
 
     public static FluidStack heliumStack = Materials.Helium.getGas(1);
-    public static FluidStack hydrogenStack = Materials.Helium.getGas(1);
+    public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
     public static FluidStack rawstarmatterStack = MaterialsUEVplus.RawStarMatter.getFluid(1);
     public static double maxFluidAmount = Long.MAX_VALUE;
     public ArrayList<MTEEyeOfHarmony> mEHO = new ArrayList<>();
@@ -166,8 +179,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     }
 
     public ModularWindow createStatusWindow(EntityPlayer player) {
-        final int windowWidth = 260;
-        final int windowHeight = 200;
+        final int windowWidth = 1000;
+        final int windowHeight = 1000;
         ModularWindow.Builder builder = ModularWindow.builder(windowWidth, windowHeight);
         builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
         builder.widget(
@@ -185,7 +198,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         Scrollable mainDisp = new Scrollable().setVerticalScroll()
             .setHorizontalScroll();
 
-        int rowHeight = 40;
+        int rowHeight = 140;
         for (int i = 0; i < this.mLinkedUnits.size(); i++) {
             mainDisp.widget(makeUnitStatusWidget(mLinkedUnits.get(i)).setPos(0, rowHeight * (i + 1)));
         }
@@ -216,20 +229,19 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
     public Widget makeUnitStatusWidget(LinkedEyeOfHarmonyUnit unit) {
         // Draw small machine controller icon
-        DynamicPositionedRow row = new DynamicPositionedRow();
-        row.widget(new FakeSyncWidget.IntegerSyncer(() -> unit.windowID, val -> unit.windowID = val));
+        DynamicPositionedRow builder = new DynamicPositionedRow();
+        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
 
         // 提取 metaTileEntity
         MTEEyeOfHarmony mte = unit.metaTileEntity();
         IGregTechTileEntity gtTE = mte.getBaseMetaTileEntity();
 
-        row.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(unit.windowID);
-            }
-        })
-            .setPlayClickSound(true)
+        IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
+        long heliumStored = link.gtnl$getHeliumStored();
+        long hydrogenStored = link.gtnl$getHydrogenStored();
+        long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
+
+        builder.widget(new ButtonWidget()
             .setBackground(
                 () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
             .addTooltips(
@@ -243,45 +255,64 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         String name = mte.getLocalName();
         String statusString = name + "  " + unit.getStatusString();
 
-        IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
-        long heliumStored = link.gtnl$getHeliumStored();
-        long hydrogenStored = link.gtnl$getHydrogenStored();
-        long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
-
-        String fluidStatus = Materials.Helium.mLocalizedName + ": "
-            + heliumStored
-            + "  "
-            + Materials.Hydrogen.mLocalizedName
-            + ": "
-            + hydrogenStored
-            + "  "
-            + MaterialsUEVplus.RawStarMatter.mLocalizedName
-            + ": "
-            + rawStarMatterStored;
-
-        row.widget(
+        builder.widget(
             TextWidget.dynamicString(() -> statusString)
                 .setSynced(false)
-                .setTextAlignment(Alignment.CenterLeft)
-                .setPos(40, 2)
-                .fillParent())
-            .widget(
-                TextWidget.dynamicString(() -> fluidStatus)
-                    .setSynced(true)
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setPos(40, 20)
-                    .fillParent())
-            .widget(new FakeSyncWidget.StringSyncer(() -> name, _name -> {}))
-            .widget(link.makeSyncerWidgets())
-            .widget(new FakeSyncWidget.BooleanSyncer(unit::isActive, unit::setActive))
-            .setSize(200, 50);
+                .setTextAlignment(Alignment.CenterLeft));
 
-        return row;
-    }
+        builder.widget(SlotGroup.ofFluidTanks(
+                IntStream.range(0, 3)
+                    .mapToObj(index -> createTankForFluidStack(new FluidStack[] {
+                        heliumStack, hydrogenStack, rawstarmatterStack
+                    }, index, Integer.MAX_VALUE))
+                    .collect(Collectors.toList()),
+                3)
+            .phantom(true)
+            .widgetCreator((slotIndex, h) -> (FluidSlotWidget) new FluidSlotWidget(h) {
 
-    public ModularWindow createConfigWindow(LinkedEyeOfHarmonyUnit unit) {
-        ModularWindow.Builder builder = ModularWindow.builder(250, 120);
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
+                @Override
+                public void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {}
+
+                @Override
+                public void tryScrollPhantom(int direction) {}
+
+                @Override
+                public void buildTooltip(List<Text> tooltip) {
+                    FluidStack fluid = getContent();
+                    if (fluid != null) {
+                        addFluidNameInfo(tooltip, fluid);
+
+                        long amount = 0;
+
+                        if (GTUtility.areFluidsEqual(fluid, heliumStack)) {
+                            amount = heliumStored;
+                        } else if (GTUtility.areFluidsEqual(fluid, hydrogenStack)) {
+                            amount = hydrogenStored;
+                        } else if (GTUtility.areFluidsEqual(fluid, rawstarmatterStack)) {
+                            amount = rawStarMatterStored;
+                        }
+
+                        tooltip.add(
+                            Text.localised(
+                                "modularui.fluid.phantom.amount", amount));
+
+                        addAdditionalFluidInfo(tooltip, fluid);
+                        if (!Interactable.hasShiftDown()) {
+                            tooltip.add(Text.EMPTY);
+                            tooltip.add(Text.localised("modularui.tooltip.shift"));
+                        }
+                    } else {
+                        tooltip.add(
+                            Text.localised("modularui.fluid.empty")
+                                .format(EnumChatFormatting.WHITE));
+                    }
+                }
+            }.setUpdateTooltipEveryTick(true))
+            .background(GTUITextures.SLOT_DARK_GRAY)
+            .controlsAmount(true)
+            .build()
+            .setSize(54, 18));
+
         builder.widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHeliumAmount, val -> unit.maxHeliumAmount = val));
         builder
             .widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHydrogenAmount, val -> unit.maxHydrogenAmount = val));
@@ -291,9 +322,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                 val -> unit.maxRawStarMatterSAmount = val));
 
         builder.widget(
-            TextWidget.localised("设置氦最大拉取数量")
-                .setSize(200, 14)
-                .setPos(10, 2))
+                TextWidget.localised("设置氦最大拉取数量")
+                    .setSize(200, 18))
             .widget(
                 new NumericWidget().setSetter(val -> unit.maxHeliumAmount = (long) val)
                     .setGetter(() -> unit.maxHeliumAmount)
@@ -302,13 +332,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                     .setTextAlignment(Alignment.CenterLeft)
                     .setTextColor(Color.WHITE.normal)
                     .setSize(200, 18)
-                    .setPos(10, 18)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
         builder.widget(
-            TextWidget.localised("设置氢最大拉取数量")
-                .setSize(200, 14)
-                .setPos(10, 38))
+                TextWidget.localised("设置氢最大拉取数量")
+                    .setSize(200, 18))
             .widget(
                 new NumericWidget().setSetter(val -> unit.maxHydrogenAmount = (long) val)
                     .setGetter(() -> unit.maxHydrogenAmount)
@@ -317,13 +345,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                     .setTextAlignment(Alignment.CenterLeft)
                     .setTextColor(Color.WHITE.normal)
                     .setSize(200, 18)
-                    .setPos(10, 54)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
         builder.widget(
-            TextWidget.localised("设置浓缩原始恒星等离子体混合物最大拉取数量")
-                .setSize(200, 14)
-                .setPos(10, 74))
+                TextWidget.localised("设置浓缩原始恒星等离子体混合物最大拉取数量")
+                    .setSize(200, 18))
             .widget(
                 new NumericWidget().setSetter(val -> unit.maxRawStarMatterSAmount = (long) val)
                     .setGetter(() -> unit.maxRawStarMatterSAmount)
@@ -332,10 +358,20 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                     .setTextAlignment(Alignment.CenterLeft)
                     .setTextColor(Color.WHITE.normal)
                     .setSize(200, 18)
-                    .setPos(10, 90)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
+                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
+            .setSize(200, 140);
 
-        return builder.build();
+        return builder;
+    }
+
+    public FluidStackTank createTankForFluidStack(FluidStack[] fluidStacks, int slotIndex, int capacity) {
+        return new FluidStackTank(() -> fluidStacks[slotIndex], (stack) -> {
+            if (getBaseMetaTileEntity().isServerSide()) {
+                return;
+            }
+
+            fluidStacks[slotIndex] = stack;
+        }, capacity);
     }
 
     @Override
@@ -347,13 +383,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
         buildContext.addSyncedWindow(STATUS_WINDOW_ID, this::createStatusWindow);
 
-        int windowID = STATUS_WINDOW_ID + 1;
-
-        for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
-            unit.windowID = windowID++;
-            buildContext.addSyncedWindow(unit.windowID, ctx -> createConfigWindow(unit));
-        }
-
         // Add status window button
         builder.widget(makeStatusWindowButton());
     }
@@ -361,19 +390,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public void addSyncers(ModularWindow.Builder builder) {
         // Sync connection list to client
         builder.widget(new FakeSyncWidget.ListSyncer<>(() -> mLinkedUnits, links -> {
-            List<Integer> oldWindowIDs = new ArrayList<>();
-            for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
-                oldWindowIDs.add(unit.windowID);
-            }
-
             mLinkedUnits.clear();
             mLinkedUnits.addAll(links);
-
-            if (mLinkedUnits.size() == oldWindowIDs.size()) {
-                for (int i = 0; i < mLinkedUnits.size(); i++) {
-                    mLinkedUnits.get(i).windowID = oldWindowIDs.get(i);
-                }
-            }
         }, (buffer, link) -> {
             // Try to save link data to NBT, so we can reconstruct it on client
             try {

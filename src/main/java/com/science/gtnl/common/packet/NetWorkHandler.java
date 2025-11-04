@@ -41,6 +41,5 @@ public class NetWorkHandler {
         network
             .registerMessage(SyncCircuitNanitesPacket.Handler.class, SyncCircuitNanitesPacket.class, i++, Side.CLIENT);
         network.registerMessage(SyncRecipePacket.Handler.class, SyncRecipePacket.class, i++, Side.CLIENT);
-        network.registerMessage(SyncLinkedUnitsPacket.Handler.class, SyncLinkedUnitsPacket.class, i++, Side.CLIENT);
     }
 }
