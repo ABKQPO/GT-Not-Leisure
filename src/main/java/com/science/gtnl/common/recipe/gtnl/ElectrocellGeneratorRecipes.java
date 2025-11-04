@@ -11,11 +11,6 @@ import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.material.Material;
-import gtPlusPlus.core.material.MaterialMisc;
-import gtPlusPlus.core.material.MaterialsAlloy;
-import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
-import gtPlusPlus.core.material.nuclear.MaterialsNuclides;
 
 public class ElectrocellGeneratorRecipes implements IRecipePool {
 
@@ -91,7 +86,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 3))
             .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(3000))
             .fluidOutputs(Materials.NitrogenDioxide.getGas(12000))
-            .outputChances(2500)
+            .outputChances(1200)
             .eut(0)
             .specialValue(110)
             .metadata(GENERATOR_EUT, 12288L)
