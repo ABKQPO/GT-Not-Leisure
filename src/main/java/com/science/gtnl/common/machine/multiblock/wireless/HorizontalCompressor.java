@@ -33,7 +33,6 @@ import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.Widget;
@@ -218,7 +217,7 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
                 if (tryConsumeItems()) {
                     hasConsumed = true;
                 }
-                reopenWindow(widget, MANUAL_INSERTION_WINDOW_ID);
+                EternalGregTechWorkshopUI.reopenWindow(widget, MANUAL_INSERTION_WINDOW_ID);
             }
         })
             .setPlayClickSound(true)
@@ -277,16 +276,6 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
         }
 
         return allFulfilled;
-    }
-
-    public static void reopenWindow(Widget widget, int windowId) {
-        if (!widget.isClient()) {
-            ModularUIContext ctx = widget.getContext();
-            if (ctx.isWindowOpen(windowId)) {
-                ctx.closeWindow(windowId);
-            }
-            ctx.openSyncedWindow(windowId);
-        }
     }
 
     @Override

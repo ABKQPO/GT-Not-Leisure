@@ -176,7 +176,7 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
             return false;
         }
         setupParameters();
-        return mCountCasing >= 80;
+        return mCountCasing >= 30;
     }
 
     @Override

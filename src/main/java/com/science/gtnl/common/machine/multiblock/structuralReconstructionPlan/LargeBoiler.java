@@ -40,7 +40,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTLog;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -241,7 +240,6 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                     || depleteInput(GTModHandler.getDistilledWater(amount))) {
                     addOutput(Materials.Steam.getGas(tGeneratedEU));
                 } else {
-                    GTLog.exp.println("Boiler " + this.mName + " had no Water!");
                     explodeMultiblock();
                 }
 
