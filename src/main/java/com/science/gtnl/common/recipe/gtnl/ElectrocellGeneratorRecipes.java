@@ -106,7 +106,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .outputChances(2500)
             .eut(0)
             .specialValue(110)
-            .metadata(GENERATOR_EUT, 16384L)
+            .metadata(GENERATOR_EUT, 12288L)
             .duration(1400)
             .addTo(EGR);
     }
