@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import thaumcraft.api.aspects.Aspect;
 import thaumic.tinkerer.common.core.helper.AspectCropLootManager;
 
-@Mixin(AspectCropLootManager.class)
+@Mixin(value = AspectCropLootManager.class, remap = false)
 public interface AccessorAspectCropLootManager {
 
     @Accessor("lootMap")
