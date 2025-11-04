@@ -2877,7 +2877,7 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
-                new ItemStack(Blocks.skull, 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 GTModHandler.getModItem(EnderIO.ID, "itemBasicCapacitor", 1, 0))
             .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 0))
             .fluidInputs(Materials.EnergeticAlloy.getMolten(288))
@@ -2888,7 +2888,7 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
-                new ItemStack(Blocks.skull, 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.RedAlloy, 1L))
             .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 1))
             .fluidInputs(Materials.Soularium.getMolten(288))
@@ -2900,7 +2900,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                new ItemStack(Blocks.skull, 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 new ItemStack(Items.rotten_flesh, 64))
             .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 2))
             .duration(200)
@@ -2944,7 +2944,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                new ItemStack(Blocks.skull, 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 new ItemStack(Items.ender_pearl, 16),
                 new ItemStack(Items.ender_eye, 2))
             .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 0))
