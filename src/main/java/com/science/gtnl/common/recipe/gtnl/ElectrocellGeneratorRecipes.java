@@ -102,7 +102,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 12))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 3))
             .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(3000))
-            .fluidOutputs(Materials.NitricAcid.getGas(12000))
+            .fluidOutputs(Materials.NitrogenDioxide.getGas(12000))
             .outputChances(2500)
             .eut(0)
             .specialValue(110)
