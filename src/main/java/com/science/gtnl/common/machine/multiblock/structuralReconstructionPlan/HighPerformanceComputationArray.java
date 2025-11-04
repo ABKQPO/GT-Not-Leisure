@@ -280,9 +280,9 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                             double coolantFactor = modXVal.coolantCoefficientX * modYVal.coolantCoefficientY;
                             double heatFactor = modXVal.heatCoefficientX * modYVal.heatCoefficientY;
 
-                            int rackComputation = rack.tickComponents(1, 1) * 5;
+                            int rackComputation = rack.tickComponents(1, 1) * 4;
                             if (rackComputation > 0) {
-                                int coolantUse = (int) (rackComputation * coolantFactor / 20);
+                                int coolantUse = (int) (rackComputation * coolantFactor / 5);
 
                                 double coolantRatio = totalSuperCoolant > 0
                                     ? Math.min(1.0, (double) totalSuperCoolant / coolantUse)
