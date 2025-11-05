@@ -245,7 +245,6 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
             mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
         }
 
-
         return result;
     }
 }
