@@ -9,6 +9,7 @@ import static gregtech.api.util.GTStructureUtility.*;
 
 import javax.annotation.Nonnull;
 
+import gregtech.api.util.GTUtility;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -35,6 +36,9 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import tectech.thing.casing.TTCasingsContainer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
@@ -239,14 +243,23 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
         mOutputItems = outputItems;
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
+
+        mOutputFluids = outputFluids;
         if (outputFluids != null) {
+            List<FluidStack> expandedFluids = new ArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
-                    fluidStack.amount *= 1 + factor;
+                    long totalAmount = (long) (fluidStack.amount * (1 + factor));
+
+                    while (totalAmount > 0) {
+                        int stackSize = (int) Math.min(totalAmount, Integer.MAX_VALUE);
+                        expandedFluids.add(new FluidStack(fluidStack.getFluid(), stackSize));
+                        totalAmount -= stackSize;
+                    }
                 }
             }
+            mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
         }
-        mOutputFluids = outputFluids;
 
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }

@@ -226,17 +226,15 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
         }
         mOutputItems = outputItems;
 
-        // 获取输出流体并进行 null 检查
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
-        List<FluidStack> expandedFluids = new ArrayList<>();
 
+        mOutputFluids = outputFluids;
         if (outputFluids != null) {
+            List<FluidStack> expandedFluids = new ArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
-                    // 计算放大后的总量
                     long totalAmount = (long) fluidStack.amount * GTUtility.getTier(this.getMaxInputVoltage()) * 2;
 
-                    // 拆分为多个 FluidStack，避免 amount 超过 int 上限
                     while (totalAmount > 0) {
                         int stackSize = (int) Math.min(totalAmount, Integer.MAX_VALUE);
                         expandedFluids.add(new FluidStack(fluidStack.getFluid(), stackSize));
@@ -244,9 +242,9 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
                     }
                 }
             }
+            mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
         }
 
-        mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
 
         return result;
     }
