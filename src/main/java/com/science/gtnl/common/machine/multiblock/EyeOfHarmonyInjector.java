@@ -6,37 +6,33 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static net.minecraft.util.StatCollector.*;
+import static gregtech.api.util.GTUtility.*;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
-import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.widget.Interactable;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotGroup;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -46,18 +42,20 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
+import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.api.widget.Interactable;
+import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
+import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
@@ -70,16 +68,21 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.gui.modularui.GTUITextures;
-import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.api.metatileentity.implementations.MTEHatchInput;
+import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
+import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.util.GTUtil;
 import gregtech.api.util.GTUtility;
-import gregtech.api.util.HatchElementBuilder;
-import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.gui.modularui.widget.TextButtonWidget;
+import gregtech.common.tileentities.machines.IDualInputHatch;
+import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
+import gregtech.common.tileentities.machines.MTEHatchInputBusME;
+import gregtech.common.tileentities.machines.MTEHatchInputME;
 import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.metaTileEntity.multi.MTEEyeOfHarmony;
 import tectech.thing.metaTileEntity.multi.base.INameFunction;
@@ -91,12 +94,11 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstructable, ISurvivalConstructable {
 
     public static int STATUS_WINDOW_ID = 10;
-
     public static FluidStack heliumStack = Materials.Helium.getGas(1);
     public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
     public static FluidStack rawstarmatterStack = MaterialsUEVplus.RawStarMatter.getFluid(1);
     public static double maxFluidAmount = Long.MAX_VALUE;
-    public ArrayList<MTEEyeOfHarmony> mEHO = new ArrayList<>();
+
     public Parameters.Group.ParameterIn maxFluidAmountSetting;
     public int tCountCasing;
 
@@ -112,14 +114,64 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
     public void registerLinkedUnit(MTEEyeOfHarmony unit) {
         LinkedEyeOfHarmonyUnit link = new LinkedEyeOfHarmonyUnit(unit);
-        // Make sure to mark it as active if it is running a recipe. This happens on server restart and fixes
-        // waterline multiblocks not resuming their progress until the next cycle.
-        link.setActive(unit.mMaxProgresstime > 0);
         this.mLinkedUnits.add(link);
+        cleanupInvalidLinks();
     }
 
     public void unregisterLinkedUnit(MTEEyeOfHarmony unit) {
-        this.mLinkedUnits.removeIf(link -> link.metaTileEntity() == unit);
+        this.mLinkedUnits.removeIf(link -> link.mMetaTileEntity == unit);
+        cleanupInvalidLinks();
+    }
+
+    public void cleanupInvalidLinks() {
+        Iterator<LinkedEyeOfHarmonyUnit> iterator = mLinkedUnits.iterator();
+
+        while (iterator.hasNext()) {
+            LinkedEyeOfHarmonyUnit link = iterator.next();
+            TileEntity te = GTUtil.getTileEntity(getBaseMetaTileEntity().getWorld(), link.x, link.y, link.z, true);
+
+            if (!(te instanceof IGregTechTileEntity gtTE)
+                || !(gtTE.getMetaTileEntity() instanceof MTEEyeOfHarmony eyeOfHarmony)) {
+                iterator.remove();
+            } else {
+                link.mMetaTileEntity = eyeOfHarmony;
+            }
+        }
+    }
+
+    @Override
+    public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick_EM(aBaseMetaTileEntity);
+        cleanupInvalidLinks();
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        NBTTagList linkedList = new NBTTagList();
+        for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+            linkedList.appendTag(unit.writeLinkDataToNBT());
+        }
+        aNBT.setTag("LinkedUnits", linkedList);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mLinkedUnits.clear();
+        if (aNBT.hasKey("LinkedUnits")) {
+            NBTTagList linkedList = aNBT.getTagList("LinkedUnits", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < linkedList.tagCount(); i++) {
+                NBTTagCompound unitTag = linkedList.getCompoundTagAt(i);
+                try {
+                    LinkedEyeOfHarmonyUnit unit = new LinkedEyeOfHarmonyUnit(unitTag, false);
+                    mLinkedUnits.add(unit);
+                } catch (Exception e) {
+                    ScienceNotLeisure.LOG.error("Failed to load LinkedEyeOfHarmonyUnit at index {}", i);
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -147,22 +199,22 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public String[] getInfoData() {
         var ret = new ArrayList<String>();
         // Show linked purification units and their status
-        ret.add(translateToLocal("GT5U.infodata.purification_plant.linked_units"));
+        ret.add(StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units"));
         for (LinkedEyeOfHarmonyUnit unit : this.mLinkedUnits) {
-            String text = EnumChatFormatting.AQUA + unit.metaTileEntity()
-                .getLocalName() + ": ";
-            MTEEyeOfHarmony status = unit.metaTileEntity();
+            String text = EnumChatFormatting.AQUA + unit.mMetaTileEntity.getLocalName() + ": ";
+            MTEEyeOfHarmony status = unit.mMetaTileEntity;
             if (status.mMachine) {
                 if (status.mMaxProgresstime > 0) {
                     text = text + EnumChatFormatting.GREEN
-                        + translateToLocal("GT5U.infodata.purification_plant.linked_units.status.online");
+                        + StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units.status.online");
                 } else {
                     text = text + EnumChatFormatting.YELLOW
-                        + translateToLocal("GT5U.infodata.purification_plant.linked_units.status.disabled");
+                        + StatCollector
+                            .translateToLocal("GT5U.infodata.purification_plant.linked_units.status.disabled");
                 }
             } else {
                 text = text + EnumChatFormatting.RED
-                    + translateToLocal("GT5U.infodata.purification_plant.linked_units.status.incomplete");
+                    + StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units.status.incomplete");
             }
             ret.add(text);
         }
@@ -173,23 +225,24 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public void onBlockDestroyed() {
         // When the controller is destroyed we want to notify all currently linked units
         for (LinkedEyeOfHarmonyUnit unit : this.mLinkedUnits) {
-            ((IEyeOfHarmonyControllerLink) unit.metaTileEntity()).unlinkController();
+            ((IEyeOfHarmonyControllerLink) unit.mMetaTileEntity).unlinkController();
         }
         super.onBlockDestroyed();
     }
 
     public ModularWindow createStatusWindow(EntityPlayer player) {
-        final int windowWidth = 1000;
-        final int windowHeight = 1000;
+        final int windowWidth = 235;
+        final int windowHeight = 220;
         ModularWindow.Builder builder = ModularWindow.builder(windowWidth, windowHeight);
         builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
+        builder.setGuiTint(getGUIColorization());
         builder.widget(
             ButtonWidget.closeWindowButton(true)
                 .setPos(windowWidth - 15, 3));
 
         // Title widget
         builder.widget(
-            new TextWidget(translateToLocal("GT5U.infodata.purification_plant.status_title"))
+            new TextWidget(StatCollector.translateToLocal("GT5U.infodata.purification_plant.status_title"))
                 .setTextAlignment(Alignment.Center)
                 .setPos(5, 10)
                 .setSize(windowWidth, 8));
@@ -200,178 +253,149 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
         int rowHeight = 140;
         for (int i = 0; i < this.mLinkedUnits.size(); i++) {
-            mainDisp.widget(makeUnitStatusWidget(mLinkedUnits.get(i)).setPos(0, rowHeight * (i + 1)));
+            int height = rowHeight * i;
+            LinkedEyeOfHarmonyUnit unit = mLinkedUnits.get(i);
+            MTEEyeOfHarmony mte = unit.mMetaTileEntity;
+            IGregTechTileEntity gtTE = mte.getBaseMetaTileEntity();
+
+            mainDisp.widget(
+                new ButtonWidget()
+                    .setBackground(
+                        () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
+                    .addTooltips(
+                        Arrays.asList(
+                            StatCollector.translateToLocal("独立配置最大输入数量"),
+                            StatCollector.translateToLocal("目标坐标: "),
+                            String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord())))
+                    .setSize(18, 18)
+                    .setPos(0, height));
+
+            mainDisp.widget(
+                SlotGroup.ofFluidTanks(
+                    Stream.of(heliumStack, hydrogenStack, rawstarmatterStack)
+                        .map(stack -> new FluidStackTank(() -> stack, s -> {}, Integer.MAX_VALUE))
+                        .collect(Collectors.toList()),
+                    3)
+                    .phantom(true)
+                    .widgetCreator((slotIndex, h) -> (FluidSlotWidget) new FluidSlotWidget(h) {
+
+                        @Override
+                        public void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {}
+
+                        @Override
+                        public void tryScrollPhantom(int direction) {}
+
+                        @Override
+                        public void buildTooltip(List<Text> tooltip) {
+                            FluidStack fluid = getContent();
+                            if (fluid != null) {
+                                addFluidNameInfo(tooltip, fluid);
+
+                                long amount = 0;
+
+                                IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
+                                long heliumStored = link.gtnl$getHeliumStored();
+                                long hydrogenStored = link.gtnl$getHydrogenStored();
+                                long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
+
+                                if (GTUtility.areFluidsEqual(fluid, heliumStack)) {
+                                    amount = heliumStored;
+                                } else if (GTUtility.areFluidsEqual(fluid, hydrogenStack)) {
+                                    amount = hydrogenStored;
+                                } else if (GTUtility.areFluidsEqual(fluid, rawstarmatterStack)) {
+                                    amount = rawStarMatterStored;
+                                }
+
+                                tooltip.add(Text.localised("modularui.fluid.phantom.amount", amount));
+
+                                addAdditionalFluidInfo(tooltip, fluid);
+                                if (!Interactable.hasShiftDown()) {
+                                    tooltip.add(Text.EMPTY);
+                                    tooltip.add(Text.localised("modularui.tooltip.shift"));
+                                }
+                            } else {
+                                tooltip.add(
+                                    Text.localised("modularui.fluid.empty")
+                                        .format(EnumChatFormatting.WHITE));
+                            }
+                        }
+                    }.setUpdateTooltipEveryTick(true))
+                    .background(GTUITextures.SLOT_DARK_GRAY)
+                    .controlsAmount(true)
+                    .build()
+                    .setSize(54, 18)
+                    .setPos(18, height));
+
+            // Display machine name and status
+            String name = mte.getLocalName();
+            String statusString = name + "  " + unit.getStatusString();
+
+            mainDisp.widget(
+                TextWidget.dynamicString(() -> statusString)
+                    .setSynced(false)
+                    .setTextAlignment(Alignment.CenterLeft)
+                    .setPos(75, 5 + height));
+
+            mainDisp
+                .widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHeliumAmount, val -> unit.maxHeliumAmount = val));
+            mainDisp.widget(
+                new FakeSyncWidget.LongSyncer(() -> unit.maxHydrogenAmount, val -> unit.maxHydrogenAmount = val));
+            mainDisp.widget(
+                new FakeSyncWidget.LongSyncer(
+                    () -> unit.maxRawStarMatterSAmount,
+                    val -> unit.maxRawStarMatterSAmount = val));
+
+            mainDisp.widget(
+                TextWidget.localised("设置氦最大拉取数量")
+                    .setSize(200, 18)
+                    .setPos(15, 18 + height))
+                .widget(
+                    new NumericWidget().setSetter(val -> unit.maxHeliumAmount = (long) val)
+                        .setGetter(() -> unit.maxHeliumAmount)
+                        .setBounds(-1, Long.MAX_VALUE)
+                        .setScrollValues(1, 10000, 1000000)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.normal)
+                        .setSize(200, 18)
+                        .setPos(15, 36 + height)
+                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
+
+            mainDisp.widget(
+                TextWidget.localised("设置氢最大拉取数量")
+                    .setSize(200, 18)
+                    .setPos(15, 54 + height))
+                .widget(
+                    new NumericWidget().setSetter(val -> unit.maxHydrogenAmount = (long) val)
+                        .setGetter(() -> unit.maxHydrogenAmount)
+                        .setBounds(-1, Long.MAX_VALUE)
+                        .setScrollValues(1, 10000, 1000000)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.normal)
+                        .setSize(200, 18)
+                        .setPos(15, 72 + height)
+                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
+
+            mainDisp.widget(
+                TextWidget.localised("设置浓缩原始恒星等离子体混合物最大拉取数量")
+                    .setSize(200, 18)
+                    .setPos(15, 90 + height))
+                .widget(
+                    new NumericWidget().setSetter(val -> unit.maxRawStarMatterSAmount = (long) val)
+                        .setGetter(() -> unit.maxRawStarMatterSAmount)
+                        .setBounds(-1, Long.MAX_VALUE)
+                        .setScrollValues(1, 10000, 1000000)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.normal)
+                        .setSize(200, 18)
+                        .setPos(15, 108 + height)
+                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
+                .setSize(200, 140);
         }
 
         builder.widget(
             mainDisp.setPos(5, currentYPosition)
                 .setSize(windowWidth - 10, windowHeight - currentYPosition - 5));
         return builder.build();
-    }
-
-    public Widget makeStatusWindowButton() {
-        TextButtonWidget widget = (TextButtonWidget) new TextButtonWidget(
-            translateToLocal("GT5U.infodata.purification_plant.status_button")).setLeftMargin(4)
-                .setSize(40, 16)
-                .setPos(10, 40);
-        widget.button()
-            .setOnClick(
-                (clickData, w) -> {
-                    if (!w.isClient()) w.getContext()
-                        .openSyncedWindow(STATUS_WINDOW_ID);
-                })
-            .setBackground(GTUITextures.BUTTON_STANDARD);
-        widget.text()
-            .setTextAlignment(Alignment.CenterLeft)
-            .setDefaultColor(EnumChatFormatting.BLACK);
-        return widget;
-    }
-
-    public Widget makeUnitStatusWidget(LinkedEyeOfHarmonyUnit unit) {
-        // Draw small machine controller icon
-        DynamicPositionedRow builder = new DynamicPositionedRow();
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
-
-        // 提取 metaTileEntity
-        MTEEyeOfHarmony mte = unit.metaTileEntity();
-        IGregTechTileEntity gtTE = mte.getBaseMetaTileEntity();
-
-        IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
-        long heliumStored = link.gtnl$getHeliumStored();
-        long hydrogenStored = link.gtnl$getHydrogenStored();
-        long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
-
-        builder.widget(new ButtonWidget()
-            .setBackground(
-                () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
-            .addTooltips(
-                Arrays.asList(
-                    StatCollector.translateToLocal("独立配置最大输入数量"),
-                    StatCollector.translateToLocal("目标坐标: "),
-                    String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord())))
-            .setSize(18, 18));
-
-        // Display machine name and status
-        String name = mte.getLocalName();
-        String statusString = name + "  " + unit.getStatusString();
-
-        builder.widget(
-            TextWidget.dynamicString(() -> statusString)
-                .setSynced(false)
-                .setTextAlignment(Alignment.CenterLeft));
-
-        builder.widget(SlotGroup.ofFluidTanks(
-                IntStream.range(0, 3)
-                    .mapToObj(index -> createTankForFluidStack(new FluidStack[] {
-                        heliumStack, hydrogenStack, rawstarmatterStack
-                    }, index, Integer.MAX_VALUE))
-                    .collect(Collectors.toList()),
-                3)
-            .phantom(true)
-            .widgetCreator((slotIndex, h) -> (FluidSlotWidget) new FluidSlotWidget(h) {
-
-                @Override
-                public void tryClickPhantom(ClickData clickData, ItemStack cursorStack) {}
-
-                @Override
-                public void tryScrollPhantom(int direction) {}
-
-                @Override
-                public void buildTooltip(List<Text> tooltip) {
-                    FluidStack fluid = getContent();
-                    if (fluid != null) {
-                        addFluidNameInfo(tooltip, fluid);
-
-                        long amount = 0;
-
-                        if (GTUtility.areFluidsEqual(fluid, heliumStack)) {
-                            amount = heliumStored;
-                        } else if (GTUtility.areFluidsEqual(fluid, hydrogenStack)) {
-                            amount = hydrogenStored;
-                        } else if (GTUtility.areFluidsEqual(fluid, rawstarmatterStack)) {
-                            amount = rawStarMatterStored;
-                        }
-
-                        tooltip.add(
-                            Text.localised(
-                                "modularui.fluid.phantom.amount", amount));
-
-                        addAdditionalFluidInfo(tooltip, fluid);
-                        if (!Interactable.hasShiftDown()) {
-                            tooltip.add(Text.EMPTY);
-                            tooltip.add(Text.localised("modularui.tooltip.shift"));
-                        }
-                    } else {
-                        tooltip.add(
-                            Text.localised("modularui.fluid.empty")
-                                .format(EnumChatFormatting.WHITE));
-                    }
-                }
-            }.setUpdateTooltipEveryTick(true))
-            .background(GTUITextures.SLOT_DARK_GRAY)
-            .controlsAmount(true)
-            .build()
-            .setSize(54, 18));
-
-        builder.widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHeliumAmount, val -> unit.maxHeliumAmount = val));
-        builder
-            .widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHydrogenAmount, val -> unit.maxHydrogenAmount = val));
-        builder.widget(
-            new FakeSyncWidget.LongSyncer(
-                () -> unit.maxRawStarMatterSAmount,
-                val -> unit.maxRawStarMatterSAmount = val));
-
-        builder.widget(
-                TextWidget.localised("设置氦最大拉取数量")
-                    .setSize(200, 18))
-            .widget(
-                new NumericWidget().setSetter(val -> unit.maxHeliumAmount = (long) val)
-                    .setGetter(() -> unit.maxHeliumAmount)
-                    .setBounds(1, Long.MAX_VALUE)
-                    .setScrollValues(1, 10000, 1000000)
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(200, 18)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        builder.widget(
-                TextWidget.localised("设置氢最大拉取数量")
-                    .setSize(200, 18))
-            .widget(
-                new NumericWidget().setSetter(val -> unit.maxHydrogenAmount = (long) val)
-                    .setGetter(() -> unit.maxHydrogenAmount)
-                    .setBounds(1, Long.MAX_VALUE)
-                    .setScrollValues(1, 10000, 1000000)
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(200, 18)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        builder.widget(
-                TextWidget.localised("设置浓缩原始恒星等离子体混合物最大拉取数量")
-                    .setSize(200, 18))
-            .widget(
-                new NumericWidget().setSetter(val -> unit.maxRawStarMatterSAmount = (long) val)
-                    .setGetter(() -> unit.maxRawStarMatterSAmount)
-                    .setBounds(1, Long.MAX_VALUE)
-                    .setScrollValues(1, 10000, 1000000)
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(200, 18)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
-            .setSize(200, 140);
-
-        return builder;
-    }
-
-    public FluidStackTank createTankForFluidStack(FluidStack[] fluidStacks, int slotIndex, int capacity) {
-        return new FluidStackTank(() -> fluidStacks[slotIndex], (stack) -> {
-            if (getBaseMetaTileEntity().isServerSide()) {
-                return;
-            }
-
-            fluidStacks[slotIndex] = stack;
-        }, capacity);
     }
 
     @Override
@@ -383,8 +407,20 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
         buildContext.addSyncedWindow(STATUS_WINDOW_ID, this::createStatusWindow);
 
-        // Add status window button
-        builder.widget(makeStatusWindowButton());
+        builder.widget(
+            new ButtonWidget().setOnClick(
+                (clickData, widget) -> {
+                    if (!widget.isClient()) widget.getContext()
+                        .openSyncedWindow(STATUS_WINDOW_ID);
+                })
+                .setPlayClickSound(true)
+                .setBackground(
+                    () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD,
+                        GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT })
+                .addTooltip(StatCollector.translateToLocal("GT5U.infodata.purification_plant.status_button"))
+                .setPos(64, 66)
+                .setSize(16, 16));
+
     }
 
     public void addSyncers(ModularWindow.Builder builder) {
@@ -402,7 +438,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         }, buffer -> {
             // Try to load link data from NBT compound as constructed above.
             try {
-                return new LinkedEyeOfHarmonyUnit(buffer.readNBTTagCompoundFromBuffer());
+                return new LinkedEyeOfHarmonyUnit(buffer.readNBTTagCompoundFromBuffer(), true);
             } catch (IOException e) {
                 ScienceNotLeisure.LOG.error(e.getCause());
             }
@@ -414,92 +450,101 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public CheckRecipeResult checkProcessing_EM() {
         this.onMachineBlockUpdate();
+        List<FluidStack> inputFluidStack = getStoredFluidsForColor(Optional.empty());
+        List<FluidStack> outputFluidStack = new ArrayList<>();
+        List<ItemStack> inputItemStack = getStoredInputs();
+        boolean hasUpdate = false;
 
-        NBTTagCompound nbt = new NBTTagCompound();
-        mEHO.get(0)
-            .onMachineBlockUpdate();
-        mEHO.get(0)
-            .saveNBTData(nbt);
+        for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+            MTEEyeOfHarmony core = unit.mMetaTileEntity;
+            core.onMachineBlockUpdate();
 
-        long maxAmount = (long) Math.min(maxFluidAmount, maxFluidAmountSetting.get());
+            NBTTagCompound nbt = new NBTTagCompound();
+            core.saveNBTData(nbt);
 
-        long helium = nbt.getLong("stored.fluid.helium");
-        long hydrogen = nbt.getLong("stored.fluid.hydrogen");
-        long rawstarmatter = nbt.getLong("stored.fluid.rawstarmatter");
+            long maxAmount = (long) Math.min(maxFluidAmount, maxFluidAmountSetting.get());
+            long heliumMaxAmount = unit.maxHeliumAmount != -1 ? unit.maxHeliumAmount : maxAmount;
+            long hydrogenMaxAmount = unit.maxHydrogenAmount != -1 ? unit.maxHydrogenAmount : maxAmount;
+            long rawstarmatterMaxAmount = unit.maxRawStarMatterSAmount != -1 ? unit.maxRawStarMatterSAmount : maxAmount;
 
-        if (helium >= maxAmount && hydrogen >= maxAmount && rawstarmatter >= maxAmount) {
-            return CheckRecipeResultRegistry.NO_RECIPE;
-        }
+            long helium = nbt.getLong("stored.fluid.helium");
+            long hydrogen = nbt.getLong("stored.fluid.hydrogen");
+            long rawstarmatter = nbt.getLong("stored.fluid.rawstarmatter");
 
-        List<ItemStack> outputItemStack = new ArrayList<>();
-
-        for (ItemStack stack : getStoredInputs()) {
-            if (!(stack.getItem() instanceof ItemFluidPacket)) continue;
-            NBTTagCompound fluidNBT = stack.getTagCompound()
-                .getCompoundTag("FluidStack");
-            String fluidName = fluidNBT.getString("FluidName");
-            long amount = fluidNBT.getLong("Amount");
-
-            switch (fluidName) {
-                case "hydrogen" -> hydrogen = handleFluidInput(
-                    Materials.Hydrogen.mGas,
-                    hydrogen,
-                    amount,
-                    maxAmount,
-                    outputItemStack);
-                case "helium" -> helium = handleFluidInput(
-                    Materials.Helium.mGas,
-                    helium,
-                    amount,
-                    maxAmount,
-                    outputItemStack);
-                case "rawstarmatter" -> rawstarmatter = handleFluidInput(
-                    MaterialsUEVplus.RawStarMatter.mFluid,
-                    rawstarmatter,
-                    amount,
-                    maxAmount,
-                    outputItemStack);
+            if (helium >= maxAmount && hydrogen >= maxAmount && rawstarmatter >= maxAmount) {
+                continue;
             }
-            stack.stackSize--;
-        }
 
-        for (FluidStack fluidStack : getStoredFluids()) {
-            if (GTUtility.areFluidsEqual(fluidStack, heliumStack)) {
-                helium = tryConsumeFluid(fluidStack, helium, maxAmount);
-            } else if (GTUtility.areFluidsEqual(fluidStack, hydrogenStack)) {
-                hydrogen = tryConsumeFluid(fluidStack, hydrogen, maxAmount);
-            } else if (GTUtility.areFluidsEqual(fluidStack, rawstarmatterStack)) {
-                rawstarmatter = tryConsumeFluid(fluidStack, rawstarmatter, maxAmount);
+            for (ItemStack stack : inputItemStack) {
+                if (!(stack.getItem() instanceof ItemFluidPacket)) continue;
+                NBTTagCompound fluidNBT = stack.getTagCompound()
+                    .getCompoundTag("FluidStack");
+                String fluidName = fluidNBT.getString("FluidName");
+                long amount = fluidNBT.getLong("Amount");
+
+                switch (fluidName) {
+                    case "helium" -> helium = handleFluidInput(
+                        Materials.Helium.mGas,
+                        helium,
+                        amount,
+                        heliumMaxAmount,
+                        outputFluidStack);
+                    case "hydrogen" -> hydrogen = handleFluidInput(
+                        Materials.Hydrogen.mGas,
+                        hydrogen,
+                        amount,
+                        hydrogenMaxAmount,
+                        outputFluidStack);
+                    case "rawstarmatter" -> rawstarmatter = handleFluidInput(
+                        MaterialsUEVplus.RawStarMatter.mFluid,
+                        rawstarmatter,
+                        amount,
+                        rawstarmatterMaxAmount,
+                        outputFluidStack);
+                }
+                stack.stackSize--;
+            }
+
+            helium = tryConsumeFluidLong(inputFluidStack, Materials.Helium.mGas, helium, heliumMaxAmount);
+            hydrogen = tryConsumeFluidLong(inputFluidStack, Materials.Hydrogen.mGas, hydrogen, hydrogenMaxAmount);
+            rawstarmatter = tryConsumeFluidLong(
+                inputFluidStack,
+                MaterialsUEVplus.RawStarMatter.mFluid,
+                rawstarmatter,
+                rawstarmatterMaxAmount);
+
+            updateSlots();
+
+            if (!outputFluidStack.isEmpty() || helium != nbt.getLong("stored.fluid.helium")
+                || hydrogen != nbt.getLong("stored.fluid.hydrogen")
+                || rawstarmatter != nbt.getLong("stored.fluid.rawstarmatter")) {
+
+                nbt.setLong("stored.fluid.helium", helium);
+                nbt.setLong("stored.fluid.hydrogen", hydrogen);
+                nbt.setLong("stored.fluid.rawstarmatter", rawstarmatter);
+
+                mergeFluidStacks(inputFluidStack, outputFluidStack);
+                outputFluidStack.clear();
+
+                core.loadNBTData(nbt);
+                core.onMachineBlockUpdate();
+                hasUpdate = true;
             }
         }
 
-        updateSlots();
-
-        if (!outputItemStack.isEmpty() || helium != nbt.getLong("stored.fluid.helium")
-            || hydrogen != nbt.getLong("stored.fluid.hydrogen")
-            || rawstarmatter != nbt.getLong("stored.fluid.rawstarmatter")) {
-
-            nbt.setLong("stored.fluid.helium", helium);
-            nbt.setLong("stored.fluid.hydrogen", hydrogen);
-            nbt.setLong("stored.fluid.rawstarmatter", rawstarmatter);
-
-            mEHO.get(0)
-                .loadNBTData(nbt);
-            mEHO.get(0)
-                .onMachineBlockUpdate();
-
+        if (hasUpdate) {
             mEfficiency = 10000;
             mEfficiencyIncrease = 10000;
             mMaxProgresstime = 20;
-            mOutputItems = outputItemStack.toArray(new ItemStack[0]);
 
+            mOutputFluids = inputFluidStack.toArray(new FluidStack[0]);
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
         return CheckRecipeResultRegistry.NO_RECIPE;
     }
 
-    public long handleFluidInput(Fluid fluid, long current, long amount, long max, List<ItemStack> outputs) {
+    public long handleFluidInput(Fluid fluid, long current, long amount, long max, List<FluidStack> outputs) {
         if (current >= max || amount <= 0) return current;
 
         long space = max - current;
@@ -507,21 +552,178 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         long leftover = amount - accepted;
 
         current += accepted;
+
         if (leftover > 0) {
-            outputs.add(ItemFluidPacket.newStack(new FluidStack(fluid, (int) leftover)));
+            while (leftover > 0) {
+                int split = (int) Math.min(leftover, Integer.MAX_VALUE);
+                outputs.add(new FluidStack(fluid, split));
+                leftover -= split;
+            }
         }
 
         return current;
     }
 
-    public long tryConsumeFluid(FluidStack fluidStack, long current, long max) {
-        if (current >= max) return current;
-        if (depleteInput(fluidStack, true)) {
-            depleteInput(fluidStack);
-            long input = Math.min(max - current, fluidStack.amount);
-            current += input;
+    public void mergeFluidStacks(List<FluidStack> input, List<FluidStack> output) {
+        for (FluidStack out : output) {
+            boolean merged = false;
+            for (FluidStack in : input) {
+                if (in.isFluidEqual(out)) {
+                    long sum = (long) in.amount + out.amount;
+                    if (sum > Integer.MAX_VALUE) {
+                        in.amount = Integer.MAX_VALUE;
+                        long leftover = sum - Integer.MAX_VALUE;
+                        while (leftover > 0) {
+                            int split = (int) Math.min(leftover, Integer.MAX_VALUE);
+                            input.add(new FluidStack(out.getFluid(), split));
+                            leftover -= split;
+                        }
+                    } else {
+                        in.amount = (int) sum;
+                    }
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged) input.add(out.copy());
         }
+    }
+
+    @Override
+    public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
+        ArrayList<ItemStack> rList = new ArrayList<>();
+        Map<GTUtility.ItemId, ItemStack> inputsFromME = new HashMap<>();
+        for (MTEHatchInputBus tHatch : validMTEList(mInputBusses)) {
+            if (tHatch instanceof MTEHatchCraftingInputME) {
+                continue;
+            }
+            byte busColor = tHatch.getColor();
+            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
+            tHatch.mRecipeMap = getRecipeMap();
+            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
+            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
+            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
+                ItemStack itemStack = tileEntity.getStackInSlot(i);
+                if (itemStack != null) {
+                    if (isMEBus) {
+                        // Prevent the same item from different ME buses from being recognized
+                        inputsFromME.put(GTUtility.ItemId.createNoCopy(itemStack), itemStack);
+                    } else {
+                        rList.add(itemStack);
+                    }
+                }
+            }
+        }
+
+        for (IDualInputHatch dualInputHatch : mDualInputHatches) {
+            rList.addAll(Arrays.asList(dualInputHatch.getAllItems()));
+        }
+
+        ItemStack stackInSlot1 = getStackInSlot(1);
+        if (stackInSlot1 != null && stackInSlot1.getUnlocalizedName()
+            .startsWith("gt.integrated_circuit")) rList.add(stackInSlot1);
+        if (!inputsFromME.isEmpty()) {
+            rList.addAll(inputsFromME.values());
+        }
+        return rList;
+
+    }
+
+    @Override
+    public ArrayList<FluidStack> getStoredFluidsForColor(Optional<Byte> color) {
+        ArrayList<FluidStack> rList = new ArrayList<>();
+        Map<Fluid, FluidStack> inputsFromME = new HashMap<>();
+        for (MTEHatchInput tHatch : validMTEList(mInputHatches)) {
+            byte hatchColor = tHatch.getColor();
+            if (color.isPresent() && hatchColor != -1 && hatchColor != color.get()) continue;
+            setHatchRecipeMap(tHatch);
+            if (tHatch instanceof MTEHatchMultiInput multiInputHatch) {
+                for (FluidStack tFluid : multiInputHatch.getStoredFluid()) {
+                    if (tFluid != null) {
+                        rList.add(tFluid);
+                    }
+                }
+            } else if (tHatch instanceof MTEHatchInputME meHatch) {
+                for (FluidStack fluidStack : meHatch.getStoredFluids()) {
+                    if (fluidStack != null) {
+                        // Prevent the same fluid from different ME hatches from being recognized
+                        inputsFromME.put(fluidStack.getFluid(), fluidStack);
+                    }
+                }
+            } else {
+                FluidStack fillableStack = tHatch.getFillableStack();
+                if (fillableStack != null) {
+                    rList.add(fillableStack);
+                }
+            }
+        }
+
+        for (IDualInputHatch dualInputHatch : mDualInputHatches) {
+            rList.addAll(Arrays.asList(dualInputHatch.getAllFluids()));
+        }
+
+        if (!inputsFromME.isEmpty()) {
+            rList.addAll(inputsFromME.values());
+        }
+        return rList;
+    }
+
+    public long tryConsumeFluidLong(List<FluidStack> stored, Fluid target, long current, long max) {
+        if (current >= max) return current;
+
+        long need = max - current;
+        long available = 0L;
+
+        for (FluidStack fs : stored) {
+            if (fs != null && fs.getFluid() == target) {
+                available += fs.amount;
+            }
+        }
+
+        if (available <= 0) return current;
+
+        long consume = Math.min(need, available);
+
+        long drained = drainFluidLong(target, consume, true);
+        current += drained;
+
         return current;
+    }
+
+    public long drainFluidLong(Fluid target, long amount, boolean doDrain) {
+        long remaining = amount;
+        for (MTEHatch hatch : getAllInputHatches()) {
+            if (remaining <= 0) break;
+
+            if (hatch instanceof IDualInputHatch dual && dual.supportsFluids()) {
+                for (FluidStack stack : dual.getAllFluids()) {
+                    if (stack != null && stack.getFluid() == target && stack.amount > 0) {
+                        long deduct = Math.min(remaining, stack.amount);
+                        if (doDrain) stack.amount -= (int) deduct;
+                        remaining -= deduct;
+                    }
+                }
+            } else if (hatch instanceof MTEHatchInput inputHatch && inputHatch.isValid()) {
+                FluidStack request = new FluidStack(target, (int) Math.min(Integer.MAX_VALUE, remaining));
+                FluidStack drained = inputHatch.drain(ForgeDirection.UNKNOWN, request, doDrain);
+                if (drained != null) {
+                    remaining -= drained.amount;
+                }
+            }
+        }
+
+        return amount - remaining;
+    }
+
+    public List<MTEHatch> getAllInputHatches() {
+        List<MTEHatch> dualHatches = mDualInputHatches.stream()
+            .map(h -> (MTEHatch) h)
+            .collect(Collectors.toList());
+
+        List<MTEHatch> allHatches = new ArrayList<>(mInputHatches);
+        allHatches.addAll(dualHatches);
+
+        return allHatches;
     }
 
     private static final int HORIZONTAL_OFF_SET = 26;
@@ -554,37 +756,13 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
             .addElement(
                 'P',
                 ofChain(
-                    buildHatchAdder(EyeOfHarmonyInjector.class).casingIndex(getCasingTextureID())
+                    buildHatchAdder(EyeOfHarmonyInjector.class).casingIndex(BlockGTCasingsTT.textureOffset)
                         .dot(1)
                         .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
                         .buildAndChain(),
                     onElementPass(e -> e.tCountCasing++, ofBlock(sBlockCasingsTT, 0))))
-            .addElement(
-                'Q',
-                HatchElementBuilder.<EyeOfHarmonyInjector>builder()
-                    .atLeast(EOH.EOH)
-                    .casingIndex(getCasingTextureID())
-                    .dot(1)
-                    .build())
+            .addElement('Q', isAir())
             .build();
-    }
-
-    public int getCasingTextureID() {
-        return BlockGTCasingsTT.textureOffset;
-    }
-
-    public boolean addEHO(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) {
-            return false;
-        }
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (aMetaTileEntity == null) {
-            return false;
-        }
-        if (aMetaTileEntity instanceof MTEEyeOfHarmony) {
-            return mEHO.add((MTEEyeOfHarmony) aMetaTileEntity);
-        }
-        return false;
     }
 
     @Override
@@ -618,7 +796,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
     @Override
     public boolean checkMachine_EM(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        mEHO.clear();
         return structureCheck_EM(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
@@ -674,36 +851,5 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new EyeOfHarmonyInjector(mName);
-    }
-
-    public enum EOH implements IHatchElement<EyeOfHarmonyInjector> {
-
-        EOH(EyeOfHarmonyInjector::addEHO, MTEEyeOfHarmony.class) {
-
-            @Override
-            public long count(EyeOfHarmonyInjector gtTieEntityMagesTower) {
-                return 0;
-            }
-        };
-
-        public final List<Class<? extends IMetaTileEntity>> mteClasses;
-        public final IGTHatchAdder<EyeOfHarmonyInjector> adder;
-
-        @SafeVarargs
-        EOH(IGTHatchAdder<EyeOfHarmonyInjector> adder, Class<? extends IMetaTileEntity>... mteClasses) {
-            this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
-            this.adder = adder;
-        }
-
-        @Override
-        public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
-            return this.mteClasses;
-        }
-
-        @Override
-        public IGTHatchAdder<? super EyeOfHarmonyInjector> adder() {
-            return this.adder;
-        }
-
     }
 }

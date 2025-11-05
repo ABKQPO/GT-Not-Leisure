@@ -20,22 +20,20 @@ import tectech.thing.metaTileEntity.multi.MTEEyeOfHarmony;
  */
 public class LinkedEyeOfHarmonyUnit {
 
-    public int windowID;
+    public long maxHeliumAmount = -1;
+    public long maxHydrogenAmount = -1;
+    public long maxRawStarMatterSAmount = -1;
 
-    public long maxHeliumAmount = Long.MAX_VALUE;
-    public long maxHydrogenAmount = Long.MAX_VALUE;
-    public long maxRawStarMatterSAmount = Long.MAX_VALUE;
-
-    /**
-     * Whether this unit is active in the current cycle. We need to keep track of this so units cannot come online in
-     * the middle of a cycle and suddenly start processing.
-     */
-    public boolean mIsActive = false;
+    public int x, y, z;
 
     public MTEEyeOfHarmony mMetaTileEntity;
 
     public LinkedEyeOfHarmonyUnit(MTEEyeOfHarmony unit) {
         this.mMetaTileEntity = unit;
+        IGregTechTileEntity gtTE = unit.getBaseMetaTileEntity();
+        this.x = gtTE.getXCoord();
+        this.y = gtTE.getYCoord();
+        this.z = gtTE.getZCoord();
     }
 
     /**
@@ -43,13 +41,19 @@ public class LinkedEyeOfHarmonyUnit {
      *
      * @param nbtData NBT data obtained from writeLinkDataToNBT()
      */
-    public LinkedEyeOfHarmonyUnit(NBTTagCompound nbtData) {
-        this.windowID = nbtData.getInteger("windowID");
-        this.mIsActive = nbtData.getBoolean("active");
+    public LinkedEyeOfHarmonyUnit(NBTTagCompound nbtData, boolean addTE) {
         this.maxHeliumAmount = nbtData.getLong("maxHeliumAmount");
         this.maxHydrogenAmount = nbtData.getLong("maxHydrogenAmount");
         this.maxRawStarMatterSAmount = nbtData.getLong("maxRawStarMatterSAmount");
         NBTTagCompound linkData = nbtData.getCompoundTag("linkData");
+
+        // Load coordinates from link data
+        x = linkData.getInteger("x");
+        y = linkData.getInteger("y");
+        z = linkData.getInteger("z");
+
+        if (!addTE) return;
+
         World world;
         if (!proxy.isClientSide()) {
             world = DimensionManager.getWorld(nbtData.getInteger("worldID"));
@@ -57,44 +61,35 @@ public class LinkedEyeOfHarmonyUnit {
             world = Minecraft.getMinecraft().thePlayer.worldObj;
         }
 
+        // Find a TileEntity at this location
+        TileEntity te = GTUtil.getTileEntity(world, x, y, z, true);
+
+        if (te instanceof IGregTechTileEntity gtTE
+            && gtTE.getMetaTileEntity() instanceof MTEEyeOfHarmony eyeOfHarmony) {
+            this.mMetaTileEntity = eyeOfHarmony;
+        }
+    }
+
+    public LinkedEyeOfHarmonyUnit(NBTTagCompound nbtData, World world) {
+        this.maxHeliumAmount = nbtData.getLong("maxHeliumAmount");
+        this.maxHydrogenAmount = nbtData.getLong("maxHydrogenAmount");
+        this.maxRawStarMatterSAmount = nbtData.getLong("maxRawStarMatterSAmount");
+        NBTTagCompound linkData = nbtData.getCompoundTag("linkData");
         // Load coordinates from link data
-        int x = linkData.getInteger("x");
-        int y = linkData.getInteger("y");
-        int z = linkData.getInteger("z");
+        x = linkData.getInteger("x");
+        y = linkData.getInteger("y");
+        z = linkData.getInteger("z");
 
         // Find a TileEntity at this location
         TileEntity te = GTUtil.getTileEntity(world, x, y, z, true);
-        if (te == null) {
-            // This is a bug, throw a fatal error.
-            throw new NullPointerException("Unit disappeared during server sync. This is a bug.");
+
+        if (te instanceof IGregTechTileEntity gtTE
+            && gtTE.getMetaTileEntity() instanceof MTEEyeOfHarmony eyeOfHarmony) {
+            this.mMetaTileEntity = eyeOfHarmony;
         }
-
-        // Cast TileEntity to proper GT TileEntity
-        this.mMetaTileEntity = (MTEEyeOfHarmony) ((IGregTechTileEntity) te).getMetaTileEntity();
-    }
-
-    public MTEEyeOfHarmony metaTileEntity() {
-        return mMetaTileEntity;
-    }
-
-    /**
-     * Whether this unit is considered as active in the current cycle
-     *
-     * @return true if this unit is active in the current cycle
-     */
-    public boolean isActive() {
-        return mIsActive;
-    }
-
-    public void setActive(boolean active) {
-        this.mIsActive = active;
     }
 
     public String getStatusString() {
-        if (this.isActive()) {
-            return EnumChatFormatting.GREEN + StatCollector.translateToLocal("GT5U.gui.text.status.active");
-        }
-
         if (this.mMetaTileEntity.mMachine) {
             if (this.mMetaTileEntity.mMaxProgresstime > 0) {
                 return EnumChatFormatting.GREEN + StatCollector.translateToLocal("GT5U.gui.text.status.online");
@@ -111,7 +106,6 @@ public class LinkedEyeOfHarmonyUnit {
      */
     public NBTTagCompound writeLinkDataToNBT() {
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setBoolean("active,", this.mIsActive);
 
         NBTTagCompound linkData = new NBTTagCompound();
         IGregTechTileEntity mte = this.mMetaTileEntity.getBaseMetaTileEntity();
@@ -119,7 +113,6 @@ public class LinkedEyeOfHarmonyUnit {
         linkData.setInteger("y", mte.getYCoord());
         linkData.setInteger("z", mte.getZCoord());
         tag.setTag("linkData", linkData);
-        tag.setInteger("windowID", windowID);
         tag.setLong("maxHeliumAmount", maxHeliumAmount);
         tag.setLong("maxHydrogenAmount", maxHydrogenAmount);
         tag.setLong("maxRawStarMatterSAmount", maxRawStarMatterSAmount);
