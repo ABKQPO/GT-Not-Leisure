@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import DummyCore.Utils.MiscUtils;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.loader.RecipePool;
@@ -8,13 +7,11 @@ import com.science.gtnl.utils.recipes.ElectrocellGeneratorSpecialValue;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
 
 public class ElectrocellGeneratorRecipes implements IRecipePool {

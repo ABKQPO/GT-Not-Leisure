@@ -139,6 +139,8 @@ public class LanguageLoader {
         addWerkstoffLocalization(MaterialPool.EnderAir, "末地空气", false);
         addWerkstoffLocalization(MaterialPool.LiquidEnderAir, "液态末地空气", false);
         addWerkstoffLocalization(MaterialPool.MixturePineoil, "松油混合物", false);
+        addWerkstoffLocalization(MaterialPool.ToxicMercurySludge, "剧毒水银污泥", false);
+        addWerkstoffLocalization(MaterialPool.PostProcessBeWaste, "后处理铍废液", false);
         addWerkstoffLocalization(MaterialPool.Periodicium, "錭錤錶", false);
         addWerkstoffLocalization(MaterialPool.Stargate, "星门", false);
 

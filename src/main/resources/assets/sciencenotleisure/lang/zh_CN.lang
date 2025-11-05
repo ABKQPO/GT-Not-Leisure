@@ -1345,8 +1345,6 @@ item.FrothNaquadahEnrichedflotation=富集硅岩浮选泡沫单元
 item.FrothNaquadahEnrichedflotation.name=富集硅岩浮选泡沫单元
 gtplusplus.fluid.naquadahenrichedfroth=富集硅岩泡沫
 fluid.froth.naquadahenrichedflotation=富集硅岩泡沫
-fluid.toxicmercurysludge=剧毒水银污泥
-fluid.postprocessbewaste=后处理铍废液
 
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线
