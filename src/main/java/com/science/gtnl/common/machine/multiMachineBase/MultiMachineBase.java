@@ -102,7 +102,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public GTCoilTracker.MultiCoilLease coilLease = null;
 
     public static final int CHECK_INTERVAL = 100; // How often should we check for a new recipe on an idle machine?
-    public final int randomTickOffset = (int) (Math.random() * CHECK_INTERVAL + 1);
+    public int randomTickOffset = (int) (Math.random() * CHECK_INTERVAL + 1);
 
     public int mCountCasing = -1;
     public int mGlassTier = -1;
