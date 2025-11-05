@@ -553,5 +553,14 @@ public class ChemicalRecipes implements IRecipePool {
             .duration(200)
             .eut(TierEU.RECIPE_HV)
             .addTo(UC);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 11))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cinnabar, 16))
+            .fluidInputs(MaterialPool.ToxicMercurySludge.getFluidOrGas(12000))
+            .fluidOutputs(MaterialPool.PostProcessBeWaste.getFluidOrGas(12000))
+            .duration(150)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(UC);
     }
 }

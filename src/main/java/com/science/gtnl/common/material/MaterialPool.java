@@ -1565,6 +1565,26 @@ public class MaterialPool implements Runnable {
             .addCells(),
         offsetID_01 + 122,
         TextureSet.SET_FLUID);
+
+    public static final Werkstoff ToxicMercurySludge = new Werkstoff(
+        new short[] { 82, 97, 117 },
+        "ToxicMercurySludge",
+        new Werkstoff.Stats(),
+        Werkstoff.Types.ELEMENT,
+        new Werkstoff.GenerationFeatures().disable()
+            .addCells(),
+        offsetID_01 + 123,
+        TextureSet.SET_FLUID);
+
+    public static final Werkstoff PostProcessBeWaste = new Werkstoff(
+        new short[] { 105, 117, 105 },
+        "PostProcessBeWaste",
+        new Werkstoff.Stats(),
+        Werkstoff.Types.ELEMENT,
+        new Werkstoff.GenerationFeatures().disable()
+            .addCells(),
+        offsetID_01 + 124,
+        TextureSet.SET_FLUID);
     // Special
 
     public static final Werkstoff Periodicium = new Werkstoff(
