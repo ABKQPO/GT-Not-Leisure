@@ -146,7 +146,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings1, 12))))
+                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings2, 0))))
             .addElement(
                 'G',
                 ofChain(
@@ -156,13 +156,13 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings1, 12))))
+                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings2, 0))))
             .addElement(
                 'H',
                 buildHatchAdder(ElectrocellGenerator.class).atLeast(InputHatch)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 12))))
+                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0))))
             .build();
     }
 
@@ -205,9 +205,18 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                 lEUt -= (long) (1000 / generatorValue);
             }
         }
-        if (lEUt <= 0) {
+        if (mMaxProgresstime > 0 && lEUt <= 0) {
             stopMachine(ShutDownReasonRegistry.NONE);
         }
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack aStack) {
+        if (this.lEUt > 0) {
+            addEnergyOutput((this.lEUt * mEfficiency) / 10000);
+            return true;
+        }
+        return true;
     }
 
     @NotNull
