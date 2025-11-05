@@ -802,7 +802,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                         .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
                         .buildAndChain(),
                     onElementPass(e -> e.tCountCasing++, ofBlock(sBlockCasingsTT, 0))))
-            .addElement('Q', isAir())
             .build();
     }
 
