@@ -9,12 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityExtremeAnvil extends TileEntity implements IInventory {
 
-    private final ItemStack[] inventory = new ItemStack[3];
-
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
-    }
+    public ItemStack[] inventory = new ItemStack[3];
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {

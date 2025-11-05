@@ -7,6 +7,9 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
@@ -239,14 +242,23 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
         mOutputItems = outputItems;
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
+
+        mOutputFluids = outputFluids;
         if (outputFluids != null) {
+            List<FluidStack> expandedFluids = new ArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
-                    fluidStack.amount *= 1 + factor;
+                    long totalAmount = (long) (fluidStack.amount * (1 + factor));
+
+                    while (totalAmount > 0) {
+                        int stackSize = (int) Math.min(totalAmount, Integer.MAX_VALUE);
+                        expandedFluids.add(new FluidStack(fluidStack.getFluid(), stackSize));
+                        totalAmount -= stackSize;
+                    }
                 }
             }
+            mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
         }
-        mOutputFluids = outputFluids;
 
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }

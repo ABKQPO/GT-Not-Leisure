@@ -10,6 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.cleanroommc.bogosorter.BogoSortAPI;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.item.items.MilledOre;
@@ -31,7 +32,6 @@ import com.science.gtnl.utils.text.LanguageLoader;
 import bartworks.API.WerkstoffAdderRegistry;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
-import gregtech.api.util.GTLog;
 import gregtech.api.util.GTModHandler;
 import micdoodle8.mods.galacticraft.api.recipe.RocketFuels;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
@@ -111,7 +111,7 @@ public class MaterialLoader {
     }
 
     public static void loadOreDictionaryRecipes() {
-        GTLog.out.println("GTNL: Register Ore Dictionary Recipe.");
+        ScienceNotLeisure.LOG.info("GTNL: Register Ore Dictionary Recipe.");
         new WoodDistillationRecipes();
         new PortalToAlfheimOreRecipes();
         new LaserEngraverOreRecipes();

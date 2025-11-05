@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.Utils;
 
@@ -16,7 +17,6 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.interfaces.IItemContainer;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
-import gregtech.api.util.GTLog;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
@@ -138,8 +138,7 @@ public enum ReAvaItemList implements IItemContainer {
         if (mHasNotBeenSet)
             throw new IllegalAccessError("The Enum '" + name() + "' has not been set to an Item at this time!");
         if (mDeprecated && !mWarned) {
-            new Exception(this + " is now deprecated").printStackTrace(GTLog.err);
-            // warn only once
+            ScienceNotLeisure.LOG.error("Deprecated: {}", this, new RuntimeException(this + " is now deprecated"));
             mWarned = true;
         }
     }
@@ -180,7 +179,7 @@ public enum ReAvaItemList implements IItemContainer {
     @Override
     public boolean isStackEqual(Object aStack, boolean aWildcard, boolean aIgnoreNBT) {
         if (mDeprecated && !mWarned) {
-            new Exception(this + " is now deprecated").printStackTrace(GTLog.err);
+            ScienceNotLeisure.LOG.error("Deprecated: {}", this, new RuntimeException(this + " is now deprecated"));
             // warn only once
             mWarned = true;
         }

@@ -246,9 +246,10 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
         mOutputItems = outputItems;
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
-        List<FluidStack> expandedFluids = new ArrayList<>();
 
+        mOutputFluids = outputFluids;
         if (outputFluids != null) {
+            List<FluidStack> expandedFluids = new ArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
                     long totalAmount = (long) fluidStack.amount * getMCoilLevel().getTier()
@@ -262,9 +263,8 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
                     }
                 }
             }
+            mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
         }
-
-        mOutputFluids = expandedFluids.toArray(new FluidStack[0]);
 
         return result;
     }

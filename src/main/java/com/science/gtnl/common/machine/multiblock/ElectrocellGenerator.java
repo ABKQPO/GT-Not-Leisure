@@ -10,6 +10,7 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
+import static gregtech.api.util.GTUtility.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import com.dreammaster.block.BlockList;
@@ -30,6 +30,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
@@ -41,6 +42,7 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
+import gregtech.api.metatileentity.implementations.MTEHatchMaintenance;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -146,7 +148,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings1, 12))))
+                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings2, 0))))
             .addElement(
                 'G',
                 ofChain(
@@ -156,13 +158,13 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings1, 12))))
+                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasings2, 0))))
             .addElement(
                 'H',
                 buildHatchAdder(ElectrocellGenerator.class).atLeast(InputHatch)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 12))))
+                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0))))
             .build();
     }
 
@@ -205,9 +207,18 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                 lEUt -= (long) (1000 / generatorValue);
             }
         }
-        if (lEUt <= 0) {
+        if (mMaxProgresstime > 0 && lEUt <= 0) {
             stopMachine(ShutDownReasonRegistry.NONE);
         }
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack aStack) {
+        if (this.lEUt > 0) {
+            addEnergyOutput((this.lEUt * mEfficiency) / 10000);
+            return true;
+        }
+        return true;
     }
 
     @NotNull
@@ -220,21 +231,18 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
         matchedFluid = null;
         outputFluid = null;
 
-        Pair<ItemStack, ItemStack> inputItems = getStoredInputsItems();
-        ItemStack leftItem = inputItems.getLeft();
-        ItemStack rightItem = inputItems.getRight();
         ArrayList<FluidStack> fluidStacks = getStoredFluids();
 
         for (GTRecipe recipe : RecipePool.ElectrocellGeneratorRecipes.getAllRecipes()) {
-            if (GTUtility.areStacksEqual(recipe.mInputs[0], leftItem)
-                && GTUtility.areStacksEqual(recipe.mInputs[1], rightItem)) {
+            if (depleteInput(mLeftInputBusses, recipe.mInputs[0], true)
+                && depleteInput(mRightInputBusses, recipe.mInputs[1], true)) {
                 if (recipe.mFluidInputs != null && !fluidStacks.isEmpty()) {
                     double multiplier = 1;
 
                     for (int i = 0; i < recipe.mFluidInputs.length; i++) {
                         for (FluidStack stored : fluidStacks) {
                             if (GTUtility.areFluidsEqual(recipe.mFluidInputs[i], stored)) {
-                                matchedFluid = stored.copy();
+                                matchedFluid = recipe.mFluidInputs[i].copy();
                                 if (i < FLUID_MULTIPLIERS.length) {
                                     multiplier = FLUID_MULTIPLIERS[i];
                                     break;
@@ -244,28 +252,36 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                     }
 
                     if (matchedFluid != null) {
-                        if (depleteInput(leftItem) && depleteInput(rightItem)) {
-                            mMaxProgresstime = recipe.mDuration;
-                            generatorValue = recipe.mSpecialValue / 100D * multiplier;
-                            lEUt = Objects
-                                .requireNonNull(recipe.getMetadata(ElectrocellGeneratorSpecialValue.INSTANCE));
-                            lastEUt = lEUt;
-                            outputFluid = recipe.mFluidOutputs[0];
+                        depleteInput(mLeftInputBusses, recipe.mInputs[0]);
+                        depleteInput(mRightInputBusses, recipe.mInputs[1]);
+                        mMaxProgresstime = recipe.mDuration;
+                        generatorValue = recipe.mSpecialValue / 100D * multiplier;
+                        lEUt = Objects.requireNonNull(recipe.getMetadata(ElectrocellGeneratorSpecialValue.INSTANCE));
+                        lastEUt = lEUt;
+                        outputFluid = recipe.mFluidOutputs[0];
 
-                            List<ItemStack> outputList = new ArrayList<>();
+                        List<ItemStack> outputList = new ArrayList<>();
 
-                            for (int i = 0; i < recipe.mOutputs.length; i++) {
-                                int chance = i < recipe.mChances.length ? recipe.mChances[i] : 10000;
+                        for (int i = 0; i < recipe.mOutputs.length; i++) {
+                            int chance = i < recipe.mChances.length ? recipe.mChances[i] : 10000;
 
-                                if (random.nextInt(10000) < chance) {
-                                    outputList.add(recipe.mOutputs[i]);
-                                }
+                            if (random.nextInt(10000) < chance) {
+                                outputList.add(recipe.mOutputs[i]);
                             }
-
-                            mOutputItems = outputList.toArray(new ItemStack[0]);
-
-                            return CheckRecipeResultRegistry.SUCCESSFUL;
                         }
+
+                        mOutputItems = outputList.toArray(new ItemStack[0]);
+
+                        for (MTEHatchMaintenance maintenance : mMaintenanceHatches) {
+                            if (maintenance instanceof IConfigurationMaintenance customMaintenance
+                                && customMaintenance.isConfiguration()) {
+                                mMaxProgresstime = (int) Math
+                                    .max(1, mMaxProgresstime * customMaintenance.getConfigTime() / 100.0);
+                                break;
+                            }
+                        }
+
+                        return CheckRecipeResultRegistry.SUCCESSFUL;
                     }
                 }
             }
@@ -274,29 +290,33 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
         return CheckRecipeResultRegistry.NO_RECIPE;
     }
 
-    public Pair<ItemStack, ItemStack> getStoredInputsItems() {
-        ItemStack leftStack = null;
-        ItemStack rightStack = null;
+    public boolean depleteInput(MTEHatchInputBus hatchInput, ItemStack aStack) {
+        return depleteInput(hatchInput, aStack, false);
+    }
 
-        if (mLeftInputBusses != null) {
-            mLeftInputBusses.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = mLeftInputBusses.getBaseMetaTileEntity();
-            int lastIndex = tileEntity.getSizeInventory() - 1;
-            if (lastIndex >= 0) {
-                leftStack = tileEntity.getStackInSlot(lastIndex);
+    public boolean depleteInput(MTEHatchInputBus hatchInput, ItemStack aStack, boolean simulate) {
+        if (GTUtility.isStackInvalid(aStack) || hatchInput == null) return false;
+
+        hatchInput.mRecipeMap = getRecipeMap();
+        IGregTechTileEntity baseMetaTileEntity = hatchInput.getBaseMetaTileEntity();
+        if (baseMetaTileEntity == null) return false;
+
+        int size = baseMetaTileEntity.getSizeInventory();
+        if (size <= 0) return false;
+
+        for (int i = 0; i < size; i++) {
+            ItemStack stackInSlot = baseMetaTileEntity.getStackInSlot(i);
+            if (GTUtility.areStacksEqual(aStack, stackInSlot)) {
+                if (stackInSlot.stackSize >= aStack.stackSize) {
+                    if (simulate) {
+                        return true;
+                    }
+                    baseMetaTileEntity.decrStackSize(i, aStack.stackSize);
+                    return true;
+                }
             }
         }
-
-        if (mRightInputBusses != null) {
-            mRightInputBusses.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = mRightInputBusses.getBaseMetaTileEntity();
-            int lastIndex = tileEntity.getSizeInventory() - 1;
-            if (lastIndex >= 0) {
-                rightStack = tileEntity.getStackInSlot(lastIndex);
-            }
-        }
-
-        return Pair.of(leftStack, rightStack);
+        return false;
     }
 
     @Override

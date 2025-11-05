@@ -388,12 +388,12 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
             return false;
         }
-        setTierAndMult();
         return mCountCasing >= 40;
     }
 
     @Override
     public boolean checkHatch() {
+        setTierAndMult();
         setupParameters();
         return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None
             && GTUtility.getTier(this.getMaxInputVoltage()) <= tTier + 4

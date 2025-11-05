@@ -177,7 +177,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     @Setter
     public boolean enableExtraModule;
     public boolean secretUpgrade;
-    public boolean enableRender;
+    public boolean enableRender = true;
     public boolean isRenderActive;
 
     public static final MilestoneFormatter DEFAULT_FORMATTING_MODE = MilestoneFormatter.COMMA;
@@ -458,9 +458,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         int checkTier = 0;
 
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) {
+            if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            if (isRenderActive) destroyRenderer();
             return false;
         }
 
@@ -487,9 +487,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             HORIZONTAL_OFF_SET_TOP,
             VERTICAL_OFF_SET_TOP + (checkTier - 1) * 22,
             DEPTH_OFF_SET_TOP)) {
+            if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            if (isRenderActive) destroyRenderer();
             return false;
         }
 
@@ -498,9 +498,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             HORIZONTAL_OFF_SET_BOTTOM,
             VERTICAL_OFF_SET_BOTTOM - (checkTier - 1) * 22,
             DEPTH_OFF_SET_BOTTOM)) {
+            if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            if (isRenderActive) destroyRenderer();
             return false;
         }
 

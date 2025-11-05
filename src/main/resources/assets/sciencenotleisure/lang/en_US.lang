@@ -2101,6 +2101,13 @@ Tooltip_EyeOfHarmonyInjector_04=Configure maximum input threshold in the GUI
 Tooltip_EyeOfHarmonyInjector_05=§eLove from Korosensei :)
 Tooltip_EyeOfHarmonyInjector_Casing=Any Hyper Energy Machine Block
 Tooltip_EyeOfHarmonyInjector_Parametrization=§bMaximum fluid input threshold
+Tooltip_EyeOfHarmonyInjector_HeliumParametrization=§bMaximum helium input threshold
+Tooltip_EyeOfHarmonyInjector_HydrogenParametrization=§bMaximum hydrogen input threshold
+Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization=§bMaximum raw star matter input threshold
+Info_EyeOfHarmonyInjector_00=Configure maximum input amount independently
+Info_EyeOfHarmonyInjector_01=Target coordinates:
+Info_EyeOfHarmonyInjector_02=Open the Eye of Harmony independent configuration panel
+Info_EyeOfHarmonyInjector_Title=§9Eye Of Harmony Status
 
 NameReactionFurnace=Reaction Furnace
 ReactionFurnaceRecipeType=Furnace
