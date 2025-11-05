@@ -18,6 +18,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class SmeltingMixingFurnaceRecipes implements IRecipePool {
 
@@ -780,7 +781,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Manganese.getMolten(144 * 100),
                 Materials.Aluminium.getMolten(144 * 108),
                 Materials.Yttrium.getMolten(144 * 35),
-                MaterialsElements.getInstance().IODINE.getFluidStack(160000),
+                WerkstoffMaterialPool.Iodine.getFluidOrGas(160000),
                 MaterialsElements.getInstance().GERMANIUM.getFluidStack(144 * 160),
                 Materials.Radon.getGas(160000))
             .fluidOutputs(MaterialsAlloy.ABYSSAL.getFluidStack(4032 * 160))

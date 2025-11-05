@@ -159,7 +159,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public int clampRecipeOcCount(int value) {
-        return 1;
+        return Math.min(1, value);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public int getTierRecipes() {
-        return 14;
+        return 4;
     }
 
     @Override
