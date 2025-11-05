@@ -1345,6 +1345,9 @@ item.FrothNaquadahEnrichedflotation=Enriched Naquadah Flotation Froth Unit
 item.FrothNaquadahEnrichedflotation.name=Enriched Naquadah Flotation Froth Unit
 gtplusplus.fluid.naquadahenrichedfroth=Enriched Naquadah Froth
 fluid.froth.naquadahenrichedflotation=Enriched Naquadah Froth
+fluid.toxicmercurysludge=Toxic Mercury Sludge
+fluid.postprocessbewaste=Post Process Beryllium Waste
+
 
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire
