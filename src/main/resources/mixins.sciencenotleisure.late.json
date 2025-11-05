@@ -53,6 +53,7 @@
     "ThaumicTinkerer.AccessorAspectCropLootManager",
     "ThaumicTinkerer.MixinItemBloodSword",
     "TecTech.MixinTTRecipeAdder",
+    "TecTech.MixinMTEEyeOfHarmony",
     "TecTech.MixinMTEResearchStation"
   ],
   "client": [],
