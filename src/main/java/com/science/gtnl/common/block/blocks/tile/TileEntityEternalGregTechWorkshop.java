@@ -118,6 +118,17 @@ public class TileEntityEternalGregTechWorkshop extends TileEntity {
     }
 
     @Override
+    public void updateEntity() {
+        super.updateEntity();
+
+        if (!worldObj.isRemote) {
+            if (worldObj.getTotalWorldTime() % 100 == 0) {
+                updateToClient();
+            }
+        }
+    }
+
+    @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         writeToNBT(nbttagcompound);
