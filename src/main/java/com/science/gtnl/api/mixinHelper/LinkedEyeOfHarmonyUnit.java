@@ -24,6 +24,10 @@ public class LinkedEyeOfHarmonyUnit {
     public long maxHydrogenAmount = -1;
     public long maxRawStarMatterSAmount = -1;
 
+    public long heliumAmount = 0;
+    public long hydrogenAmount = 0;
+    public long rawStarMatterSAmount = 0;
+
     public int x, y, z;
 
     public MTEEyeOfHarmony mMetaTileEntity;

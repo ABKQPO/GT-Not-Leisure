@@ -96,10 +96,12 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public static int STATUS_WINDOW_ID = 10;
     public static FluidStack heliumStack = Materials.Helium.getGas(1);
     public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
-    public static FluidStack rawstarmatterStack = MaterialsUEVplus.RawStarMatter.getFluid(1);
+    public static FluidStack rawStarMatterStack = MaterialsUEVplus.RawStarMatter.getFluid(1);
     public static double maxFluidAmount = Long.MAX_VALUE;
 
-    public Parameters.Group.ParameterIn maxFluidAmountSetting;
+    public Parameters.Group.ParameterIn maxHeliumAmountSetting;
+    public Parameters.Group.ParameterIn maxHydrogenAmountSetting;
+    public Parameters.Group.ParameterIn maxRawStarMatterAmountSetting;
     public int tCountCasing;
 
     public List<LinkedEyeOfHarmonyUnit> mLinkedUnits = new ArrayList<>();
@@ -113,9 +115,16 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     }
 
     public void registerLinkedUnit(MTEEyeOfHarmony unit) {
-        LinkedEyeOfHarmonyUnit link = new LinkedEyeOfHarmonyUnit(unit);
-        this.mLinkedUnits.add(link);
+        LinkedEyeOfHarmonyUnit newLink = new LinkedEyeOfHarmonyUnit(unit);
+
         cleanupInvalidLinks();
+
+        boolean alreadyLinked = mLinkedUnits.stream()
+            .anyMatch(link -> link.x == newLink.x && link.y == newLink.y && link.z == newLink.z);
+
+        if (!alreadyLinked) {
+            mLinkedUnits.add(newLink);
+        }
     }
 
     public void unregisterLinkedUnit(MTEEyeOfHarmony unit) {
@@ -143,6 +152,23 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick_EM(aBaseMetaTileEntity);
         cleanupInvalidLinks();
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (!aBaseMetaTileEntity.isServerSide()) return;
+        if (aTick % 100 == 0) {
+            for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+                IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) unit.mMetaTileEntity;
+                long heliumStored = link.gtnl$getHeliumStored();
+                long hydrogenStored = link.gtnl$getHydrogenStored();
+                long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
+                unit.heliumAmount = heliumStored;
+                unit.hydrogenAmount = hydrogenStored;
+                unit.rawStarMatterSAmount = rawStarMatterStored;
+            }
+        }
     }
 
     @Override
@@ -242,7 +268,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
         // Title widget
         builder.widget(
-            new TextWidget(StatCollector.translateToLocal("GT5U.infodata.purification_plant.status_title"))
+            new TextWidget(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_Title"))
                 .setTextAlignment(Alignment.Center)
                 .setPos(5, 10)
                 .setSize(windowWidth, 8));
@@ -258,21 +284,35 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
             MTEEyeOfHarmony mte = unit.mMetaTileEntity;
             IGregTechTileEntity gtTE = mte.getBaseMetaTileEntity();
 
+            mainDisp
+                .widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHeliumAmount, val -> unit.maxHeliumAmount = val));
+            mainDisp.widget(
+                new FakeSyncWidget.LongSyncer(() -> unit.maxHydrogenAmount, val -> unit.maxHydrogenAmount = val));
+            mainDisp.widget(
+                new FakeSyncWidget.LongSyncer(
+                    () -> unit.maxRawStarMatterSAmount,
+                    val -> unit.maxRawStarMatterSAmount = val));
+
+            mainDisp.widget(new FakeSyncWidget.LongSyncer(() -> unit.heliumAmount, val -> unit.heliumAmount = val));
+            mainDisp.widget(new FakeSyncWidget.LongSyncer(() -> unit.hydrogenAmount, val -> unit.hydrogenAmount = val));
+            mainDisp.widget(
+                new FakeSyncWidget.LongSyncer(() -> unit.rawStarMatterSAmount, val -> unit.rawStarMatterSAmount = val));
+
             mainDisp.widget(
                 new ButtonWidget()
                     .setBackground(
                         () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
                     .addTooltips(
                         Arrays.asList(
-                            StatCollector.translateToLocal("独立配置最大输入数量"),
-                            StatCollector.translateToLocal("目标坐标: "),
+                            StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_00"),
+                            StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_01"),
                             String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord())))
                     .setSize(18, 18)
                     .setPos(0, height));
 
             mainDisp.widget(
                 SlotGroup.ofFluidTanks(
-                    Stream.of(heliumStack, hydrogenStack, rawstarmatterStack)
+                    Stream.of(heliumStack, hydrogenStack, rawStarMatterStack)
                         .map(stack -> new FluidStackTank(() -> stack, s -> {}, Integer.MAX_VALUE))
                         .collect(Collectors.toList()),
                     3)
@@ -293,17 +333,12 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
                                 long amount = 0;
 
-                                IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
-                                long heliumStored = link.gtnl$getHeliumStored();
-                                long hydrogenStored = link.gtnl$getHydrogenStored();
-                                long rawStarMatterStored = link.gtnl$getStellarPlasmaStored();
-
                                 if (GTUtility.areFluidsEqual(fluid, heliumStack)) {
-                                    amount = heliumStored;
+                                    amount = unit.heliumAmount;
                                 } else if (GTUtility.areFluidsEqual(fluid, hydrogenStack)) {
-                                    amount = hydrogenStored;
-                                } else if (GTUtility.areFluidsEqual(fluid, rawstarmatterStack)) {
-                                    amount = rawStarMatterStored;
+                                    amount = unit.hydrogenAmount;
+                                } else if (GTUtility.areFluidsEqual(fluid, rawStarMatterStack)) {
+                                    amount = unit.rawStarMatterSAmount;
                                 }
 
                                 tooltip.add(Text.localised("modularui.fluid.phantom.amount", amount));
@@ -336,17 +371,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(75, 5 + height));
 
-            mainDisp
-                .widget(new FakeSyncWidget.LongSyncer(() -> unit.maxHeliumAmount, val -> unit.maxHeliumAmount = val));
             mainDisp.widget(
-                new FakeSyncWidget.LongSyncer(() -> unit.maxHydrogenAmount, val -> unit.maxHydrogenAmount = val));
-            mainDisp.widget(
-                new FakeSyncWidget.LongSyncer(
-                    () -> unit.maxRawStarMatterSAmount,
-                    val -> unit.maxRawStarMatterSAmount = val));
-
-            mainDisp.widget(
-                TextWidget.localised("设置氦最大拉取数量")
+                TextWidget.localised("Tooltip_EyeOfHarmonyInjector_HeliumParametrization")
                     .setSize(200, 18)
                     .setPos(15, 18 + height))
                 .widget(
@@ -361,7 +387,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                         .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
             mainDisp.widget(
-                TextWidget.localised("设置氢最大拉取数量")
+                TextWidget.localised("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization")
                     .setSize(200, 18)
                     .setPos(15, 54 + height))
                 .widget(
@@ -376,7 +402,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                         .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
             mainDisp.widget(
-                TextWidget.localised("设置浓缩原始恒星等离子体混合物最大拉取数量")
+                TextWidget.localised("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization")
                     .setSize(200, 18)
                     .setPos(15, 90 + height))
                 .widget(
@@ -417,8 +443,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                 .setBackground(
                     () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD,
                         GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT })
-                .addTooltip(StatCollector.translateToLocal("GT5U.infodata.purification_plant.status_button"))
-                .setPos(64, 66)
+                .addTooltip(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_02"))
+                .setPos(174, 97)
                 .setSize(16, 16));
 
     }
@@ -455,23 +481,33 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         List<ItemStack> inputItemStack = getStoredInputs();
         boolean hasUpdate = false;
 
+        int totalUnits = mLinkedUnits.size();
+        int currentIndex = 0;
+
         for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+            currentIndex++;
+            boolean isLast = currentIndex == totalUnits;
+
             MTEEyeOfHarmony core = unit.mMetaTileEntity;
+            if (core == null) continue;
+
             core.onMachineBlockUpdate();
 
             NBTTagCompound nbt = new NBTTagCompound();
             core.saveNBTData(nbt);
 
-            long maxAmount = (long) Math.min(maxFluidAmount, maxFluidAmountSetting.get());
-            long heliumMaxAmount = unit.maxHeliumAmount != -1 ? unit.maxHeliumAmount : maxAmount;
-            long hydrogenMaxAmount = unit.maxHydrogenAmount != -1 ? unit.maxHydrogenAmount : maxAmount;
-            long rawstarmatterMaxAmount = unit.maxRawStarMatterSAmount != -1 ? unit.maxRawStarMatterSAmount : maxAmount;
+            long heliumMaxAmount = unit.maxHeliumAmount != -1 ? unit.maxHeliumAmount
+                : (long) Math.min(maxFluidAmount, maxHeliumAmountSetting.get());
+            long hydrogenMaxAmount = unit.maxHydrogenAmount != -1 ? unit.maxHydrogenAmount
+                : (long) Math.min(maxFluidAmount, maxHydrogenAmountSetting.get());
+            long rawstarmatterMaxAmount = unit.maxRawStarMatterSAmount != -1 ? unit.maxRawStarMatterSAmount
+                : (long) Math.min(maxFluidAmount, maxRawStarMatterAmountSetting.get());
 
             long helium = nbt.getLong("stored.fluid.helium");
             long hydrogen = nbt.getLong("stored.fluid.hydrogen");
             long rawstarmatter = nbt.getLong("stored.fluid.rawstarmatter");
 
-            if (helium >= maxAmount && hydrogen >= maxAmount && rawstarmatter >= maxAmount) {
+            if (helium >= heliumMaxAmount && hydrogen >= hydrogenMaxAmount && rawstarmatter >= rawstarmatterMaxAmount) {
                 continue;
             }
 
@@ -515,6 +551,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
             updateSlots();
 
+            unit.heliumAmount = helium;
+            unit.hydrogenAmount = hydrogen;
+            unit.rawStarMatterSAmount = rawstarmatter;
+
             if (!outputFluidStack.isEmpty() || helium != nbt.getLong("stored.fluid.helium")
                 || hydrogen != nbt.getLong("stored.fluid.hydrogen")
                 || rawstarmatter != nbt.getLong("stored.fluid.rawstarmatter")) {
@@ -523,8 +563,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
                 nbt.setLong("stored.fluid.hydrogen", hydrogen);
                 nbt.setLong("stored.fluid.rawstarmatter", rawstarmatter);
 
-                mergeFluidStacks(inputFluidStack, outputFluidStack);
-                outputFluidStack.clear();
+                if (!isLast) {
+                    mergeFluidStacks(inputFluidStack, outputFluidStack);
+                    outputFluidStack.clear();
+                }
 
                 core.loadNBTData(nbt);
                 core.onMachineBlockUpdate();
@@ -536,8 +578,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
             mEfficiency = 10000;
             mEfficiencyIncrease = 10000;
             mMaxProgresstime = 20;
-
-            mOutputFluids = inputFluidStack.toArray(new FluidStack[0]);
+            mOutputFluids = outputFluidStack.toArray(new FluidStack[0]);
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
@@ -799,8 +840,14 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
         return structureCheck_EM(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
-    public static INameFunction<EyeOfHarmonyInjector> MAX_FLUID_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_Parametrization");
+    public static INameFunction<EyeOfHarmonyInjector> MAX_HELIUM_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HeliumParametrization");
+
+    public static INameFunction<EyeOfHarmonyInjector> MAX_HYDROGEN_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization");
+
+    public static INameFunction<EyeOfHarmonyInjector> MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization");
 
     public static IStatusFunction<EyeOfHarmonyInjector> MAX_FLUID_AMOUNT_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, maxFluidAmount / 2, maxFluidAmount, maxFluidAmount);
@@ -809,8 +856,13 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public void parametersInstantiation_EM() {
         super.parametersInstantiation_EM();
         Parameters.Group hatch_0 = parametrization.getGroup(0, false);
-        maxFluidAmountSetting = hatch_0
-            .makeInParameter(0, maxFluidAmount, MAX_FLUID_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+        Parameters.Group hatch_1 = parametrization.getGroup(1, false);
+        maxHeliumAmountSetting = hatch_0
+            .makeInParameter(0, maxFluidAmount, MAX_HELIUM_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+        maxHydrogenAmountSetting = hatch_0
+            .makeInParameter(1, maxFluidAmount, MAX_HYDROGEN_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+        maxRawStarMatterAmountSetting = hatch_1
+            .makeInParameter(0, maxFluidAmount, MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
     }
 
     @Override
