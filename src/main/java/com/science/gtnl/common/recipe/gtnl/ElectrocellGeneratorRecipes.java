@@ -44,7 +44,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Zinc, 1),
                 ItemUtils.getItemStackOfAmountFromOreDict("dustBerylliumHydroxide", 6))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Zinc, 1))
-            .fluidInputs(Materials.Mercury.getFluid(1500))
+            .fluidInputs(Materials.Mercury.getFluid(1600))
             .fluidOutputs(MaterialPool.ToxicMercurySludge.getFluidOrGas(2000))
             .outputChances(10000)
             .eut(0)
@@ -77,7 +77,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .outputChances(10000)
             .eut(0)
             .specialValue(110)
-            .metadata(GENERATOR_EUT, 12288L)
+            .metadata(GENERATOR_EUT, 14400L)
             .duration(1000)
             .addTo(EGR);
 
@@ -88,11 +88,11 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 2))
             .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(2000))
             .fluidOutputs(Materials.NitrogenDioxide.getGas(8000))
-            .outputChances(3500)
+            .outputChances(5000)
             .eut(0)
             .specialValue(110)
-            .metadata(GENERATOR_EUT, 16384L)
-            .duration(1400)
+            .metadata(GENERATOR_EUT, 20480L)
+            .duration(1500)
             .addTo(EGR);
     }
 }
