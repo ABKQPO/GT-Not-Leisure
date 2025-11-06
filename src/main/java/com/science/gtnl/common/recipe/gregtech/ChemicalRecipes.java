@@ -559,7 +559,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cinnabar, 16))
             .fluidInputs(MaterialPool.ToxicMercurySludge.getFluidOrGas(12000))
             .fluidOutputs(MaterialPool.PostProcessBeWaste.getFluidOrGas(12000))
-            .duration(150)
+            .duration(300)
             .eut(TierEU.RECIPE_MV)
             .addTo(UC);
     }

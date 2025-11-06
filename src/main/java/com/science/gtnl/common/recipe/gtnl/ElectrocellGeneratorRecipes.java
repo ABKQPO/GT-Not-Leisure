@@ -50,7 +50,7 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .eut(0)
             .specialValue(110)
             .metadata(GENERATOR_EUT, 10240L)
-            .duration(1020)
+            .duration(1050)
             .addTo(EGR);
 
         GTValues.RA.stdBuilder()
@@ -84,10 +84,10 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.TungstenSteel, 1),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 8))
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 4))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 2))
-            .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(2000))
-            .fluidOutputs(Materials.NitrogenDioxide.getGas(8000))
+            .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(1000))
+            .fluidOutputs(Materials.NitricAcid.getGas(8000))
             .outputChances(5000)
             .eut(0)
             .specialValue(110)

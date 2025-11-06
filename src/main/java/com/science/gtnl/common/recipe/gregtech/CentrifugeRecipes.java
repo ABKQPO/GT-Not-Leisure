@@ -94,8 +94,8 @@ public class CentrifugeRecipes implements IRecipePool {
             .itemOutputs(Materials.Beryllium.getDust(24))
             .fluidInputs(MaterialPool.PostProcessBeWaste.getFluidOrGas(24000))
             .fluidOutputs(Materials.DilutedSulfuricAcid.getFluid(8000))
-            .duration(120)
-            .eut(TierEU.RECIPE_LV)
+            .duration(200)
+            .eut(TierEU.RECIPE_MV)
             .addTo(CNCR);
     }
 }
