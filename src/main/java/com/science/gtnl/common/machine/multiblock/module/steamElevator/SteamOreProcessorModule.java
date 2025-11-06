@@ -36,6 +36,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.VoidProtectionHelper;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +86,6 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
 
     @Override
     @NotNull
-    @SuppressWarnings("ForLoopReplaceableByForEach")
     public CheckRecipeResult checkProcessing() {
         if (!isInit) {
             initHash();
@@ -100,7 +100,6 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
 
         currentCircuitMultiplier = 0;
         ItemStack circuit = getControllerSlot();
-
         if (GTUtility.isAnyIntegratedCircuit(circuit)) {
             currentCircuitMultiplier = MathHelper.clamp_int(circuit.getItemDamage(), 0, 24);
         }
@@ -124,14 +123,14 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         maxParallel = GTUtility.safeInt((long) (maxParallel * calculator.calculateMultiplierUnderOneTick()), 0);
 
         int currentParallel = (int) Math.min(maxParallel, availableEUt / requiredEUt);
-        // Calculate parallel by fluids
+
         int tLube = 0;
         int tWater = 0;
-        for (int i = 0, size = tInputFluid.size(); i < size; i++) {
-            FluidStack fluid = tInputFluid.get(i);
-            if (fluid != null && fluid.equals(GTModHandler.getDistilledWater(1L))) {
+        for (FluidStack fluid : tInputFluid) {
+            if (fluid == null) continue;
+            if (fluid.equals(GTModHandler.getDistilledWater(1L))) {
                 tWater += fluid.amount;
-            } else if (fluid != null && fluid.equals(Materials.Lubricant.getFluid(1L))) {
+            } else if (fluid.equals(Materials.Lubricant.getFluid(1L))) {
                 tLube += fluid.amount;
             }
         }
@@ -141,10 +140,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        // Calculate parallel by items
         int itemParallel = 0;
-        for (int i = 0, size = tInput.size(); i < size; i++) {
-            ItemStack ore = tInput.get(i);
+        for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
             if (isPureDust.contains(tID) || isImpureDust.contains(tID)
@@ -168,18 +165,9 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         calculator.setCurrentParallel(currentParallel)
             .calculate();
 
-        // for scanner
-        setCurrentParallelism(currentParallel);
-
-        // Consume fluids
-        depleteInput(GTModHandler.getDistilledWater(currentParallel * 10L), false);
-        depleteInput(Materials.Lubricant.getFluid(currentParallel), false);
-
-        // Consume items and generate outputs
-        List<ItemStack> tOres = new ArrayList<>();
+        List<ItemStack> simulatedOres = new ArrayList<>();
         int remainingCost = currentParallel;
-        for (int i = 0, size = tInput.size(); i < size; i++) {
-            ItemStack ore = tInput.get(i);
+        for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
             if (isPureDust.contains(tID) || isImpureDust.contains(tID)
@@ -188,17 +176,17 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
                 || isCrushedOre.contains(tID)
                 || isOre.contains(tID)) {
                 if (remainingCost >= ore.stackSize) {
-                    tOres.add(GTUtility.copy(ore));
+                    simulatedOres.add(GTUtility.copy(ore));
                     remainingCost -= ore.stackSize;
-                    ore.stackSize = 0;
                 } else {
-                    tOres.add(GTUtility.copyAmountUnsafe(remainingCost, ore));
-                    ore.stackSize -= remainingCost;
+                    simulatedOres.add(GTUtility.copyAmountUnsafe(remainingCost, ore));
                     break;
                 }
             }
         }
-        midProduct = tOres.toArray(new ItemStack[0]);
+
+        midProduct = simulatedOres.toArray(new ItemStack[0]);
+
         switch (machineMode) {
             case 0 -> {
                 doMac(isOre);
@@ -238,6 +226,40 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
                 return CheckRecipeResultRegistry.NO_RECIPE;
             }
         }
+
+        VoidProtectionHelper helper = new VoidProtectionHelper().setMachine(this)
+            .setItemOutputs(midProduct)
+            .setMaxParallel(currentParallel)
+            .build();
+
+        if (helper.isItemFull()) {
+            return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+        }
+
+        currentParallel = helper.getMaxParallel();
+        setCurrentParallelism(currentParallel);
+
+        int consumeLeft = currentParallel;
+        for (ItemStack ore : tInput) {
+            int tID = GTUtility.stackToInt(ore);
+            if (tID == 0) continue;
+            if (isPureDust.contains(tID) || isImpureDust.contains(tID)
+                || isCrushedPureOre.contains(tID)
+                || isThermal.contains(tID)
+                || isCrushedOre.contains(tID)
+                || isOre.contains(tID)) {
+                if (consumeLeft >= ore.stackSize) {
+                    consumeLeft -= ore.stackSize;
+                    ore.stackSize = 0;
+                } else {
+                    ore.stackSize -= consumeLeft;
+                    break;
+                }
+            }
+        }
+
+        depleteInput(GTModHandler.getDistilledWater(currentParallel * 10L), false);
+        depleteInput(Materials.Lubricant.getFluid(currentParallel), false);
 
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;

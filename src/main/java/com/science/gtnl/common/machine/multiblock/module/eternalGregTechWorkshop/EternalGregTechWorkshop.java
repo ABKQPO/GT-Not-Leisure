@@ -549,6 +549,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         if (enableExtraModule && !isRenderActive && enableRender && mTotalRunTime > 0) {
             createRenderer();
+        } else if (!enableExtraModule && isRenderActive) {
+            destroyRenderer();
+            mExtraModule = false;
         }
         return tCountCasing > 1;
     }
