@@ -99,7 +99,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
             NBTTagList itemList = new NBTTagList();
             for (short i = 0; i < mInventory.length; i++) {
                 ItemStack stack = mInventory[i];
-                if (stack != null && stack.stackSize > 0) {
+                if (stack != null) {
                     NBTTagCompound itemTag = new NBTTagCompound();
                     writeItemStackToNBT(itemTag, stack, i);
                     itemList.appendTag(itemTag);
@@ -111,7 +111,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
         if (mStoredFluid != null && mStoredFluid.length > 0) {
             for (short i = 0; i < mStoredFluid.length; i++) {
                 FluidStack fluid = mStoredFluid[i];
-                if (fluid != null && fluid.amount > 0) {
+                if (fluid != null) {
                     NBTTagCompound fluidTag = new NBTTagCompound();
                     fluid.writeToNBT(fluidTag);
                     aNBT.setTag("mFluid" + i, fluidTag);
@@ -128,7 +128,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
             NBTTagList itemList = new NBTTagList();
             for (short i = 0; i < mInventory.length; i++) {
                 ItemStack stack = mInventory[i];
-                if (stack != null && stack.stackSize > 0) {
+                if (stack != null) {
                     NBTTagCompound itemTag = new NBTTagCompound();
                     writeItemStackToNBT(itemTag, stack, i);
                     itemList.appendTag(itemTag);
@@ -140,7 +140,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
         if (mStoredFluid != null && mStoredFluid.length > 0) {
             for (short i = 0; i < mStoredFluid.length; i++) {
                 FluidStack fluid = mStoredFluid[i];
-                if (fluid != null && fluid.amount > 0) {
+                if (fluid != null) {
                     NBTTagCompound fluidTag = new NBTTagCompound();
                     fluid.writeToNBT(fluidTag);
                     aNBT.setTag("mFluid" + i, fluidTag);
