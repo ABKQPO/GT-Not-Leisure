@@ -20,6 +20,8 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class SteamOilDrillModule extends SteamElevatorModule {
 
+    public static XSTR tVeinRNG = new XSTR(System.nanoTime());
+
     public SteamOilDrillModule(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
     }
@@ -53,8 +55,8 @@ public class SteamOilDrillModule extends SteamElevatorModule {
             .addInfo(
                 StatCollector.translateToLocalFormatted(
                     "Tooltip_SteamOilDrillModule_03",
-                    500 * (1 << Math.max(0, mTier - 2)),
-                    2500 * (1 << Math.max(0, mTier - 2))))
+                    250 * (1 << Math.max(0, mTier - 2)),
+                    1000 * (1 << Math.max(0, mTier - 2))))
             .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamOilDrillModule_04", 1200 / (mTier - 1)))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
@@ -68,13 +70,9 @@ public class SteamOilDrillModule extends SteamElevatorModule {
     @Override
     public CheckRecipeResult checkProcessing() {
         int dimensionId = getBaseMetaTileEntity().getWorld().provider.dimensionId;
-        long worldDay = getBaseMetaTileEntity().getWorld()
-            .getWorldTime() / 24000;
         GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimensionId);
         if (dimension == null) return CheckRecipeResultRegistry.NO_RECIPE;
         ArrayList<FluidStack> fluidStack = new ArrayList<>();
-        XSTR tVeinRNG = new XSTR(System.nanoTime());
-        XSTR tAmountRNG = new XSTR(worldDay);
 
         for (int i = 0; i < mTier - 1; i++) {
             GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
@@ -83,13 +81,13 @@ public class SteamOilDrillModule extends SteamElevatorModule {
                 continue;
             }
 
-            int base = 500 * (1 << Math.max(0, mTier - 2));
-            int amount = base * (1 + tAmountRNG.nextInt(4));
+            int base = 250 * (1 << Math.max(0, mTier - 2));
+            int amount = base * (1 + tVeinRNG.nextInt(4));
             fluidStack.add(new FluidStack(uoFluid.getFluid(), amount));
         }
 
         this.mOutputFluids = fluidStack.toArray(new FluidStack[0]);
-        this.lEUt = GTValues.V[mTier + 1];
+        this.lEUt = GTValues.VP[mTier];
         this.mMaxProgresstime = 1200 / (mTier - 1);
 
         return CheckRecipeResultRegistry.SUCCESSFUL;

@@ -562,5 +562,13 @@ public class ChemicalRecipes implements IRecipePool {
             .duration(300)
             .eut(TierEU.RECIPE_MV)
             .addTo(UC);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Phosphate, 10))
+            .fluidInputs(Materials.Hydrogen.getGas(6000))
+            .fluidOutputs(Materials.PhosphoricAcid.getFluid(2000))
+            .duration(40)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(UC);
     }
 }

@@ -128,7 +128,7 @@ public class ReactionFurnace extends GTMMultiMachineBase<ReactionFurnace> implem
                 'F',
                 buildHatchAdder(ReactionFurnace.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
+                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy), ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
             .build();
     }

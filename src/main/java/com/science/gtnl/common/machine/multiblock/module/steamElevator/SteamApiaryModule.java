@@ -279,10 +279,10 @@ public class SteamApiaryModule extends SteamElevatorModule {
                     stacks.addAll(beeSimulator.getDrops(this, 64_00d * boosted));
                 }
 
-                this.lEUt = -(long) (GTValues.V[4] * mMaxSlots * 0.99);
+                this.lEUt = -GTValues.V[4] * mMaxSlots;
                 this.mEfficiency = 10000;
                 this.mEfficiencyIncrease = 10000;
-                this.mMaxProgresstime = 300;
+                this.mMaxProgresstime = 600;
                 this.mOutputItems = stacks.toArray(new ItemStack[0]);
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
