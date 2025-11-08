@@ -1135,6 +1135,11 @@ item.MetaItem.117.name=4安 UIV无线能源覆盖板
 item.MetaItem.118.name=4安 UMV无线能源覆盖板
 item.MetaItem.119.name=4安 UXV无线能源覆盖板
 item.MetaItem.120.name=4安 MAX无线能源覆盖板
+item.MetaItem.121.name=异星电路基板
+item.MetaItem.122.name=异星环绕CPU
+item.MetaItem.123.name=异星晶圆
+item.MetaItem.124.name=异星芯片
+item.MetaItem.125.name=异星RAM晶圆
 
 item.SuspiciousStew.name=迷之炖菜
 

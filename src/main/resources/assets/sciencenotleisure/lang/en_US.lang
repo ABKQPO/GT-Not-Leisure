@@ -1135,6 +1135,11 @@ item.MetaItem.117.name=4A UIV Wireless Energy Cover
 item.MetaItem.118.name=4A UMV Wireless Energy Cover
 item.MetaItem.119.name=4A UXV Wireless Energy Cover
 item.MetaItem.120.name=4A MAX Wireless Energy Cover
+item.MetaItem.121.name=Exotic Circuit boards
+item.MetaItem.122.name=Exotic Surrounding CPU
+item.MetaItem.123.name=Exotic Wafer
+item.MetaItem.124.name=Exotic Chip
+item.MetaItem.125.name=Exotic RAM Wafer
 
 item.SuspiciousStew.name=Suspicious Stew
 

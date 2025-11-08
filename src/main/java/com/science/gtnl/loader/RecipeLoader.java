@@ -36,6 +36,7 @@ import com.science.gtnl.common.recipe.gregtech.CompressorRecipes;
 import com.science.gtnl.common.recipe.gregtech.CrackingRecipes;
 import com.science.gtnl.common.recipe.gregtech.CraftingTableRecipes;
 import com.science.gtnl.common.recipe.gregtech.CuttingRecipes;
+import com.science.gtnl.common.recipe.gregtech.CyclotronRecipes;
 import com.science.gtnl.common.recipe.gregtech.DigesterRecipes;
 import com.science.gtnl.common.recipe.gregtech.DissolutionTankRecipes;
 import com.science.gtnl.common.recipe.gregtech.DistillationTowerRecipes;
@@ -194,7 +195,7 @@ public class RecipeLoader {
             new InfernalCokeRecipes(), new SteamFusionReactorRecipes(), new SteamExtractinatorRecipes(),
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
-            new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes() };
+            new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

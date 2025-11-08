@@ -243,6 +243,11 @@ public enum GTNLItemList implements IItemContainer {
     IronTurbine,
     BronzeTurbine,
     VoidCover,
+    ExoticCircuitBoards,
+    ExoticSurroundingCPU,
+    ExoticWafer,
+    ExoticChip,
+    ExoticRAMWafer,
 
     LVWirelessEnergyCover,
     MVWirelessEnergyCover,

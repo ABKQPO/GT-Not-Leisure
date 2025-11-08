@@ -60,7 +60,7 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
 
     }
 
-    public static ItemStack initItem(String aName, int aMeta, String[] tooltips) {
+    public static ItemStack initItem(int aMeta, String[] tooltips) {
 
         if (tooltips != null) {
             MetaItemStackUtils.metaItemStackTooltipsAdd(MetaItemTooltipsMap, aMeta, tooltips);
