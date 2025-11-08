@@ -149,6 +149,11 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     }
 
     @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
+    @Override
     public boolean onRunningTick(ItemStack aStack) {
         if (mLockedToSingleRecipe) {
             runningTickCounter++;
