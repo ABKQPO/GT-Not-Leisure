@@ -32,6 +32,7 @@
     "Gregtech.MixinGTShapedRecipe",
     "Gregtech.MixinItemFluidDisplay",
     "Gregtech.MixinGodForgeMath",
+    "Gregtech.MixinGTOreDictUnificator",
     "Gregtech.MixinGTShapelessRecipe",
     "Gregtech.MixinGTRecipeConstants",
     "Gregtech.MixinMTEHatchSteamBusOutput",
