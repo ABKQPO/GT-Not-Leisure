@@ -501,6 +501,10 @@ public class BlockLoader {
         GTNLItemList.AdvancedIndustrialSteamCasing
             .set(MetaItemBlockCasing.initMetaBlockCasing(2, BlockLoader.metaCasing02));
         GTNLItemList.StainlessSteelGearBox.set(MetaItemBlockCasing.initMetaBlockCasing(3, BlockLoader.metaCasing02));
+        GTNLItemList.AssemblerMatrixFrame.set(MetaItemBlockCasing.initMetaBlockCasing(4, BlockLoader.metaCasing02));
+        GTNLItemList.AssemblerMatrixWall.set(MetaItemBlockCasing.initMetaBlockCasing(5, BlockLoader.metaCasing02));
+        GTNLItemList.AssemblerMatrixPattern.set(MetaItemBlockCasing.initMetaBlockCasing(6, BlockLoader.metaCasing02));
+        GTNLItemList.AssemblerMatrixCrafter.set(MetaItemBlockCasing.initMetaBlockCasing(7, BlockLoader.metaCasing02));
     }
 
     public static void registry() {

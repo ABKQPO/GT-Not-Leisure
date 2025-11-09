@@ -1,0 +1,14 @@
+结构方块映射表:
+
+字母对应关系:
+A -> ofBlock...(gt.blockcasings8, 7, ...)
+B -> ofBlock...(gt.blockglass1, 1, ...)
+C -> ofBlock...(tile.stone, 0, ...)
+D -> 控制器位置
+
+偏移值 Offsets: 4 8 0
+结构体高度: 9
+
+宽: 9
+高: 9
+长: 9

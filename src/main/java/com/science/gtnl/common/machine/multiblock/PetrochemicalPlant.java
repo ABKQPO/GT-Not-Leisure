@@ -238,7 +238,8 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
         if (outputItems != null) {
             for (ItemStack itemStack : outputItems) {
                 if (itemStack != null) {
-                    itemStack.stackSize *= getMCoilLevel().getTier() * GTUtility.getTier(this.getMaxInputVoltage())
+                    itemStack.stackSize *= (getMCoilLevel().getTier() + 1)
+                        * GTUtility.getTier(this.getMaxInputVoltage())
                         * 10;
                 }
             }
@@ -252,7 +253,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
             List<FluidStack> expandedFluids = new ArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
-                    long totalAmount = (long) fluidStack.amount * getMCoilLevel().getTier()
+                    long totalAmount = (long) fluidStack.amount * (getMCoilLevel().getTier() + 1)
                         * GTUtility.getTier(this.getMaxInputVoltage())
                         * 10;
 

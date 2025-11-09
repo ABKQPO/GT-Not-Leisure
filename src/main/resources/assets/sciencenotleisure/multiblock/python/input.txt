@@ -1,11 +1,11 @@
-[17:34:00] [Server thread/INFO] [GregTech GTNH]: 
+[00:41:21] [Server thread/INFO] [GregTech GTNH]: 
 
 Structure:
 
 Blocks:
-A -> ofBlock...(gt.blockmetal4, 13, ...);
-B -> ofBlock...(gt.blockmetal4, 14, ...);
-C -> ofBlock...(gt.blockmetal4, 15, ...);
+A -> ofBlock...(gt.blockcasings8, 7, ...);
+B -> ofBlock...(gt.blockglass1, 1, ...);
+C -> ofBlock...(tile.stone, 0, ...);
 
 Tiles:
 
@@ -13,100 +13,100 @@ Special Tiles:
 D -> ofSpecialTileAdder(gregtech.api.metatileentity.BaseMetaTileEntity, ...); // You will probably want to change it to something else
 
 Offsets:
-4 4 -7
+4 8 0
 
 Normal Scan:
 new String[][]{{
-    "         ",
-    "         ",
-    "    A    ",
-    "   BBB   ",
-    "  BBBBB  ",
-    "   BBB   ",
-    "    B    ",
-    "         ",
-    "         "
+    "AAAAAAAAA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "AAAADAAAA"
 },{
-    "   D     ",
-    "   ABB   ",
-    "  BB BB  ",
-    " BB   BB ",
-    " B     B ",
-    " BB   BB ",
-    "  BB BB  ",
-    "   BBB   ",
-    "         "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "    A    ",
-    "  AA BB  ",
-    " B     B ",
-    " B     B ",
-    "B       B",
-    " B     B ",
-    " B     B ",
-    "  BB BB  ",
-    "    B    "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "   AAA   ",
-    " AA   BB ",
-    " C     B ",
-    "B       B",
-    "B       B",
-    "B       B",
-    " B     B ",
-    " BB   BB ",
-    "   BBB   "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "  AAAAA  ",
-    " A     B ",
-    "A       B",
-    "A       B",
-    "B       B",
-    "B       B",
-    "B       B",
-    " B     B ",
-    "  BBBBB  "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "   AAA   ",
-    " AA   BB ",
-    " A     B ",
-    "A       B",
-    "A       B",
-    "B       B",
-    " A     B ",
-    " BB   BB ",
-    "   BBB   "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "    A    ",
-    "  AA BB  ",
-    " AA    B ",
-    " A     B ",
-    "A       B",
-    " A     B ",
-    " A     B ",
-    "  BB BB  ",
-    "    B    "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "         ",
-    "   AAB   ",
-    "  AA BB  ",
-    " AA   BB ",
-    " A     B ",
-    " AA   BB ",
-    "  AB BB  ",
-    "   BBB   ",
-    "         "
+    "ABBBBBBBA",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "BCCCCCCCB",
+    "ABBBBBBBA"
 },{
-    "         ",
-    "         ",
-    "    A    ",
-    "   AAB   ",
-    "  AABBB  ",
-    "   BBB   ",
-    "    B    ",
-    "         ",
-    "         "
+    "AAAAAAAAA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "ABBBBBBBA",
+    "AAAAAAAAA"
 }}
 
 
-[17:34:00] [Client thread/INFO]: [CHAT] 已打印到控制台的结构
+[00:41:21] [Client thread/INFO]: [CHAT] 已打印到控制台的结构

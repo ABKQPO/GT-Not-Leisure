@@ -228,7 +228,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
     public CheckRecipeResult checkProcessing() {
         super.checkProcessing();
 
-        int tier = getMCoilLevel().getTier();
+        int tier = getMCoilLevel().getTier() + 1;
         double factor = (Math.floor(tier / 2.0) * 0.1);
 
         ItemStack[] outputItems = processingLogic.getOutputItems();

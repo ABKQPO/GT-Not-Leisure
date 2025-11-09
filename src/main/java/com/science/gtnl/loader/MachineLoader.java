@@ -61,6 +61,7 @@ import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.common.machine.multiblock.AdvancedInfiniteDriller;
 import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
+import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.machine.multiblock.AtomicEnergyExcitationPlant;
 import com.science.gtnl.common.machine.multiblock.BloodSoulSacrificialArray;
 import com.science.gtnl.common.machine.multiblock.BrickedBlastFurnace;
@@ -274,6 +275,12 @@ public class MachineLoader {
     public static ItemStack SuperSpaceElevator;
 
     public static void registerMachines() {
+        GTNLItemList.AssemblerMatrix.set(
+            new AssemblerMatrix(
+                ASSEMBLER_MATRIX.ID,
+                "AssemblerMatrix",
+                StatCollector.translateToLocal("NameAssemblerMatrix")));
+        addItemTooltip(GTNLItemList.AssemblerMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.AtomicEnergyExcitationPlant.set(
             new AtomicEnergyExcitationPlant(

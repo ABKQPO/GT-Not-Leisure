@@ -38,6 +38,7 @@ import com.science.gtnl.utils.machine.ItemStackG;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.util.GTUtility;
 
 @SuppressWarnings("unused")
 public class Utils {
@@ -74,6 +75,44 @@ public class Utils {
             }
         }
         return result;
+    }
+
+    public static boolean addStacksToList(@NotNull Collection<ItemStack> list, @NotNull ItemStack itemStack,
+        long amount) {
+        if (amount < 0L) {
+            throw new IllegalArgumentException("Code is trying to set item stack size a negative number.");
+        } else if (amount <= 2147483647L) {
+            return list.add(GTUtility.copyAmountUnsafe((int) amount, itemStack));
+        } else {
+            long toAdd;
+            for (toAdd = amount; toAdd > 2147483647L; toAdd -= 2147483647L) {
+                list.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, itemStack));
+            }
+
+            return list.add(GTUtility.copyAmountUnsafe((int) toAdd, itemStack));
+        }
+    }
+
+    public static boolean addStacksToList(@NotNull Collection<FluidStack> list, @NotNull FluidStack fluidStackStack,
+        long amount) {
+        if (amount < 0L) {
+            throw new IllegalArgumentException("Code is trying to set item stack size a negative number.");
+        } else if (amount <= 2147483647L) {
+            return list.add(GTUtility.copyAmount((int) amount, fluidStackStack));
+        } else {
+            long toAdd;
+            for (toAdd = amount; toAdd > 2147483647L; toAdd -= 2147483647L) {
+                list.add(GTUtility.copyAmount(Integer.MAX_VALUE, fluidStackStack));
+            }
+
+            return list.add(GTUtility.copyAmount((int) toAdd, fluidStackStack));
+        }
+    }
+
+    public static boolean areItemsValid(ItemStack... stacks) {
+        return stacks != null && stacks.length >= 1
+            && Arrays.stream(stacks)
+                .allMatch(GTUtility::isStackValid);
     }
 
     @Contract(value = "_ -> new", pure = true)

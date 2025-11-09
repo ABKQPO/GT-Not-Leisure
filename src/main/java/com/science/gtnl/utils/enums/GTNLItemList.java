@@ -135,6 +135,10 @@ public enum GTNLItemList implements IItemContainer {
     IndustrialSteamCasing,
     AdvancedIndustrialSteamCasing,
     StainlessSteelGearBox,
+    AssemblerMatrixFrame,
+    AssemblerMatrixWall,
+    AssemblerMatrixPattern,
+    AssemblerMatrixCrafter,
 
     TrollFace,
     DepletedExcitedNaquadahFuelRod,
@@ -470,6 +474,7 @@ public enum GTNLItemList implements IItemContainer {
     SteamOilDrillModuleII,
     SteamOilDrillModuleIII,
 
+    AssemblerMatrix,
     AtomicEnergyExcitationPlant,
     CompoundExtremeCoolingUnit,
     EyeOfHarmonyInjector,

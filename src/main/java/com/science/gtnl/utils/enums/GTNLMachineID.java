@@ -3,6 +3,7 @@ package com.science.gtnl.utils.enums;
 public enum GTNLMachineID {
 
     // Multi Machine
+    ASSEMBLER_MATRIX(21002),
     ATOMIC_ENERGY_EXCITATION_PLANT(21003),
     EDEN_GARDEN(21004),
     LARGE_STEAM_CIRCUIT_ASSEMBLER(21005),

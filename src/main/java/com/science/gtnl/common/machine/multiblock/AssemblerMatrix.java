@@ -1,25 +1,23 @@
-package com.science.gtnl.common.machine.multiblock.module.steamElevator;
+package com.science.gtnl.common.machine.multiblock;
 
-import static forestry.api.apiculture.BeeManager.beeRoot;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
+import static forestry.api.apiculture.BeeManager.*;
+import static gregtech.api.GregTechAPI.*;
+import static gregtech.api.enums.HatchElement.*;
+import static gregtech.api.enums.Textures.BlockIcons.*;
+import static gregtech.api.util.GTStructureUtility.*;
 import static kubatech.api.gui.KubaTechUITextures.*;
-import static kubatech.api.utils.ItemUtils.readItemStackFromNBT;
-import static kubatech.api.utils.ItemUtils.writeItemStackToNBT;
-import static net.minecraft.util.StatCollector.*;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,20 +33,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.builder.UIBuilder;
 import com.gtnewhorizons.modularui.common.builder.UIInfo;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
@@ -59,24 +54,19 @@ import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.gui.CircularGaugeDrawable;
+import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamApiaryModule;
+import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import forestry.api.apiculture.EnumBeeType;
-import forestry.api.apiculture.IAlleleBeeSpecies;
-import forestry.api.apiculture.IBeekeepingMode;
 import forestry.plugins.PluginApiculture;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -84,44 +74,57 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import kubatech.api.DynamicInventory;
 
-public class SteamApiaryModule extends SteamElevatorModule {
+public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
 
-    public int mMaxSlots = 8;
-    public ArrayList<BeeSimulator> mStorage = new ArrayList<>();
+    public int mMaxSlots = 0;
+    public ArrayList<SteamApiaryModule.BeeSimulator> mStorage = new ArrayList<>();
+
+    public int mCountPatternCasing = -1;
+    public int mCountCrafterCasing = -1;
+
     public static final int CONFIGURATION_WINDOW_ID = 10;
-
     public static final int MODE_PRIMARY_INPUT = 0;
     public static final int MODE_PRIMARY_OUTPUT = 1;
     public static final int MODE_PRIMARY_OPERATING = 2;
     public int mPrimaryMode = MODE_PRIMARY_INPUT;
 
-    public HashMap<GTUtility.ItemId, Double> dropProgress = new HashMap<>();
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String AM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/assembler_matrix";
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 8;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final String[][] shape = StructureUtils.readStructureFromFile(AM_STRUCTURE_FILE_PATH);
 
-    public SteamApiaryModule(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional, 6);
+    public AssemblerMatrix(int aID, String aName, String aNameRegional) {
+        super(aID, aName, aNameRegional);
     }
 
-    public SteamApiaryModule(String aName) {
-        super(aName, 6);
+    public AssemblerMatrix(String aName) {
+        super(aName);
     }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamApiaryModule(this.mName);
+        return new AssemblerMatrix(this.mName);
     }
 
     @Override
-    public int getTierRecipes() {
-        return 6 + recipeOcCount;
+    public int getMaxParallelRecipes() {
+        mMaxParallel = 512 * mCountCrafterCasing;
+        mMaxSlots = 72 * mCountPatternCasing;
+        return mMaxParallel;
     }
 
     @Override
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        super.onScrewdriverRightClick(side, aPlayer, aX, aY, aZ, aTool);
         if (this.mMaxProgresstime > 0) {
             GTUtility.sendChatToPlayer(aPlayer, "Can't change mode when running !");
             return;
@@ -170,55 +173,136 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
-    public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        info.add(
-            StatCollector.translateToLocal("kubatech.infodata.running_mode") + " "
-                + EnumChatFormatting.GOLD
-                + (mPrimaryMode == 0 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.input")
-                    : (mPrimaryMode == 1 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.output")
-                        : StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.operating.normal"))));
-        info.add(
-            StatCollector.translateToLocalFormatted(
-                "kubatech.infodata.mia.running_mode.bee_storage",
-                "" + EnumChatFormatting.GOLD + mStorage.size() + EnumChatFormatting.RESET,
-                (mStorage.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
-                    : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
-        HashMap<String, Integer> infos = new HashMap<>();
-        for (int i = 0; i < mStorage.size(); i++) {
-            StringBuilder builder = new StringBuilder();
-            if (i > mMaxSlots) builder.append(EnumChatFormatting.DARK_RED);
-            builder.append(EnumChatFormatting.GOLD);
-            SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
-            builder.append(beeSimulator.queenStack.getDisplayName());
-            infos.merge(builder.toString(), 1, Integer::sum);
-        }
-        infos.forEach((key, value) -> info.add("x" + value + ": " + key));
-
-        return info.toArray(new String[0]);
-    }
-
-    @Override
-    public String getMachineType() {
-        return "SteamApiaryModuleRecipeType";
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamApiaryModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_05"))
+        tt.addMachineType(StatCollector.translateToLocal("AssemblerMatrixRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Tectech_Hatch"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
-            .beginStructureBlock(1, 5, 2, false)
+            .beginStructureBlock(9, 9, 9, false)
             .toolTipFinisher();
         return tt;
+    }
+
+    @Override
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
+            return false;
+        }
+        setupParameters();
+        return true;
+    }
+
+    @Override
+    public void setupParameters() {
+        super.setupParameters();
+        mMaxParallel = 512 * mCountCrafterCasing;
+        mMaxSlots = 72 * mCountPatternCasing;
+    }
+
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        mCountCrafterCasing = 0;
+        mCountPatternCasing = 0;
+        mMaxParallel = 0;
+        mMaxSlots = 0;
+    }
+
+    @Override
+    public boolean checkHatch() {
+        return super.checkHatch() && mCountCrafterCasing + mCountPatternCasing + mCountCasing == 343;
+    }
+
+    @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        this.buildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public IStructureDefinition<AssemblerMatrix> getStructureDefinition() {
+        return StructureDefinition.<AssemblerMatrix>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addElement(
+                'A',
+                buildHatchAdder(AssemblerMatrix.class).atLeast(Maintenance, InputBus, OutputBus)
+                    .adder(AssemblerMatrix::addToMachineList)
+                    .dot(1)
+                    .casingIndex(getCasingTextureID())
+                    .buildAndChain(BlockLoader.metaCasing02, 4))
+            .addElement('B', ofChain(chainAllGlasses(), ofBlock(BlockLoader.metaCasing02, 5)))
+            .addElement(
+                'C',
+                ofChain(
+                    onElementPass(t -> t.mCountPatternCasing++, ofBlock(BlockLoader.metaCasing02, 6)),
+                    onElementPass(t -> t.mCountCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 7)),
+                    onElementPass(t -> t.mCountCasing++, ofBlock(BlockLoader.metaCasing02, 5))))
+            .build();
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return GTUtility.getTextureId((byte) 116, (byte) 36);
     }
 
     @Override
@@ -230,10 +314,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 ArrayList<ItemStack> inputs = getStoredInputs();
                 for (ItemStack input : inputs) {
                     if (beeRoot.getType(input) == EnumBeeType.QUEEN) {
-                        SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
-                            input,
-                            w,
-                            6 + recipeOcCount);
+                        SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6);
                         if (bs.isValid) {
                             mStorage.add(bs);
                         }
@@ -276,7 +357,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 List<ItemStack> stacks = new ArrayList<>();
                 for (int i = 0, mStorageSize = Math.min(mStorage.size(), mMaxSlots); i < mStorageSize; i++) {
                     SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
-                    stacks.addAll(beeSimulator.getDrops(this, 64_00d * boosted));
+                    // stacks.addAll(beeSimulator.getDrops(this, 64_00d * boosted));
                 }
 
                 this.lEUt = -GTValues.V[4] * mMaxSlots;
@@ -291,148 +372,36 @@ public class SteamApiaryModule extends SteamElevatorModule {
         return CheckRecipeResultRegistry.NO_RECIPE;
     }
 
-    public static class BeeSimulator {
-
-        public ItemStack queenStack;
-        public List<BeeDrop> drops = new ArrayList<>();
-        public List<BeeDrop> specialDrops = new ArrayList<>();
-        public boolean isValid;
-        public float beeSpeed;
-        public float maxBeeCycles;
-        public static IBeekeepingMode mode;
-        public static Map<GTUtility.ItemId, ItemStack> dropstacks = new HashMap<>();
-
-        public BeeSimulator(ItemStack queenStack, World world, float t) {
-            isValid = false;
-            this.queenStack = queenStack.copy();
-            this.queenStack.stackSize = 1;
-            generate(world, t);
-            isValid = true;
-            queenStack.stackSize--;
+    @Override
+    public String[] getInfoData() {
+        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        info.add(
+            StatCollector.translateToLocal("kubatech.infodata.running_mode") + " "
+                + EnumChatFormatting.GOLD
+                + (mPrimaryMode == 0 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.input")
+                    : (mPrimaryMode == 1 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.output")
+                        : StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.operating.normal"))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "kubatech.infodata.mia.running_mode.bee_storage",
+                "" + EnumChatFormatting.GOLD + mStorage.size() + EnumChatFormatting.RESET,
+                (mStorage.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
+                    : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
+        HashMap<String, Integer> infos = new HashMap<>();
+        for (int i = 0; i < mStorage.size(); i++) {
+            StringBuilder builder = new StringBuilder();
+            if (i > mMaxSlots) builder.append(EnumChatFormatting.DARK_RED);
+            builder.append(EnumChatFormatting.GOLD);
+            SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
+            builder.append(beeSimulator.queenStack.getDisplayName());
+            infos.merge(builder.toString(), 1, Integer::sum);
         }
+        infos.forEach((key, value) -> info.add("x" + value + ": " + key));
 
-        public BeeSimulator(NBTTagCompound tag) {
-            queenStack = readItemStackFromNBT(tag.getCompoundTag("queenStack"));
-            isValid = tag.getBoolean("isValid");
-            drops = new ArrayList<>();
-            specialDrops = new ArrayList<>();
-            for (int i = 0, isize = tag.getInteger("dropssize"); i < isize; i++)
-                drops.add(new BeeDrop(tag.getCompoundTag("drops" + i)));
-            for (int i = 0, isize = tag.getInteger("specialDropssize"); i < isize; i++)
-                specialDrops.add(new BeeDrop(tag.getCompoundTag("specialDrops" + i)));
-            beeSpeed = tag.getFloat("beeSpeed");
-            maxBeeCycles = tag.getFloat("maxBeeCycles");
-        }
-
-        public NBTTagCompound toNBTTagCompound() {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setTag("queenStack", writeItemStackToNBT(queenStack));
-            tag.setBoolean("isValid", isValid);
-            tag.setInteger("dropssize", drops.size());
-            for (int i = 0; i < drops.size(); i++) tag.setTag(
-                "drops" + i,
-                drops.get(i)
-                    .toNBTTagCompound());
-            tag.setInteger("specialDropssize", specialDrops.size());
-            for (int i = 0; i < specialDrops.size(); i++) tag.setTag(
-                "specialDrops" + i,
-                specialDrops.get(i)
-                    .toNBTTagCompound());
-            tag.setFloat("beeSpeed", beeSpeed);
-            tag.setFloat("maxBeeCycles", maxBeeCycles);
-            return tag;
-        }
-
-        public void generate(World world, float t) {
-            if (mode == null) mode = beeRoot.getBeekeepingMode(world);
-            drops.clear();
-            specialDrops.clear();
-            if (beeRoot.getType(this.queenStack) != EnumBeeType.QUEEN) return;
-
-            var queen = beeRoot.getMember(this.queenStack);
-            var genome = queen.getGenome();
-
-            beeSpeed = genome.getSpeed();
-
-            IAlleleBeeSpecies primary = genome.getPrimary();
-
-            genome.getPrimary()
-                .getProductChances()
-                .forEach((key, value) -> drops.add(new BeeDrop(key, value, beeSpeed, t)));
-            genome.getSecondary()
-                .getProductChances()
-                .forEach((key, value) -> drops.add(new BeeDrop(key, value / 2f, beeSpeed, t)));
-            primary.getSpecialtyChances()
-                .forEach((key, value) -> specialDrops.add(new BeeDrop(key, value, beeSpeed, t)));
-        }
-
-        public List<ItemStack> getDrops(final SteamApiaryModule machine, final double timePassed) {
-            drops.forEach(d -> {
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
-                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
-            });
-            specialDrops.forEach(d -> {
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
-                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
-            });
-
-            List<ItemStack> currentDrops = new ArrayList<>();
-            machine.dropProgress.entrySet()
-                .forEach(e -> {
-                    double v = e.getValue();
-                    while (v > 1.0) {
-                        int size = Math.min((int) v, 64);
-                        ItemStack stack = dropstacks.get(e.getKey())
-                            .copy();
-                        stack.stackSize = size;
-                        currentDrops.add(stack);
-                        v -= size;
-                        e.setValue(v);
-                    }
-                });
-            return currentDrops;
-        }
-
-        public static class BeeDrop {
-
-            public ItemStack stack;
-            public double chance;
-            public float beeSpeed;
-            public float t;
-            public GTUtility.ItemId id;
-
-            public BeeDrop(ItemStack stack, double chance, float beeSpeed, float t) {
-                this.stack = stack;
-                this.chance = chance;
-                this.beeSpeed = beeSpeed;
-                this.t = t;
-                this.id = GTUtility.ItemId.createNoCopy(stack);
-            }
-
-            public double getAmount(double speedModifier) {
-                return chance * speedModifier;
-            }
-
-            public BeeDrop(NBTTagCompound tag) {
-                stack = readItemStackFromNBT(tag.getCompoundTag("stack"));
-                chance = tag.getDouble("chance");
-                beeSpeed = tag.getFloat("beeSpeed");
-                t = tag.getFloat("t");
-                id = GTUtility.ItemId.createNoCopy(stack);
-            }
-
-            public NBTTagCompound toNBTTagCompound() {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setTag("stack", writeItemStackToNBT(stack));
-                tag.setDouble("chance", chance);
-                tag.setFloat("beeSpeed", beeSpeed);
-                tag.setFloat("t", t);
-                return tag;
-            }
-        }
+        return info.toArray(new String[0]);
     }
 
-    public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
+    public static UIInfo<?, ?> patternUI = createMetaTileEntityUI();
 
     public static UIInfo<?, ?> createMetaTileEntityUI() {
         return UIBuilder.of()
@@ -535,7 +504,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
         mStorage,
         s -> s.queenStack).allowInventoryInjection(input -> {
             World w = getBaseMetaTileEntity().getWorld();
-            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6 + recipeOcCount);
+            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6);
             if (bs.isValid) {
                 mStorage.add(bs);
                 return input;
@@ -546,7 +515,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             .allowInventoryReplace((i, stack) -> {
                 if (stack.stackSize != 1) return null;
                 World w = getBaseMetaTileEntity().getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6 + recipeOcCount);
+                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6);
                 if (bs.isValid) {
                     SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
                     mStorage.add(i, bs);
@@ -560,13 +529,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-
-        buildContext.addSyncedWindow(OC_WINDOW_ID, this::createRecipeOcCountWindow);
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getLongTotalSteamStored, val -> uiSteamStored = val));
-        builder.widget(
-            new FakeSyncWidget.IntegerSyncer(this::getTotalSteamStoredOfAnyType, val -> uiSteamStoredOfAllTypes = val));
-
         isInInventory = !getBaseMetaTileEntity().isActive();
         builder.widget(
             new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
@@ -618,101 +580,12 @@ public class SteamApiaryModule extends SteamElevatorModule {
             configurationElements.setSpace(2)
                 .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
                 .setPos(getRecipeLockingButtonPos().add(18, 0)));
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(OC_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .addTooltip(translateToLocal("Info_SteamMachine_00"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(174, 112)
-            .setSize(16, 16));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
-                .dynamicTooltip(() -> {
-                    List<String> ret = new ArrayList<>();
-                    ret.add(
-                        StatCollector.translateToLocal("AllSteamCapacity") + uiSteamStored
-                            + "/"
-                            + uiSteamCapacity
-                            + "L");
-                    if (uiSteamStored == 0 && uiSteamStoredOfAllTypes != 0) {
-                        ret.add(EnumChatFormatting.RED + "Found steam of wrong type!");
-                    }
-                    return ret;
-                })
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setUpdateTooltipEveryTick(true)
-                .setSize(64, 42)
-                .setPos(-64, 100));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(new CircularGaugeDrawable(() -> (float) uiSteamStored / uiSteamCapacity))
-                .setPos(-64 + 21, 100 + 21)
-                .setSize(18, 4));
-
-        builder.widget(
-            new ItemDrawable(GTNLItemList.FakeItemSiren.get(1)).asWidget()
-                .setPos(-64 + 21 - 7, 100 - 20)
-                .setEnabled(w -> uiSteamStored == 0));
-    }
-
-    @Override
-    public ModularWindow createRecipeOcCountWindow(EntityPlayer player) {
-        final int WIDTH = 158;
-        final int HEIGHT = 52;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.BottomRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)
-                        .subtract(0, 10)));
-        builder.widget(
-            TextWidget.localised("Info_SteamMachine_00")
-                .setPos(3, 4)
-                .setSize(150, 20))
-            .widget(
-                new NumericWidget().setSetter(val -> recipeOcCount = clampRecipeOcCount((int) val))
-                    .setGetter(() -> {
-                        mMaxSlots = 8 << Math.min(4, recipeOcCount);
-                        return clampRecipeOcCount(recipeOcCount);
-                    })
-                    .setBounds(0, Integer.MAX_VALUE)
-                    .setDefaultValue(0)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(150, 18)
-                    .setPos(4, 25)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.IntegerSyncer(
-                            () -> clampRecipeOcCount(recipeOcCount),
-                            (val) -> recipeOcCount = clampRecipeOcCount(val)),
-                        builder));
-        return builder.build();
     }
 
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (aBaseMetaTileEntity.isClientSide()) return true;
-        apiaryUI.open(
+        patternUI.open(
             aPlayer,
             aBaseMetaTileEntity.getWorld(),
             aBaseMetaTileEntity.getXCoord(),
@@ -720,8 +593,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
             aBaseMetaTileEntity.getZCoord());
         return true;
     }
-
-    private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
 
     public ModularWindow createConfigurationWindow(final EntityPlayer player) {
         ModularWindow.Builder builder = ModularWindow.builder(200, 100);
@@ -806,94 +677,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
         return builder.build();
     }
 
-    @Override
-    public Widget generateCurrentRecipeInfoWidget() {
-        DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
-        if (mOutputItems == null || GUIDropProgress == null) return processingDetails;
-        LinkedHashMap<ItemStack, Double> sortedMap = GUIDropProgress.entrySet()
-            .stream()
-            .sorted(
-                Comparator.comparingInt(
-                    (Map.Entry<ItemStack, Double> entry) -> Arrays.stream(mOutputItems)
-                        .filter(s -> s.isItemEqual(entry.getKey()))
-                        .mapToInt(i -> i.stackSize)
-                        .sum())
-                    .reversed())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-        for (Map.Entry<ItemStack, Double> drop : sortedMap.entrySet()) {
-            assert mOutputItems != null;
-            int outputSize = Arrays.stream(mOutputItems)
-                .filter(s -> s.isItemEqual(drop.getKey()))
-                .mapToInt(i -> i.stackSize)
-                .sum();
-            if (outputSize != 0) {
-                Long itemCount = (long) outputSize;
-                String itemName = drop.getKey()
-                    .getDisplayName();
-                String itemAmountString = EnumChatFormatting.WHITE + " x "
-                    + EnumChatFormatting.GOLD
-                    + formatShortenedLong(itemCount)
-                    + EnumChatFormatting.WHITE
-                    + appendRate(false, itemCount, true);
-                String lineText = EnumChatFormatting.AQUA + truncateText(itemName, 20) + itemAmountString;
-                String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
-
-                processingDetails.widget(
-                    new MultiChildWidget().addChild(
-                        new ItemDrawable(
-                            drop.getKey()
-                                .copy()).asWidget()
-                                    .setSize(8, 8)
-                                    .setPos(0, 0))
-                        .addChild(
-                            new TextWidget(lineText).setTextAlignment(Alignment.CenterLeft)
-                                .addTooltip(lineTooltip)
-                                .setPos(10, 1)));
-            }
-        }
-        return processingDetails;
-    }
-
-    @Override
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        screenElements.widget(new FakeSyncWidget<>(() -> {
-            HashMap<ItemStack, Double> ret = new HashMap<>();
-            HashMap<GTUtility.ItemId, Double> dropProgress = new HashMap<>();
-
-            for (Map.Entry<GTUtility.ItemId, Double> drop : this.dropProgress.entrySet()) {
-                dropProgress.merge(drop.getKey(), drop.getValue(), Double::sum);
-            }
-
-            for (Map.Entry<GTUtility.ItemId, Double> drop : dropProgress.entrySet()) {
-                ret.put(BeeSimulator.dropstacks.get(drop.getKey()), drop.getValue());
-            }
-            return ret;
-        }, h -> GUIDropProgress = h, (buffer, h) -> {
-            buffer.writeVarIntToBuffer(h.size());
-            for (Map.Entry<ItemStack, Double> itemStackDoubleEntry : h.entrySet()) {
-                try {
-                    buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, buffer -> {
-            int len = buffer.readVarIntFromBuffer();
-            HashMap<ItemStack, Double> ret = new HashMap<>(len);
-            for (int i = 0; i < len; i++) {
-                try {
-                    ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return ret;
-        }));
-        super.drawTexts(screenElements, inventorySlot);
-    }
-
     public <Y> void tryOutputAll(@Nullable List<Y> list, @Nullable Function<Y, List<ItemStack>> mappingFunction) {
         if (list == null || list.isEmpty() || mappingFunction == null) return;
         int emptySlots = 0;
@@ -920,11 +703,5 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 addOutput(stack);
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public SoundResource getActivitySoundLoop() {
-        return SoundResource.GT_MACHINES_MEGA_INDUSTRIAL_APIARY_LOOP;
     }
 }
