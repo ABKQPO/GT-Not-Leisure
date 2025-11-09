@@ -1206,15 +1206,8 @@ public class AssemblerRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(
-                    0,
-                    ItemUtils.getItemStack(
-                        EnderIO.ID,
-                        "blockCapBank",
-                        1,
-                        0,
-                        "{storedEnergyRF:2500000,type:\"CREATIVE\"}",
-                        null)),
+                ItemUtils
+                    .getItemStack(EnderIO.ID, "blockCapBank", 0, 0, "{storedEnergyRF:2500000,type:\"CREATIVE\"}", null),
                 GTModHandler.getModItem(DraconicEvolution.ID, "draconium", 1, 0, missing))
             .itemOutputs(GTModHandler.getModItem(DraconicEvolution.ID, "draconium", 1, 2, missing))
             .duration(20)

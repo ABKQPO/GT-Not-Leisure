@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import static com.science.gtnl.utils.Utils.setStackSize;
 import static gregtech.api.enums.OrePrefixes.*;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import com.science.gtnl.loader.RecipePool;
 
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.GTValues;
+import gregtech.api.util.GTUtility;
 
 public class BartworksOreHandler {
 
@@ -35,10 +35,10 @@ public class BartworksOreHandler {
             // byproducts
             if (werkstoff.getNoOfByProducts() >= 1) {
                 if (werkstoff.getNoOfByProducts() == 1) {
-                    outputs.add(setStackSize(werkstoff.getOreByProduct(0, dust), Integer.MAX_VALUE));
+                    outputs.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, werkstoff.getOreByProduct(0, dust)));
                 } else {
                     for (int i = 0; i < werkstoff.getNoOfByProducts(); i++) {
-                        outputs.add(setStackSize(werkstoff.getOreByProduct(i, dust), Integer.MAX_VALUE));
+                        outputs.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, werkstoff.getOreByProduct(i, dust)));
                     }
                 }
             } else {
@@ -61,10 +61,12 @@ public class BartworksOreHandler {
 
                 if (werkstoff.getNoOfByProducts() >= 1) {
                     if (werkstoff.getNoOfByProducts() == 1) {
-                        rawOreOutputs.add(setStackSize(werkstoff.getOreByProduct(0, dust), Integer.MAX_VALUE));
+                        rawOreOutputs
+                            .add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, werkstoff.getOreByProduct(0, dust)));
                     } else {
                         for (int i = 0; i < werkstoff.getNoOfByProducts(); i++) {
-                            rawOreOutputs.add(setStackSize(werkstoff.getOreByProduct(i, dust), Integer.MAX_VALUE));
+                            rawOreOutputs
+                                .add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, werkstoff.getOreByProduct(i, dust)));
                         }
                     }
                 } else {

@@ -53,7 +53,7 @@ public class LaserEngraverRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTNLItemList.NeutroniumWafer.get(1),
-                GTUtility.copyAmountUnsafe(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderPearl, 1L)))
+                GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderPearl, 0))
             .itemOutputs(GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_NAND.get(1)))
             .fluidInputs(Materials.Grade5PurifiedWater.getFluid(100))
             .duration(200)
@@ -62,8 +62,8 @@ public class LaserEngraverRecipes implements IRecipePool {
 
         recipeWithPurifiedWater(
             new ItemStack[] { GTNLItemList.NeutroniumWafer.get(1),
-                GTUtility.copyAmountUnsafe(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderPearl, 1L)) },
-            new ItemStack[] { GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_NAND.get(1)) },
+                GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderPearl, 0) },
+            new ItemStack[] { ItemList.Circuit_Wafer_NAND.get(64) },
             Materials.Grade5PurifiedWater,
             Materials.Grade6PurifiedWater,
             200,
@@ -72,8 +72,8 @@ public class LaserEngraverRecipes implements IRecipePool {
 
         recipeWithPurifiedWater(
             new ItemStack[] { GTNLItemList.NeutroniumWafer.get(1),
-                GTUtility.copyAmountUnsafe(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderEye, 1L)) },
-            new ItemStack[] { GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_NOR.get(1)) },
+                GTOreDictUnificator.get(OrePrefixes.lens, Materials.EnderEye, 0) },
+            new ItemStack[] { ItemList.Circuit_Wafer_NOR.get(64) },
             Materials.Grade5PurifiedWater,
             Materials.Grade6PurifiedWater,
             200,
@@ -82,8 +82,8 @@ public class LaserEngraverRecipes implements IRecipePool {
 
         recipeWithPurifiedWater(
             new ItemStack[] { GTNLItemList.NeutroniumWafer.get(1),
-                GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.lens, Materials.NetherStar, 1L)) },
-            new ItemStack[] { GTUtility.copyAmountUnsafe(16, ItemList.Circuit_Wafer_SoC2.get(1)) },
+                GTOreDictUnificator.get(OrePrefixes.lens, Materials.NetherStar, 0) },
+            new ItemStack[] { ItemList.Circuit_Wafer_SoC2.get(16) },
             Materials.Grade5PurifiedWater,
             Materials.Grade6PurifiedWater,
             500,

@@ -1,8 +1,5 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import static com.science.gtnl.utils.Utils.copyAmount;
-import static com.science.gtnl.utils.Utils.setStackSize;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +18,11 @@ import goodgenerator.items.GGMaterial;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 import ic2.core.Ic2Items;
 
@@ -64,9 +63,9 @@ public class CheatOreProcessingRecipes implements IRecipePool {
     public ItemStack getDustStack(Materials material, int amount) {
         ItemStack t = processingLineMaterials.get(material);
         if (t != null) {
-            return copyAmount(Integer.MAX_VALUE, t);
+            return GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, t);
         }
-        return setStackSize(GTOreDictUnificator.get(OrePrefixes.dust, material, 1), amount);
+        return GTUtility.copyAmountUnsafe(amount, GTOreDictUnificator.get(OrePrefixes.dust, material, 1));
     }
 
     /**
@@ -202,15 +201,15 @@ public class CheatOreProcessingRecipes implements IRecipePool {
 
         // IC2 Uranium ore
         processOreRecipe(
-            copyAmount(1,Ic2Items.uraniumOre),
+            GTUtility.copyAmountUnsafe(1,Ic2Items.uraniumOre),
             Materials.Uranium,
             false
         );
 
         // HEE end powder
         registryOreProcessRecipe(
-            GTModHandler.getModItem("HardcoreEnderExpansion","end_powder_ore",1),
-            new ItemStack[]{GTModHandler.getModItem("HardcoreEnderExpansion", "end_powder", 24)}
+            GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID,"end_powder_ore",1),
+            new ItemStack[]{GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID, "end_powder", 24)}
         );
 
         // spotless:on

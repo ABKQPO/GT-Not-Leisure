@@ -1,7 +1,6 @@
 package com.science.gtnl.utils;
 
 import static com.science.gtnl.config.MainConfig.targetBlockSpecs;
-import static net.minecraft.util.StatCollector.translateToLocalFormatted;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import com.mojang.authlib.GameProfile;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.machine.FluidTankG;
 import com.science.gtnl.utils.machine.ItemStackG;
 
@@ -48,7 +46,6 @@ public class Utils {
     public static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
     public static final BigInteger INTEGER_MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
     public static final BigInteger BIG_INTEGER_100 = BigInteger.valueOf(100);
-    // region about game
 
     public static boolean isClientSide() {
         return FMLCommonHandler.instance()
@@ -77,13 +74,6 @@ public class Utils {
             }
         }
         return result;
-    }
-
-    // region about ItemStack
-    public static boolean metaItemEqual(ItemStack a, ItemStack b) {
-        if (a == null || b == null) return false;
-        if (a == b) return true;
-        return a.getItem() == b.getItem() && a.getItemDamage() == b.getItemDamage();
     }
 
     @Contract(value = "_ -> new", pure = true)
@@ -164,88 +154,6 @@ public class Utils {
         return output;
     }
 
-    public static ItemStack copyAmount(int aAmount, ItemStack aStack) {
-        if (isStackInvalid(aStack)) return null;
-        ItemStack rStack = aStack.copy();
-        // if (aAmount > 64) aAmount = 64;
-        if (aAmount == -1) aAmount = 111;
-        else if (aAmount < 0) aAmount = 0;
-        rStack.stackSize = aAmount;
-        return rStack;
-    }
-
-    public static boolean isStackValid(ItemStack aStack) {
-        return (aStack != null) && aStack.getItem() != null && aStack.stackSize >= 0;
-    }
-
-    public static boolean isStackInvalid(ItemStack aStack) {
-        return aStack == null || aStack.getItem() == null || aStack.stackSize < 0;
-    }
-
-    public static ItemStack setStackSize(ItemStack itemStack, int amount) {
-        if (itemStack == null) return null;
-        if (amount < 0) {
-            ScienceNotLeisure.LOG
-                .info("Error! Trying to set a item stack size lower than zero! {} to amount {}", itemStack, amount);
-            return itemStack;
-        }
-        itemStack.stackSize = amount;
-        return itemStack;
-    }
-    // endregion
-
-    // region About FluidStack
-
-    public static boolean fluidStackEqualAbsolutely(FluidStack[] fsa1, FluidStack[] fsa2) {
-        if (fsa1.length != fsa2.length) return false;
-        for (int i = 0; i < fsa1.length; i++) {
-            if (!fluidEqual(fsa1[i], fsa2[i])) return false;
-            if (fsa1[i].amount != fsa2[i].amount) return false;
-        }
-        return true;
-    }
-
-    public static boolean fluidStackEqualFuzzy(FluidStack[] fsa1, FluidStack[] fsa2) {
-        if (fsa1.length != fsa2.length) return false;
-        for (FluidStack fluidStack1 : fsa1) {
-            boolean flag = false;
-            for (FluidStack fluidStack2 : fsa2) {
-                if (fluidEqual(fluidStack1, fluidStack2)) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (!flag) return false;
-        }
-        return true;
-    }
-
-    public static boolean fluidEqual(FluidStack a, FluidStack b) {
-        return a.getFluid() == b.getFluid();
-    }
-
-    public static FluidStack setStackSize(FluidStack fluidStack, int amount) {
-        if (fluidStack == null) return null;
-        if (amount < 0) {
-            ScienceNotLeisure.LOG
-                .info("Error! Trying to set a item stack size lower than zero! {} to amount {}", fluidStack, amount);
-            return fluidStack;
-        }
-        fluidStack.amount = amount;
-        return fluidStack;
-    }
-
-    // endregion
-
-    // region About Text
-    public static String i18n(String key) {
-        return translateToLocalFormatted(key);
-    }
-
-    // endregion
-
-    // region Rewrites
-
     public static <T extends Collection<?>> T filterValidMTE(T metaTileEntities) {
         metaTileEntities.removeIf(o -> {
             if (o == null) {
@@ -257,18 +165,6 @@ public class Utils {
             return false;
         });
         return metaTileEntities;
-    }
-
-    // endregion
-
-    // region Generals
-
-    public static <T> T withNull(T main, T instead) {
-        return null == main ? instead : main;
-    }
-
-    public static int safeInt(long number, int margin) {
-        return number > Integer.MAX_VALUE - margin ? Integer.MAX_VALUE - margin : (int) number;
     }
 
     public static ItemStack[] sortNoNullArray(ItemStack... itemStacks) {

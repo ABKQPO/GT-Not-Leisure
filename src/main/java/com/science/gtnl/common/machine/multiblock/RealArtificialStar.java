@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.copyAmount;
 import static com.science.gtnl.utils.enums.GTNLItemList.StellarConstructionFrameMaterial;
 import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
 import static goodgenerator.loader.Loaders.compactFusionCoil;
@@ -16,6 +15,7 @@ import static tectech.thing.casing.TTCasingsContainer.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -306,37 +306,55 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     public ItemStack[] getRecovers(long amount) {
+        List<ItemStack> list = new ArrayList<>();
+
         if (amount <= Integer.MAX_VALUE) {
-            return new ItemStack[] { StellarConstructionFrameMaterial.get((int) amount) };
+            list.add(StellarConstructionFrameMaterial.get((int) amount));
         } else {
             int stack = (int) (amount / Integer.MAX_VALUE);
             int remainder = (int) (amount % Integer.MAX_VALUE);
-            ItemStack[] r = new ItemStack[remainder > 0 ? stack + 1 : stack];
             ItemStack t = StellarConstructionFrameMaterial.get(Integer.MAX_VALUE);
-            for (int i = 0; i < stack; i++) {
-                r[i] = t.copy();
+
+            int i = 0;
+            while (i < stack) {
+                list.add(t.copy());
+                i++;
             }
-            if (remainder > 0) r[stack] = copyAmount(remainder, t);
-            return r;
+
+            if (remainder > 0) {
+                list.add(GTUtility.copyAmountUnsafe(remainder, t));
+            }
         }
+
+        return list.toArray(new ItemStack[0]);
     }
 
     public ItemStack[] getRecoversTST(long amount) {
-        if (amount <= Integer.MAX_VALUE && TwistSpaceTechnology.isModLoaded()) {
-            return new ItemStack[] {
-                GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", Integer.MAX_VALUE, 17) };
-        } else if (TwistSpaceTechnology.isModLoaded()) {
-            int stack = (int) (amount / Integer.MAX_VALUE);
-            int remainder = (int) (amount % Integer.MAX_VALUE);
-            ItemStack[] r = new ItemStack[remainder > 0 ? stack + 1 : stack];
-            ItemStack t = GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", Integer.MAX_VALUE, 17);
-            for (int i = 0; i < stack; i++) {
-                r[i] = t.copy();
+        List<ItemStack> list = new ArrayList<>();
+
+        if (TwistSpaceTechnology.isModLoaded()) {
+            if (amount <= Integer.MAX_VALUE) {
+                list.add(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", (int) amount, 17));
+            } else {
+                int stack = (int) (amount / Integer.MAX_VALUE);
+                int remainder = (int) (amount % Integer.MAX_VALUE);
+                ItemStack t = GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", Integer.MAX_VALUE, 17);
+
+                int i = 0;
+                while (i < stack) {
+                    list.add(t.copy());
+                    i++;
+                }
+
+                if (remainder > 0) {
+                    list.add(GTUtility.copyAmountUnsafe(remainder, t));
+                }
             }
-            if (remainder > 0) r[stack] = copyAmount(remainder, t);
-            return r;
+        } else {
+            list.add(new ItemStack(Blocks.dirt, 1));
         }
-        return new ItemStack[] { new ItemStack(Blocks.dirt, 1) };
+
+        return list.toArray(new ItemStack[0]);
     }
 
     // Artificial Star Output multiplier

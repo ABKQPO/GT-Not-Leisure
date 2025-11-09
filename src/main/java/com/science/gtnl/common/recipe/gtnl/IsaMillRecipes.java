@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.utils.Utils.setStackSize;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -66,10 +64,10 @@ public class IsaMillRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(circuitNumber),
                 GTOreDictUnificator.get(prefix, material, prefix == OrePrefixes.rawOre ? 16L : 1L))
             .itemOutputs(
-                setStackSize(
+                GTUtility.copyAmountUnsafe(
+                    outputAmount,
                     MaterialUtils.generateMaterialFromGtENUM(material)
-                        .getMilled(1),
-                    outputAmount))
+                        .getMilled(1)))
             .fluidInputs(FluidRegistry.getFluidStack("ic2distilledwater", fluidAmount))
             .metadata(ISAMILL_TIER, tier)
             .duration(duration)
@@ -82,10 +80,10 @@ public class IsaMillRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(GTUtility.getIntegratedCircuit(circuitNumber), custom)
             .itemOutputs(
-                setStackSize(
+                GTUtility.copyAmountUnsafe(
+                    outputAmount,
                     MaterialUtils.generateMaterialFromGtENUM(material)
-                        .getMilled(1),
-                    outputAmount))
+                        .getMilled(1)))
             .fluidInputs(FluidRegistry.getFluidStack("ic2distilledwater", fluidAmount))
             .metadata(ISAMILL_TIER, tier)
             .duration(duration)

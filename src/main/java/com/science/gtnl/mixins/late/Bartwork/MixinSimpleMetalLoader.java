@@ -23,7 +23,7 @@ public abstract class MixinSimpleMetalLoader {
         if (werkstoff.hasItemType(turbineBlade)) {
             if (werkstoff.hasItemType(cellMolten)) {
                 GTValues.RA.stdBuilder()
-                    .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Turbine_Blade.get(1)))
+                    .itemInputs(ItemList.Shape_Mold_Turbine_Blade.get(0))
                     .itemOutputs(werkstoff.get(turbineBlade, 1))
                     .fluidInputs(werkstoff.getMolten(864))
 
@@ -38,7 +38,7 @@ public abstract class MixinSimpleMetalLoader {
 
             if (werkstoff.hasItemType(cell)) {
                 GTValues.RA.stdBuilder()
-                    .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Turbine_Blade.get(1)))
+                    .itemInputs(ItemList.Shape_Mold_Turbine_Blade.get(0))
                     .itemOutputs(werkstoff.get(turbineBlade, 1))
                     .fluidInputs(werkstoff.getFluidOrGas(864))
 

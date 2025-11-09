@@ -31,7 +31,7 @@ public class FishingGroundRecipes implements IRecipePool {
     public void loadRecipes() {
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1), GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)))
+            .itemInputs(GTUtility.getIntegratedCircuit(1), new ItemStack(Items.fishing_rod, 0))
             .itemOutputs(
                 new ItemStack(Items.fish, 16, 0),
                 new ItemStack(Items.fish, 16, 1),
@@ -46,7 +46,7 @@ public class FishingGroundRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTUtility.getIntegratedCircuit(2),
-                GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)),
+                new ItemStack(Items.fishing_rod, 0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatRaw, 16L))
             .itemOutputs(
                 new ItemStack(Items.fish, 32, 0),
@@ -62,7 +62,7 @@ public class FishingGroundRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTUtility.getIntegratedCircuit(3),
-                GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)),
+                new ItemStack(Items.fishing_rod, 0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatCooked, 16L))
             .itemOutputs(
                 new ItemStack(Items.fish, 64, 0),
@@ -204,9 +204,7 @@ public class FishingGroundRecipes implements IRecipePool {
         if (PamsHarvestCraft.isModLoaded()) {
 
             GTValues.RA.stdBuilder()
-                .itemInputs(
-                    GTUtility.getIntegratedCircuit(4),
-                    GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)))
+                .itemInputs(GTUtility.getIntegratedCircuit(4), new ItemStack(Items.fishing_rod, 0))
                 .itemOutputs(
                     GTModHandler.getModItem(PamsHarvestCraft.ID, "anchovyrawItem", 16),
                     GTModHandler.getModItem(PamsHarvestCraft.ID, "bassrawItem", 16),
@@ -271,7 +269,7 @@ public class FishingGroundRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(5),
-                    GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)),
+                    new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatRaw, 16L))
                 .itemOutputs(
                     GTModHandler.getModItem(PamsHarvestCraft.ID, "anchovyrawItem", 32),
@@ -337,7 +335,7 @@ public class FishingGroundRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(6),
-                    GTUtility.copyAmount(0, new ItemStack(Items.fishing_rod, 1)),
+                    new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatCooked, 16L))
                 .itemOutputs(
                     GTModHandler.getModItem(PamsHarvestCraft.ID, "anchovyrawItem", 64),

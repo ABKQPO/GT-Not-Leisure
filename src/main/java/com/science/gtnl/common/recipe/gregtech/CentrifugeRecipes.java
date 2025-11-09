@@ -48,7 +48,7 @@ public class CentrifugeRecipes implements IRecipePool {
             .addTo(CNCR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTModHandler.getModItem(DraconicEvolution.ID, "magnet", 1, 1)))
+            .itemInputs(GTModHandler.getModItem(DraconicEvolution.ID, "magnet", 0, 1))
             .fluidInputs(MaterialPool.RareEarthChlorides.getFluidOrGas(2000))
             .fluidOutputs(
                 MaterialPool.LaNdOxidesSolution.getFluidOrGas(250),

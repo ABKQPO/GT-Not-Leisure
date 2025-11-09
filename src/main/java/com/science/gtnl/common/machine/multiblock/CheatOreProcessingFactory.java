@@ -4,8 +4,6 @@ import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
 import static bartworks.system.material.WerkstoffLoader.BWBlockCasingsAdvanced;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.metaItemEqual;
-import static com.science.gtnl.utils.Utils.setStackSize;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
@@ -43,6 +41,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -102,7 +101,8 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
             boolean hasNotFound = true;
             for (GTRecipe recipe : recipeMap.getAllRecipes()) {
                 if (recipe.mInputs == null || recipe.mInputs.length < 1) continue;
-                if (metaItemEqual(recipe.mInputs[0], items) && items.stackSize >= recipe.mInputs[0].stackSize) {
+                if (GTUtility.areStacksEqual(recipe.mInputs[0], items)
+                    && items.stackSize >= recipe.mInputs[0].stackSize) {
                     // found the recipe
                     hasNotFound = false;
                     ItemStack recipeInput = recipe.mInputs[0];
@@ -115,16 +115,17 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
                     for (ItemStack recipeOutput : recipe.mOutputs) {
                         if (Integer.MAX_VALUE / parallel >= recipeOutput.stackSize) {
                             // direct output
-                            outputs.add(setStackSize(recipeOutput.copy(), recipeOutput.stackSize * parallel));
+                            outputs.add(
+                                GTUtility.copyAmountUnsafe(recipeOutput.stackSize * parallel, recipeOutput.copy()));
                         } else {
                             // separate to any integer max stack
                             long outputAmount = (long) parallel * recipeOutput.stackSize;
                             while (outputAmount > 0) {
                                 if (outputAmount >= Integer.MAX_VALUE) {
-                                    outputs.add(setStackSize(recipeOutput.copy(), Integer.MAX_VALUE));
+                                    outputs.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, recipeOutput.copy()));
                                     outputAmount -= Integer.MAX_VALUE;
                                 } else {
-                                    outputs.add(setStackSize(recipeOutput.copy(), (int) outputAmount));
+                                    outputs.add(GTUtility.copyAmountUnsafe((int) outputAmount, recipeOutput.copy()));
                                     outputAmount = 0;
                                 }
                             }

@@ -73,7 +73,7 @@ public enum ReAvaItemList implements IItemContainer {
 
     public Item getItem() {
         sanityCheck();
-        if (Utils.isStackInvalid(mStack)) return null;
+        if (GTUtility.isStackInvalid(mStack)) return null;
         return mStack.getItem();
     }
 
@@ -86,12 +86,12 @@ public enum ReAvaItemList implements IItemContainer {
     public ItemStack get(long aAmount, Object... aReplacements) {
         sanityCheck();
         // if invalid, return a replacements
-        if (Utils.isStackInvalid(mStack)) {
+        if (GTUtility.isStackInvalid(mStack)) {
             System.out.println("Object in the ReAvaItemList is null at:");
             new NullPointerException().printStackTrace(System.out);
-            return Utils.copyAmount(Math.toIntExact(aAmount), TestMetaBlock01_0.get(1));
+            return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), TestMetaBlock01_0.get(1));
         }
-        return Utils.copyAmount(Math.toIntExact(aAmount), mStack);
+        return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), mStack);
     }
 
     public int getMeta() {
@@ -106,7 +106,7 @@ public enum ReAvaItemList implements IItemContainer {
     public ReAvaItemList set(ItemStack aStack) {
         if (aStack == null) return this;
         mHasNotBeenSet = false;
-        mStack = Utils.copyAmount(1, aStack);
+        mStack = GTUtility.copyAmountUnsafe(1, aStack);
         if (Utils.isClientSide()) {
             Item item = mStack.getItem();
             if (item == null) return this;

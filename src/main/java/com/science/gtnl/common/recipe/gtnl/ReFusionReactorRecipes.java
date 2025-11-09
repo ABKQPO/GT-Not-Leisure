@@ -20,7 +20,8 @@ public class ReFusionReactorRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmountUnsafe(2147483647, getModItem("gregtech", "gt.metaitem.01", 1, 2299)))
+            .itemInputs(
+                GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, getModItem("gregtech", "gt.metaitem.01", 1, 2299)))
             .itemOutputs(
                 TrollFace.get(1)
                     .setStackDisplayName(StatCollector.translateToLocal("RFRRRecipes.1")))

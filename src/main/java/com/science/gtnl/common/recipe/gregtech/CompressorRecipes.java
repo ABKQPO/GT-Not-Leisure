@@ -19,7 +19,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.metadata.CompressionTierKey;
 import gregtech.api.util.GTModHandler;
-import gregtech.api.util.GTUtility;
 
 public class CompressorRecipes implements IRecipePool {
 
@@ -38,7 +37,7 @@ public class CompressorRecipes implements IRecipePool {
             .addTo(NCR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Ingot.get(1)))
+            .itemInputs(ItemList.Shape_Mold_Ingot.get(0))
             .itemOutputs(MaterialPool.CompressedSteam.get(OrePrefixes.ingot, 1))
             .fluidInputs(Materials.Steam.getGas(100000))
             .duration(80)
@@ -47,7 +46,7 @@ public class CompressorRecipes implements IRecipePool {
             .addTo(CR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, ItemList.Shape_Mold_Ingot.get(1)))
+            .itemInputs(ItemList.Shape_Mold_Ingot.get(0))
             .itemOutputs(MaterialPool.CompressedSteam.get(OrePrefixes.ingot, 1))
             .fluidInputs(Materials.DenseSupercriticalSteam.getGas(2000))
             .duration(80)

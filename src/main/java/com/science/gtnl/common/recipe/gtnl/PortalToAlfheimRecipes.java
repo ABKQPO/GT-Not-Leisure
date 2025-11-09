@@ -2,7 +2,6 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static com.dreammaster.scripts.IScriptLoader.missing;
 import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTModHandler.getModItem;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -32,8 +31,8 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             .itemInputs(new ItemStack(Items.bread, 1))
             .itemOutputs(
                 GTUtility.copyAmountUnsafe(
-                    2147483647,
-                    getModItem(IndustrialCraft2.ID, "blockNuke", 1)
+                    Integer.MAX_VALUE,
+                    GTModHandler.getModItem(IndustrialCraft2.ID, "blockNuke", 1)
                         .setStackDisplayName(StatCollector.translateToLocal("PTARRecipes.1"))))
             .duration(1200)
             .eut(0)
@@ -83,9 +82,9 @@ public class PortalToAlfheimRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmountUnsafe(256, getModItem(IndustrialCraft2.ID, "blockITNT", 1)),
-                GTUtility.copyAmount(0, new ItemStack(Blocks.beacon, 1)),
-                GTUtility.copyAmount(0, GTNLItemList.ActivatedGaiaPylon.get(1)),
+                GTUtility.copyAmountUnsafe(256, GTModHandler.getModItem(IndustrialCraft2.ID, "blockITNT", 1)),
+                new ItemStack(Blocks.beacon, 0),
+                GTNLItemList.ActivatedGaiaPylon.get(0),
                 GTModHandler.getModItem(Botania.ID, "manaResource", 1, 14, missing))
             .itemOutputs(
                 GTModHandler.getModItem(Botania.ID, "manaResource", 16, 5, missing),
@@ -165,7 +164,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, GTModHandler.getModItem(Avaritia.ID, "Infinity_Sword", 1, 0, missing)),
+                GTModHandler.getModItem(Avaritia.ID, "Infinity_Sword", 0, 0, missing),
                 GTModHandler.getModItem(Botania.ID, "manaResource", 1, 14, missing))
             .itemOutputs(
                 GTModHandler.getModItem(Botania.ID, "manaResource", 16, 5, missing),
