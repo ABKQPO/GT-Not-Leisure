@@ -225,7 +225,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, ItemList.Circuit_Primitive.get(1L)),
+                ItemList.Circuit_Primitive.get(0),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
                 GTModHandler.getModItem(Minecraft.ID, "redstone", 1, 0))
             .fluidInputs(FluidRegistry.getFluidStack("refinedglue", 20))
@@ -236,7 +236,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, GTModHandler.getModItem(IndustrialCraft2.ID, "itemPartCircuit", 1)),
+                GTModHandler.getModItem(IndustrialCraft2.ID, "itemPartCircuit", 0),
                 GTNLItemList.VerySimpleCircuit.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.RedAlloy, 1))
@@ -261,7 +261,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, GTModHandler.getModItem(IndustrialCraft2.ID, "itemPartCircuitAdv", 1)),
+                GTModHandler.getModItem(IndustrialCraft2.ID, "itemPartCircuitAdv", 0),
                 ItemList.Circuit_Board_Coated_Basic.get(1L),
                 GTNLItemList.BasicCircuit.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),

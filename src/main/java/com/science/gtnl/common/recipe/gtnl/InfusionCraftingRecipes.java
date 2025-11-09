@@ -12,13 +12,13 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 import com.science.gtnl.loader.RecipePool;
-import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.util.GTUtility;
 
 public class InfusionCraftingRecipes implements IRecipePool {
 
@@ -27,7 +27,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
     public ItemStack[] checkInputSpecial(ItemStack... itemStacks) {
         baseLoop: for (ItemStack i : itemStacks) {
             for (ItemStack u : itemsUnconsumed) {
-                if (Utils.metaItemEqual(i, u)) {
+                if (GTUtility.areStacksEqual(i, u)) {
                     i.stackSize = 0;
                     break baseLoop;
                 }

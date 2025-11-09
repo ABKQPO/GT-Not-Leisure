@@ -82,8 +82,8 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
         // 浸出渣处理
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmountUnsafe(64, WerkstoffLoader.LeachResidue.get(OrePrefixes.dust, 1)),
-                GTUtility.copyAmountUnsafe(64, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Saltpeter, 1)),
+                WerkstoffLoader.LeachResidue.get(OrePrefixes.dust, 64),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Saltpeter, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 25))
             .itemOutputs(
                 MaterialsElements.getInstance().RUTHENIUM.getDust(46),
@@ -104,7 +104,7 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
 
         // 稀有金属渣粉处理
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmountUnsafe(20, WerkstoffLoader.IrOsLeachResidue.get(OrePrefixes.dust, 1)))
+            .itemInputs(WerkstoffLoader.IrOsLeachResidue.get(OrePrefixes.dust, 20))
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iridium, 10),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Osmium, 1),
@@ -120,7 +120,7 @@ public class PlatinumBasedTreatmentRecipes implements IRecipePool {
 
         // 铱金属渣粉处理
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmountUnsafe(20, WerkstoffLoader.IrLeachResidue.get(OrePrefixes.dust, 1)))
+            .itemInputs(WerkstoffLoader.IrLeachResidue.get(OrePrefixes.dust, 20))
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iridium, 20),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gold, 8),

@@ -15,7 +15,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsElements;
 import kubatech.loaders.DEFCRecipes;
@@ -30,7 +29,7 @@ public class DragonEvolutionFusionCraftingRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, ItemList.Field_Generator_UEV.get(1)),
+                ItemList.Field_Generator_UEV.get(0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Infinity, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.TengamPurified, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Ichorium, 32),
@@ -48,7 +47,7 @@ public class DragonEvolutionFusionCraftingRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputsUnsafe(
-                GTUtility.copyAmount(0, GTModHandler.getModItem(DraconicEvolution.ID, "draconicCore", 1)),
+                GTModHandler.getModItem(DraconicEvolution.ID, "draconicCore", 0),
                 GTModHandler.getModItem(GalacticraftAmunRa.ID, "item.baseItem", 4, 26),
                 GTOreDictUnificator.get(OrePrefixes.gem, Materials.InfusedEntropy, 512),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Draconium, 16),

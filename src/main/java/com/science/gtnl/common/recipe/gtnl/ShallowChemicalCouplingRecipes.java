@@ -956,7 +956,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.Potassiumdichromate.getDust(1),
                     Materials.Copper.getDust(1),
                     Materials.Zinc.getDust(9))
@@ -977,7 +977,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.Carbon.getDust(2),
                     Materials.Silicon.getDust(1))
                 .fluidInputs(
@@ -997,7 +997,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.Sulfur.getDust(1))
                 .fluidInputs(
                     Materials.Benzene.getFluid(216),
@@ -1014,7 +1014,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.Sodium.getDust(2),
                     Materials.Sulfur.getDust(1))
                 .fluidInputs(
@@ -1030,7 +1030,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
                 .addTo(SCCR);
 
             GTValues.RA.stdBuilder()
-                .itemInputs(GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)))
+                .itemInputs(GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0))
                 .fluidInputs(
                     Materials.Oxygen.getGas(20000),
                     Materials.Ethylene.getGas(4000),
@@ -1045,7 +1045,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.SodiumHydroxide.getDust(9))
                 .fluidInputs(
                     Materials.Acetone.getFluid(1000),
@@ -1065,7 +1065,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
                 .addTo(SCCR);
 
             GTValues.RA.stdBuilder()
-                .itemInputs(GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)))
+                .itemInputs(GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0))
                 .fluidInputs(
                     Materials.Oxygen.getGas(7000),
                     Materials.Hydrogen.getGas(4000),
@@ -1085,7 +1085,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(1),
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     Materials.Sulfur.getDust(1))
                 .fluidInputs(Materials.Ethanol.getFluid(3000), Materials.Oxygen.getGas(24000))
                 .itemOutputs()
@@ -1100,7 +1100,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
                 .itemInputs(
 
                     GTUtility.getIntegratedCircuit(2),
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)))
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0))
                 .fluidInputs(Materials.Ethanol.getFluid(2000))
                 .itemOutputs()
                 .fluidOutputs(GGMaterial.ether.getFluidOrGas(1000), Materials.Water.getFluid(1000))
@@ -1112,7 +1112,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     ItemUtils.getItemStackOfAmountFromOreDict("foilCopper", 40),
                     ItemUtils.getItemStackOfAmountFromOreDict("platePlastic", 4),
                     Materials.Sulfur.getDust(2),
@@ -1131,7 +1131,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     ItemUtils.getItemStackOfAmountFromOreDict("foilCopper", 32),
                     GTOreDictUnificator.get(OrePrefixes.plate, Materials.PolyvinylChloride, 1),
                     Materials.Sulfur.getDust(1),
@@ -1150,7 +1150,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     ItemUtils.getItemStackOfAmountFromOreDict("foilCopper", 56),
                     GTOreDictUnificator.get(OrePrefixes.plate, Materials.Polytetrafluoroethylene, 2),
                     Materials.Sulfur.getDust(1),
@@ -1169,7 +1169,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
 
             GTValues.RA.stdBuilder()
                 .itemInputs(
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 0),
                     ItemUtils.getItemStackOfAmountFromOreDict("foilCopper", 104),
                     GTOreDictUnificator.get(OrePrefixes.plate, Materials.Polybenzimidazole, 2),
                     Materials.Sulfur.getDust(1),
@@ -1190,7 +1190,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(7),
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tin, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tin, 0),
                     GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Palladium, 1)),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 22))
                 .fluidInputs(
@@ -1207,7 +1207,7 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(17),
-                    GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tin, 1)),
+                    GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tin, 0),
                     GTUtility.copyAmount(0, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Palladium, 1)),
                     GTUtility.copyAmountUnsafe(2750, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1)))
                 .fluidInputs(
@@ -1225,9 +1225,9 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(7),
-                    GTUtility.copyAmount(0, GTNLItemList.ZnFeAlClCatalyst.get(1)),
-                    GTUtility.copyAmount(0, (GTNLItemList.BlackLight.get(1))),
-                    GTUtility.copyAmount(0, (MaterialPool.CoAcAbCatalyst.get(OrePrefixes.dust, 1))),
+                    GTNLItemList.ZnFeAlClCatalyst.get(0),
+                    GTNLItemList.BlackLight.get(0),
+                    MaterialPool.CoAcAbCatalyst.get(OrePrefixes.dust, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 45))
                 .fluidInputs(Materials.Oxygen.getGas(54000), Materials.Hydrogen.getGas(216000))
                 .fluidOutputs(MaterialPool.Polyetheretherketone.getMolten(2592))
@@ -1240,9 +1240,9 @@ public class ShallowChemicalCouplingRecipes implements IRecipePool {
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(17),
-                    GTUtility.copyAmount(0, GTNLItemList.ZnFeAlClCatalyst.get(1)),
-                    GTUtility.copyAmount(0, (GTNLItemList.BlackLight.get(1))),
-                    GTUtility.copyAmount(0, (MaterialPool.CoAcAbCatalyst.get(OrePrefixes.dust, 1))),
+                    GTNLItemList.ZnFeAlClCatalyst.get(0),
+                    GTNLItemList.BlackLight.get(0),
+                    MaterialPool.CoAcAbCatalyst.get(OrePrefixes.dust, 0),
                     GTUtility.copyAmountUnsafe(1440, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1)))
                 .fluidInputs(Materials.Oxygen.getGas(1728000), Materials.Hydrogen.getGas(6912000))
                 .fluidOutputs(MaterialPool.Polyetheretherketone.getMolten(82944))

@@ -102,7 +102,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public boolean hasFinished = true;
     public boolean isWaiting = false;
     public boolean isResetting = false;
-    public boolean enableRender = false;
+    public boolean enableRender = true;
     public final Collection<ItemStack> itemDrop = new ArrayList<>();
     public byte tierMachine = 0;
 

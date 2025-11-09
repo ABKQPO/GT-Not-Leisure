@@ -223,6 +223,20 @@ public class ItemUtils {
         return itemStack;
     }
 
+    public static ItemStack getSpecialFlower(String typeName, int amount) {
+        ItemStack stack = GTModHandler.getModItem(Botania.ID, "specialFlower", amount);
+        if (stack == null) return null;
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            stack.setTagCompound(tag);
+        }
+
+        tag.setString("type", typeName);
+        return stack;
+    }
+
     public static ItemStack getSpecialFlower(String typeName) {
         ItemStack stack = GTModHandler.getModItem(Botania.ID, "specialFlower", 1);
         if (stack == null) return null;

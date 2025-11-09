@@ -118,7 +118,7 @@ public class LaserEngraverOreRecipes implements IOreRecipeRegistrator {
 
                 recipeWithPurifiedWater(
                     new ItemStack[] { GTNLItemList.NeutroniumWafer.get(1), GTUtility.copyAmountUnsafe(0, aStack) },
-                    new ItemStack[] { GTUtility.copyAmountUnsafe(1, GTNLItemList.HighlyAdvancedSocWafer.get(1)) },
+                    new ItemStack[] { GTNLItemList.HighlyAdvancedSocWafer.get(1) },
                     Materials.Grade5PurifiedWater,
                     Materials.Grade6PurifiedWater,
                     900,

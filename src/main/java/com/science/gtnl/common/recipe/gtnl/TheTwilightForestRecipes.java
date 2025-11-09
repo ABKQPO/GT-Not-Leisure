@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.utils.Utils.setStackSize;
 import static gregtech.api.enums.Mods.*;
 
 import net.minecraft.init.Blocks;
@@ -29,7 +28,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
     public void loadRecipes() {
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.NagaBook.get(1)))
+            .itemInputs(GTNLItemList.NagaBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 1),
                 GTModHandler.getModItem(TwilightForest.ID, "item.nagaScale", 32),
@@ -41,52 +40,52 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.LichBook.get(1)))
+            .itemInputs(GTNLItemList.LichBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 2),
                 NHItemList.LichBone.getIS(32),
                 NHItemList.LichBoneFragment.getIS(32),
                 NHItemList.LichBoneChip.getIS(64),
-                GTModHandler.getModItem(Minecraft.ID, "ender_pearl", 32),
-                GTModHandler.getModItem(Minecraft.ID, "book", 32),
-                GTModHandler.getModItem(Minecraft.ID, "paper", 32))
+                new ItemStack(Items.ender_pearl, 32),
+                new ItemStack(Items.book, 32),
+                new ItemStack(Items.paper, 32))
             .outputChances(1000, 10000, 5000, 2500, 5000, 7500, 7500)
             .duration(600)
             .eut(1966080)
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.MinotaurBook.get(1)))
+            .itemInputs(GTNLItemList.MinotaurBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 5),
                 GTModHandler.getModItem(TwilightForest.ID, "item.steeleafIngot", 32),
                 GTModHandler.getModItem(TwilightForest.ID, "item.ironwoodIngot", 32),
-                GTModHandler.getModItem(Minecraft.ID, "emerald", 16),
-                GTModHandler.getModItem(Minecraft.ID, "emerald_block", 1),
-                GTModHandler.getModItem(Minecraft.ID, "iron_ingot", 32))
+                new ItemStack(Items.emerald, 16),
+                new ItemStack(Blocks.emerald_block, 1),
+                new ItemStack(Items.iron_ingot, 32))
             .outputChances(1000, 10000, 10000, 2500, 1000, 7500)
             .duration(600)
             .eut(1966080)
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.HydraBook.get(1)))
+            .itemInputs(GTNLItemList.HydraBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 0),
                 GTModHandler.getModItem(TwilightForest.ID, "item.fieryBlood", 16),
-                GTModHandler.getModItem(Minecraft.ID, "redstone_block", 2),
-                GTModHandler.getModItem(Minecraft.ID, "lapis_block", 2),
-                GTModHandler.getModItem(Minecraft.ID, "iron_block", 2),
-                GTModHandler.getModItem(Minecraft.ID, "gold_block", 2),
-                GTModHandler.getModItem(Minecraft.ID, "emerald_block", 2),
-                GTModHandler.getModItem(Minecraft.ID, "diamond_block", 2))
+                new ItemStack(Blocks.redstone_block, 2),
+                new ItemStack(Blocks.lapis_block, 2),
+                new ItemStack(Blocks.iron_block, 2),
+                new ItemStack(Blocks.gold_block, 2),
+                new ItemStack(Blocks.emerald_block, 2),
+                new ItemStack(Blocks.diamond_block, 2))
             .outputChances(1000, 9500, 7500, 7500, 5000, 5000, 2500, 2500)
             .duration(600)
             .eut(1966080)
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.KnightPhantomBook.get(1)))
+            .itemInputs(GTNLItemList.KnightPhantomBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 6),
                 GTModHandler.getModItem(TwilightForest.ID, "item.knightMetal", 24))
@@ -96,7 +95,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.UrGhastBook.get(1)))
+            .itemInputs(GTNLItemList.UrGhastBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 3),
                 GTModHandler.getModItem(TwilightForest.ID, "item.fieryTears", 12),
@@ -104,14 +103,14 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 NHItemList.CarminiteFragment.getIS(32),
                 NHItemList.CarminiteChip.getIS(64),
                 GTModHandler.getModItem(TwilightForest.ID, "item.steeleafIngot", 16),
-                GTModHandler.getModItem(Minecraft.ID, "redstone_block", 4))
+                new ItemStack(Blocks.redstone_block, 4))
             .outputChances(1000, 10000, 10000, 5000, 2500, 5000, 7500)
             .duration(600)
             .eut(1966080)
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.AlphaYetiBook.get(1)))
+            .itemInputs(GTNLItemList.AlphaYetiBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 7),
                 GTModHandler.getModItem(TwilightForest.ID, "item.alphaFur", 16),
@@ -123,13 +122,13 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.SnowQueenBook.get(1)))
+            .itemInputs(GTNLItemList.SnowQueenBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 4),
                 NHItemList.SnowQueenBlood.getIS(16),
                 NHItemList.SnowQueenBloodDrop.getIS(32),
-                GTModHandler.getModItem(Minecraft.ID, "packed_ice", 32),
-                GTModHandler.getModItem(Minecraft.ID, "snowball", 64),
+                new ItemStack(Blocks.packed_ice, 32),
+                new ItemStack(Items.snowball, 64),
                 GTModHandler.getModItem(TwilightForest.ID, "tile.TFAuroraBrick", 64),
                 GTModHandler.getModItem(TwilightForest.ID, "tile.AuroraPillar", 64),
                 GTModHandler.getModItem(TwilightForest.ID, "item.ironwoodIngot", 32),
@@ -141,7 +140,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.GiantBook.get(1)))
+            .itemInputs(GTNLItemList.GiantBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(TwilightForest.ID, "tile.GiantCobble", 8),
                 GTModHandler.getModItem(TwilightForest.ID, "tile.GiantObsidian", 8),
@@ -157,22 +156,24 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .addTo(TTFR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTNLItemList.TwilightForestBook.get(1)))
+            .itemInputs(GTNLItemList.TwilightForestBook.get(0))
             .itemOutputs(
-                setStackSize(new ItemStack(Items.book, 1), 262144),
-                setStackSize(new ItemStack(Items.ender_pearl, 1), 262144),
-                setStackSize(new ItemStack(Blocks.emerald_block, 1), 262144),
-                setStackSize(new ItemStack(Blocks.diamond_block, 1), 262144),
-                setStackSize(new ItemStack(Blocks.lapis_block, 1), 262144),
-                setStackSize(new ItemStack(Blocks.redstone_block, 1), 262144),
-                setStackSize(new ItemStack(Blocks.gold_block, 1), 262144),
-                setStackSize(new ItemStack(Blocks.iron_block, 1), 262144),
-                setStackSize(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Knightmetal, 1L), 262144),
-                setStackSize(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.FierySteel, 1L), 262144),
-                setStackSize(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.IronWood, 1L), 262144),
-                setStackSize(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Steeleaf, 1L), 262144),
-                setStackSize(GTModHandler.getModItem(TwilightForest.ID, "item.fieryBlood", 1), 65536),
-                setStackSize(GTModHandler.getModItem(TwilightForest.ID, "item.nagaScale", 1), 65536))
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Items.book, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Items.ender_pearl, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.emerald_block, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.diamond_block, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.lapis_block, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.redstone_block, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.gold_block, 1)),
+                GTUtility.copyAmountUnsafe(262144, new ItemStack(Blocks.iron_block, 1)),
+                GTUtility
+                    .copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Knightmetal, 1L)),
+                GTUtility
+                    .copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.FierySteel, 1L)),
+                GTUtility.copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.IronWood, 1L)),
+                GTUtility.copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Steeleaf, 1L)),
+                GTUtility.copyAmountUnsafe(65536, GTModHandler.getModItem(TwilightForest.ID, "item.fieryBlood", 1)),
+                GTUtility.copyAmountUnsafe(65536, GTModHandler.getModItem(TwilightForest.ID, "item.nagaScale", 0)))
             .duration(200)
             .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);

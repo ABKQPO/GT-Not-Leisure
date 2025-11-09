@@ -86,7 +86,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     private static final String[][] shapeRingThreeAir = replaceLetters(shapeRingThree, "Z");
 
     public boolean neiEnableRender;
-    public boolean enableRender;
+    public boolean enableRender = true;
     public boolean isRenderActive;
 
     public NanoPhagocytosisPlant(String aName) {

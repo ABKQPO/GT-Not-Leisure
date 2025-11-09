@@ -1494,7 +1494,7 @@ public enum GTNLItemList implements IItemContainer {
 
     public Item getItem() {
         sanityCheck();
-        if (Utils.isStackInvalid(mStack)) return null;
+        if (GTUtility.isStackInvalid(mStack)) return null;
         return mStack.getItem();
     }
 
@@ -1507,24 +1507,24 @@ public enum GTNLItemList implements IItemContainer {
     public ItemStack get(long aAmount, Object... aReplacements) {
         sanityCheck();
         // if invalid, return a replacements
-        if (Utils.isStackInvalid(mStack)) {
+        if (GTUtility.isStackInvalid(mStack)) {
             ScienceNotLeisure.LOG.warn("Object in the GTNLItemList is null at:", new NullPointerException());
-            return Utils.copyAmount(Math.toIntExact(aAmount), TestMetaBlock01_0.get(1));
+            return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), TestMetaBlock01_0.get(1));
         }
-        return Utils.copyAmount(Math.toIntExact(aAmount), mStack);
+        return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), mStack);
     }
 
     public ItemStack getWithMeta(long aAmount, int meta, Object... aReplacements) {
         sanityCheck();
         // if invalid, return a replacements
-        if (Utils.isStackInvalid(mStack)) {
+        if (GTUtility.isStackInvalid(mStack)) {
             ScienceNotLeisure.LOG.warn("Object in the GTNLItemList is null at:", new NullPointerException());
             ItemStack fallback = TestMetaBlock01_0.get(1);
             fallback.setItemDamage(meta);
-            return Utils.copyAmount(Math.toIntExact(aAmount), fallback);
+            return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), fallback);
         }
 
-        ItemStack stack = Utils.copyAmount(Math.toIntExact(aAmount), mStack);
+        ItemStack stack = GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), mStack);
         stack.setItemDamage(meta);
         return stack;
     }
@@ -1541,7 +1541,7 @@ public enum GTNLItemList implements IItemContainer {
     public GTNLItemList set(ItemStack aStack) {
         if (aStack == null) return this;
         mHasNotBeenSet = false;
-        mStack = Utils.copyAmount(1, aStack);
+        mStack = GTUtility.copyAmountUnsafe(1, aStack);
         if (Utils.isClientSide()) {
             Item item = mStack.getItem();
             if (item == null) return this;

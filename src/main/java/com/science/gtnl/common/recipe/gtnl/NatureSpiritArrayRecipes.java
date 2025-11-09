@@ -2,8 +2,6 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static gregtech.api.enums.Mods.Botania;
 
-import net.minecraft.item.ItemStack;
-
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.loader.RecipePool;
@@ -12,7 +10,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.api.enums.GTValues;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
-import gregtech.api.util.GTUtility;
 
 public class NatureSpiritArrayRecipes implements IRecipePool {
 
@@ -20,10 +17,8 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        ItemStack asgardandelion = ItemUtils.getSpecialFlower("asgardandelion");
-
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, asgardandelion))
+            .itemInputs(ItemUtils.getSpecialFlower("asgardandelion", 0))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(2000000))
             .duration(20)
             .eut(491520)
@@ -51,7 +46,7 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
             .addTo(NSAR);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTUtility.copyAmount(0, GTModHandler.getModItem(Botania.ID, "pool", 1, 1)))
+            .itemInputs(GTModHandler.getModItem(Botania.ID, "pool", 0, 1))
             .fluidOutputs(MaterialPool.FluidMana.getFluidOrGas(2147483647))
             .duration(20)
             .eut(7864320)

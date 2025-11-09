@@ -39,10 +39,8 @@ public class PortalToAlfheimOreRecipes implements IOreRecipeRegistrator {
 
     public static void addManaInfusionOreRecipes(ItemStack aStack) {
         GTValues.RA.stdBuilder()
-            .itemInputs(
-                GTUtility.copyAmount(0, GTModHandler.getModItem("Botania", "alchemyCatalyst", 1)),
-                GTUtility.copyAmount(1, aStack))
-            .itemOutputs(GTModHandler.getModItem("Botania", "stone", 1, 0))
+            .itemInputs(GTModHandler.getModItem(Botania.ID, "alchemyCatalyst", 0), GTUtility.copyAmount(1, aStack))
+            .itemOutputs(GTModHandler.getModItem(Botania.ID, "stone", 1, 0))
             .fluidInputs(MaterialPool.FluidMana.getFluidOrGas(200))
             .duration(20)
             .eut(2048)

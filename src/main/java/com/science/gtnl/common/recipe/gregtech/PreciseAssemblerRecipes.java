@@ -21,7 +21,6 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -174,7 +173,7 @@ public class PreciseAssemblerRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                GTUtility.copyAmount(0, GTNLItemList.NeutroniumWafer.get(1)),
+                GTNLItemList.NeutroniumWafer.get(0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Graphite, 64))
             .fluidInputs(MaterialMisc.ETHYL_CYANOACRYLATE.getFluidStack(125))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Graphene, 64))
