@@ -3,24 +3,51 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static forestry.api.apiculture.BeeManager.*;
-import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static kubatech.api.gui.KubaTechUITextures.*;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.function.Function;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.networking.crafting.ICraftingProviderHelper;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
+import appeng.helpers.DualityInterface;
+import appeng.helpers.IInterfaceHost;
+import appeng.me.GridAccessException;
+import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.IGridProxyable;
+import appeng.util.Platform;
+import com.google.common.collect.ImmutableSet;
+import com.science.gtnl.utils.enums.GTNLItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -80,13 +107,18 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import kubatech.api.DynamicInventory;
 
-public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
+public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> implements IInterfaceHost , IGridProxyable {
 
     public int mMaxSlots = 0;
-    public ArrayList<SteamApiaryModule.BeeSimulator> mStorage = new ArrayList<>();
+    public List<SteamApiaryModule.BeeSimulator> mStorage = new ObjectArrayList<>();
 
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
+
+    private AENetworkProxy gridProxy;
+    protected final MachineSource source = new MachineSource(this);
+    private DualityInterface di;
+    private final Map<ItemStack,ICraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
 
     public static final int CONFIGURATION_WINDOW_ID = 10;
     public static final int MODE_PRIMARY_INPUT = 0;
@@ -112,6 +144,82 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new AssemblerMatrix(this.mName);
+    }
+
+    /**
+     * 向合成网络提供样板
+     * @param craftingTracker crafting helper
+     */
+    @Override
+    public void provideCrafting(ICraftingProviderHelper craftingTracker) {
+        if (mMachine && this.getProxy().isActive() && !patterns.isEmpty()) {
+            for (var value : patterns.values()) {
+                craftingTracker.addCraftingOption(this, value);
+            }
+        }
+    }
+
+    //TODO:保存和读取NBT
+    private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
+    private int workTime = 0;
+    private static final int workPeriod = 20;
+
+    @Override
+    public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
+        var out = patternDetails.getCondensedOutputs()[0];
+        var parallel = 0;
+        for (int i = 0; i < table.getSizeInventory(); i++) {
+            var stack = table.getStackInSlot(i);
+            if (stack != null) {
+                if (outputs.isEmpty()) workTime = 0;
+                outputs.add(out.copy().setStackSize(out.getStackSize() * stack.stackSize));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (!aBaseMetaTileEntity.isServerSide()) return;
+        if (!outputs.isEmpty()) {
+            if (++workTime == workPeriod) {
+                workTime = 0;
+                long parallel = getMaxParallelRecipes();
+                int maximum = outputs.size();
+                do {
+                    var stack = outputs.poll();
+
+                    var grid = getProxy().getNode().getGrid();
+                    IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
+                    IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+                    var storage = storageGrid.getItemInventory();
+                    if (stack.getStackSize() <= parallel) {
+                        parallel -= stack.getStackSize();
+                        var newItem = Platform.poweredInsert(energyGrid, storage, stack, source);
+                        if (newItem != null && newItem.getStackSize() != 0) {
+                            outputs.add(newItem);
+                        }
+                    } else {
+                        stack.decStackSize(parallel);
+                        var newItem = Platform.poweredInsert(energyGrid, storage, stack.copy().setStackSize(parallel), source);
+                        if (newItem != null && newItem.getStackSize() != 0) {
+                            outputs.add(newItem);
+                        }
+                    }
+                    if (outputs.isEmpty() || --maximum == 0) return;
+                } while (parallel > 0);
+            }
+        }
+    }
+
+    /**
+     * 是否可被发配
+     */
+    @Override
+    public boolean isBusy() {
+        return !mMachine;
     }
 
     @Override
@@ -193,9 +301,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
+            getProxy().setValidSides(emptyDirection);
             return false;
         }
         setupParameters();
+        getProxy().setValidSides(allDirection);
         return true;
     }
 
@@ -311,7 +421,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
         if (mPrimaryMode < 2) { // input and output mode
             if (mPrimaryMode == MODE_PRIMARY_INPUT && mStorage.size() < mMaxSlots) {
                 World w = getBaseMetaTileEntity().getWorld();
-                ArrayList<ItemStack> inputs = getStoredInputs();
+                List<ItemStack> inputs = getStoredInputs();
                 for (ItemStack input : inputs) {
                     if (beeRoot.getType(input) == EnumBeeType.QUEEN) {
                         SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6);
@@ -339,7 +449,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
 
                 int maxConsume = mStorage.size() * 40;
                 int toConsume = maxConsume;
-                ArrayList<ItemStack> inputs = getStoredInputs();
+                List<ItemStack> inputs = getStoredInputs();
 
                 for (ItemStack input : inputs) {
                     if (!input.isItemEqual(PluginApiculture.items.royalJelly.getItemStack(1))) continue;
@@ -354,7 +464,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
                     this.updateSlots();
                 }
 
-                List<ItemStack> stacks = new ArrayList<>();
+                List<ItemStack> stacks = new ObjectArrayList<>();
                 for (int i = 0, mStorageSize = Math.min(mStorage.size(), mMaxSlots); i < mStorageSize; i++) {
                     SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
                     // stacks.addAll(beeSimulator.getDrops(this, 64_00d * boosted));
@@ -374,7 +484,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> info = new ObjectArrayList<>(super.getInfoData());
         info.add(
             StatCollector.translateToLocal("kubatech.infodata.running_mode") + " "
                 + EnumChatFormatting.GOLD
@@ -449,6 +559,147 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
                 .setSize(16, 16));
     }
 
+    private static final EnumSet<ForgeDirection> allDirection = EnumSet.allOf(ForgeDirection.class);
+    private static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
+
+    //TODO:目前无论成型与否都无法链接频道
+    public AENetworkProxy getProxy() {
+        if (gridProxy == null) {
+            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
+                gridProxy = new AENetworkProxy(
+                    (IGridProxyable) getBaseMetaTileEntity(),
+                    "proxy",
+                    GTNLItemList.AssemblerMatrix.get(1),
+                    true);
+                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+                if (getBaseMetaTileEntity().getWorld() != null) gridProxy.setOwner(
+                    getBaseMetaTileEntity().getWorld()
+                                           .getPlayerEntityByName(getBaseMetaTileEntity().getOwnerName()));
+            }
+        }
+
+        return gridProxy;
+    }
+
+    @Override
+    public DualityInterface getInterfaceDuality() {
+        if (di == null) {
+            di = new DualityInterface(this.getProxy(),this);
+        }
+        return di;
+    }
+
+    @Override
+    public EnumSet<ForgeDirection> getTargets() {
+        return emptyDirection;
+    }
+
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(getBaseMetaTileEntity().getWorld(),getBaseMetaTileEntity().getXCoord(), getBaseMetaTileEntity().getYCoord(), getBaseMetaTileEntity().getZCoord());
+    }
+
+    @Override
+    public TileEntity getTileEntity() {
+        return getBaseMetaTileEntity().getTileEntity(getBaseMetaTileEntity().getXCoord(), getBaseMetaTileEntity().getYCoord(), getBaseMetaTileEntity().getZCoord());
+    }
+
+    @Override
+    public void saveChanges() {
+        this.getInterfaceDuality().saveChanges();
+    }
+
+    /**
+     * @return 是否能在接口终端显示
+     */
+    @Override
+    public boolean shouldDisplay() {
+        return true;
+    }
+
+    @Override
+    public boolean allowsPatternOptimization() {
+        return false;
+    }
+
+    @Override
+    public ItemStack getSelfRep() {
+        return GTNLItemList.AssemblerMatrix.get(1);
+    }
+
+    @Override
+    public int rows() {
+        return mMaxSlots / 9;
+    }
+
+    @Override
+    public int rowSize() {
+        return 9;
+    }
+
+    /**
+     * @return 用于接口终端显示与操作样板
+     */
+    @Override
+    public IInventory getPatterns() {
+        return getInterfaceDuality().getPatterns();
+    }
+
+    @Override
+    public int getInstalledUpgrades(Upgrades u) {
+        return mMaxSlots / 9 - 1;
+    }
+
+    @Override
+    public TileEntity getTile() {
+        return getTileEntity();
+    }
+
+    @Override
+    public IInventory getInventoryByName(String name) {
+        return this.getInterfaceDuality().getInventoryByName(name);
+    }
+
+    @Override
+    public IGridNode getGridNode(ForgeDirection dir) {
+        return this.getProxy().getNode();
+    }
+
+    @Override
+    public void securityBreak() {
+
+    }
+
+    @Override
+    public ItemStack getCrafterIcon() {
+        return GTNLItemList.AssemblerMatrix.get(1);
+    }
+
+    @Override
+    public ImmutableSet<ICraftingLink> getRequestedJobs() {
+        return this.getInterfaceDuality().getRequestedJobs();
+    }
+
+    @Override
+    public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode) {
+        return this.getInterfaceDuality().injectCraftedItems(link, items, mode);
+    }
+
+    @Override
+    public void jobStateChange(ICraftingLink link) {
+        this.getInterfaceDuality().jobStateChange(link);
+    }
+
+    @Override
+    public IGridNode getActionableNode() {
+        return this.getProxy().getNode();
+    }
+
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.getInterfaceDuality().getConfigManager();
+    }
+
     public static class MUIContainer extends ModularUIContainer {
 
         final WeakReference<SteamApiaryModule> parent;
@@ -502,24 +753,54 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix> {
         INVENTORY_HEIGHT,
         () -> mMaxSlots,
         mStorage,
-        s -> s.queenStack).allowInventoryInjection(input -> {
+        s -> s.queenStack){
+
+    }.allowInventoryInjection(input -> {
             World w = getBaseMetaTileEntity().getWorld();
-            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6);
-            if (bs.isValid) {
-                mStorage.add(bs);
-                return input;
+            if (input.getItem() instanceof ICraftingPatternItem i) {
+                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6);
+                if (bs.isValid) {
+                    mStorage.add(bs);
+                    patterns.put(input,i.getPatternForItem(input,this.getBaseMetaTileEntity().getWorld()));
+                    try {
+                        this.getProxy().getGrid().postEvent(new MENetworkCraftingPatternChange(this,this.getProxy().getNode()));
+                    } catch (GridAccessException ignored) {
+
+                    }
+                    return input;
+                }
             }
             return null;
         })
-            .allowInventoryExtraction(mStorage::remove)
+            .allowInventoryExtraction(stack -> {
+                var out = mStorage.remove(stack);
+                if (out != null) {
+                    patterns.remove(out.queenStack);
+                    try {
+                        this.getProxy().getGrid().postEvent(new MENetworkCraftingPatternChange(this,this.getProxy().getNode()));
+                    } catch (GridAccessException ignored) {
+
+                    }
+                }
+                return out;
+            })
             .allowInventoryReplace((i, stack) -> {
                 if (stack.stackSize != 1) return null;
                 World w = getBaseMetaTileEntity().getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6);
-                if (bs.isValid) {
-                    SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
-                    mStorage.add(i, bs);
-                    return removed.queenStack;
+                if (stack.getItem() instanceof ICraftingPatternItem ic) {
+                    SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6);
+                    if (bs.isValid) {
+                        SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
+                        patterns.remove(removed.queenStack);
+                        mStorage.add(bs);
+                        patterns.put(stack, ic.getPatternForItem(stack, this.getBaseMetaTileEntity().getWorld()));
+                        try {
+                            this.getProxy().getGrid().postEvent(new MENetworkCraftingPatternChange(this,this.getProxy().getNode()));
+                        } catch (GridAccessException ignored) {
+
+                        }
+                        return removed.queenStack;
+                    }
                 }
                 return null;
             })
