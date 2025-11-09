@@ -94,6 +94,14 @@ public class ChemicalBathRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_HV)
             .addTo(cBR);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(new ItemStack(Blocks.sponge, 1))
+            .fluidInputs(Materials.Water.getFluid(16000))
+            .itemOutputs(GTModHandler.getModItem(EtFuturumRequiem.ID, "sponge", 1, 1))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(cBR);
+
         if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
     }
 
