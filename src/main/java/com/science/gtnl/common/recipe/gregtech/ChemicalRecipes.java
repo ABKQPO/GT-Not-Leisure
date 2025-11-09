@@ -126,7 +126,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidOutputs(
                 Materials.HydrofluoricAcid.getFluid(24000),
                 new FluidStack(GTPPFluids.BoricAcid, 6000),
-                Materials.NitricOxide.getFluid(4000),
+                Materials.NitricOxide.getGas(4000),
                 MaterialPool.Benzaldehyde.getFluidOrGas(2000))
             .duration(140)
             .eut(7680)
@@ -266,7 +266,7 @@ public class ChemicalRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(WerkstoffLoader.PotassiumCarbonate.get(OrePrefixes.dust, 6))
-            .fluidInputs(MaterialsKevlar.SulfurDichloride.getGas(2000), Materials.Water.getFluid(1000))
+            .fluidInputs(MaterialsKevlar.SulfurDichloride.getFluid(2000), Materials.Water.getFluid(1000))
             .itemOutputs(MaterialPool.PotassiumBisulfite.get(OrePrefixes.dust, 12))
             .fluidOutputs(Materials.CarbonDioxide.getGas(1000))
             .duration(160)
