@@ -15,11 +15,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -56,6 +54,7 @@ import bartworks.util.BWUtil;
 import bartworks.util.BioCulture;
 import bartworks.util.Coords;
 import bartworks.util.ResultWrongSievert;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -173,18 +172,9 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                             RadioHatchElement.RadioHatch)
                         .buildAndChain(),
                     onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
-            .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("etfuturum:sponge")), 1))
+            .addElement('D', ofBlock(GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge"), 1))
             .addElement('E', ofChain(isAir(), ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
             .build();
-    }
-
-    public static int[] specialValueUnpack(int aSpecialValue) {
-        int[] ret = new int[4];
-        ret[0] = aSpecialValue & 0xF; // = glass tier
-        ret[1] = aSpecialValue >>> 4 & 0b11; // = special value
-        ret[2] = aSpecialValue >>> 6 & 0b1; // boolean exact svt | 1 = true | 0 = false
-        ret[3] = aSpecialValue >>> 7 & Integer.MAX_VALUE; // = sievert
-        return ret;
     }
 
     public int getInputCapacity() {

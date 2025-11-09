@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.Mods.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
 
@@ -12,11 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -44,6 +43,7 @@ import bartworks.common.tileentities.tiered.MTERadioHatch;
 import bartworks.util.BWUtil;
 import bartworks.util.BioCulture;
 import bartworks.util.ResultWrongSievert;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
@@ -146,7 +146,7 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
                         .dot(1)
                         .build(),
                     onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
-            .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("etfuturum:sponge")), 1))
+            .addElement('F', ofBlock(GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge"), 1))
             .addElement('G', ofChain(isAir(), ofBlockAnyMeta(Blocks.flowing_water), ofBlockAnyMeta(Blocks.water)))
             .build();
     }
@@ -183,7 +183,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 Sievert data = recipe.getMetadataOrDefault(GTRecipeConstants.SIEVERT, defaultSievertData);
                 int sievert = data.sievert;
-                boolean isExact = data.isExact;
                 if (!BWUtil.areStacksEqualOrNull((ItemStack) recipe.mSpecialItems, getControllerSlot()))
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 mNeededSievert = sievert;
