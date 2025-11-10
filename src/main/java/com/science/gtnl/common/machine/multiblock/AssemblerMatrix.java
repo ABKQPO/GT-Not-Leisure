@@ -30,13 +30,8 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -97,7 +92,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
     public int mMaxSlots = 0;
-    public int patternSize = 0;
 
     public AENetworkProxy gridProxy;
     public DualityInterface di;
@@ -242,7 +236,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 } while (parallel > 0);
             }
         }
-        patternSize = inventory.size();
     }
 
     /**
@@ -275,27 +268,13 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         super.addUIWidgets(builder, buildContext);
-        if (this.mMaxProgresstime <= 0) {
-            setMachineModeIcons();
-            builder.widget(createModeSwitchButton(builder));
-        }
-    }
-
-    @Override
-    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements.widget(
-            new TextWidget(StatCollector.translateToLocalFormatted("Info_AssemblerMatrix_00", patternSize))
-                .setTextAlignment(Alignment.CenterLeft)
-                .setDefaultColor(COLOR_TEXT_WHITE.get())
-                .attachSyncer(
-                    new FakeSyncWidget.IntegerSyncer(() -> patternSize, val -> patternSize = val),
-                    screenElements));
+        setMachineModeIcons();
+        builder.widget(createModeSwitchButton(builder));
     }
 
     @Override
     public boolean supportsMachineModeSwitch() {
-        return this.mMaxProgresstime <= 0;
+        return true;
     }
 
     @Override
@@ -558,22 +537,26 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         return info.toArray(new String[0]);
     }
 
-    private static final EnumSet<ForgeDirection> allDirection = EnumSet
-        .complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
-    private static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
+    public static final EnumSet<ForgeDirection> allDirection = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
+    public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
 
     @Override
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
-            gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.AssemblerMatrix.get(1), true);
-            gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-            gridProxy.onReady();
-            var bmte = getBaseMetaTileEntity();
-            updateValidGridProxySides();
-            if (bmte.getWorld() != null) {
-                gridProxy.setOwner(
-                    bmte.getWorld()
-                        .getPlayerEntityByName(bmte.getOwnerName()));
+            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
+                var bmte = getBaseMetaTileEntity();
+                gridProxy = new AENetworkProxy(
+                    (IGridProxyable) bmte,
+                    "proxy",
+                    GTNLItemList.AssemblerMatrix.get(1),
+                    true);
+                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+                updateValidGridProxySides();
+                if (bmte.getWorld() != null) {
+                    gridProxy.setOwner(
+                        bmte.getWorld()
+                            .getPlayerEntityByName(bmte.getOwnerName()));
+                }
             }
         }
         return gridProxy;

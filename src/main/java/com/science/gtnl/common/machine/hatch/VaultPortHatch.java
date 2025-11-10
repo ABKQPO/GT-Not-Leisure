@@ -107,6 +107,12 @@ public class VaultPortHatch extends MTEHatch
     }
 
     @Override
+    public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
+        super.onFirstTick(baseMetaTileEntity);
+        gridProxy.onReady();
+    }
+
+    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide()) {
@@ -163,7 +169,6 @@ public class VaultPortHatch extends MTEHatch
         if (gridProxy == null) {
             gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.VaultPortHatch.get(1), true);
             gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-            gridProxy.onReady();
             var bmte = getBaseMetaTileEntity();
             if (bmte.getWorld() != null) {
                 gridProxy.setOwner(

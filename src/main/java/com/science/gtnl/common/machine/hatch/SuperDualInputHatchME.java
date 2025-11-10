@@ -1159,10 +1159,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-
         super.onFirstTick(aBaseMetaTileEntity);
         getProxy().onReady();
-
     }
 
     @Override
