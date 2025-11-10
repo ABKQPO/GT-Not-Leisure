@@ -1500,6 +1500,9 @@ Tooltip_MassFabricator_Casing=Any ZPM Casing
 
 NameAssemblerMatrix=Assembler Matrix
 AssemblerMatrixRecipeType=Molecular Assembler
+AssemblerMatrix_Mode_0=Input Mode
+AssemblerMatrix_Mode_1=Operating Mode
+AssemblerMatrix_Mode_2=Output Mode
 
 NameFuelRefiningComplex=Fuel Refining Complex
 FuelRefiningComplexRecipeType=Fuel Refining Complex
