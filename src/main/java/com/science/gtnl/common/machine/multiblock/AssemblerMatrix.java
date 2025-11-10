@@ -560,6 +560,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public void onFacingChange() {
+        super.onFacingChange();
         updateValidGridProxySides();
     }
 
