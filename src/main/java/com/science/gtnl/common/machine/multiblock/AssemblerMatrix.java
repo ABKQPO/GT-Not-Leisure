@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -79,7 +80,9 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.Getter;
 
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable {
@@ -96,8 +99,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public AENetworkProxy gridProxy;
     public DualityInterface di;
     public final MachineSource source = new MachineSource(this);
-    public final Map<ItemStack, ICraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
-    public final CombinationPatternsIInventory inventory = new CombinationPatternsIInventory();
+    private final Map<ItemStack, ICraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
+    @Getter
+    private final Set<IAEItemStack> possibleOutputs = new ObjectOpenHashSet<>();
+    @Getter
+    private final CombinationPatternsIInventory inventory = new CombinationPatternsIInventory();
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String AM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/assembler_matrix";
@@ -140,7 +146,10 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         ItemStack newStack) {
         boolean work = false;
         if (removedStack != null) {
-            patterns.remove(removedStack);
+            var i = patterns.remove(removedStack);
+            if (i != null) {
+                possibleOutputs.remove(i.getCondensedOutputs()[0]);
+            }
             work = true;
         }
         if (newStack != null) {
@@ -151,6 +160,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         .getWorld());
                 if (p.isCraftable()) {
                     patterns.put(newStack, p);
+                    possibleOutputs.add(p.getCondensedOutputs()[0]);
                     work = true;
                 }
             }
@@ -366,6 +376,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     public void upPatterns() {
         patterns.clear();
+        possibleOutputs.clear();
         for (var newStack : this.inventory) {
             if (newStack.getItem() instanceof ICraftingPatternItem ic) {
                 var p = ic.getPatternForItem(
@@ -374,6 +385,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         .getWorld());
                 if (p.isCraftable()) {
                     patterns.put(newStack, p);
+                    possibleOutputs.add(p.getCondensedOutputs()[0]);
                 }
             }
         }
@@ -405,6 +417,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxParallel = 0;
         mMaxSlots = 0;
         patterns.clear();
+        possibleOutputs.clear();
     }
 
     @Override
@@ -497,12 +510,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     ItemStack pattern = input.copy();
                     pattern.stackSize = 1;
                     inventory.setInventorySlotContents(slot, pattern);
-                    patterns.put(
-                        pattern,
-                        i.getPatternForItem(
-                            input,
-                            this.getBaseMetaTileEntity()
-                                .getWorld()));
+                    var p = i.getPatternForItem(
+                        input,
+                        this.getBaseMetaTileEntity()
+                            .getWorld());
+                    patterns.put(pattern, p);
+                    possibleOutputs.add(p.getCondensedOutputs()[0]);
 
                     input.stackSize--;
                     updated = true;
@@ -969,6 +982,13 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 }
             }
             return -1;
+        }
+
+        public boolean insertPattern(ItemStack stack) {
+            var slot = getFirstEmptySlot();
+            if (slot < 0) return false;
+            this.setInventorySlotContents(slot, stack);
+            return true;
         }
 
         @Override

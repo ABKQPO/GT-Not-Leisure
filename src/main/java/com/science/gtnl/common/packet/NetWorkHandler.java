@@ -32,6 +32,7 @@ public class NetWorkHandler {
             PortableInfinityChestSyncPacket.class,
             i++,
             Side.SERVER);
+        network.registerMessage(PktPatternTermUploadPattern.class, PktPatternTermUploadPattern.class, i++, Side.SERVER);
         network.registerMessage(
             PortableInfinityChestSyncPacket.Handler.class,
             PortableInfinityChestSyncPacket.class,

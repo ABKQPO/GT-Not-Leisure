@@ -3208,3 +3208,6 @@ Info_RealArtificialStar_05=稳定场等级
 Info_RealArtificialStar_06=回收原料几率
 NEI.RealAntimatterFuelRodGeneratingRecipe.01=有概率回收部分材料. 概率受模块等级影响.
 NEI.RealArtificialStarGeneratingRecipes.specialValue=产生：
+
+gui.AssemblerMatrix.button.upload_pattern=上传样板至当前网络中可用的 §9装配矩阵§7 中。
+text.AssemblerMatrix.tooltip.0=网络已有类似的合成样板,已跳过上传并返还空白样板！
