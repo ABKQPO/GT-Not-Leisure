@@ -9,6 +9,7 @@ import static gregtech.api.util.GTStructureUtility.*;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -241,7 +242,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 } while (parallel > 0);
             }
         }
-        patternSize = inventory.currentSize;
+        patternSize = inventory.size();
     }
 
     /**
@@ -807,10 +808,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         } catch (GridAccessException ignored) {}
     }
 
-    public class CombinationPatternsIInventory implements IInventory {
+    public class CombinationPatternsIInventory implements IInventory, Iterable<ItemStack> {
 
         private AppEngInternalInventory[] combinationInventory = new AppEngInternalInventory[0];
-        public int currentSize = 0;
 
         private AppEngInternalInventory getInventory(int ordinal) {
             if (ordinal >= combinationInventory.length) {
@@ -833,30 +833,31 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         @Override
         public ItemStack getStackInSlot(int slotIn) {
-            return getInventory(slotIn / eachPatternCasingCapacity).getStackInSlot(slotIn % eachPatternCasingCapacity);
+            size = -1;
+            return packItem(
+                getInventory(slotIn / eachPatternCasingCapacity).getStackInSlot(slotIn % eachPatternCasingCapacity));
         }
 
         @Override
         public ItemStack decrStackSize(int slot, int count) {
-            return getInventory(slot / eachPatternCasingCapacity)
-                .decrStackSize(slot % eachPatternCasingCapacity, count);
+            size = -1;
+            return packItem(
+                getInventory(slot / eachPatternCasingCapacity).decrStackSize(slot % eachPatternCasingCapacity, count));
         }
 
         @Override
         public ItemStack getStackInSlotOnClosing(int slot) {
-            return getInventory(slot / eachPatternCasingCapacity)
-                .getStackInSlotOnClosing(slot % eachPatternCasingCapacity);
+            size = -1;
+            return packItem(
+                getInventory(slot / eachPatternCasingCapacity)
+                    .getStackInSlotOnClosing(slot % eachPatternCasingCapacity));
         }
 
         @Override
         public void setInventorySlotContents(int slot, ItemStack stack) {
-            ItemStack oldStack = getStackInSlot(slot);
+            size = -1;
             getInventory(slot / eachPatternCasingCapacity)
                 .setInventorySlotContents(slot % eachPatternCasingCapacity, stack);
-
-            if (oldStack == null && stack != null) currentSize++;
-            else if (oldStack != null && stack == null) currentSize--;
-            patternSize = currentSize;
         }
 
         @Override
@@ -896,23 +897,25 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            size = -1;
             return getInventory(slot / eachPatternCasingCapacity)
                 .isItemValidForSlot(slot % eachPatternCasingCapacity, stack);
         }
 
         public void saveNBTData(NBTTagCompound aNBT) {
-            var n = new NBTTagCompound();
-            for (var i = 0; i < combinationInventory.length; i++) {
-                var inv = combinationInventory[i];
-                if (inv != null) {
-                    inv.writeToNBT(n, Integer.toString(i));
+            if (getBaseMetaTileEntity().isServerSide()) {
+                var n = new NBTTagCompound();
+                for (var i = 0; i < combinationInventory.length; i++) {
+                    var inv = combinationInventory[i];
+                    if (inv != null) {
+                        inv.writeToNBT(n, Integer.toString(i));
+                    }
                 }
+                aNBT.setTag("patterns", n);
             }
-            aNBT.setTag("patterns", n);
         }
 
         public void loadNBTData(NBTTagCompound aNBT) {
-            currentSize = 0;
             var n = aNBT.getCompoundTag("patterns");
             for (var o : n.func_150296_c()) {
                 getInventory(Integer.parseInt(o)).readFromNBT(n.getCompoundTag(o));
@@ -926,7 +929,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         AssemblerMatrix.this.getBaseMetaTileEntity()
                             .getWorld());
                     if (p.isCraftable()) {
-                        currentSize++;
                         patterns.put(newStack, p);
                     }
                 }
@@ -942,16 +944,36 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             } catch (GridAccessException ignored) {
 
             }
-
-            patternSize = currentSize;
         }
 
+        private int size = -1;
+
         public int size() {
-            return currentSize;
+            if (size < 0) {
+                size = 0;
+                for (ItemStack inv : this) {
+                    ++size;
+                }
+            }
+            return size;
         }
 
         public boolean isEmpty() {
             return size() == 0;
+        }
+
+        private ItemStack packItem(ItemStack stack) {
+            if (stack == null) return null;
+            if (stack.stackSize <= 0) return null;
+            return stack;
+        }
+
+        public List<ItemStack> getAllItemsCopy() {
+            List<ItemStack> result = new ObjectArrayList<>();
+            for (ItemStack stack : this) {
+                result.add(stack);
+            }
+            return result;
         }
 
         public int getFirstEmptySlot() {
@@ -961,6 +983,69 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 }
             }
             return -1;
+        }
+
+        @Override
+        public @NotNull NoNullInvIteratot iterator() {
+            return new NoNullInvIteratot();
+        }
+
+        public class NoNullInvIteratot implements Iterator<ItemStack> {
+
+            private int invOrdinal = -1;
+            private int slotOrdinal = -1;
+            private int nowInv = -1;
+            private int nowSlot = -1;
+            private boolean nowAvailable = false;
+
+            @Override
+            public boolean hasNext() {
+                upAvailable();
+                return nowAvailable;
+            }
+
+            @Override
+            public ItemStack next() {
+                if (hasNext()) {
+                    nowAvailable = false;
+                    return CombinationPatternsIInventory.this.combinationInventory[nowInv = invOrdinal]
+                        .getStackInSlot(nowSlot = slotOrdinal);
+                }
+                nowInv = -1;
+                nowSlot = -1;
+                return null;
+            }
+
+            @Override
+            public void remove() {
+                if (nowInv < 0) return;
+                CombinationPatternsIInventory.this.combinationInventory[nowInv].setInventorySlotContents(nowSlot, null);
+            }
+
+            private void upAvailable() {
+                if (!nowAvailable) {
+                    while (mMaxSlots >= (invOrdinal * eachPatternCasingCapacity + slotOrdinal + 1)) {
+                        if (++invOrdinal >= combinationInventory.length) {
+                            slotOrdinal = eachPatternCasingCapacity;
+                            break;
+                        }
+                        var inv = CombinationPatternsIInventory.this.combinationInventory[invOrdinal];
+                        if (inv == null) continue;
+                        while (++slotOrdinal < inv.getSizeInventory()) {
+                            var stack = inv.getStackInSlot(slotOrdinal);
+                            if (stack != null) {
+                                nowInv = invOrdinal;
+                                nowSlot = slotOrdinal;
+                                nowAvailable = true;
+                                return;
+                            }
+                        }
+                        slotOrdinal = -1;
+                    }
+                    nowInv = -1;
+                    nowSlot = -1;
+                }
+            }
         }
     }
 }
