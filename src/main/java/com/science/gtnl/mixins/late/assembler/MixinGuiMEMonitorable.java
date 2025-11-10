@@ -1,5 +1,6 @@
 package com.science.gtnl.mixins.late.assembler;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,9 +16,13 @@ public class MixinGuiMEMonitorable {
     @Shadow
     private GuiImgButton pinsStateButton;
 
+    @Shadow
+    @Final
+    public boolean hasPinHost;
+
     @Inject(method = "initGui", at = @At("RETURN"), remap = true)
     private void onInit(CallbackInfo ci) {
-        if (pinsStateButton != null) {
+        if (hasPinHost) {
             this.pinsStateButton.yPosition += 25;
         }
     }

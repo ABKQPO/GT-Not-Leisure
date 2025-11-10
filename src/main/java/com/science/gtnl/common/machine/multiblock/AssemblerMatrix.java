@@ -6,14 +6,13 @@ import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.*;
-import static net.minecraft.util.StatCollector.*;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,10 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
@@ -82,6 +84,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -99,6 +102,8 @@ import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 
@@ -116,9 +121,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public int mMaxSlots = 0;
     public long usedParallel = 0;
 
-    public AENetworkProxy gridProxy;
-    public DualityInterface di;
-    public final MachineSource source = new MachineSource(this);
+    private AENetworkProxy gridProxy;
+    private DualityInterface di;
+    private final MachineSource source = new MachineSource(this);
     private final Map<ItemStack, ICraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
     @Getter
     private final Set<IAEItemStack> possibleOutputs = new ObjectOpenHashSet<>();
@@ -143,6 +148,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new AssemblerMatrix(this.mName);
+    }
+
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkChannelsChanged c) {
+        this.getInterfaceDuality()
+            .notifyNeighbors();
+    }
+
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkPowerStatusChange c) {
+        this.getInterfaceDuality()
+            .notifyNeighbors();
     }
 
     /**
@@ -200,22 +217,46 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
     }
 
+    // TODO:将两个列表保存至NBT防止意外的进度丢失
     private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
+    private final Queue<IAEItemStack> inputs = new ArrayDeque<>();
     public ItemStack[] cachedOutputItems = null;
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
         var out = patternDetails.getCondensedOutputs()[0];
+        var p = -1;
         for (int i = 0; i < table.getSizeInventory(); i++) {
             var stack = table.getStackInSlot(i);
             if (stack != null) {
-                outputs.add(
-                    out.copy()
-                        .setStackSize(out.getStackSize() * stack.stackSize));
-                return true;
+                p = stack.stackSize;
+                var c = getContainerItem(stack);
+                if (c != null) {
+                    inputs.add(
+                        AEItemStack.create(c)
+                            .setStackSize(p));
+                }
+                stack.stackSize = 1;
             }
         }
-        return false;
+        if (p < 0) return false;
+        outputs.add(
+            out.copy()
+                .setStackSize(out.getStackSize() * p));
+        return true;
+    }
+
+    // 检查物品是否在输入消耗后有返回物
+    private ItemStack getContainerItem(ItemStack stack) {
+        var i = stack.getItem();
+        if (i == null) return null;
+        if (!i.hasContainerItem(stack)) return null;
+        ItemStack ci = i.getContainerItem(stack.copy());
+        if (ci != null && ci.isItemStackDamageable() && ci.getItemDamage() > ci.getMaxDamage()) {
+            ci = null;
+        }
+
+        return ci;
     }
 
     @Override
@@ -247,22 +288,22 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         final DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
 
         if (cachedOutputItems != null) {
-            final Map<ItemStack, Long> nameToAmount = new HashMap<>();
+            final Reference2LongMap<ItemStack> nameToAmount = new Reference2LongOpenHashMap<>();
 
             for (ItemStack item : cachedOutputItems) {
                 if (item == null || item.stackSize <= 0) continue;
-                nameToAmount.merge(item, (long) item.stackSize, Long::sum);
+                nameToAmount.merge(item, item.stackSize, Long::sum);
             }
 
-            final List<Map.Entry<ItemStack, Long>> sortedMap = nameToAmount.entrySet()
+            final List<Reference2LongMap.Entry<ItemStack>> sortedMap = nameToAmount.reference2LongEntrySet()
                 .stream()
                 .sorted(
-                    Map.Entry.<ItemStack, Long>comparingByValue()
-                        .reversed())
-                .collect(Collectors.toList());
+                    ((Comparator<Reference2LongMap.Entry<ItemStack>> & Serializable) (c1, c2) -> Long
+                        .compare(c1.getLongValue(), c2.getLongValue())).reversed())
+                .collect(Collectors.toCollection(ObjectArrayList::new));
 
-            for (Map.Entry<ItemStack, Long> entry : sortedMap) {
-                Long itemCount = entry.getValue();
+            for (Reference2LongMap.Entry<ItemStack> entry : sortedMap) {
+                long itemCount = entry.getLongValue();
                 String itemName = entry.getKey()
                     .getDisplayName();
                 String itemAmountString = EnumChatFormatting.WHITE + " x "
@@ -611,12 +652,25 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 int maximum = outputs.size();
                 usedParallel = 0L;
 
-                List<ItemStack> preparedOutputs = new ArrayList<>(maximum);
+                if (!inputs.isEmpty()) {
+                    var grid = getProxy().getNode()
+                        .getGrid();
+                    IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
+                    IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+                    var storage = storageGrid.getItemInventory();
+                    final var s = inputs.size();
+                    for (int i = 0; i < s; i++) {
+                        var in = inputs.poll();
+                        if (in == null) continue;
+                        var leftover = Platform.poweredInsert(energyGrid, storage, in, source);
+                        if (leftover != null) inputs.add(leftover);
+                    }
+                }
 
-                do {
-                    var stack = outputs.poll();
-                    if (stack == null) break;
+                List<ItemStack> preparedOutputs = new ObjectArrayList<>(maximum);
 
+                IAEItemStack stack;
+                while (parallel > 0 && (stack = outputs.poll()) != null) {
                     long stackSize = stack.getStackSize();
                     if (stackSize <= parallel) {
                         parallel -= stackSize;
@@ -644,7 +698,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     }
 
                     if (outputs.isEmpty() || --maximum == 0) break;
-                } while (parallel > 0);
+                }
 
                 preparedOutputs = Utils.mergeAndSplitStacks(preparedOutputs);
 

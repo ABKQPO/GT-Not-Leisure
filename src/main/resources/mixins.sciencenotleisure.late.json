@@ -11,6 +11,8 @@
     "AppliedEnergistics.MixinEntityTinyTNTPrimed",
     "AppliedEnergistics.MixinTileIOPort",
     "assembler.AccessorContainerPatternTerm",
+    "assembler.MixinCraftingCPUCluster",
+    "assembler.MixinCraftingCPUCluster$AccessorTaskProgress",
     "Bartwork.MixinCircuitImprintLoader",
     "Bartwork.MixinItemRegistry",
     "Bartwork.MixinMultipleMetalLoader",
