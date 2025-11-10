@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
+import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.config.MainConfig;
@@ -63,10 +64,11 @@ public class CommonProxy implements IGuiHandler {
 
     // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)
     public void postInit(FMLPostInitializationEvent event) {
-        AEApi.instance()
+        var interfaceTerminal = AEApi.instance()
             .registries()
-            .interfaceTerminal()
-            .register(SuperCraftingInputHatchME.class);
+            .interfaceTerminal();
+        interfaceTerminal.register(SuperCraftingInputHatchME.class);
+        interfaceTerminal.register(AssemblerMatrix.class);
 
         // AltarStructure.registerAltarStructureInfo();
     }
