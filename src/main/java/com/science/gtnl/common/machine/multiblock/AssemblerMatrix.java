@@ -530,7 +530,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         : StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.operating.normal"))));
         info.add(
             StatCollector.translateToLocalFormatted(
-                "kubatech.infodata.mia.running_mode.bee_storage",
+                "Info_AssemblerMatrix_00",
                 "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
                 (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
                     : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
@@ -543,13 +543,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
-            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
-                var bmte = getBaseMetaTileEntity();
-                gridProxy = new AENetworkProxy(
-                    (IGridProxyable) bmte,
-                    "proxy",
-                    GTNLItemList.AssemblerMatrix.get(1),
-                    true);
+            var bmte = getBaseMetaTileEntity();
+            if (bmte instanceof IGridProxyable) {
+                gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.AssemblerMatrix.get(1), true);
                 gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
                 updateValidGridProxySides();
                 if (bmte.getWorld() != null) {

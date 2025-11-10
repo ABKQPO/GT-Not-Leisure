@@ -1500,6 +1500,7 @@ Tooltip_MassFabricator_Casing=Any ZPM Casing
 
 NameAssemblerMatrix=Assembler Matrix
 AssemblerMatrixRecipeType=Molecular Assembler
+Info_AssemblerMatrix_00=§7Pattern storage: %s/%s
 AssemblerMatrix_Mode_0=Input Mode
 AssemblerMatrix_Mode_1=Output Mode
 AssemblerMatrix_Mode_2=Operating Mode
