@@ -476,7 +476,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return wirelessMode ? TierEU.RECIPE_MAX / 20 : super.getActualEnergyUsage();
     }
 
-    private String ensureUUID(NBTTagCompound aNBT) {
+    public String ensureUUID(NBTTagCompound aNBT) {
         if (aNBT.hasKey("storeUUID")) {
             return aNBT.getString("storeUUID");
         } else {

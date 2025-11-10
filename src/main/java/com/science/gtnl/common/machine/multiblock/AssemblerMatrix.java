@@ -7,7 +7,6 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -30,8 +29,13 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -92,6 +96,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
     public int mMaxSlots = 0;
+    public int patternSize = 0;
 
     public AENetworkProxy gridProxy;
     public DualityInterface di;
@@ -236,6 +241,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 } while (parallel > 0);
             }
         }
+        patternSize = inventory.currentSize;
     }
 
     /**
@@ -275,6 +281,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    protected void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        super.drawTexts(screenElements, inventorySlot);
+        screenElements.widget(
+            new TextWidget(StatCollector.translateToLocalFormatted("Info_AssemblerMatrix_00", patternSize))
+                .setTextAlignment(Alignment.CenterLeft)
+                .setDefaultColor(COLOR_TEXT_WHITE.get())
+                .attachSyncer(
+                    new FakeSyncWidget.IntegerSyncer(() -> patternSize, val -> patternSize = val),
+                    screenElements));
+    }
+
+    @Override
     public boolean supportsMachineModeSwitch() {
         return this.mMaxProgresstime <= 0;
     }
@@ -288,16 +306,16 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public int nextMachineMode() {
         if (this.mMaxProgresstime > 0) return machineMode;
-        if (machineMode == MODE_INPUT) return MODE_OPERATING;
-        else if (machineMode == MODE_OPERATING) return MODE_OUTPUT;
+        if (machineMode == MODE_INPUT) return MODE_OUTPUT;
+        else if (machineMode == MODE_OUTPUT) return MODE_OPERATING;
         else return MODE_INPUT;
     }
 
     @Override
     public void setMachineModeIcons() {
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_UNPACKAGER);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
     }
 
     @Override
@@ -459,8 +477,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @NotNull
     public CheckRecipeResult checkProcessing() {
         if (machineMode < 2) {
-            if (machineMode == MODE_INPUT && inventory.getAllItems()
-                .size() < mMaxSlots) {
+            if (machineMode == MODE_INPUT && inventory.size() < mMaxSlots) {
                 List<ItemStack> inputs = getStoredInputs();
                 boolean updated = false;
 
@@ -476,9 +493,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                             this.getBaseMetaTileEntity()
                                 .getWorld()));
 
+                    input.stackSize--;
                     updated = true;
-                    if (inventory.getAllItems()
-                        .size() >= mMaxSlots) break;
+                    if (inventory.size() >= mMaxSlots) break;
                 }
                 if (updated) {
                     updateSlots();
@@ -493,20 +510,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     } catch (GridAccessException ignored) {}
                 }
                 updateSlots();
-            } else if (machineMode == MODE_OUTPUT && !inventory.getAllItems()
-                .isEmpty()) { // output mode
-                    tryOutputInventory(inventory);
-                } else {
-                    return CheckRecipeResultRegistry.NO_RECIPE;
-                }
+            } else if (machineMode == MODE_OUTPUT && !inventory.isEmpty()) { // output mode
+                tryOutputInventory(inventory);
+            } else {
+                return CheckRecipeResultRegistry.NO_RECIPE;
+            }
             mMaxProgresstime = 10;
             mEfficiency = 10000;
             mEfficiencyIncrease = 10000;
             lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (machineMode == MODE_OPERATING) {
-            if (mMaxSlots > 0 && !inventory.getAllItems()
-                .isEmpty()) {
+            if (mMaxSlots > 0 && !inventory.isEmpty()) {
 
                 // Output
 
@@ -534,14 +549,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         info.add(
             StatCollector.translateToLocalFormatted(
                 "kubatech.infodata.mia.running_mode.bee_storage",
-                "" + EnumChatFormatting.GOLD
-                    + inventory.getAllItems()
-                        .size()
-                    + EnumChatFormatting.RESET,
-                (inventory.getAllItems()
-                    .size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString() : EnumChatFormatting.GOLD.toString())
-                    + mMaxSlots
-                    + EnumChatFormatting.RESET));
+                "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
+                (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
+                    : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
         return info.toArray(new String[0]);
     }
 
@@ -798,6 +808,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public class CombinationPatternsIInventory implements IInventory {
 
         private AppEngInternalInventory[] combinationInventory = new AppEngInternalInventory[0];
+        public int currentSize = 0;
 
         private AppEngInternalInventory getInventory(int ordinal) {
             if (ordinal >= combinationInventory.length) {
@@ -837,8 +848,13 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         @Override
         public void setInventorySlotContents(int slot, ItemStack stack) {
+            ItemStack oldStack = getStackInSlot(slot);
             getInventory(slot / eachPatternCasingCapacity)
                 .setInventorySlotContents(slot % eachPatternCasingCapacity, stack);
+
+            if (oldStack == null && stack != null) currentSize++;
+            else if (oldStack != null && stack == null) currentSize--;
+            patternSize = currentSize;
         }
 
         @Override
@@ -883,22 +899,21 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
 
         public void saveNBTData(NBTTagCompound aNBT) {
-            if (getBaseMetaTileEntity().isServerSide()) {
-                var n = new NBTTagCompound();
-                for (var i = 0; i < combinationInventory.length; i++) {
-                    var inv = combinationInventory[i];
-                    if (inv != null) {
-                        inv.writeToNBT(n, Integer.toString(i));
-                    }
+            var n = new NBTTagCompound();
+            for (var i = 0; i < combinationInventory.length; i++) {
+                var inv = combinationInventory[i];
+                if (inv != null) {
+                    inv.writeToNBT(n, Integer.toString(i));
                 }
-                aNBT.setTag("patterns", n);
             }
+            aNBT.setTag("patterns", n);
         }
 
         public void loadNBTData(NBTTagCompound aNBT) {
+            currentSize = 0;
             var n = aNBT.getCompoundTag("patterns");
             for (var o : n.func_150296_c()) {
-                getInventory(Integer.getInteger(o)).readFromNBT(n.getCompoundTag(o));
+                getInventory(Integer.parseInt(o)).readFromNBT(n.getCompoundTag(o));
             }
             for (int i = 0; i < this.getSizeInventory(); i++) {
                 var newStack = this.getStackInSlot(i);
@@ -909,6 +924,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         AssemblerMatrix.this.getBaseMetaTileEntity()
                             .getWorld());
                     if (p.isCraftable()) {
+                        currentSize++;
                         patterns.put(newStack, p);
                     }
                 }
@@ -924,20 +940,16 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             } catch (GridAccessException ignored) {
 
             }
+
+            patternSize = currentSize;
         }
 
-        public List<ItemStack> getAllItems() {
-            List<ItemStack> result = new ArrayList<>();
-            for (AppEngInternalInventory inv : combinationInventory) {
-                if (inv == null) continue;
-                for (int i = 0; i < inv.getSizeInventory(); i++) {
-                    ItemStack stack = inv.getStackInSlot(i);
-                    if (stack != null) {
-                        result.add(stack.copy());
-                    }
-                }
-            }
-            return result;
+        public int size() {
+            return currentSize;
+        }
+
+        public boolean isEmpty() {
+            return size() == 0;
         }
 
         public int getFirstEmptySlot() {

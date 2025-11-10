@@ -172,7 +172,12 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                             RadioHatchElement.RadioHatch)
                         .buildAndChain(),
                     onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
-            .addElement('D', ofBlock(GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge"), 1))
+            .addElement(
+                'D',
+                ofBlock(
+                    EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge")
+                        : Blocks.sponge,
+                    1))
             .addElement('E', ofChain(isAir(), ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
             .build();
     }

@@ -146,7 +146,12 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
                         .dot(1)
                         .build(),
                     onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
-            .addElement('F', ofBlock(GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge"), 1))
+            .addElement(
+                'F',
+                ofBlock(
+                    EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(EtFuturumRequiem.ID, "sponge")
+                        : Blocks.sponge,
+                    1))
             .addElement('G', ofChain(isAir(), ofBlockAnyMeta(Blocks.flowing_water), ofBlockAnyMeta(Blocks.water)))
             .build();
     }
