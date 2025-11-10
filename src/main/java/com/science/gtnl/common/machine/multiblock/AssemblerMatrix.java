@@ -357,9 +357,37 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             getProxy().setValidSides(emptyDirection);
             return false;
         }
+        final var old = mMaxSlots;
         setupParameters();
+        if (mMaxSlots != old) upPatterns();
         getProxy().setValidSides(allDirection);
         return true;
+    }
+
+    public void upPatterns() {
+        patterns.clear();
+        for (var newStack : this.inventory) {
+            if (newStack.getItem() instanceof ICraftingPatternItem ic) {
+                var p = ic.getPatternForItem(
+                    newStack,
+                    AssemblerMatrix.this.getBaseMetaTileEntity()
+                        .getWorld());
+                if (p.isCraftable()) {
+                    patterns.put(newStack, p);
+                }
+            }
+        }
+        try {
+            AssemblerMatrix.this.getProxy()
+                .getGrid()
+                .postEvent(
+                    new MENetworkCraftingPatternChange(
+                        AssemblerMatrix.this,
+                        AssemblerMatrix.this.getProxy()
+                            .getNode()));
+        } catch (GridAccessException ignored) {
+
+        }
     }
 
     @Override
@@ -376,6 +404,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mCountPatternCasing = 0;
         mMaxParallel = 0;
         mMaxSlots = 0;
+        patterns.clear();
     }
 
     @Override
@@ -900,30 +929,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             for (var o : n.func_150296_c()) {
                 getInventory(Integer.parseInt(o)).readFromNBT(n.getCompoundTag(o));
             }
-            for (int i = 0; i < this.getSizeInventory(); i++) {
-                var newStack = this.getStackInSlot(i);
-                if (newStack == null) continue;
-                if (newStack.getItem() instanceof ICraftingPatternItem ic) {
-                    var p = ic.getPatternForItem(
-                        newStack,
-                        AssemblerMatrix.this.getBaseMetaTileEntity()
-                            .getWorld());
-                    if (p.isCraftable()) {
-                        patterns.put(newStack, p);
-                    }
-                }
-            }
-            try {
-                AssemblerMatrix.this.getProxy()
-                    .getGrid()
-                    .postEvent(
-                        new MENetworkCraftingPatternChange(
-                            AssemblerMatrix.this,
-                            AssemblerMatrix.this.getProxy()
-                                .getNode()));
-            } catch (GridAccessException ignored) {
-
-            }
+            AssemblerMatrix.this.upPatterns();
         }
 
         private int size = -1;
