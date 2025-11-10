@@ -15,8 +15,10 @@ public class MixinGuiMEMonitorable {
     @Shadow
     private GuiImgButton pinsStateButton;
 
-    @Inject(method = "initGui", at = @At("TAIL"), remap = true)
+    @Inject(method = "initGui", at = @At("RETURN"), remap = true)
     private void onInit(CallbackInfo ci) {
-        this.pinsStateButton.yPosition += 20;
+        if (pinsStateButton != null) {
+            this.pinsStateButton.yPosition += 25;
+        }
     }
 }
