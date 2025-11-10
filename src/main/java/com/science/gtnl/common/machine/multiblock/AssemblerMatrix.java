@@ -485,9 +485,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     if (!(input.getItem() instanceof ICraftingPatternItem i)) continue;
                     int slot = inventory.getFirstEmptySlot();
                     if (slot == -1) continue;
-                    inventory.setInventorySlotContents(slot, input);
+                    ItemStack pattern = input.copy();
+                    pattern.stackSize = 1;
+                    inventory.setInventorySlotContents(slot, pattern);
                     patterns.put(
-                        input,
+                        pattern,
                         i.getPatternForItem(
                             input,
                             this.getBaseMetaTileEntity()
