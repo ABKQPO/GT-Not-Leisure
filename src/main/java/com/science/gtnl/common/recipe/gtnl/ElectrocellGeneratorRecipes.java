@@ -44,22 +44,22 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Zinc, 1),
                 ItemUtils.getItemStackOfAmountFromOreDict("dustBerylliumHydroxide", 6))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Zinc, 1))
-            .fluidInputs(Materials.Mercury.getFluid(1600))
-            .fluidOutputs(MaterialPool.ToxicMercurySludge.getFluidOrGas(2000))
+            .fluidInputs(Materials.Mercury.getFluid(35))
+            .fluidOutputs(MaterialPool.ToxicMercurySludge.getFluidOrGas(40))
             .outputChances(10000)
             .eut(0)
             .specialValue(110)
             .metadata(GENERATOR_EUT, 10240L)
-            .duration(1050)
+            .duration(1000)
             .addTo(EGR);
 
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.foil, Materials.Aluminium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumBisulfate, 4))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 4))
-            .fluidInputs(Materials.Sodium.getFluid(4000))
-            .fluidOutputs(Materials.Hydrogen.getGas(4000))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 24))
+            .fluidInputs(Materials.Sodium.getFluid(400))
+            .fluidOutputs(Materials.Hydrogen.getGas(120))
             .outputChances(10000)
             .eut(0)
             .specialValue(100)
@@ -71,10 +71,10 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.TungstenSteel, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumBisulfate, 6))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 6))
-            .fluidInputs(Materials.Sodium.getFluid(6000))
-            .fluidOutputs(Materials.Hydrogen.getGas(6000))
-            .outputChances(10000)
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumSulfide, 30))
+            .fluidInputs(Materials.Sodium.getFluid(400))
+            .fluidOutputs(Materials.Hydrogen.getGas(100))
+            .outputChances(8000)
             .eut(0)
             .specialValue(110)
             .metadata(GENERATOR_EUT, 14400L)
@@ -84,11 +84,11 @@ public class ElectrocellGeneratorRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.TungstenSteel, 1),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 4))
-            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 2))
-            .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(1000))
-            .fluidOutputs(Materials.NitricAcid.getFluid(8000))
-            .outputChances(5000)
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 7))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thorium, 5))
+            .fluidInputs(GGMaterial.thoriumNitrate.getFluidOrGas(250))
+            .fluidOutputs(Materials.NitricAcid.getFluid(1000))
+            .outputChances(8000)
             .eut(0)
             .specialValue(110)
             .metadata(GENERATOR_EUT, 20480L)
