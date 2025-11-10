@@ -1500,6 +1500,11 @@ Tooltip_MassFabricator_Casing=Any ZPM Casing
 
 NameAssemblerMatrix=Assembler Matrix
 AssemblerMatrixRecipeType=Molecular Assembler
+Tooltip_AssemblerMatrix_00=Each assembly matrix pattern core provides 72 slots
+Tooltip_AssemblerMatrix_01=Each assembly matrix crafting core provides 2048 parallel operations
+Tooltip_AssemblerMatrix_02=Fixed runtime of 1 second
+Tooltip_AssemblerMatrix_03=Consumes 2 EU per parallel operation
+Tooltip_AssemblerMatrix_04=All pattern cores / crafting cores / walls must be fully filled to form!
 Info_AssemblerMatrix_00=§7Pattern storage: %s/%s
 AssemblerMatrix_Mode_0=Input Mode
 AssemblerMatrix_Mode_1=Output Mode

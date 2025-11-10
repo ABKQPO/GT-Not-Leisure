@@ -105,7 +105,8 @@ import lombok.Getter;
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable {
 
-    public static final int eachPatternCasingCapacity = 72;
+    public static int eachPatternCasingCapacity = 72;
+    public static int eachCraftingCasingParallel = 2048;
     public static final int MODE_INPUT = 0;
     public static final int MODE_OUTPUT = 1;
     public static final int MODE_OPERATING = 2;
@@ -299,7 +300,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public int getMaxParallelRecipes() {
-        mMaxParallel = 512 * mCountCrafterCasing;
+        mMaxParallel = eachCraftingCasingParallel * mCountCrafterCasing;
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
         return mMaxParallel;
     }
