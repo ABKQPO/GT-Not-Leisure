@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
@@ -39,6 +41,7 @@ import com.science.gtnl.utils.machine.ItemStackG;
 import cpw.mods.fml.common.FMLCommonHandler;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 @SuppressWarnings("unused")
 public class Utils {
@@ -191,6 +194,45 @@ public class Utils {
             }
         }
         return output;
+    }
+
+    public static List<ItemStack> mergeAndSplitStacks(List<ItemStack> stacks) {
+        List<ItemStack> uniqueStacks = new ArrayList<>();
+        Object2LongOpenHashMap<ItemStack> counts = new Object2LongOpenHashMap<>(stacks.size());
+
+        for (ItemStack stack : stacks) {
+            if (stack == null) continue;
+
+            boolean merged = false;
+
+            for (ItemStack existing : uniqueStacks) {
+                if (GTUtility.areStacksEqual(stack, existing)) {
+                    counts.put(existing, counts.getLong(existing) + stack.stackSize);
+                    merged = true;
+                    break;
+                }
+            }
+
+            if (!merged) {
+                ItemStack copy = stack.copy();
+                uniqueStacks.add(copy);
+                counts.put(copy, copy.stackSize);
+            }
+        }
+
+        return uniqueStacks.stream()
+            .flatMap(stack -> {
+                long total = counts.getLong(stack);
+                long chunks = (total + (long) Integer.MAX_VALUE - 1) / (long) Integer.MAX_VALUE;
+
+                return LongStream.range(0, chunks)
+                    .mapToObj(i -> {
+                        ItemStack copy = stack.copy();
+                        copy.stackSize = (int) Math.min(total - i * (long) Integer.MAX_VALUE, Integer.MAX_VALUE);
+                        return copy;
+                    });
+            })
+            .collect(Collectors.toList());
     }
 
     public static <T extends Collection<?>> T filterValidMTE(T metaTileEntities) {

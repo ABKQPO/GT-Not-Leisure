@@ -5,15 +5,21 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
+import static gregtech.api.util.GTUtility.*;
+import static net.minecraft.util.StatCollector.*;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -31,13 +37,25 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
+import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.api.widget.Widget;
+import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
+import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.ICraftingPatternItem;
@@ -65,7 +83,6 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import gregtech.api.enums.Dyes;
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IMEConnectable;
@@ -78,6 +95,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -95,6 +113,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
     public int mMaxSlots = 0;
+    public long usedParallel = 0;
 
     public AENetworkProxy gridProxy;
     public DualityInterface di;
@@ -181,17 +200,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
-    private int workTime = 0;
-    private static final int workPeriod = 20;
+    public ItemStack[] cachedOutputItems = null;
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
         var out = patternDetails.getCondensedOutputs()[0];
-        var parallel = 0;
         for (int i = 0; i < table.getSizeInventory(); i++) {
             var stack = table.getStackInSlot(i);
             if (stack != null) {
-                if (outputs.isEmpty()) workTime = 0;
                 outputs.add(
                     out.copy()
                         .setStackSize(out.getStackSize() * stack.stackSize));
@@ -208,44 +224,69 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (!aBaseMetaTileEntity.isServerSide()) return;
-        if (!outputs.isEmpty()) {
-            if (++workTime == workPeriod) {
-                workTime = 0;
-                long parallel = getMaxParallelRecipes();
-                int maximum = outputs.size();
-                do {
-                    var stack = outputs.poll();
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        super.drawTexts(screenElements, inventorySlot);
+        final ChangeableWidget recipeOutputItemsWidget = new ChangeableWidget(this::generateCurrentRecipeInfoWidget);
 
-                    var grid = getProxy().getNode()
-                        .getGrid();
-                    IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
-                    IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-                    var storage = storageGrid.getItemInventory();
-                    if (stack.getStackSize() <= parallel) {
-                        parallel -= stack.getStackSize();
-                        var newItem = Platform.poweredInsert(energyGrid, storage, stack, source);
-                        if (newItem != null && newItem.getStackSize() != 0) {
-                            outputs.add(newItem);
-                        }
-                    } else {
-                        stack.decStackSize(parallel);
-                        var newItem = Platform.poweredInsert(
-                            energyGrid,
-                            storage,
-                            stack.copy()
-                                .setStackSize(parallel),
-                            source);
-                        if (newItem != null && newItem.getStackSize() != 0) {
-                            outputs.add(newItem);
-                        }
-                    }
-                    if (outputs.isEmpty() || --maximum == 0) return;
-                } while (parallel > 0);
+        // Display current recipe
+        screenElements.widget(
+            new FakeSyncWidget.ListSyncer<>(
+                () -> cachedOutputItems != null ? Arrays.asList(cachedOutputItems) : Collections.emptyList(),
+                val -> {
+                    cachedOutputItems = val.toArray(new ItemStack[0]);
+                    recipeOutputItemsWidget.notifyChangeNoSync();
+                },
+                NetworkUtils::writeItemStack,
+                NetworkUtils::readItemStack));
+        screenElements.widget(recipeOutputItemsWidget);
+    }
+
+    @Override
+    public Widget generateCurrentRecipeInfoWidget() {
+        final DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
+
+        if (cachedOutputItems != null) {
+            final Map<ItemStack, Long> nameToAmount = new HashMap<>();
+
+            for (ItemStack item : cachedOutputItems) {
+                if (item == null || item.stackSize <= 0) continue;
+                nameToAmount.merge(item, (long) item.stackSize, Long::sum);
+            }
+
+            final List<Map.Entry<ItemStack, Long>> sortedMap = nameToAmount.entrySet()
+                .stream()
+                .sorted(
+                    Map.Entry.<ItemStack, Long>comparingByValue()
+                        .reversed())
+                .collect(Collectors.toList());
+
+            for (Map.Entry<ItemStack, Long> entry : sortedMap) {
+                Long itemCount = entry.getValue();
+                String itemName = entry.getKey()
+                    .getDisplayName();
+                String itemAmountString = EnumChatFormatting.WHITE + " x "
+                    + EnumChatFormatting.GOLD
+                    + formatShortenedLong(itemCount)
+                    + EnumChatFormatting.WHITE
+                    + appendRate(false, itemCount, true);
+                String lineText = EnumChatFormatting.AQUA + truncateText(itemName, 40 - itemAmountString.length())
+                    + itemAmountString;
+                String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
+
+                processingDetails.widget(
+                    new MultiChildWidget().addChild(
+                        new ItemDrawable(
+                            entry.getKey()
+                                .copy()).asWidget()
+                                    .setSize(8, 8)
+                                    .setPos(0, 0))
+                        .addChild(
+                            new TextWidget(lineText).setTextAlignment(Alignment.CenterLeft)
+                                .addTooltip(lineTooltip)
+                                .setPos(10, 1)));
             }
         }
+        return processingDetails;
     }
 
     /**
@@ -329,6 +370,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         super.saveNBTData(aNBT);
         aNBT.setInteger("mCountCrafterCasing", mCountCrafterCasing);
         aNBT.setInteger("mCountPatternCasing", mCountPatternCasing);
+        aNBT.setLong("usedParallel", usedParallel);
+
+        if (cachedOutputItems != null) {
+            aNBT.setInteger("cachedOutputItemsLength", cachedOutputItems.length);
+            for (int i = 0; i < cachedOutputItems.length; i++) if (cachedOutputItems[i] != null) {
+                GTUtility.saveItem(aNBT, "cachedOutputItems" + i, cachedOutputItems[i]);
+            }
+        }
+
         inventory.saveNBTData(aNBT);
     }
 
@@ -337,6 +387,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         super.loadNBTData(aNBT);
         mCountCrafterCasing = aNBT.getInteger("mCountCrafterCasing");
         mCountPatternCasing = aNBT.getInteger("mCountPatternCasing");
+        usedParallel = aNBT.getLong("usedParallel");
+
+        int cachedOutputItemsLength = aNBT.getInteger("cachedOutputItemsLength");
+        if (cachedOutputItemsLength > 0) {
+            cachedOutputItems = new ItemStack[cachedOutputItemsLength];
+            for (int i = 0; i < cachedOutputItems.length; i++)
+                cachedOutputItems[i] = GTUtility.loadItem(aNBT, "cachedOutputItems" + i);
+        }
+
         inventory.loadNBTData(aNBT);
 
         updateAE2ProxyColor();
@@ -545,20 +604,115 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (machineMode == MODE_OPERATING) {
-            if (mMaxSlots > 0 && !inventory.isEmpty()) {
+            if (mMaxSlots > 0 && !inventory.isEmpty() && !outputs.isEmpty()) {
+                long parallel = getMaxParallelRecipes();
+                parallel = Math.min(parallel, getMaxInputEu() / 2);
+                int maximum = outputs.size();
+                usedParallel = 0L;
 
-                // Output
+                List<ItemStack> preparedOutputs = new ArrayList<>(maximum);
 
-                this.lEUt = -GTValues.V[4] * mMaxSlots;
-                this.mEfficiency = 10000;
-                this.mEfficiencyIncrease = 10000;
-                this.mMaxProgresstime = 600;
-                this.mOutputItems = null;
-                return CheckRecipeResultRegistry.SUCCESSFUL;
+                do {
+                    var stack = outputs.poll();
+                    if (stack == null) break;
+
+                    long stackSize = stack.getStackSize();
+                    if (stackSize <= parallel) {
+                        parallel -= stackSize;
+                        usedParallel += stackSize;
+
+                        preparedOutputs.add(stack.getItemStack());
+                    } else {
+                        long used = parallel;
+                        long remain = stackSize - used;
+                        usedParallel += used;
+                        ItemStack item = stack.getItemStack();
+                        if (used < Integer.MAX_VALUE) {
+                            ItemStack part = item.copy();
+                            part.stackSize = (int) used;
+                            preparedOutputs.add(part);
+                        }
+
+                        if (remain > 0) {
+                            var remainStack = stack.copy();
+                            remainStack.setStackSize((int) remain);
+                            outputs.add(remainStack);
+                        }
+
+                        parallel = 0;
+                    }
+
+                    if (outputs.isEmpty() || --maximum == 0) break;
+                } while (parallel > 0);
+
+                preparedOutputs = Utils.mergeAndSplitStacks(preparedOutputs);
+
+                int outSize = preparedOutputs.size();
+                if (outSize > 0) {
+                    this.cachedOutputItems = preparedOutputs.toArray(new ItemStack[outSize]);
+                    this.lEUt = -2 * Math.max(1, usedParallel);
+                    this.mEfficiency = 10000;
+                    this.mEfficiencyIncrease = 10000;
+                    this.mMaxProgresstime = 20;
+                    return CheckRecipeResultRegistry.SUCCESSFUL;
+                }
             }
         }
 
         return CheckRecipeResultRegistry.NO_RECIPE;
+    }
+
+    @Override
+    public void outputAfterRecipe() {
+        super.outputAfterRecipe();
+        if (cachedOutputItems == null || cachedOutputItems.length == 0 || usedParallel == 0) return;
+
+        try {
+            var grid = getProxy().getNode()
+                .getGrid();
+            IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
+            IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+            var storage = storageGrid.getItemInventory();
+
+            long remainingParallel = usedParallel;
+
+            for (ItemStack stack : cachedOutputItems) {
+                if (remainingParallel <= 0) break;
+
+                int toInsert = (int) Math.min(remainingParallel, stack.stackSize);
+                if (toInsert <= 0) continue;
+
+                ItemStack insertStack = stack;
+                if (stack.stackSize != toInsert) {
+                    insertStack = stack.copy();
+                    insertStack.stackSize = toInsert;
+                }
+
+                var leftover = Platform.poweredInsert(
+                    energyGrid,
+                    storage,
+                    AEApi.instance()
+                        .storage()
+                        .createItemStack(insertStack),
+                    source);
+
+                remainingParallel -= toInsert;
+
+                if (leftover != null && leftover.getStackSize() != 0) {
+                    outputs.add(leftover);
+                }
+            }
+        } finally {
+            cachedOutputItems = new ItemStack[0];
+            usedParallel = 0;
+        }
+    }
+
+    @Override
+    public void stopMachine(@NotNull ShutDownReason reason) {
+        super.stopMachine(reason);
+        cachedOutputItems = new ItemStack[0];
+        usedParallel = 0;
     }
 
     @Override
