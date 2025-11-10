@@ -1026,6 +1026,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             public void remove() {
                 if (nowInv < 0) return;
                 CombinationPatternsIInventory.this.combinationInventory[nowInv].setInventorySlotContents(nowSlot, null);
+                nowInv = -1;
+                nowSlot = -1;
             }
 
             private void upAvailable() {
@@ -1040,8 +1042,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         while (++slotOrdinal < inv.getSizeInventory()) {
                             var stack = inv.getStackInSlot(slotOrdinal);
                             if (stack != null) {
-                                nowInv = invOrdinal;
-                                nowSlot = slotOrdinal;
                                 nowAvailable = true;
                                 return;
                             }
