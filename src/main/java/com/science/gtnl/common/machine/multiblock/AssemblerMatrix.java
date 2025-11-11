@@ -197,6 +197,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         boolean isActive = tag.getBoolean("isAEActive");
         boolean isPowered = tag.getBoolean("isAEPowered");
         currenttip.add(WailaText.getPowerState(isActive, isPowered, false));
+        if (tag.getLong("maxParallelLong") > 1) {
+            currenttip.add(
+                StatCollector.translateToLocal("GT5U.multiblock.parallelism") + " (Long): "
+                    + EnumChatFormatting.WHITE
+                    + tag.getLong("maxParallelLong"));
+        }
     }
 
     @Override
@@ -207,6 +213,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         boolean isPowered = isPowered();
         tag.setBoolean("isAEActive", isActive);
         tag.setBoolean("isAEPowered", isPowered);
+        tag.setLong("maxParallelLong", mMaxParallelLong);
     }
 
     /**
