@@ -1890,98 +1890,98 @@ public class AssemblerRecipes implements IRecipePool {
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.LVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.LVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchLV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.MVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.MVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchMV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_MV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.HVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.HVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchHV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_HV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.EVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.EVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchEV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_EV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.IVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.IVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchIV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_IV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.LuVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.LuVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchLuV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_LuV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.ZPMParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.ZPMParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchZPM.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UHVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UHVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUHV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UHV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UEVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UEVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUEV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UEV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UIVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UIVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUIV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UIV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UMVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UMVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUMV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UMV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.UXVParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.UXVParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchUXV.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_UXV)
             .addTo(As);
 
         GTValues.RA.stdBuilder()
-            .itemInputs(GTNLItemList.MAXParallelControllerCore.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(24), GTNLItemList.MAXParallelControllerCore.get(1))
             .itemOutputs(GTNLItemList.ParallelControllerHatchMAX.get(1))
             .duration(20)
             .eut(TierEU.RECIPE_MAX)
