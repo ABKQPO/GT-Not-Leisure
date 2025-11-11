@@ -122,49 +122,44 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
         NBTTagList fluids = getFluidList(container);
         if (fluids == null || fluids.tagCount() == 0) return null;
 
-        NBTTagCompound tagCompound = container.getTagCompound();
-        if (tagCompound != null && tagCompound.hasKey("Selected")) {
-            int selected = tagCompound.getInteger("Selected");
-            if (selected >= 0 && selected < fluids.tagCount()) {
-                NBTTagCompound tag = fluids.getCompoundTagAt(selected);
-                Fluid fluid = FluidRegistry.getFluid(tag.getString("FluidName"));
-                if (fluid != null) {
-                    int amount = tag.getInteger("Amount");
-                    if (amount > 0) {
-                        int drainAmount = Math.min(amount, maxDrain);
-                        FluidStack drained = new FluidStack(fluid, drainAmount);
+        NBTTagCompound nbt = container.getTagCompound();
+        int selected = (nbt != null && nbt.hasKey("Selected")) ? nbt.getInteger("Selected") : 0;
 
-                        if (doDrain) {
-                            int remaining = amount - drainAmount;
-                            if (remaining <= 0) fluids.removeTag(selected);
-                            else tag.setInteger("Amount", remaining);
-                        }
-                        return drained;
-                    }
-                }
+        NBTTagCompound tag = null;
+
+        if (selected >= 0 && selected < fluids.tagCount()) {
+            tag = fluids.getCompoundTagAt(selected);
+        }
+
+        if (tag == null && fluids.tagCount() > 0) {
+            tag = fluids.getCompoundTagAt(0);
+            selected = 0;
+        }
+
+        if (tag == null) return null;
+
+        Fluid fluid = FluidRegistry.getFluid(tag.getString("FluidName"));
+        if (fluid == null) return null;
+
+        int amount = tag.getInteger("Amount");
+        if (amount <= 0) return null;
+
+        int drainAmount = Math.min(amount, maxDrain);
+        FluidStack drained = new FluidStack(fluid, drainAmount);
+
+        if (doDrain) {
+            int remaining = amount - drainAmount;
+            if (remaining <= 0) {
+                NBTTagList copy = (NBTTagList) fluids.copy();
+                copy.removeTag(selected);
+                container.getTagCompound()
+                    .setTag("Fluids", copy);
+            } else {
+                tag.setInteger("Amount", remaining);
             }
         }
 
-        for (int i = 0; i < fluids.tagCount(); i++) {
-            NBTTagCompound tag = fluids.getCompoundTagAt(i);
-            int amount = tag.getInteger("Amount");
-            if (amount <= 0) continue;
-
-            Fluid fluid = FluidRegistry.getFluid(tag.getString("FluidName"));
-            if (fluid == null) continue;
-
-            int drainAmount = Math.min(amount, maxDrain);
-            FluidStack drained = new FluidStack(fluid, drainAmount);
-
-            if (doDrain) {
-                int remaining = amount - drainAmount;
-                if (remaining <= 0) fluids.removeTag(i);
-                else tag.setInteger("Amount", remaining);
-            }
-            return drained;
-        }
-
-        return null;
+        return drained;
     }
 
     @Override
@@ -319,13 +314,45 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
         if (nbt == null) return;
 
         NBTTagList fluids = getFluidList(stack);
-        if (fluids.tagCount() <= 1) return;
+        int count = fluids.tagCount();
+        if (count <= 0) return;
+        if (count == 1) {
+            nbt.setInteger("Selected", 0);
+            return;
+        }
 
         int selected = nbt.getInteger("Selected");
-        selected = (selected + 1) % fluids.tagCount();
+        selected = (selected + 1) % count;
         nbt.setInteger("Selected", selected);
     }
 
+    public NBTTagCompound getSelectedFluidTag(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt == null) return null;
+
+        NBTTagList fluids = getFluidList(stack);
+        if (fluids.tagCount() == 0) return null;
+
+        int selected = nbt.getInteger("Selected");
+        if (selected < 0 || selected >= fluids.tagCount()) {
+            selected = 0;
+        }
+
+        return fluids.getCompoundTagAt(selected);
+    }
+
+    public FluidStack getSelectedFluid(ItemStack stack) {
+        NBTTagCompound tag = getSelectedFluidTag(stack);
+        if (tag == null) return null;
+
+        Fluid fluid = FluidRegistry.getFluid(tag.getString("FluidName"));
+        if (fluid == null) return null;
+
+        int amount = tag.getInteger("Amount");
+        return new FluidStack(fluid, amount);
+    }
+
+    @Override
     public void showSubtitle(String name, int amount) {
         String amtText = (amount == INFINITE_FLUID_AMOUNT) ? "∞" : amount + "L";
         IChatComponent comp = new ChatComponentTranslation("Tooltip_InfinityBucket_01", name, amtText);
@@ -355,7 +382,7 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
 
         long now = System.currentTimeMillis();
         if (now - lastUpdateTime >= 500) {
-            FluidStack fluid = getFluid(stack);
+            FluidStack fluid = getSelectedFluid(stack);
             if (fluid != null) showSubtitle(
                 fluid.getFluid()
                     .getLocalizedName(),

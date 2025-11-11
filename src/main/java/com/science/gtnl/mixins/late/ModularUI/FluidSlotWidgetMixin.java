@@ -20,10 +20,10 @@ import com.reavaritia.common.item.InfinityBucket;
 public abstract class FluidSlotWidgetMixin extends SyncedWidget {
 
     @Shadow
-    public abstract ItemStack fillFluid(@NotNull FluidStack heldFluid, boolean processFullStack);
+    protected abstract ItemStack fillFluid(@NotNull FluidStack heldFluid, boolean processFullStack);
 
     @Shadow
-    public abstract ItemStack drainFluid(boolean processFullStack);
+    protected abstract ItemStack drainFluid(boolean processFullStack);
 
     @Inject(
         method = "transferFluid",
