@@ -62,6 +62,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.LargeInventoryCrafting;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -277,13 +278,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
-        var out = patternDetails.getCondensedOutputs()[0];
-        var p = -1;
+        final var out = patternDetails.getCondensedOutputs()[0];
+        final var p = ((LargeInventoryCrafting) table).getAssemblerSize();
         for (int i = 0; i < table.getSizeInventory(); i++) {
-            var stack = table.getStackInSlot(i);
+            final var stack = table.getStackInSlot(i);
             if (stack != null) {
-                p = stack.stackSize;
-                var c = getContainerItem(stack);
+                final var c = getContainerItem(stack);
                 if (c != null) {
                     inputs.add(
                         AEItemStack.create(c)
@@ -292,7 +292,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 stack.stackSize = 1;
             }
         }
-        if (p < 0) return false;
         outputs.add(
             out.copy()
                 .setStackSize(out.getStackSize() * p));
@@ -301,12 +300,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     // 检查物品是否在输入消耗后有返回物
     private ItemStack getContainerItem(ItemStack stack) {
-        var i = stack.getItem();
+        final var i = stack.getItem();
         if (i == null) return null;
         if (!i.hasContainerItem(stack)) return null;
-        ItemStack ci = i.getContainerItem(stack.copy());
+        final ItemStack ci = i.getContainerItem(stack.copy());
         if (ci != null && ci.isItemStackDamageable() && ci.getItemDamage() > ci.getMaxDamage()) {
-            ci = null;
+            return null;
         }
 
         return ci;

@@ -2,6 +2,7 @@ package com.science.gtnl.mixins.late.assembler;
 
 import java.util.Map;
 
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
 import org.objectweb.asm.Opcodes;
@@ -20,6 +21,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalLongRef;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
+import com.science.gtnl.utils.LargeInventoryCrafting;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,7 +52,7 @@ public abstract class MixinCraftingCPUCluster {
     private boolean r$IgnoreParallel = false;
 
     /**
-     * 在开头计算合成样板允许的最大并行量，防止溢出Integer.MAX_VALUE
+     * 在开头计算合成样板允许的最大并行量
      */
     @WrapOperation(
         method = "executeCrafting",
@@ -66,13 +68,9 @@ public abstract class MixinCraftingCPUCluster {
             if (size > max) max = size;
         }
 
-        var craftingFrequency = instance.getValue()
-            .getValue();
-        if (max * craftingFrequency > Integer.MAX_VALUE) {
-            craftingFrequency = Integer.MAX_VALUE / max;
-        }
-
-        craftingFrequencyR.set(craftingFrequency);
+        craftingFrequencyR.set(
+            instance.getValue()
+                .getValue());
         return key;
     }
 
@@ -92,10 +90,12 @@ public abstract class MixinCraftingCPUCluster {
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         if (details.isCraftable() && instance instanceof AssemblerMatrix ef) {
             if (!ef.isBusy()) {
-                var craftingFrequency = craftingFrequencyR.get();
+                assembly.set(true);
+                var craftingFrequency = Math
+                    .min(craftingFrequencyR.get(), Long.MAX_VALUE / details.getCondensedOutputs()[0].getStackSize());
                 for (IAEItemStack input : details.getCondensedInputs()) {
                     if (input == null) continue;
-                    long size = craftingFrequency;
+                    final long size = craftingFrequency;
                     var item = this.inventory.extractItems(
                         input.copy()
                             .setStackSize(size),
@@ -103,7 +103,7 @@ public abstract class MixinCraftingCPUCluster {
                         this.machineSrc);
                     if (item == null) continue;
                     if (item.getStackSize() < size) {
-                        long size0 = item.getStackSize() / input.getStackSize();
+                        long size0 = item.getStackSize();
                         if (size0 < 2) {
                             craftingFrequency = 1;
                         } else {
@@ -111,8 +111,6 @@ public abstract class MixinCraftingCPUCluster {
                         }
                     }
                 }
-                assembly.set(true);
-                craftingFrequency = Math.min(Integer.MAX_VALUE, craftingFrequency);
                 craftingFrequencyR.set(craftingFrequency);
             } else assembly.set(false);
         } else assembly.set(false);
@@ -178,6 +176,18 @@ public abstract class MixinCraftingCPUCluster {
         original.call(instance, receiver, single);
     }
 
+    /**
+     * 根据允许的最大合并数提取材料
+     */
+    @Unique
+    private void r$postChange1(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+        LocalBooleanRef assembly, LocalLongRef craftingFrequency, Operation<Void> original) {
+        if (assembly.get()) {
+            receiver.setStackSize(receiver.getStackSize() * craftingFrequency.get());
+        }
+        original.call(instance, receiver, single);
+    }
+
     @WrapOperation(
         method = "executeCrafting",
         at = @At(
@@ -187,7 +197,7 @@ public abstract class MixinCraftingCPUCluster {
     private void postChangeR1(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
-        r$postChange(instance, receiver, single, assembly, craftingFrequencyR, original);
+        r$postChange1(instance, receiver, single, assembly, craftingFrequencyR, original);
     }
 
     @WrapOperation(
@@ -223,7 +233,7 @@ public abstract class MixinCraftingCPUCluster {
     private void postChangeR3(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
-        r$postChange(instance, receiver, single, assembly, craftingFrequencyR, original);
+        r$postChange1(instance, receiver, single, assembly, craftingFrequencyR, original);
     }
 
     /**
@@ -239,27 +249,7 @@ public abstract class MixinCraftingCPUCluster {
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
         if (assembly.get()) {
-            iaeStack = iaeStack.copy()
-                .setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
-        }
-        original.call(instance, iaeStack);
-    }
-
-    /**
-     * 将有返回物的输入倍增到正确值加入到等待合成列表
-     */
-    @WrapOperation(
-        method = "executeCrafting",
-        at = @At(
-            value = "INVOKE",
-            target = "Lappeng/api/storage/data/IItemList;add(Lappeng/api/storage/data/IAEStack;)V",
-            ordinal = 1))
-    private void addR1(IItemList<IAEItemStack> instance, IAEStack<IAEItemStack> iaeStack, Operation<Void> original,
-        @Share("snl$assembly") LocalBooleanRef assembly,
-        @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
-        if (assembly.get()) {
-            iaeStack = iaeStack.copy()
-                .setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
+            iaeStack.setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
         }
         original.call(instance, iaeStack);
     }
@@ -277,27 +267,7 @@ public abstract class MixinCraftingCPUCluster {
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
         if (assembly.get()) {
-            iaeStack = iaeStack.copy()
-                .setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
-        }
-        original.call(instance, iaeStack);
-    }
-
-    /**
-     * 将有返回物的输入倍增到正确值加入到等待合成列表
-     */
-    @WrapOperation(
-        method = "executeCrafting",
-        at = @At(
-            value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postCraftingStatusChange(Lappeng/api/storage/data/IAEItemStack;)V",
-            ordinal = 1))
-    private void postCraftingStatusChangeR1(CraftingCPUCluster instance, IAEItemStack iaeStack,
-        Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
-        @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
-        if (assembly.get()) {
-            iaeStack = iaeStack.copy()
-                .setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
+            iaeStack.setStackSize(iaeStack.getStackSize() * craftingFrequency.get());
         }
         original.call(instance, iaeStack);
     }
@@ -313,11 +283,25 @@ public abstract class MixinCraftingCPUCluster {
             target = "Lnet/minecraft/item/ItemStack;stackSize:I",
             remap = true))
     private int getCountR(ItemStack instance, Operation<Integer> original,
+        @Share("snl$assembly") LocalBooleanRef assembly) {
+        if (assembly.get()) return 1;
+        else return original.call(instance);
+    }
+
+    /**
+     * 重定向物品数量通过检查
+     */
+    @WrapOperation(
+        method = "executeCrafting",
+        at = @At(
+            value = "INVOKE",
+            target = "Lappeng/api/networking/crafting/ICraftingMedium;pushPattern(Lappeng/api/networking/crafting/ICraftingPatternDetails;Lnet/minecraft/inventory/InventoryCrafting;)Z"))
+    private boolean pushPatternR(ICraftingMedium instance, ICraftingPatternDetails details,
+        InventoryCrafting inventoryCrafting, Operation<Boolean> original,
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
-        final int out = original.call(instance);
-        if (assembly.get()) return out / (int) craftingFrequency.get();
-        else return out;
+        if (assembly.get()) ((LargeInventoryCrafting) inventoryCrafting).setAssemblerSize(craftingFrequency.get());
+        return original.call(instance, details, inventoryCrafting);
     }
 
     /**
