@@ -588,7 +588,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void upPatterns() {
         patterns.clear();
         possibleOutputs.clear();
-        for (var newStack : this.inventory) {
+
+        for (var newStack : this.inventory.getAllItemsCopy()) {
             if (newStack.getItem() instanceof ICraftingPatternItem ic) {
                 var p = ic.getPatternForItem(
                     newStack,

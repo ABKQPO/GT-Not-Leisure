@@ -53,22 +53,22 @@ public class ContainerPortableAnvil extends ContainerRepair {
             }
 
             @Override
-            public void onPickupFromSlot(EntityPlayer p_82870_1_, ItemStack p_82870_2_) {
-                if (!p_82870_1_.capabilities.isCreativeMode) {
-                    p_82870_1_.addExperienceLevel(-maximumCost);
+            public void onPickupFromSlot(EntityPlayer entityPlayer, ItemStack itemStack) {
+                if (!entityPlayer.capabilities.isCreativeMode) {
+                    entityPlayer.addExperienceLevel(-maximumCost);
                 }
 
                 accessor.getInputSlots()
                     .setInventorySlotContents(0, null);
 
                 if (stackSizeToBeUsedInRepair > 0) {
-                    ItemStack itemstack1 = accessor.getInputSlots()
+                    ItemStack input = accessor.getInputSlots()
                         .getStackInSlot(1);
 
-                    if (itemstack1 != null && itemstack1.stackSize > stackSizeToBeUsedInRepair) {
-                        itemstack1.stackSize -= stackSizeToBeUsedInRepair;
+                    if (input != null && input.stackSize > stackSizeToBeUsedInRepair) {
+                        input.stackSize -= stackSizeToBeUsedInRepair;
                         accessor.getInputSlots()
-                            .setInventorySlotContents(1, itemstack1);
+                            .setInventorySlotContents(1, input);
                     } else {
                         accessor.getInputSlots()
                             .setInventorySlotContents(1, null);

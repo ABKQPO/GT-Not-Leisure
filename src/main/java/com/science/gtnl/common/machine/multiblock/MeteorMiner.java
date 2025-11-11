@@ -711,7 +711,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
             .setExtraDurationModifier(mConfigSpeedBoost);
         calculator.calculate();
         this.mMaxProgresstime = (isWaiting) ? 200 : calculator.getDuration();
-        this.lEUt = (int) (calculator.getConsumption() / ((isWaiting) ? 8 : 1));
+        this.lEUt = -calculator.getConsumption() / ((isWaiting) ? 8 : 1);
     }
 
     public boolean isEnergyEnough() {
