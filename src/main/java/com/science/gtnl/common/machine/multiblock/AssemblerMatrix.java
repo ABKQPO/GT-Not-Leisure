@@ -726,6 +726,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         input,
                         this.getBaseMetaTileEntity()
                             .getWorld());
+                    if (!p.isCraftable()) continue;
                     patterns.put(pattern, p);
                     possibleOutputs.add(p.getCondensedOutputs()[0]);
 
@@ -1318,7 +1319,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         public class NoNullInvIteratot implements Iterator<ItemStack> {
 
-            private int invOrdinal = -1;
+            private int invOrdinal = 0;
             private int slotOrdinal = -1;
             private int nowInv = -1;
             private int nowSlot = -1;
@@ -1353,12 +1354,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             private void upAvailable() {
                 if (!nowAvailable) {
                     while (mMaxSlots >= (invOrdinal * eachPatternCasingCapacity + slotOrdinal + 1)) {
-                        if (++invOrdinal >= combinationInventory.length) {
+                        if (invOrdinal >= combinationInventory.length) {
                             slotOrdinal = eachPatternCasingCapacity;
                             break;
                         }
                         var inv = CombinationPatternsIInventory.this.combinationInventory[invOrdinal];
-                        if (inv == null) continue;
+                        if (inv == null) {
+                            ++invOrdinal;
+                            continue;
+                        }
                         while (++slotOrdinal < inv.getSizeInventory()) {
                             var stack = inv.getStackInSlot(slotOrdinal);
                             if (stack != null) {
@@ -1367,6 +1371,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                             }
                         }
                         slotOrdinal = -1;
+                        ++invOrdinal;
                     }
                     nowInv = -1;
                     nowSlot = -1;
