@@ -38,7 +38,7 @@ public class WirelessMultiEnergyCover extends CoverLegacyData {
 
     @Override
     public void doCoverThings(byte aInputRedstone, long aTimer) {
-        if (coverData == 0 || aTimer % ticks_between_energy_addition == 0) {
+        if (coverData == 0 || aTimer % ticks_between_energy_addition / 2 == 0) {
             tryFetchingEnergy(coveredTile.get());
         }
         coverData = 1;

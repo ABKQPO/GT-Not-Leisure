@@ -49,6 +49,7 @@ import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
@@ -476,23 +477,12 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return wirelessMode ? TierEU.RECIPE_MAX / 20 : super.getActualEnergyUsage();
     }
 
-    public String ensureUUID(NBTTagCompound aNBT) {
-        if (aNBT.hasKey("storeUUID")) {
-            return aNBT.getString("storeUUID");
-        } else {
-            String uuid = UUID.randomUUID()
-                .toString();
-            aNBT.setString("storeUUID", uuid);
-            return uuid;
-        }
-    }
-
     @Override
     public void setItemNBT(NBTTagCompound aNBT) {
         aNBT.setBoolean("doVoidExcess", doVoidExcess);
         aNBT.setBoolean("locked", locked);
 
-        String uuid = ensureUUID(aNBT);
+        String uuid = Utils.ensureUUID(aNBT);
 
         NBTTagCompound storeRoot = new NBTTagCompound();
         NBTTagList itemNbt = new NBTTagList();
@@ -527,7 +517,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         aNBT.setBoolean("wirelessMode", wirelessMode);
         aNBT.setBoolean("doVoidExcess", doVoidExcess);
         aNBT.setBoolean("locked", locked);
-        ensureUUID(aNBT);
+        Utils.ensureUUID(aNBT);
         NBTTagList itemNbt = new NBTTagList();
         aNBT.setTag("STORE_ITEM", itemNbt);
         NBTTagList fluidNbt = new NBTTagList();

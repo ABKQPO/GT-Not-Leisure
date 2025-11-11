@@ -14,4 +14,11 @@ public interface AccessorContainerRepair {
 
     @Accessor("outputSlot")
     IInventory getOutputSlots();
+
+    @Accessor("inputSlots")
+    void setInputSlots(IInventory value);
+
+    @Accessor("outputSlot")
+    void setOutputSlots(IInventory value);
+
 }

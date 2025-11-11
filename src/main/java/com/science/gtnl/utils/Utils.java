@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -21,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListOpsEntry;
@@ -316,6 +318,17 @@ public class Utils {
             sb.append("!");
         }
         return sb.toString();
+    }
+
+    public static String ensureUUID(NBTTagCompound aNBT) {
+        if (aNBT.hasKey("storeUUID")) {
+            return aNBT.getString("storeUUID");
+        } else {
+            String uuid = UUID.randomUUID()
+                .toString();
+            aNBT.setString("storeUUID", uuid);
+            return uuid;
+        }
     }
 
     public static VargsFunction<ItemStack[], ItemStack[]> filterStack = (s) -> Arrays.stream(s)

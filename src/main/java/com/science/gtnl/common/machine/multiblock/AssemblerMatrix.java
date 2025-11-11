@@ -7,6 +7,8 @@ import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -24,10 +26,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -217,7 +222,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
     }
 
-    // TODO:将两个列表保存至NBT防止意外的进度丢失
     private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
     private final Queue<IAEItemStack> inputs = new ArrayDeque<>();
     public ItemStack[] cachedOutputItems = null;
@@ -404,7 +408,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void setItemNBT(NBTTagCompound aNBT) {
         super.setItemNBT(aNBT);
-        inventory.saveNBTData(aNBT);
+        saveInvData(aNBT, true);
     }
 
     @Override
@@ -413,15 +417,72 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         aNBT.setInteger("mCountCrafterCasing", mCountCrafterCasing);
         aNBT.setInteger("mCountPatternCasing", mCountPatternCasing);
         aNBT.setLong("usedParallel", usedParallel);
+        saveInvData(aNBT, false);
+    }
 
+    public void saveInvData(NBTTagCompound aNBT, boolean external) {
+        NBTTagCompound storeRoot = new NBTTagCompound();
+
+        String uuid = Utils.ensureUUID(aNBT);
+
+        // cachedOutputItems
+        NBTTagList cachedList = new NBTTagList();
         if (cachedOutputItems != null) {
-            aNBT.setInteger("cachedOutputItemsLength", cachedOutputItems.length);
-            for (int i = 0; i < cachedOutputItems.length; i++) if (cachedOutputItems[i] != null) {
-                GTUtility.saveItem(aNBT, "cachedOutputItems" + i, cachedOutputItems[i]);
+            for (ItemStack item : cachedOutputItems) {
+                if (item != null) {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    item.writeToNBT(tag);
+                    cachedList.appendTag(tag);
+                }
             }
         }
+        storeRoot.setTag("CACHED_OUTPUT_ITEMS", cachedList);
 
-        inventory.saveNBTData(aNBT);
+        // outputs
+        NBTTagList outputList = new NBTTagList();
+        if (outputs != null && !outputs.isEmpty()) {
+            for (IAEItemStack stack : outputs) {
+                if (stack != null) {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    stack.writeToNBT(tag);
+                    outputList.appendTag(tag);
+                }
+            }
+        }
+        storeRoot.setTag("OUTPUT_ITEMS", outputList);
+
+        // inputs
+        NBTTagList inputList = new NBTTagList();
+        if (inputs != null && !inputs.isEmpty()) {
+            for (IAEItemStack stack : inputs) {
+                if (stack != null) {
+                    NBTTagCompound tag = new NBTTagCompound();
+                    stack.writeToNBT(tag);
+                    inputList.appendTag(tag);
+                }
+            }
+        }
+        storeRoot.setTag("INPUT_ITEMS", inputList);
+
+        // inventory
+        NBTTagCompound invTag = new NBTTagCompound();
+        inventory.saveNBTData(invTag);
+        storeRoot.setTag("INVENTORY", invTag);
+
+        if (external) {
+            File worldDir = DimensionManager.getCurrentSaveRootDirectory();
+            File dataDir = new File(worldDir, "data");
+            if (!dataDir.exists()) dataDir.mkdirs();
+
+            File storeFile = new File(dataDir, "AssemblerMatrix_" + uuid + ".dat");
+            try {
+                CompressedStreamTools.safeWrite(storeRoot, storeFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            aNBT.setTag("CrafterInv", storeRoot);
+        }
     }
 
     @Override
@@ -431,14 +492,63 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mCountPatternCasing = aNBT.getInteger("mCountPatternCasing");
         usedParallel = aNBT.getLong("usedParallel");
 
-        int cachedOutputItemsLength = aNBT.getInteger("cachedOutputItemsLength");
-        if (cachedOutputItemsLength > 0) {
-            cachedOutputItems = new ItemStack[cachedOutputItemsLength];
-            for (int i = 0; i < cachedOutputItems.length; i++)
-                cachedOutputItems[i] = GTUtility.loadItem(aNBT, "cachedOutputItems" + i);
+        NBTTagCompound storeRoot = null;
+
+        if (aNBT.hasKey("storeUUID")) {
+            String uuid = aNBT.getString("storeUUID");
+            try {
+                File worldDir = DimensionManager.getCurrentSaveRootDirectory();
+                File dataDir = new File(worldDir, "data");
+                File storeFile = new File(dataDir, "AssemblerMatrix_" + uuid + ".dat");
+
+                if (storeFile.exists()) {
+                    storeRoot = CompressedStreamTools.read(storeFile);
+                    if (!storeFile.delete()) {
+                        System.err.println("Warning: Failed to delete CrafterInv file " + storeFile);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        inventory.loadNBTData(aNBT);
+        if (storeRoot == null && aNBT.hasKey("CrafterInv")) {
+            storeRoot = aNBT.getCompoundTag("CrafterInv");
+        }
+
+        if (storeRoot != null) {
+            // cachedOutputItems
+            NBTTagList cachedList = storeRoot.getTagList("CACHED_OUTPUT_ITEMS", 10);
+            if (cachedList != null && cachedList.tagCount() > 0) {
+                cachedOutputItems = new ItemStack[cachedList.tagCount()];
+                for (int i = 0; i < cachedList.tagCount(); i++) {
+                    cachedOutputItems[i] = ItemStack.loadItemStackFromNBT(cachedList.getCompoundTagAt(i));
+                }
+            }
+
+            // outputs
+            NBTTagList outputList = storeRoot.getTagList("OUTPUT_ITEMS", 10);
+            if (outputList != null && outputList.tagCount() > 0) {
+                for (int i = 0; i < outputList.tagCount(); i++) {
+                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(outputList.getCompoundTagAt(i));
+                    if (aeStack != null) outputs.add(aeStack);
+                }
+            }
+
+            // inputs
+            NBTTagList inputList = storeRoot.getTagList("INPUT_ITEMS", 10);
+            if (inputList != null && inputList.tagCount() > 0) {
+                for (int i = 0; i < inputList.tagCount(); i++) {
+                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(inputList.getCompoundTagAt(i));
+                    if (aeStack != null) inputs.add(aeStack);
+                }
+            }
+
+            // inventory
+            if (storeRoot.hasKey("INVENTORY")) {
+                inventory.loadNBTData(storeRoot.getCompoundTag("INVENTORY"));
+            }
+        }
 
         updateAE2ProxyColor();
         updateValidGridProxySides();

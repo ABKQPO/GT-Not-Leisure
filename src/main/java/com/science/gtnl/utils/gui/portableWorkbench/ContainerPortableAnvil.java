@@ -3,7 +3,6 @@ package com.science.gtnl.utils.gui.portableWorkbench;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -12,17 +11,12 @@ import com.science.gtnl.mixins.early.Minecraft.AccessorContainerRepair;
 
 public class ContainerPortableAnvil extends ContainerRepair {
 
-    public IInventory inputSlots;
-    public IInventory outputSlot;
-
     public ContainerPortableAnvil(InventoryPlayer playerInv, EntityPlayer player) {
         super(playerInv, player.worldObj, 0, 0, 0, player);
 
         AccessorContainerRepair accessor = (AccessorContainerRepair) this;
-        this.inputSlots = accessor.getInputSlots();
-        this.outputSlot = accessor.getOutputSlots();
 
-        this.inventorySlots.set(0, new Slot(inputSlots, 0, 27, 47) {
+        this.inventorySlots.set(0, new Slot(accessor.getInputSlots(), 0, 27, 47) {
 
             @Override
             public boolean isItemValid(ItemStack stack) {
@@ -30,7 +24,7 @@ public class ContainerPortableAnvil extends ContainerRepair {
             }
         });
 
-        this.inventorySlots.set(1, new Slot(inputSlots, 1, 76, 47) {
+        this.inventorySlots.set(1, new Slot(accessor.getInputSlots(), 1, 76, 47) {
 
             @Override
             public boolean isItemValid(ItemStack stack) {
@@ -38,11 +32,53 @@ public class ContainerPortableAnvil extends ContainerRepair {
             }
         });
 
-        this.inventorySlots.set(2, new Slot(outputSlot, 2, 134, 47) {
+        this.inventorySlots.set(2, new Slot(accessor.getOutputSlots(), 2, 134, 47) {
 
+            /**
+             * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+             */
             @Override
             public boolean isItemValid(ItemStack stack) {
                 return false;
+            }
+
+            /**
+             * Return whether this slot's stack can be taken from this slot.
+             */
+            @Override
+            public boolean canTakeStack(EntityPlayer entityPlayer) {
+                return (entityPlayer.capabilities.isCreativeMode || entityPlayer.experienceLevel >= maximumCost)
+                    && maximumCost > 0
+                    && this.getHasStack();
+            }
+
+            @Override
+            public void onPickupFromSlot(EntityPlayer p_82870_1_, ItemStack p_82870_2_) {
+                if (!p_82870_1_.capabilities.isCreativeMode) {
+                    p_82870_1_.addExperienceLevel(-maximumCost);
+                }
+
+                accessor.getInputSlots()
+                    .setInventorySlotContents(0, null);
+
+                if (stackSizeToBeUsedInRepair > 0) {
+                    ItemStack itemstack1 = accessor.getInputSlots()
+                        .getStackInSlot(1);
+
+                    if (itemstack1 != null && itemstack1.stackSize > stackSizeToBeUsedInRepair) {
+                        itemstack1.stackSize -= stackSizeToBeUsedInRepair;
+                        accessor.getInputSlots()
+                            .setInventorySlotContents(1, itemstack1);
+                    } else {
+                        accessor.getInputSlots()
+                            .setInventorySlotContents(1, null);
+                    }
+                } else {
+                    accessor.getInputSlots()
+                        .setInventorySlotContents(1, null);
+                }
+
+                maximumCost = 0;
             }
         });
     }
