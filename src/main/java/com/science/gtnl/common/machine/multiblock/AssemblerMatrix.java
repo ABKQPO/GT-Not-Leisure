@@ -4,6 +4,7 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.enums.HatchElement.*;
+import static gregtech.api.metatileentity.BaseTileEntity.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.*;
 
@@ -37,16 +38,20 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
+import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
@@ -340,7 +345,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
      */
     @Override
     public boolean isBusy() {
-        return !mMachine;
+        return !mMachine && machineMode == MODE_OPERATING;
     }
 
     @Override
@@ -370,19 +375,68 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    public ButtonWidget createModeSwitchButton(IWidgetBuilder<?> builder) {
+        Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
+            if (mMaxProgresstime > 0) return;
+            onMachineModeSwitchClick();
+            setMachineMode(nextMachineMode());
+        })
+            .setPlayClickSound(mMaxProgresstime <= 0)
+            .setBackground(() -> {
+                if (mMaxProgresstime > 0) {
+                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_RECIPE_LOCKED };
+                } else {
+                    return new IDrawable[] { GTUITextures.BUTTON_STANDARD, getMachineModeIcon(getMachineMode()) };
+                }
+            })
+            .attachSyncer(new FakeSyncWidget.IntegerSyncer(this::getMachineMode, this::setMachineMode), builder)
+            .dynamicTooltip(
+                () -> ImmutableList.of(
+                    StatCollector.translateToLocal(
+                        mMaxProgresstime > 0 ? "GT5U.gui.button.forbidden" : "GT5U.gui.button.mode_switch")))
+            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setPos(getMachineModeSwitchButtonPos())
+            .setSize(16, 16);
+
+        button.attachSyncer(
+            new FakeSyncWidget.IntegerSyncer(() -> mMaxProgresstime, newInt -> mMaxProgresstime = newInt),
+            builder,
+            (widget, val) -> widget.notifyTooltipChange());
+        return (ButtonWidget) button;
+    }
+
+    @Override
+    public boolean supportsSingleRecipeLocking() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsInputSeparation() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsBatchMode() {
+        return false;
+    }
+
+    @Override
     public boolean supportsMachineModeSwitch() {
         return true;
     }
 
     @Override
     public void setMachineMode(int index) {
-        if (this.mMaxProgresstime > 0) return;
         super.setMachineMode(index);
     }
 
     @Override
     public int nextMachineMode() {
-        if (this.mMaxProgresstime > 0) return machineMode;
         if (machineMode == MODE_INPUT) return MODE_OUTPUT;
         else if (machineMode == MODE_OUTPUT) return MODE_OPERATING;
         else return MODE_INPUT;
