@@ -11,6 +11,9 @@
     "AppliedEnergistics.MixinEntityTinyTNTPrimed",
     "AppliedEnergistics.MixinTileIOPort",
     "assembler.AccessorContainerPatternTerm",
+    "assembler.AccessorFCContainerEncodeTerminal",
+    "assembler.AccessorInvTracker",
+    "assembler.MixinContainerInterfaceTerminal",
     "assembler.MixinCraftingCPUCluster",
     "assembler.MixinCraftingCPUCluster$AccessorTaskProgress",
     "Bartwork.MixinCircuitImprintLoader",
@@ -61,6 +64,7 @@
     "ThaumicTinkerer.MixinItemBloodSword"
   ],
   "client": [
+    "assembler.MixinGuiFluidPatternWireless",
     "assembler.MixinGuiMEMonitorable",
     "assembler.MixinGuiPatternTerm"
   ],

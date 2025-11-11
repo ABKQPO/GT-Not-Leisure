@@ -474,6 +474,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         saveInvData(aNBT, false);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void saveInvData(NBTTagCompound aNBT, boolean external) {
         NBTTagCompound storeRoot = new NBTTagCompound();
 

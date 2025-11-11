@@ -1,11 +1,14 @@
 package com.science.gtnl.common.packet;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 
+import com.glodblock.github.client.gui.container.ContainerFluidPatternWireless;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.mixins.late.assembler.AccessorContainerPatternTerm;
+import com.science.gtnl.mixins.late.assembler.AccessorFCContainerEncodeTerminal;
 import com.science.gtnl.utils.Utils;
 
 import appeng.api.AEApi;
@@ -15,7 +18,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
-import appeng.me.GridAccessException;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -31,33 +33,39 @@ public class PktPatternTermUploadPattern implements IMessage, IMessageHandler<Pk
 
     @Override
     public IMessage onMessage(final PktPatternTermUploadPattern message, final MessageContext ctx) {
-        work(message, ctx);
+        work(ctx.getServerHandler().playerEntity);
         return null;
     }
 
-    private void work(final PktPatternTermUploadPattern message, final MessageContext ctx) {
-        var player = ctx.getServerHandler().playerEntity;
+    private void work(final EntityPlayer player) {
         final Container container = player.openContainer;
-        if (!(container instanceof ContainerPatternTerm term)) {
-            return;
-        }
-
-        final SlotRestrictedInput patternSlotOUT = ((AccessorContainerPatternTerm) term).getPatternSlotOUT();
-        final ItemStack patternStack = patternSlotOUT.getStack();
-        if (patternStack == null) {
-            return;
-        }
-
-        var part = term.getPatternTerminal();
-        IMachineSet channelNodes;
-        if (part != null) {
-            try {
-                channelNodes = part.getProxy()
-                    .getGrid()
-                    .getMachines(AssemblerMatrix.class);
-            } catch (GridAccessException ignored) {
+        final SlotRestrictedInput patternSlotOUT;
+        final ItemStack patternStack;
+        final IMachineSet channelNodes;
+        if (container instanceof ContainerPatternTerm term) {
+            patternSlotOUT = ((AccessorContainerPatternTerm) term).getPatternSlotOUT();
+            patternStack = patternSlotOUT.getStack();
+            if (patternStack == null) {
                 return;
             }
+
+            var part = term.getNetworkNode();
+            if (part != null) {
+                channelNodes = part.getGrid()
+                    .getMachines(AssemblerMatrix.class);
+            } else return;
+        } else if (container instanceof ContainerFluidPatternWireless term) {
+            patternSlotOUT = ((AccessorFCContainerEncodeTerminal) term).getPatternSlotOUT();
+            patternStack = patternSlotOUT.getStack();
+            if (patternStack == null) {
+                return;
+            }
+
+            var part = term.getNetworkNode();
+            if (part != null) {
+                channelNodes = part.getGrid()
+                    .getMachines(AssemblerMatrix.class);
+            } else return;
         } else return;
 
         final IAEItemStack out;

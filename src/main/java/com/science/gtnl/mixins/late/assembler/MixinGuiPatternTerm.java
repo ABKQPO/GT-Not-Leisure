@@ -35,9 +35,7 @@ public class MixinGuiPatternTerm extends GuiMEMonitorable {
         super(null, null);
     }
 
-    @Inject(
-        method = "initGui",
-        at = @At(value = "INVOKE", target = "Lappeng/client/gui/widgets/GuiImgButton;setHalfSize(Z)V", remap = false))
+    @Inject(method = "initGui", at = @At("TAIL"))
     private void injectInitGui(final CallbackInfo ci) {
         snl$uploadPatternButton = new GuiTabButton(
             this.guiLeft + 173,
@@ -57,8 +55,7 @@ public class MixinGuiPatternTerm extends GuiMEMonitorable {
     }
 
     @Inject(method = "drawFG", at = @At("HEAD"), remap = false)
-    private void injectDrawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY,
-        final CallbackInfo ci) {
+    private void updateButtonVisibility(CallbackInfo ci) {
         snl$uploadPatternButton.visible = this.container.isCraftingMode();
     }
 
