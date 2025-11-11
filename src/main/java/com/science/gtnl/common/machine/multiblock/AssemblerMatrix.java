@@ -68,6 +68,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -118,18 +119,22 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
-    implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable {
+    implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable, IPowerChannelState {
 
     public static int eachPatternCasingCapacity = 72;
     public static int eachCraftingCasingParallel = 2048;
+    public static int eachSingularityCraftingCasingParallel = Integer.MAX_VALUE;
     public static final int MODE_INPUT = 0;
     public static final int MODE_OUTPUT = 1;
     public static final int MODE_OPERATING = 2;
 
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
+    public int mCountSingularityCrafterCasing = -1;
+    public int mCountSpeedCasing = -1;
     public int mMaxSlots = 0;
     public long usedParallel = 0;
+    public long mMaxParallelLong = 0;
 
     private AENetworkProxy gridProxy;
     private DualityInterface di;
@@ -170,6 +175,16 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void stateChange(final MENetworkPowerStatusChange c) {
         this.getInterfaceDuality()
             .notifyNeighbors();
+    }
+
+    @Override
+    public boolean isPowered() {
+        return getProxy() != null && getProxy().isPowered();
+    }
+
+    @Override
+    public boolean isActive() {
+        return getProxy() != null && getProxy().isActive();
     }
 
     /**
@@ -271,6 +286,10 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
+        if (checkStructure(true)) {
+            this.mStartUpCheck = -1;
+            this.mUpdate = 200;
+        }
         getProxy().onReady();
     }
 
@@ -350,9 +369,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public int getMaxParallelRecipes() {
-        mMaxParallel = eachCraftingCasingParallel * mCountCrafterCasing;
+        mMaxParallelLong = (long) eachCraftingCasingParallel * mCountCrafterCasing
+            + (long) eachSingularityCraftingCasingParallel * mCountSingularityCrafterCasing;
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
-        return mMaxParallel;
+
+        return (int) mMaxParallelLong;
     }
 
     @Override
@@ -469,8 +490,10 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setInteger("mCountCrafterCasing", mCountCrafterCasing);
+        aNBT.setInteger("mCountSingularityCrafterCasing", mCountSingularityCrafterCasing);
         aNBT.setInteger("mCountPatternCasing", mCountPatternCasing);
-        aNBT.setLong("usedParallel", usedParallel);
+        aNBT.setInteger("mCountSpeedCasing", mCountSpeedCasing);
+        aNBT.setLong("mMaxParallelLong", mMaxParallelLong);
         saveInvData(aNBT, false);
     }
 
@@ -543,9 +566,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        mCountSpeedCasing = aNBT.getInteger("mCountSpeedCasing");
+        mCountSingularityCrafterCasing = aNBT.getInteger("mCountSingularityCrafterCasing");
         mCountCrafterCasing = aNBT.getInteger("mCountCrafterCasing");
         mCountPatternCasing = aNBT.getInteger("mCountPatternCasing");
         usedParallel = aNBT.getLong("usedParallel");
+        mMaxParallelLong = aNBT.getLong("mMaxParallelLong");
 
         NBTTagCompound storeRoot = null;
 
@@ -672,16 +698,19 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void setupParameters() {
         super.setupParameters();
-        mMaxParallel = 512 * mCountCrafterCasing;
+        mMaxParallelLong = (long) eachCraftingCasingParallel * mCountCrafterCasing
+            + (long) eachSingularityCraftingCasingParallel * mCountSingularityCrafterCasing;
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
     }
 
     @Override
     public void clearHatches() {
         super.clearHatches();
-        mCountCrafterCasing = 0;
         mCountPatternCasing = 0;
-        mMaxParallel = 0;
+        mCountCrafterCasing = 0;
+        mCountSingularityCrafterCasing = 0;
+        mCountSpeedCasing = 0;
+        mMaxParallelLong = 0;
         mMaxSlots = 0;
         patterns.clear();
         possibleOutputs.clear();
@@ -689,7 +718,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public boolean checkHatch() {
-        return super.checkHatch() && mCountCrafterCasing + mCountPatternCasing + mCountCasing == 343;
+        return super.checkHatch()
+            && mCountCasing + mCountPatternCasing
+                + mCountCrafterCasing
+                + mCountSingularityCrafterCasing
+                + mCountSpeedCasing == 343
+            && mCountSpeedCasing <= 5;
     }
 
     @Override
@@ -738,9 +772,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             .addElement(
                 'C',
                 ofChain(
+                    onElementPass(t -> t.mCountCasing++, ofBlock(BlockLoader.metaCasing02, 5)),
                     onElementPass(t -> t.mCountPatternCasing++, ofBlock(BlockLoader.metaCasing02, 6)),
                     onElementPass(t -> t.mCountCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 7)),
-                    onElementPass(t -> t.mCountCasing++, ofBlock(BlockLoader.metaCasing02, 5))))
+                    onElementPass(t -> t.mCountSingularityCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 8)),
+                    onElementPass(t -> t.mCountSpeedCasing++, ofBlock(BlockLoader.metaCasing02, 9))))
             .build();
     }
 
@@ -812,9 +848,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             mEfficiencyIncrease = 10000;
             lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
-        } else if (machineMode == MODE_OPERATING) {
+        } else if (isActive() && machineMode == MODE_OPERATING) {
             if (mMaxSlots > 0 && !inventory.isEmpty() && !outputs.isEmpty()) {
-                long parallel = getMaxParallelRecipes();
+                long parallel = mMaxParallelLong;
                 parallel = Math.min(parallel, getMaxInputEu() / 2);
                 int maximum = outputs.size();
                 usedParallel = 0L;
@@ -875,7 +911,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
-                    this.mMaxProgresstime = 20;
+                    this.mMaxProgresstime = Math.max(1, 40 >> mCountSpeedCasing);
                     return CheckRecipeResultRegistry.SUCCESSFUL;
                 }
             }

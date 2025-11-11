@@ -247,25 +247,25 @@ public class ItemLoader {
 
     public static void registryMetaItems() {
         GTNLItemList.TrollFace
-            .set(MetaItemAdder.initItem(0, new String[] { StatCollector.translateToLocal("Tooltip_TrollFace") }));
+            .set(MetaItemAdder.initItem(0, new String[] { StatCollector.translateToLocal("Tooltip_TrollFace_00") }));
         GTNLItemList.DepletedExcitedNaquadahFuelRod.set(
             MetaItemAdder.initItem(
                 1,
-                new String[] { StatCollector.translateToLocal("Tooltip_DepletedExcitedNaquadahFuelRod") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_DepletedExcitedNaquadahFuelRod_00") }));
         GTNLItemList.BlazeCube
-            .set(MetaItemAdder.initItem(2, new String[] { StatCollector.translateToLocal("Tooltip_BlazeCube") }));
-        GTNLItemList.EnhancementCore
-            .set(MetaItemAdder.initItem(3, new String[] { StatCollector.translateToLocal("Tooltip_EnhancementCore") }));
+            .set(MetaItemAdder.initItem(2, new String[] { StatCollector.translateToLocal("Tooltip_BlazeCube_00") }));
+        GTNLItemList.EnhancementCore.set(
+            MetaItemAdder.initItem(3, new String[] { StatCollector.translateToLocal("Tooltip_EnhancementCore_00") }));
         GTNLItemList.StellarConstructionFrameMaterial
             .set(MetaItemAdder.initItem(4, new String[] { StatCollector.translateToLocal("Tooltip_TestItem0.line1") }));
         GTNLItemList.ActivatedGaiaPylon.set(MetaItemAdder.initItem(5));
         GTNLItemList.PrecisionSteamMechanism.set(MetaItemAdder.initItem(6));
         GTNLItemList.MeteorMinerSchematic1.set(
             MetaItemAdder
-                .initItem(7, new String[] { StatCollector.translateToLocal("Tooltip_MeteorMinerSchematic1") }));
+                .initItem(7, new String[] { StatCollector.translateToLocal("Tooltip_MeteorMinerSchematicI_00") }));
         GTNLItemList.MeteorMinerSchematic2.set(
             MetaItemAdder
-                .initItem(8, new String[] { StatCollector.translateToLocal("Tooltip_MeteorMinerSchematic2") }));
+                .initItem(8, new String[] { StatCollector.translateToLocal("Tooltip_MeteorMinerSchematicII_00") }));
         GTNLItemList.CircuitResonaticULV.set(
             MetaItemAdder.initItem(
                 9,

@@ -139,6 +139,8 @@ public enum GTNLItemList implements IItemContainer {
     AssemblerMatrixWall,
     AssemblerMatrixPattern,
     AssemblerMatrixCrafter,
+    AssemblerMatrixSingularityCrafter,
+    AssemblerMatrixSpeed,
 
     TrollFace,
     DepletedExcitedNaquadahFuelRod,

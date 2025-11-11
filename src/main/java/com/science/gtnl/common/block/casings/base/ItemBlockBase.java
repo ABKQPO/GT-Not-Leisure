@@ -46,7 +46,7 @@ public class ItemBlockBase extends ItemBlock {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack aItemStack, EntityPlayer p_77624_2_, List<String> theTooltipsList,
+    public void addInformation(ItemStack aItemStack, EntityPlayer entityPlayer, List<String> theTooltipsList,
         boolean p_77624_4_) {
         int meta = aItemStack.getItemDamage();
         if (null != MetaBlockTooltipsMap.get(meta)) {

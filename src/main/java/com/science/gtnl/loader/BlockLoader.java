@@ -501,10 +501,30 @@ public class BlockLoader {
         GTNLItemList.AdvancedIndustrialSteamCasing
             .set(MetaItemBlockCasing.initMetaBlockCasing(2, BlockLoader.metaCasing02));
         GTNLItemList.StainlessSteelGearBox.set(MetaItemBlockCasing.initMetaBlockCasing(3, BlockLoader.metaCasing02));
+
         GTNLItemList.AssemblerMatrixFrame.set(MetaItemBlockCasing.initMetaBlockCasing(4, BlockLoader.metaCasing02));
         GTNLItemList.AssemblerMatrixWall.set(MetaItemBlockCasing.initMetaBlockCasing(5, BlockLoader.metaCasing02));
-        GTNLItemList.AssemblerMatrixPattern.set(MetaItemBlockCasing.initMetaBlockCasing(6, BlockLoader.metaCasing02));
-        GTNLItemList.AssemblerMatrixCrafter.set(MetaItemBlockCasing.initMetaBlockCasing(7, BlockLoader.metaCasing02));
+
+        GTNLItemList.AssemblerMatrixPattern.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                6,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+        GTNLItemList.AssemblerMatrixCrafter.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                7,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+        GTNLItemList.AssemblerMatrixSingularityCrafter.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                8,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+        GTNLItemList.AssemblerMatrixSpeed.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                9,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
     }
 
     public static void registry() {
