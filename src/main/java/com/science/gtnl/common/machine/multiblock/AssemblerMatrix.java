@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -68,7 +70,6 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.ICraftingPatternItem;
-import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -86,6 +87,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.localization.WailaText;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.me.GridAccessException;
@@ -117,9 +119,11 @@ import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
-    implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable, IPowerChannelState {
+    implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable {
 
     public static int eachPatternCasingCapacity = 72;
     public static int eachCraftingCasingParallel = 2048;
@@ -177,14 +181,32 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             .notifyNeighbors();
     }
 
-    @Override
     public boolean isPowered() {
         return getProxy() != null && getProxy().isPowered();
     }
 
-    @Override
     public boolean isActive() {
         return getProxy() != null && getProxy().isActive();
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currenttip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+        boolean isActive = tag.getBoolean("isAEActive");
+        boolean isPowered = tag.getBoolean("isAEPowered");
+        currenttip.add(WailaText.getPowerState(isActive, isPowered, false));
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        boolean isActive = isActive();
+        boolean isPowered = isPowered();
+        tag.setBoolean("isAEActive", isActive);
+        tag.setBoolean("isAEPowered", isPowered);
     }
 
     /**

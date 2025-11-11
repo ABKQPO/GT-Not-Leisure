@@ -509,22 +509,22 @@ public class BlockLoader {
             MetaItemBlockCasing.initMetaBlockCasing(
                 6,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixPattern_00") }));
         GTNLItemList.AssemblerMatrixCrafter.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 7,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixCrafter_00") }));
         GTNLItemList.AssemblerMatrixSingularityCrafter.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 8,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSingularityCrafter_00") }));
         GTNLItemList.AssemblerMatrixSpeed.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 9,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSpeed_00") }));
     }
 
     public static void registry() {
