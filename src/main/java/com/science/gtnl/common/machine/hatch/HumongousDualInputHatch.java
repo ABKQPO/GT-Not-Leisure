@@ -193,7 +193,7 @@ public class HumongousDualInputHatch extends DualInputHatch implements ISkipStac
         int meta = tag.getInteger("Damage");
         long count = tag.getInteger("Count");
 
-        if (count <= 0) return null;
+        if (count < 0) return null;
 
         ItemStack stack = new ItemStack(Item.getItemById(id), Math.toIntExact(count), meta);
 

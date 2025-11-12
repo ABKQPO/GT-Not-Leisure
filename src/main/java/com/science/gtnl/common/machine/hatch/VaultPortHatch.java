@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.hatch;
 import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -167,16 +168,28 @@ public class VaultPortHatch extends MTEHatch
     @Override
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
-            gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.VaultPortHatch.get(1), true);
-            gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-            var bmte = getBaseMetaTileEntity();
-            if (bmte.getWorld() != null) {
-                gridProxy.setOwner(
-                    bmte.getWorld()
-                        .getPlayerEntityByName(bmte.getOwnerName()));
+            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
+                gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.VaultPortHatch.get(1), true);
+                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+                var bmte = getBaseMetaTileEntity();
+                updateValidGridProxySides();
+                if (bmte.getWorld() != null) {
+                    gridProxy.setOwner(
+                        bmte.getWorld()
+                            .getPlayerEntityByName(bmte.getOwnerName()));
+                }
             }
         }
         return gridProxy;
+    }
+
+    public void updateValidGridProxySides() {
+        getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN)));
+    }
+
+    @Override
+    public void onFacingChange() {
+        updateValidGridProxySides();
     }
 
     @Override
