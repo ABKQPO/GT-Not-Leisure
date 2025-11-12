@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.metatileentity.BaseTileEntity.*;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -328,8 +328,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         // Display current recipe
         screenElements.widget(
             new FakeSyncWidget.ListSyncer<>(
-                () -> cachedOutputItems != null ? ObjectArrayList.wrap(cachedOutputItems)
-                    : ObjectLists.emptyList(),
+                () -> cachedOutputItems != null ? ObjectArrayList.wrap(cachedOutputItems) : ObjectLists.emptyList(),
                 val -> {
                     cachedOutputItems = val.toArray(new IAEItemStack[0]);
                     recipeOutputItemsWidget.notifyChangeNoSync();
@@ -343,7 +342,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         try {
             return AEItemStack.loadItemStackFromPacket(buffer);
         } catch (IOException e) {
-            return null;
+            return AEItemStack.create(new ItemStack(Items.fire_charge));
         }
     }
 
