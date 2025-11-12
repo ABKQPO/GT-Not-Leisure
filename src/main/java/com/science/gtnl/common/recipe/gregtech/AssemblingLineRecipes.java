@@ -1817,7 +1817,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 ItemList.BlockNaquadriaReinforcedWaterPlantCasing.get(64), ItemList.Heating_Duct_Casing.get(64),
                 ItemList.Electric_Motor_UHV.get(32), ItemList.Electric_Pump_UHV.get(32),
                 ItemList.Field_Generator_UHV.get(16), new ItemStack(huiCircuit, 32, 4),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UEV, 32),
+                new Object[] { OrePrefixes.circuit.get(Materials.UEV), 32L },
                 com.dreammaster.gthandler.CustomItemList.HighEnergyFlowCircuit.get(64),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUHV, 16),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Infinity, 1),
@@ -1829,5 +1829,34 @@ public class AssemblingLineRecipes implements IRecipePool {
             GTNLItemList.CompoundDistillationFractionator.get(1),
             2000,
             (int) TierEU.RECIPE_UEV);
+
+        GTValues.RA.stdBuilder()
+            .metadata(RESEARCH_ITEM, GTNLItemList.AssemblerMatrixCrafterCore.get(1))
+            .metadata(SCANNING, new Scanning(5 * MINUTES, TierEU.RECIPE_UEV))
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Infinity, 32),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSingularityCraftingStorage", 1),
+                GTNLItemList.AssemblerMatrixWall.get(32),
+                GTNLItemList.AssemblerMatrixCrafterCore.get(32),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockAdvancedCraftingUnit", 32, 3),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 67),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 32, 56),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 64, 30),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 64, 27),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 64, 47),
+                ItemList.Tesseract.get(16),
+                ItemList.Field_Generator_UEV.get(4),
+                new Object[] { OrePrefixes.circuit.get(Materials.UEV), 4L },
+                ItemList.SuperconductorComposite.get(16),
+                GregtechItemList.Laser_Lens_Special.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt01, Materials.SuperconductorUEV, 16))
+            .fluidInputs(
+                Materials.UUMatter.getFluid(256000),
+                MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(18432),
+                MaterialsUEVplus.SpaceTime.getMolten(1296))
+            .itemOutputs(GTNLItemList.AssemblerMatrixSingularityCrafterCore.get(1))
+            .eut(TierEU.RECIPE_UIV)
+            .duration(150 * SECONDS)
+            .addTo(AL);
     }
 }

@@ -747,13 +747,13 @@ tile.MetaCasing02.3.name=不锈钢齿轮箱机械方块
 tile.MetaCasing02.4.name=装配矩阵框架
 tile.MetaCasing02.5.name=装配矩阵墙壁
 tile.MetaCasing02.6.name=装配矩阵样板核心
-Tooltip_AssemblerMatrixPattern_00=每个提供72样板槽
+Tooltip_AssemblerMatrixPatternCore_00=每个提供72样板槽
 tile.MetaCasing02.7.name=装配矩阵合成核心
-Tooltip_AssemblerMatrixCrafter_00=每个提供2,048并行
+Tooltip_AssemblerMatrixCrafterCore_00=每个提供2,048并行
 tile.MetaCasing02.8.name=装配矩阵奇点合成核心
-Tooltip_AssemblerMatrixSingularityCrafter_00=每个提供2,147,483,647并行
+Tooltip_AssemblerMatrixSingularityCrafterCore_00=每个提供2,147,483,647并行
 tile.MetaCasing02.9.name=装配矩阵速度核心
-Tooltip_AssemblerMatrixSpeed_00=每安装一个时间减半
+Tooltip_AssemblerMatrixSpeedCore_00=每安装一个时间减半
 
 tile.MetaBlock.0.name=测试方块
 tile.MetaBlock.1.name=§d新视野线圈

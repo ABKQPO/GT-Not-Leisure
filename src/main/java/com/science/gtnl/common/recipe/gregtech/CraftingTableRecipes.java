@@ -15,6 +15,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsBotania;
@@ -1232,6 +1233,26 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTModHandler.getModItem(GalacticraftCore.ID, "tile.rockerWorkbench", 1), 'C',
                 ItemList.Robot_Arm_EV.get(1), 'D', ItemList.Casing_Gearbox_Titanium.get(1), 'E',
                 ItemList.Machine_EV_Assembler.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AssemblerMatrixWall.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A',
+                GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Iridium, 1), 'B',
+                GGMaterial.adamantiumAlloy.get(OrePrefixes.plate, 1), 'C',
+                ItemList.Casing_RobustTungstenSteel.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AssemblerMatrixFrame.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A',
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Adamantium, 1), 'B',
+                GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Osmiridium, 1), 'C',
+                GTNLItemList.AssemblerMatrixWall.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AssemblerMatrix.get(1),
+            new Object[] { "ABA", "CDE", "ABA", 'A', ItemList.Field_Generator_IV.get(1), 'B',
+                GTNLItemList.AssemblerMatrixFrame.get(1), 'C', ItemList.Hatch_Input_Bus_ME_Advanced.get(1), 'D',
+                ItemList.LargeMolecularAssembler.get(1), 'E', ItemList.Hatch_Output_Bus_ME.get(1) });
 
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }

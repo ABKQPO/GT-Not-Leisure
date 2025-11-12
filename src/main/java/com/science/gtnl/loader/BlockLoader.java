@@ -505,26 +505,26 @@ public class BlockLoader {
         GTNLItemList.AssemblerMatrixFrame.set(MetaItemBlockCasing.initMetaBlockCasing(4, BlockLoader.metaCasing02));
         GTNLItemList.AssemblerMatrixWall.set(MetaItemBlockCasing.initMetaBlockCasing(5, BlockLoader.metaCasing02));
 
-        GTNLItemList.AssemblerMatrixPattern.set(
+        GTNLItemList.AssemblerMatrixPatternCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 6,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixPattern_00") }));
-        GTNLItemList.AssemblerMatrixCrafter.set(
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixPatternCore_00") }));
+        GTNLItemList.AssemblerMatrixCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 7,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixCrafter_00") }));
-        GTNLItemList.AssemblerMatrixSingularityCrafter.set(
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixCrafterCore_00") }));
+        GTNLItemList.AssemblerMatrixSingularityCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 8,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSingularityCrafter_00") }));
-        GTNLItemList.AssemblerMatrixSpeed.set(
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSingularityCrafterCore_00") }));
+        GTNLItemList.AssemblerMatrixSpeedCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 9,
                 BlockLoader.metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSpeed_00") }));
+                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSpeedCore_00") }));
     }
 
     public static void registry() {

@@ -2970,6 +2970,80 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Casing_RobustTungstenSteel.get(1),
+                GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Iridium, 4),
+                GGMaterial.adamantiumAlloy.get(OrePrefixes.plate, 4))
+            .itemOutputs(GTNLItemList.AssemblerMatrixWall.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.AssemblerMatrixWall.get(1),
+                GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Osmiridium, 4),
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Adamantium, 4))
+            .itemOutputs(GTNLItemList.AssemblerMatrixFrame.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_IV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.AssemblerMatrixFrame.get(2),
+                ItemList.LargeMolecularAssembler.get(1),
+                ItemList.Hatch_Input_Bus_ME_Advanced.get(1),
+                ItemList.Hatch_Output_Bus_ME.get(1),
+                ItemList.Field_Generator_IV.get(4))
+            .itemOutputs(GTNLItemList.AssemblerMatrix.get(1))
+            .duration(600)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.AssemblerMatrixWall.get(1),
+                ItemList.Hatch_CraftingInput_Bus_ME_ItemOnly.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 8, 54),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 24),
+                ItemList.Conveyor_Module_LuV.get(2),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemPaintBall", 64, 11))
+            .itemOutputs(GTNLItemList.AssemblerMatrixPatternCore.get(1))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.AssemblerMatrixWall.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockMolecularAssembler", 8),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 40, 30),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 22),
+                ItemList.Robot_Arm_LuV.get(2),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemPaintBall", 64, 10))
+            .itemOutputs(GTNLItemList.AssemblerMatrixCrafterCore.get(1))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.AssemblerMatrixWall.get(1),
+                ItemList.AcceleratorLuV.get(4),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 56),
+                CustomItemList.EngineeringProcessorItemAdvEmeraldCore.get(16),
+                ItemList.Field_Generator_LuV.get(2),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 4),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemPaintBall", 64, 14))
+            .itemOutputs(GTNLItemList.AssemblerMatrixSpeedCore.get(1))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();

@@ -747,13 +747,13 @@ tile.MetaCasing02.3.name=Stainless Steel Gear Box
 tile.MetaCasing02.4.name=Assembler Matrix Frame
 tile.MetaCasing02.5.name=Assembler Matrix Wall
 tile.MetaCasing02.6.name=Assembler Matrix Pattern Core
-Tooltip_AssemblerMatrixPattern_00=Each provides 72 pattern slot processes
+Tooltip_AssemblerMatrixPatternCore_00=Each provides 72 pattern slot processes
 tile.MetaCasing02.7.name=Assembler Matrix Crafter Core
-Tooltip_AssemblerMatrixCrafter_00=Each provides 2,048 parallel processes
+Tooltip_AssemblerMatrixCrafterCore_00=Each provides 2,048 parallel processes
 tile.MetaCasing02.8.name=Assembler Matrix Singularity Crafter Core
-Tooltip_AssemblerMatrixSingularityCrafter_00=Each provides 2,147,483,647 parallel processes
+Tooltip_AssemblerMatrixSingularityCrafterCore_00=Each provides 2,147,483,647 parallel processes
 tile.MetaCasing02.9.name=Assembler Matrix Speed Core
-Tooltip_AssemblerMatrixSpeed_00=Each installed core halves the operation time
+Tooltip_AssemblerMatrixSpeedCore_00=Each installed core halves the operation time
 
 tile.MetaBlock.0.name=Test Block
 tile.MetaBlock.1.name=§dNew Horizons Coil
