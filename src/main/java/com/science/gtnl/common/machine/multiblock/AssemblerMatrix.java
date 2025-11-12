@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.metatileentity.BaseTileEntity.*;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -120,7 +119,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -322,7 +320,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         getProxy().onReady();
     }
 
-    @SneakyThrows
     @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
@@ -331,19 +328,30 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         // Display current recipe
         screenElements.widget(
             new FakeSyncWidget.ListSyncer<>(
-                () -> cachedOutputItems != null ? ObjectArrayList.wrap(cachedOutputItems)
-                    : ObjectLists.<IAEItemStack>emptyList(),
+                () -> cachedOutputItems != null ? ObjectArrayList.wrap(cachedOutputItems) : ObjectLists.emptyList(),
                 val -> {
                     cachedOutputItems = val.toArray(new IAEItemStack[0]);
                     recipeOutputItemsWidget.notifyChangeNoSync();
                 },
                 AssemblerMatrix::writeAEItemStack,
-                AEItemStack::loadItemStackFromPacket));
+                AssemblerMatrix::loadAEItemStack));
         screenElements.widget(recipeOutputItemsWidget);
     }
 
-    private static void writeAEItemStack(PacketBuffer buffer, @Nullable IAEItemStack stack) throws IOException {
-        stack.writeToPacket(buffer);
+    private static IAEItemStack loadAEItemStack(PacketBuffer buffer) {
+        try {
+            return AEItemStack.loadItemStackFromPacket(buffer);
+        } catch (IOException e) {
+            return AEItemStack.create(new ItemStack(Items.fire_charge));
+        }
+    }
+
+    private static void writeAEItemStack(PacketBuffer buffer, @NotNull IAEItemStack stack) {
+        try {
+            stack.writeToPacket(buffer);
+        } catch (IOException ignored) {
+
+        }
     }
 
     @Override
