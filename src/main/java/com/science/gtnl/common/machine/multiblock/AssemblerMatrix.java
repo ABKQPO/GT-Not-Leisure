@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -320,6 +320,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         getProxy().onReady();
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
@@ -342,7 +343,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         try {
             return AEItemStack.loadItemStackFromPacket(buffer);
         } catch (IOException e) {
-            return AEItemStack.create(new ItemStack(Items.fire_charge));
+            return AEItemStack.create(new ItemStack(Blocks.fire));
         }
     }
 
