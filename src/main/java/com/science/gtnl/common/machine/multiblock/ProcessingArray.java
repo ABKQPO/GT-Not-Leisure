@@ -271,7 +271,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public double getDurationModifier() {
-        return 1 / 1.11 - (3.0 * getMCoilLevel().getTier()) / 100;
+        return 1 / 1.11 - (3.0 * (getMCoilLevel().getTier() + 1)) / 100;
     }
 
     @Override
@@ -289,8 +289,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     public void setTierAndMult() {
         IMetaTileEntity aMachine = ItemMachines.getMetaTileEntity(getControllerSlot());
-        if (aMachine instanceof MTETieredMachineBlock) {
-            tTier = ((MTETieredMachineBlock) aMachine).mTier;
+        if (aMachine instanceof MTETieredMachineBlock tieredMachineBlock) {
+            tTier = tieredMachineBlock.mTier;
         } else {
             tTier = 0;
         }
@@ -475,7 +475,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
                 + StatCollector.translateToLocal("GT5U.PA.discount")
                 + ": "
                 + EnumChatFormatting.GREEN
-                + 1
+                + getEUtDiscount()
                 + EnumChatFormatting.RESET
                 + " x",
             StatCollector.translateToLocal("GT5U.PA.parallel") + ": "
