@@ -54,6 +54,7 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
+import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
@@ -65,6 +66,7 @@ import com.science.gtnl.utils.LargeInventoryCrafting;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -318,6 +320,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             this.mUpdate = 200;
         }
         getProxy().onReady();
+    }
+
+    @Override
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_CIRCULATION)
+                .setSize(18, 18)
+                .setPos(172, 67));
     }
 
     @SuppressWarnings("UnstableApiUsage")

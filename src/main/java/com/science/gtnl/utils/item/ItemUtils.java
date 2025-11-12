@@ -44,6 +44,9 @@ public class ItemUtils {
 
     public static final Random rand = new Random();
 
+    public static final UITexture PICTURE_CIRCULATION = UITexture
+        .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/circulation_");
+
     public static final UITexture PICTURE_GTNL_LOGO = UITexture
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/logo");
 
