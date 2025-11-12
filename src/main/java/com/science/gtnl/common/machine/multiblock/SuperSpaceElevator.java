@@ -4,7 +4,7 @@ import static bartworks.common.loaders.ItemRegistry.bw_realglas;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase.ZERO_STRING;
+import static com.science.gtnl.utils.Utils.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
