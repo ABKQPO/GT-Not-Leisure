@@ -52,6 +52,9 @@ public class Utils {
     public static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
     public static final BigInteger INTEGER_MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
     public static final BigInteger BIG_INTEGER_100 = BigInteger.valueOf(100);
+    public static final BigInteger LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
+    public static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
+    public static final String ZERO_STRING = "0";
 
     public static boolean isClientSide() {
         return FMLCommonHandler.instance()
@@ -80,6 +83,17 @@ public class Utils {
             }
         }
         return result;
+    }
+
+    public static long toLongSafe(BigInteger value) {
+        if (value == null) return 0L;
+        if (value.compareTo(LONG_MAX) > 0) {
+            return Long.MAX_VALUE;
+        }
+        if (value.compareTo(LONG_MIN) < 0) {
+            return Long.MIN_VALUE;
+        }
+        return value.longValue();
     }
 
     public static boolean addStacksToList(@NotNull Collection<ItemStack> list, @NotNull ItemStack itemStack,

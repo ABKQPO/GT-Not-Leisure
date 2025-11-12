@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.utils.Utils.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.metatileentity.BaseTileEntity.*;
 import static gregtech.api.util.GTStructureUtility.*;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,6 +115,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
+import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
@@ -141,6 +144,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public int mMaxSlots = 0;
     public long usedParallel = 0;
     public long mMaxParallelLong = 0;
+    public UUID ownerUUID;
+    public boolean wirelessMode;
+    public String costingEUText = ZERO_STRING;
 
     private AENetworkProxy gridProxy;
     private DualityInterface di;
@@ -192,18 +198,29 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currenttip, accessor, config);
+        super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         boolean isActive = tag.getBoolean("isAEActive");
         boolean isPowered = tag.getBoolean("isAEPowered");
-        currenttip.add(WailaText.getPowerState(isActive, isPowered, false));
+        currentTip.add(WailaText.getPowerState(isActive, isPowered, false));
         if (tag.getLong("maxParallelLong") > 1) {
-            currenttip.add(
+            currentTip.add(
                 StatCollector.translateToLocal("GT5U.multiblock.parallelism") + " (Long): "
                     + EnumChatFormatting.WHITE
                     + tag.getLong("maxParallelLong"));
+        }
+        if (tag.getBoolean("wirelessMode")) {
+            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + tag.getString("costingEUText")
+                    + EnumChatFormatting.RESET
+                    + " EU");
         }
     }
 
@@ -216,6 +233,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         tag.setBoolean("isAEActive", isActive);
         tag.setBoolean("isAEPowered", isPowered);
         tag.setLong("maxParallelLong", mMaxParallelLong);
+        tag.setBoolean("wirelessMode", wirelessMode);
+        if (wirelessMode) tag.setString("costingEUText", costingEUText);
     }
 
     /**
@@ -315,6 +334,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
+        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
         if (checkStructure(true)) {
             this.mStartUpCheck = -1;
             this.mUpdate = 200;
@@ -550,6 +570,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         aNBT.setInteger("mCountPatternCasing", mCountPatternCasing);
         aNBT.setInteger("mCountSpeedCasing", mCountSpeedCasing);
         aNBT.setLong("mMaxParallelLong", mMaxParallelLong);
+        aNBT.setBoolean("wirelessMode", wirelessMode);
         saveInvData(aNBT, false);
     }
 
@@ -628,6 +649,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mCountPatternCasing = aNBT.getInteger("mCountPatternCasing");
         usedParallel = aNBT.getLong("usedParallel");
         mMaxParallelLong = aNBT.getLong("mMaxParallelLong");
+        wirelessMode = aNBT.getBoolean("wirelessMode");
 
         NBTTagCompound storeRoot = null;
 
@@ -700,6 +722,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_Tectech_Hatch"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
@@ -757,6 +780,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxParallelLong = (long) eachCraftingCasingParallel * mCountCrafterCasing
             + (long) eachSingularityCraftingCasingParallel * mCountSingularityCrafterCasing;
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
+        wirelessMode = mExoticEnergyHatches.isEmpty() && mEnergyHatches.isEmpty() && mCountSingularityCrafterCasing > 0;
     }
 
     @Override
@@ -770,6 +794,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxSlots = 0;
         patterns.clear();
         possibleOutputs.clear();
+        wirelessMode = false;
     }
 
     @Override
@@ -906,8 +931,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (isActive() && machineMode == MODE_OPERATING) {
             if (mMaxSlots > 0 && !inventory.isEmpty() && !outputs.isEmpty()) {
+                costingEUText = ZERO_STRING;
                 long parallel = mMaxParallelLong;
-                parallel = Math.min(parallel, getMaxInputEu() / 2);
+                long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
+                    : getMaxInputEu();
+
+                parallel = Math.min(parallel, maxInputEU / 2);
                 int maximum = outputs.size();
                 usedParallel = 0L;
 
@@ -957,8 +986,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 }
 
                 if (!preparedOutputs.isEmpty()) {
-                    this.cachedOutputItems = preparedOutputs.toArray(new IAEItemStack[preparedOutputs.size()]);
                     this.lEUt = -2 * Math.max(1, usedParallel);
+                    if (wirelessMode) {
+                        WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -2 * usedParallel);
+                        costingEUText = GTUtility.formatNumbers(lEUt);
+                        this.lEUt = 0;
+                    }
+
+                    this.cachedOutputItems = preparedOutputs.toArray(new IAEItemStack[preparedOutputs.size()]);
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
                     this.mMaxProgresstime = Math.max(1, 40 >> mCountSpeedCasing);
@@ -1032,6 +1067,17 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
                 (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
                     : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
+        if (wirelessMode) {
+            info.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            info.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + costingEUText
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
         return info.toArray(new String[0]);
     }
 

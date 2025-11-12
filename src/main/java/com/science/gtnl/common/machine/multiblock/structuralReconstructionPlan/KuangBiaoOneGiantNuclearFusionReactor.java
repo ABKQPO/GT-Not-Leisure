@@ -743,8 +743,6 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public int totalOverclockedDuration = 0;
         public int maxParallelStored = -1;
 
-        public static final String ZERO_STRING = "0";
-
         public UUID ownerUUID;
         public boolean isRecipeProcessing = false;
         @Getter

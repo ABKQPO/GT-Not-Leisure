@@ -130,9 +130,6 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public long effectiveParallelLong = 1;
 
     @Unique
-    private static final String ZERO_STRING = "0";
-
-    @Unique
     public BigInteger costingEU = BigInteger.ZERO;
 
     @Unique

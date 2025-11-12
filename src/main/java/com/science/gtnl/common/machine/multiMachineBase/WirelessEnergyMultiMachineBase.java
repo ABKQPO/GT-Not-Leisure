@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.mergeArray;
+import static com.science.gtnl.utils.Utils.*;
 import static gregtech.api.enums.GTValues.V;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
@@ -52,8 +51,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public WirelessEnergyMultiMachineBase(String aName) {
         super(aName);
     }
-
-    public static final String ZERO_STRING = "0";
 
     public UUID ownerUUID;
     public boolean isRecipeProcessing = false;

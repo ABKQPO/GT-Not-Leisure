@@ -1511,6 +1511,7 @@ Tooltip_AssemblerMatrix_01=Consumes 2 EU per parallel process
 Tooltip_AssemblerMatrix_02=Cannot be overclocked
 Tooltip_AssemblerMatrix_03=Structure must be fully filled with cores/walls to form!
 Tooltip_AssemblerMatrix_04=Maximum of 5 speed cores can be installed
+Tooltip_AssemblerMatrix_05=Automatically enters wireless mode when a Singularity Crafter Core is installed and no energy hatch is present
 Info_AssemblerMatrix_00=§7Pattern storage: %s/%s
 AssemblerMatrix_Mode_0=Input Mode
 AssemblerMatrix_Mode_1=Output Mode

@@ -6,7 +6,7 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElement
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
+import static com.science.gtnl.utils.Utils.*;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
@@ -130,7 +130,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     private static final int HORIZONTAL_OFF_SET = 46;
     private static final int VERTICAL_OFF_SET = 2;
     private static final int DEPTH_OFF_SET = 0;
-    public final String ZERO_STRING = "0";
     public final List<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
     public String costingEUText = ZERO_STRING;
     public UUID ownerUUID;
