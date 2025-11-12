@@ -246,7 +246,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(CompressionTierKey.INSTANCE, 0) > 0)
                     return CheckRecipeResultRegistry.NO_RECIPE;
-                if (GTMod.gregtechproxy.mLowGravProcessing && recipe.mSpecialValue == -100
+                if (GTMod.proxy.mLowGravProcessing && (recipe.mSpecialValue == -100 || recipe.mSpecialValue == -300)
                     && !isValidForLowGravity(recipe, getBaseMetaTileEntity().getWorld().provider.dimensionId)) {
                     return SimpleCheckRecipeResult.ofFailure("high_gravity");
                 }
