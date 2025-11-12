@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -39,6 +39,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -52,7 +53,6 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.internal.network.NetworkUtils;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.ChangeableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
@@ -67,7 +67,6 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.ICraftingPatternItem;
@@ -115,11 +114,13 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -274,7 +275,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
     private final Queue<IAEItemStack> inputs = new ArrayDeque<>();
-    public ItemStack[] cachedOutputItems = null;
+    public IAEItemStack[] cachedOutputItems = null;
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
@@ -321,6 +322,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         getProxy().onReady();
     }
 
+    @SneakyThrows
     @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
@@ -329,14 +331,19 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         // Display current recipe
         screenElements.widget(
             new FakeSyncWidget.ListSyncer<>(
-                () -> cachedOutputItems != null ? Arrays.asList(cachedOutputItems) : Collections.emptyList(),
+                () -> cachedOutputItems != null ? ObjectArrayList.wrap(cachedOutputItems)
+                    : ObjectLists.<IAEItemStack>emptyList(),
                 val -> {
-                    cachedOutputItems = val.toArray(new ItemStack[0]);
+                    cachedOutputItems = val.toArray(new IAEItemStack[0]);
                     recipeOutputItemsWidget.notifyChangeNoSync();
                 },
-                NetworkUtils::writeItemStack,
-                NetworkUtils::readItemStack));
+                AssemblerMatrix::writeAEItemStack,
+                AEItemStack::loadItemStackFromPacket));
         screenElements.widget(recipeOutputItemsWidget);
+    }
+
+    private static void writeAEItemStack(PacketBuffer buffer, @Nullable IAEItemStack stack) throws IOException {
+        stack.writeToPacket(buffer);
     }
 
     @Override
@@ -344,23 +351,24 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         final DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
 
         if (cachedOutputItems != null) {
-            final Reference2LongMap<ItemStack> nameToAmount = new Reference2LongOpenHashMap<>();
+            final Reference2LongMap<IAEItemStack> nameToAmount = new Reference2LongOpenHashMap<>();
 
-            for (ItemStack item : cachedOutputItems) {
-                if (item == null || item.stackSize <= 0) continue;
-                nameToAmount.merge(item, item.stackSize, Long::sum);
+            for (IAEItemStack item : cachedOutputItems) {
+                if (item == null || item.getStackSize() <= 0) continue;
+                nameToAmount.merge(item, item.getStackSize(), Long::sum);
             }
 
-            final List<Reference2LongMap.Entry<ItemStack>> sortedMap = nameToAmount.reference2LongEntrySet()
+            final List<Reference2LongMap.Entry<IAEItemStack>> sortedMap = nameToAmount.reference2LongEntrySet()
                 .stream()
                 .sorted(
-                    ((Comparator<Reference2LongMap.Entry<ItemStack>> & Serializable) (c1, c2) -> Long
+                    ((Comparator<Reference2LongMap.Entry<IAEItemStack>> & Serializable) (c1, c2) -> Long
                         .compare(c1.getLongValue(), c2.getLongValue())).reversed())
                 .collect(Collectors.toCollection(ObjectArrayList::new));
 
-            for (Reference2LongMap.Entry<ItemStack> entry : sortedMap) {
+            for (Reference2LongMap.Entry<IAEItemStack> entry : sortedMap) {
                 long itemCount = entry.getLongValue();
                 String itemName = entry.getKey()
+                    .getItemStack()
                     .getDisplayName();
                 String itemAmountString = EnumChatFormatting.WHITE + " x "
                     + EnumChatFormatting.GOLD
@@ -375,6 +383,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     new MultiChildWidget().addChild(
                         new ItemDrawable(
                             entry.getKey()
+                                .getItemStack()
                                 .copy()).asWidget()
                                     .setSize(8, 8)
                                     .setPos(0, 0))
@@ -534,7 +543,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         // cachedOutputItems
         NBTTagList cachedList = new NBTTagList();
         if (cachedOutputItems != null) {
-            for (ItemStack item : cachedOutputItems) {
+            for (IAEItemStack item : cachedOutputItems) {
                 if (item != null) {
                     NBTTagCompound tag = new NBTTagCompound();
                     item.writeToNBT(tag);
@@ -629,9 +638,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             // cachedOutputItems
             NBTTagList cachedList = storeRoot.getTagList("CACHED_OUTPUT_ITEMS", 10);
             if (cachedList != null && cachedList.tagCount() > 0) {
-                cachedOutputItems = new ItemStack[cachedList.tagCount()];
+                cachedOutputItems = new IAEItemStack[cachedList.tagCount()];
                 for (int i = 0; i < cachedList.tagCount(); i++) {
-                    cachedOutputItems[i] = ItemStack.loadItemStackFromNBT(cachedList.getCompoundTagAt(i));
+                    cachedOutputItems[i] = AEItemStack.loadItemStackFromNBT(cachedList.getCompoundTagAt(i));
                 }
             }
 
@@ -898,7 +907,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     }
                 }
 
-                List<ItemStack> preparedOutputs = new ObjectArrayList<>(maximum);
+                List<IAEItemStack> preparedOutputs = new ObjectArrayList<>(maximum);
 
                 IAEItemStack stack;
                 while (parallel > 0 && (stack = outputs.poll()) != null) {
@@ -907,21 +916,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         parallel -= stackSize;
                         usedParallel += stackSize;
 
-                        preparedOutputs.add(stack.getItemStack());
+                        preparedOutputs.add(stack);
                     } else {
-                        long used = parallel;
-                        long remain = stackSize - used;
-                        usedParallel += used;
-                        ItemStack item = stack.getItemStack();
-                        if (used < Integer.MAX_VALUE) {
-                            ItemStack part = item.copy();
-                            part.stackSize = (int) used;
-                            preparedOutputs.add(part);
-                        }
+                        long remain = stackSize - parallel;
+                        usedParallel += parallel;
+                        stack.decStackSize(parallel);
+                        preparedOutputs.add(
+                            stack.copy()
+                                .setStackSize(parallel));
 
                         if (remain > 0) {
                             var remainStack = stack.copy();
-                            remainStack.setStackSize((int) remain);
+                            remainStack.setStackSize(remain);
                             outputs.add(remainStack);
                         }
 
@@ -931,11 +937,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     if (outputs.isEmpty() || --maximum == 0) break;
                 }
 
-                preparedOutputs = Utils.mergeAndSplitStacks(preparedOutputs);
-
-                int outSize = preparedOutputs.size();
-                if (outSize > 0) {
-                    this.cachedOutputItems = preparedOutputs.toArray(new ItemStack[outSize]);
+                if (!preparedOutputs.isEmpty()) {
+                    this.cachedOutputItems = preparedOutputs.toArray(new IAEItemStack[preparedOutputs.size()]);
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
@@ -962,25 +965,19 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
             long remainingParallel = usedParallel;
 
-            for (ItemStack stack : cachedOutputItems) {
+            for (IAEItemStack stack : cachedOutputItems) {
                 if (remainingParallel <= 0) break;
 
-                int toInsert = (int) Math.min(remainingParallel, stack.stackSize);
+                long toInsert = Math.min(remainingParallel, stack.getStackSize());
                 if (toInsert <= 0) continue;
 
-                ItemStack insertStack = stack;
-                if (stack.stackSize != toInsert) {
+                IAEItemStack insertStack = stack;
+                if (stack.getStackSize() != toInsert) {
                     insertStack = stack.copy();
-                    insertStack.stackSize = toInsert;
+                    insertStack.setStackSize(toInsert);
                 }
 
-                var leftover = Platform.poweredInsert(
-                    energyGrid,
-                    storage,
-                    AEApi.instance()
-                        .storage()
-                        .createItemStack(insertStack),
-                    source);
+                var leftover = Platform.poweredInsert(energyGrid, storage, insertStack, source);
 
                 remainingParallel -= toInsert;
 
@@ -989,7 +986,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 }
             }
         } finally {
-            cachedOutputItems = new ItemStack[0];
+            cachedOutputItems = new IAEItemStack[0];
             usedParallel = 0;
         }
     }
@@ -997,7 +994,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void stopMachine(@NotNull ShutDownReason reason) {
         super.stopMachine(reason);
-        cachedOutputItems = new ItemStack[0];
+        cachedOutputItems = new IAEItemStack[0];
         usedParallel = 0;
     }
 
