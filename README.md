@@ -23,20 +23,15 @@ While updating this mod, you need to:
 
 [![Join our Discord](https://img.shields.io/discord/1437641632077054055?color=5865F2&logo=discord&logoColor=white)](https://discord.gg/3sADCeCsjA)
 
-
 ---
-
 
 ## License
 
+This mod follows [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ---
 
-
 ## Credits
-
-
-This mod follows [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 [**Re-Avaritia Assets**](https://github.com/Nova-Committee/Re-Avaritia) [![CC BY-NC-SA 4.0 License](https://img.shields.io/badge/License-CC--BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
