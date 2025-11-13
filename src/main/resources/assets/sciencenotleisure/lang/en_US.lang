@@ -859,6 +859,10 @@ tile.CompressedStargateTier7.name=Compressed Stargate - Tier 7
 tile.CompressedStargateTier8.name=Compressed Stargate - Tier 8
 tile.CompressedStargateTier9.name=Compressed Stargate - Tier 9
 
+tile.SearedLadder.name=Seared Ladder
+Tooltip_SearedLadder_00=§o"Climbable smeltery building material."
+Tooltip_SearedLadder_01=Add by Circulation_
+
 tile.WaterCandle.name=Water Candle
 gtnl.potion.battle=Battle
 

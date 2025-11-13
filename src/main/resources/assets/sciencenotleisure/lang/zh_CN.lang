@@ -859,6 +859,10 @@ tile.CompressedStargateTier7.name=压缩星门-七重
 tile.CompressedStargateTier8.name=压缩星门-八重
 tile.CompressedStargateTier9.name=压缩星门-九重
 
+tile.SearedLadder.name=焦黑梯子
+Tooltip_SearedLadder_00=§o“可供攀爬的冶炼炉建材。”
+Tooltip_SearedLadder_01=由Circulation_添加
+
 tile.WaterCandle.name=水蜡烛
 gtnl.potion.battle=战斗
 

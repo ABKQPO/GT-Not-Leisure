@@ -19,6 +19,7 @@ import com.science.gtnl.common.block.blocks.BlockLaserBeacon;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.BlockPlayerDoll;
 import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
+import com.science.gtnl.common.block.blocks.BlockSearedLadder;
 import com.science.gtnl.common.block.blocks.BlockShimmerFluid;
 import com.science.gtnl.common.block.blocks.BlockWaterCandle;
 import com.science.gtnl.common.block.blocks.BlocksCompressedStargate;
@@ -50,15 +51,16 @@ import gregtech.api.util.GTRecipeBuilder;
 
 public class BlockLoader {
 
-    public static Block SaplingBrickuoia;
+    public static Block saplingBrickuoia;
     public static Block cardboardBox;
     public static Block blockArtificialStarRender;
     public static Block laserBeacon;
     public static Block playerDoll;
     public static Block waterCandle;
-    public static Block blockPlayerLeash;
-    public static Block blockNanoPhagocytosisPlantRender;
-    public static Block blockEternalGregTechWorkshopRender;
+    public static Block searedLadder;
+    public static Block playerLeash;
+    public static Block nanoPhagocytosisPlantRender;
+    public static Block eternalGregTechWorkshopRender;
 
     public static BlockFluidBase honeyFluidBlock;
     public static Fluid honeyFluid;
@@ -85,16 +87,18 @@ public class BlockLoader {
 
     public static void registryBlocks() {
 
-        blockPlayerLeash = new BlockPlayerLeash();
+        playerLeash = new BlockPlayerLeash();
+
+        searedLadder = new BlockSearedLadder();
 
         cardboardBox = new BlockCardboardBox();
         GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBoxTileEntity");
 
-        blockEternalGregTechWorkshopRender = new BlockEternalGregTechWorkshopRender();
+        eternalGregTechWorkshopRender = new BlockEternalGregTechWorkshopRender();
         GameRegistry
             .registerTileEntity(TileEntityEternalGregTechWorkshop.class, "EternalGregTechWorkshopRenderTileEntity");
 
-        blockNanoPhagocytosisPlantRender = new BlockNanoPhagocytosisPlantRender();
+        nanoPhagocytosisPlantRender = new BlockNanoPhagocytosisPlantRender();
         GameRegistry.registerTileEntity(TileEntityNanoPhagocytosisPlant.class, "NanoPhagocytosisPlantRenderTileEntity");
 
         blockArtificialStarRender = new BlockArtificialStarRender();
@@ -533,9 +537,9 @@ public class BlockLoader {
     }
 
     public static void registerTreeBrickuoia() {
-        SaplingBrickuoia = new SaplingBrickuoia();
-        GTNLItemList.SaplingBrickuoia.set(new ItemStack(SaplingBrickuoia, 1));
-        SaplingBrickuoia.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
+        saplingBrickuoia = new SaplingBrickuoia();
+        GTNLItemList.SaplingBrickuoia.set(new ItemStack(saplingBrickuoia, 1));
+        saplingBrickuoia.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),
             () -> StatCollector.translateToLocal("Tooltip_GiantBrickuoiaSapling_00"));
@@ -546,6 +550,6 @@ public class BlockLoader {
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),
             () -> StatCollector.translateToLocal("Tooltip_GiantBrickuoiaSapling_02"));
-        OreDictionary.registerOre("treeSapling", new ItemStack(SaplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
+        OreDictionary.registerOre("treeSapling", new ItemStack(saplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
     }
 }

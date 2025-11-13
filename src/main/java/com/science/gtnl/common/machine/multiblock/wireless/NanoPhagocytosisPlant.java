@@ -343,7 +343,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
         this.getBaseMetaTileEntity()
             .getWorld()
-            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, BlockLoader.blockNanoPhagocytosisPlantRender);
+            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, BlockLoader.nanoPhagocytosisPlantRender);
         TileEntityNanoPhagocytosisPlant rendererTileEntity = (TileEntityNanoPhagocytosisPlant) this
             .getBaseMetaTileEntity()
             .getWorld()

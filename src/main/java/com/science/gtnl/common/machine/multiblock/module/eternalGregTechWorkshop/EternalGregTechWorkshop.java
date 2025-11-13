@@ -444,9 +444,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                     .buildAndChain(TTCasingsContainer.GodforgeCasings, 0))
             .addElement(
                 'Z',
-                ofChain(
-                    ofBlock(GregTechAPI.sBlockCasings1, 14),
-                    ofBlock(BlockLoader.blockEternalGregTechWorkshopRender, 0)))
+                ofChain(ofBlock(GregTechAPI.sBlockCasings1, 14), ofBlock(BlockLoader.eternalGregTechWorkshopRender, 0)))
             .addElement('a', isAir())
             .build();
     }
@@ -2142,7 +2140,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
         this.getBaseMetaTileEntity()
             .getWorld()
-            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, BlockLoader.blockEternalGregTechWorkshopRender);
+            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, BlockLoader.eternalGregTechWorkshopRender);
         TileEntityEternalGregTechWorkshop rendererTileEntity = (TileEntityEternalGregTechWorkshop) this
             .getBaseMetaTileEntity()
             .getWorld()

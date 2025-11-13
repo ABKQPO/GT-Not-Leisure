@@ -93,14 +93,14 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient.registerItemRenderer(ItemLoader.twilightSword, new ItemTwilightSwordRender());
 
         MinecraftForgeClient.registerItemRenderer(
-            Item.getItemFromBlock(BlockLoader.blockNanoPhagocytosisPlantRender),
-            new ItemBlockNanoPhagocytosisPlantRender(BlockLoader.blockNanoPhagocytosisPlantRender));
+            Item.getItemFromBlock(BlockLoader.nanoPhagocytosisPlantRender),
+            new ItemBlockNanoPhagocytosisPlantRender(BlockLoader.nanoPhagocytosisPlantRender));
         ClientRegistry
             .bindTileEntitySpecialRenderer(TileEntityNanoPhagocytosisPlant.class, new NanoPhagocytosisPlantRenderer());
 
         MinecraftForgeClient.registerItemRenderer(
-            Item.getItemFromBlock(BlockLoader.blockEternalGregTechWorkshopRender),
-            new ItemBlockEternalGregTechWorkshopRender(BlockLoader.blockEternalGregTechWorkshopRender));
+            Item.getItemFromBlock(BlockLoader.eternalGregTechWorkshopRender),
+            new ItemBlockEternalGregTechWorkshopRender(BlockLoader.eternalGregTechWorkshopRender));
         ClientRegistry.bindTileEntitySpecialRenderer(
             TileEntityEternalGregTechWorkshop.class,
             new EternalGregTechWorkshopRenderer());

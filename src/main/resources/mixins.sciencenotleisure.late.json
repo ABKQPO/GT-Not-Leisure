@@ -57,6 +57,7 @@
     "ModularUI.FluidSlotWidgetMixin",
     "NHCoreMod.MixinBacteriaRegistry",
     "NotEnoughItems.MixinGuiContainerManager",
+    "TConstruct.MixinSmelteryLogic",
     "TecTech.MixinMTEEyeOfHarmony",
     "TecTech.MixinMTEResearchStation",
     "TecTech.MixinTTRecipeAdder",

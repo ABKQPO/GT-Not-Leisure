@@ -7,12 +7,14 @@ import java.util.List;
 import com.dreammaster.scripts.IScriptLoader;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.recipe.gregtech.ScriptAvaritia;
+import com.science.gtnl.common.recipe.gregtech.ScriptTinkersConstruct;
 
 public class ScriptLoader {
 
     public static void registry() {
 
-        List<IScriptLoader> scripts = new ArrayList<>(Arrays.asList(new ScriptAvaritia()));
+        List<IScriptLoader> scripts = new ArrayList<>(
+            Arrays.asList(new ScriptAvaritia(), new ScriptTinkersConstruct()));
 
         ArrayList<String> errored = new ArrayList<>();
         final long totalTimeStart = System.currentTimeMillis();
