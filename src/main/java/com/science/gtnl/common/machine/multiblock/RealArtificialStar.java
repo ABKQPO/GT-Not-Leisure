@@ -193,8 +193,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             this.enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
                 aPlayer,
-                StatCollector
-                    .translateToLocal("RealArtificialStar_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
+                StatCollector.translateToLocal("Info_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
         }
         return true;
     }

@@ -333,8 +333,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
                 aPlayer,
-                StatCollector
-                    .translateToLocal("EternalGregTechWorkshop_Render_" + (enableRender ? "Enabled" : "Disabled")));
+                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
             if (!enableRender && isRenderActive) destroyRenderer();
         }
         return true;

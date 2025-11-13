@@ -138,8 +138,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
                 aPlayer,
-                StatCollector
-                    .translateToLocal("AtomicEnergyExcitationPlant_Render_" + (enableRender ? "Enabled" : "Disabled")));
+                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
             if (mMachine) {
                 if (enableRender) {
                     destroySphere();

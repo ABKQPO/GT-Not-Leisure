@@ -310,8 +310,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             enableRender = !enableRender;
             GTUtility.sendChatToPlayer(
                 aPlayer,
-                StatCollector
-                    .translateToLocal("NanoPhagocytosisPlant_Render_" + (enableRender ? "Enabled" : "Disabled")));
+                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
             if (!enableRender && isRenderActive) destroyRenderer();
         }
         return true;

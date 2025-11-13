@@ -44,8 +44,8 @@ public abstract class MetaItemBlockBase extends ItemBlock {
             theTooltipsList.addAll(Arrays.asList(tooltips));
         }
         if (!canCreatureSpawn()) {
-            theTooltipsList.add(StatCollector.translateToLocal("NoMobsSpawnInThisBlock"));
-            theTooltipsList.add(StatCollector.translateToLocal("NoTileEntitySpawnInThisBlock"));
+            theTooltipsList.add(StatCollector.translateToLocal("Tooltip_NoMobsSpawnInThisBlock"));
+            theTooltipsList.add(StatCollector.translateToLocal("Tooltip_NoTileEntitySpawnInThisBlock"));
         }
     }
 

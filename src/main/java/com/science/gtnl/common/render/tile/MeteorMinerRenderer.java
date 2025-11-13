@@ -4,11 +4,11 @@ import static tectech.Reference.MODID;
 import static tectech.rendering.EOH.EOHRenderingUtils.*;
 import static tectech.rendering.EOH.EOHTileEntitySR.*;
 import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
+import static tectech.thing.block.TileEntityEyeOfHarmony.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.WeakHashMap;
@@ -33,25 +33,21 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gtneioreplugin.plugin.block.ModBlocks;
 import lombok.Getter;
+import tectech.thing.block.TileEntityEyeOfHarmony;
 
 @SideOnly(Side.CLIENT)
 public class MeteorMinerRenderer {
 
-    public static float GRAVITY = -0.001f;
-    public static float BOUNCE_DAMPING = 0.9f;
-    public static float DAMPING = 0.98f;
+    public static double GRAVITY = -0.001d;
+    public static double BOUNCE_DAMPING = 0.9d;
+    public static double DAMPING = 0.98d;
     public static double PUSH_RADIUS = 0.8;
-    public static float IMPULSE_STRENGTH = 0.04f;
+    public static double IMPULSE_STRENGTH = 0.04d;
 
     @Getter
-    public static ArrayList<OrbitingObject> orbitingObjects = new ArrayList<>();
+    public static ArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ArrayList<>();
 
     public static Map<MeteorMiner, VisualState> visualStateMap = new WeakHashMap<>();
-    public static Map<String, Block> blocks = new HashMap<>();
-
-    static {
-        blocks.putAll(ModBlocks.blocks);
-    }
 
     public static void renderTileEntity(MeteorMiner meteorMiner, double x, double y, double z, float partialTicks) {
         VisualState state = visualStateMap.computeIfAbsent(meteorMiner, te -> new VisualState());
@@ -60,7 +56,7 @@ public class MeteorMinerRenderer {
         GL11.glPushMatrix();
 
         GL11.glTranslated(x + 0.5 + state.offsetX, y + 0.5 + state.offsetY, z + 0.5 + state.offsetZ);
-        GL11.glRotatef(state.rotation, 0, 1, 0);
+        GL11.glRotated(state.rotation, 0, 1, 0);
 
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -96,7 +92,7 @@ public class MeteorMinerRenderer {
             state.velocityX += -dx * IMPULSE_STRENGTH;
             state.velocityZ += -dz * IMPULSE_STRENGTH;
 
-            state.angularVelocity += (float) (dz * 10 - dx * 10);
+            state.angularVelocity += dz * 10 - dx * 10;
         }
 
         boolean isSupported = false;
@@ -194,7 +190,7 @@ public class MeteorMinerRenderer {
 
     public static void generateImportantInfo() {
         int index = 0;
-        for (Block block : selectNRandomElements(blocks.values(), 10)) {
+        for (Block block : selectNRandomElements(ModBlocks.blocks.values(), 10)) {
             float MAX_ANGLE = 30;
             float xAngle = generateRandomFloat(-MAX_ANGLE, MAX_ANGLE);
             float zAngle = generateRandomFloat(-MAX_ANGLE, MAX_ANGLE);
@@ -203,22 +199,30 @@ public class MeteorMinerRenderer {
             float scale = generateRandomFloat(0.2f, 0.9f);
             float rotationSpeed = generateRandomFloat(0.5f, 1.5f);
             float orbitSpeed = generateRandomFloat(0.5f, 1.5f);
-            orbitingObjects.add(new OrbitingObject(block, distance, rotationSpeed, orbitSpeed, xAngle, zAngle, scale));
+            orbitingObjects.add(
+                new TileEntityEyeOfHarmony.OrbitingObject(
+                    block,
+                    distance,
+                    rotationSpeed,
+                    orbitSpeed,
+                    xAngle,
+                    zAngle,
+                    scale));
         }
     }
 
-    private static void renderOrbitObjects(float angle) {
-        if (getOrbitingObjects() != null) {
-            if (getOrbitingObjects().isEmpty()) {
+    public static void renderOrbitObjects(float angle) {
+        if (orbitingObjects != null) {
+            if (orbitingObjects.isEmpty()) {
                 generateImportantInfo();
             }
-            for (OrbitingObject t : getOrbitingObjects()) {
+            for (TileEntityEyeOfHarmony.OrbitingObject t : orbitingObjects) {
                 renderOrbit(t, angle);
             }
         }
     }
 
-    private static void renderOrbit(final OrbitingObject orbitingObject, float angle) {
+    public static void renderOrbit(final TileEntityEyeOfHarmony.OrbitingObject orbitingObject, float angle) {
         GL11.glPushMatrix();
         GL11.glScalef(0.05f, 0.05f, 0.05f);
 
@@ -251,42 +255,15 @@ public class MeteorMinerRenderer {
         return randomElements;
     }
 
-    public static float generateRandomFloat(float a, float b) {
-        Random rand = new Random();
-        return rand.nextFloat() * (b - a) + a;
-    }
-
-    public static class OrbitingObject {
-
-        public final Block block;
-        public final float distance;
-        public final float rotationSpeed;
-        public final float orbitSpeed;
-        public final float xAngle;
-        public final float zAngle;
-        public final float scale;
-
-        public OrbitingObject(Block block, float distance, float rotationSpeed, float orbitSpeed, float xAngle,
-            float zAngle, float scale) {
-            this.block = block;
-            this.distance = distance;
-            this.rotationSpeed = rotationSpeed;
-            this.orbitSpeed = orbitSpeed;
-            this.xAngle = xAngle;
-            this.zAngle = zAngle;
-            this.scale = scale;
-        }
-    }
-
     public static class VisualState {
 
-        float offsetX = 0;
-        float offsetZ = 0;
-        float offsetY = 0;
-        float velocityX = 0;
-        float velocityZ = 0;
-        float velocityY = 0;
-        float rotation = 0;
-        float angularVelocity = 0;
+        double offsetX = 0;
+        double offsetZ = 0;
+        double offsetY = 0;
+        double velocityX = 0;
+        double velocityZ = 0;
+        double velocityY = 0;
+        double rotation = 0;
+        double angularVelocity = 0;
     }
 }

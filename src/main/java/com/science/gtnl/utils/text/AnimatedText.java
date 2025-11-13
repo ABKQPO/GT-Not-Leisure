@@ -49,11 +49,11 @@ public class AnimatedText {
         .get() + RESET + ": " + AQUA + "Created By: Skyinr" + RESET;
 
     public static final Supplier<String> SCIENCE_NOT_LEISURE = chain(
-        text(StatCollector.translateToLocal("Adder")),
+        text(StatCollector.translateToLocal("Tooltip_Adder")),
         animatedText("Science Not Leisure", 1, 80, RED, GOLD, YELLOW, GREEN, AQUA, BLUE, LIGHT_PURPLE));
 
     public static final Supplier<String> SCIENCE_NOT_LEISURE_CHANGE = chain(
-        text(StatCollector.translateToLocal("ChangeAdder")),
+        text(StatCollector.translateToLocal("Tooltip_ChangeAdder")),
         animatedText("Science Not Leisure", 1, 80, RED, GOLD, YELLOW, GREEN, AQUA, BLUE, LIGHT_PURPLE));
 
     public static final Supplier<String> STRUCTURAL_RECONSTRUCTION_PLAN = chain(

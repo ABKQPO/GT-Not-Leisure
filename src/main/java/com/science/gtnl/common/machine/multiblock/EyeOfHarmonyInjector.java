@@ -7,6 +7,7 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gregtech.api.util.GTUtility.*;
+import static tectech.thing.block.TileEntityEyeOfHarmony.*;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -29,6 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
@@ -61,6 +64,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.mixinHelper.IEyeOfHarmonyControllerLink;
 import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
+import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
@@ -79,10 +83,13 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtil;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.render.IMTERenderer;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
+import gtneioreplugin.plugin.block.ModBlocks;
+import tectech.thing.block.TileEntityEyeOfHarmony;
 import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.metaTileEntity.multi.MTEEyeOfHarmony;
 import tectech.thing.metaTileEntity.multi.base.INameFunction;
@@ -91,8 +98,10 @@ import tectech.thing.metaTileEntity.multi.base.LedStatus;
 import tectech.thing.metaTileEntity.multi.base.Parameters;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
-public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstructable, ISurvivalConstructable {
+public class EyeOfHarmonyInjector extends TTMultiblockBase
+    implements IConstructable, ISurvivalConstructable, IMTERenderer {
 
+    public static float MAX_ANGLE = 50;
     public static int STATUS_WINDOW_ID = 10;
     public static FluidStack heliumStack = Materials.Helium.getGas(1);
     public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
@@ -104,6 +113,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     public Parameters.Group.ParameterIn maxRawStarMatterAmountSetting;
     public int tCountCasing;
 
+    public float angle;
+    public ArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ArrayList<>();
+    public boolean enableRender = true;
+
     public List<LinkedEyeOfHarmonyUnit> mLinkedUnits = new ArrayList<>();
 
     public EyeOfHarmonyInjector(int aID, String aName, String aNameRegional) {
@@ -112,6 +125,46 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
 
     public EyeOfHarmonyInjector(String aName) {
         super(aName);
+    }
+
+    @Override
+    public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
+        if (!mMachine || !enableRender) return;
+        EyeOfHarmonyInjectorRenderer.renderTileEntity(this, x, y, z, timeSinceLastTick);
+    }
+
+    @Override
+    public void onValueUpdate(byte aValue) {
+        enableRender = (aValue & 0x01) != 0;
+    }
+
+    @Override
+    public byte getUpdateData() {
+        byte data = 0;
+        if (enableRender) data |= 0x01;
+        return data;
+    }
+
+    public ChunkCoordinates getRenderPos() {
+        ForgeDirection back = getExtendedFacing().getRelativeBackInWorld();
+
+        int xOffset = 34 * back.offsetX;
+        int yOffset = 34 * back.offsetY;
+        int zOffset = 34 * back.offsetZ;
+
+        return new ChunkCoordinates(xOffset, yOffset, zOffset);
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            this.enableRender = !enableRender;
+            GTUtility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal("Info_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
+        }
+        return true;
     }
 
     public void registerLinkedUnit(MTEEyeOfHarmony unit) {
@@ -157,6 +210,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
+        angle += 10f;
         if (!aBaseMetaTileEntity.isServerSide()) return;
         if (aTick % 100 == 0) {
             for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
@@ -174,6 +228,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
+        aNBT.setBoolean("enableRender", enableRender);
         NBTTagList linkedList = new NBTTagList();
         for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
             linkedList.appendTag(unit.writeLinkDataToNBT());
@@ -184,6 +239,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        enableRender = aNBT.getBoolean("enableRender");
         mLinkedUnits.clear();
         if (aNBT.hasKey("LinkedUnits")) {
             NBTTagList linkedList = aNBT.getTagList("LinkedUnits", Constants.NBT.TAG_COMPOUND);
@@ -902,5 +958,19 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase implements IConstruct
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new EyeOfHarmonyInjector(mName);
+    }
+
+    public void generateImportantInfo() {
+        float index = 0;
+        for (Block block : ModBlocks.blocks.values()) {
+            float xAngle = generateRandomFloat(-MAX_ANGLE, MAX_ANGLE);
+            float zAngle = generateRandomFloat(-MAX_ANGLE, MAX_ANGLE);
+            index += 0.4f;
+            float distance = index + generateRandomFloat(-0.2f, 0.15f);
+            float scale = generateRandomFloat(0.3f, 0.6f);
+            float rotationSpeed = generateRandomFloat(0.25f, 1f);
+            float orbitSpeed = generateRandomFloat(0.5f, 1.5f);
+            orbitingObjects.add(new OrbitingObject(block, distance, rotationSpeed, orbitSpeed, xAngle, zAngle, scale));
+        }
     }
 }

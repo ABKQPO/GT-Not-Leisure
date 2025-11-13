@@ -989,7 +989,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     if (wirelessMode) {
                         WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -2 * usedParallel);
-                        costingEUText = GTUtility.formatNumbers(lEUt);
+                        costingEUText = GTUtility.formatNumbers(-lEUt);
                         this.lEUt = 0;
                     }
 

@@ -31,7 +31,7 @@ public class AtomicEnergyExcitationPlantRenderer {
         ChunkCoordinates pos = machine.getRenderPos();
         GL11.glTranslated(pos.posX, pos.posY, pos.posZ);
         GL11.glColor4f(0.0F, 2.0F, 0.0F, 1F);
-        GL11.glTranslated(0.5, 0, 0.5);
+        GL11.glTranslated(0.5, 0.5, 0.5);
         GL11.glScalef(0.4F, 0.4F, 0.4F);
 
         float red = 200 / 255F;

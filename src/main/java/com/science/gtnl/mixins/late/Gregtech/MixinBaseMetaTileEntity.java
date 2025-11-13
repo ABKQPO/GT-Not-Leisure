@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.science.gtnl.api.ITileEntityTickAcceleration;
 import com.science.gtnl.common.machine.multiblock.AtomicEnergyExcitationPlant;
+import com.science.gtnl.common.machine.multiblock.EyeOfHarmonyInjector;
 import com.science.gtnl.common.machine.multiblock.MeteorMiner;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.HighPerformanceComputationArray;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.KuangBiaoOneGiantNuclearFusionReactor;
@@ -30,14 +31,15 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
         if (mMetaTileEntity instanceof MeteorMiner || mMetaTileEntity instanceof HighPerformanceComputationArray
             || mMetaTileEntity instanceof KuangBiaoOneGiantNuclearFusionReactor
             || mMetaTileEntity instanceof RocketAssembler
-            || mMetaTileEntity instanceof AtomicEnergyExcitationPlant) {
+            || mMetaTileEntity instanceof AtomicEnergyExcitationPlant
+            || mMetaTileEntity instanceof EyeOfHarmonyInjector) {
             return AxisAlignedBB.getBoundingBox(
-                this.xCoord - 256,
-                this.yCoord - 256,
-                this.zCoord - 256,
-                this.xCoord + 256,
-                this.yCoord + 256,
-                this.zCoord + 256);
+                this.xCoord - 1024,
+                this.yCoord - 1024,
+                this.zCoord - 1024,
+                this.xCoord + 1024,
+                this.yCoord + 1024,
+                this.zCoord + 1024);
         }
         return super.getRenderBoundingBox();
     }

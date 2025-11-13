@@ -24,15 +24,17 @@ Welcome_GTNL_RecipeOutputChance_00=GTNL 电压配方概率修改已启用
 Welcome_GTNL_RecipeOutputChance_01=当前每级增加概率：%s
 Welcome_GTNL_reload=配置文件已重新加载！
 
-Adder=添加模组：
-ChangeAdder=修改模组：
-NoMobsSpawnInThisBlock=生物不会在这个方块上生成
-NoTileEntitySpawnInThisBlock=这不是一个实体！
+Tooltip_Adder=添加模组：
+Tooltip_ChangeAdder=修改模组：
+Tooltip_NoMobsSpawnInThisBlock=生物不会在这个方块上生成
+Tooltip_NoTileEntitySpawnInThisBlock=这不是一个实体！
 Tooltip_Tectech_Hatch=支持§9Tec§1Tech§r§7激光仓！ 
 Tooltip_PerfectOverclock=机器可进行§c无损超频§7
 Tooltip_PressShift=§r按住 §6Shift §r查看更多信息
 Tooltip_PressCtrl=§r按住 §6Ctrl §r查看更多信息
 Tooltip_Damage=耐久：%s/%s
+Info_Render_Enabled=开启渲染
+Info_Render_Disabled=关闭渲染
 
 nei.bookmark.ae_retrieve_item=自AE取出物品
 nei.bookmark.ae_start_craft=向AE请求合成
@@ -1531,8 +1533,6 @@ AtomicEnergyExcitationPlantRecipeType=燃料精炼复合体
 Tooltip_AtomicEnergyExcitationPlant_00=每超过配方温度900K，耗能均将乘以95%(不计超频)
 Tooltip_AtomicEnergyExcitationPlant_01=每超过配方温度1800K，将进行一次无损超频
 Tooltip_AtomicEnergyExcitationPlant_02=使用剪线钳开启/关闭动画特效
-AtomicEnergyExcitationPlant_Render_Enabled=开启渲染
-AtomicEnergyExcitationPlant_Render_Disabled=关闭渲染
 
 NameHorizontalCompressor=卧式压缩机
 HorizontalCompressorRecipeType=压缩机
@@ -1566,8 +1566,6 @@ Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04=储能上限：
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05=当配方需求电压超过%s§r§7时，无法进行聚变
 Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06=使用剪线钳开启/关闭动画特效
 Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing=任意聚变机械方块
-KuangBiaoOneGiantNuclearFusionReactor_Render_Enabled=开启渲染
-KuangBiaoOneGiantNuclearFusionReactor_Render_Disabled=关闭渲染
 
 NameIsaMill=艾萨研磨机
 gtnl.recipe.IsaMillRecipes=湿法碾磨
@@ -1633,8 +1631,6 @@ RocketAssemblerRecipeType=火箭组装厂
 Tooltip_RocketAssembler_00=§d§l我有一个航天梦
 Tooltip_RocketAssembler_01=使用剪线钳开启/关闭动画特效
 Tooltip_RocketAssembler_Casing=任意洁净不锈钢机械方块
-RocketAssembler_Render_Enabled=开启渲染
-RocketAssembler_Render_Disabled=关闭渲染
 NEI.RocketAssembler.specialValue=需要%s阶火箭NASA工作台图纸
 
 NameSteamItemVault=蒸汽物品保险库
@@ -2517,8 +2513,6 @@ NanoPhagocytosisPlantRecipeType=粉碎机
 Tooltip_NanoPhagocytosisPlant_00=使用纳米蜂群无情的撕碎一切
 Tooltip_NanoPhagocytosisPlant_01=每级电压等级额外提供25%的加速和耗电减免(乘算叠加)
 Tooltip_NanoPhagocytosisPlant_Casing=任意超能硅岩强化无菌净水厂机械方块
-NanoPhagocytosisPlant_Render_Enabled=开启渲染
-NanoPhagocytosisPlant_Render_Disabled=关闭渲染
 
 NameMagneticEnergyReactionFurnace=磁能反应炉
 MagneticEnergyReactionFurnaceRecipeType=电弧炉 / 等离子电弧炉
@@ -2565,8 +2559,6 @@ NameEternalGregTechWorkshop=永恒格雷工坊
 gtnl.recipe.EternalGregTechWorkshopUpgradeRecipes=永恒格雷工坊模块升级
 EternalGregTechWorkshopRecipeType=永恒格雷工坊中央控制中心
 Tooltip_EternalGregTechWorkshop_Casing=提示方块：1号
-EternalGregTechWorkshop_Render_Enabled=开启渲染
-EternalGregTechWorkshop_Render_Disabled=关闭渲染
 EGTW_UpdateStructureCheck=更新模块连接状态
 EGTW_ExtraModule=额外结构：
 EGTW_ExtraModule_On=已启用
@@ -3176,8 +3168,6 @@ Awe_Cancel_02_02=§f§l我的事迹，无人知晓，无处可寻。
 Awe_Kick=§f§l！！！ 不知所措 ！！！
 
 NameRealArtificialStar=真·湮灭发电机
-RealArtificialStar_Render_Enabled=开启渲染
-RealArtificialStar_Render_Disabled=关闭渲染
 gtnl.recipe.ArtificialStarGeneratingRecipes=真·湮灭发电机
 Tooltip_RealArtificialStar_MachineType=真·湮灭发电机
 Tooltip_RealArtificialStar_00=§d§l只是替换了TST的结构，其余功能一致
