@@ -9,17 +9,17 @@
 ---
 
 ## License
-此模组遵循[GPLv3 License](https://www.gnu.org/licenses/gpl-3.0.html)
 
-Re-Avaritia Assets [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+This mod follows [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-GTMthings Assets 其模组保留所有权
+[**Re-Avaritia Assets**](https://github.com/Nova-Committee/Re-Avaritia) [![CC BY-NC-SA 4.0 License](https://img.shields.io/badge/License-CC--BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Avaritia-GTNH Code [MIT License](https://mit-license.org/)
+[**GTMthings Assets**](https://github.com/liansishen/GTMThings) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://mit-license.org/)
 
-Occultism Assets [MIT License](https://mit-license.org/)
+[**Avaritia-GTNH Code**](https://github.com/GTNewHorizons/Avaritia) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://mit-license.org/)
 
-Mekanism Assets [MIT License](https://mit-license.org/)
+[**Occultism Assets**](https://github.com/klikli-dev/occultism) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://mit-license.org/)
 
-Twist-Space-Technology-Mod Code [GPLv3 License](https://www.gnu.org/licenses/gpl-3.0.html)
+[**Mekanism Assets**](https://github.com/mekanism/Mekanism) [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://mit-license.org/)
 
+[**Twist-Space-Technology-Mod Code**](https://github.com/Nxer/Twist-Space-Technology-Mod) [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
