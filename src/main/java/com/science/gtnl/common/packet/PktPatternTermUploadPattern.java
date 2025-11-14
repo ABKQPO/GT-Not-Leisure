@@ -5,7 +5,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 
-import com.glodblock.github.client.gui.container.ContainerFluidPatternWireless;
+import com.glodblock.github.client.gui.container.ContainerFluidPatternTerminal;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.mixins.late.assembler.AccessorContainerPatternTerm;
 import com.science.gtnl.mixins.late.assembler.AccessorFCContainerEncodeTerminal;
@@ -54,7 +54,7 @@ public class PktPatternTermUploadPattern implements IMessage, IMessageHandler<Pk
                 channelNodes = part.getGrid()
                     .getMachines(AssemblerMatrix.class);
             } else return;
-        } else if (container instanceof ContainerFluidPatternWireless term) {
+        } else if (container instanceof ContainerFluidPatternTerminal term) {
             patternSlotOUT = ((AccessorFCContainerEncodeTerminal) term).getPatternSlotOUT();
             patternStack = patternSlotOUT.getStack();
             if (patternStack == null) {
