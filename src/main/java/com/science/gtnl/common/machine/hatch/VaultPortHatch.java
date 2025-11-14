@@ -41,6 +41,7 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.Textures;
+import gregtech.api.interfaces.IMEConnectable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -48,7 +49,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 
 public class VaultPortHatch extends MTEHatch
-    implements ICellContainer, IGridProxyable, IActionHost, IPowerChannelState {
+    implements ICellContainer, IGridProxyable, IActionHost, IPowerChannelState, IMEConnectable {
 
     public IItemVault controller;
     public AENetworkProxy gridProxy = null;
@@ -110,7 +111,7 @@ public class VaultPortHatch extends MTEHatch
     @Override
     public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
         super.onFirstTick(baseMetaTileEntity);
-        gridProxy.onReady();
+        getProxy().onReady();
     }
 
     @Override
@@ -189,6 +190,17 @@ public class VaultPortHatch extends MTEHatch
 
     @Override
     public void onFacingChange() {
+        super.onFacingChange();
+        updateValidGridProxySides();
+    }
+
+    @Override
+    public boolean connectsToAllSides() {
+        return true;
+    }
+
+    @Override
+    public void setConnectsToAllSides(boolean connects) {
         updateValidGridProxySides();
     }
 
