@@ -3093,10 +3093,10 @@ public class AssemblerRecipes implements IRecipePool {
 
         ItemStack[] CHIP = { GTOreDictUnificator.get(OrePrefixes.spring, Materials.Tin, 1),
             ItemList.Circuit_Chip_ULPIC.get(1), ItemList.Circuit_Chip_LPIC.get(1), ItemList.Circuit_Chip_PIC.get(1),
-            ItemList.Circuit_Chip_HPIC.get(1), ItemList.Circuit_Chip_UHPIC.get(1), ItemList.Circuit_Chip_QPIC.get(1),
-            ItemList.Circuit_Chip_NPIC.get(1), ItemList.Circuit_Chip_PPIC.get(1), ItemList.Circuit_Chip_PPIC.get(2),
-            ItemList.Circuit_Chip_PPIC.get(4), ItemList.Circuit_Chip_PPIC.get(8), ItemList.Circuit_Chip_PPIC.get(16),
-            ItemList.Circuit_Chip_PPIC.get(32) };
+            ItemList.Circuit_Chip_HPIC.get(1), ItemList.Circuit_Chip_UHPIC.get(1), ItemList.Circuit_Chip_NPIC.get(1),
+            ItemList.Circuit_Chip_PPIC.get(1), ItemList.Circuit_Chip_QPIC.get(1), ItemList.Circuit_Chip_QPIC.get(2),
+            ItemList.Circuit_Chip_QPIC.get(4), ItemList.Circuit_Chip_QPIC.get(8), ItemList.Circuit_Chip_QPIC.get(16),
+            ItemList.Circuit_Chip_QPIC.get(32) };
 
         ItemStack[] INDUCTOR = { ItemList.Circuit_Parts_Coil.get(4), ItemList.Circuit_Parts_Coil.get(8),
             ItemList.Circuit_Parts_InductorSMD.get(4), ItemList.Circuit_Parts_InductorSMD.get(8),

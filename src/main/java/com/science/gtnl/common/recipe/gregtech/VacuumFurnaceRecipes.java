@@ -48,7 +48,7 @@ public class VacuumFurnaceRecipes implements IRecipePool {
 
         // 海晶晶体 -> 海晶酸
         GTValues.RA.stdBuilder()
-            .itemInputs(ItemList.Prismatic_Crystal.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(1), ItemList.Prismatic_Crystal.get(1))
             .fluidInputs(Materials.Boron.getPlasma(100), Materials.LiquidNitrogen.getGas(3000))
             .fluidOutputs(Materials.PrismaticAcid.getFluid(4000))
             .duration(20 * SECONDS)
