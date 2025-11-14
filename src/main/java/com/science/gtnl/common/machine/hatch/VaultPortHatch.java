@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
@@ -122,6 +123,25 @@ public class VaultPortHatch extends MTEHatch
                 unbind();
             }
         }
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+
+        if (this.gridProxy != null) {
+            NBTTagCompound proxyTag = new NBTTagCompound();
+            this.gridProxy.writeToNBT(proxyTag);
+            aNBT.setTag("gridProxy", proxyTag);
+        }
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        NBTTagCompound proxyTag = aNBT.getCompoundTag("gridProxy");
+        this.getProxy()
+            .readFromNBT(proxyTag);
     }
 
     public void bind(IItemVault controller) {
