@@ -65,7 +65,7 @@
     "ThaumicTinkerer.MixinItemBloodSword"
   ],
   "client": [
-    "assembler.MixinGuiFluidPatternWireless",
+    "assembler.MixinGuiFluidPatternTerminal",
     "assembler.MixinGuiMEMonitorable",
     "assembler.MixinGuiPatternTerm"
   ],

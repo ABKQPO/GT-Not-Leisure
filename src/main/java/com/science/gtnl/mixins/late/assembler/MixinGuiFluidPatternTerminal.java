@@ -7,9 +7,13 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.glodblock.github.client.gui.GuiFluidPatternTerminal;
-import com.glodblock.github.client.gui.GuiFluidPatternWireless;
+import com.glodblock.github.client.gui.base.FCGuiEncodeTerminal;
+import com.glodblock.github.client.gui.container.base.FCContainerEncodeTerminal;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.PktPatternTermUploadPattern;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -17,19 +21,19 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiTabButton;
 
-@Mixin(GuiFluidPatternWireless.class)
-public class MixinGuiFluidPatternWireless extends GuiFluidPatternTerminal {
+@Mixin(GuiFluidPatternTerminal.class)
+public class MixinGuiFluidPatternTerminal extends FCGuiEncodeTerminal {
 
     @Unique
     private GuiTabButton snl$uploadPatternButton;
 
-    public MixinGuiFluidPatternWireless(InventoryPlayer inventoryPlayer, ITerminalHost te) {
-        super(inventoryPlayer, te);
+    public MixinGuiFluidPatternTerminal(InventoryPlayer inventoryPlayer, ITerminalHost te,
+        FCContainerEncodeTerminal c) {
+        super(inventoryPlayer, te, c);
     }
 
-    @Intrinsic
-    public void initGui() {
-        super.initGui();
+    @Inject(method = "initGui", at = @At("TAIL"))
+    public void initGui(CallbackInfo ci) {
         this.pinsStateButton.yPosition = this.guiTop + this.ySize - 64;
         this.buttonList.add(
             snl$uploadPatternButton = new GuiTabButton(
@@ -49,9 +53,8 @@ public class MixinGuiFluidPatternWireless extends GuiFluidPatternTerminal {
         super.actionPerformed(btn);
     }
 
-    @Intrinsic
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    @Inject(method = "drawFG", at = @At("HEAD"), remap = false)
+    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY, CallbackInfo ci) {
         updateButton(snl$uploadPatternButton, this.container.isCraftingMode());
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
     }
 }
