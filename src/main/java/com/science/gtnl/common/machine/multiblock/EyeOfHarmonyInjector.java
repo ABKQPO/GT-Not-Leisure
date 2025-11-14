@@ -13,6 +13,7 @@ import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -68,6 +69,9 @@ import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import appeng.api.util.DimensionalCoord;
+import appeng.client.render.highlighter.BlockPosHighlighter;
+import appeng.core.localization.PlayerMessages;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -354,17 +358,33 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             mainDisp.widget(
                 new FakeSyncWidget.LongSyncer(() -> unit.rawStarMatterSAmount, val -> unit.rawStarMatterSAmount = val));
 
-            mainDisp.widget(
-                new ButtonWidget()
-                    .setBackground(
-                        () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
-                    .addTooltips(
-                        Arrays.asList(
-                            StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_00"),
-                            StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_01"),
-                            String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord())))
-                    .setSize(18, 18)
-                    .setPos(0, height));
+            mainDisp.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
+                if (gtTE.isClientSide()) {
+                    BlockPosHighlighter.highlightBlocks(
+                        player,
+                        Collections.singletonList(
+                            new DimensionalCoord(
+                                gtTE.getWorld(),
+                                gtTE.getXCoord(),
+                                gtTE.getYCoord(),
+                                gtTE.getZCoord())),
+                        mte.getLocalName(),
+                        PlayerMessages.MachineHighlighted.getUnlocalized(),
+                        PlayerMessages.MachineInOtherDim.getUnlocalized());
+                }
+                widget.getContext()
+                    .tryClose();
+            })
+                .setBackground(
+                    () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
+                .addTooltips(
+                    Arrays.asList(
+                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_00"),
+                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_01"),
+                        String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord()),
+                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_02")))
+                .setSize(18, 18)
+                .setPos(0, height));
 
             mainDisp.widget(
                 SlotGroup.ofFluidTanks(
@@ -423,7 +443,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
             mainDisp.widget(
                 TextWidget.dynamicString(() -> statusString)
-                    .setSynced(false)
+                    .setSynced(true)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(75, 5 + height));
 
@@ -499,7 +519,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 .setBackground(
                     () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD,
                         GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT })
-                .addTooltip(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_02"))
+                .addTooltip(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_03"))
                 .setPos(174, 97)
                 .setSize(16, 16));
 

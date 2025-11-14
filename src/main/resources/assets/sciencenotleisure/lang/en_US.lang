@@ -2130,7 +2130,8 @@ Tooltip_EyeOfHarmonyInjector_HydrogenParametrization=§bMaximum hydrogen input t
 Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization=§bMaximum raw star matter input threshold
 Info_EyeOfHarmonyInjector_00=Configure maximum input amount independently
 Info_EyeOfHarmonyInjector_01=Target coordinates:
-Info_EyeOfHarmonyInjector_02=Open the Eye of Harmony independent configuration panel
+Info_EyeOfHarmonyInjector_02=Click to highlight Eye Of Harmony coordinates
+Info_EyeOfHarmonyInjector_03=Open the Eye of Harmony independent configuration panel
 Info_EyeOfHarmonyInjector_Title=§9Eye Of Harmony Status
 
 NameReactionFurnace=Reaction Furnace
