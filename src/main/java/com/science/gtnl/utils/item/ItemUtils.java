@@ -5,6 +5,10 @@ import static gregtech.api.enums.Mods.AE2FluidCraft;
 import static gregtech.api.enums.Mods.Botania;
 import static gregtech.api.util.GTModHandler.getModItem;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +28,12 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.reavaritia.common.item.InfinityTotem;
 import com.science.gtnl.ScienceNotLeisure;
@@ -417,13 +425,53 @@ public class ItemUtils {
     }
 
     public static ItemStack getPlayerSkull(String playerName) {
-        ItemStack skullStack = new ItemStack(Items.skull, 1, 3);
+        ItemStack skull = new ItemStack(Items.skull, 1, 3);
 
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("SkullOwner", playerName);
-        skullStack.setTagCompound(tag);
+        try {
+            String uuid = fetchUUID(playerName);
+            if (uuid == null) {
+                NBTTagCompound skullOwner = new NBTTagCompound();
+                skullOwner.setString("Name", playerName);
 
-        return skullStack;
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setTag("SkullOwner", skullOwner);
+
+                skull.setTagCompound(tag);
+                return skull;
+            }
+
+            SkinProperty skin = fetchSkinProperty(uuid);
+
+            NBTTagCompound skullOwner = new NBTTagCompound();
+            skullOwner.setString("Id", uuid);
+            skullOwner.setString("Name", playerName);
+
+            if (skin != null) {
+                NBTTagCompound properties = new NBTTagCompound();
+                NBTTagList textures = new NBTTagList();
+
+                NBTTagCompound textureTag = new NBTTagCompound();
+                textureTag.setString("Value", skin.value);
+
+                if (skin.signature != null) {
+                    textureTag.setString("Signature", skin.signature);
+                }
+
+                textures.appendTag(textureTag);
+                properties.setTag("textures", textures);
+
+                skullOwner.setTag("Properties", properties);
+            }
+
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setTag("SkullOwner", skullOwner);
+            skull.setTagCompound(tag);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return skull;
     }
 
     public static final boolean isBackHandIns = Mods.Backhand.isModLoaded();
@@ -573,6 +621,60 @@ public class ItemUtils {
                 mc.playerController.windowClick(windowId, emptySlot, 0, 0, player);
             }
             return true;
+        }
+    }
+
+    public static class SkinProperty {
+
+        public final String value;
+        public final String signature;
+
+        public SkinProperty(String v, String s) {
+            this.value = v;
+            this.signature = s;
+        }
+    }
+
+    public static String fetchUUID(String name) {
+        try {
+            URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+
+            String json = reader.readLine();
+            if (json == null || json.isEmpty()) return null;
+
+            JsonObject obj = new JsonParser().parse(json)
+                .getAsJsonObject();
+            return obj.get("id")
+                .getAsString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static SkinProperty fetchSkinProperty(String uuid) {
+        try {
+            URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+            String json = reader.readLine();
+            JsonObject obj = new JsonParser().parse(json)
+                .getAsJsonObject();
+
+            JsonArray properties = obj.getAsJsonArray("properties");
+            if (properties.size() == 0) return null;
+
+            JsonObject textures = properties.get(0)
+                .getAsJsonObject();
+            String value = textures.get("value")
+                .getAsString();
+            String signature = textures.has("signature") ? textures.get("signature")
+                .getAsString() : null;
+
+            return new SkinProperty(value, signature);
+
+        } catch (Exception e) {
+            return null;
         }
     }
 

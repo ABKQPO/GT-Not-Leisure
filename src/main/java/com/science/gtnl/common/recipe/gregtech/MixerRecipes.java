@@ -1,6 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -200,6 +201,17 @@ public class MixerRecipes implements IRecipePool {
             .fluidOutputs(Materials.PrismarineSolution.getFluid(8000))
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_IV)
+            .addTo(MCR)
+            .addTo(MNCR);
+
+        // 海晶晶体 -> 海晶酸
+        RecipeBuilder.builder()
+            .itemInputs(ItemList.Prismatic_Crystal.get(1))
+            .fluidInputs(Materials.Boron.getPlasma(100), Materials.LiquidNitrogen.getGas(3000))
+            .fluidOutputs(Materials.PrismaticAcid.getFluid(4000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_IV)
+            .metadata(COIL_HEAT, 7200)
             .addTo(MCR)
             .addTo(MNCR);
 
