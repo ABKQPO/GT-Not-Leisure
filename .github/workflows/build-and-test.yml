@@ -52,7 +52,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build
-          body: Dynamic build of 'dev-280' branch
+          body: Dynamic action build of all branch
           tag_name: dev-build
           prerelease: true
           files: |
