@@ -1,4 +1,4 @@
-package com.reavaritia.common.block.NeutronCollector;
+package com.reavaritia.common.block.neutronCollector;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -7,36 +7,37 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import fox.spiteful.avaritia.items.LudicrousItems;
 import fox.spiteful.avaritia.tile.TileLudicrous;
+import gregtech.api.util.GTUtility;
+import lombok.Getter;
 
 public class TileEntityNeutronCollector extends TileLudicrous implements IInventory {
 
-    private ItemStack neutrons;
-    private int facing = 2;
-    private int progress;
+    @Getter
+    public ItemStack neutrons;
+    @Getter
+    public int facing = 2;
+    public int progress;
     public int time;
     public int meta;
-    private String machineType;
+    @Getter
+    public String machineType;
 
     public TileEntityNeutronCollector() {
-
+        super();
     }
 
     public TileEntityNeutronCollector(int time, int meta, String machineType) {
+        super();
         this.time = time;
         this.meta = meta;
         this.machineType = machineType;
     }
 
-    public String getMachineType() {
-        return this.machineType;
-    }
-
     @Override
     public void updateEntity() {
         if (++progress >= time) {
-            if (neutrons == null) {
-                neutrons = createNeutronItemStack();
-            } else if (isNeutronItem(neutrons) && neutrons.stackSize < getMaxStackSize()) {
+            if (isNeutronItem(neutrons) && neutrons.stackSize <= 64) {
+                createNeutronItemStack();
                 neutrons.stackSize++;
             }
             progress = 0;
@@ -44,24 +45,14 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
         }
     }
 
-    private ItemStack createNeutronItemStack() {
-        return new ItemStack(LudicrousItems.resource, 1, getNeutronItemDamage());
+    public void createNeutronItemStack() {
+        if (neutrons == null) {
+            neutrons = new ItemStack(LudicrousItems.resource, 1, meta);
+        }
     }
 
     private boolean isNeutronItem(ItemStack stack) {
-        return stack.getItem() == LudicrousItems.resource && stack.getItemDamage() == getNeutronItemDamage();
-    }
-
-    private int getNeutronItemDamage() {
-        return this.meta;
-    }
-
-    private int getMaxStackSize() {
-        return 64;
-    }
-
-    public int getFacing() {
-        return facing;
+        return stack == null || GTUtility.areStacksEqual(neutrons, stack);
     }
 
     public void setFacing(int facing) {
@@ -79,34 +70,24 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
 
     @Override
     public void readCustomNBT(NBTTagCompound tag) {
-        this.neutrons = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Neutrons"));
-        this.progress = tag.getInteger("Progress");
-        this.facing = tag.getShort("Facing");
-        this.machineType = tag.getString("MachineType");
+        this.neutrons = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("neutrons"));
+        this.progress = tag.getInteger("progress");
+        this.time = tag.getInteger("time");
+        this.facing = tag.getInteger("facing");
+        this.machineType = tag.getString("machineType");
     }
 
     @Override
     public void writeCustomNBT(NBTTagCompound tag) {
-        tag.setInteger("Progress", this.progress);
-        tag.setShort("Facing", (short) this.facing);
-        tag.setString("MachineType", machineType);
+        tag.setInteger("progress", this.progress);
+        tag.setInteger("time", this.time);
+        tag.setInteger("facing", this.facing);
         if (neutrons != null) {
             NBTTagCompound produce = new NBTTagCompound();
             neutrons.writeToNBT(produce);
-            tag.setTag("Neutrons", produce);
-        } else tag.removeTag("Neutrons");
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-        facing = tag.getInteger("facing");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-        tag.setInteger("facing", facing);
+            tag.setTag("neutrons", produce);
+        }
+        tag.setString("machineType", machineType);
     }
 
     @Override
