@@ -1,123 +1,59 @@
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Build and test
+name: Release build
 
 on:
-  schedule:
-    - cron:  '00 0 * * *'
-  pull_request:
-    branches: [ dev ]
   push:
-    branches: [ dev ]
+    branches: [ dev-27x ]
+
+permissions:
+  contents: write
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-24.04
+    env:
+      VERSION: ${{ github.ref_name }}
+      RELEASE_VERSION: ${{ github.ref_name }}
+      SNAPSHOT: ${{ endsWith(github.ref_name, '-snapshot') || contains(github.event.head_commit.message, '[snapshot]') }}
+      MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://nexus.gtnewhorizons.com/repository/releases/' }}
     steps:
-    - name: Install Ubuntu dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y mesa-utils xvfb x11-xserver-utils
-    - name: Checkout mod repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Checkout workflows repo
-      uses: actions/checkout@v4
-      with:
-        repository: GTNewHorizons/GTNH-Actions-Workflows
-        path: .gtnh-workflows
-        fetch-depth: 0
+      - name: Checkout mod repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 32
+          ref: dev-27x
 
-    - name: Set up JDK versions
-      uses: actions/setup-java@v4
-      with:
-        java-version: |
-          8
-          17
-          21
-        distribution: 'zulu'
+      - name: Set up JDK versions
+        uses: actions/setup-java@v4
+        with:
+          java-version: |
+            8
+            17
+            21
+          distribution: 'zulu'
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        build-scan-publish: true
-        build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-        build-scan-terms-of-use-agree: "yes"
-        validate-wrappers: true
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+          validate-wrappers: true
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    - name: Setup the workspace
-      run: ./gradlew --build-cache --info --stacktrace setupCIWorkspace
+      - name: Setup the workspace
+        run: ./gradlew --build-cache --info --stacktrace setupCIWorkspace
 
-    - name: Compile the mod
-      run: ./gradlew --build-cache --info --stacktrace assemble
+      - name: Build the mod
+        run: ./gradlew --build-cache --info --stacktrace assemble
 
-    - name: Attach compilation artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.repository_id }}-build-libs
-        path: build/libs/
-        retention-days: 90
-
-    - name: Run post-build checks
-      id: build_mod
-      run: xvfb-run --server-args="-screen 0 1366x768x24" ./gradlew --build-cache --info --stacktrace build
-
-    - name: Attach gradle reports
-      if: failure() && steps.build_mod.conclusion == 'failure'
-      uses: actions/upload-artifact@v4
-      continue-on-error: true
-      with:
-        name: ${{ github.repository_id }}-reports
-        path: build/reports/
-        retention-days: 31
-
-    - name: Attempt to make a PR fixing spotless errors
-      if: ${{ failure() && steps.build_mod.conclusion == 'failure' && github.event_name == 'pull_request' && !github.event.pull_request.draft }}
-      run: |
-        git reset --hard
-        git checkout "${PR_BRANCH}"
-        ./gradlew --build-cache --info --stacktrace spotlessApply || exit 1
-        git diff --exit-code && exit 1
-        git config user.name "GitHub GTNH Actions"
-        git config user.email "<>"
-        git switch -c "${FIXED_BRANCH}"
-        git commit -am "spotlessApply"
-        git push --force-with-lease origin "${FIXED_BRANCH}"
-        gh pr create \
-          --head "${FIXED_BRANCH}" \
-          --base "${PR_BRANCH}" \
-          --title "Spotless apply for branch ${PR_BRANCH} for #${{ github.event.pull_request.number }}" \
-          --body "Automatic spotless apply to fix formatting errors, applies to PR #${{ github.event.pull_request.number }}" \
-          2>&1 | tee pr-message.log || true
-        gh pr comment "${PR_BRANCH}" -F pr-message.log || true
-      shell: bash # ensures set -eo pipefail
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_BRANCH: ${{ github.head_ref }}
-        FIXED_BRANCH: ${{ github.head_ref }}-spotless-fixes
-
-    - name: Run server for up to 90 seconds
-      if: true
-      run: |
-        mkdir -p run
-        mkdir -p run/server
-        echo "eula=true" > run/server/eula.txt
-        # Set a constant seed with a village at spawn
-        echo "level-seed=-6202107849386030209\nonline-mode=true\n" > run/server/server.properties
-        echo "stop" > run/server/stop.txt
-        timeout 90 ./gradlew --build-cache --info --stacktrace runServer 2>&1 < run/server/stop.txt | tee -a server.log || true
-
-    - name: Test no errors reported during server run
-      if: true
-      run: |
-        chmod +x .gtnh-workflows/scripts/test_no_error_reports
-        .gtnh-workflows/scripts/test_no_error_reports
-
-    - name: Test no prerelease dependencies used
-      run: |
-        ! grep -P -- "-pre(?!shadow)" dependencies.gradle*
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Dev Build
+          body: Dynamic action build of all branch
+          tag_name: dev-build
+          prerelease: true
+          files: |
+            ./build/libs/*.jar
