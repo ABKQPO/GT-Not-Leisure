@@ -273,7 +273,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
             return false;
         }
         setupParameters();
-        return mCountCasing >= 45;
+        return mCountCasing >= 30;
     }
 
     @Override
