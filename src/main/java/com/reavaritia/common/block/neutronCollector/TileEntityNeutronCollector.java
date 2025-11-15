@@ -11,21 +11,21 @@ import lombok.Getter;
 
 public class TileEntityNeutronCollector extends TileLudicrous implements IInventory {
 
-    public ItemStack neutrons;
     @Getter
-    public int facing = 2;
+    private ItemStack neutrons;
+    @Getter
+    private short facing = 2;
     public int progress;
     public int time;
     public int meta;
     @Getter
-    public String machineType;
+    private String machineType;
 
     public TileEntityNeutronCollector() {
-        super();
+
     }
 
     public TileEntityNeutronCollector(int time, int meta, String machineType) {
-        super();
         this.time = time;
         this.meta = meta;
         this.machineType = machineType;
@@ -61,7 +61,7 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
     }
 
     public void setFacing(int facing) {
-        this.facing = facing;
+        this.facing = (short) facing;
         this.markDirty();
     }
 
@@ -78,12 +78,14 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
         this.neutrons = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Neutrons"));
         this.progress = tag.getInteger("Progress");
         this.facing = tag.getShort("Facing");
+        this.machineType = tag.getString("machineType");
     }
 
     @Override
     public void writeCustomNBT(NBTTagCompound tag) {
         tag.setInteger("Progress", this.progress);
-        tag.setShort("Facing", (short) this.facing);
+        tag.setShort("Facing", this.facing);
+        tag.setString("MachineType", this.machineType);
         if (neutrons != null) {
             NBTTagCompound produce = new NBTTagCompound();
             neutrons.writeToNBT(produce);
