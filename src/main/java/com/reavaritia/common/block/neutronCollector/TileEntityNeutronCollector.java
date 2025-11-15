@@ -78,7 +78,7 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
         this.neutrons = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Neutrons"));
         this.progress = tag.getInteger("Progress");
         this.facing = tag.getShort("Facing");
-        this.machineType = tag.getString("machineType");
+        this.machineType = tag.getString("MachineType");
     }
 
     @Override
