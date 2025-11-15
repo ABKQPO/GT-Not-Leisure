@@ -17,6 +17,10 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
     public int meta;
     private String machineType;
 
+    public TileEntityNeutronCollector() {
+
+    }
+
     public TileEntityNeutronCollector(int time, int meta, String machineType) {
         this.time = time;
         this.meta = meta;
@@ -78,12 +82,14 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
         this.neutrons = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Neutrons"));
         this.progress = tag.getInteger("Progress");
         this.facing = tag.getShort("Facing");
+        this.machineType = tag.getString("MachineType");
     }
 
     @Override
     public void writeCustomNBT(NBTTagCompound tag) {
         tag.setInteger("Progress", this.progress);
         tag.setShort("Facing", (short) this.facing);
+        tag.setString("MachineType", machineType);
         if (neutrons != null) {
             NBTTagCompound produce = new NBTTagCompound();
             neutrons.writeToNBT(produce);
@@ -117,17 +123,16 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
     public ItemStack decrStackSize(int slot, int decrement) {
         if (neutrons == null) return null;
         else {
+            ItemStack take;
             if (decrement < neutrons.stackSize) {
-                ItemStack take = neutrons.splitStack(decrement);
+                take = neutrons.splitStack(decrement);
                 if (neutrons.stackSize <= 0) neutrons = null;
-                markDirty();
-                return take;
             } else {
-                ItemStack take = neutrons;
+                take = neutrons;
                 neutrons = null;
-                markDirty();
-                return take;
             }
+            markDirty();
+            return take;
         }
     }
 
