@@ -756,6 +756,20 @@ tile.MetaCasing02.8.name=装配矩阵奇点合成核心
 Tooltip_AssemblerMatrixSingularityCrafterCore_00=每个提供2,147,483,647并行
 tile.MetaCasing02.9.name=装配矩阵速度核心
 Tooltip_AssemblerMatrixSpeedCore_00=每安装一个时间减半
+tile.MetaCasing02.10.name=量子计算机外壳
+Tooltip_QuantumComputerCasing_00=用于搭建量子计算机的最外层。最大尺寸为 %sx%sx%s。
+tile.MetaCasing02.11.name=量子合成单元
+tile.MetaCasing02.12.name=128M量子计算机合成存储器
+tile.MetaCasing02.13.name=256M量子计算机合成存储器
+tile.MetaCasing02.14.name=量子数据纠缠器
+Tooltip_QuantumComputerDataEntangler_00=量子计算机的合成存储容量变为 4 倍。每个量子计算机中最多放置 %s 个。
+tile.MetaCasing02.15.name=量子计算机加速器
+Tooltip_QuantumComputerAccelerator_00=每个加速器提供 %s 个并行处理线程。
+tile.MetaCasing02.16.name=量子计算机多线程处理器
+Tooltip_QuantumComputerMultiThreader_00=量子计算机的并行线程数变为 4 倍。每个量子计算机中最多放置 %s 个。
+
+tile.MetaCasing02.112.name=量子计算机核心
+Tooltip_QuantumComputerCore_00=提供 256M 合成存储空间和 64 并行处理线程。
 
 tile.MetaBlock.0.name=测试方块
 tile.MetaBlock.1.name=§d新视野线圈
@@ -1509,6 +1523,14 @@ Tooltip_MegaVacuumDryingFurnace_Casing=任意超能机械方块
 NameMassFabricator=质量发生器
 MassFabricatorRecipeType=质量发生器
 Tooltip_MassFabricator_Casing=任意ZPM机械方块
+
+NameQuantumComputer=量子计算机
+QuantumComputerRecipeType=CPU
+Tooltip_QuantumComputer_00=滴滴滴
+Tooltip_QuantumComputer_10=所有内部方块必须为合成存储器或并行处理单元！
+Info_QuantumComputer_00=结构大小：%sx%sx%s
+Info_QuantumComputer_01=并行线程：%s
+Info_QuantumComputer_02=可存储：%s
 
 NameAssemblerMatrix=装配矩阵
 AssemblerMatrixRecipeType=分子装配室

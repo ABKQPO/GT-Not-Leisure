@@ -41,6 +41,7 @@ import com.science.gtnl.common.block.casings.glass.MetaBlockGlass;
 import com.science.gtnl.common.block.casings.glow.ItemBlockGlow;
 import com.science.gtnl.common.block.casings.glow.MetaBlockGlow;
 import com.science.gtnl.common.item.items.SaplingBrickuoia;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
@@ -529,6 +530,39 @@ public class BlockLoader {
                 9,
                 BlockLoader.metaCasing02,
                 new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSpeedCore_00") }));
+        GTNLItemList.QuantumComputerCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                10,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocalFormatted(
+                    "Tooltip_QuantumComputerCasing_00",
+                    MainConfig.quantumComputerMaximumMultiblockSize,
+                    MainConfig.quantumComputerMaximumMultiblockSize,
+                    MainConfig.quantumComputerMaximumMultiblockSize) }));
+        GTNLItemList.QuantumComputerUnit.set(MetaItemBlockCasing.initMetaBlockCasing(11, BlockLoader.metaCasing02));
+        GTNLItemList.QuantumComputerCraftingStorage128M
+            .set(MetaItemBlockCasing.initMetaBlockCasing(12, BlockLoader.metaCasing02));
+        GTNLItemList.QuantumComputerCraftingStorage256M
+            .set(MetaItemBlockCasing.initMetaBlockCasing(13, BlockLoader.metaCasing02));
+        GTNLItemList.QuantumComputerDataEntangler.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                14,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocalFormatted(
+                    "Tooltip_QuantumComputerDataEntangler_00",
+                    MainConfig.quantumComputerMaximumQuantumDataEntangler) }));
+        GTNLItemList.QuantumComputerAccelerator.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                15,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputerAccelerator_00") }));
+        GTNLItemList.QuantumComputerMultiThreader.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                16,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocalFormatted(
+                    "Tooltip_QuantumComputerMultiThreader_00",
+                    MainConfig.quantumComputerMaximumQuantumComputerMultiThreader) }));
     }
 
     public static void registry() {

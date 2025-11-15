@@ -142,6 +142,14 @@ public enum GTNLItemList implements IItemContainer {
     AssemblerMatrixCrafterCore,
     AssemblerMatrixSingularityCrafterCore,
     AssemblerMatrixSpeedCore,
+    QuantumComputerCasing,
+    QuantumComputerUnit,
+    QuantumComputerCore,
+    QuantumComputerCraftingStorage128M,
+    QuantumComputerCraftingStorage256M,
+    QuantumComputerDataEntangler,
+    QuantumComputerAccelerator,
+    QuantumComputerMultiThreader,
 
     TrollFace,
     DepletedExcitedNaquadahFuelRod,
@@ -477,6 +485,7 @@ public enum GTNLItemList implements IItemContainer {
     SteamOilDrillModuleII,
     SteamOilDrillModuleIII,
 
+    QuantumComputer,
     AssemblerMatrix,
     AtomicEnergyExcitationPlant,
     CompoundExtremeCoolingUnit,

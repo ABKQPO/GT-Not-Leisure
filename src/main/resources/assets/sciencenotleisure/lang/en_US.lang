@@ -756,6 +756,20 @@ tile.MetaCasing02.8.name=Assembler Matrix Singularity Crafter Core
 Tooltip_AssemblerMatrixSingularityCrafterCore_00=Each provides 2,147,483,647 parallel processes
 tile.MetaCasing02.9.name=Assembler Matrix Speed Core
 Tooltip_AssemblerMatrixSpeedCore_00=Each installed core halves the operation time
+tile.MetaCasing02.10.name=Quantum Computer Casing
+Tooltip_QuantumComputerCasing_00=Used in the outside layer of the Quantum Computer Multiblock. Maximum multiblock size is %sx%sx%s.
+tile.MetaCasing02.11.name=Quantum Computer Unit
+tile.MetaCasing02.12.name=128M Quantum Computer Crafting Storage
+tile.MetaCasing02.13.name=256M Quantum Computer Crafting Storage
+tile.MetaCasing02.14.name=Quantum Computer Data Entangler
+Tooltip_QuantumComputerDataEntangler_00=
+tile.MetaCasing02.15.name=Quantum Accelerator
+Tooltip_QuantumComputerAccelerator_00=Provides %s co-processing threads per block.
+tile.MetaCasing02.16.name=Quantum Computer Multi Threader
+Tooltip_QuantumComputerMultiThreader_00=
+
+tile.MetaCasing02.112.name=Quantum Computer Core
+Tooltip_QuantumComputerCore_00=Provides 256M crafting storage and 64 co-processing threads.
 
 tile.MetaBlock.0.name=Test Block
 tile.MetaBlock.1.name=§dNew Horizons Coil
@@ -1509,6 +1523,13 @@ Tooltip_MegaVacuumDryingFurnace_Casing=Any Hyper Energy Machine Block
 NameMassFabricator=Mass Fabricator
 MassFabricatorRecipeType=Mass Fabricator
 Tooltip_MassFabricator_Casing=Any ZPM Casing
+
+NameQuantumComputer=Quantum Computer
+QuantumComputerRecipeType=CPU
+Tooltip_QuantumComputer_00=Test
+Info_QuantumComputer_00=Multiblock size: %sx%sx%s
+Info_QuantumComputer_01=Co-processors: %s
+Info_QuantumComputer_02=Storage: %s
 
 NameAssemblerMatrix=Assembler Matrix
 AssemblerMatrixRecipeType=Molecular Assembler

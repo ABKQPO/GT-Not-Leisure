@@ -97,6 +97,7 @@ import com.science.gtnl.common.machine.multiblock.PetrochemicalPlant;
 import com.science.gtnl.common.machine.multiblock.PhotovoltaicPowerStation;
 import com.science.gtnl.common.machine.multiblock.PlatinumBasedTreatment;
 import com.science.gtnl.common.machine.multiblock.ProcessingArray;
+import com.science.gtnl.common.machine.multiblock.QuantumComputer;
 import com.science.gtnl.common.machine.multiblock.RareEarthCentrifugal;
 import com.science.gtnl.common.machine.multiblock.ReactionFurnace;
 import com.science.gtnl.common.machine.multiblock.RealArtificialStar;
@@ -275,6 +276,13 @@ public class MachineLoader {
     public static ItemStack SuperSpaceElevator;
 
     public static void registerMachines() {
+        GTNLItemList.QuantumComputer.set(
+            new QuantumComputer(
+                QUANTUM_COMPUTER.ID,
+                "QuantumComputer",
+                StatCollector.translateToLocal("NameQuantumComputer")));
+        addItemTooltip(GTNLItemList.QuantumComputer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
         GTNLItemList.AssemblerMatrix.set(
             new AssemblerMatrix(
                 ASSEMBLER_MATRIX.ID,

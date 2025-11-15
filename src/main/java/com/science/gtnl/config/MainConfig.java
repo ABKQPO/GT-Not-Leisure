@@ -77,6 +77,12 @@ public class MainConfig {
     public static float minTickrate = 0.1f;
     public static float maxTickrate = 1000f;
 
+    // Quantum Computer
+    public static int quantumComputerMaximumMultiblockSize = 7;
+    public static int quantumComputerMaximumQuantumDataEntangler = 1;
+    public static int quantumComputerMaximumQuantumComputerMultiThreader = 1;
+    public static int quantumComputerMaximumQuantumComputerCore = 1;
+
     // Player Doll
     public static boolean enableCustomPlayerDoll = true;
     public static boolean enableRegisterPlayerDollGlass = true;
