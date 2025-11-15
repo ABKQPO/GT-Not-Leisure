@@ -11,16 +11,21 @@ import lombok.Getter;
 
 public class TileEntityNeutronCollector extends TileLudicrous implements IInventory {
 
-    private ItemStack neutrons;
+    public ItemStack neutrons;
     @Getter
-    private int facing = 2;
-    private int progress;
+    public int facing = 2;
+    public int progress;
     public int time;
     public int meta;
     @Getter
-    private final String machineType;
+    public String machineType;
+
+    public TileEntityNeutronCollector() {
+        super();
+    }
 
     public TileEntityNeutronCollector(int time, int meta, String machineType) {
+        super();
         this.time = time;
         this.meta = meta;
         this.machineType = machineType;
@@ -84,18 +89,6 @@ public class TileEntityNeutronCollector extends TileLudicrous implements IInvent
             neutrons.writeToNBT(produce);
             tag.setTag("Neutrons", produce);
         } else tag.removeTag("Neutrons");
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-        facing = tag.getInteger("facing");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-        tag.setInteger("facing", facing);
     }
 
     @Override

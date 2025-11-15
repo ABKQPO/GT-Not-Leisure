@@ -5,10 +5,6 @@ import static gregtech.api.enums.Mods.AE2FluidCraft;
 import static gregtech.api.enums.Mods.Botania;
 import static gregtech.api.util.GTModHandler.getModItem;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,13 +24,15 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.common.collect.Iterables;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.reavaritia.common.item.InfinityTotem;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
@@ -424,56 +422,6 @@ public class ItemUtils {
         return book;
     }
 
-    public static ItemStack getPlayerSkull(String playerName) {
-        ItemStack skull = new ItemStack(Items.skull, 1, 3);
-
-        try {
-            String uuid = fetchUUID(playerName);
-            if (uuid == null) {
-                NBTTagCompound skullOwner = new NBTTagCompound();
-                skullOwner.setString("Name", playerName);
-
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setTag("SkullOwner", skullOwner);
-
-                skull.setTagCompound(tag);
-                return skull;
-            }
-
-            SkinProperty skin = fetchSkinProperty(uuid);
-
-            NBTTagCompound skullOwner = new NBTTagCompound();
-            skullOwner.setString("Id", uuid);
-            skullOwner.setString("Name", playerName);
-
-            if (skin != null) {
-                NBTTagCompound properties = new NBTTagCompound();
-                NBTTagList textures = new NBTTagList();
-
-                NBTTagCompound textureTag = new NBTTagCompound();
-                textureTag.setString("Value", skin.value);
-
-                if (skin.signature != null) {
-                    textureTag.setString("Signature", skin.signature);
-                }
-
-                textures.appendTag(textureTag);
-                properties.setTag("textures", textures);
-
-                skullOwner.setTag("Properties", properties);
-            }
-
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setTag("SkullOwner", skullOwner);
-            skull.setTagCompound(tag);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return skull;
-    }
-
     public static final boolean isBackHandIns = Mods.Backhand.isModLoaded();
 
     public static boolean placeItemInHotbar(EntityPlayer player, ItemStack result, boolean isCreative, boolean useAE) {
@@ -624,58 +572,40 @@ public class ItemUtils {
         }
     }
 
-    public static class SkinProperty {
+    public static ItemStack getPlayerSkull(String playerName) {
+        ItemStack skull = new ItemStack(Items.skull, 1, 3);
 
-        public final String value;
-        public final String signature;
+        NBTTagCompound skullOwnerTag = new NBTTagCompound();
+        skullOwnerTag.setString("Name", playerName);
 
-        public SkinProperty(String v, String s) {
-            this.value = v;
-            this.signature = s;
+        GameProfile gameprofile = NBTUtil.func_152459_a(skullOwnerTag);
+
+        if (gameprofile != null && !StringUtils.isNullOrEmpty(gameprofile.getName())) {
+            if (!gameprofile.isComplete() || !gameprofile.getProperties()
+                .containsKey("textures")) {
+                gameprofile = MinecraftServer.getServer()
+                    .func_152358_ax()
+                    .func_152655_a(gameprofile.getName());
+
+                if (gameprofile != null) {
+                    Property property = Iterables.getFirst(
+                        gameprofile.getProperties()
+                            .get("textures"),
+                        null);
+
+                    if (property == null) {
+                        gameprofile = MinecraftServer.getServer()
+                            .func_147130_as()
+                            .fillProfileProperties(gameprofile, true);
+                    }
+
+                    NBTTagCompound tag = new NBTTagCompound();
+                    NBTUtil.func_152460_a(skullOwnerTag, gameprofile);
+                    tag.setTag("SkullOwner", skullOwnerTag);
+                    skull.setTagCompound(tag);
+                }
+            }
         }
+        return skull;
     }
-
-    public static String fetchUUID(String name) {
-        try {
-            URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-
-            String json = reader.readLine();
-            if (json == null || json.isEmpty()) return null;
-
-            JsonObject obj = new JsonParser().parse(json)
-                .getAsJsonObject();
-            return obj.get("id")
-                .getAsString();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static SkinProperty fetchSkinProperty(String uuid) {
-        try {
-            URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-            String json = reader.readLine();
-            JsonObject obj = new JsonParser().parse(json)
-                .getAsJsonObject();
-
-            JsonArray properties = obj.getAsJsonArray("properties");
-            if (properties.size() == 0) return null;
-
-            JsonObject textures = properties.get(0)
-                .getAsJsonObject();
-            String value = textures.get("value")
-                .getAsString();
-            String signature = textures.has("signature") ? textures.get("signature")
-                .getAsString() : null;
-
-            return new SkinProperty(value, signature);
-
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
 }
