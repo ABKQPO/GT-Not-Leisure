@@ -143,12 +143,16 @@ public class RecipeLoader {
 
     public static boolean recipesAdded;
 
-    public static void loadCompleteInit() {
+    public static void loadPostInit() {
+        RemoveRecipes.removeCircuitAssemblerRecipes();
+
         IRecipePool[] recipePools = new IRecipePool[] { new CircuitAssemblerConvertRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
         }
+
+        RecipeUtil.copyAllRecipes(RecipePool.ConvertToCircuitAssembler, RecipeMaps.circuitAssemblerRecipes);
     }
 
     public static void loadRecipesServerStart() {

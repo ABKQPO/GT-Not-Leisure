@@ -1,9 +1,11 @@
 package com.science.gtnl.common.recipe.gregtech.serverStart;
 
 import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
@@ -21,8 +23,11 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.recipe.Scanning;
 import gtPlusPlus.core.material.MaterialMisc;
+import tectech.recipe.TTRecipeAdder;
 
 public class CircuitAssemblerConvertRecipes implements IRecipePool {
 
@@ -284,150 +289,6 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             .eut(480)
             .addTo(CAR);
 
-        if (MainConfig.enableDeleteRecipe) {
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Chip_BioCPU.get(1L),
-                    ItemList.Circuit_Chip_QuantumCPU.get(4),
-                    GTNLItemList.HighlyAdvancedSoc.get(1),
-                    GTNLItemList.BiowareSMDCapacitor.get(8),
-                    GTNLItemList.BiowareSMDTransistor.get(8),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.Naquadah, 8))
-                .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(144))
-                .itemOutputs(ItemList.Circuit_Bioprocessor.get(2))
-                .requiresCleanRoom()
-                .duration(200)
-                .eut(TierEU.RECIPE_UV)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
-                    ItemList.Circuit_Chip_CrystalCPU.get(1),
-                    ItemList.Circuit_Chip_NanoCPU.get(2),
-                    ItemList.Circuit_Parts_CapacitorASMD.get(6),
-                    ItemList.Circuit_Parts_TransistorASMD.get(6),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .itemOutputs(ItemList.Circuit_Crystalprocessor.get(1))
-                .requiresCleanRoom()
-                .duration(200)
-                .eut(TierEU.RECIPE_LuV)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
-                    ItemList.Circuit_Chip_CrystalSoC.get(1),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8),
-                    GTOreDictUnificator.get(OrePrefixes.bolt, Materials.YttriumBariumCuprate, 8))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .itemOutputs(ItemList.Circuit_Crystalprocessor.get(2))
-                .requiresCleanRoom()
-                .duration(100)
-                .eut(TierEU.RECIPE_ZPM)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
-                    ItemList.Circuit_Crystalprocessor.get(2),
-                    ItemList.Circuit_Parts_InductorASMD.get(4),
-                    ItemList.Circuit_Parts_CapacitorASMD.get(8),
-                    ItemList.Circuit_Chip_Ram.get(24),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 16))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(288))
-                .itemOutputs(ItemList.Circuit_Crystalcomputer.get(2))
-                .requiresCleanRoom()
-                .duration(400)
-                .eut(TierEU.RECIPE_LuV)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
-                    ItemList.Circuit_Crystalcomputer.get(2),
-                    ItemList.Circuit_Chip_Ram.get(4),
-                    ItemList.Circuit_Chip_NOR.get(32),
-                    ItemList.Circuit_Chip_NAND.get(64),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 32))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(288))
-                .itemOutputs(ItemList.Circuit_Ultimatecrystalcomputer.get(1))
-                .requiresCleanRoom()
-                .duration(400)
-                .eut(TierEU.RECIPE_LuV)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .itemInputs(
-                    ItemList.Circuit_Board_Wetware_Extreme.get(1L),
-                    ItemList.Circuit_Chip_Stemcell.get(16),
-                    GTOreDictUnificator.get(OrePrefixes.pipeTiny, Materials.Polybenzimidazole, 8),
-                    GTOreDictUnificator.get(OrePrefixes.plate, Materials.Electrum, 8),
-                    GTOreDictUnificator.get(OrePrefixes.foil, Materials.Silicone, 16),
-                    GTOreDictUnificator.get(OrePrefixes.bolt, Materials.HSSE, 8))
-                .fluidInputs(Materials.GrowthMediumSterilized.getFluid(250))
-                .itemOutputs(ItemList.Circuit_Chip_NeuroCPU.get(1))
-                .requiresCleanRoom()
-                .duration(600)
-                .eut(TierEU.RECIPE_ZPM)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Chip_NeuroCPU.get(1L),
-                    ItemList.Circuit_Chip_CrystalCPU.get(1L),
-                    ItemList.Circuit_Chip_NanoCPU.get(1L),
-                    ItemList.Circuit_Parts_CapacitorASMD.get(8),
-                    ItemList.Circuit_Parts_TransistorASMD.get(8),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(144))
-                .itemOutputs(ItemList.Circuit_Neuroprocessor.get(1))
-                .requiresCleanRoom()
-                .duration(200)
-                .eut(TierEU.RECIPE_ZPM)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    ItemList.Circuit_Board_Wetware_Extreme.get(1L),
-                    ItemList.Circuit_Neuroprocessor.get(2),
-                    ItemList.Circuit_Parts_InductorASMD.get(6),
-                    ItemList.Circuit_Parts_CapacitorASMD.get(12),
-                    ItemList.Circuit_Chip_Ram.get(24),
-                    GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 16))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(288))
-                .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(2))
-                .requiresCleanRoom()
-                .duration(400)
-                .eut(TierEU.RECIPE_ZPM)
-                .addTo(CAR);
-
-            GTValues.RA.stdBuilder()
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.HSSE, 2L),
-                    ItemList.Circuit_Ultimatecrystalcomputer.get(2),
-                    GTOreDictUnificator.get(OrePrefixes.wireGt01, Materials.NiobiumTitanium, 8L),
-                    ItemList.Circuit_Parts_InductorASMD.get(8),
-                    ItemList.Circuit_Parts_CapacitorASMD.get(16),
-                    ItemList.Circuit_Parts_DiodeASMD.get(8))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(1440))
-                .itemOutputs(ItemList.Circuit_Crystalmainframe.get(1))
-                .eut(TierEU.RECIPE_LuV)
-                .duration(20 * SECONDS)
-                .requiresCleanRoom()
-                .addTo(CAR);
-        }
-
         GTValues.RA.stdBuilder()
             .itemInputs(
                 ItemList.Circuit_Chip_NeuroCPU.get(1L),
@@ -440,5 +301,211 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             .duration(100)
             .eut(TierEU.RECIPE_UV)
             .addTo(CAR);
+
+        if (MainConfig.enableDeleteRecipe) loadDeleteRecipe();
+    }
+
+    public void loadDeleteRecipe() {
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Chip_BioCPU.get(1L),
+                ItemList.Circuit_Chip_QuantumCPU.get(4),
+                GTNLItemList.HighlyAdvancedSoc.get(1),
+                GTNLItemList.BiowareSMDCapacitor.get(8),
+                GTNLItemList.BiowareSMDTransistor.get(8),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.Naquadah, 8))
+            .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(144))
+            .itemOutputs(ItemList.Circuit_Bioprocessor.get(2))
+            .requiresCleanRoom()
+            .duration(200)
+            .eut(TierEU.RECIPE_UV)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
+                ItemList.Circuit_Chip_CrystalCPU.get(1),
+                ItemList.Circuit_Chip_NanoCPU.get(2),
+                ItemList.Circuit_Parts_CapacitorASMD.get(6),
+                ItemList.Circuit_Parts_TransistorASMD.get(6),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .itemOutputs(ItemList.Circuit_Crystalprocessor.get(1))
+            .requiresCleanRoom()
+            .duration(200)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
+                ItemList.Circuit_Chip_CrystalSoC.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8),
+                GTOreDictUnificator.get(OrePrefixes.bolt, Materials.YttriumBariumCuprate, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .itemOutputs(ItemList.Circuit_Crystalprocessor.get(2))
+            .requiresCleanRoom()
+            .duration(100)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
+                ItemList.Circuit_Crystalprocessor.get(2),
+                ItemList.Circuit_Parts_InductorASMD.get(4),
+                ItemList.Circuit_Parts_CapacitorASMD.get(8),
+                ItemList.Circuit_Chip_Ram.get(24),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 16))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Crystalcomputer.get(2))
+            .requiresCleanRoom()
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Board_Multifiberglass_Elite.get(1L),
+                ItemList.Circuit_Crystalcomputer.get(2),
+                ItemList.Circuit_Chip_Ram.get(4),
+                ItemList.Circuit_Chip_NOR.get(32),
+                ItemList.Circuit_Chip_NAND.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 32))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Ultimatecrystalcomputer.get(1))
+            .requiresCleanRoom()
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                ItemList.Circuit_Board_Wetware_Extreme.get(1L),
+                ItemList.Circuit_Chip_Stemcell.get(16),
+                GTOreDictUnificator.get(OrePrefixes.pipeTiny, Materials.Polybenzimidazole, 8),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Electrum, 8),
+                GTOreDictUnificator.get(OrePrefixes.foil, Materials.Silicone, 16),
+                GTOreDictUnificator.get(OrePrefixes.bolt, Materials.HSSE, 8))
+            .fluidInputs(Materials.GrowthMediumSterilized.getFluid(250))
+            .itemOutputs(ItemList.Circuit_Chip_NeuroCPU.get(1))
+            .requiresCleanRoom()
+            .duration(600)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Chip_NeuroCPU.get(1L),
+                ItemList.Circuit_Chip_CrystalCPU.get(1L),
+                ItemList.Circuit_Chip_NanoCPU.get(1L),
+                ItemList.Circuit_Parts_CapacitorASMD.get(8),
+                ItemList.Circuit_Parts_TransistorASMD.get(8),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .itemOutputs(ItemList.Circuit_Neuroprocessor.get(1))
+            .requiresCleanRoom()
+            .duration(200)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Circuit_Board_Wetware_Extreme.get(1L),
+                ItemList.Circuit_Neuroprocessor.get(2),
+                ItemList.Circuit_Parts_InductorASMD.get(6),
+                ItemList.Circuit_Parts_CapacitorASMD.get(12),
+                ItemList.Circuit_Chip_Ram.get(24),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 16))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(2))
+            .requiresCleanRoom()
+            .duration(400)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CAR);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.HSSE, 2L),
+                ItemList.Circuit_Ultimatecrystalcomputer.get(2),
+                GTOreDictUnificator.get(OrePrefixes.wireGt01, Materials.NiobiumTitanium, 8L),
+                ItemList.Circuit_Parts_InductorASMD.get(8),
+                ItemList.Circuit_Parts_CapacitorASMD.get(16),
+                ItemList.Circuit_Parts_DiodeASMD.get(8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(1440))
+            .itemOutputs(ItemList.Circuit_Crystalmainframe.get(1))
+            .eut(TierEU.RECIPE_LuV)
+            .duration(20 * SECONDS)
+            .requiresCleanRoom()
+            .addTo(CAR);
+
+        loadCircuitRecipes();
+    }
+
+    public void loadCircuitRecipes() {
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            ItemList.Circuit_Chip_Biocell.get(1),
+            10000000,
+            2500,
+            (int) TierEU.RECIPE_UV,
+            1,
+            new Object[] { ItemList.Circuit_Board_Bio_Ultra.get(1), GTNLItemList.BiowareSMDCapacitor.get(8),
+                GTNLItemList.BiowareSMDDiode.get(8), GTNLItemList.BiowareSMDResistor.get(8),
+                GTNLItemList.BiowareSMDTransistor.get(8), GTNLItemList.BiowareSMDInductor.get(8),
+                MaterialPool.Polyetheretherketone.get(OrePrefixes.foil, 2), ItemList.Circuit_Chip_Biocell.get(8),
+                ItemList.Circuit_Parts_Chip_Bioware.get(8),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.Naquadah, 16),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.NiobiumTitanium, 4) },
+            new FluidStack[] { Materials.BioMediumSterilized.getFluid(1000), Materials.Plastic.getMolten(1296),
+                Materials.PolyvinylChloride.getMolten(864), Materials.SolderingAlloy.getMolten(1296) },
+            ItemList.Circuit_Chip_BioCPU.get(8),
+            16 * SECONDS,
+            (int) TierEU.RECIPE_UV);
+
+        GTValues.RA.stdBuilder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .metadata(RESEARCH_ITEM, ItemList.Circuit_Wetwarecomputer.get(1))
+            .metadata(SCANNING, new Scanning(30 * MINUTES, TierEU.RECIPE_IV))
+            .itemInputs(
+                ItemList.Circuit_Board_Wetware_Extreme.get(1),
+                ItemList.Circuit_Wetwarecomputer.get(2),
+                ItemList.Circuit_Parts_DiodeASMD.get(8),
+                ItemList.Circuit_Chip_NOR.get(16),
+                ItemList.Circuit_Chip_Ram.get(32),
+                GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 24),
+                GTOreDictUnificator.get(OrePrefixes.foil, Materials.Polybenzimidazole, 32),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Europium, 4))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(1152))
+            .itemOutputs(ItemList.Circuit_Wetwaresupercomputer.get(1))
+            .eut(TierEU.RECIPE_ZPM)
+            .duration(40 * SECONDS)
+            .addTo(GTRecipeConstants.AssemblyLine);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            ItemList.Circuit_Wetwaresupercomputer.get(1L),
+            384000,
+            96,
+            (int) TierEU.RECIPE_UV,
+            1,
+            new Object[] { GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Tritanium, 2),
+                ItemList.Circuit_Wetwaresupercomputer.get(2L), ItemList.Circuit_Parts_DiodeASMD.get(32),
+                ItemList.Circuit_Parts_CapacitorASMD.get(32), ItemList.Circuit_Parts_TransistorASMD.get(32),
+                ItemList.Circuit_Parts_ResistorASMD.get(32), ItemList.Circuit_Parts_InductorASMD.get(32),
+                GTOreDictUnificator.get(OrePrefixes.foil, Materials.Polybenzimidazole, 64),
+                ItemList.Circuit_Chip_Ram.get(32),
+                GTOreDictUnificator.get(OrePrefixes.wireGt02, Materials.SuperconductorUV, 16),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Europium, 8), },
+            new FluidStack[] { Materials.SolderingAlloy.getMolten(2880), Materials.Polybenzimidazole.getMolten(1152) },
+            ItemList.Circuit_Wetwaremainframe.get(1L),
+            2000,
+            300000);
     }
 }

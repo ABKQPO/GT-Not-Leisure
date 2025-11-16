@@ -9,6 +9,7 @@ import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.SubscribeEventUtils;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.enums.ModList;
@@ -73,7 +74,9 @@ public class CommonProxy implements IGuiHandler {
         // AltarStructure.registerAltarStructureInfo();
     }
 
-    public void completeInit(FMLLoadCompleteEvent event) {}
+    public void completeInit(FMLLoadCompleteEvent event) {
+        MaterialLoader.loadCompleteInit();
+    }
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {

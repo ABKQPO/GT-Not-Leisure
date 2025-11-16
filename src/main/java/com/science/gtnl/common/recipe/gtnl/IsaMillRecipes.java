@@ -36,8 +36,8 @@ public class IsaMillRecipes implements IRecipePool {
         addIsaMillSet(Materials.Redstone);
         addIsaMillSet(Materials.NaquadahEnriched);
 
-        addIsaMillRecipeCustom(Materials.Netherrack, new ItemStack(Blocks.netherrack, 16), 1, 96, 100, 1, 2400);
-        addIsaMillRecipeCustom(Materials.Netherrack, new ItemStack(Blocks.netherrack, 16), 10, 64, 100, 2, 1200);
+        addIsaMillRecipeCustom(Materials.Netherrack, new ItemStack(Blocks.netherrack, 16), 10, 96, 100, 1, 2400);
+        addIsaMillRecipeCustom(Materials.Netherrack, new ItemStack(Blocks.netherrack, 16), 1, 64, 100, 2, 1200);
     }
 
     public void addIsaMillSet(Materials material) {

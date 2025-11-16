@@ -57,6 +57,8 @@
     "InventoryBogoSorter.MixinShortcutHandler",
     "InventoryBogoSorter.MixinSortHandler",
     "ModularUI.FluidSlotWidgetMixin",
+    "NEICustomDiagram.AccessorNeiCustomDiagram",
+    "NEICustomDiagram.MixinNeiCustomDiagram",
     "NHCoreMod.MixinBacteriaRegistry",
     "NotEnoughItems.MixinGuiContainerManager",
     "TConstruct.MixinSmelteryLogic",

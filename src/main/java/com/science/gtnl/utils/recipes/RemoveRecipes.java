@@ -42,7 +42,6 @@ public class RemoveRecipes {
         final long timeStart = System.currentTimeMillis();
 
         RecipeMapBackend autoClaveRecipe = RecipeMaps.autoclaveRecipes.getBackend();
-        RecipeMapBackend circuitAssemblerRecipe = RecipeMaps.circuitAssemblerRecipes.getBackend();
         RecipeMapBackend formingPressRecipe = RecipeMaps.formingPressRecipes.getBackend();
         RecipeMapBackend vacuumFurnaceRecipe = GTPPRecipeMaps.vacuumFurnaceRecipes.getBackend();
         RecipeMapBackend blastFurnaceRecipe = RecipeMaps.blastFurnaceRecipes.getBackend();
@@ -259,6 +258,45 @@ public class RemoveRecipes {
         }
         mixerNonCellRecipe.removeRecipes(recipesToRemoveFromMixerNonCell);
 
+        int recipesToRemoveFromCircuitAssembler = removeCircuitAssemblerRecipes();
+
+        removeRecipeByOutputDelayed(ItemList.Machine_EV_LightningRod.get(1));
+        removeRecipeByOutputDelayed(ItemList.Machine_IV_LightningRod.get(1));
+
+        if (MainConfig.enableDebugMode) {
+            removedRecipeCounts.put("Autoclave", recipesToRemoveFromAutoClave.size());
+            removedRecipeCounts.put("Circuit Assembler", recipesToRemoveFromCircuitAssembler);
+            removedRecipeCounts.put("Forming Press", recipesToRemoveFromFormingPress.size());
+            removedRecipeCounts.put("Vacuum Furnace", recipesToRemoveFromVacuumFurnace.size());
+            removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
+            removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
+            removedRecipeCounts.put("Chemical Plant", recipesToRemoveFromChemicalPlant.size());
+            removedRecipeCounts.put("Alloy Blast Smelter", recipesToRemoveFromAlloyBlastSmelter.size());
+            removedRecipeCounts.put("Cryogenic Freezer", recipesToRemoveFromCryogenicFreezer.size());
+            removedRecipeCounts.put("Chemical Bath", recipesToRemoveFromChemicalBath.size());
+            removedRecipeCounts.put("Mixer", recipesToRemoveFromMixer.size());
+            removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
+
+            StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
+            for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {
+                logMessage.append("\n- ")
+                    .append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue())
+                    .append(" recipes");
+            }
+            System.out.println(logMessage);
+        }
+
+        flushBuffer();
+        bufferMap = null;
+        final long timeToLoad = System.currentTimeMillis() - timeStart;
+        ScienceNotLeisure.LOG.info("Recipes removal took {} ms.", timeToLoad);
+    }
+
+    public static int removeCircuitAssemblerRecipes() {
+        RecipeMapBackend circuitAssemblerRecipe = RecipeMaps.circuitAssemblerRecipes.getBackend();
+
         // 电路装配线
         List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ArrayList<>();
         List<ItemStack> targetOutputs = Arrays.asList(
@@ -286,38 +324,7 @@ public class RemoveRecipes {
 
         circuitAssemblerRecipe.removeRecipes(recipesToRemoveFromCircuitAssembler);
 
-        removeRecipeByOutputDelayed(ItemList.Machine_EV_LightningRod.get(1));
-        removeRecipeByOutputDelayed(ItemList.Machine_IV_LightningRod.get(1));
-
-        if (MainConfig.enableDebugMode) {
-            removedRecipeCounts.put("Autoclave", recipesToRemoveFromAutoClave.size());
-            removedRecipeCounts.put("Circuit Assembler", recipesToRemoveFromCircuitAssembler.size());
-            removedRecipeCounts.put("Forming Press", recipesToRemoveFromFormingPress.size());
-            removedRecipeCounts.put("Vacuum Furnace", recipesToRemoveFromVacuumFurnace.size());
-            removedRecipeCounts.put("Blast Furnace", recipesToRemoveFromBlastFurnace.size());
-            removedRecipeCounts.put("Vacuum Freezer", recipesToRemoveFromVacuumFreezer.size());
-            removedRecipeCounts.put("Chemical Plant", recipesToRemoveFromChemicalPlant.size());
-            removedRecipeCounts.put("Alloy Blast Smelter", recipesToRemoveFromAlloyBlastSmelter.size());
-            removedRecipeCounts.put("Cryogenic Freezer", recipesToRemoveFromCryogenicFreezer.size());
-            removedRecipeCounts.put("Chemical Bath", recipesToRemoveFromChemicalBath.size());
-            removedRecipeCounts.put("Mixer", recipesToRemoveFromMixer.size());
-            removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
-
-            StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
-            for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {
-                logMessage.append("\n- ")
-                    .append(entry.getKey())
-                    .append(": ")
-                    .append(entry.getValue())
-                    .append(" recipes");
-            }
-            System.out.println(logMessage);
-        }
-
-        flushBuffer();
-        bufferMap = null;
-        final long timeToLoad = System.currentTimeMillis() - timeStart;
-        ScienceNotLeisure.LOG.info("Recipes removal took {} ms.", timeToLoad);
+        return recipesToRemoveFromCircuitAssembler.size();
     }
 
     public static void removeRecipeByOutputDelayed(Object aOutput) {

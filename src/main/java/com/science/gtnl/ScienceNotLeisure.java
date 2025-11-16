@@ -48,6 +48,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "required-after:gregtech;"
         + "before:TwistSpaceTechnology;"
         + "required-after:Thaumcraft;"
+        + "required-before:neicustomdiagram;"
         + "after:GalacticraftPlanets",
     guiFactory = "com.science.gtnl.config.ConfigGuiFactory",
     acceptedMinecraftVersions = "1.7.10")
@@ -89,13 +90,12 @@ public class ScienceNotLeisure {
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
         MaterialLoader.loadPostInit();
+        RecipeLoader.loadPostInit();
     }
 
     @Mod.EventHandler
     public void completeInit(FMLLoadCompleteEvent event) {
         proxy.completeInit(event);
-        MaterialLoader.loadCompleteInit();
-        RecipeLoader.loadCompleteInit();
     }
 
     // register server commands in this event handler (Remove if not needed)
