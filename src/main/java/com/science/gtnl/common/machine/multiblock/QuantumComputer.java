@@ -8,8 +8,10 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.StructureLibAPI;
@@ -50,8 +52,8 @@ import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 public class QuantumComputer extends MTETooltipMultiBlockBase
     implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
@@ -126,6 +128,14 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
+        super.onFirstTick(baseMetaTileEntity);
+        if (this.virtualCPU == null) {
+            createVirtualCPU();
+        }
+    }
+
+    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
 
         // structure bounds
@@ -153,8 +163,22 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         aNBT.setInteger("maximumParallel", this.maximumParallel);
 
         getProxy().writeToNBT(aNBT);
+        writeCPUNBT(aNBT);
 
         super.saveNBTData(aNBT);
+    }
+
+    public void writeCPUNBT(final NBTTagCompound compound) {
+        final NBTTagList clustersTag = new NBTTagList();
+        cpus.forEach(cluster -> {
+            ECPUCluster eCluster = ECPUCluster.from(cluster);
+            NBTTagCompound clusterTag = new NBTTagCompound();
+            cluster.writeToNBT(clusterTag);
+            clusterTag.setLong("availableStorage", cluster.getAvailableStorage());
+            clusterTag.setLong("usedExtraStorage", eCluster.ec$getUsedExtraStorage());
+            clustersTag.appendTag(clusterTag);
+        });
+        compound.setTag("clusters", clustersTag);
     }
 
     @Override
@@ -184,8 +208,29 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         this.maximumStorage = aNBT.getLong("maximumStorage");
         this.maximumParallel = aNBT.getInteger("maximumParallel");
         getProxy().readFromNBT(aNBT);
+        readCPUNBT(aNBT);
+        updateValidGridProxySides();
 
         super.loadNBTData(aNBT);
+    }
+
+    public void readCPUNBT(final NBTTagCompound compound) {
+        new ReferenceArrayList<>(cpus).forEach(CraftingCPUCluster::destroy);
+        cpus.clear();
+
+        final NBTTagList clustersTag = compound.getTagList("clusters", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < clustersTag.tagCount(); i++) {
+            NBTTagCompound clusterTag = clustersTag.getCompoundTagAt(i);
+
+            WorldCoord coord = getWorldCoord();
+            CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
+            ECPUCluster eCluster = ECPUCluster.from(cluster);
+
+            eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
+            eCluster.ec$setUsedExtraStorage(clusterTag.getLong("usedExtraStorage"));
+            cluster.readFromNBT(clusterTag);
+            cpus.add(cluster);
+        }
     }
 
     @Override
@@ -795,12 +840,12 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     protected CraftingCPUCluster virtualCPU = null;
-    protected final List<CraftingCPUCluster> cpus = new ObjectArrayList<>();
+    protected final List<CraftingCPUCluster> cpus = new ReferenceArrayList<>();
 
     public List<CraftingCPUCluster> getCPUs() {
-        if (!isActive()) return ObjectLists.emptyList();
+        if (!isActive() || cpus.isEmpty()) return ObjectLists.emptyList();
 
-        final List<CraftingCPUCluster> clusters = new ObjectArrayList<>(cpus);
+        final List<CraftingCPUCluster> clusters = new ReferenceArrayList<>(cpus);
         if (this.virtualCPU != null) {
             // Refresh machine source.
             ECPUCluster.from(this.virtualCPU)
