@@ -303,8 +303,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             aBaseMetaTileEntity.getWorld(),
             aBaseMetaTileEntity.getXCoord() + dx,
             aBaseMetaTileEntity.getYCoord() + dy,
-            aBaseMetaTileEntity.getZCoord() + dz
-        );
+            aBaseMetaTileEntity.getZCoord() + dz);
 
         if (isCasings) {
             if (block == BlockLoader.metaCasing02 && meta == 10) {
@@ -662,7 +661,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         final boolean b = checkMachine(aBaseMetaTileEntity);
         if (b) {
-            getProxy().setValidSides(allDirection);
+            getProxy().setValidSides(upDirection);
             if (this.virtualCPU == null) {
                 createVirtualCPU();
             }
@@ -895,12 +894,12 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return gridProxy;
     }
 
-    public static final EnumSet<ForgeDirection> allDirection = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
+    public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
     public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
 
     public void updateValidGridProxySides() {
         if (mMachine) {
-            getProxy().setValidSides(allDirection);
+            getProxy().setValidSides(upDirection);
         } else {
             getProxy().setValidSides(emptyDirection);
         }

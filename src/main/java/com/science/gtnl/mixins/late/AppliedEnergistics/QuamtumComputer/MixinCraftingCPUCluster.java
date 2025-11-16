@@ -70,24 +70,21 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         at = @At(
             value = "INVOKE",
             target = "Lappeng/api/networking/crafting/ICraftingJob;getOutput()Lappeng/api/storage/data/IAEItemStack;"),
-        require = 1
-    )
+        require = 1)
     private void injectSubmitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine,
         CallbackInfoReturnable<ICraftingLink> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         this.ec$virtualCPUOwner.onVirtualCPUSubmitJob(job.getByteTotal());
     }
 
-    @Inject(method = "cancel", at = @At("RETURN"),
-        require = 1)
+    @Inject(method = "cancel", at = @At("RETURN"), require = 1)
     private void injectCancel(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         if (this.inventory.getItemList()
             .isEmpty()) destroy();
     }
 
-    @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectUpdateCraftingLogicStoreItems(final IGrid grid, final IEnergyGrid eg,
         final CraftingGridCache cgc, final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
@@ -119,8 +116,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectDestroy(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         if (this.isDestroyed) {
@@ -130,8 +126,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         this.ec$virtualCPUOwner.onCPUDestroyed((CraftingCPUCluster) (Object) this);
     }
 
-    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectIsActive(final CallbackInfoReturnable<Boolean> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(
@@ -139,8 +134,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
                 .isActive());
     }
 
-    @Inject(method = "getGrid", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "getGrid", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetGrid(final CallbackInfoReturnable<IGrid> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         IGridNode node = ec$virtualCPUOwner.getProxy()
@@ -149,15 +143,13 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "getCore", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "getCore", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetCore(final CallbackInfoReturnable<TileCraftingTile> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(null);
     }
 
-    @Inject(method = "getWorld", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "getWorld", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetWorld(final CallbackInfoReturnable<World> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(
@@ -166,8 +158,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "markDirty", at = @At("HEAD"), cancellable = true,
-        require = 1)
+    @Inject(method = "markDirty", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectMarkDirty(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         this.ec$virtualCPUOwner.markDirty();
