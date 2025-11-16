@@ -74,9 +74,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
             target = "Lappeng/api/networking/crafting/ICraftingJob;getOutput()Lappeng/api/storage/data/IAEItemStack;"))
     private void injectSubmitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine,
         CallbackInfoReturnable<ICraftingLink> cir) {
-        if (this.ec$virtualCPUOwner == null) {
-            return;
-        }
+        if (this.ec$virtualCPUOwner == null) return;
         this.ec$virtualCPUOwner.onVirtualCPUSubmitJob(job.getByteTotal());
     }
 
@@ -121,6 +119,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     @Inject(method = "destroy", at = @At("HEAD"), cancellable = true)
     private void injectDestroy(final CallbackInfo ci) {
+        if (this.ec$virtualCPUOwner == null) return;
         if (this.isDestroyed) {
             ci.cancel();
             return;
@@ -130,47 +129,42 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     @Inject(method = "isActive", at = @At("HEAD"), cancellable = true)
     private void injectIsActive(final CallbackInfoReturnable<Boolean> cir) {
-        if (this.ec$virtualCPUOwner == null) {
-            return;
-        }
-        if (this.ec$virtualCPUOwner != null) {
-            cir.setReturnValue(
-                ec$virtualCPUOwner.getProxy()
-                    .isActive());
-        }
+        if (this.ec$virtualCPUOwner == null) return;
+        cir.setReturnValue(
+            ec$virtualCPUOwner.getProxy()
+                .isActive());
     }
 
     @Inject(method = "getGrid", at = @At("HEAD"), cancellable = true)
     private void injectGetGrid(final CallbackInfoReturnable<IGrid> cir) {
-        if (this.ec$virtualCPUOwner != null) {
-            IGridNode node = ec$virtualCPUOwner.getProxy()
-                .getNode();
-            cir.setReturnValue(node == null ? null : node.getGrid());
-        }
+        if (this.ec$virtualCPUOwner == null) return;
+        IGridNode node = ec$virtualCPUOwner.getProxy()
+            .getNode();
+        cir.setReturnValue(node == null ? null : node.getGrid());
+
     }
 
     @Inject(method = "getCore", at = @At("HEAD"), cancellable = true)
     private void injectGetCore(final CallbackInfoReturnable<TileCraftingTile> cir) {
-        if (this.ec$virtualCPUOwner != null) {
-            cir.setReturnValue(null);
-        }
+        if (this.ec$virtualCPUOwner == null) return;
+        cir.setReturnValue(null);
     }
 
     @Inject(method = "getWorld", at = @At("HEAD"), cancellable = true)
     private void injectGetWorld(final CallbackInfoReturnable<World> cir) {
-        if (this.ec$virtualCPUOwner != null) {
-            cir.setReturnValue(
-                ec$virtualCPUOwner.getBaseMetaTileEntity()
-                    .getWorld());
-        }
+        if (this.ec$virtualCPUOwner == null) return;
+        cir.setReturnValue(
+            ec$virtualCPUOwner.getBaseMetaTileEntity()
+                .getWorld());
+
     }
 
     @Inject(method = "markDirty", at = @At("HEAD"), cancellable = true)
     private void injectMarkDirty(final CallbackInfo ci) {
-        if (this.ec$virtualCPUOwner != null) {
-            this.ec$virtualCPUOwner.markDirty();
-            ci.cancel();
-        }
+        if (this.ec$virtualCPUOwner == null) return;
+        this.ec$virtualCPUOwner.markDirty();
+        ci.cancel();
+
     }
 
     @Override
