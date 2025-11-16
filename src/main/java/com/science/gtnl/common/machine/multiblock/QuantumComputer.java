@@ -167,6 +167,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
         super.onFirstTick(baseMetaTileEntity);
+        if (checkStructure(true)) {
+            this.mStartUpCheck = -1;
+            this.mUpdate = 200;
+        }
         getProxy().onReady();
     }
 
