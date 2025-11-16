@@ -17,6 +17,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
@@ -26,6 +29,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECPUCluster;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -48,6 +52,7 @@ import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.ISecondaryDescribable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
@@ -57,7 +62,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 public class QuantumComputer extends MTETooltipMultiBlockBase
-    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
+    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo {
 
     /**
      * Maximum size of the quantum computer. Includes walls.
@@ -303,8 +308,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             aBaseMetaTileEntity.getWorld(),
             aBaseMetaTileEntity.getXCoord() + dx,
             aBaseMetaTileEntity.getYCoord() + dy,
-            aBaseMetaTileEntity.getZCoord() + dz
-        );
+            aBaseMetaTileEntity.getZCoord() + dz);
 
         if (isCasings) {
             if (block == BlockLoader.metaCasing02 && meta == 10) {
@@ -321,6 +325,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             if (meta == 14) return QuantumComputerBlockType.DATA_ENTANGLER;
             if (meta == 15) return QuantumComputerBlockType.ACCELERATOR;
             if (meta == 16) return QuantumComputerBlockType.MULTI_THREADER;
+            if (meta == 17) return QuantumComputerBlockType.CORE;
         }
 
         if (block == CRAFTING_STORAGE) {
@@ -378,64 +383,63 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case CORE:
-                maximumStorage += 268435456L;
-                maximumParallel += 64;
+                maximumStorage = addToStorage(maximumStorage, 268435456L);
+                maximumParallel = addToParallel(maximumParallel, 256);
                 unitCount++;
                 coreCount++;
                 return true;
 
             case CRAFTING_STORAGE_1K:
-                maximumStorage += 1024L;
+                maximumStorage = addToStorage(maximumStorage, 1024L);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4K:
-                maximumStorage += 4L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 4L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16K:
-                maximumStorage += 16L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 16L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_64K:
-                maximumStorage += 64L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 64L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256K:
-                maximumStorage += 256L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 256L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_1024K:
-                maximumStorage += 1024L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 1024L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4096K:
-                maximumStorage += 4096L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 4096L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16384K:
-                maximumStorage += 16384L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 16384L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_128M:
-                maximumStorage += 128L * 1024 * 1024;
+                maximumStorage = addToStorage(maximumStorage, 128L * 1024 * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256M:
-                maximumStorage += 256L * 1024 * 1024;
+                maximumStorage = addToStorage(maximumStorage, 256L * 1024 * 1024);
                 unitCount++;
                 return true;
 
             case DATA_ENTANGLER:
-                maximumStorage *= 4;
                 dataEntanglerCount++;
                 unitCount++;
                 return true;
@@ -447,47 +451,46 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1:
-                maximumParallel += 1;
+                maximumParallel = addToParallel(maximumParallel, 1);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4:
-                maximumParallel += 4;
+                maximumParallel = addToParallel(maximumParallel, 4);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_16:
-                maximumParallel += 16;
+                maximumParallel = addToParallel(maximumParallel, 16);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_64:
-                maximumParallel += 64;
+                maximumParallel = addToParallel(maximumParallel, 64);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_256:
-                maximumParallel += 256;
+                maximumParallel = addToParallel(maximumParallel, 256);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1024:
-                maximumParallel += 1024;
+                maximumParallel = addToParallel(maximumParallel, 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4096:
-                maximumParallel += 4096;
+                maximumParallel = addToParallel(maximumParallel, 4096);
                 unitCount++;
                 return true;
 
             case ACCELERATOR:
-                maximumParallel += 16384;
+                maximumParallel = addToParallel(maximumParallel, 16384);
                 unitCount++;
                 return true;
 
             case MULTI_THREADER:
-                maximumParallel *= 4;
                 multiThreaderCount++;
                 unitCount++;
                 return true;
@@ -501,6 +504,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 throw new IllegalArgumentException(
                     "Quantum Computer error: unknown block type at offset (" + dx + ", " + dy + ", " + dz + ").");
         }
+    }
+
+    public long addToStorage(long current, long increment) {
+        if (current > Long.MAX_VALUE - increment) {
+            return Long.MAX_VALUE;
+        }
+        return current + increment;
+    }
+
+    public int addToParallel(int current, int increment) {
+        if (current > Integer.MAX_VALUE - increment) {
+            return Integer.MAX_VALUE;
+        }
+        return current + increment;
     }
 
     /**
@@ -676,7 +693,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return b;
     }
 
-    private boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity) {
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity) {
         // Optimization: a vast majority of the time, the size of the CR won't change. Try checking it using the old
         // size, and only if that fails, try to find a new size.
         if (dyMin == 0 || !checkCeiling(aBaseMetaTileEntity)) {
@@ -739,6 +756,22 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             || dataEntanglerCount > MainConfig.quantumComputerMaximumQuantumDataEntangler
             || coreCount > MainConfig.quantumComputerMaximumQuantumComputerCore) {
             return false;
+        }
+
+        for (int i = 0; i < dataEntanglerCount; i++) {
+            if (maximumStorage > Long.MAX_VALUE / 4L) {
+                maximumStorage = Long.MAX_VALUE;
+                break;
+            }
+            maximumStorage *= 4L;
+        }
+
+        for (int i = 0; i < multiThreaderCount; i++) {
+            if (maximumParallel > Integer.MAX_VALUE / 4) {
+                maximumParallel = Integer.MAX_VALUE;
+                break;
+            }
+            maximumParallel *= 4;
         }
 
         if (MainConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Check successful.");
@@ -808,6 +841,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 }
             }
         }
+    }
+
+    @Override
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        super.addUIWidgets(builder, buildContext);
+        addGregTechLogo(builder);
+    }
+
+    @Override
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_CIRCULATION)
+                .setSize(18, 18)
+                .setPos(172, 67));
     }
 
     @Override
