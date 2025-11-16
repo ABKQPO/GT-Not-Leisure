@@ -775,6 +775,19 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public void checkMaintenance() {}
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
+    }
+
+    @Override
     public IGridNode getActionableNode() {
         return getProxy().getNode();
     }
