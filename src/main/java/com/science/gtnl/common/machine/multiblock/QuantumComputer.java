@@ -2,6 +2,24 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static gregtech.api.enums.Textures.BlockIcons.*;
 
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalCoord;
+import appeng.api.util.WorldCoord;
+import appeng.me.GridAccessException;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.IGridProxyable;
+import com.science.gtnl.utils.ECPUCluster;
+import com.science.gtnl.utils.enums.GTNLItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,7 +50,10 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstructable, ISecondaryDescribable {
+import java.util.EnumSet;
+import java.util.List;
+
+public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
 
     /**
      * Maximum size of the quantum computer. Includes walls.
@@ -130,6 +151,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
         aNBT.setLong("maximumStorage", this.maximumStorage);
         aNBT.setInteger("maximumParallel", this.maximumParallel);
 
+        getProxy().writeToNBT(aNBT);
+
         super.saveNBTData(aNBT);
     }
 
@@ -159,6 +182,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
         // storage / parallel
         this.maximumStorage = aNBT.getLong("maximumStorage");
         this.maximumParallel = aNBT.getInteger("maximumParallel");
+        getProxy().readFromNBT(aNBT);
 
         super.loadNBTData(aNBT);
     }
@@ -404,10 +428,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
             return false;
         }
 
-        if (Math.abs(dzMin + dzMax) > 1) {
-            return false;
-        }
-        return true;
+        return Math.abs(dzMin + dzMax) <= 1;
     }
 
     /**
@@ -416,7 +437,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
      *
      * @return True on success, false on failure.
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "StatementWithEmptyBody"})
     public boolean checkCeiling(IGregTechTileEntity aBaseMetaTileEntity) {
         // Edges must be plascrete, everything else must be filters (except for the controller).
         for (int dx = dxMin; dx <= dxMax; ++dx) {
@@ -485,12 +506,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
             if (!addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dz, true)) return false;
         }
 
-        if (!addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMin, true)) return false;
-        if (!addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMax, true)) return false;
-        if (!addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMin, true)) return false;
-        if (!addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMax, true)) return false;
-
-        return true;
+        return addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMin, true) &&
+            addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMax, true) &&
+            addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMin, true) &&
+            addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMax, true);
     }
 
     @Override
@@ -668,6 +687,192 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
             .widget(new FakeSyncWidget.IntegerSyncer(() -> depth, d -> depth = d))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> maximumParallel, parallel -> maximumParallel = parallel))
             .widget(new FakeSyncWidget.LongSyncer(() -> maximumStorage, storage -> maximumStorage = storage));
+    }
+
+    @Override
+    public IGridNode getActionableNode() {
+        return getProxy().getNode();
+    }
+
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(
+            getBaseMetaTileEntity().getWorld(),
+            getBaseMetaTileEntity().getXCoord(),
+            getBaseMetaTileEntity().getYCoord(),
+            getBaseMetaTileEntity().getZCoord());
+    }
+
+    @Override
+    public IGridNode getGridNode(ForgeDirection dir) {
+        return getProxy().getNode();
+    }
+
+    public AECableType getCableConnectionType(ForgeDirection forgeDirection) {
+        return AECableType.DENSE_COVERED;
+    }
+
+    private AENetworkProxy gridProxy;
+
+    public AENetworkProxy getProxy() {
+        if (gridProxy == null) {
+            var bmte = getBaseMetaTileEntity();
+            if (bmte instanceof IGridProxyable) {
+                gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.AssemblerMatrix.get(1), true);
+                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+                gridProxy.onReady();
+                updateValidGridProxySides();
+                if (bmte.getWorld() != null) {
+                    gridProxy.setOwner(
+                        bmte.getWorld()
+                            .getPlayerEntityByName(bmte.getOwnerName()));
+                }
+            }
+        }
+        return gridProxy;
+    }
+
+    public static final EnumSet<ForgeDirection> allDirection = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
+    public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
+
+    public void updateValidGridProxySides() {
+        if (mMachine) {
+            getProxy().setValidSides(allDirection);
+        } else {
+            getProxy().setValidSides(emptyDirection);
+        }
+    }
+
+    @Override
+    public void securityBreak() {
+
+    }
+
+    private boolean wasActive = false;
+
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkPowerStatusChange c) {
+        final boolean currentActive = isActive();
+        if (this.wasActive != currentActive) {
+            this.wasActive = currentActive;
+            postCPUClusterChangeEvent();
+        }
+    }
+
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkChannelsChanged c) {
+        final boolean currentActive = isActive();
+        if (this.wasActive != currentActive) {
+            this.wasActive = currentActive;
+            postCPUClusterChangeEvent();
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        getProxy().onChunkUnload();
+    }
+
+    @Override
+    public void inValidate() {
+        super.inValidate();
+        getProxy().invalidate();
+    }
+
+    protected void postCPUClusterChangeEvent() {
+        if (isActive()) {
+            try {
+                getProxy().getGrid().postEvent(new MENetworkCraftingCpuChange(getProxy().getNode()));
+            } catch (final GridAccessException ignored) {
+            }
+        }
+    }
+
+    public boolean isActive() {
+        return getProxy().isActive();
+    }
+
+    protected CraftingCPUCluster virtualCPU = null;
+    protected final List<CraftingCPUCluster> cpus = new ObjectArrayList<>();
+
+    public List<CraftingCPUCluster> getCPUs() {
+        if (!isActive()) return ObjectLists.emptyList();
+
+        final List<CraftingCPUCluster> clusters = new ObjectArrayList<>(cpus);
+        if (this.virtualCPU != null) {
+            // Refresh machine source.
+            ECPUCluster.from(this.virtualCPU).ec$setVirtualCPUOwner(this);
+            clusters.add(this.virtualCPU);
+        }
+        return clusters;
+    }
+
+    public void onVirtualCPUSubmitJob(final long usedBytes) {
+        final boolean prevEmpty = cpus.isEmpty();
+
+        ECPUCluster.from(virtualCPU).ec$setVirtualCPUOwner(this);
+        cpus.add(virtualCPU);
+
+        if (prevEmpty) {
+            markDirty();
+        }
+
+        ECPUCluster ecpuCluster = ECPUCluster.from(this.virtualCPU);
+        ecpuCluster.ec$setAvailableStorage(usedBytes);
+        this.virtualCPU = null;
+        createVirtualCPU();
+    }
+
+    public long getTotalBytes() {
+        return maximumStorage;
+    }
+
+    public long getAvailableBytes() {
+        return maximumStorage - getUsedBytes();
+    }
+
+    public long getUsedBytes() {
+        return cpus.stream().mapToLong(CraftingCPUCluster::getAvailableStorage).sum();
+    }
+
+    public void createVirtualCPU() {
+        final long availableBytes = getAvailableBytes();
+        if (availableBytes < maximumStorage * 0.1F) {
+            if (this.virtualCPU != null) {
+                this.virtualCPU.destroy();
+                this.virtualCPU = null;
+            }
+            return;
+        }
+
+        if (this.virtualCPU != null) {
+            ECPUCluster eCluster = ECPUCluster.from(this.virtualCPU);
+            eCluster.ec$setAvailableStorage(availableBytes);
+            eCluster.ec$setAccelerators(maximumParallel);
+            return;
+        }
+
+        WorldCoord pos = getWorldCoord();
+        this.virtualCPU = new CraftingCPUCluster(pos, pos);
+        ECPUCluster eCluster = ECPUCluster.from(this.virtualCPU);
+        eCluster.ec$setVirtualCPUOwner(this);
+        eCluster.ec$setAvailableStorage(availableBytes);
+        eCluster.ec$setAccelerators(maximumParallel);
+
+        this.postCPUClusterChangeEvent();
+    }
+
+    public WorldCoord getWorldCoord() {
+        return new WorldCoord(getBaseMetaTileEntity().getXCoord(),getBaseMetaTileEntity().getYCoord(),getBaseMetaTileEntity().getZCoord());
+    }
+
+    public void onCPUDestroyed(final CraftingCPUCluster cluster) {
+        cpus.remove(cluster);
+        postCPUClusterChangeEvent();
+        if (cpus.isEmpty()) {
+            markDirty();
+        }
     }
 
     public enum QuantumComputerBlockType {

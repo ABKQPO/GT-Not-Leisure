@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.assembler;
+package com.science.gtnl.mixins.late.AppliedEnergistics.assembler;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

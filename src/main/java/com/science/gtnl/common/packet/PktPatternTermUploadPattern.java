@@ -7,8 +7,8 @@ import net.minecraft.util.ChatComponentTranslation;
 
 import com.glodblock.github.client.gui.container.ContainerFluidPatternTerminal;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.mixins.late.assembler.AccessorContainerPatternTerm;
-import com.science.gtnl.mixins.late.assembler.AccessorFCContainerEncodeTerminal;
+import com.science.gtnl.mixins.late.AppliedEnergistics.assembler.AccessorContainerPatternTerm;
+import com.science.gtnl.mixins.late.AppliedEnergistics.assembler.AccessorFCContainerEncodeTerminal;
 import com.science.gtnl.utils.Utils;
 
 import appeng.api.AEApi;

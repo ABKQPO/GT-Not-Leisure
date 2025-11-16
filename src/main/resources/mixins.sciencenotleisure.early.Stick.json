@@ -8,10 +8,10 @@
   "mixins": [],
   "client": [
     "MixinAnimatedTooltipHandler",
-    "MixinItemRenderer",
-    "MixinLayoutManager",
     "MixinGuiCraftingRecipe",
     "MixinGuiUsageRecipe",
+    "MixinItemRenderer",
+    "MixinLayoutManager",
     "MixinRenderItem"
   ],
   "server": []

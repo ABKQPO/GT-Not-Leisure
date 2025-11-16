@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.assembler;
+package com.science.gtnl.mixins.late.AppliedEnergistics.assembler;
 
 import net.minecraft.inventory.IInventory;
 

@@ -10,12 +10,14 @@
     "AppliedEnergistics.MixinAdaptorIInventory",
     "AppliedEnergistics.MixinEntityTinyTNTPrimed",
     "AppliedEnergistics.MixinTileIOPort",
-    "assembler.AccessorContainerPatternTerm",
-    "assembler.AccessorFCContainerEncodeTerminal",
-    "assembler.AccessorInvTracker",
-    "assembler.MixinContainerInterfaceTerminal",
-    "assembler.MixinCraftingCPUCluster",
-    "assembler.MixinCraftingCPUCluster$AccessorTaskProgress",
+    "AppliedEnergistics.assembler.AccessorContainerPatternTerm",
+    "AppliedEnergistics.assembler.AccessorFCContainerEncodeTerminal",
+    "AppliedEnergistics.assembler.AccessorInvTracker",
+    "AppliedEnergistics.assembler.MixinContainerInterfaceTerminal",
+    "AppliedEnergistics.assembler.MixinCraftingCPUCluster",
+    "AppliedEnergistics.assembler.MixinCraftingCPUCluster$AccessorTaskProgress",
+    "AppliedEnergistics.QuamtumComputer.MixinCraftingCPUCluster",
+    "AppliedEnergistics.QuamtumComputer.MixinCraftingGridCache",
     "Bartwork.MixinCircuitImprintLoader",
     "Bartwork.MixinItemRegistry",
     "Bartwork.MixinMultipleMetalLoader",
@@ -65,9 +67,9 @@
     "ThaumicTinkerer.MixinItemBloodSword"
   ],
   "client": [
-    "assembler.MixinGuiFluidPatternTerminal",
-    "assembler.MixinGuiMEMonitorable",
-    "assembler.MixinGuiPatternTerm"
+    "AppliedEnergistics.assembler.MixinGuiFluidPatternTerminal",
+    "AppliedEnergistics.assembler.MixinGuiMEMonitorable",
+    "AppliedEnergistics.assembler.MixinGuiPatternTerm"
   ],
   "server": []
 }

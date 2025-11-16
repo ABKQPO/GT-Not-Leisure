@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.assembler;
+package com.science.gtnl.mixins.late.AppliedEnergistics.assembler;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;

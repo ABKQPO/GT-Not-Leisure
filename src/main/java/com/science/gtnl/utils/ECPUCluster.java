@@ -1,0 +1,28 @@
+package com.science.gtnl.utils;
+
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import com.science.gtnl.common.machine.multiblock.QuantumComputer;
+
+import javax.annotation.Nullable;
+
+public interface ECPUCluster {
+
+    static ECPUCluster from(final CraftingCPUCluster cluster) {
+        return (ECPUCluster) (Object) cluster;
+    }
+
+    void ec$setAvailableStorage(final long availableStorage);
+
+    void ec$setAccelerators(final int accelerators);
+
+    QuantumComputer ec$getVirtualCPUOwner();
+
+    void ec$setVirtualCPUOwner(@Nullable final QuantumComputer isVirtualCPUOwner);
+
+    long ec$getUsedExtraStorage();
+
+    void ec$setUsedExtraStorage(final long usedExtraStorage);
+
+    void ec$markDestroyed();
+
+}

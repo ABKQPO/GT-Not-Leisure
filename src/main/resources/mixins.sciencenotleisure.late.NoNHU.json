@@ -7,11 +7,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAbstractPoweredMachineEntity",
-    "MixinTileEntityEnder",
-    "MixinBlockItemCapBank",
     "MixinBaseMetaTileEntity",
+    "MixinBlockItemCapBank",
     "MixinMTEAdvAssLineAcceleration",
-    "MixinResearchStationAcceleration"
+    "MixinResearchStationAcceleration",
+    "MixinTileEntityEnder"
   ]
 }
 
