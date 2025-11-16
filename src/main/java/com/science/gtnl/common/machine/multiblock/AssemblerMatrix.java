@@ -571,6 +571,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         aNBT.setInteger("mCountSpeedCasing", mCountSpeedCasing);
         aNBT.setLong("mMaxParallelLong", mMaxParallelLong);
         aNBT.setBoolean("wirelessMode", wirelessMode);
+        getProxy().writeToNBT(aNBT);
         saveInvData(aNBT, false);
     }
 
@@ -709,6 +710,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             }
         }
 
+        getProxy().readFromNBT(aNBT);
         updateAE2ProxyColor();
         updateValidGridProxySides();
     }
@@ -1288,6 +1290,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public ItemStack getDisplayRep() {
         return getSelfRep();
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        getProxy().onChunkUnload();
+    }
+
+    @Override
+    public void inValidate() {
+        super.inValidate();
+        getProxy().invalidate();
     }
 
     public void tryOutputInventory(IInventory inventory) {
