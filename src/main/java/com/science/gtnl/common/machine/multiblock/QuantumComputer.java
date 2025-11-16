@@ -140,7 +140,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isActive()) aBaseMetaTileEntity.setActive(false);
+        if (aBaseMetaTileEntity.isAllowedToWork()) aBaseMetaTileEntity.disableWorking();
     }
 
     @Override
@@ -473,7 +473,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
         }
-        if (dxMin < -MAX_SIZE / 2) {
+        if (dxMin < -MAX_SIZE / 2 - 1) {
             return false;
         }
 
@@ -483,7 +483,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
         }
-        if (dxMax > MAX_SIZE / 2) {
+        if (dxMax > MAX_SIZE / 2 + 1) {
             return false;
         }
 
@@ -499,7 +499,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
         }
-        if (dzMin < -MAX_SIZE / 2) {
+        if (dzMin < -MAX_SIZE / 2 - 1) {
             return false;
         }
 
@@ -509,7 +509,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
         }
-        if (dzMax > MAX_SIZE / 2) {
+        if (dzMax > MAX_SIZE / 2 + 1) {
             return false;
         }
 
@@ -637,7 +637,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             } else {
                 // Not floor yet, check for a wall.
-                if (!checkWall(aBaseMetaTileEntity, dyMin)) return false;
+                if (!checkWall(aBaseMetaTileEntity, dyMin)) {
+                    dyMin = 0;
+                    return false;
+                }
             }
         }
         if (dyMin < -(MAX_SIZE - 1)) {
