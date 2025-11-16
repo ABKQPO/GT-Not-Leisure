@@ -128,6 +128,22 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public void onBlockDestroyed() {
+        super.onBlockDestroyed();
+        cpus.forEach(
+            cluster -> ECPUCluster.from(cluster)
+                .ec$markDestroyed());
+        cpus.clear();
+        postCPUClusterChangeEvent();
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (aBaseMetaTileEntity.isActive()) aBaseMetaTileEntity.setActive(false);
+    }
+
+    @Override
     public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
         super.onFirstTick(baseMetaTileEntity);
         if (this.virtualCPU == null) {

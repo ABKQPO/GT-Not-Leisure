@@ -80,15 +80,15 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     @Inject(method = "cancel", at = @At("RETURN"))
     private void injectCancel(final CallbackInfo ci) {
+        if (this.ec$virtualCPUOwner == null) return;
         if (this.inventory.getItemList()
-            .isEmpty()) {
-            destroy();
-        }
+            .isEmpty()) destroy();
     }
 
     @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true)
     private void injectUpdateCraftingLogicStoreItems(final IGrid grid, final IEnergyGrid eg,
         final CraftingGridCache cgc, final CallbackInfo ci) {
+        if (this.ec$virtualCPUOwner == null) return;
         if (this.myLastLink != null) {
             if (this.myLastLink.isCanceled()) {
                 this.myLastLink = null;
@@ -110,11 +110,10 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         at = @At(value = "INVOKE", target = "Lappeng/tile/crafting/TileCraftingTile;isActive()Z"))
     private boolean redirectUpdateCraftingLogicIsActive(final TileCraftingTile instance,
         final Operation<Boolean> original) {
-        if (this.ec$virtualCPUOwner != null) {
-            return ec$virtualCPUOwner.getProxy()
-                .isActive();
-        }
-        return original.call(instance);
+        if (this.ec$virtualCPUOwner == null) return original.call(instance);
+        return ec$virtualCPUOwner.getProxy()
+            .isActive();
+
     }
 
     @Inject(method = "destroy", at = @At("HEAD"), cancellable = true)
