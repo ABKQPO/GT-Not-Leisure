@@ -20,10 +20,6 @@ public interface ECPUCluster {
 
     void ec$setVirtualCPUOwner(@Nullable final QuantumComputer isVirtualCPUOwner);
 
-    long ec$getUsedExtraStorage();
-
-    void ec$setUsedExtraStorage(final long usedExtraStorage);
-
     void ec$markDestroyed();
 
 }

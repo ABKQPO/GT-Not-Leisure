@@ -32,7 +32,8 @@ public abstract class MixinCraftingGridCache {
     @Shadow
     public abstract void addLink(final CraftingLink link);
 
-    @Inject(method = "updateCPUClusters()V", at = @At("RETURN"))
+    @Inject(method = "updateCPUClusters()V", at = @At("RETURN"),
+        require = 1)
     private void injectUpdateCPUClusters(final CallbackInfo ci) {
         for (final IGridNode ecNode : grid.getMachines(QuantumComputer.class)) {
             final var ec = (QuantumComputer) ecNode.getMachine();
