@@ -359,6 +359,41 @@ public class MainConfig {
                 "Maximum tickrate from servers. Prevents really high tickrate values.")
             .getDouble(maxTickrate);
 
+        // Quantum Computer
+        quantumComputerMaximumQuantumDataEntangler = config
+            .get(
+                CATEGORY_MACHINE,
+                "quantumComputerMaximumQuantumDataEntangler",
+                quantumComputerMaximumQuantumDataEntangler,
+                "Maximum number of data entangler allowed in a Quantum Computer")
+            .getInt(quantumComputerMaximumQuantumDataEntangler);
+
+        quantumComputerMaximumQuantumComputerMultiThreader = config
+            .get(
+                CATEGORY_MACHINE,
+                "quantumComputerMaximumQuantumComputerMultiThreader",
+                quantumComputerMaximumQuantumComputerMultiThreader,
+                "Maximum number of multi threader allowed in a Quantum Computer")
+            .getInt(quantumComputerMaximumQuantumComputerMultiThreader);
+
+        quantumComputerMaximumQuantumComputerCore = config
+            .get(
+                CATEGORY_MACHINE,
+                "quantumComputerMaximumQuantumComputerCore",
+                quantumComputerMaximumQuantumComputerCore,
+                "Maximum number of cores allowed in a Quantum Computer")
+            .getInt(quantumComputerMaximumQuantumComputerCore);
+
+        quantumComputerMaximumMultiblockSize = config
+            .get(
+                CATEGORY_MACHINE,
+                "quantumComputerMaximumMultiblockSize",
+                quantumComputerMaximumMultiblockSize,
+                "Maximum size allowed for a Quantum Computer multiblock structure",
+                3,
+                64)
+            .getInt(quantumComputerMaximumMultiblockSize);
+
         // Player Doll
         enableCustomPlayerDoll = config
             .get(
