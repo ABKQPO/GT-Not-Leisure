@@ -104,7 +104,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             currentCircuitMultiplier = MathHelper.clamp_int(circuit.getItemDamage(), 0, 24);
         }
 
-        int powerMultiplier = (int) GTUtility.powInt(2, currentCircuitMultiplier);
+        int powerMultiplier = (int) Math.min(GTUtility.powInt(2, currentCircuitMultiplier), 10);
         long requiredEUt = RECIPE_EUT * powerMultiplier;
         long availableEUt = GTUtility.roundUpVoltage(getBaseMetaTileEntity().getStoredEU());
 
