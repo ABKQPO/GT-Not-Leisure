@@ -1,4 +1,4 @@
-package com.reavaritia.common.block.neutronCollector;
+package com.reavaritia.common.block.NeutronCollector;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
