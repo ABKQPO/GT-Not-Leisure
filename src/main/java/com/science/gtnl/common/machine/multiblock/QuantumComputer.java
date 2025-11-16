@@ -44,6 +44,7 @@ import appeng.me.helpers.IGridProxyable;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.ISecondaryDescribable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -149,6 +150,46 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         if (this.virtualCPU == null) {
             createVirtualCPU();
         }
+    }
+
+    @Override
+    public boolean supportsSingleRecipeLocking() {
+        return false;
+    }
+
+    @Override
+    public boolean isRecipeLockingEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return false;
+    }
+
+    @Override
+    public VoidingMode getVoidingMode() {
+        return VoidingMode.VOID_NONE;
+    }
+
+    @Override
+    public boolean supportsInputSeparation() {
+        return false;
+    }
+
+    @Override
+    public boolean isInputSeparationEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsBatchMode() {
+        return false;
+    }
+
+    @Override
+    public boolean isBatchModeEnabled() {
+        return false;
     }
 
     @Override
@@ -467,7 +508,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
         // X direction
 
-        for (dxMin = -1; dxMin >= -MAX_SIZE / 2; --dxMin) {
+        for (dxMin = -1; dxMin > -MAX_SIZE / 2; --dxMin) {
             if (getBlockType(aBaseMetaTileEntity, dxMin, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 dxMin++;
                 break;
@@ -477,7 +518,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             return false;
         }
 
-        for (dxMax = 1; dxMax <= MAX_SIZE / 2; ++dxMax) {
+        for (dxMax = 1; dxMax < MAX_SIZE / 2; ++dxMax) {
             if (getBlockType(aBaseMetaTileEntity, dxMax, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 dxMax--;
                 break;
@@ -493,7 +534,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
         // Z direction
 
-        for (dzMin = -1; dzMin >= -MAX_SIZE / 2; --dzMin) {
+        for (dzMin = -1; dzMin > -MAX_SIZE / 2; --dzMin) {
             if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMin, true) == QuantumComputerBlockType.INVALID) {
                 dzMin++;
                 break;
@@ -503,7 +544,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             return false;
         }
 
-        for (dzMax = 1; dzMax <= MAX_SIZE / 2; ++dzMax) {
+        for (dzMax = 1; dzMax < MAX_SIZE / 2; ++dzMax) {
             if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMax, true) == QuantumComputerBlockType.INVALID) {
                 dzMax--;
                 break;
