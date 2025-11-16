@@ -2,24 +2,9 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static gregtech.api.enums.Textures.BlockIcons.*;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkCraftingCpuChange;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.util.AECableType;
-import appeng.api.util.DimensionalCoord;
-import appeng.api.util.WorldCoord;
-import appeng.me.GridAccessException;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
-import com.science.gtnl.utils.ECPUCluster;
-import com.science.gtnl.utils.enums.GTNLItemList;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
+import java.util.EnumSet;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,7 +22,23 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.ECPUCluster;
+import com.science.gtnl.utils.enums.GTNLItemList;
 
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkCraftingCpuChange;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.util.AECableType;
+import appeng.api.util.DimensionalCoord;
+import appeng.api.util.WorldCoord;
+import appeng.me.GridAccessException;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.IGridProxyable;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -49,11 +50,11 @@ import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 
-import java.util.EnumSet;
-import java.util.List;
-
-public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
+public class QuantumComputer extends MTETooltipMultiBlockBase
+    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
 
     /**
      * Maximum size of the quantum computer. Includes walls.
@@ -437,7 +438,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
      *
      * @return True on success, false on failure.
      */
-    @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "StatementWithEmptyBody"})
+    @SuppressWarnings({ "BooleanMethodIsAlwaysInverted", "StatementWithEmptyBody" })
     public boolean checkCeiling(IGregTechTileEntity aBaseMetaTileEntity) {
         // Edges must be plascrete, everything else must be filters (except for the controller).
         for (int dx = dxMin; dx <= dxMax; ++dx) {
@@ -506,10 +507,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
             if (!addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dz, true)) return false;
         }
 
-        return addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMin, true) &&
-            addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMax, true) &&
-            addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMin, true) &&
-            addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMax, true);
+        return addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMin, true)
+            && addStructureBlock(aBaseMetaTileEntity, dxMin, dy, dzMax, true)
+            && addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMin, true)
+            && addStructureBlock(aBaseMetaTileEntity, dxMax, dy, dzMax, true);
     }
 
     @Override
@@ -783,9 +784,9 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
     protected void postCPUClusterChangeEvent() {
         if (isActive()) {
             try {
-                getProxy().getGrid().postEvent(new MENetworkCraftingCpuChange(getProxy().getNode()));
-            } catch (final GridAccessException ignored) {
-            }
+                getProxy().getGrid()
+                    .postEvent(new MENetworkCraftingCpuChange(getProxy().getNode()));
+            } catch (final GridAccessException ignored) {}
         }
     }
 
@@ -802,7 +803,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
         final List<CraftingCPUCluster> clusters = new ObjectArrayList<>(cpus);
         if (this.virtualCPU != null) {
             // Refresh machine source.
-            ECPUCluster.from(this.virtualCPU).ec$setVirtualCPUOwner(this);
+            ECPUCluster.from(this.virtualCPU)
+                .ec$setVirtualCPUOwner(this);
             clusters.add(this.virtualCPU);
         }
         return clusters;
@@ -811,7 +813,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
     public void onVirtualCPUSubmitJob(final long usedBytes) {
         final boolean prevEmpty = cpus.isEmpty();
 
-        ECPUCluster.from(virtualCPU).ec$setVirtualCPUOwner(this);
+        ECPUCluster.from(virtualCPU)
+            .ec$setVirtualCPUOwner(this);
         cpus.add(virtualCPU);
 
         if (prevEmpty) {
@@ -833,7 +836,9 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
     }
 
     public long getUsedBytes() {
-        return cpus.stream().mapToLong(CraftingCPUCluster::getAvailableStorage).sum();
+        return cpus.stream()
+            .mapToLong(CraftingCPUCluster::getAvailableStorage)
+            .sum();
     }
 
     public void createVirtualCPU() {
@@ -864,7 +869,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase implements IConstr
     }
 
     public WorldCoord getWorldCoord() {
-        return new WorldCoord(getBaseMetaTileEntity().getXCoord(),getBaseMetaTileEntity().getYCoord(),getBaseMetaTileEntity().getZCoord());
+        return new WorldCoord(
+            getBaseMetaTileEntity().getXCoord(),
+            getBaseMetaTileEntity().getYCoord(),
+            getBaseMetaTileEntity().getZCoord());
     }
 
     public void onCPUDestroyed(final CraftingCPUCluster cluster) {

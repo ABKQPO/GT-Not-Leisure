@@ -1,9 +1,10 @@
 package com.science.gtnl.utils;
 
-import appeng.me.cluster.implementations.CraftingCPUCluster;
+import javax.annotation.Nullable;
+
 import com.science.gtnl.common.machine.multiblock.QuantumComputer;
 
-import javax.annotation.Nullable;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 public interface ECPUCluster {
 
