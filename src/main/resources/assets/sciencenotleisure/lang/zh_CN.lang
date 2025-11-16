@@ -767,8 +767,7 @@ tile.MetaCasing02.15.name=量子计算机加速器
 Tooltip_QuantumComputerAccelerator_00=每个加速器提供 %s 个并行处理线程。
 tile.MetaCasing02.16.name=量子计算机多线程处理器
 Tooltip_QuantumComputerMultiThreader_00=量子计算机的并行线程数变为 4 倍。每个量子计算机中最多放置 %s 个。
-
-tile.MetaCasing02.112.name=量子计算机核心
+tile.MetaCasing02.17.name=量子计算机核心
 Tooltip_QuantumComputerCore_00=提供 256M 合成存储空间和 64 并行处理线程。
 
 tile.MetaBlock.0.name=测试方块

@@ -563,6 +563,11 @@ public class BlockLoader {
                 new String[] { StatCollector.translateToLocalFormatted(
                     "Tooltip_QuantumComputerMultiThreader_00",
                     MainConfig.quantumComputerMaximumQuantumComputerMultiThreader) }));
+        GTNLItemList.QuantumComputerCore.set(
+            MetaItemBlockCasing.initMetaBlockCasing(
+                17,
+                BlockLoader.metaCasing02,
+                new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputerCore_00") }));
     }
 
     public static void registry() {

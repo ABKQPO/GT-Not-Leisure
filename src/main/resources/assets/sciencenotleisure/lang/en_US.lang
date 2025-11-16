@@ -767,8 +767,7 @@ tile.MetaCasing02.15.name=Quantum Accelerator
 Tooltip_QuantumComputerAccelerator_00=Provides %s co-processing threads per block.
 tile.MetaCasing02.16.name=Quantum Computer Multi Threader
 Tooltip_QuantumComputerMultiThreader_00=
-
-tile.MetaCasing02.112.name=Quantum Computer Core
+tile.MetaCasing02.17.name=Quantum Computer Core
 Tooltip_QuantumComputerCore_00=Provides 256M crafting storage and 64 co-processing threads.
 
 tile.MetaBlock.0.name=Test Block
