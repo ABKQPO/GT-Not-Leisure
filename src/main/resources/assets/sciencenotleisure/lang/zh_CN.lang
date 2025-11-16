@@ -1525,11 +1525,21 @@ Tooltip_MassFabricator_Casing=任意ZPM机械方块
 
 NameQuantumComputer=量子计算机
 QuantumComputerRecipeType=CPU
-Tooltip_QuantumComputer_00=滴滴滴
+Tooltip_QuantumComputer_00=可以像常规的CPU一样执行合成任务
+Tooltip_QuantumComputer_01=只要容量足够，量子计算机可以同时执行的合成任务数量不限
+Tooltip_QuantumComputer_02=不同任务之间可以共享并行数量
+Tooltip_QuantumComputer_03=量子计算机会在接收到合成任务时，自行“分配”出一个小CPU
+Tooltip_QuantumComputer_04=容量 = 该合成任务的占用，并行数 = 该量子计算机的并行数
+Tooltip_QuantumComputer_05=分配出的小CPU会占用量子计算机的剩余容量。在还有足够的剩余容量时可不断分配，直到容量不足
+Tooltip_QuantumComputer_06=在合成任务完成时，分配出的小CPU会重新“回收”进量子计算机中，作为空余容量
+Tooltip_QuantumComputer_07=可以在AE的终端中观察到量子计算机创建新CPU
+Tooltip_QuantumComputer_08=耗能与常规CPU一致
+Tooltip_QuantumComputer_09=不需要开机，这台机器成型即可使用
 Tooltip_QuantumComputer_10=所有内部方块必须为合成存储器或并行处理单元！
+Tooltip_QuantumComputer_11=§c在量子计算机的外表面上，不能放置任何可用于构成量子计算机的方块，否则会导致量子计算机失效
 Info_QuantumComputer_00=结构大小：%sx%sx%s
-Info_QuantumComputer_01=并行线程：%s
-Info_QuantumComputer_02=可存储：%s
+Info_QuantumComputer_01=并行线程：%s / 已使用：%s (%s)
+Info_QuantumComputer_02=可存储：%s / 已使用：%s (%s)
 
 NameAssemblerMatrix=装配矩阵
 AssemblerMatrixRecipeType=分子装配室

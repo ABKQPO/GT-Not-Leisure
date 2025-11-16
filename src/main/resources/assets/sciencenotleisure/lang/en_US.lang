@@ -1525,10 +1525,21 @@ Tooltip_MassFabricator_Casing=Any ZPM Casing
 
 NameQuantumComputer=Quantum Computer
 QuantumComputerRecipeType=CPU
-Tooltip_QuantumComputer_00=Test
+Tooltip_QuantumComputer_00=Can perform crafting tasks like a conventional CPU
+Tooltip_QuantumComputer_01=The number of crafting tasks a Quantum Computer can execute simultaneously is unlimited, as long as capacity allows
+Tooltip_QuantumComputer_02=Parallel threads can be shared across different tasks
+Tooltip_QuantumComputer_03=When receiving a crafting task, the Quantum Computer automatically "allocates" a small CPU
+Tooltip_QuantumComputer_04=Capacity = the amount consumed by this crafting task, Parallel threads = the number of threads available in this Quantum Computer
+Tooltip_QuantumComputer_05=The allocated small CPU consumes the remaining capacity of the Quantum Computer. It can keep allocating as long as enough capacity remains
+Tooltip_QuantumComputer_06=When a crafting task is completed, the allocated small CPU is "reclaimed" back into the Quantum Computer as free capacity
+Tooltip_QuantumComputer_07=You can observe the Quantum Computer creating new CPUs from an AE terminal
+Tooltip_QuantumComputer_08=Power consumption is the same as a conventional CPU
+Tooltip_QuantumComputer_09=No need to turn on; the machine is ready to use once assembled
+Tooltip_QuantumComputer_10=All internal blocks must be crafting storage or parallel processing units!
+Tooltip_QuantumComputer_11=§cNo blocks that could form part of the Quantum Computer can be placed on the outer surface, or the machine will fail
 Info_QuantumComputer_00=Multiblock size: %sx%sx%s
-Info_QuantumComputer_01=Co-processors: %s
-Info_QuantumComputer_02=Storage: %s
+Info_QuantumComputer_01=Co-processors: %s / Used: %s (%s)
+Info_QuantumComputer_02=Storage: %s / Used: %s (%s)
 
 NameAssemblerMatrix=Assembler Matrix
 AssemblerMatrixRecipeType=Molecular Assembler

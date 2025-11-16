@@ -96,8 +96,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public int multiThreaderCount;
     public int dataEntanglerCount;
     public int singularityCraftingStorageCount;
-    private long maximumStorage;
-    public int maximumParallel;
+    public long maximumStorage = 0;
+    public int maximumParallel = 0;
+    public long usedStorage = 0;
+    public int usedParallel = 0;
 
     public long getMaximumStorage() {
         if (singularityCraftingStorageCount > 0) return Long.MAX_VALUE;
@@ -130,6 +132,14 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_10"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_11"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
@@ -868,9 +878,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
-                new TextWidget().setStringSupplier(
-                    () -> StatCollector
-                        .translateToLocalFormatted("Info_QuantumComputer_01", GTUtility.formatNumbers(maximumParallel)))
+                new TextWidget()
+                    .setStringSupplier(
+                        () -> StatCollector.translateToLocalFormatted(
+                            "Info_QuantumComputer_01",
+                            GTUtility.formatNumbers(maximumParallel),
+                            GTUtility.formatNumbers(usedParallel),
+                            String.format(
+                                "%.1f%%",
+                                maximumParallel > 0 ? (double) usedParallel / maximumParallel * 100.0 : 0.0)))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
@@ -878,14 +894,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
                             "Info_QuantumComputer_02",
-                            GTUtility.scientificFormat(getMaximumStorage())))
+                            GTUtility.scientificFormat(getMaximumStorage()),
+                            usedStorage,
+                            String.format(
+                                "%.1f%%",
+                                getMaximumStorage() > 0 ? (double) usedParallel / getMaximumStorage() * 100.0 : 0.0)))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> width, w -> width = w))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> height, h -> height = h))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> depth, d -> depth = d))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> maximumParallel, parallel -> maximumParallel = parallel))
-            .widget(new FakeSyncWidget.LongSyncer(this::getMaximumStorage, storage -> maximumStorage = storage));
+            // .widget(new FakeSyncWidget.IntegerSyncer(() -> getUsedBytes(), parallel -> maximumParallel = parallel))
+            .widget(new FakeSyncWidget.LongSyncer(this::getMaximumStorage, storage -> maximumStorage = storage))
+            .widget(new FakeSyncWidget.LongSyncer(this::getUsedBytes, storage -> usedStorage = storage));
     }
 
     @Override
