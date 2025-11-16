@@ -284,7 +284,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             WorldCoord coord = getWorldCoord();
             CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
             ECPUCluster eCluster = ECPUCluster.from(cluster);
-
+            eCluster.ec$setVirtualCPUOwner(this);
             eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
             cluster.readFromNBT(clusterTag);
             cpus.add(cluster);
