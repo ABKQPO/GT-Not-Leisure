@@ -311,99 +311,122 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case UNIT:
+                unitCount++;
                 return true;
 
             case CORE:
                 maximumStorage += 268435456L;
                 maximumParallel += 64;
+                unitCount++;
                 coreCount++;
                 return true;
 
             case CRAFTING_STORAGE_1K:
                 maximumStorage += 1024L;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4K:
                 maximumStorage += 4L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16K:
                 maximumStorage += 16L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_64K:
                 maximumStorage += 64L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256K:
                 maximumStorage += 256L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_1024K:
                 maximumStorage += 1024L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4096K:
                 maximumStorage += 4096L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16384K:
                 maximumStorage += 16384L * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_128M:
                 maximumStorage += 128L * 1024 * 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256M:
                 maximumStorage += 256L * 1024 * 1024;
+                unitCount++;
                 return true;
 
             case DATA_ENTANGLER:
                 maximumStorage *= 4;
                 dataEntanglerCount++;
+                unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_SINGULARITY:
                 maximumStorage = Long.MAX_VALUE;
                 singularityCraftingStorageCount++;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1:
                 maximumParallel += 1;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4:
                 maximumParallel += 4;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_16:
                 maximumParallel += 16;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_64:
                 maximumParallel += 64;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_256:
                 maximumParallel += 256;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1024:
                 maximumParallel += 1024;
+                unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4096:
                 maximumParallel += 4096;
+                unitCount++;
                 return true;
 
             case ACCELERATOR:
                 maximumParallel += 16384;
+                unitCount++;
                 return true;
 
             case MULTI_THREADER:
                 maximumParallel *= 4;
                 multiThreaderCount++;
+                unitCount++;
                 return true;
 
             case INVALID:

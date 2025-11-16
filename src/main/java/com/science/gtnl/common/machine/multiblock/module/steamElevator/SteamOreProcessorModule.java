@@ -62,11 +62,11 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public static long RECIPE_EUT = 128;
 
     public SteamOreProcessorModule(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional, 7);
+        super(aID, aName, aNameRegional, 8);
     }
 
     public SteamOreProcessorModule(String aName) {
-        super(aName, 7);
+        super(aName, 8);
     }
 
     @Override
