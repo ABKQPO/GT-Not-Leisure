@@ -1306,7 +1306,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UIV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            GTNLItemList.LargeMaterialPress.get(1),
+            GTNLItemList.LargeForming.get(1),
             1000000,
             48000,
             (int) TierEU.RECIPE_UHV,
@@ -1323,27 +1323,6 @@ public class AssemblingLineRecipes implements IRecipePool {
             new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(96000),
                 Materials.Lubricant.getFluid(64000), MaterialsAlloy.PIKYONIUM.getFluidStack(66816) },
             GTNLItemList.SuperconductingMagneticPresser.get(1),
-            2000,
-            (int) TierEU.RECIPE_UEV);
-
-        TTRecipeAdder.addResearchableAssemblylineRecipe(
-            GTNLItemList.LargeBender.get(1),
-            1000000,
-            48000,
-            (int) TierEU.RECIPE_UHV,
-            1,
-            new Object[] { GTNLItemList.LargeBender.get(64), ItemList.Neutronium_Casing.get(64),
-                GTModHandler.getModItem(TecTech.ID, "gt.blockcasingsTT", 64, 4), ItemList.Electric_Motor_UHV.get(32),
-                ItemList.Electric_Piston_UHV.get(32), ItemList.Field_Generator_UHV.get(8),
-                GTModHandler.getModItem(NewHorizonsCoreMod.ID, "item.HighEnergyFlowCircuit", 64),
-                new ItemStack(huiCircuit, 16, 4), new Object[] { OrePrefixes.circuit.get(Materials.UEV), 16 },
-                GregtechItemList.Laser_Lens_Special.get(2),
-                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Infinity, 8),
-                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUHV, 16L),
-                GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 16), },
-            new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(96000),
-                Materials.Lubricant.getFluid(64000), MaterialsAlloy.PIKYONIUM.getFluidStack(66816) },
-            GTNLItemList.HeavyRolling.get(1),
             2000,
             (int) TierEU.RECIPE_UEV);
 
