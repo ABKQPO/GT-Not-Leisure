@@ -263,6 +263,7 @@ public enum GTNLItemList implements IItemContainer {
     ExoticWafer,
     ExoticChip,
     ExoticRAMWafer,
+    ShatteredSingularity,
 
     LVWirelessEnergyCover,
     MVWirelessEnergyCover,

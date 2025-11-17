@@ -51,6 +51,8 @@ public class MaterialLoader {
         ItemLoader.registry();
         WerkstoffAdderRegistry.addWerkstoffAdder(new MaterialPool());
 
+        LanguageLoader.registry();
+
         loadOreDictionaryRecipes();
 
         if (Mods.InventoryBogoSorter.isModLoaded()) {
@@ -96,8 +98,6 @@ public class MaterialLoader {
         if (MainConfig.enableStickItem) {
             RecipeLoader.loadVillageTrade();
         }
-
-        LanguageLoader.registry();
     }
 
     @Optional.Method(modid = "bogosorter")

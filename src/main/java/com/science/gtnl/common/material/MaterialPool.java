@@ -27,7 +27,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff CrudeHexanitrohexaazaisowurtzitane = new Werkstoff(
         new short[] { 20, 71, 88 },
-        "CrudeHexanitrohexaazaisowurtzitane",
+        "Crude Hexanitrohexaazaisowurtzitane",
         subscriptNumbers("C6H6N12O12"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -38,7 +38,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SilicaGel = new Werkstoff(
         new short[] { 77, 173, 202 },
-        "SilicaGel",
+        "Silica Gel",
         subscriptNumbers(""),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -71,7 +71,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SilicaGelBase = new Werkstoff(
         new short[] { 55, 146, 119 },
-        "SilicaGelBase",
+        "Silica Gel Base",
         subscriptNumbers(""),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -82,7 +82,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff FluoroboricAcide = new Werkstoff(
         new short[] { 139, 183, 139 },
-        "FluoroboricAcide",
+        "Fluoroboric Acid",
         subscriptNumbers("HBF4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -104,7 +104,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff NitroniumTetrafluoroborate = new Werkstoff(
         new short[] { 53, 56, 57 },
-        "NitroniumTetrafluoroborate",
+        "Nitronium Tetrafluoroborate",
         subscriptNumbers("NO2BF4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -115,7 +115,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff NitronsoniumTetrafluoroborate = new Werkstoff(
         new short[] { 53, 56, 57 },
-        "NitronsoniumTetrafluoroborate",
+        "Nitronsonium Tetrafluoroborate",
         subscriptNumbers("NOBF4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -126,7 +126,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BoronFluoride = new Werkstoff(
         new short[] { 200, 196, 202 },
-        "BoronFluoride",
+        "Boron Fluoride",
         subscriptNumbers("BF3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -137,7 +137,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SodiumTetrafluoroborate = new Werkstoff(
         new short[] { 147, 89, 13 },
-        "SodiumTetrafluoroborate",
+        "Sodium Tetrafluoroborate",
         subscriptNumbers("NaBF4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -148,7 +148,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BoronTrioxide = new Werkstoff(
         new short[] { 127, 147, 161 },
-        "BoronTrioxide",
+        "Boron Trioxide",
         subscriptNumbers("B2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -181,7 +181,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff HydrobromicAcid = new Werkstoff(
         new short[] { 160, 86, 62 },
-        "HydrobromicAcid",
+        "Hydrobromic Acid",
         subscriptNumbers("HBr"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -192,7 +192,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SuccinimidylAcetate = new Werkstoff(
         new short[] { 89, 99, 68 },
-        "SuccinimidylAcetate",
+        "Succinimidyl Acetate",
         subscriptNumbers("C6H7NO4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -225,7 +225,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SuccinicAnhydride = new Werkstoff(
         new short[] { 57, 15, 19 },
-        "SuccinicAnhydride",
+        "Succinic Anhydride",
         subscriptNumbers("C4H4O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -236,7 +236,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff HydroxylamineHydrochloride = new Werkstoff(
         new short[] { 66, 49, 23 },
-        "HydroxylamineHydrochloride",
+        "Hydroxylamine Hydrochloride",
         subscriptNumbers("H4NOCl"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -247,7 +247,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BariumChloride = new Werkstoff(
         new short[] { 207, 99, 84 },
-        "BariumChloride",
+        "Barium Chloride",
         subscriptNumbers("BaCl2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -258,7 +258,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff HydroxylammoniumSulfate = new Werkstoff(
         new short[] { 117, 114, 104 },
-        "HydroxylammoniumSulfate",
+        "Hydroxylammonium Sulfate",
         subscriptNumbers("N2H8SO6"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -269,7 +269,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff AcrylonitrileButadieneStyrene = new Werkstoff(
         new short[] { 100, 100, 100 },
-        "AcrylonitrileButadieneStyrene",
+        "Acrylonitrile Butadiene Styrene",
         subscriptNumbers("C8H8·C4H6·C3H3N"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -286,7 +286,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PotassiumHydroxylaminedisulfonate = new Werkstoff(
         new short[] { 117, 114, 104 },
-        "PotassiumHydroxylaminedisulfonate",
+        "Potassium Hydroxylaminedisulfonate",
         subscriptNumbers("K2NHS2O7"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -297,7 +297,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PotassiumSulfate = new Werkstoff(
         new short[] { 208, 152, 46 },
-        "PotassiumHydroxylaminedisulfonate",
+        "Potassium Hydroxylaminedisulfonate",
         subscriptNumbers("K2SO4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -308,7 +308,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PotassiumBisulfite = new Werkstoff(
         new short[] { 114, 111, 101 },
-        "PotassiumBisulfite",
+        "Potassium Bisulfite",
         subscriptNumbers("KSHO3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -319,7 +319,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff NitrousAcid = new Werkstoff(
         new short[] { 156, 194, 246 },
-        "NitrousAcid",
+        "Nitrous Acid",
         subscriptNumbers("HNO2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -330,7 +330,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SodiumNitrite = new Werkstoff(
         new short[] { 114, 111, 101 },
-        "SodiumNitrite",
+        "Sodium Nitrite",
         subscriptNumbers("NaNO2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -341,7 +341,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff CoAcAbCatalyst = new Werkstoff(
         new short[] { 68, 55, 28 },
-        "Co/Ac-AbCatalyst",
+        "Co/Ac-Ab Catalyst",
         subscriptNumbers(""),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -352,7 +352,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SodiumNitrateSolution = new Werkstoff(
         new short[] { 156, 194, 246 },
-        "SodiumNitrateSolution",
+        "Sodium Nitrate Solution",
         subscriptNumbers("(NaNO3)(H2O)"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -396,7 +396,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff AmmoniumChloride = new Werkstoff(
         new short[] { 80, 86, 86 },
-        "AmmoniumChloride",
+        "Ammonium Chloride",
         subscriptNumbers("NH4Cl"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -418,7 +418,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BenzylChloride = new Werkstoff(
         new short[] { 155, 239, 244 },
-        "BenzylChloride",
+        "Benzyl Chloride",
         subscriptNumbers("C7H7Cl"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -429,7 +429,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SuccinicAcid = new Werkstoff(
         new short[] { 80, 87, 86 },
-        "SuccinicAcid",
+        "Succinic Acid",
         subscriptNumbers("C4H6O4"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -440,7 +440,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff MaleicAnhydride = new Werkstoff(
         new short[] { 155, 239, 244 },
-        "MaleicAnhydride",
+        "Maleic Anhydride",
         subscriptNumbers("C4H2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -451,7 +451,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SuperMutatedLivingSolder = new Werkstoff(
         new short[] { 177, 95, 248 },
-        "SuperMutatedLivingSolder",
+        "Super Mutated Living Solder",
         subscriptNumbers("??HeOSnCBe??"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -479,7 +479,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PloyamicAcid = new Werkstoff(
         new short[] { 231, 206, 93 },
-        "PloyamicAcid",
+        "Ployamic Acid",
         subscriptNumbers("C22H14N2O7"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -501,7 +501,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PyromelliticDianhydride = new Werkstoff(
         new short[] { 99, 114, 128 },
-        "PyromelliticDianhydride",
+        "Pyromellitic Dianhydride",
         subscriptNumbers("C10H2O6"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -560,7 +560,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff FluidMana = new Werkstoff(
         new short[] { 98, 183, 227 },
-        "FluidMana",
+        "Fluid Mana",
         subscriptNumbers("❃"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -571,7 +571,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ExcitedNaquadahFuel = new Werkstoff(
         new short[] { 15, 2, 2 },
-        "ExcitedNaquadahFuel",
+        "Excited Naquadah Fuel",
         subscriptNumbers("❖◈❖"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -582,7 +582,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RareEarthHydroxides = new Werkstoff(
         new short[] { 114, 114, 9 },
-        "RareEarthHydroxides",
+        "Rare Earth Hydroxides",
         subscriptNumbers("?OH"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -593,7 +593,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RareEarthChlorides = new Werkstoff(
         new short[] { 165, 161, 103 },
-        "RareEarthChlorides",
+        "Rare Earth Chlorides",
         subscriptNumbers("?Cl"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -604,7 +604,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RareEarthOxide = new Werkstoff(
         new short[] { 166, 166, 79 },
-        "RareEarthOxide",
+        "Rare Earth Oxide",
         subscriptNumbers("?O"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -615,7 +615,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RareEarthMetal = new Werkstoff(
         new short[] { 148, 148, 148 },
-        "RareEarthMetal",
+        "Rare Earth Metal",
         subscriptNumbers("?"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -643,7 +643,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BarnardaCSappy = new Werkstoff(
         new short[] { 49, 49, 100 },
-        "BarnardaCSappy",
+        "Barnarda C Sappy",
         subscriptNumbers("?"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -654,7 +654,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff NeutralisedRedMud = new Werkstoff(
         new short[] { 147, 40, 3 },
-        "NeutralisedRedMud",
+        "Neutralised Red Mud",
         subscriptNumbers("Fe??"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -665,7 +665,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff FerricReeChloride = new Werkstoff(
         new short[] { 101, 101, 13 },
-        "FerricReeChloride",
+        "Ferric Ree Chloride",
         subscriptNumbers("Fe?"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -676,7 +676,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff LaNdOxidesSolution = new Werkstoff(
         new short[] { 152, 221, 213 },
-        "LaNdOxidesSolution",
+        "LaNdOxides Solution",
         subscriptNumbers("(La2O3)(Pr2O3)(Nd2O3)(Ce2O3)"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -687,7 +687,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SmGdOxidesSolution = new Werkstoff(
         new short[] { 248, 248, 149 },
-        "SmGdOxidesSolution",
+        "SmGdOxides Solution",
         subscriptNumbers("(Sc2O3)(Eu2O3)(Gd2O3)(Sm2O3)"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -698,7 +698,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff TbHoOxidesSolution = new Werkstoff(
         new short[] { 149, 248, 149 },
-        "TbHoOxidesSolution",
+        "TbHoOxides Solution",
         subscriptNumbers("(Y2O3)(Tb2O3)(Dy2O3)(Ho2O3)"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -709,7 +709,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ErLuOxidesSolution = new Werkstoff(
         new short[] { 248, 174, 248 },
-        "ErLuOxidesSolution",
+        "ErLuOxides Solution",
         subscriptNumbers("(Er2O3)(Tm2O3)(Yb2O3)(Lu2O3)"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -720,7 +720,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PraseodymiumOxide = new Werkstoff(
         new short[] { 144, 221, 154 },
-        "PraseodymiumOxide",
+        "Praseodymium Oxide",
         subscriptNumbers("Pr2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -731,7 +731,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ScandiumOxide = new Werkstoff(
         new short[] { 223, 223, 223 },
-        "ScandiumOxide",
+        "Scandium Oxide",
         subscriptNumbers("Sc2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -742,7 +742,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff GadoliniumOxide = new Werkstoff(
         new short[] { 126, 234, 100 },
-        "GadoliniumOxide",
+        "Gadolinium Oxide",
         subscriptNumbers("Gd2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -753,7 +753,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff TerbiumOxide = new Werkstoff(
         new short[] { 233, 233, 233 },
-        "TerbiumOxide",
+        "Terbium Oxide",
         subscriptNumbers("Tb2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -764,7 +764,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff DysprosiumOxide = new Werkstoff(
         new short[] { 155, 243, 134 },
-        "DysprosiumOxide",
+        "Dysprosium Oxide",
         subscriptNumbers("Dy2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -775,7 +775,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff HolmiumOxide = new Werkstoff(
         new short[] { 168, 163, 222 },
-        "HolmiumOxide",
+        "Holmium Oxide",
         subscriptNumbers("Ho2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -786,7 +786,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ErbiumOxide = new Werkstoff(
         new short[] { 201, 184, 136 },
-        "ErbiumOxide",
+        "Erbium Oxide",
         subscriptNumbers("Er2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -797,7 +797,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ThuliumOxide = new Werkstoff(
         new short[] { 141, 153, 213 },
-        "ThuliumOxide",
+        "Thulium Oxide",
         subscriptNumbers("Tm2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -808,7 +808,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff YtterbiumOxide = new Werkstoff(
         new short[] { 110, 217, 135 },
-        "YtterbiumOxide",
+        "Ytterbium Oxide",
         subscriptNumbers("Yb2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -819,7 +819,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff LutetiumOxide = new Werkstoff(
         new short[] { 209, 123, 217 },
-        "LutetiumOxide",
+        "Lutetium Oxide",
         subscriptNumbers("Lu2O3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -830,7 +830,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff MolybdenumDisilicide = new Werkstoff(
         new short[] { 82, 74, 125 },
-        "MolybdenumDisilicide",
+        "Molybdenum Disilicide",
         subscriptNumbers("MoSi2"),
         new Werkstoff.Stats().setCentrifuge(true)
             .setBlastFurnace(true)
@@ -853,7 +853,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff HSLASteel = new Werkstoff(
         new short[] { 96, 98, 101 },
-        "HSLASteel",
+        "HSLA Steel",
         subscriptNumbers("(Fe2Ni)2VTiMo"),
         new Werkstoff.Stats().setCentrifuge(true)
             .setBlastFurnace(true)
@@ -1264,7 +1264,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff BenzenediazoniumTetrafluoroborate = new Werkstoff(
         new short[] { 110, 143, 110 },
-        "BenzenediazoniumTetrafluoroborate",
+        "Benzenediazonium Tetrafluoroborate",
         subscriptNumbers("C6H5BF4N2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -1275,7 +1275,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff FluoroBenzene = new Werkstoff(
         new short[] { 110, 143, 110 },
-        "FluoroBenzene",
+        "Fluoro Benzene",
         subscriptNumbers("C6H5F"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -1286,7 +1286,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff AntimonyTrifluoride = new Werkstoff(
         new short[] { 199, 194, 180 },
-        "AntimonyTrifluoride",
+        "Antimony Trifluoride",
         subscriptNumbers("SbF3"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -1341,7 +1341,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff FluorineCrackedNaquadah = new Werkstoff(
         new short[] { 57, 68, 72 },
-        "FluorineCrackedNaquadah",
+        "Fluorine Cracked Naquadah",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1351,7 +1351,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff EnrichedNaquadahWaste = new Werkstoff(
         new short[] { 67, 100, 71 },
-        "EnrichedNaquadahWaste",
+        "Enriched Naquadah Waste",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1361,7 +1361,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RadonCrackedEnrichedNaquadah = new Werkstoff(
         new short[] { 67, 100, 71 },
-        "RadonCrackedEnrichedNaquadah",
+        "Radon Cracked Enriched Naquadah",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1371,7 +1371,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff NaquadriaWaste = new Werkstoff(
         new short[] { 61, 84, 69 },
-        "NaquadriaWaste",
+        "Naquadria Waste",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1381,7 +1381,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SmallBaka = new Werkstoff(
         new short[] { 65, 105, 225 },
-        "SmallBaka",
+        "Small Baka",
         subscriptNumbers("C6H5N3O2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -1392,7 +1392,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff LargeBaka = new Werkstoff(
         new short[] { 106, 90, 205 },
-        "LargeBaka",
+        "Large Baka",
         subscriptNumbers("C6H5-NDs2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
@@ -1403,9 +1403,10 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff CompressedSteam = new Werkstoff(
         new short[] { 211, 211, 211 },
-        "CompressedSteam",
+        "Compressed Steam",
         subscriptNumbers("H2O"),
-        new Werkstoff.Stats().setMass(50),
+        new Werkstoff.Stats().setMass(50)
+            .setProtons(8000),
         Werkstoff.Types.MIXTURE,
         new Werkstoff.GenerationFeatures().onlyDust()
             .addMolten()
@@ -1422,7 +1423,8 @@ public class MaterialPool implements Runnable {
         new short[] { 89, 61, 45 },
         "Stronze",
         subscriptNumbers("(SnCu3)(Fe50C)2"),
-        new Werkstoff.Stats().setMass(40),
+        new Werkstoff.Stats().setMass(40)
+            .setProtons(96),
         Werkstoff.Types.MIXTURE,
         new Werkstoff.GenerationFeatures().onlyDust()
             .addMolten()
@@ -1439,7 +1441,8 @@ public class MaterialPool implements Runnable {
         new short[] { 69, 60, 55 },
         "Breel",
         subscriptNumbers("(Fe50C)(SnCu3)2"),
-        new Werkstoff.Stats().setMass(40),
+        new Werkstoff.Stats().setMass(40)
+            .setProtons(102),
         Werkstoff.Types.MIXTURE,
         new Werkstoff.GenerationFeatures().onlyDust()
             .addMolten()
@@ -1454,7 +1457,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PitchblendeSlag = new Werkstoff(
         new short[] { 68, 55, 28 },
-        "PitchblendeSlag",
+        "Pitchblende Slag",
         subscriptNumbers("??ThPbCaSO4??"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -1465,7 +1468,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff UraniumSlag = new Werkstoff(
         new short[] { 68, 100, 77 },
-        "UraniumSlag",
+        "Uranium Slag",
         subscriptNumbers("??ThPbBa??"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -1476,7 +1479,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff UraniumChlorideSlag = new Werkstoff(
         new short[] { 234, 243, 245 },
-        "UraniumChlorideSlag",
+        "Uranium Chloride Slag",
         subscriptNumbers("??ThPbBaCl4??"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -1487,7 +1490,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff RadiumChloride = new Werkstoff(
         new short[] { 223, 223, 223 },
-        "RadiumChloride",
+        "Radium Chloride",
         subscriptNumbers("RaCl2"),
         new Werkstoff.Stats(),
         Werkstoff.Types.MATERIAL,
@@ -1498,7 +1501,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff GravelSluice = new Werkstoff(
         new short[] { 91, 91, 91 },
-        "GravelSluice",
+        "Gravel Sluice",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1508,7 +1511,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff SandSluice = new Werkstoff(
         new short[] { 248, 250, 130 },
-        "SandSluice",
+        "Sand Sluice",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1518,7 +1521,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ObsidianSluice = new Werkstoff(
         new short[] { 53, 40, 61 },
-        "ObsidianSluice",
+        "Obsidian Sluice",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1528,7 +1531,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff GemSluice = new Werkstoff(
         new short[] { 120, 153, 113 },
-        "GemSluice",
+        "Gem Sluice",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1538,7 +1541,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff EnderAir = new Werkstoff(
         new short[] { 57, 66, 89 },
-        "EnderAir",
+        "Ender Air",
         new Werkstoff.Stats().setGas(true),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1548,7 +1551,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff LiquidEnderAir = new Werkstoff(
         new short[] { 61, 71, 98 },
-        "LiquidEnderAir",
+        "Liquid Ender Air",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1558,7 +1561,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff MixturePineoil = new Werkstoff(
         new short[] { 230, 196, 100 },
-        "MixturePineoil",
+        "Mixture Pineoil",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1568,7 +1571,7 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff ToxicMercurySludge = new Werkstoff(
         new short[] { 82, 97, 117 },
-        "ToxicMercurySludge",
+        "Toxic Mercury Sludge",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
@@ -1578,13 +1581,24 @@ public class MaterialPool implements Runnable {
 
     public static final Werkstoff PostProcessBeWaste = new Werkstoff(
         new short[] { 105, 117, 105 },
-        "PostProcessBeWaste",
+        "Post Process Be Waste",
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
         offsetID_01 + 124,
         TextureSet.SET_FLUID);
+
+    public static final Werkstoff QuantumInfusion = new Werkstoff(
+        new short[] { 52, 45, 96 },
+        "Quantum Infusion",
+        new Werkstoff.Stats(),
+        Werkstoff.Types.ELEMENT,
+        new Werkstoff.GenerationFeatures().disable()
+            .addCells(),
+        offsetID_01 + 125,
+        TextureSet.SET_FLUID);
+
     // Special
 
     public static final Werkstoff Periodicium = new Werkstoff(
