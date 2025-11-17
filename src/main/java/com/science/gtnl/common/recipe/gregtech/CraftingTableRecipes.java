@@ -8,6 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import com.dreammaster.gthandler.CustomItemList;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
@@ -1253,6 +1254,20 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDE", "ABA", 'A', ItemList.Field_Generator_IV.get(1), 'B',
                 GTNLItemList.AssemblerMatrixFrame.get(1), 'C', ItemList.Hatch_Input_Bus_ME_Advanced.get(1), 'D',
                 ItemList.LargeMolecularAssembler.get(1), 'E', ItemList.Hatch_Output_Bus_ME.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.QuantumComputerCasing.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A',
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockQuartzGlass", 1), 'B',
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 1), 'C', ItemList.QuantumEye.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.QuantumComputerUnit.get(1),
+            new Object[] { "AB ", "CD ", "   ", 'A',
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockCraftingUnit", 1), 'B',
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 47), 'C',
+                CustomItemList.EngravedQuantumChip.get(1), 'D',
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(1) });
 
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }

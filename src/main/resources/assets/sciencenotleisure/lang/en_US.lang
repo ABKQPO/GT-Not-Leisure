@@ -764,11 +764,11 @@ tile.MetaCasing02.13.name=256M Quantum Computer Crafting Storage
 tile.MetaCasing02.14.name=Quantum Computer Data Entangler
 Tooltip_QuantumComputerDataEntangler_00=
 tile.MetaCasing02.15.name=Quantum Accelerator
-Tooltip_QuantumComputerAccelerator_00=Provides 8 co-processing threads per block.
+Tooltip_QuantumComputerAccelerator_00=Provides 16384 co-processing threads per block.
 tile.MetaCasing02.16.name=Quantum Computer Multi Threader
 Tooltip_QuantumComputerMultiThreader_00=
 tile.MetaCasing02.17.name=Quantum Computer Core
-Tooltip_QuantumComputerCore_00=Provides 256M crafting storage and 256 co-processing threads.
+Tooltip_QuantumComputerCore_00=Provides 256M crafting storage and 16384 co-processing threads.
 
 tile.MetaBlock.0.name=Test Block
 tile.MetaBlock.1.name=§dNew Horizons Coil

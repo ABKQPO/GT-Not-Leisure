@@ -3044,6 +3044,116 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .addTo(As);
 
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 6, 60),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
+                GTNLItemList.ShatteredSingularity.get(4),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 27),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 22),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(8),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 2))
+            .itemOutputs(GTNLItemList.QuantumComputerCraftingStorage128M.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(4000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTNLItemList.QuantumComputerCraftingStorage128M.get(2),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
+                GTNLItemList.ShatteredSingularity.get(4),
+                CustomItemList.EngravedQuantumChip.get(8),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(16))
+            .itemOutputs(GTNLItemList.QuantumComputerCraftingStorage256M.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(4000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockAdvancedCraftingUnit", 3, 3),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Quantium, 8),
+                GTNLItemList.ShatteredSingularity.get(4),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 56),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 23),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(8),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 2))
+            .itemOutputs(GTNLItemList.QuantumComputerAccelerator.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(4000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTNLItemList.QuantumComputerAccelerator.get(1),
+                GTNLItemList.QuantumComputerCraftingStorage256M.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 47),
+                GTNLItemList.ShatteredSingularity.get(2),
+                CustomItemList.EngravedQuantumChip.get(16),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 16, 24),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(4))
+            .itemOutputs(GTNLItemList.QuantumComputerCore.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(16000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTNLItemList.QuantumComputerCore.get(1),
+                GTNLItemList.ShatteredSingularity.get(16),
+                GTNLItemList.QuantumComputerAccelerator.get(4),
+                ItemList.QuantumStar.get(4),
+                CustomItemList.EngravedQuantumChip.get(16),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(8),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 8))
+            .itemOutputs(GTNLItemList.QuantumComputerMultiThreader.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(16000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerUnit.get(1),
+                GTNLItemList.QuantumComputerCore.get(1),
+                GTNLItemList.ShatteredSingularity.get(16),
+                GTNLItemList.QuantumComputerCraftingStorage256M.get(3),
+                ItemList.QuantumStar.get(4),
+                CustomItemList.EngravedQuantumChip.get(16),
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(8),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UV, 8))
+            .itemOutputs(GTNLItemList.QuantumComputerDataEntangler.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(16000))
+            .duration(400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTNLItemList.QuantumComputerCasing.get(4),
+                GTNLItemList.QuantumComputerUnit.get(4),
+                GTNLItemList.QuantumComputerCore.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockController", 4),
+                GTNLItemList.ShatteredSingularity.get(4),
+                ItemList.Emitter_LuV.get(4),
+                ItemList.Sensor_LuV.get(4),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 4))
+            .itemOutputs(GTNLItemList.QuantumComputer.get(1))
+            .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(32000))
+            .duration(600)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();
