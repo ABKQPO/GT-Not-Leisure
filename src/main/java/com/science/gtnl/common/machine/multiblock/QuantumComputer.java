@@ -169,7 +169,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         super.onFirstTick(baseMetaTileEntity);
         if (checkStructure(true)) {
             this.mStartUpCheck = -1;
-            this.mUpdate = 200;
+            this.mUpdate = 6000;
         }
         getProxy().onReady();
     }
@@ -691,7 +691,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        final boolean b = checkMachine(aBaseMetaTileEntity);
+        boolean b = checkMachine(aBaseMetaTileEntity);
         if (b) {
             getProxy().setValidSides(upDirection);
             if (this.virtualCPU == null) {

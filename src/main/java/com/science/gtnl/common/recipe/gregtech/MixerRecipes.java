@@ -232,7 +232,8 @@ public class MixerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.EnderPearl, 4),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.EnderEye, 4),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Enderium, 4),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sunnarium, 4))
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sunnarium, 4),
+                GTUtility.getIntegratedCircuit(4))
             .fluidInputs(Materials.Radon.getGas(1000))
             .fluidOutputs(MaterialPool.QuantumInfusion.getFluidOrGas(1000))
             .duration(10)
