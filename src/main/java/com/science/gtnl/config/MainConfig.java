@@ -408,7 +408,7 @@ public class MainConfig {
             1,
             Integer.MAX_VALUE,
             "Maximum number of data entangler allowed in a Quantum Computer",
-            "confi.quantum_computer.quantumComputerMaximumQuantumDataEntangler");
+            "config.quantum_computer.quantumComputerMaximumQuantumDataEntangler");
 
         quantumComputerMaximumQuantumComputerMultiThreader = config.getInt(
             "quantumComputerMaximumQuantumComputerMultiThreader",
