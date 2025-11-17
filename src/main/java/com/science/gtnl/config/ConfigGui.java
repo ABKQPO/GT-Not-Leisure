@@ -23,11 +23,20 @@ public class ConfigGui extends GuiConfig {
             GuiConfig.getAbridgedConfigPath(MainConfig.config.toString()));
     }
 
-    private static List<IConfigElement> getConfigElements() {
+    @SuppressWarnings("rawtypes")
+    public static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
 
         if (MainConfig.config != null) {
-            list.add(new ConfigElement(MainConfig.config.getCategory(MainConfig.CATEGORY_GTNL_CONFIG)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_MACHINE)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_RE_AVARITIA)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_RECIPE)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_TICK_RATE)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_SUPER_CREEPER)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_MESSAGE)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_OTHER)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_ITEM)));
+            list.add(new ConfigElement<>(MainConfig.config.getCategory(MainConfig.CATEGORY_DEBUG)));
         } else {
             System.err.println("Error: MainConfig.config is null when trying to get config elements!");
         }
