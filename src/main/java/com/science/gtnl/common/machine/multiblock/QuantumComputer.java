@@ -822,19 +822,9 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection sideDirection,
         ForgeDirection facingDirection, int colorIndex, boolean active, boolean redstoneLevel) {
         if ((sideDirection.flag & (ForgeDirection.UP.flag | ForgeDirection.DOWN.flag)) != 0) {
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX), active
-                ? TextureFactory.of(
-                    TextureFactory.of(OVERLAY_TOP_CLEANROOM_ACTIVE),
-                    TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_CLEANROOM_ACTIVE_GLOW)
-                        .glow()
-                        .build())
-                : TextureFactory.of(
-                    TextureFactory.of(OVERLAY_TOP_CLEANROOM),
-                    TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_CLEANROOM_GLOW)
-                        .glow()
-                        .build()) };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX),
+                active ? TextureFactory.of(TextureFactory.of(OVERLAY_ME_INPUT_HATCH_ACTIVE))
+                    : TextureFactory.of(TextureFactory.of(OVERLAY_ME_INPUT_HATCH)) };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX) };
     }
