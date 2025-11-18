@@ -2034,6 +2034,16 @@ CompoundDistillationFractionator_Mode_0=蒸馏塔
 CompoundDistillationFractionator_Mode_1=蒸馏室
 Tooltip_CompoundDistillationFractionator_Casing=稳定化硅岩净水厂机械方块
 
+NameMoltenCore=熔火之心
+MoltenCoreRecipeType=流体加热器
+Tooltip_MoltenCore_00=每级线圈等级额外提供15%的加速(乘算叠加)
+Tooltip_MoltenCore_Casing=任意强化镀铱机械方块
+
+NameCrystalBuilder=晶体构建者
+CrystalBuilderRecipeType=高压釜
+Tooltip_CrystalBuilder_00=每级线圈等级额外提供15%的加速(乘算叠加)
+Tooltip_CrystalBuilder_Casing=任意分子机械方块
+
 NameMegaBrewer=巨型酿造厂
 MegaBrewerRecipeType=酿造室 / 发酵槽
 Tooltip_MegaBrewer_00=每级线圈等级额外提供15%的加速(乘算叠加)

@@ -216,6 +216,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.CircuitComponentAssem
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundDistillationFractionator;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundExtremeCoolingUnit;
 import com.science.gtnl.common.machine.multiblock.wireless.CrackerHub;
+import com.science.gtnl.common.machine.multiblock.wireless.CrystalBuilder;
 import com.science.gtnl.common.machine.multiblock.wireless.EngravingLaserPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.FieldForgePress;
 import com.science.gtnl.common.machine.multiblock.wireless.HandOfJohnDavisonRockefeller;
@@ -229,6 +230,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.MegaBrewer;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaCanner;
 import com.science.gtnl.common.machine.multiblock.wireless.MegaVacuumDryingFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.MicroorganismMaster;
+import com.science.gtnl.common.machine.multiblock.wireless.MoltenCore;
 import com.science.gtnl.common.machine.multiblock.wireless.NanitesCircuitAssemblyFactory;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoAssemblerMarkL;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
@@ -1531,6 +1533,17 @@ public class MachineLoader {
                 "MicroorganismMaster",
                 StatCollector.translateToLocal("NameMicroorganismMaster")));
         addItemTooltip(GTNLItemList.MicroorganismMaster.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.MoltenCore
+            .set(new MoltenCore(MOLTEN_CORE.ID, "MoltenCore", StatCollector.translateToLocal("NameMoltenCore")));
+        addItemTooltip(GTNLItemList.MoltenCore.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.CrystalBuilder.set(
+            new CrystalBuilder(
+                CRYSTAL_BUILDER.ID,
+                "CrystalBuilder",
+                StatCollector.translateToLocal("NameCrystalBuilder")));
+        addItemTooltip(GTNLItemList.CrystalBuilder.get(1), AnimatedText.SNL_QYZG);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

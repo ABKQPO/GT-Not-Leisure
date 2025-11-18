@@ -539,16 +539,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
      * @return True on success, false on failure (which means an invalid structure).
      */
     public boolean checkSize(IGregTechTileEntity aBaseMetaTileEntity) {
+
         // X direction (min)
         dxMin = -1;
         while (true) {
             int next = dxMin - 1;
-            if (next < -MAX_SIZE / 2) { // too far
+
+            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
+                break;
+            }
+
+            if (next < -MAX_SIZE / 2) {
                 return false;
             }
-            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
-                break; // stop before invalid block
-            }
+
             dxMin = next;
         }
 
@@ -556,12 +560,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         dxMax = 1;
         while (true) {
             int next = dxMax + 1;
-            if (next > MAX_SIZE / 2) {
-                return false;
-            }
+
             if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
+
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+
             dxMax = next;
         }
 
@@ -574,12 +581,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         dzMin = -1;
         while (true) {
             int next = dzMin - 1;
-            if (next < -MAX_SIZE / 2) {
-                return false;
-            }
+
             if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
+
+            if (next < -MAX_SIZE / 2) {
+                return false;
+            }
+
             dzMin = next;
         }
 
@@ -587,12 +597,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         dzMax = 1;
         while (true) {
             int next = dzMax + 1;
-            if (next > MAX_SIZE / 2) {
-                return false;
-            }
+
             if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
+
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+
             dzMax = next;
         }
 
