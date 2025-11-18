@@ -2034,6 +2034,13 @@ CompoundDistillationFractionator_Mode_0=蒸馏塔
 CompoundDistillationFractionator_Mode_1=蒸馏室
 Tooltip_CompoundDistillationFractionator_Casing=稳定化硅岩净水厂机械方块
 
+NameMegaBrewer=巨型酿造厂
+MegaBrewerRecipeType=酿造室 / 发酵槽
+Tooltip_MegaBrewer_00=每级线圈等级额外提供15%的加速(乘算叠加)
+MegaBrewer_Mode_0=酿造室
+MegaBrewer_Mode_1=发酵槽
+Tooltip_MegaBrewer_Casing=任意热抑制机械方块
+
 NameLargeDistillery=大型分馏蒸馏厂
 LargeDistilleryRecipeType=蒸馏塔 / 蒸馏室
 LargeDistillery_Mode_0=蒸馏塔
@@ -2070,11 +2077,11 @@ LargeCutter_Mode_0=切割机
 LargeCutter_Mode_1=切片机
 
 NameLargeBrewer=大型酿造厂
-LargeBrewerRecipeType=酿造室 / 流体加热器 / 发酵槽
+LargeBrewerRecipeType=酿造室 / 发酵槽 / 流体加热器
 Tooltip_LargeBrewer_00=比相同电压的机器快125%
 LargeBrewer_Mode_0=酿造室
-LargeBrewer_Mode_1=流体加热器
-LargeBrewer_Mode_2=发酵槽
+LargeBrewer_Mode_1=发酵槽
+LargeBrewer_Mode_2=流体加热器
 Tooltip_LargeBrewer_Casing=任意焦炉机械方块
 
 NameElectrocellGenerator=电化学电池发电机
@@ -3020,6 +3027,13 @@ Tooltip_LargeIncubator_03=无视玻璃等级要求和精确剂量要求
 Tooltip_LargeIncubator_04=并行数：4 * 培养皿数量 + 2 * 电压等级 * 玻璃等级
 Tooltip_LargeIncubator_Radio_Hatch=放射仓
 Tooltip_LargeIncubator_Casing=任意塑料混凝土方块
+
+NameMicroorganismMaster=微生物之主
+MicroorganismMasterRecipeType=细菌培养缸
+Tooltip_MicroorganismMaster_00=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
+Tooltip_MicroorganismMaster_01=不再需要保持输出仓半满
+Tooltip_MicroorganismMaster_02=无视玻璃等级要求和剂量要求
+Tooltip_MicroorganismMaster_Casing=任意化学惰性机械方块
 
 NameAlloyBlastSmelter=合金冶炼炉
 AlloyBlastSmelterRecipeType=合金冶炼炉

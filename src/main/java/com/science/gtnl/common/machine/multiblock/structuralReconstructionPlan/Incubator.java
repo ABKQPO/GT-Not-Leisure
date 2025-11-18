@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -39,6 +37,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.multiblock.LargeIncubator;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ParallelHelper;
@@ -246,7 +245,8 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
             @NotNull
             @Override
             public GTNL_ParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
-                return super.createParallelHelper(recipeWithMultiplier(recipe, inputFluids));
+                return super.createParallelHelper(
+                    LargeIncubator.recipeWithMultiplier(recipe, inputFluids, mOutputHatches.get(0), getTrueParallel()));
             }
         };
     }
@@ -264,57 +264,6 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     @Override
     public int getMaxParallelRecipes() {
         return 4;
-    }
-
-    public GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs) {
-        if (recipe == null || fluidInputs == null) {
-            return recipe;
-        }
-
-        if (recipe.mFluidInputs == null || recipe.mFluidInputs.length == 0
-            || recipe.mFluidOutputs == null
-            || recipe.mFluidOutputs.length == 0) {
-            return recipe;
-        }
-
-        if (recipe.mFluidInputs[0] == null || recipe.mFluidOutputs[0] == null) {
-            return recipe;
-        }
-
-        for (FluidStack fluid : fluidInputs) {
-            if (fluid == null) {
-                return recipe;
-            }
-        }
-
-        GTRecipe tRecipe = recipe.copy();
-        int multiplier;
-
-        long fluidAmount = 0;
-        for (FluidStack fluid : fluidInputs) {
-            if (recipe.mFluidInputs[0].isFluidEqual(fluid)) {
-                fluidAmount += fluid.amount;
-            }
-        }
-
-        multiplier = (int) fluidAmount / (recipe.mFluidInputs[0].amount * 1001);
-        multiplier = Math.max(Math.min(multiplier, getTrueParallel()), 1);
-        multiplier *= getExpectedMultiplier(recipe.getFluidOutput(0));
-
-        tRecipe.mFluidInputs[0].amount *= multiplier;
-        tRecipe.mFluidOutputs[0].amount *= multiplier;
-
-        return tRecipe;
-    }
-
-    public int getExpectedMultiplier(@Nullable FluidStack recipeFluidOutput) {
-        FluidStack storedFluidOutputs = mOutputHatches.get(0)
-            .getFluid();
-        if (storedFluidOutputs == null) return 1001;
-        if (storedFluidOutputs.isFluidEqual(recipeFluidOutput)) {
-            return 1001;
-        }
-        return 1;
     }
 
     @Override

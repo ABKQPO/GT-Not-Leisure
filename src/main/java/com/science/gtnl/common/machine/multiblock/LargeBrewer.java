@@ -92,8 +92,8 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     @Override
     public RecipeMap<?> getRecipeMap() {
         return switch (machineMode) {
-            case MACHINEMODE_FREWERY -> RecipeMaps.fermentingRecipes;
-            case MACHINEMODE_FERMENTER -> RecipeMaps.fluidHeaterRecipes;
+            case MACHINEMODE_FERMENTER -> RecipeMaps.fermentingRecipes;
+            case MACHINEMODE_FLUID_HEATER -> RecipeMaps.fluidHeaterRecipes;
             default -> RecipeMaps.brewingRecipes;
         };
     }

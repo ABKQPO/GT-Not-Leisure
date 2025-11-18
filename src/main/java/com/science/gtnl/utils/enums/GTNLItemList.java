@@ -600,6 +600,8 @@ public enum GTNLItemList implements IItemContainer {
     MegaBathTank,
     MegaCanner,
     CompoundDistillationFractionator,
+    MegaBrewer,
+    MicroorganismMaster,
 
     EnergyHatchLV,
     EnergyHatchLV4A,

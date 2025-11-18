@@ -2034,6 +2034,13 @@ CompoundDistillationFractionator_Mode_0=Distillation Tower
 CompoundDistillationFractionator_Mode_1=Distillation Chamber
 Tooltip_CompoundDistillationFractionator_Casing=Stabilized Naquadah Water Plant Casing
 
+NameMegaBrewer=Mega Brewer
+MegaBrewerRecipeType=Brewery / Fermenter
+Tooltip_MegaBrewer_00=Each coil tier provides an additional 15% speed (multiplicative).
+MegaBrewer_Mode_0=Brewery
+MegaBrewer_Mode_1=Fermenter
+Tooltip_MegaBrewer_Casing=Any Thermal Containment Casing
+
 NameLargeDistillery=Large Distillation Plant
 LargeDistilleryRecipeType=Distillation Tower / Distillation Chamber
 LargeDistillery_Mode_0=Distillation Tower
@@ -2070,11 +2077,11 @@ LargeCutter_Mode_0=Cutter
 LargeCutter_Mode_1=Slicer
 
 NameLargeBrewer=Large Brewery
-LargeBrewerRecipeType=Brewery / Fluid Heater / Fermenter
+LargeBrewerRecipeType=Brewery / Fermenter / Fluid Heater
 Tooltip_LargeBrewer_00=125% faster than machines of the same voltage
 LargeBrewer_Mode_0=Brewery
-LargeBrewer_Mode_1=Fluid Heater
-LargeBrewer_Mode_2=Fermenter
+LargeBrewer_Mode_1=Fermenter
+LargeBrewer_Mode_2=Fluid Heater
 Tooltip_LargeBrewer_Casing=Any coke oven machine block
 
 NameElectrocellGenerator=Electrocell Generator
@@ -3020,6 +3027,13 @@ Tooltip_LargeIncubator_03=Ignores glass tier requirements and precise dosage req
 Tooltip_LargeIncubator_04=Parallel: 4 * number of petri dishes + 2 * voltage tier * glass tier.
 Tooltip_LargeIncubator_Radio_Hatch=Radioactive Hatch
 Tooltip_LargeIncubator_Casing=Any Plastic Concrete Block
+
+NameMicroorganismMaster=Microorganism Master
+MicroorganismMasterRecipeType=Bacterial Incubator
+Tooltip_MicroorganismMaster_00=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
+Tooltip_MicroorganismMaster_01=No longer needs to keep the output bus half full.
+Tooltip_MicroorganismMaster_02=Ignores glass tier requirements and dosage requirements.
+Tooltip_MicroorganismMaster_Casing=Any Chemically Inert Machine Block
 
 NameAlloyBlastSmelter=Alloy Blast Smelter
 AlloyBlastSmelterRecipeType=Alloy Blast Smelter
