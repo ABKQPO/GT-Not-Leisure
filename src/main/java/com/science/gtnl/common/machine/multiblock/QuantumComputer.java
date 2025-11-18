@@ -91,8 +91,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public int depth;
 
     public int casingCount;
-    public int coreCount;
     public int unitCount;
+    public int coreCount;
     public int multiThreaderCount;
     public int dataEntanglerCount;
     public int singularityCraftingStorageCount;
@@ -287,7 +287,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         this.maximumParallel = aNBT.getInteger("maximumParallel");
         getProxy().readFromNBT(aNBT);
         readCPUNBT(aNBT);
-        updateValidGridProxySides();
 
         super.loadNBTData(aNBT);
     }
@@ -565,10 +564,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             return false;
         }
 
-        if (Math.abs(dxMin + dxMax) > 1) {
-            return false;
-        }
-
         // Z direction
 
         for (dzMin = -1; dzMin > -MAX_SIZE / 2; --dzMin) {
@@ -587,11 +582,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             }
         }
-        if (dzMax > MAX_SIZE / 2 + 1) {
-            return false;
-        }
-
-        return Math.abs(dzMin + dzMax) <= 1;
+        return dzMax <= MAX_SIZE / 2 + 1;
     }
 
     /**
@@ -682,6 +673,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         depth = 0;
         casingCount = 0;
         unitCount = 0;
+        coreCount = 0;
         multiThreaderCount = 0;
         dataEntanglerCount = 0;
         singularityCraftingStorageCount = 0;
@@ -970,14 +962,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
     public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
-
-    public void updateValidGridProxySides() {
-        if (mMachine) {
-            getProxy().setValidSides(upDirection);
-        } else {
-            getProxy().setValidSides(emptyDirection);
-        }
-    }
 
     @Override
     public void securityBreak() {
