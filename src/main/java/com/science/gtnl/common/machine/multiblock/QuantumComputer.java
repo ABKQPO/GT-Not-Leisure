@@ -169,7 +169,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         super.onFirstTick(baseMetaTileEntity);
         if (checkStructure(true)) {
             this.mStartUpCheck = -1;
-            this.mUpdate = 6000;
+            this.mUpdate = 200;
         }
         getProxy().onReady();
     }
@@ -398,7 +398,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
             case CORE:
                 maximumStorage = addToStorage(maximumStorage, 268435456L);
-                maximumParallel = addToParallel(maximumParallel, 256);
+                maximumParallel = addToParallel(maximumParallel, 16384);
                 unitCount++;
                 coreCount++;
                 return true;
