@@ -539,50 +539,64 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
      * @return True on success, false on failure (which means an invalid structure).
      */
     public boolean checkSize(IGregTechTileEntity aBaseMetaTileEntity) {
-        // Footprint must be a rectangle. If the width is odd, the controller must be in the middle.
-        // If the width is even, controller must be one of the two middle blocks.
+        // X direction (min)
+        dxMin = -1;
+        while (true) {
+            int next = dxMin - 1;
+            if (next < -MAX_SIZE / 2) { // too far
+                return false;
+            }
+            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
+                break; // stop before invalid block
+            }
+            dxMin = next;
+        }
 
-        // X direction
-
-        for (dxMin = -1; dxMin > -MAX_SIZE / 2; --dxMin) {
-            if (getBlockType(aBaseMetaTileEntity, dxMin, 0, 0, true) == QuantumComputerBlockType.INVALID) {
-                dxMin++;
+        // X direction (max)
+        dxMax = 1;
+        while (true) {
+            int next = dxMax + 1;
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
+            dxMax = next;
         }
-        if (dxMin < -MAX_SIZE / 2 - 1) {
+
+        // controller must be centered (odd) or one of two center blocks (even)
+        if (Math.abs(dxMin + dxMax) > 1) {
             return false;
         }
 
-        for (dxMax = 1; dxMax < MAX_SIZE / 2; ++dxMax) {
-            if (getBlockType(aBaseMetaTileEntity, dxMax, 0, 0, true) == QuantumComputerBlockType.INVALID) {
-                dxMax--;
+        // Z direction (min)
+        dzMin = -1;
+        while (true) {
+            int next = dzMin - 1;
+            if (next < -MAX_SIZE / 2) {
+                return false;
+            }
+            if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dxMax > MAX_SIZE / 2 + 1) {
-            return false;
+            dzMin = next;
         }
 
-        // Z direction
-
-        for (dzMin = -1; dzMin > -MAX_SIZE / 2; --dzMin) {
-            if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMin, true) == QuantumComputerBlockType.INVALID) {
-                dzMin++;
+        // Z direction (max)
+        dzMax = 1;
+        while (true) {
+            int next = dzMax + 1;
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+            if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dzMin < -MAX_SIZE / 2 - 1) {
-            return false;
+            dzMax = next;
         }
 
-        for (dzMax = 1; dzMax < MAX_SIZE / 2; ++dzMax) {
-            if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMax, true) == QuantumComputerBlockType.INVALID) {
-                dzMax--;
-                break;
-            }
-        }
-        return dzMax <= MAX_SIZE / 2 + 1;
+        return Math.abs(dzMin + dzMax) <= 1;
     }
 
     /**
