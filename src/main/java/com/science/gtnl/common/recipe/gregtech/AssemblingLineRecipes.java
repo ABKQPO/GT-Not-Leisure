@@ -1551,7 +1551,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 16), },
             new FluidStack[] { MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(96000),
                 Materials.SuperCoolant.getFluid(128000), Materials.Longasssuperconductornameforuhvwire.getMolten(27648),
-                Materials.Xenoxene.getPlasma(9216) },
+                new FluidStack(MaterialsElements.getInstance().XENON.getPlasma(), 9216) },
             GTNLItemList.SuperconductingElectromagnetism.get(1),
             1200,
             (int) TierEU.RECIPE_UHV);
