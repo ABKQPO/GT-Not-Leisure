@@ -1710,6 +1710,7 @@ Tooltip_QuantumComputer_08=Power consumption is the same as a conventional CPU
 Tooltip_QuantumComputer_09=No need to turn on; the machine is ready to use once assembled
 Tooltip_QuantumComputer_10=All internal blocks must be crafting storage or parallel processing units!
 Tooltip_QuantumComputer_11=§cNo blocks that could form part of the Quantum Computer can be placed on the outer surface, or the machine will fail
+Tooltip_QuantumComputer_12=§cIf controller broken, it will try to use the AE network above to return CPU ingredient. If no network is present, the items will not be kept!
 Info_QuantumComputer_00=Multiblock size: %sx%sx%s
 Info_QuantumComputer_01=Co-processors: %s / Used: %s (%s)
 Info_QuantumComputer_02=Storage: %s / Used: %s (%s)

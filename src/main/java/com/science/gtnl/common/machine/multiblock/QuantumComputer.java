@@ -140,6 +140,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_10"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_11"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_12"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
