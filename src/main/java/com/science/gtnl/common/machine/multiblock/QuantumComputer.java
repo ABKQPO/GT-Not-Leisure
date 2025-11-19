@@ -17,6 +17,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
@@ -26,6 +29,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECPUCluster;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -44,9 +48,11 @@ import appeng.me.helpers.IGridProxyable;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.ISecondaryDescribable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
@@ -56,7 +62,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 public class QuantumComputer extends MTETooltipMultiBlockBase
-    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable {
+    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo {
 
     /**
      * Maximum size of the quantum computer. Includes walls.
@@ -85,13 +91,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public int depth;
 
     public int casingCount;
-    public int coreCount;
     public int unitCount;
+    public int coreCount;
     public int multiThreaderCount;
     public int dataEntanglerCount;
     public int singularityCraftingStorageCount;
-    public long maximumStorage;
-    public int maximumParallel;
+    public long maximumStorage = 0;
+    public int maximumParallel = 0;
+    public long usedStorage = 0;
+    public int usedParallel = 0;
+
+    public long getMaximumStorage() {
+        if (singularityCraftingStorageCount > 0) return Long.MAX_VALUE;
+        return maximumStorage;
+    }
 
     public QuantumComputer(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -119,6 +132,14 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_10"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_11"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
@@ -140,15 +161,57 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isActive()) aBaseMetaTileEntity.setActive(false);
+        if (aBaseMetaTileEntity.isAllowedToWork()) aBaseMetaTileEntity.disableWorking();
     }
 
     @Override
     public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
         super.onFirstTick(baseMetaTileEntity);
-        if (this.virtualCPU == null) {
-            createVirtualCPU();
+        if (checkStructure(true)) {
+            this.mStartUpCheck = -1;
+            this.mUpdate = 200;
         }
+        getProxy().onReady();
+    }
+
+    @Override
+    public boolean supportsSingleRecipeLocking() {
+        return super.supportsSingleRecipeLocking();
+    }
+
+    @Override
+    public boolean isRecipeLockingEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return super.supportsVoidProtection();
+    }
+
+    @Override
+    public VoidingMode getVoidingMode() {
+        return VoidingMode.VOID_NONE;
+    }
+
+    @Override
+    public boolean supportsInputSeparation() {
+        return super.supportsInputSeparation();
+    }
+
+    @Override
+    public boolean isInputSeparationEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsBatchMode() {
+        return super.supportsBatchMode();
+    }
+
+    @Override
+    public boolean isBatchModeEnabled() {
+        return false;
     }
 
     @Override
@@ -175,7 +238,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         aNBT.setInteger("singularityCraftingStorageCount", this.singularityCraftingStorageCount);
 
         // storage / parallel
-        aNBT.setLong("maximumStorage", this.maximumStorage);
+        aNBT.setLong("maximumStorage", getMaximumStorage());
         aNBT.setInteger("maximumParallel", this.maximumParallel);
 
         getProxy().writeToNBT(aNBT);
@@ -191,7 +254,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             NBTTagCompound clusterTag = new NBTTagCompound();
             cluster.writeToNBT(clusterTag);
             clusterTag.setLong("availableStorage", cluster.getAvailableStorage());
-            clusterTag.setLong("usedExtraStorage", eCluster.ec$getUsedExtraStorage());
             clustersTag.appendTag(clusterTag);
         });
         compound.setTag("clusters", clustersTag);
@@ -225,7 +287,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         this.maximumParallel = aNBT.getInteger("maximumParallel");
         getProxy().readFromNBT(aNBT);
         readCPUNBT(aNBT);
-        updateValidGridProxySides();
 
         super.loadNBTData(aNBT);
     }
@@ -241,9 +302,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             WorldCoord coord = getWorldCoord();
             CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
             ECPUCluster eCluster = ECPUCluster.from(cluster);
-
+            eCluster.ec$setVirtualCPUOwner(this);
             eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
-            eCluster.ec$setUsedExtraStorage(clusterTag.getLong("usedExtraStorage"));
             cluster.readFromNBT(clusterTag);
             cpus.add(cluster);
         }
@@ -257,7 +317,11 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public QuantumComputerBlockType getBlockType(IGregTechTileEntity aBaseMetaTileEntity, int dx, int dy, int dz,
         boolean isCasings) {
         Block block = aBaseMetaTileEntity.getBlockOffset(dx, dy, dz);
-        int meta = aBaseMetaTileEntity.getMetaIDOffset(dx, dy, dz);
+        int meta = block.getDamageValue(
+            aBaseMetaTileEntity.getWorld(),
+            aBaseMetaTileEntity.getXCoord() + dx,
+            aBaseMetaTileEntity.getYCoord() + dy,
+            aBaseMetaTileEntity.getZCoord() + dz);
 
         if (isCasings) {
             if (block == BlockLoader.metaCasing02 && meta == 10) {
@@ -274,6 +338,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             if (meta == 14) return QuantumComputerBlockType.DATA_ENTANGLER;
             if (meta == 15) return QuantumComputerBlockType.ACCELERATOR;
             if (meta == 16) return QuantumComputerBlockType.MULTI_THREADER;
+            if (meta == 17) return QuantumComputerBlockType.CORE;
         }
 
         if (block == CRAFTING_STORAGE) {
@@ -331,64 +396,63 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case CORE:
-                maximumStorage += 268435456L;
-                maximumParallel += 64;
+                maximumStorage = addToStorage(maximumStorage, 268435456L);
+                maximumParallel = addToParallel(maximumParallel, 16384);
                 unitCount++;
                 coreCount++;
                 return true;
 
             case CRAFTING_STORAGE_1K:
-                maximumStorage += 1024L;
+                maximumStorage = addToStorage(maximumStorage, 1024L);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4K:
-                maximumStorage += 4L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 4L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16K:
-                maximumStorage += 16L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 16L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_64K:
-                maximumStorage += 64L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 64L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256K:
-                maximumStorage += 256L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 256L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_1024K:
-                maximumStorage += 1024L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 1024L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_4096K:
-                maximumStorage += 4096L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 4096L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_16384K:
-                maximumStorage += 16384L * 1024;
+                maximumStorage = addToStorage(maximumStorage, 16384L * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_128M:
-                maximumStorage += 128L * 1024 * 1024;
+                maximumStorage = addToStorage(maximumStorage, 128L * 1024 * 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_STORAGE_256M:
-                maximumStorage += 256L * 1024 * 1024;
+                maximumStorage = addToStorage(maximumStorage, 256L * 1024 * 1024);
                 unitCount++;
                 return true;
 
             case DATA_ENTANGLER:
-                maximumStorage *= 4;
                 dataEntanglerCount++;
                 unitCount++;
                 return true;
@@ -400,47 +464,46 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1:
-                maximumParallel += 1;
+                maximumParallel = addToParallel(maximumParallel, 1);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4:
-                maximumParallel += 4;
+                maximumParallel = addToParallel(maximumParallel, 4);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_16:
-                maximumParallel += 16;
+                maximumParallel = addToParallel(maximumParallel, 16);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_64:
-                maximumParallel += 64;
+                maximumParallel = addToParallel(maximumParallel, 64);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_256:
-                maximumParallel += 256;
+                maximumParallel = addToParallel(maximumParallel, 256);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_1024:
-                maximumParallel += 1024;
+                maximumParallel = addToParallel(maximumParallel, 1024);
                 unitCount++;
                 return true;
 
             case CRAFTING_PROCESSING_UNIT_4096:
-                maximumParallel += 4096;
+                maximumParallel = addToParallel(maximumParallel, 4096);
                 unitCount++;
                 return true;
 
             case ACCELERATOR:
-                maximumParallel += 16384;
+                maximumParallel = addToParallel(maximumParallel, 16384);
                 unitCount++;
                 return true;
 
             case MULTI_THREADER:
-                maximumParallel *= 4;
                 multiThreaderCount++;
                 unitCount++;
                 return true;
@@ -456,61 +519,94 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         }
     }
 
+    public long addToStorage(long current, long increment) {
+        if (current > Long.MAX_VALUE - increment) {
+            return Long.MAX_VALUE;
+        }
+        return current + increment;
+    }
+
+    public int addToParallel(int current, int increment) {
+        if (current > Integer.MAX_VALUE - increment) {
+            return Integer.MAX_VALUE;
+        }
+        return current + increment;
+    }
+
     /**
      * Find the horizontal size of the quantum computer. Populates values dxMin, dxMax, dzMin, and dzMax.
      *
      * @return True on success, false on failure (which means an invalid structure).
      */
     public boolean checkSize(IGregTechTileEntity aBaseMetaTileEntity) {
-        // Footprint must be a rectangle. If the width is odd, the controller must be in the middle.
-        // If the width is even, controller must be one of the two middle blocks.
 
-        // X direction
+        // X direction (min)
+        dxMin = -1;
+        while (true) {
+            int next = dxMin - 1;
 
-        for (dxMin = -1; dxMin >= -MAX_SIZE / 2; --dxMin) {
-            if (getBlockType(aBaseMetaTileEntity, dxMin, 0, 0, true) == QuantumComputerBlockType.INVALID) {
-                dxMin++;
+            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dxMin < -MAX_SIZE / 2) {
-            return false;
+
+            if (next < -MAX_SIZE / 2) {
+                return false;
+            }
+
+            dxMin = next;
         }
 
-        for (dxMax = 1; dxMax <= MAX_SIZE / 2; ++dxMax) {
-            if (getBlockType(aBaseMetaTileEntity, dxMax, 0, 0, true) == QuantumComputerBlockType.INVALID) {
-                dxMax--;
+        // X direction (max)
+        dxMax = 1;
+        while (true) {
+            int next = dxMax + 1;
+
+            if (getBlockType(aBaseMetaTileEntity, next, 0, 0, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dxMax > MAX_SIZE / 2) {
-            return false;
+
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+
+            dxMax = next;
         }
 
+        // controller must be centered (odd) or one of two center blocks (even)
         if (Math.abs(dxMin + dxMax) > 1) {
             return false;
         }
 
-        // Z direction
+        // Z direction (min)
+        dzMin = -1;
+        while (true) {
+            int next = dzMin - 1;
 
-        for (dzMin = -1; dzMin >= -MAX_SIZE / 2; --dzMin) {
-            if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMin, true) == QuantumComputerBlockType.INVALID) {
-                dzMin++;
+            if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dzMin < -MAX_SIZE / 2) {
-            return false;
+
+            if (next < -MAX_SIZE / 2) {
+                return false;
+            }
+
+            dzMin = next;
         }
 
-        for (dzMax = 1; dzMax <= MAX_SIZE / 2; ++dzMax) {
-            if (getBlockType(aBaseMetaTileEntity, 0, 0, dzMax, true) == QuantumComputerBlockType.INVALID) {
-                dzMax--;
+        // Z direction (max)
+        dzMax = 1;
+        while (true) {
+            int next = dzMax + 1;
+
+            if (getBlockType(aBaseMetaTileEntity, 0, 0, next, true) == QuantumComputerBlockType.INVALID) {
                 break;
             }
-        }
-        if (dzMax > MAX_SIZE / 2) {
-            return false;
+
+            if (next > MAX_SIZE / 2) {
+                return false;
+            }
+
+            dzMax = next;
         }
 
         return Math.abs(dzMin + dzMax) <= 1;
@@ -604,6 +700,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         depth = 0;
         casingCount = 0;
         unitCount = 0;
+        coreCount = 0;
         multiThreaderCount = 0;
         dataEntanglerCount = 0;
         singularityCraftingStorageCount = 0;
@@ -613,6 +710,23 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        boolean b = checkMachine(aBaseMetaTileEntity);
+        if (b) {
+            getProxy().setValidSides(upDirection);
+            if (this.virtualCPU == null) {
+                createVirtualCPU();
+            }
+        } else {
+            getProxy().setValidSides(emptyDirection);
+            if (this.virtualCPU != null) {
+                this.virtualCPU.destroy();
+                this.virtualCPU = null;
+            }
+        }
+        return b;
+    }
+
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity) {
         // Optimization: a vast majority of the time, the size of the CR won't change. Try checking it using the old
         // size, and only if that fails, try to find a new size.
         if (dyMin == 0 || !checkCeiling(aBaseMetaTileEntity)) {
@@ -637,7 +751,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 break;
             } else {
                 // Not floor yet, check for a wall.
-                if (!checkWall(aBaseMetaTileEntity, dyMin)) return false;
+                if (!checkWall(aBaseMetaTileEntity, dyMin)) {
+                    dyMin = 0;
+                    return false;
+                }
             }
         }
         if (dyMin < -(MAX_SIZE - 1)) {
@@ -674,6 +791,22 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             return false;
         }
 
+        for (int i = 0; i < dataEntanglerCount; i++) {
+            if (maximumStorage > Long.MAX_VALUE / 4L) {
+                maximumStorage = Long.MAX_VALUE;
+                break;
+            }
+            maximumStorage *= 4L;
+        }
+
+        for (int i = 0; i < multiThreaderCount; i++) {
+            if (maximumParallel > Integer.MAX_VALUE / 4) {
+                maximumParallel = Integer.MAX_VALUE;
+                break;
+            }
+            maximumParallel *= 4;
+        }
+
         if (MainConfig.enableDebugMode) ScienceNotLeisure.LOG.info("Quantum Computer: Check successful.");
 
         return true;
@@ -689,26 +822,16 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection sideDirection,
         ForgeDirection facingDirection, int colorIndex, boolean active, boolean redstoneLevel) {
         if ((sideDirection.flag & (ForgeDirection.UP.flag | ForgeDirection.DOWN.flag)) != 0) {
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX), active
-                ? TextureFactory.of(
-                    TextureFactory.of(OVERLAY_TOP_CLEANROOM_ACTIVE),
-                    TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_CLEANROOM_ACTIVE_GLOW)
-                        .glow()
-                        .build())
-                : TextureFactory.of(
-                    TextureFactory.of(OVERLAY_TOP_CLEANROOM),
-                    TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_CLEANROOM_GLOW)
-                        .glow()
-                        .build()) };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX),
+                active ? TextureFactory.of(TextureFactory.of(OVERLAY_ME_INPUT_HATCH_ACTIVE))
+                    : TextureFactory.of(TextureFactory.of(OVERLAY_ME_INPUT_HATCH)) };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CASING_INDEX) };
     }
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        int i = Math.min(stackSize.stackSize, MAX_SIZE / 2);
+        final int i = Math.min(stackSize.stackSize, MAX_SIZE / 2);
         IGregTechTileEntity baseEntity = this.getBaseMetaTileEntity();
         World world = baseEntity.getWorld();
         int x = baseEntity.getXCoord();
@@ -744,6 +867,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        super.addUIWidgets(builder, buildContext);
+        addGregTechLogo(builder);
+    }
+
+    @Override
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_CIRCULATION)
+                .setSize(18, 18)
+                .setPos(172, 67));
+    }
+
+    @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
         screenElements
@@ -754,9 +891,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
-                new TextWidget().setStringSupplier(
-                    () -> StatCollector
-                        .translateToLocalFormatted("Info_QuantumComputer_01", GTUtility.formatNumbers(maximumParallel)))
+                new TextWidget()
+                    .setStringSupplier(
+                        () -> StatCollector.translateToLocalFormatted(
+                            "Info_QuantumComputer_01",
+                            GTUtility.formatNumbers(maximumParallel),
+                            GTUtility.formatNumbers(usedParallel),
+                            String.format(
+                                "%.1f%%",
+                                maximumParallel > 0 ? (double) usedParallel / maximumParallel * 100.0 : 0.0)))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
@@ -764,14 +907,33 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
                             "Info_QuantumComputer_02",
-                            GTUtility.scientificFormat(maximumStorage)))
+                            GTUtility.scientificFormat(getMaximumStorage()),
+                            usedStorage,
+                            String.format(
+                                "%.1f%%",
+                                getMaximumStorage() > 0 ? (double) usedParallel / getMaximumStorage() * 100.0 : 0.0)))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> width, w -> width = w))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> height, h -> height = h))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> depth, d -> depth = d))
             .widget(new FakeSyncWidget.IntegerSyncer(() -> maximumParallel, parallel -> maximumParallel = parallel))
-            .widget(new FakeSyncWidget.LongSyncer(() -> maximumStorage, storage -> maximumStorage = storage));
+            // .widget(new FakeSyncWidget.IntegerSyncer(() -> getUsedBytes(), parallel -> maximumParallel = parallel))
+            .widget(new FakeSyncWidget.LongSyncer(this::getMaximumStorage, storage -> maximumStorage = storage))
+            .widget(new FakeSyncWidget.LongSyncer(this::getUsedBytes, storage -> usedStorage = storage));
+    }
+
+    @Override
+    public void checkMaintenance() {}
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
     }
 
     @Override
@@ -805,8 +967,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             if (bmte instanceof IGridProxyable) {
                 gridProxy = new AENetworkProxy(this, "proxy", GTNLItemList.AssemblerMatrix.get(1), true);
                 gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-                gridProxy.onReady();
-                updateValidGridProxySides();
                 if (bmte.getWorld() != null) {
                     gridProxy.setOwner(
                         bmte.getWorld()
@@ -817,16 +977,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return gridProxy;
     }
 
-    public static final EnumSet<ForgeDirection> allDirection = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
+    public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
     public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
-
-    public void updateValidGridProxySides() {
-        if (mMachine) {
-            getProxy().setValidSides(allDirection);
-        } else {
-            getProxy().setValidSides(emptyDirection);
-        }
-    }
 
     @Override
     public void securityBreak() {
@@ -881,8 +1033,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     protected CraftingCPUCluster virtualCPU = null;
     protected final List<CraftingCPUCluster> cpus = new ReferenceArrayList<>();
 
+    public boolean isVirtualCPU(Object cluster) {
+        return virtualCPU == cluster;
+    }
+
     public List<CraftingCPUCluster> getCPUs() {
-        if (!isActive() || cpus.isEmpty()) return ObjectLists.emptyList();
+        if (!isActive()) return ObjectLists.emptyList();
+
+        if (cpus.isEmpty())
+            return this.virtualCPU != null ? ObjectLists.singleton(this.virtualCPU) : ObjectLists.emptyList();
 
         final List<CraftingCPUCluster> clusters = new ReferenceArrayList<>(cpus);
         if (this.virtualCPU != null) {
@@ -911,12 +1070,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         createVirtualCPU();
     }
 
-    public long getTotalBytes() {
-        return maximumStorage;
-    }
-
     public long getAvailableBytes() {
-        return maximumStorage - getUsedBytes();
+        return getMaximumStorage() - getUsedBytes();
     }
 
     public long getUsedBytes() {
@@ -927,14 +1082,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public void createVirtualCPU() {
         final long availableBytes = getAvailableBytes();
-        if (availableBytes < maximumStorage * 0.1F) {
-            if (this.virtualCPU != null) {
-                this.virtualCPU.destroy();
-                this.virtualCPU = null;
-            }
-            return;
-        }
-
         if (this.virtualCPU != null) {
             ECPUCluster eCluster = ECPUCluster.from(this.virtualCPU);
             eCluster.ec$setAvailableStorage(availableBytes);
@@ -961,6 +1108,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public void onCPUDestroyed(final CraftingCPUCluster cluster) {
         cpus.remove(cluster);
+        createVirtualCPU();
         postCPUClusterChangeEvent();
         if (cpus.isEmpty()) {
             markDirty();

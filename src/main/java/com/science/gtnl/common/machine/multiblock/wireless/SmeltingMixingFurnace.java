@@ -249,8 +249,8 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4 && machineMode != MACHINEMODE_DTPF
-                    && wirelessMode) {
+                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4
+                    && machineMode != MACHINEMODE_DTPF) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);

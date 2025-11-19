@@ -739,7 +739,7 @@ public class SpaceMinerRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(10, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Zeolite, 1)),
                 GTUtility.copyAmountUnsafe(10, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cassiterite, 1)),
                 GTUtility.copyAmountUnsafe(50, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Realgar, 1)),
-                GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cinnabar, 1)),
+                GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Mytryl, 1)),
                 GTUtility
                     .copyAmountUnsafe(80, GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSkyStone", 1)),
                 GTUtility.copyAmountUnsafe(40, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Americium, 1)),
@@ -759,7 +759,7 @@ public class SpaceMinerRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(10, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Zeolite, 1)),
                 GTUtility.copyAmountUnsafe(10, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cassiterite, 1)),
                 GTUtility.copyAmountUnsafe(50, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Realgar, 1)),
-                GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cinnabar, 1)),
+                GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Mytryl, 1)),
                 GTUtility
                     .copyAmountUnsafe(80, GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockSkyStone", 1)),
                 GTUtility.copyAmountUnsafe(40, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Americium, 1)),

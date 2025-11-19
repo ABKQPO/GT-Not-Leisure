@@ -1,8 +1,7 @@
 package com.science.gtnl.utils.text;
 
-import static gregtech.api.util.GTLanguageManager.addStringLocalization;
-
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.mixins.late.Gregtech.AccessorGTLanguageManager;
 
 import bartworks.system.material.Werkstoff;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -141,6 +140,7 @@ public class LanguageLoader {
         addWerkstoffLocalization(MaterialPool.MixturePineoil, "松油混合物", false);
         addWerkstoffLocalization(MaterialPool.ToxicMercurySludge, "剧毒水银污泥", false);
         addWerkstoffLocalization(MaterialPool.PostProcessBeWaste, "后处理铍废液", false);
+        addWerkstoffLocalization(MaterialPool.QuantumInfusion, "量子灌输液", false);
         addWerkstoffLocalization(MaterialPool.Periodicium, "錭錤錶", false);
         addWerkstoffLocalization(MaterialPool.Stargate, "星门", false);
 
@@ -305,5 +305,9 @@ public class LanguageLoader {
             addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_small.name", "小型%material流体管道");
             addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_tiny.name", "微型%material流体管道");
         }
+    }
+
+    public static String addStringLocalization(String trimmedKey, String text) {
+        return AccessorGTLanguageManager.callStoreTranslation(trimmedKey, text);
     }
 }

@@ -424,7 +424,7 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
                 if (recipe.getMetadataOrDefault(CompressionTierKey.INSTANCE, 0) == 2 && !hasConsumed) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
-                if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);

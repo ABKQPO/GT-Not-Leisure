@@ -35,8 +35,6 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     @Unique
     private QuantumComputer ec$virtualCPUOwner = null;
-    @Unique
-    private long ec$usedExtraStorage = 0;
     @Shadow
     private long availableStorage;
 
@@ -71,21 +69,22 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         method = "submitJob",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/api/networking/crafting/ICraftingJob;getOutput()Lappeng/api/storage/data/IAEItemStack;"))
+            target = "Lappeng/api/networking/crafting/ICraftingJob;getOutput()Lappeng/api/storage/data/IAEItemStack;"),
+        require = 1)
     private void injectSubmitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine,
         CallbackInfoReturnable<ICraftingLink> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         this.ec$virtualCPUOwner.onVirtualCPUSubmitJob(job.getByteTotal());
     }
 
-    @Inject(method = "cancel", at = @At("RETURN"))
+    @Inject(method = "cancel", at = @At("RETURN"), require = 1)
     private void injectCancel(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         if (this.inventory.getItemList()
             .isEmpty()) destroy();
     }
 
-    @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectUpdateCraftingLogicStoreItems(final IGrid grid, final IEnergyGrid eg,
         final CraftingGridCache cgc, final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
@@ -95,7 +94,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
                 this.cancel();
             }
         }
-        if (this.isComplete) {
+        if (this.isComplete && !this.ec$virtualCPUOwner.isVirtualCPU(this)) {
             // Ensure inventory is empty
             if (this.inventory.getItemList()
                 .isEmpty()) {
@@ -107,7 +106,8 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     @WrapOperation(
         method = "updateCraftingLogic",
-        at = @At(value = "INVOKE", target = "Lappeng/tile/crafting/TileCraftingTile;isActive()Z"))
+        at = @At(value = "INVOKE", target = "Lappeng/tile/crafting/TileCraftingTile;isActive()Z"),
+        require = 1)
     private boolean redirectUpdateCraftingLogicIsActive(final TileCraftingTile instance,
         final Operation<Boolean> original) {
         if (this.ec$virtualCPUOwner == null) return original.call(instance);
@@ -116,7 +116,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectDestroy(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         if (this.isDestroyed) {
@@ -126,7 +126,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         this.ec$virtualCPUOwner.onCPUDestroyed((CraftingCPUCluster) (Object) this);
     }
 
-    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isActive", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectIsActive(final CallbackInfoReturnable<Boolean> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(
@@ -134,7 +134,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
                 .isActive());
     }
 
-    @Inject(method = "getGrid", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getGrid", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetGrid(final CallbackInfoReturnable<IGrid> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         IGridNode node = ec$virtualCPUOwner.getProxy()
@@ -143,13 +143,13 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "getCore", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getCore", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetCore(final CallbackInfoReturnable<TileCraftingTile> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(null);
     }
 
-    @Inject(method = "getWorld", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getWorld", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectGetWorld(final CallbackInfoReturnable<World> cir) {
         if (this.ec$virtualCPUOwner == null) return;
         cir.setReturnValue(
@@ -158,7 +158,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
 
     }
 
-    @Inject(method = "markDirty", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "markDirty", at = @At("HEAD"), cancellable = true, require = 1)
     private void injectMarkDirty(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
         this.ec$virtualCPUOwner.markDirty();
@@ -179,16 +179,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
     @Override
     public void ec$setVirtualCPUOwner(@Nullable QuantumComputer isVirtualCPUOwner) {
         this.ec$virtualCPUOwner = isVirtualCPUOwner;
-    }
-
-    @Override
-    public long ec$getUsedExtraStorage() {
-        return this.ec$usedExtraStorage;
-    }
-
-    @Override
-    public void ec$setUsedExtraStorage(long usedExtraStorage) {
-        this.ec$usedExtraStorage = usedExtraStorage;
+        this.machineSrc = new MachineSource(isVirtualCPUOwner);
     }
 
     @Override

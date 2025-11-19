@@ -592,6 +592,7 @@ public class ItemLoader {
         GTNLItemList.ExoticWafer.set(MetaItemAdder.initItem(123));
         GTNLItemList.ExoticChip.set(MetaItemAdder.initItem(124));
         GTNLItemList.ExoticRAMWafer.set(MetaItemAdder.initItem(125));
+        GTNLItemList.ShatteredSingularity.set(MetaItemAdder.initItem(126));
 
         GTNLItemList.ManaElectricProspectorTool.set(ElectricProspectorTool.initItem(0, 10, 9999));
         GTNLItemList.DebugElectricProspectorTool.set(ElectricProspectorTool.initItem(1, 50, Integer.MAX_VALUE));

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.enums.Mods.*;
 
 import net.minecraftforge.fluids.FluidStack;
 
@@ -555,6 +555,17 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidOutputs(Materials.PhosphoricAcid.getFluid(2000))
             .duration(40)
             .eut(TierEU.RECIPE_HV)
+            .addTo(UC);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 47),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 8, 45),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.EnderPearl, 8))
+            .itemOutputs(GTNLItemList.ShatteredSingularity.get(2))
+            .fluidInputs(Materials.Lava.getFluid(1000))
+            .duration(100)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
     }
 }

@@ -51,6 +51,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
+import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -214,7 +215,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             @NotNull
             @Override
             public GTNL_ParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
-                return super.createParallelHelper(recipeWithMultiplier(recipe, inputFluids));
+                return super.createParallelHelper(
+                    recipeWithMultiplier(recipe, inputFluids, mOutputHatches.get(0), getTrueParallel()));
             }
         };
     }
@@ -239,7 +241,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         return 4 * itemQuantity + 2 * GTUtility.getTier(this.getMaxInputVoltage()) * mGlassTier;
     }
 
-    public GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs) {
+    public static GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs, MTEHatchOutput output,
+        int parallel) {
         if (recipe == null || fluidInputs == null) {
             return recipe;
         }
@@ -271,8 +274,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         }
 
         multiplier = (int) fluidAmount / (recipe.mFluidInputs[0].amount * 1001);
-        multiplier = Math.max(Math.min(multiplier, getTrueParallel()), 1);
-        multiplier *= getExpectedMultiplier(recipe.getFluidOutput(0));
+        multiplier = Math.max(Math.min(multiplier, parallel), 1);
+        multiplier *= getExpectedMultiplier(recipe.getFluidOutput(0), output);
 
         tRecipe.mFluidInputs[0].amount *= multiplier;
         tRecipe.mFluidOutputs[0].amount *= multiplier;
@@ -280,9 +283,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         return tRecipe;
     }
 
-    public int getExpectedMultiplier(@Nullable FluidStack recipeFluidOutput) {
-        FluidStack storedFluidOutputs = mOutputHatches.get(0)
-            .getFluid();
+    public static int getExpectedMultiplier(@Nullable FluidStack recipeFluidOutput, MTEHatchOutput output) {
+        FluidStack storedFluidOutputs = output.getFluid();
         if (storedFluidOutputs == null) return 1001;
         if (storedFluidOutputs.isFluidEqual(recipeFluidOutput)) {
             return 1001;

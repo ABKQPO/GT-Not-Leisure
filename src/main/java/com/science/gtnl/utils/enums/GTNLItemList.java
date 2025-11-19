@@ -263,6 +263,7 @@ public enum GTNLItemList implements IItemContainer {
     ExoticWafer,
     ExoticChip,
     ExoticRAMWafer,
+    ShatteredSingularity,
 
     LVWirelessEnergyCover,
     MVWirelessEnergyCover,
@@ -599,6 +600,10 @@ public enum GTNLItemList implements IItemContainer {
     MegaBathTank,
     MegaCanner,
     CompoundDistillationFractionator,
+    MegaBrewer,
+    MicroorganismMaster,
+    MoltenCore,
+    CrystalBuilder,
 
     EnergyHatchLV,
     EnergyHatchLV4A,

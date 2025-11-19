@@ -39,23 +39,30 @@ public class MixinBehaviourScanner {
         CallbackInfoReturnable<Boolean> cir, @Local ArrayList<String> tList) {
         if (ModList.Overpowered.isModLoaded() || !MainConfig.enableRecipeOutputChance) return;
         TileEntity tile = aWorld.getTileEntity(aX, aY, aZ);
-        if (tile instanceof BaseMetaTileEntity baseMetaTileEntity) {
-            IMetaTileEntity meta = baseMetaTileEntity.getMetaTileEntity();
-            if (meta instanceof MTEMultiBlockBase mte) {
-                GTRecipe recipe = ChanceBonusManager.customProvider.getRecipeForMachine(mte);
-                if (recipe != null) {
-                    int tier = GTUtility.getTier(mte.getMaxInputVoltage());
-                    int baseTier = GTUtility.getTier(recipe.mEUt);
-                    double bonus = tier <= baseTier ? 0.0 : (tier - baseTier) * MainConfig.recipeOutputChance;
-
-                    String debugMessage = String.format(
-                        StatCollector.translateToLocal("Info_VoltageChanceBonus_00"),
-                        bonus,
-                        StringUtils.voltageTooltipFormatted(tier),
-                        StringUtils.voltageTooltipFormatted(baseTier));
-                    tList.add(debugMessage);
-                }
-            }
+        if (!(tile instanceof BaseMetaTileEntity baseMetaTileEntity)) {
+            return;
         }
+
+        IMetaTileEntity meta = baseMetaTileEntity.getMetaTileEntity();
+        if (!(meta instanceof MTEMultiBlockBase mte)) {
+            return;
+        }
+
+        GTRecipe recipe = ChanceBonusManager.customProvider.getRecipeForMachine(mte);
+        if (recipe == null) {
+            return;
+        }
+
+        int tier = GTUtility.getTier(mte.getMaxInputVoltage());
+        int baseTier = GTUtility.getTier(recipe.mEUt);
+        double bonus = tier <= baseTier ? 0.0 : (tier - baseTier) * MainConfig.recipeOutputChance;
+
+        String debugMessage = String.format(
+            StatCollector.translateToLocal("Info_VoltageChanceBonus_00"),
+            bonus,
+            StringUtils.voltageTooltipFormatted(tier),
+            StringUtils.voltageTooltipFormatted(baseTier));
+
+        tList.add(debugMessage);
     }
 }
