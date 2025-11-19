@@ -1292,18 +1292,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         return getSelfRep();
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        getProxy().onChunkUnload();
-    }
-
-    @Override
-    public void inValidate() {
-        super.inValidate();
-        getProxy().invalidate();
-    }
-
     public void tryOutputInventory(IInventory inventory) {
         int emptySlots = 0;
         boolean ignoreEmptiness = false;

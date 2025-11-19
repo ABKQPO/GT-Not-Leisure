@@ -1710,6 +1710,7 @@ Tooltip_QuantumComputer_08=耗能与常规CPU一致
 Tooltip_QuantumComputer_09=不需要开机，这台机器成型即可使用
 Tooltip_QuantumComputer_10=所有内部方块必须为合成存储器或并行处理单元！
 Tooltip_QuantumComputer_11=§c在量子计算机的外表面上，不能放置任何可用于构成量子计算机的方块，否则会导致量子计算机失效
+Tooltip_QuantumComputer_12=§c量子计算机被破坏时会尝试获取上方AE网络退回CPU内材料，如果不存在将不会保留物品！
 Info_QuantumComputer_00=结构大小：%sx%sx%s
 Info_QuantumComputer_01=并行线程：%s / 已使用：%s (%s)
 Info_QuantumComputer_02=可存储：%s / 已使用：%s (%s)

@@ -31,16 +31,23 @@ import com.science.gtnl.utils.ECPUCluster;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.WorldCoord;
+import appeng.crafting.MECraftingInventory;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
@@ -140,6 +147,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_10"))
             .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_11"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_12"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
             .addInfo(StatCollector.translateToLocal("BLUE_PRINT_INFO"))
@@ -151,11 +159,34 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     public void onBlockDestroyed() {
         super.onBlockDestroyed();
-        cpus.forEach(
-            cluster -> ECPUCluster.from(cluster)
-                .ec$markDestroyed());
-        cpus.clear();
+        clearCPUs();
         postCPUClusterChangeEvent();
+    }
+
+    public void clearCPUs() {
+        IMEMonitor<IAEItemStack> itemInventory = null;
+        try {
+            var t = getBaseMetaTileEntity();
+            var te = t.getWorld()
+                .getTileEntity(t.getXCoord(), t.getYCoord() + 1, t.getZCoord());
+            if (te instanceof IGridHost igh) itemInventory = igh.getGridNode(ForgeDirection.UNKNOWN)
+                .getGrid()
+                .<IStorageGrid>getCache(IStorageGrid.class)
+                .getItemInventory();
+        } catch (Exception ignored) {
+
+        }
+        final var s = new MachineSource(this);
+        for (var cpu : cpus) {
+            if (itemInventory != null) {
+                for (var stack : ((MECraftingInventory) cpu.getInventory()).getItemList()) {
+                    itemInventory.injectItems(stack, Actionable.MODULATE, s);
+                }
+            }
+            ECPUCluster.from(cpu)
+                .ec$markDestroyed();
+        }
+        cpus.clear();
     }
 
     @Override
@@ -1003,18 +1034,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             this.wasActive = currentActive;
             postCPUClusterChangeEvent();
         }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        getProxy().onChunkUnload();
-    }
-
-    @Override
-    public void inValidate() {
-        super.inValidate();
-        getProxy().invalidate();
     }
 
     protected void postCPUClusterChangeEvent() {
