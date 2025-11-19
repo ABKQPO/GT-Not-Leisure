@@ -207,7 +207,7 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
                 if (!BWUtil.areStacksEqualOrNull((ItemStack) recipe.mSpecialItems, getControllerSlot()))
                     return CheckRecipeResultRegistry.NO_RECIPE;
 
-                if (recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
 

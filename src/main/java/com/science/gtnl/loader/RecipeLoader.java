@@ -95,6 +95,7 @@ import com.science.gtnl.common.recipe.gtnl.ReFusionReactorRecipes;
 import com.science.gtnl.common.recipe.gtnl.RealArtificialStarRecipes;
 import com.science.gtnl.common.recipe.gtnl.RockBreakerRecipes;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
+import com.science.gtnl.common.recipe.gtnl.RuneAltarRecipes;
 import com.science.gtnl.common.recipe.gtnl.ShallowChemicalCouplingRecipes;
 import com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
@@ -199,7 +200,8 @@ public class RecipeLoader {
             new InfernalCokeRecipes(), new SteamFusionReactorRecipes(), new SteamExtractinatorRecipes(),
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
-            new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes() };
+            new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
+            new RuneAltarRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
