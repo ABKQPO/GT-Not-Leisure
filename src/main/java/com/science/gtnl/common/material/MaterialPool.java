@@ -1651,13 +1651,6 @@ public class MaterialPool implements Runnable {
         offsetID_01 + 201,
         TextureSet.SET_SHINY);
 
-    public static Werkstoff.GenerationFeatures gf = new Werkstoff.GenerationFeatures();
-
     @Override
-    public void run() {
-        for (var prefix : OrePrefixes.values()) {
-            gf.addPrefix(prefix);
-        }
-        gf.removePrefix(OrePrefixes.ore);
-    }
+    public void run() {}
 }
