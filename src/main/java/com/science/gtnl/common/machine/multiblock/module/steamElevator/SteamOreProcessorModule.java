@@ -268,20 +268,12 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         Supplier<GTRecipe> supplier) {
         synchronized (cache) {
             GTRecipe r = cache.get(key);
-            if (r != null) {
-                cache.remove(key);
-                cache.put(key, r);
-                return r;
-            }
+            if (r != null) return r;
+
             r = supplier.get();
             if (r != null) {
                 cache.put(key, r);
-                if (cache.size() > CACHE_MAX) {
-                    Integer eldest = cache.keySet()
-                        .iterator()
-                        .next();
-                    cache.remove(eldest);
-                }
+                if (cache.size() > CACHE_MAX) cache.removeFirst();
             }
             return r;
         }
@@ -494,7 +486,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             .collect(Collectors.toList());
     }
 
-    public void doCompress(ObjectArrayList<ItemStack> aList) {
+    public void doCompress(List<ItemStack> aList) {
         Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
