@@ -200,6 +200,7 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.L
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeMixer;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargePacker;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargePyrolyseOven;
+import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeRockCrusher;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeSiftingFunnel;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeSolidifier;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeWiremill;
@@ -1545,6 +1546,13 @@ public class MachineLoader {
                 "CrystalBuilder",
                 StatCollector.translateToLocal("NameCrystalBuilder")));
         addItemTooltip(GTNLItemList.CrystalBuilder.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.LargeRockCrusher.set(
+            new LargeRockCrusher(
+                LARGE_ROCK_CRUSHER.ID,
+                "LargeRockCrusher",
+                StatCollector.translateToLocal("NameLargeRockCrusher")));
+        addItemTooltip(GTNLItemList.LargeRockCrusher.get(1), AnimatedText.SNL_QYZG_SRP);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

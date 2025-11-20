@@ -78,6 +78,7 @@ import com.science.gtnl.common.recipe.gtnl.FallingTowerRecipes;
 import com.science.gtnl.common.recipe.gtnl.FishingGroundRecipes;
 import com.science.gtnl.common.recipe.gtnl.FuelRefiningComplexRecipes;
 import com.science.gtnl.common.recipe.gtnl.GasCollectorRecipes;
+import com.science.gtnl.common.recipe.gtnl.IndustrialRockCrusherRecipes;
 import com.science.gtnl.common.recipe.gtnl.InfernalCokeRecipes;
 import com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes;
 import com.science.gtnl.common.recipe.gtnl.IsaMillRecipes;
@@ -202,7 +203,7 @@ public class RecipeLoader {
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
             new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
-            new RuneAltarRecipes() };
+            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

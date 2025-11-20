@@ -33,8 +33,8 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
     /**
      * A Set contains the meta value that has been used.
      */
-    public static final Set<Integer> MetaSet = new HashSet<>();
-    public static final Map<Integer, String[]> MetaItemTooltipsMap = new HashMap<>();
+    public static final Set<Integer> metaSet = new HashSet<>();
+    public static final Map<Integer, String[]> metaItemTooltipsMap = new HashMap<>();
 
     public final String unlocalizedName;
     public IIcon[] halo;
@@ -56,14 +56,14 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
      */
     public static ItemStack initItem(int aMeta) {
 
-        return MetaItemStackUtils.initMetaItemStack(aMeta, ItemLoader.metaItem, MetaSet);
+        return MetaItemStackUtils.initMetaItemStack(aMeta, ItemLoader.metaItem, metaSet);
 
     }
 
     public static ItemStack initItem(int aMeta, String[] tooltips) {
 
         if (tooltips != null) {
-            MetaItemStackUtils.metaItemStackTooltipsAdd(MetaItemTooltipsMap, aMeta, tooltips);
+            MetaItemStackUtils.metaItemStackTooltipsAdd(metaItemTooltipsMap, aMeta, tooltips);
         }
 
         return initItem(aMeta);
@@ -85,7 +85,7 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
         this.itemIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaItem/0");
-        for (int meta : MetaSet) {
+        for (int meta : metaSet) {
             ItemStaticDataClientOnly.iconsMapMetaItem01
                 .put(meta, iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaItem/" + meta));
         }
@@ -106,8 +106,8 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
     public void addInformation(ItemStack aItemStack, EntityPlayer p_77624_2_, List<String> theTooltipsList,
         boolean p_77624_4_) {
         int meta = aItemStack.getItemDamage();
-        if (null != MetaItemTooltipsMap.get(meta)) {
-            String[] tooltips = MetaItemTooltipsMap.get(meta);
+        if (null != metaItemTooltipsMap.get(meta)) {
+            String[] tooltips = metaItemTooltipsMap.get(meta);
             theTooltipsList.addAll(Arrays.asList(tooltips));
         }
     }
@@ -115,8 +115,8 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item aItem, CreativeTabs aCreativeTabs, List<ItemStack> aList) {
-        for (int Meta : MetaSet) {
-            aList.add(new ItemStack(ItemLoader.metaItem, 1, Meta));
+        for (int meta : metaSet) {
+            aList.add(new ItemStack(ItemLoader.metaItem, 1, meta));
         }
     }
 

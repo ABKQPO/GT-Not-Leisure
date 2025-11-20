@@ -2060,6 +2060,12 @@ Tooltip_LargeDistillery_00=比相同电压的机器快300%
 Tooltip_LargeDistillery_01=只需要使用配方要求功率的50%
 Tooltip_LargeDistillery_Casing=任意储罐拓展方块
 
+NameLargeRockCrusher=大型碎岩机
+gtnl.recipe.IndustrialRockCrusherRecipes=工业碎岩机
+LargeRockCrusherRecipeType=工业碎岩机
+Tooltip_LargeRockCrusher_00=需要在输入仓中放入水和岩浆
+Tooltip_LargeRockCrusher_Casing=任意坚实铱锇机械方块
+
 NameLargeMacerationTower=大型研磨塔
 LargeMacerationTowerRecipeType=粉碎机
 Tooltip_LargeMacerationTower_00=比相同电压的机器快100%

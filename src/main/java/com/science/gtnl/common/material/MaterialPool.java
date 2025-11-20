@@ -12,7 +12,7 @@ import gtPlusPlus.core.client.CustomTextureSet;
 
 public class MaterialPool implements Runnable {
 
-    public static final int offsetID_01 = 25_000;
+    public static final int offsetID = 25_000;
 
     public static final Werkstoff Hexanitrohexaazaisowurtzitane = new Werkstoff(
         new short[] { 47, 53, 57 },
@@ -22,7 +22,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 1,
+        offsetID + 1,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff CrudeHexanitrohexaazaisowurtzitane = new Werkstoff(
@@ -33,7 +33,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 2,
+        offsetID + 2,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SilicaGel = new Werkstoff(
@@ -44,7 +44,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 3,
+        offsetID + 3,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Ethylenediamine = new Werkstoff(
@@ -55,7 +55,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 4,
+        offsetID + 4,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Ethanolamine = new Werkstoff(
@@ -66,7 +66,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 5,
+        offsetID + 5,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SilicaGelBase = new Werkstoff(
@@ -77,7 +77,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 6,
+        offsetID + 6,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluoroboricAcide = new Werkstoff(
@@ -88,7 +88,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 7,
+        offsetID + 7,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Tetraacetyldinitrohexaazaisowurtzitane = new Werkstoff(
@@ -99,7 +99,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 8,
+        offsetID + 8,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitroniumTetrafluoroborate = new Werkstoff(
@@ -110,7 +110,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 9,
+        offsetID + 9,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitronsoniumTetrafluoroborate = new Werkstoff(
@@ -121,7 +121,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 10,
+        offsetID + 10,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BoronFluoride = new Werkstoff(
@@ -132,7 +132,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 11,
+        offsetID + 11,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SodiumTetrafluoroborate = new Werkstoff(
@@ -143,7 +143,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 12,
+        offsetID + 12,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BoronTrioxide = new Werkstoff(
@@ -154,7 +154,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 13,
+        offsetID + 13,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Dibenzyltetraacetylhexaazaisowurtzitane = new Werkstoff(
@@ -165,7 +165,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 14,
+        offsetID + 14,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Benzaldehyde = new Werkstoff(
@@ -176,7 +176,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 15,
+        offsetID + 15,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff HydrobromicAcid = new Werkstoff(
@@ -187,7 +187,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 16,
+        offsetID + 16,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuccinimidylAcetate = new Werkstoff(
@@ -198,7 +198,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 17,
+        offsetID + 17,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hexabenzylhexaazaisowurtzitane = new Werkstoff(
@@ -209,7 +209,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 18,
+        offsetID + 18,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NHydroxysuccinimide = new Werkstoff(
@@ -220,7 +220,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 19,
+        offsetID + 19,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SuccinicAnhydride = new Werkstoff(
@@ -231,7 +231,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 20,
+        offsetID + 20,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff HydroxylamineHydrochloride = new Werkstoff(
@@ -242,7 +242,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 21,
+        offsetID + 21,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BariumChloride = new Werkstoff(
@@ -253,7 +253,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 22,
+        offsetID + 22,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff HydroxylammoniumSulfate = new Werkstoff(
@@ -264,7 +264,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 23,
+        offsetID + 23,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff AcrylonitrileButadieneStyrene = new Werkstoff(
@@ -281,7 +281,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 24,
+        offsetID + 24,
         TextureSet.SET_DULL);
 
     public static final Werkstoff PotassiumHydroxylaminedisulfonate = new Werkstoff(
@@ -292,7 +292,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 25,
+        offsetID + 25,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PotassiumSulfate = new Werkstoff(
@@ -303,7 +303,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 26,
+        offsetID + 26,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PotassiumBisulfite = new Werkstoff(
@@ -314,7 +314,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 27,
+        offsetID + 27,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitrousAcid = new Werkstoff(
@@ -325,7 +325,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 28,
+        offsetID + 28,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SodiumNitrite = new Werkstoff(
@@ -336,7 +336,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 29,
+        offsetID + 29,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff CoAcAbCatalyst = new Werkstoff(
@@ -347,7 +347,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 30,
+        offsetID + 30,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SodiumNitrateSolution = new Werkstoff(
@@ -358,7 +358,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 31,
+        offsetID + 31,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Benzylamine = new Werkstoff(
@@ -369,7 +369,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 32,
+        offsetID + 32,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Glyoxal = new Werkstoff(
@@ -380,7 +380,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 33,
+        offsetID + 33,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Acetonitrile = new Werkstoff(
@@ -391,7 +391,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 34,
+        offsetID + 34,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff AmmoniumChloride = new Werkstoff(
@@ -402,7 +402,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 35,
+        offsetID + 35,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hexamethylenetetramine = new Werkstoff(
@@ -413,7 +413,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 36,
+        offsetID + 36,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BenzylChloride = new Werkstoff(
@@ -424,7 +424,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 37,
+        offsetID + 37,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuccinicAcid = new Werkstoff(
@@ -435,7 +435,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 38,
+        offsetID + 38,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff MaleicAnhydride = new Werkstoff(
@@ -446,7 +446,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 39,
+        offsetID + 39,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuperMutatedLivingSolder = new Werkstoff(
@@ -457,7 +457,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 40,
+        offsetID + 40,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Polyimide = new Werkstoff(
@@ -474,7 +474,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 41,
+        offsetID + 41,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PloyamicAcid = new Werkstoff(
@@ -485,7 +485,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 42,
+        offsetID + 42,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Oxydianiline = new Werkstoff(
@@ -496,7 +496,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 43,
+        offsetID + 43,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PyromelliticDianhydride = new Werkstoff(
@@ -507,7 +507,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 44,
+        offsetID + 44,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Durene = new Werkstoff(
@@ -518,7 +518,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 45,
+        offsetID + 45,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Germaniumtungstennitride = new Werkstoff(
@@ -538,7 +538,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 46,
+        offsetID + 46,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Polyetheretherketone = new Werkstoff(
@@ -555,7 +555,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 47,
+        offsetID + 47,
         TextureSet.SET_DULL);
 
     public static final Werkstoff FluidMana = new Werkstoff(
@@ -566,7 +566,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 48,
+        offsetID + 48,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ExcitedNaquadahFuel = new Werkstoff(
@@ -577,7 +577,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 49,
+        offsetID + 49,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthHydroxides = new Werkstoff(
@@ -588,7 +588,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 50,
+        offsetID + 50,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthChlorides = new Werkstoff(
@@ -599,7 +599,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 51,
+        offsetID + 51,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthOxide = new Werkstoff(
@@ -610,7 +610,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 52,
+        offsetID + 52,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthMetal = new Werkstoff(
@@ -638,7 +638,7 @@ public class MaterialPool implements Runnable {
             .addPrefix(OrePrefixes.dustRefined)
             .addPrefix(OrePrefixes.dustTiny)
             .addPrefix(OrePrefixes.ore),
-        offsetID_01 + 53,
+        offsetID + 53,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BarnardaCSappy = new Werkstoff(
@@ -649,7 +649,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 54,
+        offsetID + 54,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff NeutralisedRedMud = new Werkstoff(
@@ -660,7 +660,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 55,
+        offsetID + 55,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FerricReeChloride = new Werkstoff(
@@ -671,7 +671,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 56,
+        offsetID + 56,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LaNdOxidesSolution = new Werkstoff(
@@ -682,7 +682,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 57,
+        offsetID + 57,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SmGdOxidesSolution = new Werkstoff(
@@ -693,7 +693,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 58,
+        offsetID + 58,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff TbHoOxidesSolution = new Werkstoff(
@@ -704,7 +704,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 59,
+        offsetID + 59,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ErLuOxidesSolution = new Werkstoff(
@@ -715,7 +715,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 60,
+        offsetID + 60,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PraseodymiumOxide = new Werkstoff(
@@ -726,7 +726,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 61,
+        offsetID + 61,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ScandiumOxide = new Werkstoff(
@@ -737,7 +737,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 62,
+        offsetID + 62,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff GadoliniumOxide = new Werkstoff(
@@ -748,7 +748,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 63,
+        offsetID + 63,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff TerbiumOxide = new Werkstoff(
@@ -759,7 +759,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 64,
+        offsetID + 64,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff DysprosiumOxide = new Werkstoff(
@@ -770,7 +770,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 65,
+        offsetID + 65,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff HolmiumOxide = new Werkstoff(
@@ -781,7 +781,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 66,
+        offsetID + 66,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ErbiumOxide = new Werkstoff(
@@ -792,7 +792,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 67,
+        offsetID + 67,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ThuliumOxide = new Werkstoff(
@@ -803,7 +803,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 68,
+        offsetID + 68,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff YtterbiumOxide = new Werkstoff(
@@ -814,7 +814,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 69,
+        offsetID + 69,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LutetiumOxide = new Werkstoff(
@@ -825,7 +825,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 70,
+        offsetID + 70,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff MolybdenumDisilicide = new Werkstoff(
@@ -846,7 +846,7 @@ public class MaterialPool implements Runnable {
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes()
             .addMixerRecipes((short) 2),
-        offsetID_01 + 71,
+        offsetID + 71,
         TextureSet.SET_SHINY,
         Pair.of(Materials.Molybdenum, 1),
         Pair.of(Materials.Silicon, 2));
@@ -870,7 +870,7 @@ public class MaterialPool implements Runnable {
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes()
             .addMixerRecipes((short) 4),
-        offsetID_01 + 72,
+        offsetID + 72,
         TextureSet.SET_SHINY,
         Pair.of(Materials.Invar, 2),
         Pair.of(Materials.Vanadium, 1),
@@ -891,7 +891,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 73,
+        offsetID + 73,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Rutherfordium = new Werkstoff(
@@ -908,7 +908,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 74,
+        offsetID + 74,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Dubnium = new Werkstoff(
@@ -925,7 +925,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 75,
+        offsetID + 75,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Seaborgium = new Werkstoff(
@@ -942,7 +942,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 76,
+        offsetID + 76,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Technetium = new Werkstoff(
@@ -959,7 +959,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 77,
+        offsetID + 77,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Bohrium = new Werkstoff(
@@ -976,7 +976,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 78,
+        offsetID + 78,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hassium = new Werkstoff(
@@ -993,7 +993,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 79,
+        offsetID + 79,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Meitnerium = new Werkstoff(
@@ -1010,7 +1010,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 80,
+        offsetID + 80,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Darmstadtium = new Werkstoff(
@@ -1027,7 +1027,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 81,
+        offsetID + 81,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Roentgenium = new Werkstoff(
@@ -1044,7 +1044,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 82,
+        offsetID + 82,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Copernicium = new Werkstoff(
@@ -1061,7 +1061,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 83,
+        offsetID + 83,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Moscovium = new Werkstoff(
@@ -1078,7 +1078,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 84,
+        offsetID + 84,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Livermorium = new Werkstoff(
@@ -1095,7 +1095,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 85,
+        offsetID + 85,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Astatine = new Werkstoff(
@@ -1112,7 +1112,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 86,
+        offsetID + 86,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Tennessine = new Werkstoff(
@@ -1129,7 +1129,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 87,
+        offsetID + 87,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Francium = new Werkstoff(
@@ -1146,7 +1146,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 88,
+        offsetID + 88,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Berkelium = new Werkstoff(
@@ -1163,7 +1163,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 89,
+        offsetID + 89,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Einsteinium = new Werkstoff(
@@ -1180,7 +1180,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 90,
+        offsetID + 90,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Mendelevium = new Werkstoff(
@@ -1197,7 +1197,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 91,
+        offsetID + 91,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Nobelium = new Werkstoff(
@@ -1214,7 +1214,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 92,
+        offsetID + 92,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Lawrencium = new Werkstoff(
@@ -1231,7 +1231,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 93,
+        offsetID + 93,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Nihonium = new Werkstoff(
@@ -1248,7 +1248,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 94,
+        offsetID + 94,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff ZnFeAlCl = new Werkstoff(
@@ -1259,7 +1259,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 95,
+        offsetID + 95,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BenzenediazoniumTetrafluoroborate = new Werkstoff(
@@ -1270,7 +1270,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 96,
+        offsetID + 96,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluoroBenzene = new Werkstoff(
@@ -1281,7 +1281,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 97,
+        offsetID + 97,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff AntimonyTrifluoride = new Werkstoff(
@@ -1292,7 +1292,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 98,
+        offsetID + 98,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Fluorotoluene = new Werkstoff(
@@ -1303,7 +1303,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 99,
+        offsetID + 99,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Resorcinol = new Werkstoff(
@@ -1314,7 +1314,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 100,
+        offsetID + 100,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Hydroquinone = new Werkstoff(
@@ -1325,7 +1325,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 101,
+        offsetID + 101,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Difluorobenzophenone = new Werkstoff(
@@ -1336,7 +1336,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 102,
+        offsetID + 102,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluorineCrackedNaquadah = new Werkstoff(
@@ -1346,7 +1346,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 103,
+        offsetID + 103,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff EnrichedNaquadahWaste = new Werkstoff(
@@ -1356,7 +1356,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 104,
+        offsetID + 104,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RadonCrackedEnrichedNaquadah = new Werkstoff(
@@ -1366,7 +1366,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 105,
+        offsetID + 105,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff NaquadriaWaste = new Werkstoff(
@@ -1376,7 +1376,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 106,
+        offsetID + 106,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SmallBaka = new Werkstoff(
@@ -1387,7 +1387,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 107,
+        offsetID + 107,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LargeBaka = new Werkstoff(
@@ -1398,7 +1398,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 108,
+        offsetID + 108,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff CompressedSteam = new Werkstoff(
@@ -1416,7 +1416,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 109,
+        offsetID + 109,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Stronze = new Werkstoff(
@@ -1434,7 +1434,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 110,
+        offsetID + 110,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Breel = new Werkstoff(
@@ -1452,7 +1452,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 111,
+        offsetID + 111,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PitchblendeSlag = new Werkstoff(
@@ -1463,7 +1463,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 112,
+        offsetID + 112,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff UraniumSlag = new Werkstoff(
@@ -1474,7 +1474,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 113,
+        offsetID + 113,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff UraniumChlorideSlag = new Werkstoff(
@@ -1485,7 +1485,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 114,
+        offsetID + 114,
         CustomTextureSet.TextureSets.NUCLEAR.get());
 
     public static final Werkstoff RadiumChloride = new Werkstoff(
@@ -1496,7 +1496,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID_01 + 115,
+        offsetID + 115,
         CustomTextureSet.TextureSets.NUCLEAR.get());
 
     public static final Werkstoff GravelSluice = new Werkstoff(
@@ -1506,7 +1506,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 116,
+        offsetID + 116,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SandSluice = new Werkstoff(
@@ -1516,7 +1516,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 117,
+        offsetID + 117,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ObsidianSluice = new Werkstoff(
@@ -1526,7 +1526,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 118,
+        offsetID + 118,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff GemSluice = new Werkstoff(
@@ -1536,7 +1536,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 119,
+        offsetID + 119,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff EnderAir = new Werkstoff(
@@ -1546,7 +1546,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 120,
+        offsetID + 120,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LiquidEnderAir = new Werkstoff(
@@ -1556,7 +1556,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 121,
+        offsetID + 121,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff MixturePineoil = new Werkstoff(
@@ -1566,7 +1566,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 122,
+        offsetID + 122,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ToxicMercurySludge = new Werkstoff(
@@ -1576,7 +1576,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 123,
+        offsetID + 123,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PostProcessBeWaste = new Werkstoff(
@@ -1586,7 +1586,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 124,
+        offsetID + 124,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff QuantumInfusion = new Werkstoff(
@@ -1596,7 +1596,7 @@ public class MaterialPool implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID_01 + 125,
+        offsetID + 125,
         TextureSet.SET_FLUID);
 
     // Special
@@ -1631,7 +1631,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 200,
+        offsetID + 200,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Stargate = new Werkstoff(
@@ -1648,7 +1648,7 @@ public class MaterialPool implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID_01 + 201,
+        offsetID + 201,
         TextureSet.SET_SHINY);
 
     @Override

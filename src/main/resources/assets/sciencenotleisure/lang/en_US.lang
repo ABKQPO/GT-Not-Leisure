@@ -2060,6 +2060,12 @@ Tooltip_LargeDistillery_00=300% faster than machines of the same voltage
 Tooltip_LargeDistillery_01=Only requires 50% of the recipe's power demand
 Tooltip_LargeDistillery_Casing=Any tank expansion block
 
+NameLargeRockCrusher=Large Rock Crusher
+gtnl.recipe.IndustrialRockCrusherRecipes=Industrial Rock Crusher
+LargeRockCrusherRecipeType=Rock Crusher
+Tooltip_LargeRockCrusher_00=Need put water and lava into input hatch
+Tooltip_LargeRockCrusher_Casing=Any solid Iridium-Osmium machine block
+
 NameLargeMacerationTower=Large Maceration Tower
 LargeMacerationTowerRecipeType=Pulverizer
 Tooltip_LargeMacerationTower_00=100% faster than machines of the same voltage

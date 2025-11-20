@@ -626,4 +626,12 @@ public class RecipePool {
             builder -> builder.setDisplayStack(GTNLItemList.CircuitComponentAssemblyLine.get(1))
                 .setMaxRecipesPerPage(1))
         .build();
+
+    public static final RecipeMap<RecipeMapBackend> IndustrialRockCrusherRecipes = RecipeMapBuilder
+        .of("gtnl.recipe.IndustrialRockCrusherRecipes")
+        .maxIO(1, 1, 0, 0)
+        .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .frontend(GTNLLogoFrontend::new)
+        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LargeRockCrusher.get(1)))
+        .build();
 }

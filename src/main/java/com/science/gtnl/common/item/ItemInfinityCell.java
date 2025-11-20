@@ -72,9 +72,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorageFluidCell {
 
-    private static final long StorageSIZE = 1L << 53 - 1;
-    private static final Map<String, IIcon> ICON_MAP = new HashMap<>();
+    public static final long StorageSIZE = 1L << 53 - 1;
+    public static final Map<String, IIcon> ICON_MAP = new HashMap<>();
     public static final Set<String> REGISTERED_TEXTURES = new HashSet<>();
+    public static final List<ItemStack> REGISTERED_CELLS = new ArrayList<>();
 
     public ItemInfinityCell() {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityCell");
@@ -88,8 +89,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
     }
 
     @Override
-    public void getCheckedSubItems(final Item sameItem, final CreativeTabs creativeTab,
-        final List<ItemStack> itemStacks) {
+    public void getCheckedSubItems(final Item sameItem, final CreativeTabs creativeTab, List<ItemStack> itemStacks) {
         itemStacks.add(ItemLoader.infinityDyeCell);
         itemStacks.add(ItemLoader.infinityCobblestoneCell);
         itemStacks.add(ItemLoader.infinityDyeFluidCell);
@@ -127,21 +127,24 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
 
     public static ItemStack getSubItem(StorageChannel s, String unlocalizedName, String textureName,
         List<SubItem> subItemsList) {
-        var cell = getSubItem(s, textureName, subItemsList.toArray(new SubItem[0]));
-        return setInfinityUnlocalizedName(cell, unlocalizedName);
+        return getSubItem(s, unlocalizedName, textureName, subItemsList.toArray(new SubItem[0]));
+    }
+
+    public static ItemStack getSubItem(StorageChannel s, String textureName, SubItem... subItems) {
+        return getSubItemInternal(s, null, textureName, subItems);
     }
 
     public static ItemStack getSubItem(StorageChannel s, SubItem... subItems) {
-        return getSubItem(s, null, subItems);
+        return getSubItem(s, null, null, subItems);
     }
 
     public static ItemStack getSubItem(StorageChannel s, String unlocalizedName, String textureName,
         SubItem... subItems) {
-        var cell = getSubItem(s, textureName, subItems);
-        return setInfinityUnlocalizedName(cell, unlocalizedName);
+        return getSubItemInternal(s, unlocalizedName, textureName, subItems);
     }
 
-    public static ItemStack getSubItem(StorageChannel s, String textureName, SubItem... subItems) {
+    public static ItemStack getSubItemInternal(StorageChannel s, String unlocalizedName, String textureName,
+        SubItem... subItems) {
         var cell = new ItemStack(infinityCell);
         var tag = new NBTTagCompound();
         var list = new NBTTagList();
@@ -171,20 +174,16 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
             }
         }
         tag.setTag("infinityList", list);
-        cell.setTagCompound(tag);
-        return cell;
-    }
 
-    public static ItemStack setInfinityUnlocalizedName(ItemStack stack, String unlocalizedName) {
-        if (stack.hasTagCompound()) {
-            var tag = stack.getTagCompound();
+        if (unlocalizedName != null) {
             tag.setString("key", unlocalizedName);
-        } else {
-            var tag = new NBTTagCompound();
-            tag.setString("key", unlocalizedName);
-            stack.setTagCompound(tag);
         }
-        return stack;
+
+        cell.setTagCompound(tag);
+
+        REGISTERED_CELLS.add(cell);
+
+        return cell;
     }
 
     @Desugar
