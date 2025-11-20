@@ -1388,6 +1388,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
+            .setEnabled(supportsSteamOC())
             .addTooltip(translateToLocal("Info_SteamMachine_00"))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(174, 112)
@@ -1406,6 +1407,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                     }
                     return ret;
                 })
+                .setEnabled(supportsSteamCapacityUI())
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
                 .setUpdateTooltipEveryTick(true)
                 .setSize(64, 42)
@@ -1413,13 +1415,23 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
         builder.widget(
             new DrawableWidget().setDrawable(new CircularGaugeDrawable(() -> (float) uiSteamStored / uiSteamCapacity))
+                .setEnabled(supportsSteamCapacityUI())
                 .setPos(-64 + 21, 100 + 21)
                 .setSize(18, 4));
 
         builder.widget(
             new ItemDrawable(GTNLItemList.FakeItemSiren.get(1)).asWidget()
+                .setEnabled(supportsSteamCapacityUI())
                 .setPos(-64 + 21 - 7, 100 - 20)
                 .setEnabled(w -> uiSteamStored == 0));
+    }
+
+    public boolean supportsSteamOC() {
+        return true;
+    }
+
+    public boolean supportsSteamCapacityUI() {
+        return true;
     }
 
     @Override

@@ -230,6 +230,16 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
+    public boolean supportsSteamOC() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
+    @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         super.drawTexts(screenElements, inventorySlot);
 

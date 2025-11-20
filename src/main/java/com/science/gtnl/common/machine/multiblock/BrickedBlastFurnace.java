@@ -9,10 +9,13 @@ import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -20,10 +23,11 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -35,7 +39,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class BrickedBlastFurnace extends MultiMachineBase<BrickedBlastFurnace> implements ISurvivalConstructable {
+public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String BBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/bricked_blast_furnace";
@@ -53,13 +57,33 @@ public class BrickedBlastFurnace extends MultiMachineBase<BrickedBlastFurnace> i
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new BrickedBlastFurnace(this.mName);
+    }
+
+    @Override
     public boolean getPerfectOC() {
         return false;
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new BrickedBlastFurnace(this.mName);
+    public int getTierRecipes() {
+        return 14;
+    }
+
+    @Override
+    public boolean supportsSteamOC() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("BrickBlastFurnaceRecipeType");
     }
 
     @Override
@@ -116,7 +140,12 @@ public class BrickedBlastFurnace extends MultiMachineBase<BrickedBlastFurnace> i
                 'B',
                 buildHatchAdder(BrickedBlastFurnace.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus)
+                    .atLeast(
+                        SteamHatchElement.InputBus_Steam,
+                        InputBus,
+                        SteamHatchElement.OutputBus_Steam,
+                        OutputBus,
+                        Maintenance)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 15))))
             .addElement('C', ofFrame(Materials.Bronze))
             .addElement('D', ofBlock(sBlockCasings1, 10))
@@ -156,6 +185,9 @@ public class BrickedBlastFurnace extends MultiMachineBase<BrickedBlastFurnace> i
         }
         return mCountCasing >= 350;
     }
+
+    @Override
+    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
 
     @Override
     public int getMaxParallelRecipes() {

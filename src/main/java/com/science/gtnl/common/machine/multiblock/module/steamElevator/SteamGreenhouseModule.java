@@ -109,8 +109,8 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     }
 
     @Override
-    public int clampRecipeOcCount(int value) {
-        return 0;
+    public boolean supportsSteamOC() {
+        return false;
     }
 
     @Override

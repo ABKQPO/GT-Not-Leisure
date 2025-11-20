@@ -80,8 +80,8 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
     }
 
     @Override
-    public int clampRecipeOcCount(int value) {
-        return 0;
+    public boolean supportsSteamOC() {
+        return false;
     }
 
     @Override

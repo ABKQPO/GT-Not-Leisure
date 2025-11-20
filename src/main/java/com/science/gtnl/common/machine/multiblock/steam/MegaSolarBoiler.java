@@ -227,6 +227,16 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
+    public boolean supportsSteamOC() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())

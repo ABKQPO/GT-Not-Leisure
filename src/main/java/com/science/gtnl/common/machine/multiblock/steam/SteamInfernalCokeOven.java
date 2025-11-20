@@ -163,6 +163,11 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     }
 
     @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
+    @Override
     public boolean onRunningTick(ItemStack aStack) {
         runningTickCounter++;
         if (runningTickCounter % 100 == 0 && speedup < 7) {
