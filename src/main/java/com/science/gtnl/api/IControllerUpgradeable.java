@@ -147,10 +147,8 @@ public interface IControllerUpgradeable {
         ItemStack[] upgradeItems = getUpgradeRequiredItems();
         int costPerRow = getUpgradeCostItemsPerRow();
         int inputSlotsPerRow = getUpgradeInputSlotsPerRow();
-        int numCostRows = (int) Math.ceil(upgradeItems.length / (double) costPerRow);
 
         int slotX = 5 + Math.min(upgradeItems.length, costPerRow) * 36;
-        int slotY = 6 + Math.max(0, numCostRows - 1) * 9;
 
         builder.widget(
             SlotGroup.ofItemHandler(inputHandler, inputSlotsPerRow)
@@ -159,7 +157,7 @@ public interface IControllerUpgradeable {
                 .phantom(false)
                 .background(getGUITextureSet().getItemSlot())
                 .build()
-                .setPos(slotX, slotY));
+                .setPos(slotX, 6));
 
         for (int i = 0; i < upgradeItems.length; i++) {
             ItemStack stack = upgradeItems[i];
