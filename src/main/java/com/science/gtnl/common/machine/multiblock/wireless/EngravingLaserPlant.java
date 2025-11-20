@@ -29,22 +29,11 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotGroup;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.IControllerUpgradeable;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUI;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -72,8 +61,10 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import lombok.Getter;
+import lombok.Setter;
 
-public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<EngravingLaserPlant> {
+public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<EngravingLaserPlant>
+    implements IControllerUpgradeable {
 
     private static final int MACHINEMODE_LASER = 0;
     private static final int MACHINEMODE_PRECISION_LASER = 1;
@@ -88,14 +79,18 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     public static final ItemStack[] REQUIRED_ITEMS = new ItemStack[] {
         GTUtility.copyAmountUnsafe(114514, ItemList.Circuit_Silicon_Wafer7.get(1)) };
 
+    @Getter
     public ItemStack[] storedUpgradeWindowItems = new ItemStack[16];
-    public ItemStackHandler inputSlotHandler = new ItemStackHandler(16);
-    public int[] paidCost = new int[REQUIRED_ITEMS.length];
-
-    public int mCasingTier;
+    @Getter
+    public ItemStackHandler upgradeInputSlotHandler = new ItemStackHandler(16);
+    @Getter
+    public int[] upgradePaidCosts = new int[REQUIRED_ITEMS.length];
 
     @Getter
-    public boolean hasConsumed = false;
+    @Setter
+    public boolean upgradeConsumed = false;
+
+    public int mCasingTier;
 
     public EngravingLaserPlant(String aName) {
         super(aName);
@@ -330,25 +325,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         super.saveNBTData(aNBT);
         aNBT.setInteger("mGlassTier", mGlassTier);
         aNBT.setInteger("casingTier", mCasingTier);
-        NBTTagCompound upgradeWindowStorageNBTTag = new NBTTagCompound();
-        int storageIndex = 0;
-        for (ItemStack itemStack : inputSlotHandler.getStacks()) {
-            if (itemStack != null) {
-                upgradeWindowStorageNBTTag
-                    .setInteger(storageIndex + "stacksizeOfStoredUpgradeItems", itemStack.stackSize);
-                aNBT.setTag(storageIndex + "storedUpgradeItem", itemStack.writeToNBT(new NBTTagCompound()));
-            }
-            storageIndex++;
-        }
-        aNBT.setTag("upgradeWindowStorage", upgradeWindowStorageNBTTag);
-
-        NBTTagCompound paidCostTag = new NBTTagCompound();
-        for (int i = 0; i < paidCost.length; i++) {
-            paidCostTag.setInteger("cost" + i, paidCost[i]);
-        }
-        aNBT.setTag("paidCosts", paidCostTag);
-
-        aNBT.setBoolean("hasConsumed", hasConsumed);
+        saveUpgradeNBTData(aNBT);
     }
 
     @Override
@@ -356,147 +333,28 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         super.loadNBTData(aNBT);
         mGlassTier = aNBT.getInteger("mGlassTier");
         mCasingTier = aNBT.getInteger("casingTier");
-        NBTTagCompound tempItemTag = aNBT.getCompoundTag("upgradeWindowStorage");
-        for (int index = 0; index < 16; index++) {
-            int stackSize = tempItemTag.getInteger(index + "stacksizeOfStoredUpgradeItems");
-            ItemStack itemStack = ItemStack.loadItemStackFromNBT(aNBT.getCompoundTag(index + "storedUpgradeItem"));
-            if (itemStack != null) {
-                storedUpgradeWindowItems[index] = itemStack.splitStack(stackSize);
-            }
-        }
-
-        NBTTagCompound paidCostTag = aNBT.getCompoundTag("paidCosts");
-        for (int i = 0; i < paidCost.length; i++) {
-            paidCost[i] = paidCostTag.getInteger("cost" + i);
-        }
-
-        hasConsumed = aNBT.getBoolean("hasConsumed");
+        loadUpgradeNBTData(aNBT);
     }
 
     @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         super.addUIWidgets(builder, buildContext);
-
-        buildContext.addSyncedWindow(MANUAL_INSERTION_WINDOW_ID, this::createConsumeWindow);
-        builder.widget(new FakeSyncWidget.BooleanSyncer(this::isHasConsumed, val -> hasConsumed = val));
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(MANUAL_INSERTION_WINDOW_ID);
-            }
-        })
-            .setBackground(
-                () -> new IDrawable[] {
-                    hasConsumed ? GTUITextures.BUTTON_STANDARD_PRESSED : GTUITextures.BUTTON_STANDARD,
-                    GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
-            .addTooltip(StatCollector.translateToLocal("Info_EngravingLaserPlant_00"))
-            .setTooltipShowUpDelay(5)
-            .setPos(174, 110)
-            .setSize(16, 16));
+        createUpgradeButton(builder, buildContext);
     }
 
-    public ModularWindow createConsumeWindow(EntityPlayer player) {
-        final int WIDTH = 160;
-        final int HEIGHT = 120;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(Alignment.TopRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT)))
-                .subtract(5, 0)
-                .add(0, 4));
-
-        for (int i = 0; i < 16; i++) {
-            inputSlotHandler.insertItem(i, storedUpgradeWindowItems[i], false);
-            storedUpgradeWindowItems[i] = null;
-        }
-
-        builder.widget(
-            SlotGroup.ofItemHandler(inputSlotHandler, 4)
-                .startFromSlot(0)
-                .endAtSlot(15)
-                .phantom(false)
-                .background(getGUITextureSet().getItemSlot())
-                .build()
-                .setPos(80, 10));
-
-        for (int i = 0; i < REQUIRED_ITEMS.length; i++) {
-            ItemStack stack = REQUIRED_ITEMS[i];
-            int stackCost = paidCost[i];
-            Widget costWidget = EternalGregTechWorkshopUI.createExtraCostWidget(stack, () -> stackCost);
-            costWidget.setPos(5 + (36 * (i % 2)), 6 + (18 * (i / 2)));
-            builder.widget(costWidget);
-        }
-
-        builder.widget(new MultiChildWidget().addChild(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                if (tryConsumeItems()) {
-                    hasConsumed = true;
-                }
-                EternalGregTechWorkshopUI.reopenWindow(widget, MANUAL_INSERTION_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(GTUITextures.BUTTON_STANDARD)
-            .setSize(140, 20))
-            .addChild(
-                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.consumeUpgradeMats"))
-                    .setTextAlignment(Alignment.Center)
-                    .setScale(0.75f)
-                    .setSize(140, 20))
-            .setPos(10, 90)
-            .setSize(140, 20));
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getWindow()
-                    .closeWindow();
-            }
-        })
-            .setBackground(ModularUITextures.VANILLA_BACKGROUND, new Text("x"))
-            .setPos(151, 0)
-            .setSize(10, 10));
-
-        return builder.build();
+    @Override
+    public ItemStack[] getUpgradeRequiredItems() {
+        return REQUIRED_ITEMS;
     }
 
-    public boolean tryConsumeItems() {
-        boolean allFulfilled = true;
+    @Override
+    public int getUpgradeWindowId() {
+        return MANUAL_INSERTION_WINDOW_ID;
+    }
 
-        for (int i = 0; i < REQUIRED_ITEMS.length; i++) {
-            ItemStack required = REQUIRED_ITEMS[i];
-            int requiredAmount = required.stackSize;
-            int alreadyPaid = paidCost[i];
-
-            if (alreadyPaid >= requiredAmount) continue;
-
-            int remainingToPay = requiredAmount - alreadyPaid;
-
-            for (int slot = 0; slot < inputSlotHandler.getSlots(); slot++) {
-                ItemStack slotStack = inputSlotHandler.getStackInSlot(slot);
-                if (slotStack == null) continue;
-
-                if (GTUtility.areStacksEqual(slotStack, required)) {
-                    int extract = Math.min(remainingToPay, slotStack.stackSize);
-                    inputSlotHandler.extractItem(slot, extract, false);
-                    alreadyPaid += extract;
-                    remainingToPay -= extract;
-                    paidCost[i] = alreadyPaid;
-                    if (remainingToPay <= 0) break;
-                }
-            }
-
-            if (alreadyPaid < requiredAmount) {
-                allFulfilled = false;
-            }
-        }
-
-        return allFulfilled;
+    @Override
+    public String getUpgradeButtonTooltip() {
+        return StatCollector.translateToLocal("Info_EngravingLaserPlant_00");
     }
 
     @Override
@@ -506,7 +364,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (machineMode == MACHINEMODE_PRECISION_LASER && !hasConsumed) {
+                if (machineMode == MACHINEMODE_PRECISION_LASER && !upgradeConsumed) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
                 if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
