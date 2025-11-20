@@ -219,12 +219,12 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
             if (mCasingTier >= 10) {
                 return V[Math.min(mParallelTier + 1, 14)];
             } else {
-                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 3), 14)];
+                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
             }
         } else if (mCasingTier >= 10) {
             return V[mEnergyHatchTier];
         } else {
-            return V[Math.min(mCasingTier + 3, mEnergyHatchTier)];
+            return V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
         }
     }
 

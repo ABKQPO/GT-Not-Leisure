@@ -1,9 +1,9 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,8 +34,10 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.api.util.VoidProtectionHelper;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -49,6 +51,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public static IntOpenHashSet isImpureDust = new IntOpenHashSet();
     public static IntOpenHashSet isThermal = new IntOpenHashSet();
     public static IntOpenHashSet isOre = new IntOpenHashSet();
+    public static IntOpenHashSet ALL_PROCESSABLE = new IntOpenHashSet();
     public static boolean isInit = false;
     public ItemStack[] midProduct;
     public boolean mVoidStone = false;
@@ -58,6 +61,19 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public int currentCircuitMultiplier = 0;
     public static final int MAX_PARA = 8;
     public static long RECIPE_EUT = 128;
+
+    public static final int CACHE_MAX = 2048;
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> MAC_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> WASH_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> THERMAL_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> CENTRIFUGE_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> SIFTER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> CHEMBATH_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+
+    public static final ThreadLocal<Random> RAND = ThreadLocal.withInitial(Random::new);
+
+    public static final ThreadLocal<GTNL_OverclockCalculator> OC_CALC = ThreadLocal
+        .withInitial(GTNL_OverclockCalculator::new);
 
     public SteamOreProcessorModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 8);
@@ -90,8 +106,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             isInit = true;
         }
 
-        ArrayList<ItemStack> tInput = getStoredInputs();
-        ArrayList<FluidStack> tInputFluid = getStoredFluids();
+        List<ItemStack> tInput = getStoredInputs();
+        List<FluidStack> tInputFluid = getStoredFluids();
         if (tInput.isEmpty() || tInputFluid.isEmpty()) {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
@@ -112,7 +128,9 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
 
         int maxParallel = MAX_PARA * powerMultiplier;
 
-        GTNL_OverclockCalculator calculator = new GTNL_OverclockCalculator().setEUt(availableEUt)
+        GTNL_OverclockCalculator calculator = OC_CALC.get()
+            .reset()
+            .setEUt(availableEUt)
             .setRecipeEUt(requiredEUt)
             .setDuration(128)
             .setParallel(maxParallel)
@@ -142,18 +160,11 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (isPureDust.contains(tID) || isImpureDust.contains(tID)
-                || isCrushedPureOre.contains(tID)
-                || isThermal.contains(tID)
-                || isCrushedOre.contains(tID)
-                || isOre.contains(tID)) {
-                if (itemParallel + ore.stackSize <= currentParallel) {
-                    itemParallel += ore.stackSize;
-                } else {
-                    itemParallel = currentParallel;
-                    break;
-                }
-            }
+            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            int add = Math.min(ore.stackSize, currentParallel - itemParallel);
+            if (add <= 0) break;
+            itemParallel += add;
+            if (itemParallel >= currentParallel) break;
         }
         currentParallel = itemParallel;
         if (currentParallel <= 0) {
@@ -163,23 +174,19 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         calculator.setCurrentParallel(currentParallel)
             .calculate();
 
-        List<ItemStack> simulatedOres = new ArrayList<>();
+        ObjectArrayList<ItemStack> simulatedOres = new ObjectArrayList<>();
         int remainingCost = currentParallel;
         for (ItemStack ore : tInput) {
+            if (remainingCost <= 0) break;
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (isPureDust.contains(tID) || isImpureDust.contains(tID)
-                || isCrushedPureOre.contains(tID)
-                || isThermal.contains(tID)
-                || isCrushedOre.contains(tID)
-                || isOre.contains(tID)) {
-                if (remainingCost >= ore.stackSize) {
-                    simulatedOres.add(GTUtility.copy(ore));
-                    remainingCost -= ore.stackSize;
-                } else {
-                    simulatedOres.add(GTUtility.copyAmountUnsafe(remainingCost, ore));
-                    break;
-                }
+            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            if (remainingCost >= ore.stackSize) {
+                simulatedOres.add(GTUtility.copy(ore));
+                remainingCost -= ore.stackSize;
+            } else {
+                simulatedOres.add(GTUtility.copyAmountUnsafe(remainingCost, ore));
+                break;
             }
         }
 
@@ -225,34 +232,19 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             }
         }
 
-        VoidProtectionHelper helper = new VoidProtectionHelper().setMachine(this)
-            .setItemOutputs(midProduct)
-            .setMaxParallel(currentParallel)
-            .build();
-
-        if (helper.isItemFull()) {
-            return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
-        }
-
-        currentParallel = helper.getMaxParallel();
         setCurrentParallelism(currentParallel);
 
         int consumeLeft = currentParallel;
         for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (isPureDust.contains(tID) || isImpureDust.contains(tID)
-                || isCrushedPureOre.contains(tID)
-                || isThermal.contains(tID)
-                || isCrushedOre.contains(tID)
-                || isOre.contains(tID)) {
-                if (consumeLeft >= ore.stackSize) {
-                    consumeLeft -= ore.stackSize;
-                    ore.stackSize = 0;
-                } else {
-                    ore.stackSize -= consumeLeft;
-                    break;
-                }
+            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            if (consumeLeft >= ore.stackSize) {
+                consumeLeft -= ore.stackSize;
+                ore.stackSize = 0;
+            } else {
+                ore.stackSize -= consumeLeft;
+                break;
             }
         }
 
@@ -272,6 +264,29 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
+    public static GTRecipe getCachedRecipe(Int2ObjectLinkedOpenHashMap<GTRecipe> cache, int key,
+        Supplier<GTRecipe> supplier) {
+        synchronized (cache) {
+            GTRecipe r = cache.get(key);
+            if (r != null) {
+                cache.remove(key);
+                cache.put(key, r);
+                return r;
+            }
+            r = supplier.get();
+            if (r != null) {
+                cache.put(key, r);
+                if (cache.size() > CACHE_MAX) {
+                    Integer eldest = cache.keySet()
+                        .iterator()
+                        .next();
+                    cache.remove(eldest);
+                }
+            }
+            return r;
+        }
+    }
+
     public boolean checkTypes(int aID, IntOpenHashSet... aTables) {
         for (IntOpenHashSet set : aTables) {
             if (set.contains(aID)) {
@@ -282,15 +297,18 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doMac(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.maceratorRecipes.findRecipeQuery()
-                        .caching(false)
-                        .items(aStack)
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        MAC_CACHE,
+                        tID,
+                        () -> RecipeMaps.maceratorRecipes.findRecipeQuery()
+                            .caching(false)
+                            .items(aStack)
+                            .find());
                     if (tRecipe != null) {
                         tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
                     } else {
@@ -305,16 +323,19 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doWash(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.oreWasherRecipes.findRecipeQuery()
-                        .caching(false)
-                        .items(aStack)
-                        .fluids(GTModHandler.getDistilledWater(Integer.MAX_VALUE))
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        WASH_CACHE,
+                        tID,
+                        () -> RecipeMaps.oreWasherRecipes.findRecipeQuery()
+                            .caching(false)
+                            .items(aStack)
+                            .fluids(GTModHandler.getDistilledWater(Integer.MAX_VALUE))
+                            .find());
                     if (tRecipe != null) {
                         tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
                     } else {
@@ -329,15 +350,18 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doThermal(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.thermalCentrifugeRecipes.findRecipeQuery()
-                        .caching(false)
-                        .items(aStack)
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        THERMAL_CACHE,
+                        tID,
+                        () -> RecipeMaps.thermalCentrifugeRecipes.findRecipeQuery()
+                            .caching(false)
+                            .items(aStack)
+                            .find());
                     if (tRecipe != null) {
                         tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
                     } else {
@@ -352,14 +376,17 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doCentrifuge(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.centrifugeRecipes.findRecipeQuery()
-                        .items(aStack)
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        CENTRIFUGE_CACHE,
+                        tID,
+                        () -> RecipeMaps.centrifugeRecipes.findRecipeQuery()
+                            .items(aStack)
+                            .find());
                     if (tRecipe != null) {
                         tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
                     } else {
@@ -374,14 +401,17 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doSift(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.sifterRecipes.findRecipeQuery()
-                        .items(aStack)
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        SIFTER_CACHE,
+                        tID,
+                        () -> RecipeMaps.sifterRecipes.findRecipeQuery()
+                            .items(aStack)
+                            .find());
                     if (tRecipe != null) {
                         tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
                     } else {
@@ -396,15 +426,18 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public void doChemWash(IntOpenHashSet... aTables) {
-        List<ItemStack> tProduct = new ArrayList<>();
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
             for (ItemStack aStack : midProduct) {
                 int tID = GTUtility.stackToInt(aStack);
                 if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = RecipeMaps.chemicalBathRecipes.findRecipeQuery()
-                        .items(aStack)
-                        .fluids(getStoredFluids().toArray(new FluidStack[0]))
-                        .find();
+                    GTRecipe tRecipe = getCachedRecipe(
+                        CHEMBATH_CACHE,
+                        tID,
+                        () -> RecipeMaps.chemicalBathRecipes.findRecipeQuery()
+                            .items(aStack)
+                            .fluids(getStoredFluids().toArray(new FluidStack[0]))
+                            .find());
                     if (tRecipe != null && tRecipe.getRepresentativeFluidInput(0) != null) {
                         FluidStack tInputFluid = tRecipe.getRepresentativeFluidInput(0)
                             .copy();
@@ -438,7 +471,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     }
 
     public List<ItemStack> getOutputStack(GTRecipe aRecipe, int aTime) {
-        List<ItemStack> tOutput = new ArrayList<>();
+        ObjectArrayList<ItemStack> tOutput = new ObjectArrayList<>();
+        Random random = RAND.get();
         for (int i = 0; i < aRecipe.mOutputs.length; i++) {
             if (aRecipe.getOutput(i) == null) {
                 continue;
@@ -447,12 +481,12 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             if (tChance == 10000) {
                 tOutput.add(GTUtility.copyAmountUnsafe(aTime * aRecipe.getOutput(i).stackSize, aRecipe.getOutput(i)));
             } else {
-                // Use Normal Distribution
                 double u = aTime * (tChance / 10000D);
                 double e = aTime * (tChance / 10000D) * (1 - (tChance / 10000D));
-                Random random = new Random();
                 int tAmount = (int) Math.ceil(Math.sqrt(e) * random.nextGaussian() + u);
-                tOutput.add(GTUtility.copyAmountUnsafe(tAmount * aRecipe.getOutput(i).stackSize, aRecipe.getOutput(i)));
+                tOutput.add(
+                    GTUtility
+                        .copyAmountUnsafe(Math.max(0, tAmount) * aRecipe.getOutput(i).stackSize, aRecipe.getOutput(i)));
             }
         }
         return tOutput.stream()
@@ -460,8 +494,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             .collect(Collectors.toList());
     }
 
-    public void doCompress(List<ItemStack> aList) {
-        HashMap<Integer, Integer> rProduct = new HashMap<>();
+    public void doCompress(ObjectArrayList<ItemStack> aList) {
+        Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
             if (mVoidStone) {
@@ -470,18 +504,14 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
                 }
             }
             if (tID != 0) {
-                if (rProduct.containsKey(tID)) {
-                    rProduct.put(tID, rProduct.get(tID) + stack.stackSize);
-                } else {
-                    rProduct.put(tID, stack.stackSize);
-                }
+                rProduct.put(tID, rProduct.getOrDefault(tID, 0) + stack.stackSize);
             }
         }
         midProduct = new ItemStack[rProduct.size()];
         int cnt = 0;
-        for (Integer id : rProduct.keySet()) {
-            ItemStack stack = GTUtility.intToStack(id);
-            midProduct[cnt] = GTUtility.copyAmountUnsafe(rProduct.get(id), stack);
+        for (Int2IntOpenHashMap.Entry e : rProduct.int2IntEntrySet()) {
+            ItemStack stack = GTUtility.intToStack(e.getIntKey());
+            midProduct[cnt] = GTUtility.copyAmountUnsafe(e.getIntValue(), stack);
             cnt++;
         }
     }
@@ -630,47 +660,31 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         tag.setInteger("currentParallelism", currentParallelism);
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach")
     public static void initHash() {
         for (String name : OreDictionary.getOreNames()) {
             if (name == null || name.isEmpty()) continue;
+            List<ItemStack> ores = OreDictionary.getOres(name);
             if (name.startsWith("crushedPurified")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isCrushedPureOre.add(GTUtility.stackToInt(ores.get(i)));
-                }
+                for (ItemStack s : ores) isCrushedPureOre.add(GTUtility.stackToInt(s));
             } else if (name.startsWith("crushedCentrifuged")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isThermal.add(GTUtility.stackToInt(ores.get(i)));
-                }
+                for (ItemStack s : ores) isThermal.add(GTUtility.stackToInt(s));
             } else if (name.startsWith("crushed")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isCrushedOre.add(GTUtility.stackToInt(ores.get(i)));
-                }
+                for (ItemStack s : ores) isCrushedOre.add(GTUtility.stackToInt(s));
             } else if (name.startsWith("dustImpure")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isImpureDust.add(GTUtility.stackToInt(ores.get(i)));
-                }
+                for (ItemStack s : ores) isImpureDust.add(GTUtility.stackToInt(s));
             } else if (name.startsWith("dustPure")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isPureDust.add(GTUtility.stackToInt(ores.get(i)));
-                }
-            } else if (name.startsWith("ore")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isOre.add(GTUtility.stackToInt(ores.get(i)));
-                }
-            } else if (name.startsWith("rawOre")) {
-                ArrayList<ItemStack> ores = OreDictionary.getOres(name);
-                for (int i = 0, size = ores.size(); i < size; i++) {
-                    isOre.add(GTUtility.stackToInt(ores.get(i)));
-                }
+                for (ItemStack s : ores) isPureDust.add(GTUtility.stackToInt(s));
+            } else if (name.startsWith("ore") || name.startsWith("rawOre")) {
+                for (ItemStack s : ores) isOre.add(GTUtility.stackToInt(s));
             }
         }
+        // build combined set
+        ALL_PROCESSABLE.addAll(isPureDust);
+        ALL_PROCESSABLE.addAll(isImpureDust);
+        ALL_PROCESSABLE.addAll(isCrushedPureOre);
+        ALL_PROCESSABLE.addAll(isThermal);
+        ALL_PROCESSABLE.addAll(isCrushedOre);
+        ALL_PROCESSABLE.addAll(isOre);
     }
 
     @Override

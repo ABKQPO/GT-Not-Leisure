@@ -539,4 +539,47 @@ public class GTNL_OverclockCalculator extends OverclockCalculator {
 
         return Math.ceil(heatMultiplier * correctionMultiplier * regularMultiplier);
     }
+
+    public GTNL_OverclockCalculator reset() {
+
+        // Basic properties
+        this.recipeEUt = 0;
+        this.machineVoltage = 0;
+        this.machineAmperage = 1;
+        this.duration = 0;
+        // DO NOT reset durationUnderOneTickSupplier, it's user defined
+        this.parallel = 1;
+        this.maxTierSkip = Integer.MAX_VALUE;
+
+        // Modifiers
+        this.eutModifier = 1.0;
+        this.durationModifier = 1.0;
+        this.extraDurationModifier = 1.0;
+
+        // Overclock parameters
+        this.eutIncreasePerOC = 4;
+        this.durationDecreasePerOC = 2;
+        this.laserOC = false;
+        this.amperageOC = false;
+        this.maxOverclocks = Integer.MAX_VALUE;
+        this.maxRegularOverclocks = Integer.MAX_VALUE;
+        this.overclocks = 0;
+        this.noOverclock = false;
+        this.currentParallel = 0;
+
+        // Heat parameters
+        this.recipeHeat = 0;
+        this.machineHeat = 0;
+        // durationDecreasePerHeatOC is final, leave it untouched
+        this.heatOC = false;
+        this.heatDiscount = false;
+        this.heatDiscountExponent = 0.95;
+
+        // Results
+        this.calculated = false;
+        this.calculatedDuration = 0;
+        this.calculatedConsumption = 0;
+
+        return this;
+    }
 }
