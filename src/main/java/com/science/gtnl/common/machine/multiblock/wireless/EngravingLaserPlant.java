@@ -259,18 +259,19 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         return super.getDurationModifier() * Math.pow(0.95, mGlassTier) * Math.pow(0.95, mCasingTier);
     }
 
+    @Override
     public long getMachineVoltageLimit() {
         if (mCasingTier < 0) return 0;
         if (wirelessMode) {
-            if (mCasingTier >= 11) {
+            if (mCasingTier >= 10) {
                 return V[Math.min(mParallelTier + 1, 14)];
             } else {
-                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 3), 14)];
+                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
             }
-        } else if (mCasingTier >= 11) {
+        } else if (mCasingTier >= 10) {
             return V[mEnergyHatchTier];
         } else {
-            return V[Math.min(mCasingTier + 3, mEnergyHatchTier)];
+            return V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
         }
     }
 
