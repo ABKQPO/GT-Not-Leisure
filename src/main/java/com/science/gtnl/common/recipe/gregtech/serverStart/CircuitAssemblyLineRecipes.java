@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import bartworks.system.material.CircuitGeneration.CircuitImprintLoader;

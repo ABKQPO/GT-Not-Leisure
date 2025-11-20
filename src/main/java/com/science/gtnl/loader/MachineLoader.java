@@ -242,6 +242,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.SuperconductingMagnet
 import com.science.gtnl.common.machine.multiblock.wireless.VortexMatterCentrifuge;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.common.material.MaterialUtils;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;

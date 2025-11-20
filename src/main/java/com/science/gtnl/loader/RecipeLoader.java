@@ -18,6 +18,7 @@ import com.reavaritia.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.common.recipe.bloodMagic.MeteorsRecipes;
 import com.science.gtnl.common.recipe.botania.BotaniaManaInfusionRecipes;
 import com.science.gtnl.common.recipe.gregtech.AlloyBlastSmelterRecipes;

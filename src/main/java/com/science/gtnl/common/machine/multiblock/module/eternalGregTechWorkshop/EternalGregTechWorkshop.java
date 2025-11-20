@@ -70,9 +70,9 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUI;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.UpgradeColor;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.common.loaders.ItemRegistry;

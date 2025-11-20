@@ -3,7 +3,7 @@ package com.science.gtnl.common.recipe.gtnl;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.GTValues;

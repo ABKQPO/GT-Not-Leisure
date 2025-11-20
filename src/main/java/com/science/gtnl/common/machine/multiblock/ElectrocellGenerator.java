@@ -10,7 +10,6 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.ElectrocellGeneratorSpecialValue;
 

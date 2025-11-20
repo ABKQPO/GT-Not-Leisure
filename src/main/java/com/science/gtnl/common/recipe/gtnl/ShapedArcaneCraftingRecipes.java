@@ -13,8 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
-import com.science.gtnl.loader.RecipePool;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GTValues;

@@ -1,4 +1,4 @@
-package com.science.gtnl.loader;
+package com.science.gtnl.common.material;
 
 import java.util.Collections;
 import java.util.Comparator;

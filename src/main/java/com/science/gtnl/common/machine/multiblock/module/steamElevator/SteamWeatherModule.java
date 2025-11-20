@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.StatCollector;
 
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.mixins.late.Gregtech.AccessorProcessingLogic;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;

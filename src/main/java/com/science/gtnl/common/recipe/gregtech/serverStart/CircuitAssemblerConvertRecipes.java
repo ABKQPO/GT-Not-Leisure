@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import bartworks.system.material.CircuitGeneration.BWMetaItems;

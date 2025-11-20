@@ -36,7 +36,7 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.CommonElements;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;

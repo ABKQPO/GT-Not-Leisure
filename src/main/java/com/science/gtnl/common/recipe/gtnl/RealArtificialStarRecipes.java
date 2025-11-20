@@ -7,7 +7,7 @@ import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
 import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.recipe.RecipeMap;

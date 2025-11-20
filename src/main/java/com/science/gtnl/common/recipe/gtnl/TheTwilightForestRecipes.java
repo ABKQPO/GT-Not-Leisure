@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import gregtech.api.enums.GTValues;

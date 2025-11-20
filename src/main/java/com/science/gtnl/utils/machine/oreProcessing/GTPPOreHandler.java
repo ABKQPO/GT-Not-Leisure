@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import gregtech.api.enums.GTValues;
 import gtPlusPlus.core.material.Material;

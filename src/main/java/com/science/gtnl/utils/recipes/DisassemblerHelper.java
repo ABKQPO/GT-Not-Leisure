@@ -21,8 +21,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
-import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;

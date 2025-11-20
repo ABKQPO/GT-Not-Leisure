@@ -6,7 +6,7 @@ import static gregtech.api.enums.Mods.Botania;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.material.MaterialPool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;

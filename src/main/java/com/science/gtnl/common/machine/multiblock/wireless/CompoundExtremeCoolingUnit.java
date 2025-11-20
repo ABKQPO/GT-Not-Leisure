@@ -26,8 +26,8 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.enums.Materials;

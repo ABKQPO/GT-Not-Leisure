@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
 import fox.spiteful.avaritia.crafting.ExtremeShapedOreRecipe;

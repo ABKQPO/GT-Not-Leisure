@@ -18,7 +18,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.kuba6000.mobsinfo.api.MobDrop;
 import com.kuba6000.mobsinfo.api.MobRecipe;
 import com.kuba6000.mobsinfo.api.event.PostMobRegistrationEvent;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.enums.GTValues;

@@ -8,7 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import goodgenerator.items.GGMaterial;

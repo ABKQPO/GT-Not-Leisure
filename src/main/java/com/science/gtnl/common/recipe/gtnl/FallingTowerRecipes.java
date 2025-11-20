@@ -6,7 +6,7 @@ import static gregtech.api.enums.Mods.IndustrialCraft2;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.recipes.MeteorRecipeData;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;

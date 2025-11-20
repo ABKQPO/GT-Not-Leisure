@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.gtnl;
 
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;

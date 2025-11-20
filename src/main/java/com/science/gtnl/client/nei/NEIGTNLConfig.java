@@ -1,7 +1,7 @@
 package com.science.gtnl.client.nei;
 
 import com.science.gtnl.common.material.MaterialPool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.gui.portableWorkbench.GuiPortableAdvancedWorkbench;

@@ -4,7 +4,7 @@ import static gregtech.api.enums.Mods.Botania;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;

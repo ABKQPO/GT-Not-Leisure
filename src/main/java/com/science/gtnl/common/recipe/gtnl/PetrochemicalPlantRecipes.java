@@ -9,7 +9,7 @@ import com.dreammaster.bartworksHandler.BacteriaRegistry;
 import com.dreammaster.fluids.FluidList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import bartworks.common.loaders.BioItemList;
 import bartworks.util.BioCulture;

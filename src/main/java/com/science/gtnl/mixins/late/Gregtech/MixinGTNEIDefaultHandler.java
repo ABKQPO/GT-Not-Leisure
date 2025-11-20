@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend;
 
 import codechicken.nei.recipe.TemplateRecipeHandler;

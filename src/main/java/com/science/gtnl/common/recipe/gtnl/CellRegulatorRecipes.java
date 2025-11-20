@@ -4,7 +4,7 @@ import static gregtech.api.util.GTRecipeBuilder.*;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
-import com.science.gtnl.loader.RecipePool;
+import com.science.gtnl.common.material.RecipePool;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;

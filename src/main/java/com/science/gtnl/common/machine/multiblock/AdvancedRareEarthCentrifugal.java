@@ -5,10 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.*;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.*;
 import static tectech.thing.casing.TTCasingsContainer.*;
 
 import net.minecraft.item.ItemStack;
@@ -20,8 +17,8 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.loader.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 
 import goodgenerator.loader.Loaders;

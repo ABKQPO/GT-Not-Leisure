@@ -2,12 +2,10 @@ package com.science.gtnl.mixins.early.Minecraft;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -17,9 +15,6 @@ import com.science.gtnl.api.mixinHelper.IInfinityChestGui;
 
 @Mixin(value = GuiContainer.class)
 public abstract class MixinGuiContainer extends GuiScreen {
-
-    @Shadow
-    public Container inventorySlots;
 
     @ModifyArg(
         method = "drawItemStack",
