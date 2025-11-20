@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 
+import gnu.trove.map.hash.TIntIntHashMap;
 import gregtech.api.enums.Materials;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -34,7 +35,6 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -483,27 +483,40 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         }
         return tOutput.stream()
             .filter(i -> (i != null && i.stackSize > 0))
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(ObjectArrayList::new));
+    }
+
+    private ItemStack stone;
+
+    private ItemStack getStone() {
+        if (stone == null) {
+            stone = Materials.Stone.getDust(1);
+        }
+        return stone;
     }
 
     public void doCompress(List<ItemStack> aList) {
-        Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
+        TIntIntHashMap rProduct = new TIntIntHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
             if (mVoidStone) {
-                if (GTUtility.areStacksEqual(Materials.Stone.getDust(1), stack)) {
+                if (GTUtility.areStacksEqual(getStone(), stack)) {
                     continue;
                 }
             }
             if (tID != 0) {
-                rProduct.put(tID, rProduct.getOrDefault(tID, 0) + stack.stackSize);
+                rProduct.adjustOrPutValue(tID, stack.stackSize, stack.stackSize);
             }
         }
         midProduct = new ItemStack[rProduct.size()];
+
         int cnt = 0;
-        for (Int2IntOpenHashMap.Entry e : rProduct.int2IntEntrySet()) {
-            ItemStack stack = GTUtility.intToStack(e.getIntKey());
-            midProduct[cnt] = GTUtility.copyAmountUnsafe(e.getIntValue(), stack);
+        var i = rProduct.iterator();
+
+        while (i.hasNext()) {
+            i.advance();
+            ItemStack stack = GTUtility.intToStack(i.key());
+            midProduct[cnt] = GTUtility.copyAmountUnsafe(i.value(), stack);
             cnt++;
         }
     }
