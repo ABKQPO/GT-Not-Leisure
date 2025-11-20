@@ -51,7 +51,6 @@ import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
@@ -462,13 +461,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
         this.machineMode = (this.machineMode + 1) % 3;
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("AssemblerMatrix_Mode_" + this.machineMode));
-    }
-
-    @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        super.addUIWidgets(builder, buildContext);
-        setMachineModeIcons();
-        builder.widget(createModeSwitchButton(builder));
     }
 
     @Override

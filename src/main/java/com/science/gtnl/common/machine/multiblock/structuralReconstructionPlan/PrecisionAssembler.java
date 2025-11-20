@@ -30,8 +30,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
@@ -253,13 +251,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         aNBT.setInteger("casingTier", mCasingTier);
         aNBT.setInteger("machineTier", mMachineTier);
         super.saveNBTData(aNBT);
-    }
-
-    @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        super.addUIWidgets(builder, buildContext);
-        setMachineModeIcons();
-        builder.widget(createModeSwitchButton(builder));
     }
 
     @Override

@@ -72,7 +72,7 @@ import lombok.Getter;
 
 public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<HorizontalCompressor> {
 
-    public static final int MANUAL_INSERTION_WINDOW_ID = 15;
+    private static final int MANUAL_INSERTION_WINDOW_ID = 15;
 
     public static final ItemStack[] REQUIRED_ITEMS = new ItemStack[] {
         GTUtility.copyAmountUnsafe(3670, ItemList.Extreme_Density_Casing.get(1)),

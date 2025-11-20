@@ -91,6 +91,7 @@ import com.science.gtnl.common.recipe.gtnl.NatureSpiritArrayRecipes;
 import com.science.gtnl.common.recipe.gtnl.PetrochemicalPlantRecipes;
 import com.science.gtnl.common.recipe.gtnl.PlatinumBasedTreatmentRecipes;
 import com.science.gtnl.common.recipe.gtnl.PortalToAlfheimRecipes;
+import com.science.gtnl.common.recipe.gtnl.PrecisionLaserEngraver;
 import com.science.gtnl.common.recipe.gtnl.PrimitiveBrickKilnRecipes;
 import com.science.gtnl.common.recipe.gtnl.RareEarthCentrifugalRecipes;
 import com.science.gtnl.common.recipe.gtnl.ReFusionReactorRecipes;
@@ -203,7 +204,7 @@ public class RecipeLoader {
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
             new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
-            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes() };
+            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(), new PrecisionLaserEngraver() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

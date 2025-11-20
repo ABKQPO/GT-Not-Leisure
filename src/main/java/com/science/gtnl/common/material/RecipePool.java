@@ -634,4 +634,12 @@ public class RecipePool {
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LargeRockCrusher.get(1)))
         .build();
+
+    public static final RecipeMap<RecipeMapBackend> PrecisionLaserEngraver = RecipeMapBuilder
+        .of("gtnl.recipe.PrecisionLaserEngraver")
+        .maxIO(9, 3, 3, 3)
+        .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .frontend(GTNLLogoFrontend::new)
+        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.EngravingLaserPlant.get(1)))
+        .build();
 }

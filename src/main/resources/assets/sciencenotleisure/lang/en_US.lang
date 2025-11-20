@@ -2766,10 +2766,15 @@ Tooltip_IntegratedAssemblyFacility_01=The level of the Component Assembly Line C
 Tooltip_IntegratedAssemblyFacility_Casing=Ang Advanced Iridium Plated Machine Casing
 
 NameEngravingLaserPlant=Engraving Laser Plant
-EngravingLaserPlantRecipeType=Laser Engraver
+gtnl.recipe.PrecisionLaserEngraver=Precision Laser Engraver
+EngravingLaserPlantRecipeType=Laser Engraver / Precision Laser Engraver
+EngravingLaserPlant_Mode_0=Laser Engraver
+EngravingLaserPlant_Mode_1=Precision Laser Engraver
 Tooltip_EngravingLaserPlant_00=Each level of Glass and Component Assembly Line Casing grade provides an additional 5% acceleration and power consumption reduction (multiplication and superposition)
 Tooltip_EngravingLaserPlant_01=The level of the Component Assembly Line Casing determines the maximum level of the energy warehouse + 3. UIV mechanical blocks unlock all levels.
+Tooltip_EngravingLaserPlant_02=In precision laser mode, it does not get the 16x parallel bonus
 Tooltip_EngravingLaserPlant_Casing=Ang Advanced Iridium Plated Machine Casing
+Info_EngravingLaserPlant_00=Precision Laser Engraver Upgrade
 
 NameNanitesIntegratedProcessingCenter=Nanites Integrated Processing Center
 NanitesIntegratedProcessingCenterRecipeType=Nanites Integrated Processing Center
