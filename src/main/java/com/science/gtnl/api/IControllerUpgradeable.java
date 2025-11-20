@@ -150,7 +150,7 @@ public interface IControllerUpgradeable {
         int numCostRows = (int) Math.ceil(upgradeItems.length / (double) costPerRow);
 
         int slotX = 5 + Math.min(upgradeItems.length, costPerRow) * 36;
-        int slotY = 6 + Math.max(0, numCostRows - 1) * 18;
+        int slotY = 6 + Math.max(0, numCostRows - 1) * 9;
 
         builder.widget(
             SlotGroup.ofItemHandler(inputHandler, inputSlotsPerRow)
