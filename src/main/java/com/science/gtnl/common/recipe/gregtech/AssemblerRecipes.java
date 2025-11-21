@@ -2,7 +2,7 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static bartworks.common.loaders.ItemRegistry.bw_realglas;
 import static com.dreammaster.scripts.IScriptLoader.missing;
-import static goodgenerator.loader.Loaders.huiCircuit;
+import static gregtech.api.enums.MetaTileEntityIDs.*;
 import static gregtech.api.enums.Mods.*;
 import static gregtech.api.util.GTRecipeBuilder.*;
 
@@ -1380,7 +1380,7 @@ public class AssemblerRecipes implements IRecipePool {
 
         GTValues.RA.stdBuilder()
             .itemInputs(
-                new ItemStack(GregTechAPI.sBlockMachines, 2, 12712),
+                new ItemStack(GregTechAPI.sBlockMachines, 2, BioVat.ID),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 4L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.EV, 8L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 16L),
@@ -1459,7 +1459,7 @@ public class AssemblerRecipes implements IRecipePool {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 ItemRefer.Precise_Assembler.get(1),
-                new ItemStack(huiCircuit, 4, 1),
+                ItemRefer.HiC_T2.get(4),
                 ItemList.Tool_DataOrb.get(8),
                 GGMaterial.hikarium.get(OrePrefixes.wireFine, 16),
                 ItemList.Robot_Arm_IV.get(8),

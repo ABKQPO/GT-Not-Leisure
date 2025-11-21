@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -38,6 +39,7 @@ import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
 import gregtech.GTMod;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
@@ -93,7 +95,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public int getMaxParallelRecipes() {
-        if (getControllerSlot() == null && getControllerSlot().getItem() == new ItemStack(sBlockMachines).getItem()) {
+        if (getControllerSlot() == null
+            || getControllerSlot().getItem() != Item.getItemFromBlock(GregTechAPI.sBlockMachines)) {
             return 0;
         }
         return getControllerSlot().stackSize * 2 + GTUtility.getTier(this.getMaxInputVoltage()) * 4

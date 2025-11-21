@@ -42,6 +42,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "required-after:Botania;"
         + "after:GalacticraftCore;"
         + "required-after:bartworks;"
+        + "required-after:gtnhintergalactic;"
         + "after:miscutils;"
         + "required-after:dreamcraft;"
         + "after:GalacticraftMars;"

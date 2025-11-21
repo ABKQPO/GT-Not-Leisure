@@ -78,6 +78,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.FluidTankG;
 import com.science.gtnl.utils.machine.ItemStackG;
@@ -107,7 +108,6 @@ import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -1263,7 +1263,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                 gridProxy = new AENetworkProxy(
                     this,
                     "proxy",
-                    new ItemStack(GregTechAPI.sBlockMachines, 1, getBaseMetaTileEntity().getMetaTileID()),
+                    allowAuto ? GTNLItemList.AdvancedSuperDualInputHatchME.get(1)
+                        : GTNLItemList.SuperDualInputHatchME.get(1),
                     true);
                 gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
                 updateValidGridProxySides();
