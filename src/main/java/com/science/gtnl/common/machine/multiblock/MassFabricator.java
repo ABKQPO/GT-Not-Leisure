@@ -93,6 +93,7 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_PerfectOverclock"))
             .addSeparator()
             .addInfo(StatCollector.translateToLocal("StructureTooComplex"))
@@ -123,7 +124,7 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
                         InputBus,
                         OutputBus,
                         Maintenance,
-                        Energy,
+                        Energy.or(ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 7))))
             .addElement('B', ofBlock(ModBlocks.blockCasingsMisc, 8))

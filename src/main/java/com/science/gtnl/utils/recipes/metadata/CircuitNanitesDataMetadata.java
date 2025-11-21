@@ -1,17 +1,18 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.metadata;
 
 import javax.annotation.Nullable;
 
 import com.science.gtnl.mixins.late.Gregtech.AccessorRecipeDisplayInfo;
+import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.nei.RecipeDisplayInfo;
 
-public class CircuitNanitesDataSpecialValue extends RecipeMetadataKey<CircuitNanitesRecipeData> {
+public class CircuitNanitesDataMetadata extends RecipeMetadataKey<CircuitNanitesRecipeData> {
 
-    public static final CircuitNanitesDataSpecialValue INSTANCE = new CircuitNanitesDataSpecialValue();
+    public static final CircuitNanitesDataMetadata INSTANCE = new CircuitNanitesDataMetadata();
 
-    public CircuitNanitesDataSpecialValue() {
+    public CircuitNanitesDataMetadata() {
         super(CircuitNanitesRecipeData.class, "circuit_nanites_data");
     }
 

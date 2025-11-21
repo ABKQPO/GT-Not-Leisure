@@ -1,4 +1,4 @@
-package com.science.gtnl.common.recipe.gregtech;
+package com.science.gtnl.common.recipe.gtnl;
 
 import static com.dreammaster.scripts.IScriptLoader.missing;
 import static gregtech.api.enums.Mods.*;
@@ -1268,6 +1268,13 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 47), 'C',
                 CustomItemList.EngravedQuantumChip.get(1), 'D',
                 NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.LargeRockCrusher.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', ItemList.Electric_Piston_IV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.IV), 'C',
+                GTOreDictUnificator.get(OrePrefixes.cableGt02, Materials.Platinum, 1), 'D',
+                ItemList.Machine_IV_RockBreaker.get(1) });
 
         if (MainConfig.enableSomethingRecipe) loadExtraRecipe();
     }

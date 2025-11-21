@@ -488,7 +488,7 @@ public abstract class MixinMTEIntegratedOreFactory
     }
 
     @Unique
-    public void doCompress(ObjectArrayList<ItemStack> aList) {
+    public void doCompress(List<ItemStack> aList) {
         Int2IntOpenHashMap rProduct = new Int2IntOpenHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);

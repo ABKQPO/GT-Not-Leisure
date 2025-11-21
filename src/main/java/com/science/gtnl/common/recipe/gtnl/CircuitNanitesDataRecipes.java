@@ -2,8 +2,8 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.CircuitNanitesDataSpecialValue;
-import com.science.gtnl.utils.recipes.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.recipes.metadata.CircuitNanitesDataMetadata;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -14,7 +14,7 @@ import gregtech.api.util.GTOreDictUnificator;
 public class CircuitNanitesDataRecipes implements IRecipePool {
 
     public RecipeMap<?> CNDR = RecipePool.CircuitNanitesDataRecipes;
-    public CircuitNanitesDataSpecialValue RECIPE_DATA = CircuitNanitesDataSpecialValue.INSTANCE;
+    public CircuitNanitesDataMetadata RECIPE_DATA = CircuitNanitesDataMetadata.INSTANCE;
     public long worldSeed;
 
     public CircuitNanitesDataRecipes(long worldSeed) {

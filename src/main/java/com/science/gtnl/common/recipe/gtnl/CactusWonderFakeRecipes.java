@@ -2,7 +2,7 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.SteamAmountSpecialValue;
+import com.science.gtnl.utils.recipes.metadata.SteamAmountMetadata;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
@@ -12,7 +12,7 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 public class CactusWonderFakeRecipes implements IRecipePool {
 
-    private static final SteamAmountSpecialValue OFFER_VALUE = SteamAmountSpecialValue.INSTANCE;
+    private static final SteamAmountMetadata OFFER_VALUE = SteamAmountMetadata.INSTANCE;
     public RecipeMap<?> CWFR = RecipePool.CactusWonderFakeRecipes;
 
     @Override

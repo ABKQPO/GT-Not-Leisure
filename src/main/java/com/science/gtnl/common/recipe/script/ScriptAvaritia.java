@@ -1,4 +1,4 @@
-package com.science.gtnl.common.recipe.gregtech;
+package com.science.gtnl.common.recipe.script;
 
 import static com.science.gtnl.utils.enums.ModList.ScienceNotLeisure;
 import static gregtech.api.enums.MetaTileEntityIDs.*;
@@ -2052,33 +2052,6 @@ public class ScriptAvaritia implements IScriptLoader {
 
         ExtremeCraftingManager.getInstance()
             .addExtremeShapedOreRecipe(
-                GTNLItemList.InfinityCobblestoneCell.get(1),
-                "--ABBBA--",
-                "-BBCDCBB-",
-                "ABCCECCBA",
-                "BCCCFCCCB",
-                "BDEFGFEDB",
-                "BCCCFCCCB",
-                "ABCCECCBA",
-                "-BBCDCBB-",
-                "--ABBBA--",
-                'A',
-                GTModHandler.getModItem(TwilightForest.ID, "tile.GiantCobble", 1, 0, missing),
-                'B',
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Stone, 1),
-                'C',
-                GregtechItemList.Controller_IndustrialRockBreaker.get(1),
-                'D',
-                ItemList.Field_Generator_EV.get(1),
-                'E',
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1),
-                'F',
-                GTModHandler.getModItem(ExtraUtilities.ID, "cobblestone_compressed", 1, 7, missing),
-                'G',
-                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 61, missing));
-
-        ExtremeCraftingManager.getInstance()
-            .addExtremeShapedOreRecipe(
                 GTNLItemList.InfinityDyeCell.get(1),
                 "--ABCBA--",
                 "-BBDEDBB-",
@@ -2239,5 +2212,42 @@ public class ScriptAvaritia implements IScriptLoader {
                 GTNLItemList.BlazeCubeBlock.get(1),
                 'E',
                 GTNLItemList.EnhancementCore.get(1));
+
+        ExtremeCraftingManager.getInstance()
+            .addExtremeShapedOreRecipe(
+                GTNLItemList.InfinityStoneCell.get(1),
+                "--ABCBA--",
+                "-DEFGFED-",
+                "AHFFIFFHA",
+                "JFFFKFFFJ",
+                "CGIKLKIGC",
+                "JFFFKFFFJ",
+                "AHFFIFFHA",
+                "-DEFGFED-",
+                "--ABCBA--",
+                'A',
+                GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1),
+                'B',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Naquadah, 1),
+                'C',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Carbon, 1),
+                'D',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Vanadium, 1),
+                'E',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Bedrockium, 1),
+                'F',
+                GTModHandler.getModItem(ExtraUtilities.ID, "cobblestone_compressed", 1, 7),
+                'G',
+                ItemList.Field_Generator_UV.get(1),
+                'H',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Tungsten, 1),
+                'I',
+                GTModHandler.getModItem(Avaritia.ID, "Resource", 1, 5),
+                'J',
+                GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.NiobiumTitanium, 1),
+                'K',
+                GTNLItemList.LargeRockCrusher.get(1),
+                'L',
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 61));
     }
 }

@@ -226,9 +226,9 @@ Info_VoltageChanceBonus_00=Voltage Chance Bonus: §3%s%% §7(Voltage Tier: %s, R
 
 Info_Dimension_Override=Dimension Override: 
 
-CleanroomTierKey.0=Requires Cleanroom Environment
-CleanroomTierKey.1=Requires Sterile Environment
-CleanroomTierKey.2=Requires Absolute Cleaning Environment
+CleanroomMetadata.0=Requires Cleanroom Environment
+CleanroomMetadata.1=Requires Sterile Environment
+CleanroomMetadata.2=Requires Absolute Cleaning Environment
 
 HatchCustomFluid_00=Input fluids for multiblock machines
 HatchCustomFluid_01=Capacity: 
@@ -1544,7 +1544,7 @@ item.InfinityCell.name=ME Infinity %s Storage Cell
 item.InfinityCell.unknown=Unknown ME Infinity Storage Cell
 InfinityCell.dye.name=dye
 InfinityCell.dye.fluid.name=fluid dye
-
+InfinityCell.stone.name=stone
 Tooltip_InfinityCell_Contents=Contains Item:
 
 item.milledNaquadahEnriched.name=Milled Enriched Naquadah
@@ -1731,7 +1731,7 @@ AssemblerMatrix_Mode_2=Operating Mode
 NameFuelRefiningComplex=Fuel Refining Complex
 FuelRefiningComplexRecipeType=Fuel Refining Complex
 gtnl.recipe.FuelRefiningComplexRecipes=Fuel Refining Complex
-FuelRefiningTierKey=Requires %s tier coils
+FuelRefiningMetadata=Requires %s tier coils
 
 NameAtomicEnergyExcitationPlant=Atomic Energy Excitation Plant
 AtomicEnergyExcitationPlantRecipeType=Fuel Refining Complex
@@ -1774,8 +1774,8 @@ Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing=Any fusion machine block
 
 NameIsaMill=Isa Mill
 gtnl.recipe.IsaMillRecipes=Wet Grinding
-IsaMillTierKey.0=Requires aluminum grinding balls
-IsaMillTierKey.1=Requires soapstone grinding balls
+IsaMillMetadata.0=Requires aluminum grinding balls
+IsaMillMetadata.1=Requires soapstone grinding balls
 IsaMillRecipeType=Wet Grinding
 Tooltip_IsaMill_00=Industrial-level wet grinding
 Tooltip_IsaMill_01=Glass tier limits the energy hatch tier, UHV glass unlocks all tiers
@@ -1804,12 +1804,12 @@ Tooltip_VacuumDryingFurnace_Casing=Any vacuum machine block
 NameResourceCollectionModule=Space Elevator Resource Collection Module
 gtnl.recipe.SpaceMinerRecipes=Space Mining
 gtnl.recipe.SpaceDrillRecipes=Space Drilling
-ResourceCollectionModuleTierKey.0=Requires MK-VIII Mining Drones x 16
-ResourceCollectionModuleTierKey.1=Requires MK-IX Mining Drones x 16
-ResourceCollectionModuleTierKey.2=Requires MK-X Mining Drones x 16
-ResourceCollectionModuleTierKey.3=Requires MK-XI Mining Drones x 16
-ResourceCollectionModuleTierKey.4=Requires MK-XII Mining Drones x 16
-ResourceCollectionModuleTierKey.5=Requires MK-XIII Mining Drones x 16
+ResourceCollectionModuleMetadata.0=Requires MK-VIII Mining Drones x 16
+ResourceCollectionModuleMetadata.1=Requires MK-IX Mining Drones x 16
+ResourceCollectionModuleMetadata.2=Requires MK-X Mining Drones x 16
+ResourceCollectionModuleMetadata.3=Requires MK-XI Mining Drones x 16
+ResourceCollectionModuleMetadata.4=Requires MK-XII Mining Drones x 16
+ResourceCollectionModuleMetadata.5=Requires MK-XIII Mining Drones x 16
 ResourceCollectionModuleRecipeType=Space Mining / Space Drilling
 ResourceCollectionModule_Mode_0=Space Mining
 ResourceCollectionModule_Mode_1=Space Drilling
@@ -2104,7 +2104,7 @@ Tooltip_LargeBrewer_Casing=Any coke oven machine block
 NameElectrocellGenerator=Electrocell Generator
 gtnl.recipe.ElectrocellGeneratorRecipes=Electrochemical Reaction
 NEI.ElectrocellGenerator.specialValue=Generation Coefficient: %s
-NEI.ElectrocellGenerator.generatorEUt=Base Power Output: %s EU/t
+ElectrocellGeneratorMetadata=Base Power Output: %s EU/t
 ElectrocellGeneratorRecipeType=Electrochemical Reaction
 Tooltip_ElectrocellGenerator_00=Clean, eco-friendly, and efficient!
 Tooltip_ElectrocellGenerator_01=Input anode on the left, cathode on the right
@@ -2435,7 +2435,7 @@ Tooltip_SteamCactusWonder_03=Can only take one type of offer at once.
 Tooltip_SteamCactusWonder_04=Needs Fully Grown Cacti on the Sand Blocks to form
 Tooltip_SteamCactusWonder_05=§b§oCactus🙏
 Tooltip_SteamCactusWonder_06=Offer Value: 
-NEI.CactusWonderFakeRecipes.specialValue=Offer Value: 
+CactusWonderMetadata=Offer Value: 
 
 NameSteamCarpenter=Steam Carpenter
 gtnl.recipe.SteamCarpenterRecipes=Steamic Carpentry
@@ -2476,7 +2476,7 @@ Tooltip_SteamWoodcutter_01=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
 
 NameSteamFusionReactor=Hyper Pressure Reactor
 gtnl.recipe.SteamFusionReactorRecipes=High Pressure Reactor
-SteamFusionTierKey.0=Requires Compact Hyper Pressure Reactor
+SteamFusionMetadata.0=Requires Compact Hyper Pressure Reactor
 SteamFusionReactorRecipeType=High Pressure Reactor
 GT5U.gui.text.metadata.steamfusion=Need Compact Hyper Pressure Reactor
 Tooltip_SteamFusionReactor_00=Combines Steam with hot fluids in order to reach higher temperatures
@@ -2766,7 +2766,7 @@ Tooltip_IntegratedAssemblyFacility_01=The level of the Component Assembly Line C
 Tooltip_IntegratedAssemblyFacility_Casing=Ang Advanced Iridium Plated Machine Casing
 
 NameEngravingLaserPlant=Engraving Laser Plant
-gtnl.recipe.PrecisionLaserEngraver=Precision Laser Engraver
+gtnl.recipe.PrecisionLaserEngraverRecipes=Precision Laser Engraver
 EngravingLaserPlantRecipeType=Laser Engraver / Precision Laser Engraver
 EngravingLaserPlant_Mode_0=Laser Engraver
 EngravingLaserPlant_Mode_1=Precision Laser Engraver
@@ -2777,12 +2777,18 @@ Tooltip_EngravingLaserPlant_Casing=Ang Advanced Iridium Plated Machine Casing
 Info_EngravingLaserPlant_00=Precision Laser Engraver Upgrade
 
 NameNanitesIntegratedProcessingCenter=Nanites Integrated Processing Center
-NanitesIntegratedProcessingCenterRecipeType=Nanites Integrated Processing Center
+gtnl.recipe.NanitesIntegratedProcessingRecipes=Nano Convergence Nexus
+NanitesIntegratedProcessingCenterRecipeType=Nano Convergence Nexus
+NanitesIntegratedProcessingMetadata.0=Requires Bioengineering Module
+NanitesIntegratedProcessingMetadata.1=Requires Polymer Twisting Module
+NanitesIntegratedProcessingMetadata.2=Requires Ore Extraction Module
 Tooltip_NanitesIntegratedProcessingCenter_00=Our advanced nano-swarm manufacturing technology has completely surpassed the outdated chemical production lines
 Tooltip_NanitesIntegratedProcessingCenter_01=Install the corresponding module to unlock the related recipe
-Tooltip_NanitesIntegratedProcessingCenter_02=Inserting Nano Swarms into the controller can reduce material requirements
-Tooltip_NanitesIntegratedProcessingCenter_03=Each level of coil grade provides an additional 10% acceleration and power consumption reduction (multiplication and stacking)
+Tooltip_NanitesIntegratedProcessingCenter_02=Each level of coil grade provides an additional 10% acceleration and power consumption reduction (multiplication and stacking)
 Tooltip_NanitesIntegratedProcessingCenter_Casing=Any Radiant Naquadah Alloy Machine Casing
+GT5U.gui.text.missing_bio_module=§dRequires Bioengineering Module
+GT5U.gui.text.missing_ore_module=§dRequires Polymer Twisting Module
+GT5U.gui.text.missing_pol_module=§dRequires Ore Extraction Module
 
 NameBioengineeringModule=Bioengineering Module
 NamePolymerTwistingModule=Polymer Twisting Module

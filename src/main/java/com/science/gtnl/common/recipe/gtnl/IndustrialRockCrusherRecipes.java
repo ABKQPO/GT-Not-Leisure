@@ -126,6 +126,13 @@ public class IndustrialRockCrusherRecipes implements IRecipePool {
             .addTo(IRCR);
 
         GTValues.RA.stdBuilder()
+            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 0))
+            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 0))
+            .duration(16)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(IRCR);
+
+        GTValues.RA.stdBuilder()
             .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 1))
             .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 1))
             .duration(16)

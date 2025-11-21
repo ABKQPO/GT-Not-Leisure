@@ -12,7 +12,7 @@ import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.ResourceCollectionModuleTierKey;
+import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
 
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
@@ -29,7 +29,7 @@ import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class SpaceDrillRecipes implements IRecipePool {
 
-    public ResourceCollectionModuleTierKey MINER_TIER = ResourceCollectionModuleTierKey.INSTANCE;
+    public ResourceCollectionModuleMetadata MINER_TIER = ResourceCollectionModuleMetadata.INSTANCE;
     public RecipeMap<?> SDR = RecipePool.SpaceDrillRecipes;
 
     public void addSpaceDrillOutputRecipe(int circuit, ItemStack drone, FluidStack fuel, FluidStack output,

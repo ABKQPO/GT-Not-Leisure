@@ -5,7 +5,7 @@ import static gregtech.api.util.GTRecipeBuilder.TICKS;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.SteamFusionTierKey;
+import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
@@ -36,7 +36,7 @@ public class SteamFusionReactorRecipes implements IRecipePool {
             .fluidOutputs(Materials.DenseSupercriticalSteam.getGas(16000))
             .duration(10 * TICKS)
             .eut(0)
-            .metadata(SteamFusionTierKey.INSTANCE, 1)
+            .metadata(SteamFusionMetadata.INSTANCE, 1)
             .addTo(SFRR);
     }
 }

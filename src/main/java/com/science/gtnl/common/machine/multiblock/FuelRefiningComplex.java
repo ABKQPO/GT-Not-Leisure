@@ -26,9 +26,9 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
+import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -200,7 +200,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
-                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningTierKey.INSTANCE, 0);
+                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
                 if (recipeReq > 0) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
                 }

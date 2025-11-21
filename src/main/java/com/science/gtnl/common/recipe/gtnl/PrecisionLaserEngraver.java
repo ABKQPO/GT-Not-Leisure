@@ -11,7 +11,7 @@ import gregtech.api.util.GTUtility;
 
 public class PrecisionLaserEngraver implements IRecipePool {
 
-    public RecipeMap<?> PLE = RecipePool.PrecisionLaserEngraver;
+    public RecipeMap<?> PLE = RecipePool.PrecisionLaserEngraverRecipes;
 
     @Override
     public void loadRecipes() {

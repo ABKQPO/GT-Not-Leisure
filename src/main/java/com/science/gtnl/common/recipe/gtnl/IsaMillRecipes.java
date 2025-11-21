@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.IsaMillTierKey;
+import com.science.gtnl.utils.recipes.metadata.IsaMillMetadata;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
@@ -18,7 +18,7 @@ import gtPlusPlus.core.util.minecraft.MaterialUtils;
 
 public class IsaMillRecipes implements IRecipePool {
 
-    public IsaMillTierKey ISAMILL_TIER = IsaMillTierKey.INSTANCE;
+    public IsaMillMetadata ISAMILL_TIER = IsaMillMetadata.INSTANCE;
     public RecipeMap<?> IsaMR = RecipePool.IsaMillRecipes;
 
     @Override

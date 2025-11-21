@@ -60,7 +60,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.gui.recipe.ElectrocellGeneratorFrontend;
 import com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend;
-import com.science.gtnl.utils.recipes.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import bartworks.API.SideReference;
 import cpw.mods.fml.client.event.ConfigChangedEvent;

@@ -26,7 +26,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
-import com.science.gtnl.utils.recipes.SteamFusionTierKey;
+import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
 
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -120,7 +120,7 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (recipe.getMetadataOrDefault(SteamFusionTierKey.INSTANCE, 0) != 0) {
+                if (recipe.getMetadataOrDefault(SteamFusionMetadata.INSTANCE, 0) != 0) {
                     return SimpleCheckRecipeResult.ofFailure("metadata.steamfusion");
                 }
                 return super.validateRecipe(recipe);

@@ -18,7 +18,7 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.BloodSoulSpecialValue;
+import com.science.gtnl.utils.recipes.format.BloodSoulFormat;
 
 import gregtech.api.enums.SteamVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
@@ -36,7 +36,7 @@ public class FallingTowerFrontend extends RecipeMapFrontend {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(26, 7)),
             neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 170))
-                .neiSpecialInfoFormatter(new BloodSoulSpecialValue()));
+                .neiSpecialInfoFormatter(new BloodSoulFormat()));
     }
 
     @Override

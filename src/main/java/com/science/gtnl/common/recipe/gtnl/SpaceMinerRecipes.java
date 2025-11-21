@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.ResourceCollectionModuleTierKey;
+import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
 
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
@@ -29,7 +29,7 @@ import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class SpaceMinerRecipes implements IRecipePool {
 
-    final ResourceCollectionModuleTierKey MINER_TIER = ResourceCollectionModuleTierKey.INSTANCE;
+    final ResourceCollectionModuleMetadata MINER_TIER = ResourceCollectionModuleMetadata.INSTANCE;
     public RecipeMap<?> SMR = RecipePool.SpaceMinerRecipes;
 
     @Override

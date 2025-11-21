@@ -288,13 +288,14 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_LASER) ? RecipeMaps.laserEngraverRecipes : RecipePool.PrecisionLaserEngraver;
+        return (machineMode == MACHINEMODE_LASER) ? RecipeMaps.laserEngraverRecipes
+            : RecipePool.PrecisionLaserEngraverRecipes;
     }
 
     @Nonnull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.laserEngraverRecipes, RecipePool.PrecisionLaserEngraver);
+        return Arrays.asList(RecipeMaps.laserEngraverRecipes, RecipePool.PrecisionLaserEngraverRecipes);
     }
 
     @Override

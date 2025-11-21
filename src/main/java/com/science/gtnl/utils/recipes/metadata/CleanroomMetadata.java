@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.metadata;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,11 +11,11 @@ import gregtech.nei.RecipeDisplayInfo;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CleanRoomTierKey extends RecipeMetadataKey<Integer> {
+public class CleanroomMetadata extends RecipeMetadataKey<Integer> {
 
-    public static final CleanRoomTierKey INSTANCE = new CleanRoomTierKey();
+    public static final CleanroomMetadata INSTANCE = new CleanroomMetadata();
 
-    public CleanRoomTierKey() {
+    public CleanroomMetadata() {
         super(Integer.class, "cleanroom_tier");
     }
 
@@ -23,9 +23,9 @@ public class CleanRoomTierKey extends RecipeMetadataKey<Integer> {
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 1);
         switch (tier) {
-            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomTierKey.0"));
-            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomTierKey.1"));
-            case 3 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomTierKey.2"));
+            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.0"));
+            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.1"));
+            case 3 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.2"));
         }
     }
 }

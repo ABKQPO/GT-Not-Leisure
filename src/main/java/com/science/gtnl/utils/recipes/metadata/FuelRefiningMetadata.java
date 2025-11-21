@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.metadata;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,17 +11,17 @@ import gregtech.nei.RecipeDisplayInfo;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FuelRefiningTierKey extends RecipeMetadataKey<Integer> {
+public class FuelRefiningMetadata extends RecipeMetadataKey<Integer> {
 
-    public static final FuelRefiningTierKey INSTANCE = new FuelRefiningTierKey();
+    public static final FuelRefiningMetadata INSTANCE = new FuelRefiningMetadata();
 
-    private FuelRefiningTierKey() {
+    private FuelRefiningMetadata() {
         super(Integer.class, "fuel_refining_tier");
     }
 
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 0);
-        recipeInfo.drawText(StatCollector.translateToLocalFormatted("FuelRefiningTierKey", tier));
+        recipeInfo.drawText(StatCollector.translateToLocalFormatted("FuelRefiningMetadata", tier));
     }
 }

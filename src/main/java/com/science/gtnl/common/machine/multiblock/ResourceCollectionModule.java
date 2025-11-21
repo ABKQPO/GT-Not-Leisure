@@ -33,7 +33,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
-import com.science.gtnl.utils.recipes.ResourceCollectionModuleTierKey;
+import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
@@ -228,7 +228,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                     return CheckRecipeResultRegistry.SUCCESSFUL;
                 }
 
-                int recipeReq = recipe.getMetadataOrDefault(ResourceCollectionModuleTierKey.INSTANCE, 0);
+                int recipeReq = recipe.getMetadataOrDefault(ResourceCollectionModuleMetadata.INSTANCE, 0);
 
                 ItemStack miningDrone = findMiningDrone();
 

@@ -1,6 +1,5 @@
-package com.science.gtnl.common.recipe.gregtech;
+package com.science.gtnl.common.recipe.script;
 
-import static com.science.gtnl.utils.enums.ModList.*;
 import static gregtech.api.enums.Mods.*;
 import static gregtech.api.enums.Mods.GregTech;
 

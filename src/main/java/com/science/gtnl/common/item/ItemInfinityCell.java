@@ -43,7 +43,6 @@ import com.glodblock.github.inventory.gui.GuiType;
 import com.glodblock.github.util.BlockPos;
 import com.glodblock.github.util.NameConst;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.loader.ItemLoader;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -90,9 +89,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
 
     @Override
     public void getCheckedSubItems(final Item sameItem, final CreativeTabs creativeTab, List<ItemStack> itemStacks) {
-        itemStacks.add(ItemLoader.infinityDyeCell);
-        itemStacks.add(ItemLoader.infinityCobblestoneCell);
-        itemStacks.add(ItemLoader.infinityDyeFluidCell);
+        itemStacks.addAll(REGISTERED_CELLS);
     }
 
     @SideOnly(Side.CLIENT)
@@ -128,10 +125,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
     public static ItemStack getSubItem(StorageChannel s, String unlocalizedName, String textureName,
         List<SubItem> subItemsList) {
         return getSubItem(s, unlocalizedName, textureName, subItemsList.toArray(new SubItem[0]));
-    }
-
-    public static ItemStack getSubItem(StorageChannel s, String textureName, SubItem... subItems) {
-        return getSubItemInternal(s, null, textureName, subItems);
     }
 
     public static ItemStack getSubItem(StorageChannel s, SubItem... subItems) {

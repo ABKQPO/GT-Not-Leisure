@@ -20,7 +20,7 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.RocketAssemblerSpecialValue;
+import com.science.gtnl.utils.recipes.format.RocketAssemblerFormat;
 
 import codechicken.nei.PositionedStack;
 import gregtech.api.enums.SteamVariant;
@@ -44,7 +44,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         super(
             uiPropertiesBuilder,
             neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 175))
-                .neiSpecialInfoFormatter(new RocketAssemblerSpecialValue()));
+                .neiSpecialInfoFormatter(new RocketAssemblerFormat()));
     }
 
     @Override

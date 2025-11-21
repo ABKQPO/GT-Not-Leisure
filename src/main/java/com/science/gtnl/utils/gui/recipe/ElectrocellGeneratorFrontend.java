@@ -13,7 +13,7 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.ElectrocellGeneratorSpecialValue;
+import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
 import codechicken.nei.PositionedStack;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
@@ -32,9 +32,7 @@ public class ElectrocellGeneratorFrontend extends RecipeMapFrontend {
 
     public ElectrocellGeneratorFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
-        super(
-            uiPropertiesBuilder,
-            neiPropertiesBuilder.neiSpecialInfoFormatter(ElectrocellGeneratorSpecialValue.INSTANCE));
+        super(uiPropertiesBuilder, neiPropertiesBuilder.neiSpecialInfoFormatter(ElectrocellGeneratorMetadata.INSTANCE));
     }
 
     @Override

@@ -35,7 +35,6 @@ import com.science.gtnl.common.recipe.gregtech.ChemicalPlantRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalRecipes;
 import com.science.gtnl.common.recipe.gregtech.CompressorRecipes;
 import com.science.gtnl.common.recipe.gregtech.CrackingRecipes;
-import com.science.gtnl.common.recipe.gregtech.CraftingTableRecipes;
 import com.science.gtnl.common.recipe.gregtech.CuttingRecipes;
 import com.science.gtnl.common.recipe.gregtech.CyclotronRecipes;
 import com.science.gtnl.common.recipe.gregtech.DigesterRecipes;
@@ -69,6 +68,7 @@ import com.science.gtnl.common.recipe.gtnl.BloodDemonInjectionRecipes;
 import com.science.gtnl.common.recipe.gtnl.CactusWonderFakeRecipes;
 import com.science.gtnl.common.recipe.gtnl.CellRegulatorRecipes;
 import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
+import com.science.gtnl.common.recipe.gtnl.CraftingTableRecipes;
 import com.science.gtnl.common.recipe.gtnl.DecayHastenerRecipes;
 import com.science.gtnl.common.recipe.gtnl.DesulfurizerRecipes;
 import com.science.gtnl.common.recipe.gtnl.ElectrocellGeneratorRecipes;
@@ -86,6 +86,7 @@ import com.science.gtnl.common.recipe.gtnl.LavaMakerRecipes;
 import com.science.gtnl.common.recipe.gtnl.ManaInfusionRecipes;
 import com.science.gtnl.common.recipe.gtnl.MatterFabricatorRecipes;
 import com.science.gtnl.common.recipe.gtnl.MolecularTransformerRecipes;
+import com.science.gtnl.common.recipe.gtnl.NanitesIntegratedProcessingRecipes;
 import com.science.gtnl.common.recipe.gtnl.NaquadahReactorRecipes;
 import com.science.gtnl.common.recipe.gtnl.NatureSpiritArrayRecipes;
 import com.science.gtnl.common.recipe.gtnl.PetrochemicalPlantRecipes;
@@ -204,7 +205,8 @@ public class RecipeLoader {
             new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
             new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
-            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(), new PrecisionLaserEngraver() };
+            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(), new PrecisionLaserEngraver(),
+            new NanitesIntegratedProcessingRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

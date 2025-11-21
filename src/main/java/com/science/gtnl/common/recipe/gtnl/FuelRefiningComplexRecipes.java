@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
+import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
@@ -23,7 +23,7 @@ import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class FuelRefiningComplexRecipes implements IRecipePool {
 
-    public FuelRefiningTierKey FUEL_REFINING_TIER = FuelRefiningTierKey.INSTANCE;
+    public FuelRefiningMetadata FUEL_REFINING_TIER = FuelRefiningMetadata.INSTANCE;
     public RecipeMap<?> FCR = RecipePool.FuelRefiningComplexRecipes;
 
     @Override

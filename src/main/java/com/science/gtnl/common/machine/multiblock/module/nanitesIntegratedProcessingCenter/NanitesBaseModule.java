@@ -9,13 +9,18 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
+import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
+import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -45,8 +50,6 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("NanitesIntegratedProcessingCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
@@ -87,6 +90,11 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipePool.NanitesIntegratedProcessingRecipes;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
 
@@ -96,17 +104,32 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(mHeatingCapacity)
-                    .setEUtDiscount(setEUtDiscount)
-                    .setDurationModifier(setDurationModifier)
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier())
                     .setPerfectOC(true);
             }
 
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4 && wirelessMode) {
+                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
+
+                NanitesIntegratedProcessingRecipesData data = recipe.getMetadataOrDefault(
+                    NanitesIntegratedProcessingMetadata.INSTANCE,
+                    new NanitesIntegratedProcessingRecipesData(false, false, false));
+
+                if (data.bioengineeringModule && !isBioModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_bio_module");
+                }
+                if (data.oreExtractionModule && !isOreModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_ore_module");
+                }
+                if (data.polymerTwistingModule && !isPolModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_pol_module");
+                }
+
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -119,18 +142,6 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
 
     public void disconnect() {
         isConnected = false;
-    }
-
-    public void getOreModule() {
-        isOreModule = false;
-    }
-
-    public void getBioModule() {
-        isBioModule = false;
-    }
-
-    public void getPolModule() {
-        isPolModule = false;
     }
 
     @Override

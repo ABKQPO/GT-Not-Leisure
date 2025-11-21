@@ -27,7 +27,7 @@ import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
-import com.science.gtnl.utils.recipes.IsaMillTierKey;
+import com.science.gtnl.utils.recipes.metadata.IsaMillMetadata;
 
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -334,7 +334,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
 
-                int recipeReq = recipe.getMetadataOrDefault(IsaMillTierKey.INSTANCE, 0);
+                int recipeReq = recipe.getMetadataOrDefault(IsaMillMetadata.INSTANCE, 0);
                 millingBall = findMillingBall(recipeReq);
 
                 if (millingBall == null) {

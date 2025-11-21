@@ -33,9 +33,9 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.common.render.tile.AtomicEnergyExcitationPlantRenderer;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
+import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -464,7 +464,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
-                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningTierKey.INSTANCE, 0);
+                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
                 if (recipeReq > machineTier) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
                 }

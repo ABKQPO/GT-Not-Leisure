@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.data;
 
 import java.util.HashMap;
 import java.util.Map;

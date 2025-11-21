@@ -13,7 +13,6 @@ import static gregtech.api.util.GTStructureUtility.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import net.minecraft.item.ItemStack;
@@ -33,7 +32,7 @@ import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.recipes.ElectrocellGeneratorSpecialValue;
+import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -255,7 +254,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         depleteInput(mRightInputBusses, recipe.mInputs[1]);
                         mMaxProgresstime = recipe.mDuration;
                         generatorValue = recipe.mSpecialValue / 100D * multiplier;
-                        lEUt = Objects.requireNonNull(recipe.getMetadata(ElectrocellGeneratorSpecialValue.INSTANCE));
+                        lEUt = recipe.getMetadataOrDefault(ElectrocellGeneratorMetadata.INSTANCE, 0L);
                         lastEUt = lEUt;
                         outputFluid = recipe.mFluidOutputs[0];
 

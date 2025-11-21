@@ -3,7 +3,7 @@ package com.science.gtnl.common.recipe.gtnl;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.MaterialPool;
 import com.science.gtnl.common.material.RecipePool;
-import com.science.gtnl.utils.recipes.ElectrocellGeneratorSpecialValue;
+import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.GTValues;
@@ -17,7 +17,7 @@ import gtPlusPlus.core.util.minecraft.ItemUtils;
 public class ElectrocellGeneratorRecipes implements IRecipePool {
 
     public RecipeMap<?> EGR = RecipePool.ElectrocellGeneratorRecipes;
-    public ElectrocellGeneratorSpecialValue GENERATOR_EUT = ElectrocellGeneratorSpecialValue.INSTANCE;
+    public ElectrocellGeneratorMetadata GENERATOR_EUT = ElectrocellGeneratorMetadata.INSTANCE;
 
     @Override
     public void loadRecipes() {

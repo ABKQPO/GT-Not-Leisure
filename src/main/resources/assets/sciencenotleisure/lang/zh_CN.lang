@@ -226,9 +226,9 @@ Info_VoltageChanceBonus_00=电压概率加成：§3%s%% §7(机器电压：%s，
 
 Info_Dimension_Override=维度覆盖为：
 
-CleanroomTierKey.0=需要超净间环境
-CleanroomTierKey.1=需要无菌环境
-CleanroomTierKey.2=需要绝对洁净环境
+CleanroomMetadata.0=需要超净间环境
+CleanroomMetadata.1=需要无菌环境
+CleanroomMetadata.2=需要绝对洁净环境
 
 HatchCustomFluid_00=为多方块机器输入流体
 HatchCustomFluid_01=容量：
@@ -1544,7 +1544,7 @@ item.InfinityCell.name=ME无限%s存储元件
 item.InfinityCell.unknown=未知的ME无限存储元件
 InfinityCell.dye.name=染料
 InfinityCell.dye.fluid.name=流体染料
-
+InfinityCell.stone.name=石材
 Tooltip_InfinityCell_Contents=内含物品：
 
 item.milledNaquadahEnriched.name=研磨富集硅岩矿
@@ -1731,7 +1731,7 @@ AssemblerMatrix_Mode_2=运行模式
 NameFuelRefiningComplex=燃料精炼复合体
 FuelRefiningComplexRecipeType=燃料精炼复合体
 gtnl.recipe.FuelRefiningComplexRecipes=燃料精炼复合体
-FuelRefiningTierKey=需要%s级线圈
+FuelRefiningMetadata=需要%s级线圈
 
 NameAtomicEnergyExcitationPlant=原子能激发工厂
 AtomicEnergyExcitationPlantRecipeType=燃料精炼复合体
@@ -1774,8 +1774,8 @@ Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing=任意聚变机械方块
 
 NameIsaMill=艾萨研磨机
 gtnl.recipe.IsaMillRecipes=湿法碾磨
-IsaMillTierKey.0=需要铝研磨球
-IsaMillTierKey.1=需要皂石研磨球
+IsaMillMetadata.0=需要铝研磨球
+IsaMillMetadata.1=需要皂石研磨球
 IsaMillRecipeType=湿法碾磨
 Tooltip_IsaMill_00=工业级湿法碾磨
 Tooltip_IsaMill_01=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
@@ -1804,12 +1804,12 @@ Tooltip_VacuumDryingFurnace_Casing=任意真空机械方块
 NameResourceCollectionModule=太空电梯资源采集模块
 gtnl.recipe.SpaceMinerRecipes=太空采矿
 gtnl.recipe.SpaceDrillRecipes=太空钻井
-ResourceCollectionModuleTierKey.0=需要采矿无人机MK-VIII x 16
-ResourceCollectionModuleTierKey.1=需要采矿无人机MK-IX x 16
-ResourceCollectionModuleTierKey.2=需要采矿无人机MK-X x 16
-ResourceCollectionModuleTierKey.3=需要采矿无人机MK-XI x 16
-ResourceCollectionModuleTierKey.4=需要采矿无人机MK-XII x 16
-ResourceCollectionModuleTierKey.5=需要采矿无人机MK-XIII x 16
+ResourceCollectionModuleMetadata.0=需要采矿无人机MK-VIII x 16
+ResourceCollectionModuleMetadata.1=需要采矿无人机MK-IX x 16
+ResourceCollectionModuleMetadata.2=需要采矿无人机MK-X x 16
+ResourceCollectionModuleMetadata.3=需要采矿无人机MK-XI x 16
+ResourceCollectionModuleMetadata.4=需要采矿无人机MK-XII x 16
+ResourceCollectionModuleMetadata.5=需要采矿无人机MK-XIII x 16
 ResourceCollectionModuleRecipeType=太空采矿 / 太空钻井
 ResourceCollectionModule_Mode_0=太空采矿
 ResourceCollectionModule_Mode_1=太空钻井
@@ -2104,7 +2104,7 @@ Tooltip_LargeBrewer_Casing=任意焦炉机械方块
 NameElectrocellGenerator=电化学电池发电机
 gtnl.recipe.ElectrocellGeneratorRecipes=电化学反应
 NEI.ElectrocellGenerator.specialValue=发电系数：%s
-NEI.ElectrocellGenerator.generatorEUt=基础发电量：%s EU/t
+ElectrocellGeneratorMetadata=基础发电量：%s EU/t
 ElectrocellGeneratorRecipeType=电化学反应
 Tooltip_ElectrocellGenerator_00=干净环保且高效！
 Tooltip_ElectrocellGenerator_01=在左侧输入正极，右侧输入负极
@@ -2435,7 +2435,7 @@ Tooltip_SteamCactusWonder_03=一次只能接受一种类型的供奉
 Tooltip_SteamCactusWonder_04=需要在沙子上种植成熟的仙人掌才能成型
 Tooltip_SteamCactusWonder_05=§b§o仙人掌🙏
 Tooltip_SteamCactusWonder_06=提供价值：
-NEI.CactusWonderFakeRecipes.specialValue=提供价值：
+CactusWonderMetadata=提供价值：
 
 NameSteamCarpenter=蒸汽木匠
 gtnl.recipe.SteamCarpenterRecipes=蒸汽工艺
@@ -2476,7 +2476,7 @@ Tooltip_SteamWoodcutter_01=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 NameSteamFusionReactor=超高压反应堆
 gtnl.recipe.SteamFusionReactorRecipes=高压反应堆
-SteamFusionTierKey.0=需要压缩超高压聚变反应堆
+SteamFusionMetadata.0=需要压缩超高压聚变反应堆
 SteamFusionReactorRecipeType=高压反应堆
 GT5U.gui.text.metadata.steamfusion=需要压缩超高压反应堆
 Tooltip_SteamFusionReactor_00=将蒸汽与热流体结合，以达到更高的温度
@@ -2766,7 +2766,7 @@ Tooltip_IntegratedAssemblyFacility_01=部件装配线外壳等级决定了能源
 Tooltip_IntegratedAssemblyFacility_Casing=任意强化镀铱机械方块
 
 NameEngravingLaserPlant=激光蚀刻工厂
-gtnl.recipe.PrecisionLaserEngraver=精密激光蚀刻
+gtnl.recipe.PrecisionLaserEngraverRecipes=精密激光蚀刻
 EngravingLaserPlantRecipeType=激光蚀刻机 / 精密激光蚀刻
 EngravingLaserPlant_Mode_0=激光蚀刻机
 EngravingLaserPlant_Mode_1=精密激光蚀刻
@@ -2777,12 +2777,18 @@ Tooltip_EngravingLaserPlant_Casing=任意强化镀铱机械方块
 Info_EngravingLaserPlant_00=精密激光蚀刻升级
 
 NameNanitesIntegratedProcessingCenter=纳米集成加工中心
-NanitesIntegratedProcessingCenterRecipeType=纳米集成加工中心
+gtnl.recipe.NanitesIntegratedProcessingRecipes=纳米统合工坊
+NanitesIntegratedProcessingMetadata.0=需要生物工程模块
+NanitesIntegratedProcessingMetadata.1=需要矿石萃取模块
+NanitesIntegratedProcessingMetadata.2=需要聚合物扭曲模块
+NanitesIntegratedProcessingCenterRecipeType=纳米统合工坊
 Tooltip_NanitesIntegratedProcessingCenter_00=我们先进的纳米蜂群生产技术已经完全超越了老式的化工产线
 Tooltip_NanitesIntegratedProcessingCenter_01=安装对应模块解锁对应配方
-Tooltip_NanitesIntegratedProcessingCenter_02=控制器中放入纳米蜂群可减少材料需求
-Tooltip_NanitesIntegratedProcessingCenter_03=每级线圈等级额外提供10%的加速和耗电减免(乘算叠加)
+Tooltip_NanitesIntegratedProcessingCenter_02=每级线圈等级额外提供10%的加速和耗电减免(乘算叠加)
 Tooltip_NanitesIntegratedProcessingCenter_Casing=任意放射硅岩合金机械方块
+GT5U.gui.text.missing_bio_module=§d需要生物工程模块
+GT5U.gui.text.missing_ore_module=§d需要矿石萃取模块
+GT5U.gui.text.missing_pol_module=§d需要聚合物扭曲模块
 
 NameBioengineeringModule=生物工程模块
 NamePolymerTwistingModule=聚合物扭曲模块

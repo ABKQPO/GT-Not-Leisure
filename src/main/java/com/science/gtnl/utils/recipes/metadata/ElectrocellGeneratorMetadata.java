@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,19 +11,18 @@ import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.nei.RecipeDisplayInfo;
 import gregtech.nei.formatter.INEISpecialInfoFormatter;
 
-public class ElectrocellGeneratorSpecialValue extends RecipeMetadataKey<Long> implements INEISpecialInfoFormatter {
+public class ElectrocellGeneratorMetadata extends RecipeMetadataKey<Long> implements INEISpecialInfoFormatter {
 
-    public static final ElectrocellGeneratorSpecialValue INSTANCE = new ElectrocellGeneratorSpecialValue();
+    public static final ElectrocellGeneratorMetadata INSTANCE = new ElectrocellGeneratorMetadata();
 
-    public ElectrocellGeneratorSpecialValue() {
+    public ElectrocellGeneratorMetadata() {
         super(Long.class, "electricellgeneratorfrontend_metadata");
     }
 
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         long generatorEUt = cast(value, 1L);
-        recipeInfo
-            .drawText(StatCollector.translateToLocalFormatted("NEI.ElectrocellGenerator.generatorEUt", generatorEUt));
+        recipeInfo.drawText(StatCollector.translateToLocalFormatted("ElectrocellGeneratorMetadata", generatorEUt));
     }
 
     @Override

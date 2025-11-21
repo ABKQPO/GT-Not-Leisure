@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.recipes;
+package com.science.gtnl.utils.recipes.metadata;
 
 import static kubatech.api.Variables.numberFormat;
 
@@ -13,18 +13,17 @@ import gregtech.nei.RecipeDisplayInfo;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamAmountSpecialValue extends RecipeMetadataKey<Long> {
+public class SteamAmountMetadata extends RecipeMetadataKey<Long> {
 
-    public static final SteamAmountSpecialValue INSTANCE = new SteamAmountSpecialValue();
+    public static final SteamAmountMetadata INSTANCE = new SteamAmountMetadata();
 
-    private SteamAmountSpecialValue() {
+    private SteamAmountMetadata() {
         super(Long.class, "offer_value");
     }
 
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         long offer = cast(value, 0L);
-        recipeInfo.drawText(
-            StatCollector.translateToLocal("NEI.CactusWonderFakeRecipes.specialValue") + numberFormat.format(offer));
+        recipeInfo.drawText(StatCollector.translateToLocal("CactusWonderMetadata") + numberFormat.format(offer));
     }
 }

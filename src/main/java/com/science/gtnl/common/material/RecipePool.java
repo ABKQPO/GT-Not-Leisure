@@ -25,14 +25,16 @@ import com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend;
 import com.science.gtnl.utils.gui.recipe.SpaceMinerFrontend;
 import com.science.gtnl.utils.gui.recipe.SteamGateAssemblerFrontend;
 import com.science.gtnl.utils.gui.recipe.SteamLogoFrontend;
-import com.science.gtnl.utils.recipes.CircuitNanitesDataSpecialValue;
-import com.science.gtnl.utils.recipes.CircuitNanitesRecipeData;
-import com.science.gtnl.utils.recipes.FuelRefiningTierKey;
-import com.science.gtnl.utils.recipes.IsaMillTierKey;
-import com.science.gtnl.utils.recipes.NaquadahReactorSpecialValue;
-import com.science.gtnl.utils.recipes.RealArtificialStarSpecialValue;
-import com.science.gtnl.utils.recipes.ResourceCollectionModuleTierKey;
-import com.science.gtnl.utils.recipes.SteamFusionTierKey;
+import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
+import com.science.gtnl.utils.recipes.format.NaquadahReactorFormat;
+import com.science.gtnl.utils.recipes.format.RealArtificialStarFormat;
+import com.science.gtnl.utils.recipes.metadata.CircuitNanitesDataMetadata;
+import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
+import com.science.gtnl.utils.recipes.metadata.IsaMillMetadata;
+import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
+import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
+import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
 
 import goodgenerator.api.recipe.ComponentAssemblyLineFrontend;
 import goodgenerator.client.GUI.GGUITextures;
@@ -92,7 +94,7 @@ public class RecipePool {
     public static final RecipeMap<RecipeMapBackend> RealArtificialStarRecipes = RecipeMapBuilder
         .of("gtnl.recipe.ArtificialStarGeneratingRecipes")
         .maxIO(1, 1, 0, 0)
-        .neiSpecialInfoFormatter(RealArtificialStarSpecialValue.INSTANCE)
+        .neiSpecialInfoFormatter(RealArtificialStarFormat.INSTANCE)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.RealArtificialStar.get(1)))
@@ -249,7 +251,7 @@ public class RecipePool {
             builder -> builder.setDisplayStack(GTNLItemList.IsaMill.get(1))
                 .setMaxRecipesPerPage(1))
         .neiRecipeComparator(
-            Comparator.<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(IsaMillTierKey.INSTANCE, 0))
+            Comparator.<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(IsaMillMetadata.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
         .build();
 
@@ -297,7 +299,7 @@ public class RecipePool {
         .of("gtnl.recipe.NaquadahReactorRecipes")
         .maxIO(0, 0, 2, 1)
         .dontUseProgressBar()
-        .neiSpecialInfoFormatter(NaquadahReactorSpecialValue.INSTANCE)
+        .neiSpecialInfoFormatter(NaquadahReactorFormat.INSTANCE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LargeNaquadahReactor.get(1))
@@ -336,7 +338,7 @@ public class RecipePool {
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .neiRecipeComparator(
             Comparator
-                .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(FuelRefiningTierKey.INSTANCE, 0))
+                .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
         .build();
 
@@ -350,7 +352,7 @@ public class RecipePool {
         .neiRecipeComparator(
             Comparator
                 .<GTRecipe, Integer>comparing(
-                    recipe -> recipe.getMetadataOrDefault(ResourceCollectionModuleTierKey.INSTANCE, 0))
+                    recipe -> recipe.getMetadataOrDefault(ResourceCollectionModuleMetadata.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
         .neiRecipeComparator(
             Comparator.<GTRecipe, Integer>comparing(recipe -> recipe.mSpecialValue)
@@ -473,7 +475,7 @@ public class RecipePool {
         .neiHandlerInfo((builder -> builder.setDisplayStack(GTNLItemList.SteamFusionReactor.get(1))))
         .neiRecipeComparator(
             Comparator
-                .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(SteamFusionTierKey.INSTANCE, 0))
+                .<GTRecipe, Integer>comparing(recipe -> recipe.getMetadataOrDefault(SteamFusionMetadata.INSTANCE, 0))
                 .thenComparing(GTRecipe::compareTo))
         .build();
 
@@ -612,7 +614,7 @@ public class RecipePool {
             Comparator
                 .<GTRecipe, CircuitNanitesRecipeData>comparing(
                     recipe -> recipe
-                        .getMetadataOrDefault(CircuitNanitesDataSpecialValue.INSTANCE, new CircuitNanitesRecipeData()))
+                        .getMetadataOrDefault(CircuitNanitesDataMetadata.INSTANCE, new CircuitNanitesRecipeData()))
                 .thenComparing(GTRecipe::compareTo))
         .frontend((ui, nei) -> new GTNLLogoFrontend(ui, nei) {
 
@@ -635,11 +637,28 @@ public class RecipePool {
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LargeRockCrusher.get(1)))
         .build();
 
-    public static final RecipeMap<RecipeMapBackend> PrecisionLaserEngraver = RecipeMapBuilder
-        .of("gtnl.recipe.PrecisionLaserEngraver")
+    public static final RecipeMap<RecipeMapBackend> PrecisionLaserEngraverRecipes = RecipeMapBuilder
+        .of("gtnl.recipe.PrecisionLaserEngraverRecipes")
         .maxIO(9, 3, 3, 3)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.EngravingLaserPlant.get(1)))
+        .build();
+
+    public static RecipeMap<RecipeMapBackend> NanitesIntegratedProcessingRecipes = RecipeMapBuilder
+        .of("gtnl.recipe.NanitesIntegratedProcessingRecipes")
+        .maxIO(16, 16, 8, 8)
+        .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .frontend(GeneralFrontend::new)
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.NanitesIntegratedProcessingCenter.get(1))
+                .setMaxRecipesPerPage(1))
+        .neiRecipeComparator(
+            Comparator
+                .<GTRecipe, NanitesIntegratedProcessingRecipesData>comparing(
+                    recipe -> recipe.getMetadataOrDefault(
+                        NanitesIntegratedProcessingMetadata.INSTANCE,
+                        new NanitesIntegratedProcessingRecipesData(false, false, false)))
+                .thenComparing(GTRecipe::compareTo))
         .build();
 }

@@ -26,10 +26,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
+import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
+import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
 
 import bartworks.util.BWUtil;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -40,8 +43,10 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.HatchElementBuilder;
@@ -56,13 +61,15 @@ public class NanitesIntegratedProcessingCenter
     private static final int HORIZONTAL_OFF_SET = 15;
     private static final int VERTICAL_OFF_SET = 20;
     private static final int DEPTH_OFF_SET = 0;
-    private double setEUtDiscount = 1;
-    private double setDurationModifier = 1;
-    public ArrayList<NanitesBaseModule<?>> moduleHatches = new ArrayList<>();
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String NIPC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/nanites_integrated_processing_center";
     private static final String[][] shape = StructureUtils.readStructureFromFile(NIPC_STRUCTURE_FILE_PATH);
+
+    public ArrayList<NanitesBaseModule<?>> moduleMachine = new ArrayList<>();
+    public boolean isOreModule = false;
+    public boolean isBioModule = false;
+    public boolean isPolModule = false;
 
     public NanitesIntegratedProcessingCenter(String aName) {
         super(aName);
@@ -84,7 +91,6 @@ public class NanitesIntegratedProcessingCenter
             .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
@@ -136,12 +142,12 @@ public class NanitesIntegratedProcessingCenter
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (aBaseMetaTileEntity.isServerSide()) {
-            if (!moduleHatches.isEmpty() && moduleHatches.size() <= 3) {
-                for (NanitesBaseModule<?> module : moduleHatches) {
+            if (!moduleMachine.isEmpty() && moduleMachine.size() <= 3) {
+                for (NanitesBaseModule<?> module : moduleMachine) {
                     if (allowModuleConnection(module, this)) {
                         module.connect();
                         module.setEUtDiscount(getEUtDiscount());
-                        module.setDurationModifier(getSpeedBoost());
+                        module.setDurationModifier(getDurationModifier());
                         module.setMaxParallel(getTrueParallel());
                         module.setHeatingCapacity(mHeatingCapacity);
                     } else {
@@ -152,8 +158,8 @@ public class NanitesIntegratedProcessingCenter
                         module.setHeatingCapacity(0);
                     }
                 }
-            } else if (moduleHatches.size() > 3) {
-                for (NanitesBaseModule<?> module : moduleHatches) {
+            } else if (moduleMachine.size() > 3) {
+                for (NanitesBaseModule<?> module : moduleMachine) {
                     module.disconnect();
                 }
             }
@@ -250,12 +256,26 @@ public class NanitesIntegratedProcessingCenter
         super.setupParameters();
         mHeatingCapacity = (int) this.getMCoilLevel()
             .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
+
+        for (NanitesBaseModule<?> module : moduleMachine) {
+            if (module instanceof BioengineeringModule) {
+                isBioModule = module.isBioModule;
+            }
+
+            if (module instanceof PolymerTwistingModule) {
+                isPolModule = module.isPolModule;
+            }
+
+            if (module instanceof OreExtractionModule) {
+                isOreModule = module.isOreModule;
+            }
+        }
     }
 
     @Override
     public void clearHatches() {
         super.clearHatches();
-        moduleHatches.clear();
+        moduleMachine.clear();
     }
 
     @Override
@@ -264,30 +284,59 @@ public class NanitesIntegratedProcessingCenter
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipePool.NanitesIntegratedProcessingRecipes;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
-
-            @Nonnull
-            @Override
-            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
-                setEUtDiscount = 1 - (mParallelTier / 50.0) * Math.pow(0.80, getMCoilLevel().getTier());
-                setDurationModifier = Math.pow(0.75, mParallelTier) * Math.pow(0.80, getMCoilLevel().getTier());
-                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
-                    .setRecipeHeat(recipe.mSpecialValue)
-                    .setMachineHeat(mHeatingCapacity)
-                    .setEUtDiscount(setEUtDiscount)
-                    .setDurationModifier(setDurationModifier);
-            }
 
             @Override
             public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
                 if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
+
+                NanitesIntegratedProcessingRecipesData data = recipe.getMetadataOrDefault(
+                    NanitesIntegratedProcessingMetadata.INSTANCE,
+                    new NanitesIntegratedProcessingRecipesData(false, false, false));
+
+                if (data.bioengineeringModule && !isBioModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_bio_module");
+                }
+                if (data.oreExtractionModule && !isOreModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_ore_module");
+                }
+                if (data.polymerTwistingModule && !isPolModule) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_pol_module");
+                }
+
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
+
+            @Nonnull
+            @Override
+            public GTNL_OverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setRecipeHeat(recipe.mSpecialValue)
+                    .setMachineHeat(mHeatingCapacity)
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier());
+            }
+
         }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 1 - (mParallelTier / 50.0) * Math.pow(0.80, getMCoilLevel().getTier());
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return Math.pow(0.75, mParallelTier) * Math.pow(0.80, getMCoilLevel().getTier());
     }
 
     public boolean addModuleToMachineList(IGregTechTileEntity tileEntity, int baseCasingIndex) {
@@ -298,8 +347,8 @@ public class NanitesIntegratedProcessingCenter
         if (metaTileEntity == null) {
             return false;
         }
-        if (metaTileEntity instanceof NanitesBaseModule<?>) {
-            return moduleHatches.add((NanitesBaseModule<?>) metaTileEntity);
+        if (metaTileEntity instanceof NanitesBaseModule<?>module) {
+            return moduleMachine.add(module);
         }
         return false;
     }
@@ -310,7 +359,7 @@ public class NanitesIntegratedProcessingCenter
 
             @Override
             public long count(NanitesIntegratedProcessingCenter tileEntity) {
-                return tileEntity.moduleHatches.size();
+                return tileEntity.moduleMachine.size();
             }
         };
 
@@ -344,29 +393,17 @@ public class NanitesIntegratedProcessingCenter
             return true;
         }
 
-        if (module instanceof OreExtractionModule && center.getGlassTier() > 8) {
+        if (module instanceof OreExtractionModule && center.mGlassTier > 8) {
             return true;
         }
 
         return false;
     }
 
-    public int getGlassTier() {
-        return this.mGlassTier;
-    }
-
-    public double getEUtDiscount() {
-        return setEUtDiscount;
-    }
-
-    public double getSpeedBoost() {
-        return setDurationModifier;
-    }
-
     @Override
     public void onRemoval() {
-        if (moduleHatches != null && !moduleHatches.isEmpty()) {
-            for (NanitesBaseModule<?> module : moduleHatches) {
+        if (moduleMachine != null && !moduleMachine.isEmpty()) {
+            for (NanitesBaseModule<?> module : moduleMachine) {
                 module.disconnect();
             }
         }

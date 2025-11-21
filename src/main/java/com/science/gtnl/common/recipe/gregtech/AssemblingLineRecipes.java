@@ -43,6 +43,7 @@ import gregtech.api.util.recipe.Scanning;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtPlusPlus.core.material.Particle;
 import gtPlusPlus.core.recipe.common.CI;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.LanthItemList;
@@ -1798,5 +1799,49 @@ public class AssemblingLineRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_UIV)
             .duration(150 * SECONDS)
             .addTo(AL);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            CustomItemList.Machine_Multi_EyeOfHarmony.get(1),
+            1919810,
+            65536,
+            (int) TierEU.RECIPE_UMV,
+            1,
+            new Object[] { ItemRefer.ProtomatterActivationCoil.get(16), ItemList.Extreme_Density_Casing.get(16),
+                CustomItemList.Godforge_StellarEnergySiphonCasing.get(16), ItemList.MagneticAnchorCasing.get(16),
+                ItemRefer.AntimatterForge.get(2), ItemList.Machine_Multi_BlackHoleCompressor.get(2),
+                CustomItemList.Machine_Multi_ForgeOfGods.get(2), CustomItemList.Machine_Multi_EyeOfHarmony.get(2),
+                GTModHandler.getModItem(EternalSingularity.ID, "eternal_singularity", 64),
+                GTUtility.copyAmountUnsafe(64, Particle.getBaseParticle(Particle.GRAVITON)),
+                ItemList.Black_Hole_Opener.get(32), ItemList.EnergisedTesseract.get(32),
+                ItemList.Field_Generator_UMV.get(16), ItemList.Transdimensional_Alignment_Matrix.get(8),
+                CustomItemList.astralArrayFabricator.get(1),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemExtremeStorageCell.Universe", 1) },
+            new FluidStack[] { MaterialPool.SuperMutatedLivingSolder.getFluidOrGas(256000),
+                MaterialsUEVplus.PhononMedium.getFluid(128000), MaterialsUEVplus.TranscendentMetal.getMolten(46080) },
+            GTNLItemList.EyeOfHarmonyInjector.get(1),
+            1000,
+            (int) TierEU.RECIPE_UXV);
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            GTModHandler.getModItem(AE2FluidCraft.ID, "fluid_storage.singularity", 1),
+            512000,
+            2048,
+            (int) TierEU.RECIPE_UIV,
+            1,
+            new Object[] { GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockDrive", 64),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "tile.BlockCreativeEnergyController", 32),
+                GTNLItemList.QuantumComputerCore.get(16), ItemRefer.YOTTank_Cell_T8.get(16),
+                ItemList.Quantum_Tank_IV.get(64), ItemList.Quantum_Chest_IV.get(64),
+                ItemList.Field_Generator_UEV.get(4), new Object[] { OrePrefixes.circuit.get(Materials.UEV), 16L },
+                GTModHandler.getModItem(EternalSingularity.ID, "eternal_singularity", 16),
+                GregtechItemList.Laser_Lens_Special.get(8), ItemList.Black_Hole_Opener.get(8), ItemList.ZPM3.get(2),
+                GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemExtremeStorageCell.Singularity", 1),
+                GTModHandler.getModItem(AE2FluidCraft.ID, "fluid_storage.singularity", 1) },
+            new FluidStack[] { MaterialPool.QuantumInfusion.getFluidOrGas(256000),
+                MaterialPool.SuperMutatedLivingSolder.getFluidOrGas(64000), Materials.Infinity.getMolten(18432),
+                MaterialsUEVplus.TranscendentMetal.getMolten(9216) },
+            GTNLItemList.SingularityDataHub.get(1),
+            8000,
+            (int) TierEU.RECIPE_UIV);
     }
 }

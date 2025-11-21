@@ -4,6 +4,9 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.item.items.SuspiciousStew.*;
 import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -50,10 +53,13 @@ import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import appeng.api.storage.StorageChannel;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
@@ -190,10 +196,46 @@ public class ItemLoader {
         infinityDyeFluidCell = ItemInfinityCell
             .getSubItem(StorageChannel.FLUIDS, "InfinityCell.dye.fluid.name", "InfinityDyeFluidCell", subDyeFluid);
 
-        infinityCobblestoneCell = ItemInfinityCell.getSubItem(
-            StorageChannel.ITEMS,
-            "InfinityCobblestoneCell",
-            ItemInfinityCell.SubItem.getInstance(Blocks.cobblestone));
+        List<ItemInfinityCell.SubItem> infinityStoneCell = new ArrayList<>();
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.stone));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.cobblestone));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.netherrack));
+
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockGranites, 1, 0)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockGranites, 1, 1)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockGranites, 1, 8)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockGranites, 1, 9)));
+
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockStones, 1, 0)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockStones, 1, 1)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockStones, 1, 8)));
+        infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockStones, 1, 9)));
+
+        if (Mods.EtFuturumRequiem.isModLoaded()) {
+            infinityStoneCell.add(
+                ItemInfinityCell.SubItem
+                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "deepslate", 1)));
+            infinityStoneCell.add(
+                ItemInfinityCell.SubItem
+                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 1)));
+            infinityStoneCell.add(
+                ItemInfinityCell.SubItem
+                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "blackstone", 1)));
+        }
+
+        if (Mods.Botania.isModLoaded()) {
+            infinityStoneCell
+                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 0)));
+            infinityStoneCell
+                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 1)));
+            infinityStoneCell
+                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 2)));
+            infinityStoneCell
+                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 3)));
+        }
+
+        infinityCobblestoneCell = ItemInfinityCell
+            .getSubItem(StorageChannel.ITEMS, "InfinityCell.stone.name", "InfinityStoneCell", infinityStoneCell);
 
         GameRegistry.registerItem(wirelessUpgradeChip, "WirelessUpgradeChip");
         GameRegistry.registerItem(stick, "Stick");
@@ -242,7 +284,7 @@ public class ItemLoader {
         GTNLItemList.InfinityCell.set(new ItemStack(infinityCell, 1));
         GTNLItemList.InfinityDyeCell.set(infinityDyeCell);
         GTNLItemList.InfinityDyeFluidCell.set(infinityDyeFluidCell);
-        GTNLItemList.InfinityCobblestoneCell.set(infinityCobblestoneCell);
+        GTNLItemList.InfinityStoneCell.set(infinityCobblestoneCell);
     }
 
     public static void registryMetaItems() {
