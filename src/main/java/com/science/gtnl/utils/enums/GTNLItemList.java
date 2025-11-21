@@ -45,6 +45,7 @@ public enum GTNLItemList implements IItemContainer {
     CardboardBox,
     WaterCandle,
     SearedLadder,
+    DirePatternEncoder,
 
     BronzeBrickCasing,
     SteelBrickCasing,

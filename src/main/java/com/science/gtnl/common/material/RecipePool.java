@@ -267,7 +267,7 @@ public class RecipePool {
 
     public static RecipeMap<RecipeMapBackend> ElementCopyingRecipes = RecipeMapBuilder
         .of("gtnl.recipe.ElementCopyingRecipes")
-        .maxIO(3, 9, 1, 3)
+        .maxIO(3, 9, 3, 9)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GTNLLogoFrontend::new)
         .neiHandlerInfo(

@@ -20,7 +20,8 @@ public enum GuiType {
     PortableCrystalChestGUI,
     PortableObsidianChestGUI,
     PortableNetheriteChestGUI,
-    PortableDarkSteelChestGUI;
+    PortableDarkSteelChestGUI,
+    DirePatternEncoderGUI;
 
     public static GuiType getGuiType(int id) {
         return GuiType.values()[id];

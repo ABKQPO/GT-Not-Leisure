@@ -13,6 +13,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
+import com.science.gtnl.common.block.blocks.BlockDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.BlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.BlockHoneyFluid;
 import com.science.gtnl.common.block.blocks.BlockLaserBeacon;
@@ -25,6 +26,7 @@ import com.science.gtnl.common.block.blocks.BlockWaterCandle;
 import com.science.gtnl.common.block.blocks.BlocksCompressedStargate;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
+import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
@@ -60,6 +62,7 @@ public class BlockLoader {
     public static Block waterCandle;
     public static Block searedLadder;
     public static Block playerLeash;
+    public static Block direPatternEncoder;
     public static Block nanoPhagocytosisPlantRender;
     public static Block eternalGregTechWorkshopRender;
 
@@ -91,6 +94,9 @@ public class BlockLoader {
         playerLeash = new BlockPlayerLeash();
 
         searedLadder = new BlockSearedLadder();
+
+        direPatternEncoder = new BlockDirePatternEncoder();
+        GameRegistry.registerTileEntity(TileEntityDirePatternEncoder.class, "DirePatternEncoderTileEntity");
 
         cardboardBox = new BlockCardboardBox();
         GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBoxTileEntity");

@@ -81,6 +81,7 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return switch (GuiType.getGuiType(ID)) {
+            case DetravScannerGUI -> null;
             case PortableBasicWorkBenchGUI -> new ContainerPortableBasicWorkbench(player, world, player.getHeldItem());
             case PortableAdvancedWorkBenchGUI -> new ContainerPortableAdvancedWorkbench(
                 player.inventory,
@@ -139,7 +140,7 @@ public class CommonProxy implements IGuiHandler {
                 player.inventory,
                 player.getHeldItem(),
                 GuiPortableChest.GUI.DARKSTEEL);
-            case DetravScannerGUI -> null;
+            case DirePatternEncoderGUI -> null;
         };
     }
 

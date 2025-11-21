@@ -1109,6 +1109,9 @@ tile.PlayerLeash.name=Leash Barrier
 entity.sciencenotleisure.PlayerLeashKnot.name=Leash Barrier
 Tooltip_PlayerLeash_00=Creates a powerful leash field that allows the placer to fly
 
+tile.DirePatternEncoder.name=Dire Pattern Encoder
+container.DirePatternEncoder=Dire Pattern Encoder
+
 item.ElectricProspectorTool.0.name=Mana Teleport Prospector Tool
 item.ElectricProspectorTool.1.name=Debug Teleport Prospector Tool
 Info_DetravScanner_TP=Teleport to vein: %s (%s, %s)

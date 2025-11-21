@@ -52,6 +52,7 @@ import com.science.gtnl.common.recipe.gregtech.FusionReactorRecipes;
 import com.science.gtnl.common.recipe.gregtech.HammerRecipes;
 import com.science.gtnl.common.recipe.gregtech.LaserEngraverRecipes;
 import com.science.gtnl.common.recipe.gregtech.MixerRecipes;
+import com.science.gtnl.common.recipe.gregtech.NanoForgeRecipes;
 import com.science.gtnl.common.recipe.gregtech.PCBFactoryRecipes;
 import com.science.gtnl.common.recipe.gregtech.PlasmaForgeRecipes;
 import com.science.gtnl.common.recipe.gregtech.PreciseAssemblerRecipes;
@@ -206,7 +207,7 @@ public class RecipeLoader {
             new ElectrocellGeneratorRecipes(), new RocketAssemblerRecipes(), new FluidSolidifierRecipes(),
             new BotaniaManaInfusionRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
             new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(), new PrecisionLaserEngraver(),
-            new NanitesIntegratedProcessingRecipes() };
+            new NanitesIntegratedProcessingRecipes(), new NanoForgeRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

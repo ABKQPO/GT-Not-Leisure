@@ -203,6 +203,7 @@ public class ClientProxy extends CommonProxy {
             case PortableCrystalChestGUI -> new GuiPortableChest.Crystal(player.inventory, player.getHeldItem());
             case PortableObsidianChestGUI -> new GuiPortableChest.Obsidian(player.inventory, player.getHeldItem());
             case PortableNetheriteChestGUI -> new GuiPortableChest.Netherite(player.inventory, player.getHeldItem());
+            case DirePatternEncoderGUI -> null;
             case PortableDarkSteelChestGUI -> new GuiPortableChest.DarkSteel(player.inventory, player.getHeldItem());
         };
     }

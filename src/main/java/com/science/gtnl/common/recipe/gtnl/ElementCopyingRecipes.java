@@ -21,6 +21,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class ElementCopyingRecipes implements IRecipePool {
@@ -31,7 +32,7 @@ public class ElementCopyingRecipes implements IRecipePool {
     public void loadRecipes() {
 
         GTValues.RA.stdBuilder()
-            .itemInputs()
+            .itemInputs(GregtechItemList.PlatinumGroupCatalyst.get(0))
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lithium, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sodium, 16),

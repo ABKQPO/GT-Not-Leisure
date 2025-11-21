@@ -1109,6 +1109,9 @@ tile.PlayerLeash.name=拴绳结界
 entity.sciencenotleisure.PlayerLeashKnot.name=拴绳结界
 Tooltip_PlayerLeash_00=创造一个强大的拴绳立场，允许放置其方块的玩家在一定范围内飞行
 
+tile.DirePatternEncoder.name=终极样板编码台
+container.DirePatternEncoder=终极样板编码台
+
 item.ElectricProspectorTool.0.name=魔力传送探矿仪
 item.ElectricProspectorTool.1.name=Debug传送探矿仪
 Info_DetravScanner_TP=传送至矿脉：%s (%s，%s)

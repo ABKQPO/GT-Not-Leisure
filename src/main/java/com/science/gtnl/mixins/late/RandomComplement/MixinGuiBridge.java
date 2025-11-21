@@ -20,7 +20,7 @@ import cpw.mods.fml.common.Optional;
 public abstract class MixinGuiBridge {
 
     @Shadow
-    public abstract Object getGuiObject(ItemStack it, EntityPlayer player, World w, int x, int y, int z);
+    protected abstract Object getGuiObject(ItemStack it, EntityPlayer player, World w, int x, int y, int z);
 
     @Redirect(
         method = "getServerGuiElement",
