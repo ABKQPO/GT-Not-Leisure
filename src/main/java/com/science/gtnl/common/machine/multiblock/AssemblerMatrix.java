@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -51,6 +52,7 @@ import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
@@ -101,6 +103,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.Dyes;
+import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IMEConnectable;
@@ -145,6 +148,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public long mMaxParallelLong = 0;
     public UUID ownerUUID;
     public boolean wirelessMode;
+    public boolean showPattern = true;
     public String costingEUText = ZERO_STRING;
 
     private AENetworkProxy gridProxy;
@@ -203,6 +207,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         NBTTagCompound tag = accessor.getNBTData();
         boolean isActive = tag.getBoolean("isAEActive");
         boolean isPowered = tag.getBoolean("isAEPowered");
+        boolean showPattern = tag.getBoolean("showPattern");
         currentTip.add(WailaText.getPowerState(isActive, isPowered, false));
         if (tag.getLong("maxParallelLong") > 1) {
             currentTip.add(
@@ -210,6 +215,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     + EnumChatFormatting.WHITE
                     + tag.getLong("maxParallelLong"));
         }
+        currentTip.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
         if (tag.getBoolean("wirelessMode")) {
             currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
             currentTip.add(
@@ -233,6 +239,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         tag.setBoolean("isAEPowered", isPowered);
         tag.setLong("maxParallelLong", mMaxParallelLong);
         tag.setBoolean("wirelessMode", wirelessMode);
+        tag.setBoolean("showPattern", showPattern);
         if (wirelessMode) tag.setString("costingEUText", costingEUText);
     }
 
@@ -339,6 +346,32 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             this.mUpdate = 200;
         }
         getProxy().onReady();
+    }
+
+    @Override
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        super.addUIWidgets(builder, buildContext);
+        builder.widget(
+            new ButtonWidget().setOnClick((clickData, widget) -> showPattern = !showPattern)
+                .setPlayClickSoundResource(
+                    () -> showPattern ? SoundResource.GUI_BUTTON_UP.resourceLocation
+                        : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
+                .setBackground(() -> {
+                    if (showPattern) {
+                        return new IDrawable[] { GTUITextures.BUTTON_STANDARD_PRESSED,
+                            GTUITextures.OVERLAY_BUTTON_WHITELIST };
+                    } else {
+                        return new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_BLACKLIST };
+                    }
+                })
+                .attachSyncer(new FakeSyncWidget.BooleanSyncer(() -> showPattern, val -> showPattern = val), builder)
+                .dynamicTooltip(
+                    () -> Collections.singletonList(
+                        StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"))))
+                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setUpdateTooltipEveryTick(true)
+                .setPos(98, 91)
+                .setSize(16, 16));
     }
 
     @Override
@@ -449,6 +482,18 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxSlots = eachPatternCasingCapacity * mCountPatternCasing;
 
         return (int) mMaxParallelLong;
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            showPattern = !showPattern;
+            GTUtility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+        }
+        return true;
     }
 
     @Override
@@ -563,6 +608,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         aNBT.setInteger("mCountSpeedCasing", mCountSpeedCasing);
         aNBT.setLong("mMaxParallelLong", mMaxParallelLong);
         aNBT.setBoolean("wirelessMode", wirelessMode);
+        aNBT.setBoolean("showPattern", showPattern);
         getProxy().writeToNBT(aNBT);
         saveInvData(aNBT, false);
     }
@@ -643,6 +689,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         usedParallel = aNBT.getLong("usedParallel");
         mMaxParallelLong = aNBT.getLong("mMaxParallelLong");
         wirelessMode = aNBT.getBoolean("wirelessMode");
+        showPattern = aNBT.getBoolean("showPattern");
 
         NBTTagCompound storeRoot = null;
 
@@ -1061,6 +1108,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
                 (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
                     : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
+        info.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
         if (wirelessMode) {
             info.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
             info.add(
@@ -1148,7 +1196,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
      */
     @Override
     public boolean shouldDisplay() {
-        return true;
+        return showPattern;
     }
 
     @Override

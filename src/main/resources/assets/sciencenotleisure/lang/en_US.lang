@@ -35,6 +35,8 @@ Tooltip_PressCtrl=§rHold §6Ctrl §rfor more information
 Tooltip_Damage=Durability: %s/%s
 Info_Render_Enabled=Enabled Render
 Info_Render_Disabled=Disabled Render
+Info_ShowPattern_Enabled=§aShow on Interface Terminal
+Info_ShowPattern_Disabled=§cHide on Interface Terminal
 
 gtnl_config.machine=Machine
 gtnl_config.machine.tooltip=Adjust some machine settings

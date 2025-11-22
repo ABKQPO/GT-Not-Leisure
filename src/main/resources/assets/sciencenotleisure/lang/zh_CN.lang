@@ -35,6 +35,8 @@ Tooltip_PressCtrl=§r按住 §6Ctrl §r查看更多信息
 Tooltip_Damage=耐久：%s/%s
 Info_Render_Enabled=开启渲染
 Info_Render_Disabled=关闭渲染
+Info_ShowPattern_Enabled=§a在接口终端显示
+Info_ShowPattern_Disabled=§c在接口终端隐藏
 
 gtnl_config.machine=机器
 gtnl_config.machine.tooltip=调整部分机器的配置

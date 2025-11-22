@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -370,19 +369,6 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         if (aNBT.hasKey("mUseMultiparallelMode")) {
             // backward compatibility
             batchMode = aNBT.getBoolean("mUseMultiparallelMode");
-        }
-    }
-
-    @Override
-    public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        if (aPlayer.isSneaking()) {
-            super.onScrewdriverRightClick(side, aPlayer, aX, aY, aZ, aTool);
-        } else {
-            inputSeparation = !inputSeparation;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("GT5U.machines.separatebus") + " " + inputSeparation);
         }
     }
 

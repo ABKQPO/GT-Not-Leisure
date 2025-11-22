@@ -3,10 +3,12 @@ package com.science.gtnl.common.machine.hatch;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUS;
+import static gregtech.api.metatileentity.BaseTileEntity.*;
 import static gregtech.api.objects.XSTR.XSTR_INSTANCE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import com.glodblock.github.common.item.ItemFluidDrop;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.google.common.collect.ImmutableList;
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -51,6 +54,7 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
@@ -92,6 +96,7 @@ import appeng.util.ReadableNumberConverter;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.SoundResource;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.IMEConnectable;
@@ -430,6 +435,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     private BaseActionSource requestSource = null;
     private @Nullable AENetworkProxy gridProxy = null;
     public List<ProcessingLogic> processingLogics = new ArrayList<>();
+    public boolean showPattern = true;
 
     // holds all internal inventories
     @SuppressWarnings("unchecked") // Java doesn't allow to create an array of a generic type.
@@ -643,7 +649,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
 
     @Override
     public boolean shouldDisplay() {
-        return true;
+        return showPattern;
     }
 
     @Override
@@ -685,6 +691,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         if (customName != null) aNBT.setString("customName", customName);
         aNBT.setBoolean("additionalConnection", additionalConnection);
         aNBT.setBoolean("disablePatternOptimization", disablePatternOptimization);
+        aNBT.setBoolean("showPattern", showPattern);
         getProxy().writeToNBT(aNBT);
     }
 
@@ -731,6 +738,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         if (aNBT.hasKey("customName")) customName = aNBT.getString("customName");
         additionalConnection = aNBT.getBoolean("additionalConnection");
         disablePatternOptimization = aNBT.getBoolean("disablePatternOptimization");
+        showPattern = aNBT.getBoolean("showPattern");
 
         getProxy().readFromNBT(aNBT);
         updateAE2ProxyColor();
@@ -756,6 +764,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         ret.add(
             "The bus is " + ((getProxy() != null && getProxy().isActive()) ? EnumChatFormatting.GREEN + "online"
                 : EnumChatFormatting.RED + "offline" + getAEDiagnostics()) + EnumChatFormatting.RESET);
+        ret.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
         ret.add("Internal Inventory: ");
         int i = 0;
         for (PatternSlot<SuperCraftingInputHatchME> slot : internalInventory) {
@@ -898,7 +907,32 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                 .setBackground(GTUITextures.BUTTON_STANDARD, OVERLAY_BUTTON_X2)
                 .addTooltip(StatCollector.translateToLocal("gui.tooltips.appliedenergistics2.DoublePatterns"))
                 .setSize(16, 16)
-                .setPos(194, 10));
+                .setPos(194, 10))
+            .widget(
+                new ButtonWidget().setOnClick((clickData, widget) -> showPattern = !showPattern)
+                    .setPlayClickSoundResource(
+                        () -> showPattern ? SoundResource.GUI_BUTTON_UP.resourceLocation
+                            : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
+                    .setBackground(() -> {
+                        if (showPattern) {
+                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD_PRESSED,
+                                GTUITextures.OVERLAY_BUTTON_WHITELIST };
+                        } else {
+                            return new IDrawable[] { GTUITextures.BUTTON_STANDARD,
+                                GTUITextures.OVERLAY_BUTTON_BLACKLIST };
+                        }
+                    })
+                    .attachSyncer(
+                        new FakeSyncWidget.BooleanSyncer(() -> showPattern, val -> showPattern = val),
+                        builder)
+                    .dynamicTooltip(
+                        () -> Collections.singletonList(
+                            StatCollector
+                                .translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"))))
+                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setUpdateTooltipEveryTick(true)
+                    .setPos(194, 28)
+                    .setSize(16, 16));
     }
 
     @Override
@@ -975,6 +1009,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.hasKey("name"))
             currenttip.add(EnumChatFormatting.AQUA + tag.getString("name") + EnumChatFormatting.RESET);
+        currenttip.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
         if (tag.hasKey("inventory")) {
             NBTTagList inventory = tag.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < inventory.tagCount(); ++i) {
@@ -994,7 +1029,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     @Override
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
-
+        tag.setBoolean("showPattern", showPattern);
         NBTTagList inventory = new NBTTagList();
         HashMap<String, Long> nameToAmount = new HashMap<>();
         for (Iterator<PatternSlot<SuperCraftingInputHatchME>> it = inventories(); it.hasNext();) {
