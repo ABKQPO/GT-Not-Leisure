@@ -21,6 +21,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.util.GTUtility;
 
 public class ShapedArcaneCraftingRecipes implements IRecipePool {
 
@@ -89,6 +90,8 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                     }
                 }
             }
+
+            if (inputItems.size() == 1) inputItems.add(GTUtility.getIntegratedCircuit(1));
 
             ItemStack output = recipe.getOutput()
                 .copy();

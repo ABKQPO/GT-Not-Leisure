@@ -33,25 +33,25 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
     modid = MODID,
     version = Tags.VERSION,
     name = MODNAME,
-    dependencies = "required-after:IC2;" + "required-after:structurelib;"
-        + "required-after:Avaritia;"
-        + "after:eternalsingularity;"
-        + "required-after:AWWayofTime;"
+    dependencies = "required-after:AWWayofTime;" + "required-after:Avaritia;"
         + "required-after:BloodArsenal;"
-        + "required-after:modularui;"
         + "required-after:Botania;"
-        + "after:GalacticraftCore;"
         + "required-after:bartworks;"
-        + "required-after:gtnhintergalactic;"
-        + "after:miscutils;"
+        + "after:eternalsingularity;"
         + "after:etfuturum;"
-        + "required-after:dreamcraft;"
+        + "after:GalacticraftCore;"
         + "after:GalacticraftMars;"
+        + "after:GalacticraftPlanets;"
+        + "required-after:gtnhintergalactic;"
         + "required-after:gregtech;"
-        + "before:TwistSpaceTechnology;"
-        + "required-after:Thaumcraft;"
+        + "required-after:IC2;"
+        + "required-after:modularui;"
+        + "after:miscutils;"
         + "required-before:neicustomdiagram;"
-        + "after:GalacticraftPlanets",
+        + "required-after:dreamcraft;"
+        + "required-after:structurelib;"
+        + "required-after:Thaumcraft;"
+        + "before:TwistSpaceTechnology;",
     guiFactory = "com.science.gtnl.config.ConfigGuiFactory",
     acceptedMinecraftVersions = "1.7.10")
 public class ScienceNotLeisure {

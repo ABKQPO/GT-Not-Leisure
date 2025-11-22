@@ -158,7 +158,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings4Misc, 3))))
-            .addElement('M', ofBlock(sBlockCasingsSE, 9))
+            .addElement('M', ofBlock(sBlockCasingsDyson, 9))
             .addElement('N', ofBlock(lscLapotronicEnergyUnit, 0))
             .build();
     }
