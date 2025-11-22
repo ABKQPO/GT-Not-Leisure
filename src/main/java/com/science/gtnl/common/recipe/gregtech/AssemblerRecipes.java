@@ -171,7 +171,7 @@ public class AssemblerRecipes implements IRecipePool {
                 ItemList.Casing_Coil_Superconductor.get(1L),
                 NHItemList.LaserEmitter.getIS(4),
                 GTOreDictUnificator.get(OrePrefixes.lens, Materials.Diamond, 4),
-                new ItemStack(ModItems.itemDehydratorCoilWire, 8, 2),
+                GregtechItemList.DehydratorCoilWireLuV.get(8),
                 ItemList.LuV_Coil.get(4L),
                 ItemList.Emitter_IV.get(2L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 16))
@@ -3152,6 +3152,22 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(MaterialPool.QuantumInfusion.getFluidOrGas(32000))
             .duration(600)
             .eut(TierEU.RECIPE_LuV)
+            .addTo(As);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GregtechItemList.Industrial_MassFab.get(1),
+                GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.NaquadahAlloy, 4),
+                GregtechItemList.Casing_Containment.get(24),
+                ItemList.Emitter_ZPM.get(1),
+                ItemList.Sensor_ZPM.get(1),
+                GregtechItemList.Casing_MatterGen.get(9),
+                GregtechItemList.DehydratorCoilWireZPM.get(32),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 8))
+            .itemOutputs(GTNLItemList.MassFabricator.get(1))
+            .fluidInputs(MaterialPool.Polyetheretherketone.getMolten(1152))
+            .duration(600)
+            .eut(TierEU.RECIPE_UV)
             .addTo(As);
 
         loadLamp();

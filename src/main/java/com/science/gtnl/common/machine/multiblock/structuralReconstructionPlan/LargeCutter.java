@@ -144,7 +144,7 @@ public class LargeCutter extends GTMMultiMachineBase<LargeCutter> implements ISu
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 2);
+        this.machineMode = (this.machineMode + 1) % 2;
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeCutter_Mode_" + this.machineMode));
     }
 

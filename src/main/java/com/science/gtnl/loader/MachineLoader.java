@@ -237,6 +237,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.NanoAssemblerMarkL;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.NeutroniumWireCutting;
 import com.science.gtnl.common.machine.multiblock.wireless.NineIndustrialMultiMachine;
+import com.science.gtnl.common.machine.multiblock.wireless.PhaseChangeCube;
 import com.science.gtnl.common.machine.multiblock.wireless.SmeltingMixingFurnace;
 import com.science.gtnl.common.machine.multiblock.wireless.SuperconductingElectromagnetism;
 import com.science.gtnl.common.machine.multiblock.wireless.SuperconductingMagneticPresser;
@@ -1553,6 +1554,13 @@ public class MachineLoader {
                 "LargeRockCrusher",
                 StatCollector.translateToLocal("NameLargeRockCrusher")));
         addItemTooltip(GTNLItemList.LargeRockCrusher.get(1), AnimatedText.SNL_QYZG_SRP);
+
+        GTNLItemList.PhaseChangeCube.set(
+            new PhaseChangeCube(
+                PHASE_CHANGE_CUBE.ID,
+                "PhaseChangeCube",
+                StatCollector.translateToLocal("NamePhaseChangeCube")));
+        addItemTooltip(GTNLItemList.PhaseChangeCube.get(1), AnimatedText.SNL_QYZG);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(

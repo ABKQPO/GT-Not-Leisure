@@ -606,6 +606,7 @@ public enum GTNLItemList implements IItemContainer {
     MoltenCore,
     CrystalBuilder,
     LargeRockCrusher,
+    PhaseChangeCube,
 
     EnergyHatchLV,
     EnergyHatchLV4A,

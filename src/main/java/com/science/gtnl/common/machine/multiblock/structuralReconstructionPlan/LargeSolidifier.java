@@ -10,8 +10,6 @@ import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +33,6 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
-import ggfab.api.GGFabRecipeMaps;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -100,11 +97,6 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
     }
 
     @Override
-    public @NotNull Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.fluidSolidifierRecipes, GGFabRecipeMaps.toolCastRecipes);
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.fluidSolidifierRecipes;
     }
@@ -112,25 +104,6 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
     @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNL_ProcessingLogic() {
-
-            RecipeMap<?> currentRecipeMap = RecipeMaps.fluidSolidifierRecipes;
-
-            @Override
-            public RecipeMap<?> getCurrentRecipeMap() {
-                lastRecipeMap = currentRecipeMap;
-                return currentRecipeMap;
-            }
-
-            @NotNull
-            @Override
-            public CheckRecipeResult process() {
-                currentRecipeMap = RecipeMaps.fluidSolidifierRecipes;
-                CheckRecipeResult result = super.process();
-                if (result.wasSuccessful()) return result;
-
-                currentRecipeMap = GGFabRecipeMaps.toolCastRecipes;
-                return super.process();
-            }
 
             @Override
             public boolean tryCachePossibleRecipesFromPattern(IDualInputInventoryWithPattern inv) {
@@ -147,8 +120,6 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                 setInputFluids(inputs.inputFluid);
                 Set<GTRecipe> recipes = findRecipeMatches(RecipeMaps.fluidSolidifierRecipes)
                     .collect(Collectors.toSet());
-                if (recipes.isEmpty())
-                    recipes = findRecipeMatches(GGFabRecipeMaps.toolCastRecipes).collect(Collectors.toSet());
                 if (!recipes.isEmpty()) {
                     dualInvWithPatternToRecipeCache.put(inv, recipes);
                     activeDualInv = inv;

@@ -18,6 +18,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 public class NanoForgeRecipes implements IRecipePool {
 
@@ -64,6 +65,33 @@ public class NanoForgeRecipes implements IRecipePool {
                 ItemList.Circuit_Chip_SoC2.get(64))
             .itemOutputs(GGMaterial.metastableOganesson.get(OrePrefixes.nanite, 1))
             .fluidInputs(Materials.UUMatter.getFluid(500_000))
+            .metadata(NANO_FORGE_TIER, 2)
+            .duration(300 * SECONDS)
+            .eut(40_000_000)
+            .addTo(NFR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                GregtechItemList.Laser_Lens_Special.get(0),
+                GGMaterial.preciousMetalAlloy.get(OrePrefixes.block, 8),
+                ItemList.Circuit_Chip_NanoCPU.get(64),
+                ItemList.Circuit_Chip_NanoCPU.get(64))
+            .itemOutputs(GGMaterial.preciousMetalAlloy.get(OrePrefixes.nanite, 1))
+            .fluidInputs(Materials.UUMatter.getFluid(300_000))
+            .metadata(NANO_FORGE_TIER, 1)
+            .duration(400 * SECONDS)
+            .eut(40_000_000)
+            .addTo(NFR);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(
+                CustomItemList.ChromaticLens.get(0),
+                GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.block, 16),
+                ItemList.Circuit_Chip_QPIC.get(64),
+                ItemList.Circuit_Chip_QPIC.get(64),
+                ItemList.Circuit_Chip_QPIC.get(64))
+            .itemOutputs(GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.nanite, 1))
+            .fluidInputs(Materials.UUMatter.getFluid(1000_000))
             .metadata(NANO_FORGE_TIER, 2)
             .duration(300 * SECONDS)
             .eut(40_000_000)

@@ -2279,7 +2279,7 @@ LargeAutoclaveRecipeType=高压釜
 Tooltip_LargeAutoclave_Casing=任意洗矿厂机械方块
 
 NameLargeSolidifier=大型固化阵列
-LargeSolidifierRecipeType=流体固化器 / 工具铸形机
+LargeSolidifierRecipeType=流体固化器
 Tooltip_LargeSolidifier_00=比相同电压的机器快300%
 Tooltip_LargeSolidifier_Casing=任意洗矿厂机械方块
 
@@ -2756,6 +2756,14 @@ Tooltip_MagneticEnergyReactionFurnace_00=电容器满负荷运作中
 Tooltip_MagneticEnergyReactionFurnace_01=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
 Tooltip_MagneticEnergyReactionFurnace_Casing=任意电弧炉机械方块
 
+NamePhaseChangeCube=相变魔方
+PhaseChangeCubeRecipeType=提取机 / 流体提取机 / 流体固化器
+PhaseChangeCube_Mode_0=提取机
+PhaseChangeCube_Mode_1=流体提取机
+PhaseChangeCube_Mode_2=流体固化器
+Tooltip_PhaseChangeCube_00=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
+Tooltip_PhaseChangeCube_Casing=任意超能机械方块
+
 NameCompoundExtremeCoolingUnit=复合式极端冷却装置
 gtnl.recipe.PlasmaCondensationRecipes=等离子冷凝
 CompoundExtremeCoolingUnitRecipeType=真空冷冻机 / 等离子冷凝
@@ -2856,7 +2864,7 @@ Tooltip_FOGAlloyBlastSmelterModule_05=它拥有无损超频的能力.
 Tooltip_FOGAlloyBlastSmelterModule_06=这一模块专注于高效处理材料.
 
 NameFOGExtractorModule=太阳热离精粹机
-FOGExtractorModuleRecipeType=流体提取机 / 提取机
+FOGExtractorModuleRecipeType=提取机 / 流体提取机
 fog.button.fluidmode.tooltip.01=提取机
 fog.button.fluidmode.tooltip.02=流体提取机
 Tooltip_FOGExtractorModule_00=这是诸神之锻炉的一个模块

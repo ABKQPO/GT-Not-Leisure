@@ -92,6 +92,8 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
             .beginStructureBlock(33, 14, 15, true)
             .addInputBus(StatCollector.translateToLocal("Tooltip_MagneticEnergyReactionFurnace_Casing"), 1)
             .addOutputBus(StatCollector.translateToLocal("Tooltip_MagneticEnergyReactionFurnace_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_MagneticEnergyReactionFurnace_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MagneticEnergyReactionFurnace_Casing"), 1)
             .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MagneticEnergyReactionFurnace_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
@@ -231,7 +233,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 2);
+        this.machineMode = (this.machineMode + 1) % 2;
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal("MagneticEnergyReactionFurnace_Mode_" + this.machineMode));

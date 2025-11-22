@@ -17,8 +17,8 @@ def replace_text_in_java_files(root_folder, old_text, new_text):
 if __name__ == "__main__":
     target_folder = "E:/Github/GT-Not-Leisure/src/main/java/com"
 
-    text_to_replace = """protected """
+    text_to_replace = """(byte) ((this.machineMode + 1) % 5)"""
 
-    replacement_text = """public """
+    replacement_text = """(this.machineMode + 1) % 5"""
 
     replace_text_in_java_files(target_folder, text_to_replace, replacement_text)

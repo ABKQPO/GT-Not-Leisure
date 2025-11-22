@@ -225,7 +225,7 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 2);
+        this.machineMode = (this.machineMode + 1) % 2;
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal("CompoundDistillationFractionator_Mode_" + this.machineMode));

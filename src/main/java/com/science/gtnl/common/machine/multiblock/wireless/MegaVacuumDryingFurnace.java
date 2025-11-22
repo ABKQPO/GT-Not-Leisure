@@ -232,7 +232,7 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 4);
+        this.machineMode = (this.machineMode + 1) % 4;
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal("MegaVacuumDryingFurnace_Mode_" + this.machineMode));

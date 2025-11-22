@@ -104,7 +104,7 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 2);
+        this.machineMode = (this.machineMode + 1) % 2;
         GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeCanning_Mode_" + this.machineMode));
     }
 

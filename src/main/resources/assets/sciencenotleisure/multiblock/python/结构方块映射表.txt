@@ -1,15 +1,19 @@
 结构方块映射表:
 
 字母对应关系:
-A -> ofBlock...(block.MaragingSteel350.frame, 0, ...)
-B -> ofBlock...(gt.blockcasings4, 14, ...)
-C -> ofBlock...(gtplusplus.blocktieredcasings.1, 2, ...)
-D -> ofBlock...(tile.MetaBlockColumn, 2, ...)
-E -> 控制器位置
+A -> ofBlock...(tile.blockDiamond, 0, ...)
+B -> ofBlock...(tile.cloth, 0, ...)
+C -> ofBlock...(tile.cloth, 1, ...)
+D -> ofBlock...(tile.cloth, 3, ...)
+E -> ofBlock...(tile.cloth, 11, ...)
+F -> ofBlock...(tile.cloth, 14, ...)
+G -> ofBlock...(tile.cloth, 15, ...)
+H -> ofBlock...(tile.glass, 0, ...)
+I -> 控制器位置
 
-偏移值 Offsets: 2 2 0
-结构体高度: 4
+偏移值 Offsets: 9 9 6
+结构体高度: 19
 
-宽: 5
-高: 4
-长: 5
+宽: 19
+高: 19
+长: 19

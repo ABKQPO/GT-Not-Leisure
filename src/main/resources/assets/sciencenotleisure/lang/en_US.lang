@@ -2279,7 +2279,7 @@ LargeAutoclaveRecipeType=Autoclave
 Tooltip_LargeAutoclave_Casing=Any ore washing plant machine block
 
 NameLargeSolidifier=Large Solidification Array
-LargeSolidifierRecipeType=Fluid Solidifier / Tool Mold
+LargeSolidifierRecipeType=Fluid Solidifier
 Tooltip_LargeSolidifier_00=300% faster than machines of the same voltage
 Tooltip_LargeSolidifier_Casing=Any ore washing plant machine block
 
@@ -2756,6 +2756,14 @@ Tooltip_MagneticEnergyReactionFurnace_00=Capacitor is operating at full capacity
 Tooltip_MagneticEnergyReactionFurnace_01=Each level of coil grade provides an additional 20% acceleration and power consumption reduction (multiplication and superposition)
 Tooltip_MagneticEnergyReactionFurnace_Casing=Ang Tempered Arc Furnace Casing
 
+NamePhaseChangeCube=Phase Change Cube
+PhaseChangeCubeRecipeType=Extractor / Fluid Extractor / Fluid Solidifier
+PhaseChangeCube_Mode_0=Extractor
+PhaseChangeCube_Mode_1=Fluid Extractor
+PhaseChangeCube_Mode_2=Fluid Solidifier
+Tooltip_PhaseChangeCube_00=Each level of coil grade provides an additional 20% acceleration and power consumption reduction (multiplication and superposition)
+Tooltip_PhaseChangeCube_Casing=Any Hyper Energy Machine Block
+
 NameCompoundExtremeCoolingUnit=Compound Extreme Cooling Unit
 gtnl.recipe.PlasmaCondensationRecipes=Plasma Condensation
 CompoundExtremeCoolingUnitRecipeType=Vacuum Freezer / Plasma Condensation
@@ -2856,7 +2864,7 @@ Tooltip_FOGAlloyBlastSmelterModule_05=It has the ability of lossless overclockin
 Tooltip_FOGAlloyBlastSmelterModule_06=This module is specialized in efficient material processing.
 
 NameFOGExtractorModule=Solar Thermo-Extraction Unit
-FOGExtractorModuleRecipeType=Fluid Extractor / Extractor
+FOGExtractorModuleRecipeType=Extractor / Fluid Extractor
 fog.button.fluidmode.tooltip.01=Extractor
 fog.button.fluidmode.tooltip.02=Fluid Extractor
 Tooltip_FOGExtractorModule_00=This is a module of the Godforge

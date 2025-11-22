@@ -145,7 +145,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public final void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (byte) ((this.machineMode + 1) % 3);
+        this.machineMode = (this.machineMode + 1) % 3;
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + this.machineMode));
