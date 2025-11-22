@@ -35,6 +35,7 @@ import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -87,6 +88,11 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
     public ResourceCollectionModule(String aName) {
         super(aName, 25, 5, 1);
+    }
+
+    @Override
+    public long getMaxInputVoltage() {
+        return GTValues.V[GTUtility.getTier(tTier)];
     }
 
     @Override
