@@ -44,6 +44,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "required-after:bartworks;"
         + "required-after:gtnhintergalactic;"
         + "after:miscutils;"
+        + "required-after:etfuturum;"
         + "required-after:dreamcraft;"
         + "after:GalacticraftMars;"
         + "required-after:gregtech;"
