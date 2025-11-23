@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.DebugItem;
+import com.science.gtnl.common.item.ItemDireCraftPattern;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;
 import com.science.gtnl.common.item.ItemRecord;
@@ -89,6 +90,7 @@ public class ItemLoader {
     public static ItemBucket honeyBucket;
     public static ItemBucket shimmerBucket;
     public static ItemInfinityCell infinityCell;
+    public static ItemDireCraftPattern direCraftPattern;
     public static Item wirelessUpgradeChip;
     public static Item stick;
     public static Item suspiciousStew;
@@ -176,6 +178,7 @@ public class ItemLoader {
         royalGel = new RoyalGel();
         luckyHorseshoe = new LuckyHorseshoe();
         infinityCell = new ItemInfinityCell();
+        direCraftPattern = new ItemDireCraftPattern();
         stick = new Stick();
 
         var subDyeItems = new ItemInfinityCell.SubItem[16];
@@ -263,6 +266,7 @@ public class ItemLoader {
         GameRegistry.registerItem(RecordLoader.recordNewHorizons, "record_new_horizons");
         GameRegistry.registerItem(infinityFuelRodDepleted, "InfinityFuelRodDepleted");
         GameRegistry.registerItem(infinityFuelRod, "InfinityFuelRod");
+        GameRegistry.registerItem(direCraftPattern, "DireCraftPattern");
         GameRegistry.registerItem(metaItem, "MetaItem");
 
         GameRegistry.registerItem(satietyRing, "SatietyRing");
@@ -282,6 +286,7 @@ public class ItemLoader {
         GTNLItemList.HoneyBucket.set(new ItemStack(honeyBucket, 1));
         GTNLItemList.ShimmerBucket.set(new ItemStack(shimmerBucket, 1));
         GTNLItemList.InfinityCell.set(new ItemStack(infinityCell, 1));
+        GTNLItemList.DireCraftPattern.set(direCraftPattern);
         GTNLItemList.InfinityDyeCell.set(infinityDyeCell);
         GTNLItemList.InfinityDyeFluidCell.set(infinityDyeFluidCell);
         GTNLItemList.InfinityStoneCell.set(infinityCobblestoneCell);

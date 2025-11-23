@@ -15,6 +15,7 @@ import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
@@ -44,6 +45,7 @@ import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.SubscribeEventClientUtils;
 import com.science.gtnl.utils.detrav.DetravScannerGUI;
 import com.science.gtnl.utils.enums.GuiType;
+import com.science.gtnl.utils.gui.GuiDirePatternEncoder;
 import com.science.gtnl.utils.gui.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.utils.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.utils.gui.portableWorkbench.GuiPortableAnvil;
@@ -203,7 +205,13 @@ public class ClientProxy extends CommonProxy {
             case PortableCrystalChestGUI -> new GuiPortableChest.Crystal(player.inventory, player.getHeldItem());
             case PortableObsidianChestGUI -> new GuiPortableChest.Obsidian(player.inventory, player.getHeldItem());
             case PortableNetheriteChestGUI -> new GuiPortableChest.Netherite(player.inventory, player.getHeldItem());
-            case DirePatternEncoderGUI -> null;
+            case DirePatternEncoderGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof TileEntityDirePatternEncoder d) {
+                    yield new GuiDirePatternEncoder(player.inventory, d);
+                }
+                yield null;
+            }
             case PortableDarkSteelChestGUI -> new GuiPortableChest.DarkSteel(player.inventory, player.getHeldItem());
         };
     }

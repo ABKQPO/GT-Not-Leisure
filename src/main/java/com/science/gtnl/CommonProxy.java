@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.packet.NetWorkHandler;
@@ -13,6 +14,7 @@ import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.SubscribeEventUtils;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.gui.ContainerDirePatternEncoder;
 import com.science.gtnl.utils.gui.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.utils.gui.portableWorkbench.ContainerPortableAnvil;
 import com.science.gtnl.utils.gui.portableWorkbench.ContainerPortableBasicWorkbench;
@@ -140,7 +142,13 @@ public class CommonProxy implements IGuiHandler {
                 player.inventory,
                 player.getHeldItem(),
                 GuiPortableChest.GUI.DARKSTEEL);
-            case DirePatternEncoderGUI -> null;
+            case DirePatternEncoderGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof TileEntityDirePatternEncoder d) {
+                    yield new ContainerDirePatternEncoder(player.inventory, d);
+                }
+                yield null;
+            }
         };
     }
 

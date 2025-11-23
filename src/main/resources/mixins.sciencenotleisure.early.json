@@ -26,6 +26,7 @@
     "Minecraft.MixinItem",
     "Minecraft.MixinItemStack",
     "Minecraft.MixinMinecraftServer",
+    "Minecraft.MixinNBTTagList",
     "Minecraft.MixinPotion",
     "Minecraft.MixinPotionEffect",
     "Minecraft.MixinServerConfigurationManager",
