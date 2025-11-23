@@ -1,5 +1,6 @@
 package com.science.gtnl.common.packet;
 
+import com.science.gtnl.utils.DireCraftingPatternDetails;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -71,7 +72,7 @@ public class PktPatternTermUploadPattern implements IMessage, IMessageHandler<Pk
         final IAEItemStack out;
         if (patternStack.getItem() instanceof ItemEncodedPattern item) {
             var pattern = item.getPatternForItem(patternStack, player.worldObj);
-            if (pattern.isCraftable()) {
+            if (pattern.isCraftable() || pattern instanceof DireCraftingPatternDetails) {
                 out = pattern.getCondensedOutputs()[0];
             } else return;
         } else return;

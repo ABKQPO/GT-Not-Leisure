@@ -2,6 +2,7 @@ package com.science.gtnl.mixins.late.AppliedEnergistics.assembler;
 
 import java.util.Map;
 
+import com.science.gtnl.utils.DireCraftingPatternDetails;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
@@ -35,7 +36,7 @@ public class MixinContainerInterfaceTerminal {
             if (inv.getPatterns() instanceof AssemblerMatrix.CombinationPatternsIInventory) {
                 var i = (ItemEncodedPattern) object;
                 var d = i.getPatternForItem(handStack, player.worldObj);
-                return d.isCraftable();
+                return d.isCraftable() || d instanceof DireCraftingPatternDetails;
             }
             return true;
         }

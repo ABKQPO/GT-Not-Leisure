@@ -2,6 +2,7 @@ package com.science.gtnl.mixins.late.AppliedEnergistics.assembler;
 
 import java.util.Map;
 
+import com.science.gtnl.utils.DireCraftingPatternDetails;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 
@@ -88,7 +89,7 @@ public abstract class MixinCraftingCPUCluster {
         @Local(name = "medium") ICraftingMedium instance, @Local(name = "details") ICraftingPatternDetails details,
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
-        if (details.isCraftable() && instance instanceof AssemblerMatrix ef) {
+        if ((details.isCraftable() || details instanceof DireCraftingPatternDetails) && instance instanceof AssemblerMatrix ef) {
             if (!ef.isBusy()) {
                 assembly.set(true);
                 var craftingFrequency = Math

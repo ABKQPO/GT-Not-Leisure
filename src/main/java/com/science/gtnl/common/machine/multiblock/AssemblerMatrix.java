@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.science.gtnl.utils.DireCraftingPatternDetails;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -276,7 +277,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     newStack,
                     this.getBaseMetaTileEntity()
                         .getWorld());
-                if (p.isCraftable()) {
+                if (p.isCraftable() || p instanceof DireCraftingPatternDetails) {
                     patterns.put(newStack, p);
                     possibleOutputs.add(p.getCondensedOutputs()[0]);
                     work = true;
@@ -796,7 +797,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     newStack,
                     AssemblerMatrix.this.getBaseMetaTileEntity()
                         .getWorld());
-                if (p.isCraftable()) {
+                if (p.isCraftable() || p instanceof DireCraftingPatternDetails) {
                     patterns.put(newStack, p);
                     possibleOutputs.add(p.getCondensedOutputs()[0]);
                 }
@@ -939,7 +940,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         input,
                         this.getBaseMetaTileEntity()
                             .getWorld());
-                    if (!p.isCraftable()) continue;
+                    if (!(p.isCraftable() || p instanceof DireCraftingPatternDetails)) continue;
                     patterns.put(pattern, p);
                     possibleOutputs.add(p.getCondensedOutputs()[0]);
 
