@@ -32,7 +32,6 @@ import net.minecraft.util.FoodStats;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -310,11 +309,6 @@ public class SubscribeEventUtils {
             RecipeLoader.loadCircuitNanitesData(world.getSeed());
             circuitNanitesDataLoad = true;
         }
-
-        GameRules rules = world.getGameRules();
-        if (!rules.hasRule("doWeatherCycle")) {
-            rules.setOrCreateGameRule("doWeatherCycle", "true");
-        }
         if (event.world.provider.dimensionId == 0) {
             loadInstance(event.world);
         }
@@ -334,27 +328,6 @@ public class SubscribeEventUtils {
         CircuitNanitesRecipeData.recipeDataMap.clear();
         RecipePool.CircuitNanitesDataRecipes.getBackend()
             .clearRecipes();
-    }
-
-    @SubscribeEvent
-    public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || event.world.isRemote) return;
-
-        World world = event.world;
-        GameRules rules = world.getGameRules();
-
-        if (rules.hasRule("doWeatherCycle") && !rules.getGameRuleBooleanValue("doWeatherCycle")) {
-            WorldInfo info = world.getWorldInfo();
-
-            info.setRainTime(1000000);
-            info.setThunderTime(1000000);
-
-            info.setRaining(info.isRaining());
-            info.setThundering(info.isThundering());
-
-            world.rainingStrength = info.isRaining() ? 1.0f : 0.0f;
-            world.thunderingStrength = info.isThundering() ? 1.0f : 0.0f;
-        }
     }
 
     @SubscribeEvent

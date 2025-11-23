@@ -2,11 +2,16 @@ package com.science.gtnl.utils;
 
 import static com.science.gtnl.config.MainConfig.targetBlockSpecs;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,6 +60,9 @@ public class Utils {
     public static final BigInteger LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
     public static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
     public static final String ZERO_STRING = "0";
+    public static final String[] UNITS = { "", "K", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q" };
+    public static final BigDecimal THOUSAND_DEC = BigDecimal.valueOf(1000);
+    public static final DecimalFormat DF = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.US));
 
     public static boolean isClientSide() {
         return FMLCommonHandler.instance()
@@ -94,6 +102,39 @@ public class Utils {
             return Long.MIN_VALUE;
         }
         return value.longValue();
+    }
+
+    public static String shortFormat(long value) {
+        double number = value;
+        int unitIndex = 0;
+        while (Math.abs(number) >= 1000 && unitIndex < UNITS.length - 1) {
+            number /= 1000;
+            unitIndex++;
+        }
+
+        String formatted = DF.format(number);
+        if (formatted.endsWith(".00")) {
+            formatted = formatted.substring(0, formatted.length() - 3);
+        }
+
+        return formatted + UNITS[unitIndex];
+    }
+
+    public static String shortFormat(BigInteger value) {
+        BigDecimal decimal = new BigDecimal(value);
+        int unitIndex = 0;
+
+        while (decimal.compareTo(THOUSAND_DEC) >= 0 && unitIndex < UNITS.length - 1) {
+            decimal = decimal.divide(THOUSAND_DEC, 2, RoundingMode.HALF_UP);
+            unitIndex++;
+        }
+
+        String formatted = DF.format(decimal);
+        if (formatted.endsWith(".00")) {
+            formatted = formatted.substring(0, formatted.length() - 3);
+        }
+
+        return formatted + UNITS[unitIndex];
     }
 
     public static boolean addStacksToList(@NotNull Collection<ItemStack> list, @NotNull ItemStack itemStack,
@@ -347,7 +388,7 @@ public class Utils {
 
     public static VargsFunction<ItemStack[], ItemStack[]> filterStack = (s) -> Arrays.stream(s)
         .flatMap(Arrays::stream)
-        .filter(a -> a != null)
+        .filter(Objects::nonNull)
         .toArray(ItemStack[]::new);
 
     public interface VargsFunction<T, R> {

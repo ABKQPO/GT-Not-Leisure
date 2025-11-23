@@ -20,7 +20,7 @@ public class MixinPotion {
 
     @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void onPotionTypesInit(CallbackInfo ci) {
-        int newLength = 65536;
+        int newLength = 256;
         Potion[] newPotionTypes = new Potion[newLength];
 
         System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);

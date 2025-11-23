@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,6 +29,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -361,9 +363,13 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
     public void destroyRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
+        World world = this.getBaseMetaTileEntity()
+            .getWorld();
+
+        if (!(world
+            .getBlock(renderPos.posX, renderPos.posY, renderPos.posZ) instanceof BlockNanoPhagocytosisPlantRender))
+            return;
+        world.setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
 
         buildFirstRing();
         buildSecondRing();
@@ -499,11 +505,23 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     }
 
     @Override
+    public boolean isFlipChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isFlipChangeAllowed();
+    }
+
+    @Override
+    public boolean isRotationChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isRotationChangeAllowed();
+    }
+
+    @Override
     public void onBlockDestroyed() {
+        super.onBlockDestroyed();
         if (isRenderActive) {
             destroyRenderer();
         }
-        super.onBlockDestroyed();
     }
 
     @Override

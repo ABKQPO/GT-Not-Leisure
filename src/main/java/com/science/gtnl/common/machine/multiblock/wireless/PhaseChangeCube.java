@@ -200,7 +200,7 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
             return false;
         }
         setupParameters();
-        return mCountCasing > 50;
+        return mCountCasing > 1;
     }
 
     @Override

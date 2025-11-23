@@ -145,7 +145,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                 } else {
                     buildSphere();
                 }
-                isRenderActive = enableRender;
             }
         }
         return true;
@@ -159,6 +158,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             HORIZONTAL_OFF_SET_SPHERE,
             VERTICAL_OFF_SET_SPHERE,
             DEPTH_OFF_SET_SPHERE);
+        isRenderActive = true;
     }
 
     public void buildSphere() {
@@ -169,6 +169,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             HORIZONTAL_OFF_SET_SPHERE,
             VERTICAL_OFF_SET_SPHERE,
             DEPTH_OFF_SET_SPHERE);
+        isRenderActive = false;
     }
 
     public ChunkCoordinates getRenderPos() {
@@ -333,7 +334,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                 VERTICAL_OFF_SET_SPHERE,
                 DEPTH_OFF_SET_SPHERE)) {
                 buildSphere();
-                isRenderActive = false;
                 return false;
             }
         } else
@@ -351,7 +351,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
         if (!isRenderActive && enableRender && mTotalRunTime > 0) {
             destroySphere();
-            isRenderActive = true;
         }
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
 
@@ -359,11 +358,23 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     @Override
+    public boolean isFlipChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isFlipChangeAllowed();
+    }
+
+    @Override
+    public boolean isRotationChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isRotationChangeAllowed();
+    }
+
+    @Override
     public void onBlockDestroyed() {
-        if (isRenderActive && mMachine) {
+        super.onBlockDestroyed();
+        if (isRenderActive) {
             buildSphere();
         }
-        super.onBlockDestroyed();
     }
 
     @Override

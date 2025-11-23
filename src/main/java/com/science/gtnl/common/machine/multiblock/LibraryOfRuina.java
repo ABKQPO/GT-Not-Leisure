@@ -239,6 +239,11 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
             && GTUtility.areStacksEqual(getControllerSlot(), CustomItemList.TwilightCrystal.get(1));
     }
 
+    @Override
+    public boolean checkEnergyHatch() {
+        return true;
+    }
+
     public void replaceWaterWithPortal() {
         IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
         World world = aBaseMetaTileEntity.getWorld();

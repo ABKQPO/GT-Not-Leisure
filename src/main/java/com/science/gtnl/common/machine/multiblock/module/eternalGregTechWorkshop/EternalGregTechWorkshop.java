@@ -32,6 +32,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -64,6 +65,7 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.science.gtnl.common.block.blocks.BlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EGTWUpgradeStorage;
@@ -877,6 +879,18 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             }
         }
         super.onRemoval();
+    }
+
+    @Override
+    public boolean isFlipChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isFlipChangeAllowed();
+    }
+
+    @Override
+    public boolean isRotationChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isRotationChangeAllowed();
     }
 
     @Override
@@ -2118,12 +2132,15 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     public void destroyRenderer() {
         ChunkCoordinates renderPos = getRenderPos();
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, GregTechAPI.sBlockCasings1, 14, 2);
+        World world = this.getBaseMetaTileEntity()
+            .getWorld();
+
+        if (!(world
+            .getBlock(renderPos.posX, renderPos.posY, renderPos.posZ) instanceof BlockEternalGregTechWorkshopRender))
+            return;
+
+        world.setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, Blocks.air);
+        world.setBlock(renderPos.posX, renderPos.posY, renderPos.posZ, GregTechAPI.sBlockCasings1, 14, 2);
 
         buildExtraModule();
 
