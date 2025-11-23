@@ -28,6 +28,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECPUCluster;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -938,7 +939,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
                             "Info_QuantumComputer_02",
-                            GTUtility.scientificFormat(getMaximumStorage()),
+                            Utils.shortFormat(getMaximumStorage()),
                             usedStorage,
                             String.format(
                                 "%.1f%%",
