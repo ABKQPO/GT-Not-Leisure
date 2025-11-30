@@ -1,5 +1,9 @@
 package com.science.gtnl.common.packet;
 
+import appeng.api.AEApi;
+import appeng.api.features.ILocatable;
+import appeng.tile.misc.TileSecurity;
+import com.glodblock.github.util.Util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -117,11 +121,31 @@ public class WirelessPickBlock implements IMessage, IMessageHandler<WirelessPick
             return false;
         }
 
-        if (!obj.rangeCheck()) {
+        if (!obj.rangeCheck() && !Util.hasInfinityBoosterCard(item)) {
             player.addChatMessage(PlayerMessages.OutOfRange.toChat());
         } else {
             IGridNode gridNode = obj.getActionableNode();
-            if (gridNode == null) return false;
+            if (Util.hasInfinityBoosterCard(item)) {
+                IWirelessTermHandler handler = AEApi.instance()
+                    .registries()
+                    .wireless()
+                    .getWirelessTerminalHandler(item);
+                String unparsedKey = handler.getEncryptionKey(item);
+                long parsedKey = Long.parseLong(unparsedKey);
+                ILocatable securityStation = AEApi.instance()
+                    .registries()
+                    .locatable()
+                    .getLocatableBy(parsedKey);
+                if (securityStation instanceof TileSecurity t) {
+                    gridNode = t.getActionableNode();
+                    if (gridNode == null) {
+                        player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
+                    }
+                }
+            }
+            if (gridNode == null) {
+                return false;
+            }
             IGrid grid = gridNode.getGrid();
             if (securityCheck(player, grid, SecurityPermissions.EXTRACT)) {
                 IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
