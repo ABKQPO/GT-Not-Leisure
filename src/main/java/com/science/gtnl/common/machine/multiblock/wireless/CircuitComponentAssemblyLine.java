@@ -14,6 +14,13 @@ import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
+import gregtech.api.enums.GTValues;
+import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.util.GTRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -38,8 +45,11 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import org.jetbrains.annotations.NotNull;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
+
+import javax.annotation.Nonnull;
 
 public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase<CircuitComponentAssemblyLine>
     implements ISurvivalConstructable {
@@ -132,8 +142,36 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
+    public ProcessingLogic createProcessingLogic() {
+        return new GTNL_ProcessingLogic() {
+
+            @NotNull
+            @Override
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+                if (recipe.mSpecialValue > casingTier + 1) {
+                    return CheckRecipeResultRegistry.insufficientMachineTier(recipe.mSpecialValue);
+                }
+                return CheckRecipeResultRegistry.SUCCESSFUL;
+            }
+
+            @Override
+            @Nonnull
+            public GTNL_OverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier());
+            }
+        }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public String[] getInfoData() {
+        String[] origin = super.getInfoData();
+        String[] ret = new String[origin.length + 1];
+        System.arraycopy(origin, 0, ret, 0, origin.length);
+        ret[origin.length] = StatCollector.translateToLocal("scanner.info.CASS.tier")
+            + (casingTier >= 0 ? GTValues.VN[casingTier + 1] : "None!");
+        return ret;
     }
 
     @Override
@@ -172,6 +210,16 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
+        aNBT.setInteger("casingTier", casingTier);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        casingTier = aNBT.getInteger("casingTier");
+        if (!aNBT.hasKey(INPUT_SEPARATION_NBT_KEY)) {
+            inputSeparation = aNBT.getBoolean("mSeparate");
+        }
     }
 
     @Override
