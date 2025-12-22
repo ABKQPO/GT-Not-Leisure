@@ -14,19 +14,15 @@ import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
-import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
-import gregtech.api.enums.GTValues;
-import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.recipe.check.CheckRecipeResult;
-import gregtech.api.recipe.check.CheckRecipeResultRegistry;
-import gregtech.api.util.GTRecipe;
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -35,21 +31,25 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.RecipePool;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.recipes.GTNL_OverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNL_ProcessingLogic;
 
 import goodgenerator.loader.Loaders;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import org.jetbrains.annotations.NotNull;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
-
-import javax.annotation.Nonnull;
 
 public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase<CircuitComponentAssemblyLine>
     implements ISurvivalConstructable {
@@ -91,7 +91,11 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
                         .mapToObj(i -> Pair.of(Loaders.componentAssemblylineCasing, i))
                         .collect(Collectors.toList()),
                     -1,
-                    (t, meta) -> {if (t.casingTier < 0) {t.casingTier = meta;}},
+                    (t, meta) -> {
+                        if (t.casingTier < 0) {
+                            t.casingTier = meta;
+                        }
+                    },
                     t -> t.casingTier < 0 ? -1 : t.casingTier))
             .addElement('C', ofBlock(sBlockCasings2, 5))
             .addElement('D', ofBlock(sBlockCasingsTT, 0))
@@ -101,13 +105,7 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
                 'G',
                 buildHatchAdder(CircuitComponentAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(
-                        InputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
-                        ParallelCon)
+                    .atLeast(InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
             .addElement('H', ofBlock(sBlockCasingsTT, 7))
             .addElement('I', ofBlock(sBlockCasingsTT, 8))
