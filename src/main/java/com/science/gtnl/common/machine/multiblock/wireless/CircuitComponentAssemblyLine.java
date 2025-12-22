@@ -52,7 +52,7 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
     private static final int VERTICAL_OFF_SET = 2;
     private static final int DEPTH_OFF_SET = 0;
     private float speedup = 1;
-    public int casingTier;
+    public int casingTier = -1;
     private int runningTickCounter = 0;
 
     public CircuitComponentAssemblyLine(int aID, String aName, String aNameRegional) {
@@ -80,9 +80,9 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
                     IntStream.range(0, 14)
                         .mapToObj(i -> Pair.of(Loaders.componentAssemblylineCasing, i))
                         .collect(Collectors.toList()),
-                    -2,
-                    (t, meta) -> t.casingTier = meta,
-                    t -> t.casingTier))
+                    -1,
+                    (t, meta) -> {if (t.casingTier < 0) {t.casingTier = meta;}},
+                    t -> t.casingTier < 0 ? -1 : t.casingTier))
             .addElement('C', ofBlock(sBlockCasings2, 5))
             .addElement('D', ofBlock(sBlockCasingsTT, 0))
             .addElement('E', ofBlock(sBlockCasingsTT, 1))
@@ -92,7 +92,6 @@ public class CircuitComponentAssemblyLine extends WirelessEnergyMultiMachineBase
                 buildHatchAdder(CircuitComponentAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        Maintenance,
                         InputHatch,
                         InputBus,
                         OutputBus,
