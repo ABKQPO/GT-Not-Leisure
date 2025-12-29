@@ -413,6 +413,71 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .eut(16)
             .addTo(SMFR);
 
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Input_Bus_Steam.get(1L),
+                GTNLItemList.PrecisionSteamMechanism.get(2),
+                GTNLItemList.HydraulicConveyor.get(1),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTOreDictUnificator.get("plateDoubleStronze", 4),
+                GTUtility.getIntegratedCircuit(1))
+            .itemOutputs(GTNLItemList.AdvancedSteamInputBus.get(1))
+            .duration(2 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Output_Bus_Steam.get(1L),
+                GTNLItemList.PrecisionSteamMechanism.get(2),
+                GTNLItemList.HydraulicConveyor.get(1),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTOreDictUnificator.get("plateDoubleStronze", 4),
+                GTUtility.getIntegratedCircuit(2))
+            .itemOutputs(GTNLItemList.AdvancedSteamOutputBus.get(1))
+            .duration(2 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTNLItemList.AdvancedSteamInputBus.get(1),
+                GTNLItemList.PrecisionSteamMechanism.get(4),
+                GTNLItemList.HydraulicConveyor.get(2),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTOreDictUnificator.get("plateDoubleStronze", 4),
+                GTUtility.getIntegratedCircuit(1))
+            .itemOutputs(GTNLItemList.AdvancedSteamInputBusII.get(1))
+            .duration(2 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTNLItemList.AdvancedSteamOutputBus.get(1),
+                GTNLItemList.PrecisionSteamMechanism.get(4),
+                GTNLItemList.HydraulicConveyor.get(2),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTOreDictUnificator.get("plateDoubleStronze", 4),
+                GTUtility.getIntegratedCircuit(2))
+            .itemOutputs(GTNLItemList.AdvancedSteamOutputBusII.get(1))
+            .duration(2 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTModHandler.getModItem(IronChests.ID, "BlockIronChest", 4, 2),
+                GTOreDictUnificator.get("plateDoubleStronze", 4),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTNLItemList.PrecisionSteamMechanism.get(4),
+                GTNLItemList.HydraulicConveyor.get(4),
+                GTUtility.getIntegratedCircuit(13))
+            .itemOutputs(GTModHandler.getModItem(GregTech.ID, "gt.blockmachines", 1, 135))
+            .duration(2 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
         // Hatches
 
         RecipeBuilder.builder()
@@ -435,6 +500,17 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.OriginalOutputHatch.get(1))
             .duration(2 * SECONDS)
             .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTNLItemList.OriginalOutputHatch.get(1),
+                GTOreDictUnificator.get("pipeHugeStronze", 2),
+                GTOreDictUnificator.get("plateDoubleBreel", 4),
+                GTNLItemList.PrecisionSteamMechanism.get(2))
+            .itemOutputs(GTNLItemList.AdvancedOutputHatch.get(1))
+            .duration(20 * SECONDS)
+            .eut(90)
             .addTo(SMFR);
 
         // Machine Casings

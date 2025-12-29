@@ -632,6 +632,8 @@ public enum GTNLItemList implements IItemContainer {
     MagneticConfinementDimensionalityShockDevice,
     SupercomputingCenter,
     PCBFactory,
+    LargeSteamElectrolyzer,
+    LargeSteamFluidExtractor,
 
     EnergyHatchLV,
     EnergyHatchLV4A,
@@ -1278,7 +1280,12 @@ public enum GTNLItemList implements IItemContainer {
     GasCollectorUEV,
     GasCollectorUIV,
     GasCollectorUMV,
-    GasCollectorUXV;
+    GasCollectorUXV,
+    AdvancedOutputHatch,
+    AdvancedSteamInputBus,
+    AdvancedSteamOutputBus,
+    AdvancedSteamInputBusII,
+    AdvancedSteamOutputBusII;
 
     public static final GTNLItemList[] HUMONGOUS_OUTPUT_BUS = { HumongousOutputBusLV, HumongousOutputBusMV,
         HumongousOutputBusHV, HumongousOutputBusEV, HumongousOutputBusIV, HumongousOutputBusLuV, HumongousOutputBusZPM,

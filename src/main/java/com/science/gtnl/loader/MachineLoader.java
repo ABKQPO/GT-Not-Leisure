@@ -25,6 +25,7 @@ import com.science.gtnl.common.machine.basicMachine.SteamTurbine;
 import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
 import com.science.gtnl.common.machine.cover.WirelessSteamCover;
+import com.science.gtnl.common.machine.hatch.AdvancedOutputHatch;
 import com.science.gtnl.common.machine.hatch.BeamlinePipeMirror;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.CustomMaintenanceHatch;
@@ -47,6 +48,8 @@ import com.science.gtnl.common.machine.hatch.OriginalOutputHatch;
 import com.science.gtnl.common.machine.hatch.OutputBusMEProxy;
 import com.science.gtnl.common.machine.hatch.OutputHatchMEProxy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.hatch.SteamInputBus;
+import com.science.gtnl.common.machine.hatch.SteamOutputBus;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputProxy;
 import com.science.gtnl.common.machine.hatch.SuperDataAccessHatch;
@@ -141,8 +144,10 @@ import com.science.gtnl.common.machine.multiblock.steam.LargeSteamCircuitAssembl
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamCompressor;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamCrusher;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamCutting;
+import com.science.gtnl.common.machine.multiblock.steam.LargeSteamElectrolyzer;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamExtractor;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamExtruder;
+import com.science.gtnl.common.machine.multiblock.steam.LargeSteamFluidExtractor;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamFormingPress;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamFurnace;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamHammer;
@@ -718,6 +723,15 @@ public class MachineLoader {
                 "LargeSteamExtractor",
                 StatCollector.translateToLocal("NameLargeSteamExtractor")));
         addItemTooltip(GTNLItemList.LargeSteamExtractor.get(1), AnimatedText.SNL_QYZG);
+
+        GTNLItemList.LargeSteamFluidExtractor.set(
+            new LargeSteamFluidExtractor(
+                LARGE_STEAM_FLUID_EXTRACTOR.ID,
+                "LargeSteamFluidExtractor",
+                StatCollector.translateToLocal("NameLargeSteamFluidExtractor")));
+        addItemTooltip(
+            GTNLItemList.LargeSteamFluidExtractor.get(1),
+            chain(AnimatedText.SNL_SRP, text(RESET + " | "), AnimatedText.SNL_ADITYA));
 
         GTNLItemList.LargeSteamOreWasher.set(
             new LargeSteamOreWasher(
@@ -1712,6 +1726,15 @@ public class MachineLoader {
             .set(new PCBFactory(PCB_FACTORY.ID, "PCBFactory", StatCollector.translateToLocal("NamePCBFactory")));
         addItemTooltip(GTNLItemList.PCBFactory.get(1), AnimatedText.SNL_QYZG);
 
+        GTNLItemList.LargeSteamElectrolyzer.set(
+            new LargeSteamElectrolyzer(
+                LARGE_STEAM_ELECTROLYZER.ID,
+                "LargeSteamElectrolyzer",
+                StatCollector.translateToLocal("NameLargeSteamElectrolyzer")));
+        addItemTooltip(
+            GTNLItemList.LargeSteamElectrolyzer.get(1),
+            chain(AnimatedText.SNL_SRP, text(RESET + " | "), AnimatedText.SNL_ADITYA));
+
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(
             new CheatOreProcessingFactory(
@@ -2311,6 +2334,55 @@ public class MachineLoader {
                 "OriginalOutputHatch",
                 StatCollector.translateToLocal("OriginalOutputHatch")));
         addItemTooltip(GTNLItemList.OriginalOutputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.AdvancedOutputHatch.set(
+            new AdvancedOutputHatch(
+                ADVANCED_OUTPUT_HATCH.ID,
+                "AdvancedOutputHatch",
+                StatCollector.translateToLocal("AdvancedOutputHatch")));
+        addItemTooltip(
+            GTNLItemList.AdvancedOutputHatch.get(1),
+            chain(AnimatedText.SCIENCE_NOT_LEISURE, text(RESET + " | "), AnimatedText.SNL_ADITYA));
+
+        GTNLItemList.AdvancedSteamInputBus.set(
+            new SteamInputBus(
+                ADVANCED_STEAM_INPUT_BUS.ID,
+                "AdvancedSteamInputBus",
+                StatCollector.translateToLocal("AdvancedSteamInputBus"),
+                9));
+        addItemTooltip(
+            GTNLItemList.AdvancedSteamInputBus.get(1),
+            chain(AnimatedText.SCIENCE_NOT_LEISURE, text(RESET + " | "), AnimatedText.SNL_ADITYA));
+
+        GTNLItemList.AdvancedSteamOutputBus.set(
+            new SteamOutputBus(
+                ADVANCED_STEAM_OUTPUT_BUS.ID,
+                "AdvancedSteamOutputBus",
+                StatCollector.translateToLocal("AdvancedSteamOutputBus"),
+                9));
+        addItemTooltip(
+            GTNLItemList.AdvancedSteamOutputBus.get(1),
+            chain(AnimatedText.SCIENCE_NOT_LEISURE, text(RESET + " | "), AnimatedText.SNL_ADITYA));
+
+        GTNLItemList.AdvancedSteamInputBusII.set(
+            new SteamInputBus(
+                ADVANCED_STEAM_INPUT_BUS_II.ID,
+                "AdvancedSteamInputBusII",
+                StatCollector.translateToLocal("AdvancedSteamInputBusII"),
+                16));
+        addItemTooltip(
+            GTNLItemList.AdvancedSteamInputBusII.get(1),
+            chain(AnimatedText.SCIENCE_NOT_LEISURE, text(RESET + " | "), AnimatedText.SNL_ADITYA));
+
+        GTNLItemList.AdvancedSteamOutputBusII.set(
+            new SteamOutputBus(
+                ADVANCED_STEAM_OUTPUT_BUS_II.ID,
+                "AdvancedSteamOutputBusII",
+                StatCollector.translateToLocal("AdvancedSteamOutputBusII"),
+                16));
+        addItemTooltip(
+            GTNLItemList.AdvancedSteamOutputBusII.get(1),
+            chain(AnimatedText.SCIENCE_NOT_LEISURE, text(RESET + " | "), AnimatedText.SNL_ADITYA));
 
         GTNLItemList.SuperVoidBus
             .set(new SuperVoidBus(SUPER_VOID_BUS.ID, "SuperVoidBus", StatCollector.translateToLocal("SuperVoidBus")));

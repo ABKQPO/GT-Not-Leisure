@@ -281,6 +281,12 @@ public class CraftingTableRecipes implements IRecipePool {
                 ItemList.Machine_Bronze_Extractor.get(1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.LargeSteamFluidExtractor.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.MV), 'B',
+                MaterialPool.Stronze.get(OrePrefixes.pipeHuge, 1), 'C', GTNLItemList.HydraulicPump.get(1), 'D',
+                ItemList.Machine_LV_FluidExtractor.get(1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeSteamOreWasher.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', GTOreDictUnificator.get(OrePrefixes.rotor, Materials.Steel, 1L),
                 'B', GTNLItemList.HydraulicPump.get(1), 'C', GTNLItemList.PrecisionSteamMechanism.get(1), 'D',
@@ -329,6 +335,12 @@ public class CraftingTableRecipes implements IRecipePool {
                 GregtechItemList.Controller_SteamCentrifugeMulti.get(1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.LargeSteamElectrolyzer.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', GTNLItemList.HydraulicPump.get(1), 'B',
+                MaterialPool.Breel.get(OrePrefixes.pipeTiny, 1), 'C', GTNLItemList.PrecisionSteamMechanism.get(1), 'D',
+                ItemList.Hull_Bronze.get(1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeSteamHammer.get(1),
             new Object[] { "ABA", "CDC", "AEA", 'A', MaterialPool.Breel.get(OrePrefixes.pipeTiny, 1), 'B',
                 GTNLItemList.HydraulicPiston.get(1), 'C', GTNLItemList.PrecisionSteamMechanism.get(1), 'D',
@@ -355,6 +367,26 @@ public class CraftingTableRecipes implements IRecipePool {
             GregtechItemList.Hatch_Output_Bus_Steam.get(1),
             new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
                 GregtechItemList.Hatch_Input_Bus_Steam.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AdvancedSteamInputBus.get(1),
+            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
+                GTNLItemList.AdvancedSteamOutputBus.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AdvancedSteamOutputBus.get(1),
+            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
+                GTNLItemList.AdvancedSteamInputBus.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AdvancedSteamInputBusII.get(1),
+            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
+                GTNLItemList.AdvancedSteamOutputBusII.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.AdvancedSteamOutputBusII.get(1),
+            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
+                GTNLItemList.AdvancedSteamInputBusII.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeBoilerBronze.get(1),

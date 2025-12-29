@@ -295,6 +295,12 @@ Tooltip_OriginalOutputHatch_01=容量：%s升
 Tooltip_OriginalOutputHatch_02=用螺丝刀右键以限制自动输出
 Tooltip_OriginalOutputHatch_03=可以被设定为仅输出/仅不输出 物品/蒸汽/流体
 Tooltip_OriginalOutputHatch_04=被设定过的输出仓在多方块中拥有更高的优先级
+AdvancedOutputHatch=高级输出仓(蒸汽)
+Tooltip_AdvancedOutputHatch_00=为多方块机器输出流体
+Tooltip_AdvancedOutputHatch_01=容量：%s升
+Tooltip_AdvancedOutputHatch_02=用螺丝刀右键以限制自动输出
+Tooltip_AdvancedOutputHatch_03=可以被设定为仅输出/仅不输出 物品/蒸汽/流体
+Tooltip_AdvancedOutputHatch_04=被设定过的输出仓在多方块中拥有更高的优先级
 
 VaultPortHatch=保险库多方块输入/输出总成
 Tooltip_VaultPortHatch_00=保险库的一站式访问节点
@@ -2645,6 +2651,13 @@ Tooltip_LargeSteamCentrifuge_01=仅消耗正常需求100%的蒸汽
 Tooltip_LargeSteamCentrifuge_02=一次可处理多达16个物品
 Tooltip_LargeSteamCentrifuge_Casing=任意镀铜砖块或脱氧钢机械方块
 
+NameLargeSteamElectrolyzer=大型蒸汽电解机
+LargeSteamElectrolyzerRecipeType=电解机
+Tooltip_LargeSteamElectrolyzer_00=比同等级的单方块电解机快43%
+Tooltip_LargeSteamElectrolyzer_01=仅消耗正常需求100%的蒸汽
+Tooltip_LargeSteamElectrolyzer_02=一次可处理多达16个物品
+Tooltip_LargeSteamElectrolyzer_Casing=任意镀铜砖块或脱氧钢机械方块
+
 NameLargeSteamHammer=大型蒸汽锻造锤
 LargeSteamHammerRecipeType=锻造锤
 Tooltip_LargeSteamHammer_00=比同等级的单方块锻造锤快33%
@@ -3049,6 +3062,12 @@ Tooltip_LargeSteamExtractor_00=比同等级的单方块提取机快33%
 Tooltip_LargeSteamExtractor_01=仅消耗正常需求90%的蒸汽
 Tooltip_LargeSteamExtractor_02=一次可处理多达16个物品
 Tooltip_LargeSteamExtractor_Casing=任意镀铜砖块或脱氧钢机械方块
+NameLargeSteamFluidExtractor=大型蒸汽流体提取机
+LargeSteamFluidExtractorRecipeType=流体提取机
+Tooltip_LargeSteamFluidExtractor_00=比同等级的单方块流体提取机快33%
+Tooltip_LargeSteamFluidExtractor_01=仅消耗正常需求90%的蒸汽
+Tooltip_LargeSteamFluidExtractor_02=一次可处理多达16个物品
+Tooltip_LargeSteamFluidExtractor_Casing=任意镀铜砖块或脱氧钢机械方块
 
 NameComponentAssembler=部件组装机
 ComponentAssemblerRecipeType=部件装配线

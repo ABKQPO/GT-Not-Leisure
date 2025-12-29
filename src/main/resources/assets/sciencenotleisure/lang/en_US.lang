@@ -295,6 +295,25 @@ Tooltip_OriginalOutputHatch_01=Capacity: %sL
 Tooltip_OriginalOutputHatch_02=Right click with screwdriver to restrict output
 Tooltip_OriginalOutputHatch_03=Can be restricted to put out Items and/or Steam/No Steam/1 specific Fluid
 Tooltip_OriginalOutputHatch_04=Restricted Output Hatches are given priority for Multiblock Fluid output
+AdvancedOutputHatch=Advanced Output Hatch (Steam)
+Tooltip_AdvancedOutputHatch_00=Fluid Output for Multiblocks
+Tooltip_AdvancedOutputHatch_01=Capacity: %sL
+Tooltip_AdvancedOutputHatch_02=Right click with screwdriver to restrict output
+Tooltip_AdvancedOutputHatch_03=Can be restricted to put out Items and/or Steam/No Steam/1 specific Fluid
+Tooltip_AdvancedOutputHatch_04=Restricted Output Hatches are given priority for Multiblock Fluid output
+
+AdvancedSteamInputBus=Advanced Input Bus (Steam)
+AdvancedSteamOutputBus=Advanced Output Bus (Steam)
+AdvancedSteamInputBusII=Advanced Input Bus II (Steam)
+AdvancedSteamOutputBusII=Advanced Output Bus II (Steam)
+Tooltip_AdvancedSteamInputBus_00=Item Input for Steam Multiblocks
+Tooltip_AdvancedSteamInputBus_01=Shift + right click with screwdriver to toggle automatic item shuffling
+Tooltip_AdvancedSteamInputBus_02=Capacity: %s stacks
+Tooltip_AdvancedSteamInputBus_03=Does not work with non-steam multiblocks
+Tooltip_AdvancedSteamOutputBus_00=Item Output for Steam Multiblocks
+Tooltip_AdvancedSteamOutputBus_01=Does not automatically export items
+Tooltip_AdvancedSteamOutputBus_02=Capacity: %s stacks
+Tooltip_AdvancedSteamOutputBus_03=Does not work with non-steam multiblocks
 
 VaultPortHatch=Vault Port Assembly
 Tooltip_VaultPortHatch_00=All-in-one access for the Vault
@@ -2645,6 +2664,13 @@ Tooltip_LargeSteamCentrifuge_01=Only consumes 100% of the normal steam requireme
 Tooltip_LargeSteamCentrifuge_02=Can process up to 16 items at once.
 Tooltip_LargeSteamCentrifuge_Casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
+NameLargeSteamElectrolyzer=Large Steam Electrolyzer
+LargeSteamElectrolyzerRecipeType=Electrolyzer
+Tooltip_LargeSteamElectrolyzer_00=43% faster than single-block electrolyzers of the same tier.
+Tooltip_LargeSteamElectrolyzer_01=Only consumes 100% of the normal steam requirement.
+Tooltip_LargeSteamElectrolyzer_02=Can process up to 16 items at once.
+Tooltip_LargeSteamElectrolyzer_Casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
+
 NameLargeSteamHammer=Large Steam Forging Hammer
 LargeSteamHammerRecipeType=Forging Hammer
 Tooltip_LargeSteamHammer_00=33% faster than single-block forging hammers of the same tier.
@@ -3049,6 +3075,12 @@ Tooltip_LargeSteamExtractor_00=33% faster than single-block extractors of the sa
 Tooltip_LargeSteamExtractor_01=Only consumes 90% of the normal steam requirement.
 Tooltip_LargeSteamExtractor_02=Can process up to 16 items at once.
 Tooltip_LargeSteamExtractor_Casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
+NameLargeSteamFluidExtractor=Large Steam Fluid Extractor
+LargeSteamFluidExtractorRecipeType=Fluid Extractor
+Tooltip_LargeSteamFluidExtractor_00=33% faster than single-block fluid extractors of the same tier.
+Tooltip_LargeSteamFluidExtractor_01=Only consumes 90% of the normal steam requirement.
+Tooltip_LargeSteamFluidExtractor_02=Can process up to 16 items at once.
+Tooltip_LargeSteamFluidExtractor_Casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 NameComponentAssembler=Component Assembler
 ComponentAssemblerRecipeType=Component Assembly Line

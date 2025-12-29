@@ -47,6 +47,19 @@ public class AnimatedText {
         + RESET;
     public static final Supplier<String> SNL_SKYINR = () -> AnimatedText.SCIENCE_NOT_LEISURE
         .get() + RESET + ": " + AQUA + "Created By: Skyinr" + RESET;
+    public static final Supplier<String> SNL_ADITYA = chain(
+        animatedText(
+            "Created By: Aditya",
+            1,
+            80,
+            DARK_PURPLE,
+            DARK_PURPLE,
+            LIGHT_PURPLE,
+            DARK_PURPLE,
+            WHITE,
+            DARK_PURPLE,
+            LIGHT_PURPLE),
+        text(RESET));
 
     public static final Supplier<String> SCIENCE_NOT_LEISURE = chain(
         text(StatCollector.translateToLocal("Tooltip_Adder")),

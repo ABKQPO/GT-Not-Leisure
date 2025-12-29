@@ -86,6 +86,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
@@ -142,7 +143,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/background/steam_dial");
     public static final UITexture STEAM_GAUGE_STEEL_BG = UITexture
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/background/steam_dial_steel");
-
     public SteamMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -280,6 +280,16 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         for (MTEHatch h : mInputHatches) h.updateTexture(getCasingTextureID());
         for (MTEHatch h : mOutputHatches) h.updateTexture(getCasingTextureID());
         for (IDualInputHatch h : mDualInputHatches) h.updateTexture(getCasingTextureID());
+    }
+
+    @Override
+    public boolean addInputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return super.addInputBusToMachineList(aTileEntity, aBaseCasingIndex);
+    }
+
+    @Override
+    public boolean addOutputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return super.addOutputBusToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     public int getCasingTextureID() {
