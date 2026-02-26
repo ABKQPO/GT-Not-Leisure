@@ -284,7 +284,6 @@ import gregtech.api.covers.CoverRegistry;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.SoundResource;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
@@ -4818,7 +4817,7 @@ public class MachineLoader {
                 3,
                 3,
                 tier.tier * 100000000,
-                SoundResource.NONE,
+                null,
                 MTEBasicMachineWithRecipe.SpecialEffects.NONE,
                 "GAS_COLLECTOR",
                 null);
