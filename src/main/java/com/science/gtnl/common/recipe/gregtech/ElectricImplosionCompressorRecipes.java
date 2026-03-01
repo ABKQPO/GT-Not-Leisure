@@ -24,7 +24,7 @@ public class ElectricImplosionCompressorRecipes implements IRecipePool {
                 GTModHandler.getModItem(EternalSingularity.ID, "eternal_singularity", 1, 0),
                 ItemList.EnergisedTesseract.get(1))
             .fluidInputs(MaterialsUEVplus.Protomatter.getFluid(1000))
-            .itemOutputs(GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 4, 47))
+            .itemOutputs(GTModHandler.getModItem(AppliedEnergistics2.ID, "item.ItemMultiMaterial", 1, 47))
             .fluidOutputs(MaterialsUEVplus.DimensionallyTranscendentResidue.getFluid(25000))
             .duration(2 * SECONDS)
             .eut(TierEU.RECIPE_UMV)
