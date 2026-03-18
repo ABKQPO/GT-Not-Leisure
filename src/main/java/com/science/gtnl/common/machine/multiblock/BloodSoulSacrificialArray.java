@@ -253,7 +253,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             .addElement('M', ofBlock(ModBlocks.bloodRune, 6))
             .addElement('N', ofBlockAnyMeta(BLOOD_LAMP))
             .addElement('O', ofBlockAnyMeta(ModBlocks.blockCrystal))
-            .addElement('P', ofBlockAnyMeta(ModBlocks.bloodStoneBrick))
+            .addElement('P', ofBlockAnyMeta(ModBlocks.largeBloodStoneBrick))
             .addElement('Q', ofBlockAnyMeta(Blocks.glowstone))
             .addElement('R', ofBlockAnyMeta(ModBlocks.ritualStone))
             .addElement('S', ofBlockAnyMeta(ModBlocks.runeOfSacrifice))
@@ -272,6 +272,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             .addElement('0', ofBlockAnyMeta(ModBlocks.blockAltar))
             .addElement('1', ofBlockAnyMeta(Blocks.hopper))
             .addElement('2', ofFrame(Materials.Plutonium))
+            .addElement('3', ofBlockAnyMeta(ModBlocks.bloodStoneBrick))
             .build();
     }
 

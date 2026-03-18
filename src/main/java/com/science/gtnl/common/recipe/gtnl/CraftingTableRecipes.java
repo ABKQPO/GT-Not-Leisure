@@ -1328,6 +1328,14 @@ public class CraftingTableRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull() });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.EnderElevatorBlock.get(1),
+            new Object[] { "ABA", "CDC", "CEC", 'A', new ItemStack(Blocks.wool, 1), 'B',
+                new ItemStack(Blocks.stone_pressure_plate, 1), 'C',
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.EnderPearl, 1), 'D',
+                GTModHandler.getModItem(OpenBlocks.ID, "elevator", 1), 'E',
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Redstone, 1) });
+
         GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.PartSuperInterface.get(1),
             new Object[] { GTNLItemList.SuperInterface.get(1) });
@@ -1335,6 +1343,14 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.SuperInterface.get(1),
             new Object[] { GTNLItemList.PartSuperInterface.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.EnderElevatorSlab.get(2),
+            new Object[] { GTNLItemList.EnderElevatorBlock.get(1), ToolDictNames.craftingToolSaw });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.EnderElevatorCarpet.get(2),
+            new Object[] { GTNLItemList.EnderElevatorSlab.get(1), ToolDictNames.craftingToolSaw });
 
         if (NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();

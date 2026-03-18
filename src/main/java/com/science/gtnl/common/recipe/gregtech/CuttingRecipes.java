@@ -108,5 +108,23 @@ public class CuttingRecipes implements IRecipePool {
             200,
             TierEU.RECIPE_ULV);
 
+        registerCutterRecipes(
+            new ItemStack[] { GTNLItemList.EnderElevatorBlock.get(1) },
+            new ItemStack[] { GTNLItemList.EnderElevatorSlab.get(2) },
+            1,
+            3,
+            4,
+            40,
+            TierEU.RECIPE_LV);
+
+        registerCutterRecipes(
+            new ItemStack[] { GTNLItemList.EnderElevatorSlab.get(1) },
+            new ItemStack[] { GTNLItemList.EnderElevatorCarpet.get(2) },
+            1,
+            3,
+            4,
+            40,
+            TierEU.RECIPE_LV);
+
     }
 }
