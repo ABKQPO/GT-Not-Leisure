@@ -110,7 +110,7 @@ public class CuttingRecipes implements IRecipePool {
 
         registerCutterRecipes(
             new ItemStack[] { GTNLItemList.EnderElevatorBlock.get(1) },
-            new ItemStack[] { GTNLItemList.EnderElevatorSlab.get(2) },
+            new ItemStack[] { GTNLItemList.EnderElevatorSlab.get(1) },
             1,
             3,
             4,
@@ -119,7 +119,7 @@ public class CuttingRecipes implements IRecipePool {
 
         registerCutterRecipes(
             new ItemStack[] { GTNLItemList.EnderElevatorSlab.get(1) },
-            new ItemStack[] { GTNLItemList.EnderElevatorCarpet.get(2) },
+            new ItemStack[] { GTNLItemList.EnderElevatorCarpet.get(1) },
             1,
             3,
             4,

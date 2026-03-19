@@ -3244,6 +3244,20 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_MV)
             .addTo(As);
 
+        RecipeBuilder.builder()
+            .itemInputs(GTNLItemList.EnderElevatorSlab.get(2))
+            .itemOutputs(GTNLItemList.EnderElevatorBlock.get(2))
+            .duration(40)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(GTNLItemList.EnderElevatorCarpet.get(2))
+            .itemOutputs(GTNLItemList.EnderElevatorSlab.get(2))
+            .duration(40)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();
