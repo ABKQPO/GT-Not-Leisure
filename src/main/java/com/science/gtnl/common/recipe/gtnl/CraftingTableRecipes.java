@@ -1352,6 +1352,14 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.EnderElevatorCarpet.get(2),
             new Object[] { GTNLItemList.EnderElevatorSlab.get(1), ToolDictNames.craftingToolSaw });
 
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.EnderElevatorBlock.get(1),
+            new Object[] { GTNLItemList.EnderElevatorSlab.get(1), GTNLItemList.EnderElevatorSlab.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.EnderElevatorSlab.get(1),
+            new Object[] { GTNLItemList.EnderElevatorCarpet.get(1), GTNLItemList.EnderElevatorCarpet.get(1) });
+
         if (NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
             if (MainConfig.recipe.enableSomethingRecipe) loadExtraRecipe();
