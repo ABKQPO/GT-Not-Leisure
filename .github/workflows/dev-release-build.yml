@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  dev-build:
     runs-on: ubuntu-24.04
     env:
       VERSION: ${{ github.ref_name }}
