@@ -29,8 +29,12 @@ Info_Render_Disabled=关闭渲染
 Info_ShowPattern_Enabled=§a在接口终端显示
 Info_ShowPattern_Disabled=§c在接口终端隐藏
 
+commands.kill.success.single=杀死了%s
+commands.kill.success.multiple=杀死了%s个实体
+
 GT5U.gui.text.parallel_overflow=§4并行溢出
 GT5U.gui.text.parallel_zero=§4并行不足，检查你的输入是否满足配方或机器要求
+GT5U.gui.text.crash=§4很抱歉，你的机器出现了一些问题……        如果要寻求帮助，请把错误报告和日志文件发给对方，而不是发送这个窗口的照片或者截图或者文本。
 
 gtnl.gui.config.general=GTNL 总览配置
 gtnl.gui.config.general.debug=调试设置
@@ -223,6 +227,9 @@ gtnl.gui.config.general.tickrate.maxtickrate=最高刻率
 gtnl.gui.config.general.tickrate.maxtickrate.tooltip=来自服务器的最大刻率，防止刻率过高
 gtnl.gui.config.general.tickrate.mintickrate=最低刻率
 gtnl.gui.config.general.tickrate.mintickrate.tooltip=来自服务器的最小刻率，防止刻率过低
+
+gtnl.gui.config.general.minecraft.enableKillEnhance=增强 /kill 指令
+gtnl.gui.config.general.minecraft.enableKillEnhance.tooltip=增强 /kill 指令，支持现代目标选择器并改进其行为。
 
 nei.bookmark.ae_retrieve_item=自AE取出物品
 nei.bookmark.ae_start_craft=向AE请求合成
@@ -1173,6 +1180,15 @@ tile.CompressedStargateTier6.name=压缩星门-六重
 tile.CompressedStargateTier7.name=压缩星门-七重
 tile.CompressedStargateTier8.name=压缩星门-八重
 tile.CompressedStargateTier9.name=压缩星门-九重
+
+tile.EnderElevatorBlock.name=末影电梯 (方块)
+tile.EnderElevatorSlab.name=末影电梯 (台阶)
+tile.EnderElevatorCarpet.name=末影电梯 (地毯)
+Tooltip_EnderElevator_00=让实体在距离最近的两个相同颜色电梯之间上下传送
+Tooltip_EnderElevator_01=传送最高256格，水平64格，不可同高度平移
+Tooltip_EnderElevator_02=跳跃向上，潜行向下
+Tooltip_EnderElevator_03=手持染料对其右键点击可以改变电梯颜色为染料颜色
+Tooltip_EnderElevator_04=手持伪装方块对电梯右击可以伪装电梯。空手时潜行右击移除伪装
 
 tile.SearedLadder.name=焦黑梯子
 Tooltip_SearedLadder_00=§o“可供攀爬的冶炼炉建材。”
@@ -3526,6 +3542,7 @@ Tooltip_EnergyInfuser_01=可用于为物品充电(无损)
 Tooltip_EnergyInfuser_02=提供UU物质可修复物品
 Tooltip_EnergyInfuser_03=充电时将存储在机器内部
 Tooltip_EnergyInfuser_04=使用螺丝刀右键立即输出所有物品
+Tooltip_EnergyInfuser_05=不安装能源仓将自动进入无线模式
 Tooltip_EnergyInfuser_Casing=任意分子机械方块
 Info_EnergyInfuser_00=立即输出所有物品
 

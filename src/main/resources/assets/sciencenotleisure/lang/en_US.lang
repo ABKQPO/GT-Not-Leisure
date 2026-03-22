@@ -29,8 +29,12 @@ Info_Render_Disabled=Disabled Render
 Info_ShowPattern_Enabled=§aShow on Interface Terminal
 Info_ShowPattern_Disabled=§cHide on Interface Terminal
 
+commands.kill.success.single=Killed %s
+commands.kill.success.multiple=Killed %s entities
+
 GT5U.gui.text.parallel_overflow=§4Parallel overflow
 GT5U.gui.text.parallel_zero=§4Insufficient parallel, check whether your inputs meet the recipe or machine requirements
+GT5U.gui.text.crash=§4Machine turned off due to crash. Refer to the log for more info.
 
 gtnl.gui.config.general=GTNL General Config
 gtnl.gui.config.general.debug=Debug Settings
@@ -223,6 +227,9 @@ gtnl.gui.config.general.tickrate.maxtickrate=Maximum Tickrate
 gtnl.gui.config.general.tickrate.maxtickrate.tooltip=Maximum allowed tickrate from the server to prevent over-speeding.
 gtnl.gui.config.general.tickrate.mintickrate=Minimum Tickrate
 gtnl.gui.config.general.tickrate.mintickrate.tooltip=Minimum allowed tickrate from the server to prevent excessive lag.
+
+gtnl.gui.config.general.minecraft.enableKillEnhance=Enhanced /kill Command
+gtnl.gui.config.general.minecraft.enableKillEnhance.tooltip=Improves the /kill command with modern selector support and better behavior.
 
 nei.bookmark.ae_retrieve_item=Retrieve item from AE
 nei.bookmark.ae_start_craft=Request craft from AE
@@ -1173,6 +1180,15 @@ tile.CompressedStargateTier6.name=Compressed Stargate - Tier 6
 tile.CompressedStargateTier7.name=Compressed Stargate - Tier 7
 tile.CompressedStargateTier8.name=Compressed Stargate - Tier 8
 tile.CompressedStargateTier9.name=Compressed Stargate - Tier 9
+
+tile.EnderElevatorBlock.name=Ender Elevator (Block)
+tile.EnderElevatorSlab.name=Ender Elevator (Slab)
+tile.EnderElevatorCarpet.name=Ender Elevator (Carpet)
+Tooltip_EnderElevator_00=Allows entities to teleport up or down between the nearest elevators of the same color
+Tooltip_EnderElevator_01=Maximum range: 256 blocks vertically and 64 blocks horizontally. Cannot teleport at the same height
+Tooltip_EnderElevator_02=Jump to go up, sneak to go down
+Tooltip_EnderElevator_03=Right-click with dye to change the elevator color to the dye color
+Tooltip_EnderElevator_04=Right-click with a block to disguise the elevator. Sneak-right-click with an empty hand to remove the disguise
 
 tile.SearedLadder.name=Seared Ladder
 Tooltip_SearedLadder_00=§o"Climbable smeltery building material."
@@ -3526,6 +3542,7 @@ Tooltip_EnergyInfuser_01=Can be used to charge items without loss.
 Tooltip_EnergyInfuser_02=Provides UU-Matter to repair items.
 Tooltip_EnergyInfuser_03=Store inside the machine during charging
 Tooltip_EnergyInfuser_04=Right-click with the screwdriver to immediately output all items
+Tooltip_EnergyInfuser_05=If no energy hatch is installed, it will automatically enter wireless mode
 Info_EnergyInfuser_00=Immediately output all items
 Tooltip_EnergyInfuser_Casing=Any Molecular Machine Block
 

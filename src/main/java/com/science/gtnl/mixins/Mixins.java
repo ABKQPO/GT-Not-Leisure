@@ -24,17 +24,22 @@ public enum Mixins implements IMixins {
         .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
     MINECRAFT_COMMON(Side.COMMON, "Minecraft.AccessorStringTranslate", "Minecraft.AccessorContainerRepair",
-        "Minecraft.AccessorEntityLivingBase", "Minecraft.AccessorFoodStats", "Minecraft.AccessorGuiChat",
+        "Minecraft.AccessorEntityLivingBase", "Minecraft.AccessorTessellator", "Minecraft.AccessorFoodStats",
         "Minecraft.AccessorMinecraft", "Minecraft.MixinCommandTeleport", "Minecraft.MixinEntity",
         "Minecraft.MixinEntityItem", "Minecraft.MixinEntityLivingBase", "Minecraft.MixinEntityLiving",
-        "Minecraft.MixinEntityPlayer", "Minecraft.MixinExplosion", "Minecraft.MixinGuiContainer",
-        "Minecraft.MixinInventoryCrafting", "Minecraft.MixinItem", "Minecraft.MixinItemStack",
-        "Minecraft.MixinMinecraftServer", "Minecraft.MixinNBTTagList", "Minecraft.MixinPotion",
-        "Minecraft.MixinPotionEffect", "Minecraft.MixinServerConfigurationManager", "Minecraft.MixinWorld",
-        "Minecraft.MixinWorldServer"),
+        "Minecraft.MixinEntityPlayer", "Minecraft.MixinExplosion", "Minecraft.MixinInventoryCrafting",
+        "Minecraft.MixinItem", "Minecraft.MixinItemStack", "Minecraft.MixinMinecraftServer",
+        "Minecraft.MixinNBTTagList", "Minecraft.MixinPotion", "Minecraft.MixinPotionEffect",
+        "Minecraft.MixinServerConfigurationManager", "Minecraft.MixinWorld", "Minecraft.MixinWorldServer"),
 
-    MINECRAFT_CLIENT(Side.CLIENT, "Minecraft.AccessorEntityRenderer", "Minecraft.MixinMinecraft",
-        "Minecraft.MixinWorldClient", "Minecraft.MixinSimpleReloadableResourceManager"),
+    MINECRAFT_KILL_ENHANCE(
+        new MixinBuilder("Mixins for Kill Command Enhance").addCommonMixins("Minecraft.MixinCommandKill")
+            .setPhase(Phase.EARLY)
+            .setApplyIf(() -> MainConfig.minecraft.enableKillEnhance)),
+
+    MINECRAFT_CLIENT(Side.CLIENT, "Minecraft.AccessorEntityRenderer", "Minecraft.AccessorGuiChat",
+        "Minecraft.MixinMinecraft", "Minecraft.MixinWorldClient", "Minecraft.MixinSimpleReloadableResourceManager",
+        "Minecraft.MixinGuiContainer", "Minecraft.MixinGuiFlatPresets"),
 
     SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
         .addCommonMixins(

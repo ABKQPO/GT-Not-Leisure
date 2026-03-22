@@ -3,6 +3,7 @@ package com.science.gtnl.common.render.tile;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -18,6 +19,7 @@ import org.lwjgl.opengl.GL12;
 import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.block.blocks.BlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.mixins.early.Minecraft.AccessorTessellator;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -63,6 +65,7 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements 
         boolean hasWorld = te.hasWorldObj();
 
         GL11.glPushMatrix();
+        RenderHelper.disableStandardItemLighting();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glTranslated(x, y, z);
@@ -94,7 +97,11 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements 
                 tessellator.setTranslation(0, 0, 0);
                 tessellator.draw();
 
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                var accessor = (AccessorTessellator) tessellator;
+                if (accessor.getIsDrawing()) tessellator.draw();
+                return;
+            }
         } else {
             float lastBrightnessX = OpenGlHelper.lastBrightnessX;
             float lastBrightnessY = OpenGlHelper.lastBrightnessY;
