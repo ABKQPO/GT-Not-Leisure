@@ -119,6 +119,14 @@ public class MainConfig {
     @Comment("Machine section")
     public static class Machine {
 
+        @Comment("Default energy consumption per operation (in AE/t)")
+        @DefaultDouble(10)
+        public double beamFormerEnergyConsume = 10;
+
+        @Comment("Default maximum beam length (in blocks)")
+        @DefaultInt(256)
+        public int beamFormerLength = 256;
+
         @Comment("Enhance the display of input hatch bus in interface terminal to support the machine current recipe map and virtual programming circuit")
         @DefaultBoolean(true)
         public boolean enableHatchInterfaceTerminalEnhance = true;
@@ -475,5 +483,16 @@ public class MainConfig {
         @Comment("Minimum tickrate from servers. Prevents really low tickrate values.")
         @DefaultFloat(0.1f)
         public float minTickrate = 0.1f;
+    }
+
+    public static final Minecraft minecraft = new Minecraft();
+
+    @Sync
+    @Comment("Minecraft section")
+    public static class Minecraft {
+
+        @Comment({ "Enhances the /kill command to support modern selectors and improved behaviour." })
+        @DefaultBoolean(true)
+        public boolean enableKillEnhance = true;
     }
 }
