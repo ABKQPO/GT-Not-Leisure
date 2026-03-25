@@ -88,6 +88,11 @@ gtnl.gui.config.general.item.steam_rocket.idschematicrocketsteam.tooltip=Unique 
 gtnl.gui.config.general.item.steam_rocket.nasaworkbenchsteamrocket=NASA Workbench GUI ID
 gtnl.gui.config.general.item.steam_rocket.nasaworkbenchsteamrocket.tooltip=GUI ID used when opening the dedicated Steam Rocket NASA Workbench.
 
+gtnl.gui.config.general.machine.beamFormerEnergyConsume=ME Beam Former energy consumption per operation (in AE/t)
+gtnl.gui.config.general.machine.beamFormerEnergyConsume.tooltip=ME Beam Former energy consumption per operation (in AE/t)
+gtnl.gui.config.general.machine.beamFormerLength=ME Beam Former maximum beam length (in blocks)
+gtnl.gui.config.general.machine.beamFormerLength.tooltip=ME Beam Former maximum beam length (in blocks)
+
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance=Hatch Interface Terminal Enhance
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance.tooltip=Enhance the display of input hatches/buses in the interface terminal to support current recipe maps and virtual programming circuits.
 gtnl.gui.config.general.machine.enableintegratedorefactorychange=Integrated Ore Factory Change
@@ -1268,6 +1273,10 @@ tile.SuperInterface.name=Super ME Interface
 container.SuperInterface=Super ME Interface
 
 item.PartActiveFormationPlane.name=ME Active Formation Plane
+
+item.PartBeamFormer.name=ME Beam Former
+text.beam_former.hide=Hiding beam.
+text.beam_former.show=Showing beam.
 
 tile.AEChisel.name=ME Chisel
 container.AEChisel=ME Chisel

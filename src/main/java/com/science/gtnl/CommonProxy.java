@@ -11,14 +11,15 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.entity.EntityParticleBeam;
-import com.science.gtnl.common.item.PartActiveFormationPlane;
-import com.science.gtnl.common.item.PartSuperInterface;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.packet.NetWorkHandler;
+import com.science.gtnl.common.part.PartActiveFormationPlane;
+import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
+import com.science.gtnl.common.world.WorldListener;
 import com.science.gtnl.container.ContainerAEChisel;
 import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.container.ContainerCustomPriority;
@@ -79,6 +80,12 @@ public class CommonProxy implements IGuiHandler {
         FMLCommonHandler.instance()
             .bus()
             .register(new VMTweakHelper());
+
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new WorldListener());
+        MinecraftForge.EVENT_BUS.register(new WorldListener());
+
         if (Mods.MobsInfo.isModLoaded()) {
             MinecraftForge.EVENT_BUS.register(new ExtremeExtremeEntityCrusherRecipes());
         }

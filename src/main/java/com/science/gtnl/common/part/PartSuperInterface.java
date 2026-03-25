@@ -1,4 +1,4 @@
-package com.science.gtnl.common.item;
+package com.science.gtnl.common.part;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

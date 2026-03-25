@@ -88,6 +88,11 @@ gtnl.gui.config.general.item.steam_rocket.idschematicrocketsteam.tooltip=蒸汽�
 gtnl.gui.config.general.item.steam_rocket.nasaworkbenchsteamrocket=NASA 工作台 GUI ID
 gtnl.gui.config.general.item.steam_rocket.nasaworkbenchsteamrocket.tooltip=打开蒸汽火箭专用的 NASA 工作台时使用的 GUI ID
 
+gtnl.gui.config.general.machine.beamFormerEnergyConsume=ME光束成型器能量消耗
+gtnl.gui.config.general.machine.beamFormerEnergyConsume.tooltip=ME光束成型器的能量消耗（单位 AE/t）
+gtnl.gui.config.general.machine.beamFormerLength=ME光束成型器激光最大长度
+gtnl.gui.config.general.machine.beamFormerLength.tooltip=ME光束成型器激光的最大长度（单位 方块）
+
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance=输入仓接口终端显示增强
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance.tooltip=增强输入仓和输入总线在接口终端的显示，使其支持机器的当前配方池和虚拟编程电路
 gtnl.gui.config.general.machine.enableintegratedorefactorychange=集成矿石处理厂改动
@@ -1268,6 +1273,10 @@ tile.SuperInterface.name=超级ME接口
 container.SuperInterface=超级ME接口
 
 item.PartActiveFormationPlane.name=ME主动成型面板
+
+item.PartBeamFormer.name=ME光束成型器
+text.beam_former.hide=已隐藏光束。
+text.beam_former.show=已显示光束。
 
 tile.AEChisel.name=ME雕凿机
 container.AEChisel=ME雕凿机

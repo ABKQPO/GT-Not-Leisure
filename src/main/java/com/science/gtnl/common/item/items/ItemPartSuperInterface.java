@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.item.PartSuperInterface;
+import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;

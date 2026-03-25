@@ -25,6 +25,7 @@ import com.science.gtnl.common.item.items.ElectricProspectorTool;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
+import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
@@ -152,6 +153,7 @@ public class ItemLoader {
 
     public static ItemPartSuperInterface superInterface = new ItemPartSuperInterface();
     public static ItemPartActiveFormationPlane activeFormationPlane = new ItemPartActiveFormationPlane();
+    public static ItemPartBeamFormer beamFormer = new ItemPartBeamFormer();
 
     public static ItemStack infinityDyeCell;
     public static ItemStack infinityDyeFluidCell;

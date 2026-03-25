@@ -156,12 +156,14 @@ We gratefully acknowledge the use of code and assets from the open-source commun
 |:-----------------------------|:----------------------------------------------------------------|:----------------------------------------------------------------------|
 | **Re-Avaritia Assets**       | [Nova-Committee](https://github.com/Nova-Committee/Re-Avaritia) | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **GTMthings Assets**         | [liansishen](https://github.com/liansishen/GTMThings)           | [MIT](https://mit-license.org/)                                       |
-| **Avaritia-GTNH Code**       | [GTNewHorizons](https://github.com/GTNewHorizons/Avaritia)      | [MIT](https://mit-license.org/)                                       |
+| **Avaritia-GTNH**            | [GTNewHorizons](https://github.com/GTNewHorizons/Avaritia)      | [MIT](https://mit-license.org/)                                       |
 | **Occultism Assets**         | [klikli-dev](https://github.com/klikli-dev/occultism)           | [MIT](https://mit-license.org/)                                       |
 | **Mekanism Assets**          | [mekanism](https://github.com/mekanism/Mekanism)                | [MIT](https://mit-license.org/)                                       |
+| **Stargate Journey Assets**  | [Povstalec](https://github.com/Povstalec/StargateJourney)       | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Twist-Space-Tech**         | [Nxer](https://github.com/Nxer/Twist-Space-Technology-Mod)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)                    |
 | **gtnh-no-nerf**             | [Taskeren](https://github.com/ElytraServers/gtnh-no-nerf)       | [MIT](https://www.gnu.org/licenses/gpl-3.0.html)                      |
 | **Programmable-Hatches-Mod** | [zyf051520](https://github.com/reobf/Programmable-Hatches-Mod)  | [MIT](https://www.gnu.org/licenses/gpl-3.0.html)                      |
+| **NAE2**                     | [Neeve](https://github.com/AE2-UEL/NAE2)                        | [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html)                  |
 
 ---
 

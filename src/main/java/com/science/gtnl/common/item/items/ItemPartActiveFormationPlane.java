@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.item.PartActiveFormationPlane;
+import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
