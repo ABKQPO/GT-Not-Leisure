@@ -84,7 +84,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
 
     @Override
     public AECableType getCableConnectionType(final ForgeDirection dir) {
-        return AECableType.DENSE;
+        return AECableType.SMART;
     }
 
     @Override
