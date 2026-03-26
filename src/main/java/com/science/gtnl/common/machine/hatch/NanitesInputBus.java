@@ -7,6 +7,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.gtnewhorizons.modularui.api.drawable.AdaptableUITexture;
+import com.gtnewhorizons.modularui.api.drawable.UITexture;
+import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
@@ -98,14 +101,19 @@ public class NanitesInputBus extends MTEHatchInputBus {
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         IItemHandlerModifiable inventoryHandler = getInventoryHandler();
         if (inventoryHandler == null) return;
-        builder.widget(
-            SlotGroup.ofItemHandler(inventoryHandler, 2)
-                .startFromSlot(0)
-                .endAtSlot(3)
-                .background(getGUITextureSet().getItemSlot())
-                .widgetCreator(slot -> new SlotWidget(slot).setFilter(this::limitedAllowPutStack))
-                .build()
-                .setPos(52, 7));
+        builder
+            .widget(
+                new SlotGroup.BuilderWithPattern()
+                    .where(
+                        's',
+                        index -> new SlotWidget(inventoryHandler, index)
+                            .setFilter(stack -> limitedAllowPutStack(index, stack))
+                            .setBackground(UITexture.fullImage("gregtech", "gui/slot/item_nanochip")))
+                    .row("ssss")
+                    .setCellSize(new Size(38, 18))
+                    .build()
+                    .setPos(21, 35))
+            .setBackground(AdaptableUITexture.of("gregtech", "gui/background/nanochip_default", 198, 203, 0));
     }
 
     @Override
