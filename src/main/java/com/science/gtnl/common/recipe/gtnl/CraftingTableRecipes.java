@@ -18,6 +18,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
+import appeng.api.util.AEColor;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -1351,6 +1352,18 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.EnderElevatorCarpet.get(1),
             new Object[] { GTNLItemList.EnderElevatorSlab.get(1), ToolDictNames.craftingToolSaw });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PartBeamFormer.get(1),
+            new Object[] { " A ", "BCB", " D ", 'A', GTOreDictUnificator.get(OrePrefixes.lens, Materials.Amethyst, 1),
+                'B', aeMaterials.wirelessBooster()
+                    .maybeStack(1)
+                    .orNull(),
+                'C', aeMaterials.wireless()
+                    .maybeStack(1)
+                    .orNull(),
+                'D', aeParts.cableSmart()
+                    .stack(AEColor.Transparent, 1) });
 
         if (NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
