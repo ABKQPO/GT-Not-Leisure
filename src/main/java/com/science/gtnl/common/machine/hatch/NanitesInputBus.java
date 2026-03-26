@@ -84,19 +84,6 @@ public class NanitesInputBus extends MTEHatchInputBus {
         return mInventory[aIndex] == null;
     }
 
-    public boolean limitedAllowPutStack(ItemStack aStack) {
-        boolean isNanite = false;
-        int[] oreIds = OreDictionary.getOreIDs(aStack);
-        for (int id : oreIds) {
-            String name = OreDictionary.getOreName(id);
-            if (OrePrefixes.isInstanceOf(name, OrePrefixes.nanite)) {
-                isNanite = true;
-                break;
-            }
-        }
-        return isNanite;
-    }
-
     @Override
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         IItemHandlerModifiable inventoryHandler = getInventoryHandler();
