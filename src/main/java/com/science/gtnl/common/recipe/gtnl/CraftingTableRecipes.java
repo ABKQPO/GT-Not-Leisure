@@ -1307,6 +1307,11 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Items.flint, 1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.CompressedFurnaceCasing.get(1),
+            new Object[] { "AAA", "ABA", "AAA", 'A', new ItemStack(Blocks.furnace, 1), 'B',
+                new ItemStack(Items.flint, 1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.SuperInterface.get(1),
             recipeFlags,
             new Object[] { "ABC", "BAB", "CBA", 'A', aeBlocks.iface()
