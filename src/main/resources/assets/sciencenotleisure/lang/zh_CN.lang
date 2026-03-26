@@ -454,6 +454,8 @@ Info_AdvancedSuperDualInputHatchME_IntMaxTooltip=设置所能拉取的最大数�
 Info_SuperDualInputHatchME_00=设置物品指定抽取数量
 Info_SuperDualInputHatchME_01=设置流体指定抽取数量
 Info_SuperDualInputHatchME_02=槽位：
+Info_SuperDualInputHatchME_03=物品最小数量
+Info_SuperDualInputHatchME_04=流体最小数量
 
 SuperInputBusME=超级存储输入总线(ME)
 AdvancedSuperInputBusME=进阶超级存储输入总线(ME)

@@ -454,6 +454,8 @@ Info_AdvancedSuperDualInputHatchME_IntMaxTooltip=Sets the maximum amount that ca
 Info_SuperDualInputHatchME_00=Configure item extraction amount
 Info_SuperDualInputHatchME_01=Configure fluid extraction amount
 Info_SuperDualInputHatchME_02=Slot: 
+Info_SuperDualInputHatchME_03=Item Min Amount
+Info_SuperDualInputHatchME_04=Fluid Min Amount
 
 SuperInputBusME=Super Stocking Input Bus (ME)
 AdvancedSuperInputBusME=Advanced Super Stocking Input Bus (ME)
