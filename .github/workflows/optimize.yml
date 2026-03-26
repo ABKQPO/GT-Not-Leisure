@@ -1,0 +1,15 @@
+name: Optimize images
+
+on:
+  pull_request:
+    paths:
+      - "**/*.png"
+
+  push:
+    paths:
+      - "**/*.png"
+
+jobs:
+  optimize-images:
+    uses: GTNewHorizons/GTNH-Actions-Workflows/.github/workflows/optimize-images.yml@master
+    secrets: inherit
