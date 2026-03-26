@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -138,6 +139,8 @@ import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class SuperDualInputHatchME extends MTEHatchInputBus
     implements IDualInputHatchWithPattern, IRecipeProcessingAwareDualHatch, IAddGregtechLogo, IDataCopyable,
@@ -204,7 +207,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     }
 
     public boolean autoPullItemList;
-    public long minAutoPullStackSize = 1;
+    public long minAutoPullItemAmount = 1;
+    public long minAutoPullFluidAmount = 1;
     public int autoPullRefreshTime = 100;
 
     public ItemStack updateInformationSlot(int aIndex, ItemStack aStack) {
@@ -841,7 +845,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 .setScrollValues(1, 4, 64)
                                 .setTextAlignment(Alignment.Center)
                                 .setTextColor(Color.WHITE.normal)
-                                .setSize(70, 18)
+                                .setSize(74, 18)
                                 .setPos(3, 3)
                                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                         .addChild(
@@ -857,8 +861,36 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 .setScrollValues(1, 10, 100)
                                 .setTextAlignment(Alignment.Center)
                                 .setTextColor(Color.WHITE.normal)
-                                .setSize(70, 18)
-                                .setPos(3, 3 + 40)
+                                .setSize(74, 18)
+                                .setPos(3, 43)
+                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
+                        .addChild(
+                            TextWidget.localised("Info_SuperDualInputHatchME_03")
+                                .setPos(80, 22)
+                                .setSize(74, 14))
+                        .addChild(
+                            new NumericWidget().setSetter(val -> minAutoPullItemAmount = (long) val)
+                                .setGetter(() -> minAutoPullItemAmount)
+                                .setBounds(1, Long.MAX_VALUE)
+                                .setScrollValues(1, 4, 64)
+                                .setTextAlignment(Alignment.Center)
+                                .setTextColor(Color.WHITE.normal)
+                                .setSize(74, 18)
+                                .setPos(80, 3)
+                                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
+                        .addChild(
+                            TextWidget.localised("Info_SuperDualInputHatchME_04")
+                                .setPos(80, 64)
+                                .setSize(74, 14))
+                        .addChild(
+                            new NumericWidget().setSetter(val -> minAutoPullFluidAmount = (long) val)
+                                .setGetter(() -> minAutoPullFluidAmount)
+                                .setBounds(1, Long.MAX_VALUE)
+                                .setScrollValues(1, 4, 64)
+                                .setTextAlignment(Alignment.Center)
+                                .setTextColor(Color.WHITE.normal)
+                                .setSize(74, 18)
+                                .setPos(80, 43)
                                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                         .addChild(new ButtonWidget().setOnClick((clickData, widget) -> {
                             if (clickData.mouseButton == 0) {
@@ -874,16 +906,14 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                         GTUITextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED };
                                 }
                             })
-                            .addTooltips(
-                                Arrays.asList(
-                                    StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"),
-                                    StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.2")))
+                            .addTooltip(
+                                StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
                             .setEnabledForce(allowAuto)
                             .setSize(16, 16)
-                            .setPos(80, 4))
+                            .setPos(157, 4))
                         .addChild(
                             TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                                .setPos(100, 44)
+                                .setPos(177, 44)
                                 .setSize(50, 14))
                         .addChild(
                             new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
@@ -891,7 +921,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                     state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
                                         : GTUITextures.OVERLAY_BUTTON_CROSS)
                                 .setBackground(GTUITextures.BUTTON_STANDARD)
-                                .setPos(80, 44)
+                                .setPos(157, 44)
                                 .setSize(16, 16)
                                 .addTooltip(
                                     StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")))));
@@ -1046,7 +1076,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             int index = 0;
             while (iterator.hasNext() && index < SLOT_COUNT) {
                 IAEItemStack currItem = iterator.next();
-                if (currItem.getStackSize() >= minAutoPullStackSize) {
+                if (currItem.getStackSize() >= minAutoPullItemAmount) {
                     ItemStack itemstack = GTUtility.copyAmount(
                         i_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, i_stored[index]),
                         currItem.getItemStack());
@@ -1079,7 +1109,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             int index = 0;
             while (iterator.hasNext() && index < SLOT_COUNT) {
                 IAEFluidStack currItem = iterator.next();
-                if (currItem.getStackSize() >= minAutoPullStackSize) {
+                if (currItem.getStackSize() >= minAutoPullFluidAmount) {
                     FluidStack fluidstack = GTUtility.copyAmount(
                         f_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, f_stored[index]),
                         currItem.getFluidStack());
@@ -1507,6 +1537,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         }
         aNBT.setByteArray("clientDisplayValueF", b.array());
 
+        aNBT.setLong("itemMinAmount", minAutoPullItemAmount);
+        aNBT.setLong("fluidMinAmount", minAutoPullFluidAmount);
         aNBT.setBoolean("autoPull", autoPullItemList);
 
         aNBT.setInteger("intmaxs", intmaxs);
@@ -1519,6 +1551,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public void loadNBTData(NBTTagCompound aNBT) {
         additionalConnection = aNBT.getBoolean("additionalConnection");
         allowAuto = aNBT.getBoolean("allowAuto");
+        minAutoPullItemAmount = aNBT.getLong("itemMinAmount");
+        minAutoPullFluidAmount = aNBT.getLong("fluidMinAmount");
         expediteRecipeCheck = aNBT.getBoolean("expediteRecipeCheck");
         getProxy().readFromNBT(aNBT);
         super.loadNBTData(aNBT);
@@ -1764,7 +1798,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
         if (allowAuto) {
             setAutoPullItemList(aNBT.getBoolean("autoPull"));
-            minAutoPullStackSize = aNBT.getInteger("minStackSize");
+            minAutoPullItemAmount = aNBT.getInteger("itemMinStackSize");;
+            minAutoPullFluidAmount = aNBT.getInteger("fluidMinStackSize");
             // Data sticks created before refreshTime was implemented should not cause stocking buses to
             // spam divide by zero errors
             if (aNBT.hasKey("refreshTime")) {
@@ -1799,7 +1834,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         NBTTagCompound aNBT = new NBTTagCompound();
         aNBT.setString("type", COPIED_DATA_IDENTIFIER);
         aNBT.setBoolean("autoPull", autoPullItemList);
-        aNBT.setLong("minAmount", minAutoPullStackSize);
+        aNBT.setLong("itemMinStackSize", minAutoPullItemAmount);
+        aNBT.setLong("fluidMinStackSize", minAutoPullFluidAmount);
         aNBT.setBoolean("additionalConnection", additionalConnection);
         aNBT.setInteger("refreshTime", autoPullRefreshTime);
         aNBT.setBoolean("expediteRecipeCheck", expediteRecipeCheck);
@@ -1846,6 +1882,45 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             aNBT.setTag("itemsToStock", stockingItems);
         }
         return aNBT;
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        if (!allowAuto) {
+            super.getWailaBody(itemStack, currenttip, accessor, config);
+            return;
+        }
+
+        NBTTagCompound tag = accessor.getNBTData();
+        boolean autopull = tag.getBoolean("autoPull");
+        long itemMinSize = tag.getLong("itemMinAmount");
+        long fluidMinSize = tag.getLong("fluidMinAmount");
+        currenttip.add(
+            StatCollector.translateToLocal("GT5U.waila.stocking_bus.auto_pull." + (autopull ? "enabled" : "disabled")));
+        if (autopull) {
+            currenttip.add(
+                StatCollector
+                    .translateToLocalFormatted("Info_SuperDualInputHatchME_03", GTUtility.formatNumbers(itemMinSize)));
+            currenttip.add(
+                StatCollector
+                    .translateToLocalFormatted("Info_SuperDualInputHatchME_04", GTUtility.formatNumbers(fluidMinSize)));
+        }
+        super.getWailaBody(itemStack, currenttip, accessor, config);
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        if (!allowAuto) {
+            super.getWailaNBTData(player, tile, tag, world, x, y, z);
+            return;
+        }
+
+        tag.setBoolean("autoPull", autoPullItemList);
+        tag.setLong("itemMinAmount", minAutoPullItemAmount);
+        tag.setLong("fluidMinAmount", minAutoPullFluidAmount);
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
     }
 
     public boolean off;
