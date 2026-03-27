@@ -265,6 +265,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
+    @Override
     public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
         if (!isRecipeProcessing) startRecipeProcessing();
         setupProcessingLogic(processingLogic);

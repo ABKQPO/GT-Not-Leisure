@@ -354,7 +354,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         boolean succeeded = false;
         CheckRecipeResult finalResult = CheckRecipeResultRegistry.SUCCESSFUL;
         for (int i = 0; i < cycleNum; i++) {
-            CheckRecipeResult r = wirelessModeProcessOnce();
+            CheckRecipeResult r = wirelessModeProcessOnce(null);
             if (!r.wasSuccessful()) {
                 finalResult = r;
                 break;
@@ -369,12 +369,13 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = 1;
+        lEUt = 0;
 
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
     @Override
-    public CheckRecipeResult wirelessModeProcessOnce() {
+    public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
         if (!isRecipeProcessing) startRecipeProcessing();
         setupProcessingLogic(processingLogic);
 

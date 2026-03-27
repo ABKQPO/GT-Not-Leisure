@@ -237,7 +237,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         boolean succeeded = false;
         CheckRecipeResult finalResult = CheckRecipeResultRegistry.SUCCESSFUL;
         for (cycleNow = 0; cycleNow < cycleNum; cycleNow++) {
-            CheckRecipeResult r = wirelessModeProcessOnce();
+            CheckRecipeResult r = wirelessModeProcessOnce(null);
 
             if (!r.wasSuccessful()) {
                 finalResult = r;
@@ -261,10 +261,11 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = totalOverclockedDuration;
         maxParallelStored = -1;
+        lEUt = 0;
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    public CheckRecipeResult wirelessModeProcessOnce() {
+    public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
         if (!isRecipeProcessing) startRecipeProcessing();
         setupProcessingLogic(processingLogic);
 

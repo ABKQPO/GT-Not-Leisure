@@ -1091,43 +1091,41 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             costingEUText = ZERO_STRING;
             totalOverclockedDuration = 0;
             cycleNow = 0;
-            maxParallelStored = getTrueParallel();
             if (!wirelessMode) return super.checkProcessing();
+
+            maxParallelStored = getTrueParallel();
 
             boolean succeeded = false;
             CheckRecipeResult finalResult = CheckRecipeResultRegistry.SUCCESSFUL;
             for (cycleNow = 0; cycleNow < cycleNum; cycleNow++) {
-                CheckRecipeResult r = wirelessModeProcessOnce();
+                CheckRecipeResult r = wirelessModeProcessOnce(null);
 
                 if (!r.wasSuccessful()) {
                     finalResult = r;
                     break;
                 }
                 succeeded = true;
-                if (maxParallelStored <= 0) {
+                if (maxParallelStored <= -1) {
                     finalResult = r;
                     break;
                 }
             }
 
-            if (!succeeded) return finalResult;
-            updateSlots();
-            if (totalOverclockedDuration > 0) {
-                totalOverclockedDuration = (int) Math
-                    .max(1, totalOverclockedDuration * Math.pow(0.75, mParallelTier - 4) / (cycleNow + 1));
-            } else {
-                totalOverclockedDuration = 1;
+            if (!succeeded) {
+                maxParallelStored = -1;
+                return finalResult;
             }
+            updateSlots();
             costingEUText = GTUtility.formatNumbers(costingEU);
 
             mEfficiency = 10000;
             mEfficiencyIncrease = 10000;
             mMaxProgresstime = totalOverclockedDuration;
-
+            lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
-        public CheckRecipeResult wirelessModeProcessOnce() {
+        public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
             if (!isRecipeProcessing) startRecipeProcessing();
             setupProcessingLogic(processingLogic);
 

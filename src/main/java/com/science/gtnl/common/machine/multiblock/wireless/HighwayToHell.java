@@ -470,6 +470,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
+    @Override
     public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
         if (!isRecipeProcessing) startRecipeProcessing();
         setupProcessingLogic(processingLogic);

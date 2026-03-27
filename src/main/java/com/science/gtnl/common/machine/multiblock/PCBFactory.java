@@ -250,8 +250,8 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    public CheckRecipeResult wirelessModeProcessOnce() {
-        CheckRecipeResult result = super.wirelessModeProcessOnce();
+    public CheckRecipeResult wirelessModeProcessOnce(ItemStack stack) {
+        CheckRecipeResult result = super.wirelessModeProcessOnce(null);
         if (!result.wasSuccessful()) return result;
         depletePurifiedWater();
         return result;
