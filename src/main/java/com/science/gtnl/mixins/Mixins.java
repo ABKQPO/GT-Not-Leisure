@@ -255,7 +255,8 @@ public enum Mixins implements IMixins {
             .setPhase(Phase.LATE)
             .setApplyIf(() -> MainConfig.machine.enableIntegratedOreFactoryChange)),
 
-    STICK_LATE(new MixinBuilder("Stick Late Mixins").addCommonMixins("Stick.MixinTooltipHandlerWaila")
+    STICK_LATE(new MixinBuilder("Stick Late Mixins")
+        .addCommonMixins("Stick.MixinTooltipHandlerWaila", "Stick.MixinOreDictTooltipHandler")
         .setPhase(Phase.LATE)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
 
