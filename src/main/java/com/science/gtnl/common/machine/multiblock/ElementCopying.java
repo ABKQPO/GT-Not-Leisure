@@ -53,7 +53,6 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.recipe.gtnl.ElementCopyingRecipes;
 import com.science.gtnl.loader.BlockLoader;
@@ -182,13 +181,8 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     public @NotNull CheckRecipeResult checkProcessing() {
         // Clear cached wireless parallel cap from previous recipe checks.
         maxParallelStored = -1;
+        resetParallelTier();
         maxParallelStored = getTrueParallel();
-        mParallelTier = Math.max(0, getParallelTier(getControllerSlot()));
-        for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
-            mParallelTier = module.mTier;
-            break;
-        }
-        setWirelessMode(mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty());
         costingEU = BigInteger.ZERO;
         costingEUText = ZERO_STRING;
 

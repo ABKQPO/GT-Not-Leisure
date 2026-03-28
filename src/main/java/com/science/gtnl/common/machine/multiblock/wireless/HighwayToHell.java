@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -347,12 +346,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
-        mParallelTier = 0;
-        mParallelTier = Math.max(mParallelTier, getParallelTier(getControllerSlot()));
-        for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
-            mParallelTier = module.mTier;
-            break;
-        }
+        resetParallelTier();
         costingEU = BigInteger.ZERO;
         costingEUText = ZERO_STRING;
         totalOverclockedDuration = 0;

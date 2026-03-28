@@ -198,8 +198,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        ItemStack controllerItem = getControllerSlot();
-        this.mParallelTier = getParallelTier(controllerItem);
+        resetParallelTier();
         int maxParallel = getTrueParallel();
         long energyEU;
 
@@ -483,7 +482,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
             costingEUText = GTUtility.formatNumbers(totalEU_BI);
 
-            this.lEUt = -finalEUt;
+            this.lEUt = 0;
             this.mMaxProgresstime = Math.max(1, finalDuration);
 
         } else {

@@ -179,8 +179,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
-        ItemStack controllerItem = getControllerSlot();
-        this.mParallelTier = getParallelTier(controllerItem);
+        resetParallelTier();
 
         final ItemStack outputItem = MatterFabricatorRecipes.PAINT_BALL.copy();
         final int maxParallel = getTrueParallel();

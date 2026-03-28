@@ -110,12 +110,18 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public void setupParameters() {
         super.setupParameters();
+        resetParallelTier();
+        setWirelessMode(mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty());
+    }
+
+    @Override
+    public void resetParallelTier() {
+        super.resetParallelTier();
         mParallelTier = getParallelTier(getControllerSlot());
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
             break;
         }
-        setWirelessMode(mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty());
     }
 
     @Override
@@ -222,10 +228,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public CheckRecipeResult checkProcessing() {
         maxParallelStored = -1;
-        mParallelTier = 0;
-        ItemStack controllerItem = getControllerSlot();
-        int parallelTierItem = getParallelTier(controllerItem);
-        mParallelTier = Math.max(mParallelTier, parallelTierItem);
+        resetParallelTier();
         costingEU = BigInteger.ZERO;
         costingEUText = ZERO_STRING;
         totalOverclockedDuration = 0;

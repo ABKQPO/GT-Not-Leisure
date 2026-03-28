@@ -213,8 +213,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
     @Override
     public CheckRecipeResult checkProcessing() {
         maxParallelStored = -1;
-        mParallelTier = 0;
-        mParallelTier = Math.max(mParallelTier, getParallelTier(getControllerSlot()));
+        resetParallelTier();
         costingEU = BigInteger.ZERO;
         costingEUText = ZERO_STRING;
         totalOverclockedDuration = 0;

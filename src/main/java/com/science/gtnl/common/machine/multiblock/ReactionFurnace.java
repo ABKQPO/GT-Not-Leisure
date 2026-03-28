@@ -294,7 +294,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     }
 
     public long getMaxParallelRecipesLong() {
-        mParallelTier = getParallelTier(getControllerSlot());
+        resetParallelTier();
 
         long baseParallel;
         if (mParallelControllerHatches.size() == 1) {

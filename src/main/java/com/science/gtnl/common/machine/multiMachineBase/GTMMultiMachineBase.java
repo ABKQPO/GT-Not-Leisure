@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiMachineBase;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -52,6 +51,12 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
     @Override
     public void setupParameters() {
         super.setupParameters();
+        resetParallelTier();
+    }
+
+    @Override
+    public void resetParallelTier() {
+        super.resetParallelTier();
         mParallelTier = getParallelTier(getControllerSlot());
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
@@ -76,7 +81,7 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
 
     @Override
     public int getMaxParallelRecipes() {
-        mParallelTier = getParallelTier(getControllerSlot());
+        resetParallelTier();
 
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
@@ -93,10 +98,7 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
-        mParallelTier = 0;
-        ItemStack controllerItem = getControllerSlot();
-        int parallelTierItem = getParallelTier(controllerItem);
-        mParallelTier = Math.max(mParallelTier, parallelTierItem);
+        resetParallelTier();
         return super.checkProcessing();
     }
 

@@ -957,15 +957,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 @NotNull
                 @Override
                 public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                    if (wirelessMode) {
-                        availableAmperage = (8L << (2 * mParallelTier)) - 2L;
-                        availableVoltage = V[Math.min(mParallelTier + 1, 14)];
-                    }
-                    return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    var calculator = super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                         .setAmperageOC(true)
                         .setPerfectOC(getPerfectOC())
                         .setEUtDiscount(0.4 - (mParallelTier / 50.0))
                         .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier));
+                    if (wirelessMode) {
+                        calculator = calculator.setAmperage((8L << (2 * mParallelTier)) - 2L)
+                            .setEUt(V[Math.min(mParallelTier + 1, 14)]);
+                    }
+                    return calculator;
                 }
 
                 @NotNull
@@ -997,6 +998,18 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 }
 
             }.setMaxParallelSupplier(this::getTrueParallel);
+        }
+
+        @Override
+        public void setProcessingLogicPower(ProcessingLogic logic) {
+            if (wirelessMode) {
+                logic.setAvailableVoltage(V[Math.min(mParallelTier + 1, 14)]);
+                logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
+                logic.setAmperageOC(true);
+                logic.enablePerfectOverclock();
+            } else {
+                super.setProcessingLogicPower(logic);
+            }
         }
 
         @Override
@@ -1083,10 +1096,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         @Override
         public CheckRecipeResult checkProcessing() {
             maxParallelStored = -1;
-            mParallelTier = 0;
-            ItemStack controllerItem = getControllerSlot();
-            int parallelTierItem = getParallelTier(controllerItem);
-            mParallelTier = Math.max(mParallelTier, parallelTierItem);
+            resetParallelTier();
             costingEU = BigInteger.ZERO;
             costingEUText = ZERO_STRING;
             totalOverclockedDuration = 0;

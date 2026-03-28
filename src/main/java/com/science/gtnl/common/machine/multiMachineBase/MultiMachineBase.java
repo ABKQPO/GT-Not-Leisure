@@ -798,6 +798,10 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         mEnergyHatchTier = checkEnergyHatchTier();
     }
 
+    public void resetParallelTier() {
+        mParallelTier = 0;
+    }
+
     public IMetaTileEntity getMetaTileEntity(final IGregTechTileEntity aTileEntity) {
         if (aTileEntity == null) {
             return null;
