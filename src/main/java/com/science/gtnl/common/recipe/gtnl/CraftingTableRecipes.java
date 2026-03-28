@@ -1359,9 +1359,11 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { GTNLItemList.EnderElevatorSlab.get(1), ToolDictNames.craftingToolSaw });
 
         GTModHandler.addCraftingRecipe(
-            GTNLItemList.PartBeamFormer.get(1),
-            new Object[] { " A ", "BCB", " D ", 'A', GTOreDictUnificator.get(OrePrefixes.lens, Materials.Amethyst, 1),
-                'B', aeMaterials.wirelessBooster()
+            GTNLItemList.PartBeamFormer.get(2),
+            new Object[] { " A ", "BCB", " D ", 'A', aeMaterials.fluixPearl()
+                .maybeStack(1)
+                .orNull(), 'B',
+                aeMaterials.purifiedFluixCrystal()
                     .maybeStack(1)
                     .orNull(),
                 'C', aeMaterials.wireless()
