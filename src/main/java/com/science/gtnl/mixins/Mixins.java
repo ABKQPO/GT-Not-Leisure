@@ -2,6 +2,7 @@ package com.science.gtnl.mixins;
 
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
+import com.science.gtnl.ClientProxy;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -259,6 +260,11 @@ public enum Mixins implements IMixins {
         .addCommonMixins("Stick.MixinTooltipHandlerWaila", "Stick.MixinOreDictTooltipHandler")
         .setPhase(Phase.LATE)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+
+    APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
+        .addSidedMixins(Side.CLIENT, "AprilFool.MixinBaseMetaTileEntityRenderer", "AprilFool.MixinCommonMetaTileEntity")
+        .setPhase(Phase.LATE)
+        .setApplyIf(() -> ClientProxy.enableAprilFool))
 
     ;
 

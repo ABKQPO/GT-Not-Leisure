@@ -40,10 +40,8 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.common.render.tile.MeteorMinerRenderer;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -51,8 +49,6 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import bartworks.system.material.BWTileEntityMetaGeneratedOre;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -71,7 +67,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
-import gregtech.api.render.ISBRWorldContext;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -80,16 +75,14 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.blocks.TileEntityOres;
 import gregtech.common.misc.GTStructureChannels;
-import gregtech.common.render.IMTERenderer;
 import gtPlusPlus.core.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvivalConstructable, IMTERenderer {
+public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String STRUCTURE_PIECE_TIER2 = "tier2";
@@ -118,9 +111,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public static final int MAX_BLOCKS_PER_CYCLE = MainConfig.machine.meteor_miner.meteorMinerMaxBlockPerCycle;
     public static final int MAX_ROWS_PER_CYCLE = MainConfig.machine.meteor_miner.meteorMinerMaxRowPerCycle;
 
-    @Getter
-    public float renderAngle = 0f;
-
     public MeteorMiner(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -132,24 +122,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new MeteorMiner(this.mName);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean renderInWorld(ISBRWorldContext ctx) {
-        if (ClientProxy.enableAprilFool) {
-            return true;
-        } else {
-            return super.renderInWorld(ctx);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
-        if (ClientProxy.enableAprilFool) {
-            MeteorMinerRenderer.renderTileEntity(this, x, y, z, timeSinceLastTick);
-        }
     }
 
     @Override
@@ -394,7 +366,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         aNBT.setBoolean("enableRender", enableRender);
         aNBT.setInteger("tierMachine", tierMachine);
         aNBT.setInteger("fortuneTier", fortuneTier);
-        aNBT.setDouble("renderAngle", renderAngle);
     }
 
     @Override
@@ -409,13 +380,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
         tierMachine = aNBT.getByte("tierMachine");
         fortuneTier = aNBT.getInteger("fortuneTier");
-        renderAngle = (float) aNBT.getDouble("renderAngle");
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        renderAngle += 1f;
-        super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 
     public void reset() {

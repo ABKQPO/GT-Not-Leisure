@@ -100,14 +100,11 @@ import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
 
 public class ClientProxy extends CommonProxy {
 
-    public static boolean enableAprilFool = false;
+    public static final boolean enableAprilFool;
 
     static {
         LocalDate today = LocalDate.now();
-        if (today.getMonthValue() == 4 && today.getDayOfMonth() == 1) {
-            enableAprilFool = true;
-        }
-
+        enableAprilFool = today.getMonthValue() == 4 && today.getDayOfMonth() == 1;
     }
 
     public static int waterCandleRenderID;
