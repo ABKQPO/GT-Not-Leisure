@@ -5,6 +5,7 @@ import net.minecraft.util.AxisAlignedBB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import com.science.gtnl.ClientProxy;
 import com.science.gtnl.api.ITileEntityTickAcceleration;
 
 import cpw.mods.fml.relauncher.Side;
@@ -23,7 +24,7 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        if (mMetaTileEntity instanceof IMTERenderer) {
+        if (ClientProxy.enableAprilFool || mMetaTileEntity instanceof IMTERenderer) {
             return AxisAlignedBB.getBoundingBox(
                 this.xCoord - 1024,
                 this.yCoord - 1024,
