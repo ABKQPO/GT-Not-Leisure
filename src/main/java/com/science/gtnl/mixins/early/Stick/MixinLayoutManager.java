@@ -29,8 +29,10 @@ public abstract class MixinLayoutManager implements IContainerInputHandler, ICon
     public Item getItemR(ItemStack instance) {
         var item = instance.getItem();
         if (item instanceof Stick stick && !stick.isShiftDown()) {
-            return Stick.getDisguisedStack(instance)
-                .getItem();
+            var fake = Stick.getDisguisedStack(instance);
+            if (fake != null) {
+                return fake.getItem();
+            }
         }
         return item;
     }

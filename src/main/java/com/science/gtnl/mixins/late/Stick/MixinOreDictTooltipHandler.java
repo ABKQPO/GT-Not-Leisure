@@ -19,8 +19,10 @@ public class MixinOreDictTooltipHandler {
     private Item redirectGetNameForObject(ItemStack instance) {
         var item = instance.getItem();
         if (item instanceof Stick stick && !stick.isShiftDown()) {
-            return Stick.getDisguisedStack(instance)
-                .getItem();
+            var fake = Stick.getDisguisedStack(instance);
+            if (fake != null) {
+                return fake.getItem();
+            }
         }
         return item;
     }
