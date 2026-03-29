@@ -250,8 +250,7 @@ public class ItemLoader {
             .set(MetaItemAdder.initItem(2, new String[] { StatCollector.translateToLocal("Tooltip_BlazeCube_00") }));
         GTNLItemList.EnhancementCore.set(
             MetaItemAdder.initItem(3, new String[] { StatCollector.translateToLocal("Tooltip_EnhancementCore_00") }));
-        GTNLItemList.StellarConstructionFrameMaterial
-            .set(MetaItemAdder.initItem(4, new String[] { StatCollector.translateToLocal("Tooltip_TestItem0.line1") }));
+        GTNLItemList.WaterCover.set(MetaItemAdder.initItem(4));
         GTNLItemList.ActivatedGaiaPylon.set(MetaItemAdder.initItem(5));
         GTNLItemList.PrecisionSteamMechanism.set(MetaItemAdder.initItem(6));
         GTNLItemList.MeteorMinerSchematic1.set(

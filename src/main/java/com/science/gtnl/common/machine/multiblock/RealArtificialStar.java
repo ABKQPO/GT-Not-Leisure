@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.GTNLItemList.StellarConstructionFrameMaterial;
 import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
 import static goodgenerator.loader.Loaders.compactFusionCoil;
 import static gregtech.api.GregTechAPI.*;
@@ -280,14 +279,14 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         // chance to recover FrameMaterial
         if (recoveryChance == 1000) {
             if (recoveryAmount > 0) {
-                mOutputItems = getRecovers(recoveryAmount);
+                // mOutputItems = getRecovers(recoveryAmount);
             }
             if (recoveryAmountTST > 0 && TwistSpaceTechnology.isModLoaded()) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
             if (recoveryAmount > 0) {
-                mOutputItems = getRecovers(recoveryAmount);
+                // mOutputItems = getRecovers(recoveryAmount);
             }
             if (recoveryAmountTST > 0 && TwistSpaceTechnology.isModLoaded()) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
@@ -305,29 +304,29 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         return CheckRecipeResultRegistry.GENERATING;
     }
 
-    public ItemStack[] getRecovers(long amount) {
-        List<ItemStack> list = new ArrayList<>();
-
-        if (amount <= Integer.MAX_VALUE) {
-            list.add(StellarConstructionFrameMaterial.get((int) amount));
-        } else {
-            int stack = (int) (amount / Integer.MAX_VALUE);
-            int remainder = (int) (amount % Integer.MAX_VALUE);
-            ItemStack t = StellarConstructionFrameMaterial.get(Integer.MAX_VALUE);
-
-            int i = 0;
-            while (i < stack) {
-                list.add(t.copy());
-                i++;
-            }
-
-            if (remainder > 0) {
-                list.add(GTUtility.copyAmountUnsafe(remainder, t));
-            }
-        }
-
-        return list.toArray(new ItemStack[0]);
-    }
+    // public ItemStack[] getRecovers(long amount) {
+    // List<ItemStack> list = new ArrayList<>();
+    //
+    // if (amount <= Integer.MAX_VALUE) {
+    // list.add(StellarConstructionFrameMaterial.get((int) amount));
+    // } else {
+    // int stack = (int) (amount / Integer.MAX_VALUE);
+    // int remainder = (int) (amount % Integer.MAX_VALUE);
+    // ItemStack t = StellarConstructionFrameMaterial.get(Integer.MAX_VALUE);
+    //
+    // int i = 0;
+    // while (i < stack) {
+    // list.add(t.copy());
+    // i++;
+    // }
+    //
+    // if (remainder > 0) {
+    // list.add(GTUtility.copyAmountUnsafe(remainder, t));
+    // }
+    // }
+    //
+    // return list.toArray(new ItemStack[0]);
+    // }
 
     public ItemStack[] getRecoversTST(long amount) {
         List<ItemStack> list = new ArrayList<>();
