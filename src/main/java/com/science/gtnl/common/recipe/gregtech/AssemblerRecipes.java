@@ -2076,6 +2076,13 @@ public class AssemblerRecipes implements IRecipePool {
             .addTo(As);
 
         RecipeBuilder.builder()
+            .itemInputs(ItemList.Cover_Drain.get(1), GregtechItemList.Hatch_Reservoir.get(1))
+            .itemOutputs(GTNLItemList.WaterCover.get(1))
+            .duration(100)
+            .eut(TierEU.LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
                 GTModHandler.getModItem(Forestry.ID, "alveary", 2, 0),

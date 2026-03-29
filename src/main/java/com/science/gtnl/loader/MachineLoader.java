@@ -24,6 +24,7 @@ import com.science.gtnl.common.machine.basicMachine.Replicator;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerBronze;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerSteel;
 import com.science.gtnl.common.machine.basicMachine.SteamTurbine;
+import com.science.gtnl.common.machine.cover.FluidCover;
 import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
 import com.science.gtnl.common.machine.cover.WirelessSteamCover;
@@ -226,7 +227,6 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.V
 import com.science.gtnl.common.machine.multiblock.wireless.AdvancedMassFabricator;
 import com.science.gtnl.common.machine.multiblock.wireless.AetronPressor;
 import com.science.gtnl.common.machine.multiblock.wireless.ChemicalComplex;
-import com.science.gtnl.common.machine.multiblock.wireless.CircuitComponentAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundDistillationFractionator;
 import com.science.gtnl.common.machine.multiblock.wireless.CompoundExtremeCoolingUnit;
 import com.science.gtnl.common.machine.multiblock.wireless.CrackerHub;
@@ -269,6 +269,7 @@ import com.science.gtnl.common.machine.multiblock.wireless.SuperconductingElectr
 import com.science.gtnl.common.machine.multiblock.wireless.SuperconductingMagneticPresser;
 import com.science.gtnl.common.machine.multiblock.wireless.SwarmCore;
 import com.science.gtnl.common.machine.multiblock.wireless.TransliminalOasis;
+import com.science.gtnl.common.machine.multiblock.wireless.TreeDiagram;
 import com.science.gtnl.common.machine.multiblock.wireless.VortexMatterCentrifuge;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -301,6 +302,7 @@ import gregtech.common.covers.CoverSteamRegulator;
 import gregtech.common.covers.CoverSteamValve;
 import gtPlusPlus.api.objects.Logger;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.CustomItemList;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
@@ -1127,12 +1129,12 @@ public class MachineLoader {
                 StatCollector.translateToLocal("NameIntegratedAssemblyFacility")));
         addItemTooltip(GTNLItemList.IntegratedAssemblyFacility.get(1), AnimatedText.SNL_QYZG);
 
-        GTNLItemList.CircuitComponentAssemblyLine.set(
-            new CircuitComponentAssemblyLine(
+        GTNLItemList.TreeDiagram.set(
+            new TreeDiagram(
                 CIRCUIT_COMPONENT_ASSEMBLY_LINE.ID,
-                "CircuitComponentAssemblyLine",
-                StatCollector.translateToLocal("NameCircuitComponentAssemblyLine")));
-        addItemTooltip(GTNLItemList.CircuitComponentAssemblyLine.get(1), AnimatedText.SNL_SCCR);
+                "TreeDiagram",
+                StatCollector.translateToLocal("NameTreeDiagram")));
+        addItemTooltip(GTNLItemList.TreeDiagram.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.NanoPhagocytosisPlant.set(
             new NanoPhagocytosisPlant(
@@ -4961,6 +4963,12 @@ public class MachineLoader {
             TextureFactory.of(MACHINE_CASINGS[1][0], TextureFactory.of(ITEM_VOID_SIGN)),
             VoidCover::new,
             CoverRegistry.INTERCEPTS_RIGHT_CLICK_COVER_PLACER);
+
+        CoverRegistry.registerCover(
+            GTNLItemList.WaterCover.get(1L),
+            TextureFactory.of(MACHINE_CASINGS[4][0], TextureFactory.of(TexturesGtBlock.Overlay_Water)),
+            context -> new FluidCover(context, Materials.Water.mFluid, "item.MetaItem.4.name"),
+            CoverRegistry.PRIMITIVE_COVER_PLACER);
 
         for (int i = 0; i < 14; i++) {
             int tier = i + 1;
