@@ -61,11 +61,12 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
             ICoverable coverable = coveredTile.get();
             if (coverable instanceof IMachineProgress machineProgress) {
                 if (machineProgress.isAllowedToWork() && machineProgress instanceof BaseMetaTileEntity baseTile) {
-                    if (baseTile.getMetaTileEntity() instanceof MTEBasicMachine basicMachine) {
+                    var tile = baseTile.getMetaTileEntity();
+                    if (tile instanceof MTEBasicMachine basicMachine) {
                         removeLockedItemsFromMachine(basicMachine);
                         removeLockedFluidsFromMachine(basicMachine);
                         basicMachine.markDirty();
-                    } else if (baseTile.getMetaTileEntity() instanceof MTEHatch hatch) {
+                    } else if (tile instanceof MTEHatch hatch) {
                         removeLockedItemsFromHatch(hatch);
                         removeLockedFluidsFromHatch(hatch);
                         hatch.markDirty();

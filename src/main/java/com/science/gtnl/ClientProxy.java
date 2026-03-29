@@ -100,7 +100,7 @@ import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
 
 public class ClientProxy extends CommonProxy {
 
-    public static final boolean enableAprilFool;
+    public static boolean enableAprilFool;
 
     static {
         LocalDate today = LocalDate.now();
