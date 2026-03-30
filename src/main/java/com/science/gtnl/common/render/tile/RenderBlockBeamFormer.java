@@ -95,7 +95,7 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         GL11.glRotatef(metadata.yaw(), 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(metadata.pitch(), 1.0F, 0.0F, 0.0F);
-        GL11.glTranslated(-0.5, -1, -0.5);
+        GL11.glTranslated(-0.5, -0.35, -0.5);
 
         BeaconRenderHelper.renderBeamSegment(
             0,
@@ -106,7 +106,7 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
             (double) te.getWorld()
                 .getTotalWorldTime(),
             0,
-            te.getBeamLength() + 1d,
+            te.getBeamLength() + 1.7d,
             rgb,
             0.12,
             0.15);

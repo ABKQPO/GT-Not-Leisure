@@ -43,6 +43,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,6 +64,8 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     public boolean hideBeam;
     public boolean paired;
+
+    public NBTTagCompound nbtCache = null;
 
     public TileEntityBeamFormer() {
         super();
@@ -100,7 +103,7 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @Override
     public AEColor getColor() {
-        return AEColor.Transparent;
+        return getProxy().getGridColor();
     }
 
     @Override
@@ -361,6 +364,15 @@ public class TileEntityBeamFormer extends AENetworkTile
         super.invalidate();
     }
 
+    @Override
+    public void validate() {
+        super.validate();
+        if (this.nbtCache != null) {
+            internalReadNBT(this.nbtCache);
+            this.nbtCache = null;
+        }
+    }
+
     public void cleanup() {
         this.unregisterListener();
         this.disconnect(null);
@@ -393,6 +405,14 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @TileEvent(TileEventType.WORLD_NBT_READ)
     public void readCustomNBT(NBTTagCompound data) {
+        if (this.worldObj == null) {
+            this.nbtCache = (NBTTagCompound) data.copy();
+            return;
+        }
+        internalReadNBT(data);
+    }
+
+    private void internalReadNBT(NBTTagCompound data) {
         boolean oldPaired = this.paired;
         int oldFlags = this.clientFlags;
 
@@ -403,8 +423,9 @@ public class TileEntityBeamFormer extends AENetworkTile
         }
         this.hideBeam = data.getBoolean("hideBeam");
         this.paired = data.getBoolean("paired");
+        this.clientFlags = data.getByte("cf");
 
-        if (this.paired != oldPaired || oldFlags != this.clientFlags) {
+        if (this.worldObj != null && (this.paired != oldPaired || oldFlags != this.clientFlags)) {
             this.worldObj.markBlockRangeForRenderUpdate(
                 this.xCoord,
                 this.yCoord,
@@ -416,7 +437,7 @@ public class TileEntityBeamFormer extends AENetworkTile
     }
 
     @TileEvent(TileEventType.NETWORK_WRITE)
-    public void writeToNetwork(NBTTagCompound data) {
+    public void writeToNetwork(final ByteBuf data) {
         int flags = 0;
         try {
             if (this.getProxy()
@@ -429,23 +450,23 @@ public class TileEntityBeamFormer extends AENetworkTile
         } catch (GridAccessException ignored) {}
         this.clientFlags = flags;
 
-        data.setInteger("beamLength", this.beamLength);
-        data.setBoolean("paired", this.otherBeamFormer != null);
-        data.setBoolean("hideBeam", this.hideBeam);
-        data.setByte("cf", (byte) this.clientFlags);
+        data.writeInt(this.beamLength);
+        data.writeBoolean(this.otherBeamFormer != null);
+        data.writeBoolean(this.hideBeam);
+        data.writeByte((byte) this.clientFlags);
     }
 
     @TileEvent(TileEventType.NETWORK_READ)
-    public boolean readFromNetwork(NBTTagCompound data) {
+    public boolean readFromNetwork(final ByteBuf data) {
         int oldBeamLength = this.beamLength;
         boolean oldPaired = this.paired;
         boolean oldHideBeam = this.hideBeam;
         int oldFlags = this.clientFlags;
 
-        this.beamLength = data.getInteger("beamLength");
-        this.paired = data.getBoolean("paired");
-        this.hideBeam = data.getBoolean("hideBeam");
-        this.clientFlags = data.getByte("cf");
+        this.beamLength = data.readInt();
+        this.paired = data.readBoolean();
+        this.hideBeam = data.readBoolean();
+        this.clientFlags = data.readByte();
 
         if (this.paired != oldPaired || oldFlags != this.clientFlags) {
             this.worldObj.markBlockRangeForRenderUpdate(

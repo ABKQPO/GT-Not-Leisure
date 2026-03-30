@@ -1280,6 +1280,8 @@ item.PartBeamFormer.name=ME光束成型器
 text.beam_former.hide=已隐藏光束。
 text.beam_former.show=已显示光束。
 
+tile.BeamFormer.name=ME光束成型器
+
 tile.AEChisel.name=ME雕凿机
 container.AEChisel=ME雕凿机
 text.ae_chisel.gui.parallel=设置样板并行

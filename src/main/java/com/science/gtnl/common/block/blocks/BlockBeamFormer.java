@@ -53,13 +53,13 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
         super(Material.iron);
         setHardness(8.0F);
         setResistance(40.0F);
-        setBlockName("BlockBeamFormer");
+        setBlockName("BeamFormer");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":BlockBeamFormer");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":BeamFormer");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setLightOpacity(0);
         GameRegistry.registerBlock(this, ItemBlockBeamFormer.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityBeamFormer.class, "BlockBeamFormerTileEntity");
+        GameRegistry.registerTileEntity(TileEntityBeamFormer.class, "BeamFormerTileEntity");
         GTNLItemList.BlockBeamFormer.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntityBeamFormer.class);
         this.setFeature(EnumSet.of(AEFeature.Core));

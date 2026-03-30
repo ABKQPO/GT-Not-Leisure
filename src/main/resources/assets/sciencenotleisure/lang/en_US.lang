@@ -1280,6 +1280,8 @@ item.PartBeamFormer.name=ME Beam Former
 text.beam_former.hide=Hiding beam.
 text.beam_former.show=Showing beam.
 
+tile.BeamFormer.name=ME Beam Former
+
 tile.AEChisel.name=ME Chisel
 container.AEChisel=ME Chisel
 text.ae_chisel.gui.parallel=Set Pattern Parallel
