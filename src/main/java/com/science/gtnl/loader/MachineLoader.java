@@ -1129,11 +1129,8 @@ public class MachineLoader {
                 StatCollector.translateToLocal("NameIntegratedAssemblyFacility")));
         addItemTooltip(GTNLItemList.IntegratedAssemblyFacility.get(1), AnimatedText.SNL_QYZG);
 
-        GTNLItemList.TreeDiagram.set(
-            new TreeDiagram(
-                TREE_DIAGRAM.ID,
-                "TreeDiagram",
-                StatCollector.translateToLocal("NameTreeDiagram")));
+        GTNLItemList.TreeDiagram
+            .set(new TreeDiagram(TREE_DIAGRAM.ID, "TreeDiagram", StatCollector.translateToLocal("NameTreeDiagram")));
         addItemTooltip(GTNLItemList.TreeDiagram.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.NanoPhagocytosisPlant.set(
