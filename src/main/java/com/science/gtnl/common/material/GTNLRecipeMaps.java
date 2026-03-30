@@ -367,8 +367,7 @@ public class GTNLRecipeMaps {
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .build();
 
-    public static RecipeMap<RecipeMapBackend> CircuitComponentAssemblyLineRecipes = RecipeMapBuilder
-        .of("gtnl.recipe.CircuitComponentAssemblyLineRecipes")
+    public static RecipeMap<RecipeMapBackend> TreeDiagramRecipes = RecipeMapBuilder.of("gtnl.recipe.TreeDiagramRecipes")
         .maxIO(12, 1, 12, 0)
         .neiTransferRect(70, 15, 18, 54)
         .neiSpecialInfoFormatter(
@@ -380,7 +379,7 @@ public class GTNLRecipeMaps {
         .addSpecialTexture(70, 11, 72, 40, GGUITextures.PICTURE_COMPONENT_ASSLINE)
         .frontend(ComponentAssemblyLineFrontend::new)
         .neiHandlerInfo(
-            builder -> builder.setDisplayStack(GTNLItemList.CircuitComponentAssemblyLine.get(1))
+            builder -> builder.setDisplayStack(GTNLItemList.TreeDiagram.get(1))
                 .setMaxRecipesPerPage(1))
         .build();
 
@@ -593,7 +592,7 @@ public class GTNLRecipeMaps {
                 return Collections.singletonList(new Pos2d(9, 13));
             }
         })
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.CircuitComponentAssemblyLine.get(1)))
+        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.TreeDiagram.get(1)))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> IndustrialRockCrusherRecipes = RecipeMapBuilder

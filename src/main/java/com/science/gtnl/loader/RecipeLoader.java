@@ -65,7 +65,6 @@ import com.science.gtnl.common.recipe.gregtech.TargetChamberRecipes;
 import com.science.gtnl.common.recipe.gregtech.TranscendentPlasmaMixerRecipes;
 import com.science.gtnl.common.recipe.gregtech.VacuumFreezerRecipes;
 import com.science.gtnl.common.recipe.gregtech.VacuumFurnaceRecipes;
-import com.science.gtnl.common.recipe.gtnl.AdvancedCircuitAssemblyLineRecipes;
 import com.science.gtnl.common.recipe.gtnl.AlchemicChemistrySetRecipes;
 import com.science.gtnl.common.recipe.gtnl.BloodDemonInjectionRecipes;
 import com.science.gtnl.common.recipe.gtnl.CactusWonderFakeRecipes;
@@ -122,6 +121,7 @@ import com.science.gtnl.common.recipe.gtnl.SteamManufacturerRecipes;
 import com.science.gtnl.common.recipe.gtnl.SteamWeatherModuleRecipes;
 import com.science.gtnl.common.recipe.gtnl.SteamWoodcutterRecipes;
 import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
+import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
@@ -201,18 +201,18 @@ public class RecipeLoader {
             new ElectricImplosionCompressorRecipes(), new DecayHastenerRecipes(), new PreciseAssemblerRecipes(),
             new FuelRefiningComplexRecipes(), new CrackingRecipes(), new DistillationTowerRecipes(),
             new SpaceMinerRecipes(), new SpaceDrillRecipes(), new SpaceAssemblerRecipes(), new PCBFactoryRecipes(),
-            new PlatinumBasedTreatmentRecipes(), new ShallowChemicalCouplingRecipes(),
-            new AdvancedCircuitAssemblyLineRecipes(), new AssemblingLineRecipes(), new GasCollectorRecipes(),
-            new EternalGregTechWorkshopUpgradeRecipes(), new FluidCannerRecipes(), new VacuumFreezerRecipes(),
-            new CheatOreProcessingRecipes(), new ShapedArcaneCraftingRecipes(), new InfusionCraftingRecipes(),
-            new SteamManufacturerRecipes(), new SteamCarpenterRecipe(), new LavaMakerRecipes(),
-            new SteamWoodcutterRecipes(), new SteamGateAssemblerRecipes(), new CactusWonderFakeRecipes(),
-            new InfernalCokeRecipes(), new SteamFusionReactorRecipes(), new SteamExtractinatorRecipes(),
-            new RockBreakerRecipes(), new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(),
-            new ElectrocellGeneratorRecipes(), new FluidSolidifierRecipes(), new FormingPressRecipes(),
-            new HammerRecipes(), new CyclotronRecipes(), new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(),
-            new PrecisionLaserEngraver(), new NanitesIntegratedProcessingRecipes(), new NanoForgeRecipes(),
-            new SteamWeatherModuleRecipes(), new ElectricNeutronActivatorRecipes(), new ReactorProcessingUnitRecipes(),
+            new PlatinumBasedTreatmentRecipes(), new ShallowChemicalCouplingRecipes(), new TreeDiagramRecipes(),
+            new AssemblingLineRecipes(), new GasCollectorRecipes(), new EternalGregTechWorkshopUpgradeRecipes(),
+            new FluidCannerRecipes(), new VacuumFreezerRecipes(), new CheatOreProcessingRecipes(),
+            new ShapedArcaneCraftingRecipes(), new InfusionCraftingRecipes(), new SteamManufacturerRecipes(),
+            new SteamCarpenterRecipe(), new LavaMakerRecipes(), new SteamWoodcutterRecipes(),
+            new SteamGateAssemblerRecipes(), new CactusWonderFakeRecipes(), new InfernalCokeRecipes(),
+            new SteamFusionReactorRecipes(), new SteamExtractinatorRecipes(), new RockBreakerRecipes(),
+            new PrimitiveBrickKilnRecipes(), new TargetChamberRecipes(), new ElectrocellGeneratorRecipes(),
+            new FluidSolidifierRecipes(), new FormingPressRecipes(), new HammerRecipes(), new CyclotronRecipes(),
+            new RuneAltarRecipes(), new IndustrialRockCrusherRecipes(), new PrecisionLaserEngraver(),
+            new NanitesIntegratedProcessingRecipes(), new NanoForgeRecipes(), new SteamWeatherModuleRecipes(),
+            new ElectricNeutronActivatorRecipes(), new ReactorProcessingUnitRecipes(),
             new NuclearSaltProcessingPlantRecipes(), new MaceratorRecipes(), new QuantumForceTransformerRecipes(),
             new MicroorganismMasterRecipes(), new SolarMuonCatalystRecipes() };
 

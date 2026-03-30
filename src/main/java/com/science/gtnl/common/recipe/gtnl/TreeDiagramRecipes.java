@@ -11,9 +11,9 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 
-public class AdvancedCircuitAssemblyLineRecipes implements IRecipePool {
+public class TreeDiagramRecipes implements IRecipePool {
 
-    public RecipeMap<?> ACALR = GTNLRecipeMaps.CircuitComponentAssemblyLineRecipes;
+    public RecipeMap<?> ACALR = GTNLRecipeMaps.TreeDiagramRecipes;
 
     @Override
     public void loadRecipes() {
