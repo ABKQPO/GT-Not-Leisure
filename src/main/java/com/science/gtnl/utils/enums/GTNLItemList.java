@@ -56,6 +56,7 @@ public enum GTNLItemList implements IItemContainer {
     PartSuperInterface,
     PartActiveFormationPlane,
     PartBeamFormer,
+    BlockBeamFormer,
 
     BronzeBrickCasing,
     SteelBrickCasing,

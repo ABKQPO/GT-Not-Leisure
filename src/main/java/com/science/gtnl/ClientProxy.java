@@ -34,6 +34,7 @@ import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorksho
 import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityBeamFormer;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
@@ -79,6 +80,7 @@ import Forge.NullPointerException;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.client.render.ItemRenderer;
+import appeng.client.render.TESRWrapper;
 import appeng.helpers.IPriorityHost;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -118,6 +120,11 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWaterCandle.class, new WaterCandleRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaserBeacon.class, new LaserBeconRenderer());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(
+            TileEntityBeamFormer.class,
+            new TESRWrapper(BlockLoader.beamFormer.getRenderer()));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.beamFormer), ItemRenderer.INSTANCE);
 
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.direPatternEncoder), ItemRenderer.INSTANCE);

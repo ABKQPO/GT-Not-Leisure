@@ -2,7 +2,6 @@ package com.science.gtnl.loader;
 
 import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
@@ -11,6 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.science.gtnl.common.block.blocks.BlockAEChisel;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
+import com.science.gtnl.common.block.blocks.BlockBeamFormer;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
 import com.science.gtnl.common.block.blocks.BlockDimensionRespawnAnchor;
 import com.science.gtnl.common.block.blocks.BlockDirePatternEncoder;
@@ -22,6 +22,7 @@ import com.science.gtnl.common.block.blocks.BlockLaserBeacon;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.BlockPlayerDoll;
 import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
+import com.science.gtnl.common.block.blocks.BlockSaplingBrickuoia;
 import com.science.gtnl.common.block.blocks.BlockSearedLadder;
 import com.science.gtnl.common.block.blocks.BlockShimmerFluid;
 import com.science.gtnl.common.block.blocks.BlockSuperInterface;
@@ -38,7 +39,6 @@ import com.science.gtnl.common.block.casings.glass.ItemBlockGlass;
 import com.science.gtnl.common.block.casings.glass.MetaBlockGlass;
 import com.science.gtnl.common.block.casings.glow.ItemBlockGlow;
 import com.science.gtnl.common.block.casings.glow.MetaBlockGlow;
-import com.science.gtnl.common.item.items.SaplingBrickuoia;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
@@ -50,43 +50,44 @@ import gregtech.api.util.GTRecipeBuilder;
 
 public class BlockLoader {
 
-    public static Block saplingBrickuoia;
-    public static Block cardboardBox;
-    public static Block artificialStarRender;
-    public static Block laserBeacon;
-    public static Block playerDoll;
-    public static Block waterCandle;
-    public static Block searedLadder;
-    public static Block playerLeash;
-    public static Block direPatternEncoder;
-    public static Block aeChisel;
-    public static Block superInterface;
-    public static Block nanoPhagocytosisPlantRender;
-    public static Block eternalGregTechWorkshopRender;
-    public static Block dimensionRespawnAnchor;
-    public static Block essentiaHatch;
-    public static Block enderElevatorBlock, enderElevatorSlab, enderElevatorCarpet;
+    public static BlockSaplingBrickuoia saplingBrickuoia;
+    public static BlockCardboardBox cardboardBox;
+    public static BlockArtificialStarRender artificialStarRender;
+    public static BlockLaserBeacon laserBeacon;
+    public static BlockPlayerDoll playerDoll;
+    public static BlockWaterCandle waterCandle;
+    public static BlockSearedLadder searedLadder;
+    public static BlockPlayerLeash playerLeash;
+    public static BlockDirePatternEncoder direPatternEncoder;
+    public static BlockAEChisel aeChisel;
+    public static BlockSuperInterface superInterface;
+    public static BlockBeamFormer beamFormer;
+    public static BlockNanoPhagocytosisPlantRender nanoPhagocytosisPlantRender;
+    public static BlockEternalGregTechWorkshopRender eternalGregTechWorkshopRender;
+    public static BlockDimensionRespawnAnchor dimensionRespawnAnchor;
+    public static BlockEssentiaHatch essentiaHatch;
+    public static BlockEnderElevator enderElevatorBlock, enderElevatorSlab, enderElevatorCarpet;
 
-    public static Block honeyFluidBlock;
+    public static BlockHoneyFluid honeyFluidBlock;
     public static Fluid honeyFluid;
-    public static Block shimmerFluidBlock;
+    public static BlockShimmerFluid shimmerFluidBlock;
     public static Fluid shimmerFluid;
 
-    public static Block compressedStargateTier0 = new BlocksCompressedStargate(0);
-    public static Block compressedStargateTier1 = new BlocksCompressedStargate(1);
-    public static Block compressedStargateTier2 = new BlocksCompressedStargate(2);
-    public static Block compressedStargateTier3 = new BlocksCompressedStargate(3);
-    public static Block compressedStargateTier4 = new BlocksCompressedStargate(4);
-    public static Block compressedStargateTier5 = new BlocksCompressedStargate(5);
-    public static Block compressedStargateTier6 = new BlocksCompressedStargate(6);
-    public static Block compressedStargateTier7 = new BlocksCompressedStargate(7);
-    public static Block compressedStargateTier8 = new BlocksCompressedStargate(8);
-    public static Block compressedStargateTier9 = new BlocksCompressedStargate(9);
+    public static BlocksCompressedStargate compressedStargateTier0 = new BlocksCompressedStargate(0);
+    public static BlocksCompressedStargate compressedStargateTier1 = new BlocksCompressedStargate(1);
+    public static BlocksCompressedStargate compressedStargateTier2 = new BlocksCompressedStargate(2);
+    public static BlocksCompressedStargate compressedStargateTier3 = new BlocksCompressedStargate(3);
+    public static BlocksCompressedStargate compressedStargateTier4 = new BlocksCompressedStargate(4);
+    public static BlocksCompressedStargate compressedStargateTier5 = new BlocksCompressedStargate(5);
+    public static BlocksCompressedStargate compressedStargateTier6 = new BlocksCompressedStargate(6);
+    public static BlocksCompressedStargate compressedStargateTier7 = new BlocksCompressedStargate(7);
+    public static BlocksCompressedStargate compressedStargateTier8 = new BlocksCompressedStargate(8);
+    public static BlocksCompressedStargate compressedStargateTier9 = new BlocksCompressedStargate(9);
 
-    public static Block metaBlock = new MetaBlockBase("MetaBlock");
-    public static Block metaBlockGlow = new MetaBlockGlow("MetaBlockGlow");
-    public static Block metaBlockGlass = new MetaBlockGlass("MetaBlockGlass");
-    public static Block metaBlockColumn = new MetaBlockColumn("MetaBlockColumn");
+    public static MetaBlockBase metaBlock = new MetaBlockBase("MetaBlock");
+    public static MetaBlockGlow metaBlockGlow = new MetaBlockGlow("MetaBlockGlow");
+    public static MetaBlockGlass metaBlockGlass = new MetaBlockGlass("MetaBlockGlass");
+    public static MetaBlockColumn metaBlockColumn = new MetaBlockColumn("MetaBlockColumn");
     public static MetaCasing metaCasing = new MetaCasing("MetaCasing", (byte) 0);
     public static MetaCasing metaCasing02 = new MetaCasing("MetaCasing02", (byte) 32);
 
@@ -96,6 +97,7 @@ public class BlockLoader {
         direPatternEncoder = new BlockDirePatternEncoder();
         aeChisel = new BlockAEChisel();
         superInterface = new BlockSuperInterface();
+        beamFormer = new BlockBeamFormer();
         cardboardBox = new BlockCardboardBox();
         eternalGregTechWorkshopRender = new BlockEternalGregTechWorkshopRender();
         nanoPhagocytosisPlantRender = new BlockNanoPhagocytosisPlantRender();
@@ -544,7 +546,7 @@ public class BlockLoader {
     }
 
     public static void registerTreeBrickuoia() {
-        saplingBrickuoia = new SaplingBrickuoia();
+        saplingBrickuoia = new BlockSaplingBrickuoia();
         GTNLItemList.SaplingBrickuoia.set(new ItemStack(saplingBrickuoia, 1));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),

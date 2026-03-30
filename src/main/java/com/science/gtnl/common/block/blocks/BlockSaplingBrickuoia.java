@@ -1,4 +1,4 @@
-package com.science.gtnl.common.item.items;
+package com.science.gtnl.common.block.blocks;
 
 import java.util.Random;
 
@@ -13,9 +13,9 @@ import com.science.gtnl.common.block.WorldGenBrickuoia;
 
 import gtPlusPlus.xmod.bop.blocks.base.SaplingBase;
 
-public class SaplingBrickuoia extends SaplingBase {
+public class BlockSaplingBrickuoia extends SaplingBase {
 
-    public SaplingBrickuoia() {
+    public BlockSaplingBrickuoia() {
         super("Giant Brickuoia Sapling", "brickuoia", new String[] { "brickuoia" });
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
     }
