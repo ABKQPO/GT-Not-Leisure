@@ -1,7 +1,5 @@
 package com.science.gtnl;
 
-import java.time.LocalDate;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSlime;
 import net.minecraft.client.renderer.entity.RenderLeashKnot;
@@ -15,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.gui.GuiAEChisel;
@@ -100,13 +99,6 @@ import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
 
 public class ClientProxy extends CommonProxy {
 
-    public static boolean enableAprilFool;
-
-    static {
-        LocalDate today = LocalDate.now();
-        enableAprilFool = today.getMonthValue() == 4 && today.getDayOfMonth() == 1;
-    }
-
     public static int waterCandleRenderID;
     public static int enderElevatorRenderID;
 
@@ -160,7 +152,7 @@ public class ClientProxy extends CommonProxy {
 
         if (Mods.Avaritia.isModLoaded()) registerFancyHaloRenderer();
 
-        if (enableAprilFool) {
+        if (GTNLEarlyCoreMod.enableAprilFool) {
             MinecraftForgeClient.registerItemRenderer(
                 Item.getItemFromBlock(GregTechAPI.sBlockMachines),
                 new ItemMeteorMinerMachineRender());

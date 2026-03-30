@@ -1,5 +1,6 @@
 package com.science.gtnl.asm;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
+
+    public static boolean enableAprilFool;
 
     public static Logger LOGGER = LogManager.getLogger("GTNL Asm Core Mod");
 
@@ -41,6 +44,9 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
         } catch (ConfigException e) {
             LOGGER.error("Failed to register config", e);
         }
+
+        LocalDate today = LocalDate.now();
+        enableAprilFool = today.getMonthValue() == 4 && today.getDayOfMonth() == 1;
     }
 
     @Override

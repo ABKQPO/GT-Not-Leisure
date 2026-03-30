@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.AprilFool;
+package com.science.gtnl.mixins.early.AprilFool;
 
 import net.minecraft.tileentity.TileEntity;
 
@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.render.tile.BallRenderer;
 
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -18,7 +17,6 @@ public class MixinBaseMetaTileEntityRenderer {
 
     @Inject(method = "renderTileEntityAt", at = @At("HEAD"), cancellable = true)
     private void onPostTick(TileEntity te, double x, double y, double z, float timeSinceLastTick, CallbackInfo ci) {
-        if (!ClientProxy.enableAprilFool) return;
         if (!(te instanceof BaseMetaTileEntity baseTE)) return;
         BallRenderer.renderTileEntity(baseTE.getMetaTileEntity(), x, y, z, timeSinceLastTick);
         ci.cancel();

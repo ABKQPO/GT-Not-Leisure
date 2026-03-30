@@ -2,6 +2,7 @@ package com.science.gtnl.mixins;
 
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
+import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -31,6 +32,11 @@ public enum Mixins implements IMixins {
         "Minecraft.MixinItem", "Minecraft.MixinItemStack", "Minecraft.MixinMinecraftServer",
         "Minecraft.MixinNBTTagList", "Minecraft.MixinPotion", "Minecraft.MixinPotionEffect",
         "Minecraft.MixinServerConfigurationManager", "Minecraft.MixinWorld", "Minecraft.MixinWorldServer"),
+
+    APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
+        .addSidedMixins(Side.CLIENT, "AprilFool.MixinBaseMetaTileEntityRenderer", "AprilFool.MixinCommonMetaTileEntity")
+        .setPhase(Phase.EARLY)
+        .setApplyIf(() -> GTNLEarlyCoreMod.enableAprilFool)),
 
     MINECRAFT_KILL_ENHANCE(
         new MixinBuilder("Mixins for Kill Command Enhance").addCommonMixins("Minecraft.MixinCommandKill")
@@ -259,10 +265,6 @@ public enum Mixins implements IMixins {
         .addCommonMixins("Stick.MixinTooltipHandlerWaila", "Stick.MixinOreDictTooltipHandler")
         .setPhase(Phase.LATE)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
-
-    APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
-        .addSidedMixins(Side.CLIENT, "AprilFool.MixinBaseMetaTileEntityRenderer", "AprilFool.MixinCommonMetaTileEntity")
-        .setPhase(Phase.LATE))
 
     ;
 
