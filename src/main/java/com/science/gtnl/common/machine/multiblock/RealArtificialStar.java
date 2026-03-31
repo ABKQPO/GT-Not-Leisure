@@ -93,6 +93,19 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static boolean configEnableDefaultRender = MainConfig.machine.artificial_star.enableRenderDefaultArtificialStar;
     public boolean enableRender = configEnableDefaultRender;
 
+    public static final ItemStack TST_PROTO = GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 17);
+    private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
+    private static final ItemStack ENHANCEMENT_CORE = GTNLItemList.EnhancementCore.get(1);
+    private static final ItemStack TST_ANTIMATTER = TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 14)
+        : null;
+    private static final ItemStack TST_FUEL_ROD = TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 16)
+        : null;
+    private static final ItemStack TST_STRANGE_ROD = TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 29)
+        : null;
+
     public RealArtificialStar(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -215,38 +228,46 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         currentOutputEU = BigInteger.ZERO;
 
         for (ItemStack items : getStoredInputs()) {
-            if (items.isItemEqual(GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1))) {
+            if (items == null || items.stackSize <= 0) continue;
+
+            long size = items.stackSize;
+            boolean matched = false;
+
+            if (GTUtility.areStacksEqual(items, DEPLETED_ROD, true)) {
                 currentOutputEU = currentOutputEU.add(
                     BigInteger.valueOf(MaxOfDepletedExcitedNaquadahFuelRod)
-                        .multiply(BigInteger.valueOf(items.stackSize)));
-                flag = true;
-            } else if (items.isItemEqual(GTNLItemList.EnhancementCore.get(1))) {
+                        .multiply(BigInteger.valueOf(size)));
+                matched = true;
+            } else if (GTUtility.areStacksEqual(items, ENHANCEMENT_CORE, true)) {
                 currentOutputEU = currentOutputEU.add(
                     BigInteger.valueOf(MaxOfEnhancementCore)
-                        .multiply(BigInteger.valueOf(items.stackSize)));
-                // recoveryAmount += items.stackSize;
-                flag = true;
+                        .multiply(BigInteger.valueOf(size)));
+                matched = true;
             } else if (TwistSpaceTechnology.isModLoaded()) {
-                if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 14))) {
+                if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfAntimatter)
-                            .multiply(BigInteger.valueOf(items.stackSize)));
-                    flag = true;
-                } else if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 16))) {
+                            .multiply(BigInteger.valueOf(size)));
+                    matched = true;
+                } else if (GTUtility.areStacksEqual(items, TST_FUEL_ROD, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfAntimatterFuelRod)
-                            .multiply(BigInteger.valueOf(items.stackSize)));
-                    recoveryAmountTST += items.stackSize;
-                    flag = true;
-                } else if (items.isItemEqual(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 29))) {
+                            .multiply(BigInteger.valueOf(size)));
+                    recoveryAmountTST += size;
+                    matched = true;
+                } else if (GTUtility.areStacksEqual(items, TST_STRANGE_ROD, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfStrangeAnnihilationFuelRod)
-                            .multiply(BigInteger.valueOf(items.stackSize)));
-                    recoveryAmountTST += items.stackSize;
-                    flag = true;
+                            .multiply(BigInteger.valueOf(size)));
+                    recoveryAmountTST += size;
+                    matched = true;
                 }
             }
-            items.stackSize = 0;
+
+            if (matched) {
+                flag = true;
+                items.stackSize = 0;
+            }
         }
 
         // flush input slots
@@ -329,28 +350,19 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     // }
 
     public ItemStack[] getRecoversTST(long amount) {
+        if (amount <= 0 || !TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
+
         List<ItemStack> list = new ArrayList<>();
 
-        if (TwistSpaceTechnology.isModLoaded()) {
-            if (amount <= Integer.MAX_VALUE) {
-                list.add(GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", (int) amount, 17));
-            } else {
-                int stack = (int) (amount / Integer.MAX_VALUE);
-                int remainder = (int) (amount % Integer.MAX_VALUE);
-                ItemStack t = GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", Integer.MAX_VALUE, 17);
+        long fullStacks = amount / Integer.MAX_VALUE;
+        int remainder = (int) (amount % Integer.MAX_VALUE);
 
-                int i = 0;
-                while (i < stack) {
-                    list.add(t.copy());
-                    i++;
-                }
+        for (long i = 0; i < fullStacks; i++) {
+            list.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, TST_PROTO));
+        }
 
-                if (remainder > 0) {
-                    list.add(GTUtility.copyAmountUnsafe(remainder, t));
-                }
-            }
-        } else {
-            list.add(new ItemStack(Blocks.dirt, 1));
+        if (remainder > 0) {
+            list.add(GTUtility.copyAmountUnsafe(remainder, TST_PROTO));
         }
 
         return list.toArray(new ItemStack[0]);
