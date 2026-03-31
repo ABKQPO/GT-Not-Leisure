@@ -39,6 +39,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartRenderHelper;
@@ -86,6 +87,11 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             .setFlags(GridFlags.PREFERRED);
         this.getProxy()
             .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
+    }
+
+    @Override
+    public boolean canBePlacedOn(BusSupport what) {
+        return what != BusSupport.NO_PARTS;
     }
 
     @Override

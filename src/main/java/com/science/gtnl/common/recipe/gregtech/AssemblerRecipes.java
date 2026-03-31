@@ -3265,6 +3265,38 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
+        RecipeBuilder.builder()
+            .itemInputs(GTNLItemList.PartBeamFormer.get(1))
+            .itemOutputs(GTNLItemList.BlockBeamFormer.get(1))
+            .duration(40)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(GTNLItemList.BlockBeamFormer.get(1))
+            .itemOutputs(GTNLItemList.PartBeamFormer.get(1))
+            .duration(40)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                aeMaterials.fluixPearl()
+                    .maybeStack(1)
+                    .orNull(),
+                aeMaterials.purifiedFluixCrystal()
+                    .maybeStack(2)
+                    .orNull(),
+                aeMaterials.wireless()
+                    .maybeStack(1)
+                    .orNull(),
+                aeParts.cableSmart()
+                    .stack(AEColor.Transparent, 1))
+            .itemOutputs(GTNLItemList.PartBeamFormer.get(2))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
         loadLamp();
         loadWirelessHatch();
         loadLaserHatch();

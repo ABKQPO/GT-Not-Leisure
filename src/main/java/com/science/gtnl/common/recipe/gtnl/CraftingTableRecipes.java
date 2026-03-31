@@ -1358,6 +1358,14 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.EnderElevatorCarpet.get(1),
             new Object[] { GTNLItemList.EnderElevatorSlab.get(1), ToolDictNames.craftingToolSaw });
 
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.BlockBeamFormer.get(1),
+            new Object[] { GTNLItemList.PartBeamFormer.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.PartBeamFormer.get(1),
+            new Object[] { GTNLItemList.BlockBeamFormer.get(1) });
+
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PartBeamFormer.get(2),
             new Object[] { " A ", "BCB", " D ", 'A', aeMaterials.fluixPearl()
