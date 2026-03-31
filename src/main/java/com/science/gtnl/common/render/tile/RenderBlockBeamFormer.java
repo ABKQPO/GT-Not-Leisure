@@ -87,6 +87,7 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
     public void renderTile(BlockBeamFormer block, TileEntityBeamFormer te, Tessellator tessellator, double x, double y,
         double z, float partialTicks, RenderBlocks renderer) {
         if (te == null || !te.shouldRenderBeam()) return;
+        double offset = te.getClientOtherOffset();
 
         BeamFormerRenderHelper.StaticBloomMetadata metadata = BeamFormerRenderHelper.getBloomMetadata(te);
         float[] rgb = BeamFormerRenderHelper.getColor(te);
@@ -106,7 +107,7 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
             (double) te.getWorld()
                 .getTotalWorldTime(),
             0,
-            te.getBeamLength() + 1.7d,
+            te.getBeamLength() + offset,
             rgb,
             0.12,
             0.15);

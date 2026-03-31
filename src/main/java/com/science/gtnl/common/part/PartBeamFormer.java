@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.api.IBlockStateListener;
+import com.science.gtnl.common.block.blocks.tile.TileEntityBeamFormer;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;
 import com.science.gtnl.common.world.WorldListener;
@@ -51,17 +52,28 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 
 public class PartBeamFormer extends GTNLBasePartState implements IBlockStateListener, IGridTickable, IBeamFormer {
 
     @Getter
+    @Setter
     public int beamLength = 0;
-    public PartBeamFormer otherBeamFormer = null;
+    @Getter
+    @Setter
+    public IBeamFormer otherBeamFormer = null;
+    @Getter
+    @Setter
     public IGridConnection connection = null;
     public Long2ObjectLinkedOpenHashMap<BlockPos> listenerLinkedList = null;
+    @Getter
+    @Setter
     public boolean hideBeam;
     public boolean paired;
     public boolean rendererRegistered;
+    @Getter
+    @Setter
+    public double clientOtherOffset = 0;
 
     public static final int[][] BOXES = { { 6, 6, 11, 10, 10, 12 }, { 6, 6, 12, 10, 10, 13 }, { 6, 5, 13, 10, 6, 14 },
         { 10, 7, 14, 11, 9, 16 }, { 7, 10, 14, 9, 11, 16 }, { 5, 7, 14, 6, 9, 16 }, { 7, 5, 14, 9, 6, 16 },
@@ -76,10 +88,34 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
     }
 
+    @Override
+    public IGridNode getGridNode() {
+        return this.getProxy()
+            .getNode();
+    }
+
+    @Override
+    public void markForUpdate() {
+        if (this.getHost() != null) {
+            this.getHost()
+                .markForUpdate();
+            this.getHost()
+                .markForSave();
+        }
+    }
+
+    @Override
+    public void sleepDevice() {
+        try {
+            this.getProxy()
+                .getTick()
+                .sleepDevice(this.getGridNode());
+        } catch (GridAccessException ignored) {}
+    }
+
     public static boolean isTranslucent(World world, int x, int y, int z) {
         var block = world.getBlock(x, y, z);
-        if (block == null) return true;
-        return !block.isOpaqueCube();
+        return block == null || !block.isOpaqueCube();
     }
 
     @Override
@@ -119,6 +155,14 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     }
 
     @Override
+    public double getRenderOffset() {
+        if (otherBeamFormer == null) return 0;
+        if (otherBeamFormer instanceof TileEntityBeamFormer) return 1;
+        if (otherBeamFormer instanceof PartBeamFormer) return 0.3d;
+        return 0;
+    }
+
+    @Override
     public BlockPos getPos() {
         var tile = this.getHost()
             .getTile();
@@ -136,7 +180,6 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @Override
     public void addToWorld() {
         super.addToWorld();
-
         try {
             this.getProxy()
                 .getTick()
@@ -152,55 +195,39 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     }
 
     @Override
-    public void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile) {
-        super.setPartHostInfo(side, host, tile);
-    }
-
     public void unregisterListener() {
         WorldListener.instance.unregisterBlockStateListener(this);
     }
 
-    public void connect(PartBeamFormer potentialFormer, Iterable<BlockPos> locs) throws FailedConnection {
-        // Form the connection.
+    public void connect(IBeamFormer potentialFormer, Iterable<BlockPos> locs) throws FailedConnection {
         var myNode = this.getGridNode();
         this.connection = AEApi.instance()
             .createGridConnection(myNode, potentialFormer.getGridNode());
 
-        potentialFormer.connection = this.connection;
+        potentialFormer.setConnection(this.connection);
         this.otherBeamFormer = potentialFormer;
-        potentialFormer.otherBeamFormer = this;
+        potentialFormer.setOtherBeamFormer(this);
 
-        // Copy over hiding.
-        if (potentialFormer.hideBeam || this.hideBeam) {
-            potentialFormer.hideBeam = true;
+        if (potentialFormer.isHideBeam() || this.hideBeam) {
+            potentialFormer.setHideBeam(true);
             this.hideBeam = true;
         }
 
-        // Re-register and rehash block positions for world listening.
         this.unregisterListener();
-        this.otherBeamFormer.unregisterListener();
+        potentialFormer.unregisterListener();
+
         this.listenerLinkedList = new Long2ObjectLinkedOpenHashMap<>();
         for (var loc : locs) this.listenerLinkedList.put(loc.asLong(), loc);
 
         WorldListener.instance.registerBlockStateListener(this, locs);
 
         this.beamLength = this.listenerLinkedList.size();
-        this.otherBeamFormer.beamLength = 0;
+        potentialFormer.setBeamLength(0);
 
-        try {
-            this.otherBeamFormer.getProxy()
-                .getTick()
-                .sleepDevice(this.otherBeamFormer.getGridNode());
-        } catch (GridAccessException ignored) {}
+        potentialFormer.sleepDevice();
 
-        this.getHost()
-            .markForUpdate();
-        this.getHost()
-            .markForSave();
-        this.otherBeamFormer.getHost()
-            .markForUpdate();
-        this.otherBeamFormer.getHost()
-            .markForSave();
+        this.markForUpdate();
+        potentialFormer.markForUpdate();
     }
 
     public boolean disconnect(@Nullable BlockPos breakPos) {
@@ -209,7 +236,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         var newBeamA = 0;
         var newBeamB = 0;
 
-        if (breakPos != null) {
+        if (breakPos != null && this.listenerLinkedList != null) {
             var iterator = this.listenerLinkedList.long2ObjectEntrySet()
                 .fastIterator();
             var hash = breakPos.asLong();
@@ -218,7 +245,6 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
                     .getLongKey() == hash) break;
                 newBeamA++;
             }
-
             while (iterator.hasNext()) {
                 iterator.next();
                 newBeamB++;
@@ -230,19 +256,15 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             this.connection.destroy();
             this.connection = null;
         }
-        this.getHost()
-            .markForUpdate();
-        this.getHost()
-            .markForSave();
+        this.markForUpdate();
 
-        if (this.otherBeamFormer != null && this.otherBeamFormer.otherBeamFormer == this) {
-            this.otherBeamFormer.beamLength = newBeamB;
-            this.otherBeamFormer.connection = null;
-            this.otherBeamFormer.otherBeamFormer = null;
-            this.otherBeamFormer.getHost()
-                .markForUpdate();
-            this.otherBeamFormer.getHost()
-                .markForSave();
+        IBeamFormer other = this.otherBeamFormer;
+        if (other != null && other.getOtherBeamFormer() == this) {
+            other.setBeamLength(newBeamB);
+            other.setConnection(null);
+            other.setOtherBeamFormer(null);
+            other.markForUpdate();
+            this.clientOtherOffset = 0;
             this.otherBeamFormer = null;
         }
 
@@ -253,15 +275,16 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     public void onBlockChanged(BlockPos pos) {
         try {
             var isValid = isTranslucent(this.getWorld(), pos.x, pos.y, pos.z);
-
             if (isValid) {
                 var te = this.getTile()
                     .getWorldObj()
                     .getTileEntity(pos.x, pos.y, pos.z);
-                if (te instanceof IPartHost partHost) {
-                    if (partHost.getPart(this.getSide()) instanceof PartBeamFormer || partHost.getPart(
+                if (te instanceof IBeamFormer) {
+                    isValid = false;
+                } else if (te instanceof IPartHost partHost) {
+                    if (partHost.getPart(this.getSide()) instanceof IBeamFormer || partHost.getPart(
                         this.getSide()
-                            .getOpposite()) instanceof PartBeamFormer) {
+                            .getOpposite()) instanceof IBeamFormer) {
                         isValid = false;
                     }
                 }
@@ -285,27 +308,18 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         if (Platform.isWrench(player, player.getHeldItem(), (int) pos.xCoord, (int) pos.yCoord, (int) pos.zCoord)) {
             if (Platform.isServer()) {
                 this.hideBeam = !this.hideBeam;
-
                 player.addChatMessage(
                     new ChatComponentTranslation(this.hideBeam ? "text.beam_former.hide" : "text.beam_former.show"));
-                this.getHost()
-                    .markForUpdate();
-                this.getHost()
-                    .markForSave();
+                this.markForUpdate();
 
                 if (this.otherBeamFormer != null) {
-                    this.otherBeamFormer.hideBeam = this.hideBeam;
-                    this.otherBeamFormer.getHost()
-                        .markForUpdate();
-                    this.otherBeamFormer.getHost()
-                        .markForSave();
+                    this.otherBeamFormer.setHideBeam(this.hideBeam);
+                    this.otherBeamFormer.markForUpdate();
                 }
             }
-
             player.swingItem();
             return !player.worldObj.isRemote;
         }
-
         return super.onPartActivate(player, pos);
     }
 
@@ -339,12 +353,8 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         if (!this.getProxy()
             .isReady()) return TickRateModulation.SAME;
 
-        var isConnectionValid = this.connection != null;
-
-        var host = this.getHost();
         var side = this.getSide();
-
-        var tile = host.getTile();
+        var tile = this.getTile();
         var loc = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
         var world = tile.getWorldObj();
         var opposite = side.getOpposite();
@@ -352,42 +362,35 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
 
         for (int i = 0; i < MainConfig.machine.beamFormerLength; i++) {
             loc = loc.offset(side);
-
             TileEntity te = world.getTileEntity(loc.x, loc.y, loc.z);
-            if (te instanceof IPartHost ph) {
-                if (ph.getPart(opposite) instanceof PartBeamFormer potentialFormer) {
-                    if (isConnectionValid && potentialFormer == this.otherBeamFormer
-                        && this.otherBeamFormer.otherBeamFormer == this) {
+            IBeamFormer potentialFormer = null;
+
+            if (te instanceof IBeamFormer ibf) {
+                if (ibf.getDirection() == opposite) potentialFormer = ibf;
+            } else if (te instanceof IPartHost ph) {
+                if (ph.getPart(opposite) instanceof IBeamFormer ibf) potentialFormer = ibf;
+            }
+
+            if (potentialFormer != null) {
+                if (this.connection != null && potentialFormer == this.otherBeamFormer) return TickRateModulation.SLEEP;
+                boolean disconnected = this.disconnect(loc);
+
+                if (potentialFormer.getGridNode() != null && potentialFormer.getOtherBeamFormer() == null) {
+                    try {
+                        this.connect(potentialFormer, blockSet);
                         return TickRateModulation.SLEEP;
+                    } catch (final FailedConnection | NullPointerException e) {
+                        AELog.error(e);
                     }
-
-                    boolean disconnected = this.disconnect(loc);
-
-                    if (potentialFormer.getProxy()
-                        .isReady() && potentialFormer.otherBeamFormer == null) {
-                        try {
-                            this.connect(potentialFormer, blockSet);
-                            return TickRateModulation.SLEEP;
-                        } catch (final FailedConnection | NullPointerException e) {
-                            AELog.error(e);
-                        }
-                    }
-
-                    return disconnected ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
                 }
-
-                if (ph.getPart(side) instanceof PartBeamFormer) {
-                    return this.disconnect(loc) ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-                }
+                return disconnected ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
             }
 
             if (!isTranslucent(world, loc.x, loc.y, loc.z)) {
                 return this.disconnect(loc) ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
             }
-
             blockSet.add(loc);
         }
-
         return TickRateModulation.SLOWER;
     }
 
@@ -406,17 +409,14 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             status = (this.connection != null || this.paired) ? ItemPartBeamFormer.iconStatusBeaming
                 : ItemPartBeamFormer.iconStatusOn;
         }
-
         rh.setTexture(ItemPartBeamFormer.iconBase);
         for (int[] b : BOXES) {
             rh.setBounds(b[0], b[1], b[2], b[3], b[4], b[5]);
             rh.renderBlock(x, y, z, renderer);
         }
-
         rh.setTexture(status);
         rh.setBounds(10, 10, 12, 6, 6, 11);
         rh.renderBlock(x, y, z, renderer);
-
         if (!(this.isActive() && this.isPowered() && (this.connection != null || this.paired))) {
             rh.setTexture(ItemPartBeamFormer.iconPrism);
             rh.setBounds(10, 10, 12, 6, 6, 11);
@@ -432,11 +432,9 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             rh.setBounds(b[0], b[1], b[2], b[3], b[4], b[5]);
             rh.renderInventoryBox(renderer);
         }
-
         rh.setTexture(ItemPartBeamFormer.iconStatusOff);
         rh.setBounds(10, 10, 12, 6, 6, 11);
         rh.renderInventoryBox(renderer);
-
         rh.setTexture(ItemPartBeamFormer.iconPrism);
         rh.setBounds(10, 10, 12, 6, 6, 11);
         rh.renderInventoryBox(renderer);
@@ -452,11 +450,9 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @Override
     @SideOnly(Side.CLIENT)
     public boolean requireDynamicRender() {
-        if (Platform.isClient()) {
-            if (!this.rendererRegistered) {
-                this.rendererRegistered = true;
-                BeamFormerRenderHelper.init(this);
-            }
+        if (Platform.isClient() && !this.rendererRegistered) {
+            this.rendererRegistered = true;
+            BeamFormerRenderHelper.init(this);
         }
         return BeamFormerRenderHelper.shouldRenderDynamic(this);
     }
@@ -464,20 +460,21 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @Override
     public boolean readFromStream(ByteBuf data) throws IOException {
         var shouldRedraw = super.readFromStream(data);
-
         this.beamLength = data.readInt();
         var wasPaired = this.paired;
         this.paired = data.readBoolean();
-        // Kick rendering.
         if (this.paired != wasPaired) {
             var tile = this.getTile();
-            var x = tile.xCoord;
-            var y = tile.yCoord;
-            var z = tile.zCoord;
-            Minecraft.getMinecraft().renderGlobal.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+            Minecraft.getMinecraft().renderGlobal.markBlockRangeForRenderUpdate(
+                tile.xCoord,
+                tile.yCoord,
+                tile.zCoord,
+                tile.xCoord,
+                tile.yCoord,
+                tile.zCoord);
         }
         this.hideBeam = data.readBoolean();
-
+        this.clientOtherOffset = data.readDouble();
         return shouldRedraw;
     }
 
@@ -487,12 +484,12 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         data.writeInt(this.beamLength);
         data.writeBoolean(this.otherBeamFormer != null);
         data.writeBoolean(this.hideBeam);
+        data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound data) {
         super.writeToNBT(data);
-
         var part = data.getCompoundTag("part");
         if (this.beamLength > 0) part.setInteger("beamLength", this.beamLength);
         if (this.hideBeam) part.setBoolean("hideBeam", true);
@@ -501,9 +498,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @Override
     public void readFromNBT(NBTTagCompound data) {
         super.readFromNBT(data);
-
         var part = data.getCompoundTag("part");
-        // Back compat.
         if (part.getTag("beamLength") instanceof NBTTagDouble dbl) {
             this.beamLength = (int) dbl.func_150286_g();
         } else {

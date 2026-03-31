@@ -3,10 +3,6 @@ package com.science.gtnl.common.block.blocks.tile;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 
-import com.science.gtnl.asm.GTNLEarlyCoreMod;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.common.render.IMTERenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.api.IBlockStateListener;
+import com.science.gtnl.common.part.PartBeamFormer;
 import com.science.gtnl.common.world.WorldListener;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -40,6 +37,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
@@ -48,6 +46,9 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import lombok.Getter;
@@ -57,21 +58,29 @@ public class TileEntityBeamFormer extends AENetworkTile
     implements IBlockStateListener, IGridTickable, IBeamFormer, IPowerChannelState {
 
     public static final int POWERED_FLAG = 1;
+
     @Getter
     @Setter
-    public int clientFlags = 0; // sent as byte.
-
+    public int clientFlags = 0;
     @Getter
+    @Setter
     public int beamLength = 0;
-    public TileEntityBeamFormer otherBeamFormer = null;
+    @Getter
+    @Setter
+    public IBeamFormer otherBeamFormer = null;
+    @Getter
+    @Setter
     public IGridConnection connection = null;
     public Long2ObjectLinkedOpenHashMap<BlockPos> listenerLinkedList = null;
-
+    @Getter
+    @Setter
     public boolean hideBeam;
     public boolean paired;
-
     public NBTTagCompound nbtCache = null;
     public AEColor cachedColor = AEColor.Transparent;
+    @Getter
+    @Setter
+    public double clientOtherOffset = 0;
 
     public TileEntityBeamFormer() {
         super();
@@ -84,15 +93,35 @@ public class TileEntityBeamFormer extends AENetworkTile
     }
 
     @Override
+    public IGridNode getGridNode() {
+        return this.getProxy()
+            .getNode();
+    }
+
+    @Override
+    public void markForUpdate() {
+        super.markForUpdate();
+    }
+
+    @Override
+    public void sleepDevice() {
+        try {
+            this.getProxy()
+                .getTick()
+                .sleepDevice(this.getGridNode());
+        } catch (GridAccessException ignored) {}
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return AxisAlignedBB.getBoundingBox(
-                this.xCoord - 50,
-                this.yCoord - 50,
-                this.zCoord - 50,
-                this.xCoord + 50,
-                this.yCoord + 50,
-                this.zCoord + 50);
+            this.xCoord - 50,
+            this.yCoord - 50,
+            this.zCoord - 50,
+            this.xCoord + 50,
+            this.yCoord + 50,
+            this.zCoord + 50);
     }
 
     @Override
@@ -113,9 +142,7 @@ public class TileEntityBeamFormer extends AENetworkTile
                 .isReady()) {
                 this.getProxy()
                     .getTick()
-                    .alertDevice(
-                        this.getProxy()
-                            .getNode());
+                    .alertDevice(this.getGridNode());
             }
         } catch (GridAccessException ignored) {}
     }
@@ -157,15 +184,20 @@ public class TileEntityBeamFormer extends AENetworkTile
     }
 
     @Override
+    public double getRenderOffset() {
+        if (otherBeamFormer == null) return 0;
+        if (otherBeamFormer instanceof TileEntityBeamFormer) return 1.7d;
+        if (otherBeamFormer instanceof PartBeamFormer) return 1;
+        return 0;
+    }
+
+    @Override
     public BlockPos getPos() {
         return new BlockPos(this.xCoord, this.yCoord, this.zCoord);
     }
 
     @Override
     public boolean isPowered() {
-        if (this.worldObj != null && !this.worldObj.isRemote) {
-            return getProxy() != null && getProxy().isPowered();
-        }
         return (this.clientFlags & POWERED_FLAG) == POWERED_FLAG;
     }
 
@@ -185,44 +217,36 @@ public class TileEntityBeamFormer extends AENetworkTile
         return AECableType.DENSE;
     }
 
+    @Override
     public void unregisterListener() {
         WorldListener.instance.unregisterBlockStateListener(this);
     }
 
-    public void connect(TileEntityBeamFormer potentialFormer, Iterable<BlockPos> locs) throws FailedConnection {
-        var myProxy = this.getProxy();
-        var otherProxy = potentialFormer.getProxy();
-
-        if (potentialFormer == this || myProxy == null || otherProxy == null) return;
-        var myNode = myProxy.getNode();
-        var otherNode = otherProxy.getNode();
-        if (myNode == null || otherNode == null || myNode == otherNode) return;
-
+    public void connect(IBeamFormer potentialFormer, Iterable<BlockPos> locs) throws FailedConnection {
+        var myNode = this.getGridNode();
         this.connection = AEApi.instance()
-            .createGridConnection(myNode, otherNode);
-        potentialFormer.connection = this.connection;
-        this.otherBeamFormer = potentialFormer;
-        potentialFormer.otherBeamFormer = this;
+            .createGridConnection(myNode, potentialFormer.getGridNode());
 
-        if (potentialFormer.hideBeam || this.hideBeam) {
-            potentialFormer.hideBeam = this.hideBeam = true;
+        potentialFormer.setConnection(this.connection);
+        this.otherBeamFormer = potentialFormer;
+        potentialFormer.setOtherBeamFormer(this);
+
+        if (potentialFormer.isHideBeam() || this.hideBeam) {
+            potentialFormer.setHideBeam(true);
+            this.hideBeam = true;
         }
 
         this.unregisterListener();
-        this.otherBeamFormer.unregisterListener();
+        potentialFormer.unregisterListener();
 
         this.listenerLinkedList = new Long2ObjectLinkedOpenHashMap<>();
         for (var loc : locs) this.listenerLinkedList.put(loc.asLong(), loc);
 
         WorldListener.instance.registerBlockStateListener(this, locs);
         this.beamLength = this.listenerLinkedList.size();
-        this.otherBeamFormer.beamLength = 0;
+        potentialFormer.setBeamLength(0);
 
-        try {
-            this.otherBeamFormer.getProxy()
-                .getTick()
-                .sleepDevice(otherNode);
-        } catch (GridAccessException ignored) {}
+        potentialFormer.sleepDevice();
 
         this.markForUpdate();
         potentialFormer.markForUpdate();
@@ -255,11 +279,13 @@ public class TileEntityBeamFormer extends AENetworkTile
             this.connection = null;
         }
 
-        if (this.otherBeamFormer != null && this.otherBeamFormer.otherBeamFormer == this) {
-            this.otherBeamFormer.beamLength = newBeamB;
-            this.otherBeamFormer.connection = null;
-            this.otherBeamFormer.otherBeamFormer = null;
-            this.otherBeamFormer.markForUpdate();
+        IBeamFormer other = this.otherBeamFormer;
+        if (other != null && other.getOtherBeamFormer() == this) {
+            other.setBeamLength(newBeamB);
+            other.setConnection(null);
+            other.setOtherBeamFormer(null);
+            other.markForUpdate();
+            this.clientOtherOffset = 0;
             this.otherBeamFormer = null;
         }
 
@@ -271,10 +297,16 @@ public class TileEntityBeamFormer extends AENetworkTile
     public void onBlockChanged(BlockPos pos) {
         try {
             boolean isValid = isTranslucent(this.worldObj, pos.x, pos.y, pos.z);
-            if (isValid && this.worldObj.getTileEntity(pos.x, pos.y, pos.z) instanceof TileEntityBeamFormer) {
-                isValid = false;
+            if (isValid) {
+                TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
+                if (te instanceof IBeamFormer) isValid = false;
+                else if (te instanceof IPartHost ph) {
+                    if (ph.getPart(this.getForward()) instanceof IBeamFormer || ph.getPart(
+                        this.getForward()
+                            .getOpposite()) instanceof IBeamFormer)
+                        isValid = false;
+                }
             }
-
             if ((this.connection != null && !isValid) || (this.connection == null && isValid)) {
                 if (!isValid) this.disconnect(pos);
                 this.refreshNetwork();
@@ -287,11 +319,11 @@ public class TileEntityBeamFormer extends AENetworkTile
             this.hideBeam = !this.hideBeam;
             player.addChatMessage(
                 new ChatComponentTranslation(this.hideBeam ? "text.beam_former.hide" : "text.beam_former.show"));
+            this.markForUpdate();
             if (this.otherBeamFormer != null) {
-                this.otherBeamFormer.hideBeam = this.hideBeam;
+                this.otherBeamFormer.setHideBeam(this.hideBeam);
                 this.otherBeamFormer.markForUpdate();
             }
-            this.markForUpdate();
         }
         return true;
     }
@@ -326,16 +358,13 @@ public class TileEntityBeamFormer extends AENetworkTile
             IGridNode node = proxy.getNode();
             ForgeDirection cableSide = this.getForward()
                 .getOpposite();
-
             for (IGridConnection conn : node.getConnections()) {
                 IGridNode otherNode = (conn.a() == node) ? conn.b() : conn.a();
                 BlockPos myPos = this.getPos();
                 var otherPos = otherNode.getGridBlock()
                     .getLocation();
-
                 if (myPos.x + cableSide.offsetX == otherPos.x && myPos.y + cableSide.offsetY == otherPos.y
                     && myPos.z + cableSide.offsetZ == otherPos.z) {
-
                     this.cachedColor = otherNode.getGridBlock()
                         .getGridColor();
                     return;
@@ -350,11 +379,7 @@ public class TileEntityBeamFormer extends AENetworkTile
     public TickRateModulation tickingRequest(@NotNull IGridNode node, int ticksSinceLastCall) {
         if (!this.getProxy()
             .isReady()) return TickRateModulation.SAME;
-
         ForgeDirection forward = this.getForward();
-        if (forward == null || forward == ForgeDirection.UNKNOWN) return TickRateModulation.SAME;
-
-        boolean isConnectionValid = this.connection != null;
         ForgeDirection opposite = forward.getOpposite();
         BlockPos loc = this.getPos();
         LinkedHashSet<BlockPos> blockSet = new LinkedHashSet<>();
@@ -362,38 +387,38 @@ public class TileEntityBeamFormer extends AENetworkTile
         for (int i = 0; i < MainConfig.machine.beamFormerLength; i++) {
             loc = loc.offset(forward);
             TileEntity te = this.worldObj.getTileEntity(loc.x, loc.y, loc.z);
+            IBeamFormer potentialFormer = null;
 
-            if (te instanceof TileEntityBeamFormer potentialFormer) {
-                if (potentialFormer == this) continue;
+            if (te instanceof IBeamFormer ibf) {
+                if (ibf.getDirection() == opposite) potentialFormer = ibf;
+            } else if (te instanceof IPartHost ph) {
+                if (ph.getPart(opposite) instanceof IBeamFormer ibf) potentialFormer = ibf;
+            }
 
-                if (potentialFormer.getForward() == opposite) {
-                    if (isConnectionValid && potentialFormer == this.otherBeamFormer) return TickRateModulation.SLEEP;
-
-                    boolean disconnected = this.disconnect(loc);
-                    if (potentialFormer.getProxy()
-                        .isReady() && potentialFormer.otherBeamFormer == null) {
-                        try {
-                            this.connect(potentialFormer, blockSet);
-                            return TickRateModulation.SLEEP;
-                        } catch (FailedConnection | NullPointerException e) {
-                            AELog.error(e);
-                        }
+            if (potentialFormer != null) {
+                if (this.connection != null && potentialFormer == this.otherBeamFormer) return TickRateModulation.SLEEP;
+                boolean disconnected = this.disconnect(loc);
+                if (potentialFormer.getGridNode() != null && potentialFormer.getOtherBeamFormer() == null) {
+                    try {
+                        this.connect(potentialFormer, blockSet);
+                        return TickRateModulation.SLEEP;
+                    } catch (FailedConnection | NullPointerException e) {
+                        AELog.error(e);
                     }
-                    return disconnected ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
                 }
-                return this.disconnect(loc) ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
+                return disconnected ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
             }
-
-            if (!isTranslucent(this.worldObj, loc.x, loc.y, loc.z)) {
+            if (!isTranslucent(this.worldObj, loc.x, loc.y, loc.z))
                 return this.disconnect(loc) ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-            }
             blockSet.add(loc);
         }
         return TickRateModulation.SLOWER;
     }
 
     public int getLightLevel() {
-        return !this.hideBeam && (this.beamLength != 0 || this.otherBeamFormer != null) && this.isActive() ? 15 : 0;
+        return !this.hideBeam
+            && ((Platform.isClient() && this.paired) || this.beamLength != 0 || this.otherBeamFormer != null)
+            && (this.isActive() && this.isPowered()) ? 15 : 0;
     }
 
     @Override
@@ -429,22 +454,9 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @TileEvent(TileEventType.WORLD_NBT_WRITE)
     public void writeCustomNBT(NBTTagCompound data) {
-        int flags = 0;
-        try {
-            if (this.getProxy()
-                .isReady()
-                && this.getProxy()
-                    .getEnergy()
-                    .isNetworkPowered()) {
-                flags |= POWERED_FLAG;
-            }
-        } catch (GridAccessException ignored) {}
-        this.clientFlags = flags;
-
         if (this.beamLength > 0) data.setInteger("beamLength", this.beamLength);
         if (this.hideBeam) data.setBoolean("hideBeam", true);
         data.setBoolean("paired", this.otherBeamFormer != null);
-        data.setByte("cf", (byte) this.clientFlags);
     }
 
     @TileEvent(TileEventType.WORLD_NBT_READ)
@@ -458,7 +470,6 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     private void internalReadNBT(NBTTagCompound data) {
         boolean oldPaired = this.paired;
-        int oldFlags = this.clientFlags;
 
         if (data.getTag("beamLength") instanceof NBTTagDouble dbl) {
             this.beamLength = (int) dbl.func_150286_g();
@@ -467,9 +478,8 @@ public class TileEntityBeamFormer extends AENetworkTile
         }
         this.hideBeam = data.getBoolean("hideBeam");
         this.paired = data.getBoolean("paired");
-        this.clientFlags = data.getByte("cf");
 
-        if (this.worldObj != null && (this.paired != oldPaired || oldFlags != this.clientFlags)) {
+        if (this.worldObj != null && (this.paired != oldPaired)) {
             this.worldObj.markBlockRangeForRenderUpdate(
                 this.xCoord,
                 this.yCoord,
@@ -482,23 +492,25 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @TileEvent(TileEventType.NETWORK_WRITE)
     public void writeToNetwork(final ByteBuf data) {
-        int flags = 0;
+        setClientFlags(0);
         try {
             if (this.getProxy()
-                .isReady()
-                && this.getProxy()
-                    .getEnergy()
-                    .isNetworkPowered()) {
-                flags |= POWERED_FLAG;
+                .getEnergy()
+                .isNetworkPowered()) {
+                this.setClientFlags(this.clientFlags | POWERED_FLAG);
             }
-        } catch (GridAccessException ignored) {}
-        this.clientFlags = flags;
+
+            this.setClientFlags(this.populateFlags(this.clientFlags));
+        } catch (final GridAccessException e) {
+            // meh
+        }
 
         data.writeInt(this.beamLength);
         data.writeBoolean(this.otherBeamFormer != null);
         data.writeBoolean(this.hideBeam);
         data.writeByte((byte) this.clientFlags);
         data.writeByte((byte) this.cachedColor.ordinal());
+        data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
     }
 
     @TileEvent(TileEventType.NETWORK_READ)
@@ -508,12 +520,14 @@ public class TileEntityBeamFormer extends AENetworkTile
         boolean oldHideBeam = this.hideBeam;
         int oldFlags = this.clientFlags;
         AEColor oldColor = this.cachedColor;
+        double oldOtherOffset = this.clientOtherOffset;
 
         this.beamLength = data.readInt();
         this.paired = data.readBoolean();
         this.hideBeam = data.readBoolean();
         this.clientFlags = data.readByte();
         this.cachedColor = AEColor.values()[data.readByte()];
+        this.clientOtherOffset = data.readDouble();
 
         if (this.paired != oldPaired || oldFlags != this.clientFlags) {
             this.worldObj.markBlockRangeForRenderUpdate(
@@ -528,6 +542,11 @@ public class TileEntityBeamFormer extends AENetworkTile
         return oldBeamLength != this.beamLength || oldPaired != this.paired
             || oldHideBeam != this.hideBeam
             || oldFlags != this.clientFlags
-            || oldColor != this.cachedColor;
+            || oldColor != this.cachedColor
+            || oldOtherOffset != this.clientOtherOffset;
+    }
+
+    public int populateFlags(final int cf) {
+        return cf;
     }
 }

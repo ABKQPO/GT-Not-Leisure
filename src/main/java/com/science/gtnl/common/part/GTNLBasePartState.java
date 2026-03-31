@@ -18,6 +18,7 @@ import lombok.Setter;
 public abstract class GTNLBasePartState extends AEBasePart implements IPowerChannelState {
 
     public static final int POWERED_FLAG = 1;
+
     @Getter
     @Setter
     public int clientFlags = 0; // sent as byte.

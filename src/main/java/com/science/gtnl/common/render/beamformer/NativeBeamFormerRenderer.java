@@ -20,10 +20,8 @@ public class NativeBeamFormerRenderer implements IBeamFormerRenderer {
 
     @Override
     public void renderDynamic(IBeamFormer partBeamFormer, double x, double y, double z, float partialTicks) {
-
-        if (!partBeamFormer.shouldRenderBeam()) {
-            return;
-        }
+        if (partBeamFormer == null || !partBeamFormer.shouldRenderBeam()) return;
+        double offset = partBeamFormer.getClientOtherOffset();
 
         BeamFormerRenderHelper.StaticBloomMetadata metadata = BeamFormerRenderHelper.getBloomMetadata(partBeamFormer);
 
@@ -47,7 +45,7 @@ public class NativeBeamFormerRenderer implements IBeamFormerRenderer {
             (double) partBeamFormer.getWorld()
                 .getTotalWorldTime(),
             0,
-            partBeamFormer.getBeamLength() + 0.3d,
+            partBeamFormer.getBeamLength() + offset,
             rgb,
             0.075 * 1.6,
             0.075 * 2);
