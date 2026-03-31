@@ -88,7 +88,7 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
         var te = world.getTileEntity(x, y, z);
         if (te instanceof TileEntityBeamFormer beamFormer) {
-            return beamFormer.getLightLevel();
+            return beamFormer.isActive() && beamFormer.getBeamLength() > 0 ? 15 : 0;
         }
         return 0;
     }

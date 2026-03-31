@@ -46,7 +46,6 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
-import appeng.util.Platform;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -101,6 +100,9 @@ public class TileEntityBeamFormer extends AENetworkTile
     @Override
     public void markForUpdate() {
         super.markForUpdate();
+        if (this.worldObj != null) {
+            this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);
+        }
     }
 
     @Override
@@ -414,12 +416,6 @@ public class TileEntityBeamFormer extends AENetworkTile
             blockSet.add(loc);
         }
         return TickRateModulation.SLOWER;
-    }
-
-    public int getLightLevel() {
-        return !this.hideBeam
-            && ((Platform.isClient() && this.paired) || this.beamLength != 0 || this.otherBeamFormer != null)
-            && (this.isActive() && this.isPowered()) ? 15 : 0;
     }
 
     @Override
