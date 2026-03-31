@@ -64,6 +64,7 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
         this.setTileEntity(TileEntityBeamFormer.class);
         this.setFeature(EnumSet.of(AEFeature.Core));
         this.isOpaque = false;
+        this.isFullSize = false;
     }
 
     @Override

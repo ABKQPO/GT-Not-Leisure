@@ -185,10 +185,10 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @Override
     public double getRenderOffset() {
-        if (otherBeamFormer == null) return 0;
+        if (otherBeamFormer == null) return 0.5d;
         if (otherBeamFormer instanceof TileEntityBeamFormer) return 1.7d;
         if (otherBeamFormer instanceof PartBeamFormer) return 1;
-        return 0;
+        return 0.5d;
     }
 
     @Override
@@ -285,7 +285,8 @@ public class TileEntityBeamFormer extends AENetworkTile
             other.setConnection(null);
             other.setOtherBeamFormer(null);
             other.markForUpdate();
-            this.clientOtherOffset = 0;
+            other.setClientOtherOffset(0.5d);
+            this.clientOtherOffset = 0.5d;
             this.otherBeamFormer = null;
         }
 
@@ -510,7 +511,11 @@ public class TileEntityBeamFormer extends AENetworkTile
         data.writeBoolean(this.hideBeam);
         data.writeByte((byte) this.clientFlags);
         data.writeByte((byte) this.cachedColor.ordinal());
-        data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
+        if (otherBeamFormer == null && beamLength > 0) {
+            data.writeDouble(clientOtherOffset);
+        } else {
+            data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
+        }
     }
 
     @TileEvent(TileEventType.NETWORK_READ)

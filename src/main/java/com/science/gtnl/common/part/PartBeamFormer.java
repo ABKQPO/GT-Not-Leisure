@@ -156,10 +156,10 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
 
     @Override
     public double getRenderOffset() {
-        if (otherBeamFormer == null) return 0;
+        if (otherBeamFormer == null) return 0.5d;
         if (otherBeamFormer instanceof TileEntityBeamFormer) return 1;
         if (otherBeamFormer instanceof PartBeamFormer) return 0.3d;
-        return 0;
+        return 0.5d;
     }
 
     @Override
@@ -264,7 +264,8 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
             other.setConnection(null);
             other.setOtherBeamFormer(null);
             other.markForUpdate();
-            this.clientOtherOffset = 0;
+            other.setClientOtherOffset(0.5d);
+            this.clientOtherOffset = 0.5d;
             this.otherBeamFormer = null;
         }
 
@@ -458,6 +459,19 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     }
 
     @Override
+    public void writeToStream(ByteBuf data) throws IOException {
+        super.writeToStream(data);
+        data.writeInt(this.beamLength);
+        data.writeBoolean(this.otherBeamFormer != null);
+        data.writeBoolean(this.hideBeam);
+        if (otherBeamFormer == null && beamLength > 0) {
+            data.writeDouble(clientOtherOffset);
+        } else {
+            data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
+        }
+    }
+
+    @Override
     public boolean readFromStream(ByteBuf data) throws IOException {
         var shouldRedraw = super.readFromStream(data);
         this.beamLength = data.readInt();
@@ -476,15 +490,6 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
         this.hideBeam = data.readBoolean();
         this.clientOtherOffset = data.readDouble();
         return shouldRedraw;
-    }
-
-    @Override
-    public void writeToStream(ByteBuf data) throws IOException {
-        super.writeToStream(data);
-        data.writeInt(this.beamLength);
-        data.writeBoolean(this.otherBeamFormer != null);
-        data.writeBoolean(this.hideBeam);
-        data.writeDouble(this.otherBeamFormer != null ? this.otherBeamFormer.getRenderOffset() : 0.0);
     }
 
     @Override
