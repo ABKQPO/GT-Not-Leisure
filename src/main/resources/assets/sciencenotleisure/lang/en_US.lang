@@ -332,11 +332,11 @@ tc.research_text.gtnl.essentiaUpgradeMechanics.0=This kind of Essentia must flow
 tc.research_text.gtnl.essentiaUpgradeMechanics.1=Acceptable Aspects:<BR><BR>Iter: 16000EU<BR><BR>Machina: 61200EU<BR><BR>Limus: 11800EU<BR><BR>The Coefficient is always x1.0
 tc.research_text.gtnl.essentiaUpgradeMechanics.2=Required Liquid:<BR><BR>Lubricant: Efficiency:x1.0
 
-tc.research_name.gtnl.essentiaUpgradeSprite=Essentia: SPRITE
-tc.research_text.gtnl.essentiaUpgradeSprite=Brain in a Machine.
-tc.research_text.gtnl.essentiaUpgradeSprite.0=The power directly generated from spiritual Essentia is very low. It is only when activated with Flowing Spirit or Hollow Tears that these Essentia can show their true power.<BR><BR>When the stable point of Diffusion Cell is low, Hollow Tears can stimulate more energy from Essentia. But when the stable point of Diffusion Cell becomes higher, only using Flowing Spirit can awaken the true power of Essentia.<BR><BR>The basic consuming speed is 40L/sec.
-tc.research_text.gtnl.essentiaUpgradeSprite.1=Acceptable Aspects:<BR><BR>Cognitio: 2200EU Coefficient:x1.2<BR><BR>Sensus: 1400EU Coefficient:x0.7<BR><BR>Lucrum: 6000EU Coefficient:x2.0<BR><BR>Strontio: 200EU Coefficient:x0.03<BR><BR>Nebrisum: 24300EU Coefficient:x2.0<BR><BR>Luxuria: 79200EU Coefficient:x3.7<BR><BR>Superbia: 10900EU Coefficient:x2.1<BR><BR>Invidia: 7700EU Coefficient:x1.0<BR><BR>Desidia: 600EU Coefficient:x0.1
-tc.research_text.gtnl.essentiaUpgradeSprite.2=Optional Liquid:<BR><BR>Hollow Tears: Efficiency:x 15x(1+100/Stable Point)<BR><BR>Flowing Spirit Efficiency:x 10x(1+Stable Point/100)<BR><BR>This means Flowing Spirit is more efficient when stable point is over 150.
+tc.research_name.gtnl.essentiaUpgradeSpririt=Essentia: SPRITE
+tc.research_text.gtnl.essentiaUpgradeSpririt=Brain in a Machine.
+tc.research_text.gtnl.essentiaUpgradeSpririt.0=The power directly generated from spiritual Essentia is very low. It is only when activated with Flowing Spirit or Hollow Tears that these Essentia can show their true power.<BR><BR>When the stable point of Diffusion Cell is low, Hollow Tears can stimulate more energy from Essentia. But when the stable point of Diffusion Cell becomes higher, only using Flowing Spirit can awaken the true power of Essentia.<BR><BR>The basic consuming speed is 40L/sec.
+tc.research_text.gtnl.essentiaUpgradeSpririt.1=Acceptable Aspects:<BR><BR>Cognitio: 2200EU Coefficient:x1.2<BR><BR>Sensus: 1400EU Coefficient:x0.7<BR><BR>Lucrum: 6000EU Coefficient:x2.0<BR><BR>Strontio: 200EU Coefficient:x0.03<BR><BR>Nebrisum: 24300EU Coefficient:x2.0<BR><BR>Luxuria: 79200EU Coefficient:x3.7<BR><BR>Superbia: 10900EU Coefficient:x2.1<BR><BR>Invidia: 7700EU Coefficient:x1.0<BR><BR>Desidia: 600EU Coefficient:x0.1
+tc.research_text.gtnl.essentiaUpgradeSpririt.2=Optional Liquid:<BR><BR>Hollow Tears: Efficiency:x 15x(1+100/Stable Point)<BR><BR>Flowing Spirit Efficiency:x 10x(1+Stable Point/100)<BR><BR>This means Flowing Spirit is more efficient when stable point is over 150.
 
 tc.research_name.gtnl.essentiaUpgradeRadiation=Essentia: RADIATION
 tc.research_text.gtnl.essentiaUpgradeRadiation=Atomic Heart

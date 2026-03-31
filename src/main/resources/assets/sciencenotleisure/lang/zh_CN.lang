@@ -332,11 +332,11 @@ tc.research_text.gtnl.essentiaUpgradeMechanics.0=这类源质必须处于快速�
 tc.research_text.gtnl.essentiaUpgradeMechanics.1=用源质:<BR><BR>Iter:16000EU<BR><BR>Machina:61200EU<BR><BR>Limus:11800EU<BR><BR>系数均为x1.0
 tc.research_text.gtnl.essentiaUpgradeMechanics.2=需要流体:<BR><BR>润滑油:效率:x1.0
 
-tc.research_name.gtnl.essentiaUpgradeSprite=源质：SPRITE
-tc.research_text.gtnl.essentiaUpgradeSprite=机中之脑
-tc.research_text.gtnl.essentiaUpgradeSprite.0=精神类的源质的直接产能很低.只有用水心或虚伪泪水激活后,它们才能展示正在的能量.<BR><BR>当扩散单元的稳定点较低时,虚伪泪水可以从源质中激发出更多能量.而稳定点较高时,只能用水心才能激发出源质的真正能量.<BR><BR>基础消耗速度为40L/秒.
-tc.research_text.gtnl.essentiaUpgradeSprite.1=可用源质:<BR><BR>Cognitio:2200EU;系数:x1.2<BR><BR>Sensus:1400EU;系数:x0.7<BR><BR>Lucrum:6000EU;系数:x2.0<BR><BR>Strontio:200EU;系数:x0.03<BR><BR>Nebrisum:24300EU;系数:x2.0<BR><BR>Luxuria:79200EU;系数:x3.7<BR><BR>Superbia:10900EU;系数:x2.1<BR><BR>Invidia:7700EU;系数:x1.0<BR><BR>Desidia:600EU;系数:x0.1
-tc.research_text.gtnl.essentiaUpgradeSprite.2=可选流体:<BR><BR>虚伪泪水:效率:x15x(1+100/稳定点)<BR><BR>水心:效率:x10x(1+稳定点/100)<BR><BR>简而言之,稳定点超过150后,水心的效率更高.
+tc.research_name.gtnl.essentiaUpgradeSpririt=源质：SPRITE
+tc.research_text.gtnl.essentiaUpgradeSpririt=机中之脑
+tc.research_text.gtnl.essentiaUpgradeSpririt.0=精神类的源质的直接产能很低.只有用水心或虚伪泪水激活后,它们才能展示正在的能量.<BR><BR>当扩散单元的稳定点较低时,虚伪泪水可以从源质中激发出更多能量.而稳定点较高时,只能用水心才能激发出源质的真正能量.<BR><BR>基础消耗速度为40L/秒.
+tc.research_text.gtnl.essentiaUpgradeSpririt.1=可用源质:<BR><BR>Cognitio:2200EU;系数:x1.2<BR><BR>Sensus:1400EU;系数:x0.7<BR><BR>Lucrum:6000EU;系数:x2.0<BR><BR>Strontio:200EU;系数:x0.03<BR><BR>Nebrisum:24300EU;系数:x2.0<BR><BR>Luxuria:79200EU;系数:x3.7<BR><BR>Superbia:10900EU;系数:x2.1<BR><BR>Invidia:7700EU;系数:x1.0<BR><BR>Desidia:600EU;系数:x0.1
+tc.research_text.gtnl.essentiaUpgradeSpririt.2=可选流体:<BR><BR>虚伪泪水:效率:x15x(1+100/稳定点)<BR><BR>水心:效率:x10x(1+稳定点/100)<BR><BR>简而言之,稳定点超过150后,水心的效率更高.
 
 tc.research_name.gtnl.essentiaUpgradeRadiation=源质：RADIATION
 tc.research_text.gtnl.essentiaUpgradeRadiation=原子之心
