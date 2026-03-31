@@ -3,11 +3,16 @@ package com.science.gtnl.common.block.blocks.tile;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 
+import com.science.gtnl.asm.GTNLEarlyCoreMod;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.common.render.IMTERenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -66,6 +71,7 @@ public class TileEntityBeamFormer extends AENetworkTile
     public boolean paired;
 
     public NBTTagCompound nbtCache = null;
+    public AEColor cachedColor = AEColor.Transparent;
 
     public TileEntityBeamFormer() {
         super();
@@ -75,6 +81,18 @@ public class TileEntityBeamFormer extends AENetworkTile
             .setIdlePowerUsage(MainConfig.machine.beamFormerEnergyConsume);
         this.getProxy()
             .setValidSides(EnumSet.allOf(ForgeDirection.class));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        return AxisAlignedBB.getBoundingBox(
+                this.xCoord - 50,
+                this.yCoord - 50,
+                this.zCoord - 50,
+                this.xCoord + 50,
+                this.yCoord + 50,
+                this.zCoord + 50);
     }
 
     @Override
@@ -89,6 +107,7 @@ public class TileEntityBeamFormer extends AENetworkTile
     }
 
     public void refreshNetwork() {
+        updateCachedColor();
         try {
             if (this.getProxy()
                 .isReady()) {
@@ -103,7 +122,7 @@ public class TileEntityBeamFormer extends AENetworkTile
 
     @Override
     public AEColor getColor() {
-        return getProxy().getGridColor();
+        return cachedColor;
     }
 
     @Override
@@ -301,6 +320,31 @@ public class TileEntityBeamFormer extends AENetworkTile
         this.markForUpdate();
     }
 
+    public void updateCachedColor() {
+        AENetworkProxy proxy = this.getProxy();
+        if (proxy.isReady()) {
+            IGridNode node = proxy.getNode();
+            ForgeDirection cableSide = this.getForward()
+                .getOpposite();
+
+            for (IGridConnection conn : node.getConnections()) {
+                IGridNode otherNode = (conn.a() == node) ? conn.b() : conn.a();
+                BlockPos myPos = this.getPos();
+                var otherPos = otherNode.getGridBlock()
+                    .getLocation();
+
+                if (myPos.x + cableSide.offsetX == otherPos.x && myPos.y + cableSide.offsetY == otherPos.y
+                    && myPos.z + cableSide.offsetZ == otherPos.z) {
+
+                    this.cachedColor = otherNode.getGridBlock()
+                        .getGridColor();
+                    return;
+                }
+            }
+        }
+        this.cachedColor = AEColor.Transparent;
+    }
+
     @NotNull
     @Override
     public TickRateModulation tickingRequest(@NotNull IGridNode node, int ticksSinceLastCall) {
@@ -454,6 +498,7 @@ public class TileEntityBeamFormer extends AENetworkTile
         data.writeBoolean(this.otherBeamFormer != null);
         data.writeBoolean(this.hideBeam);
         data.writeByte((byte) this.clientFlags);
+        data.writeByte((byte) this.cachedColor.ordinal());
     }
 
     @TileEvent(TileEventType.NETWORK_READ)
@@ -462,11 +507,13 @@ public class TileEntityBeamFormer extends AENetworkTile
         boolean oldPaired = this.paired;
         boolean oldHideBeam = this.hideBeam;
         int oldFlags = this.clientFlags;
+        AEColor oldColor = this.cachedColor;
 
         this.beamLength = data.readInt();
         this.paired = data.readBoolean();
         this.hideBeam = data.readBoolean();
         this.clientFlags = data.readByte();
+        this.cachedColor = AEColor.values()[data.readByte()];
 
         if (this.paired != oldPaired || oldFlags != this.clientFlags) {
             this.worldObj.markBlockRangeForRenderUpdate(
@@ -480,6 +527,7 @@ public class TileEntityBeamFormer extends AENetworkTile
 
         return oldBeamLength != this.beamLength || oldPaired != this.paired
             || oldHideBeam != this.hideBeam
-            || oldFlags != this.clientFlags;
+            || oldFlags != this.clientFlags
+            || oldColor != this.cachedColor;
     }
 }

@@ -30,7 +30,7 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
     private static final int[] STATUS_BOX = { 6, 6, 0, 10, 10, 1 };
 
     public RenderBlockBeamFormer() {
-        super(true, 20);
+        super(true, 50);
     }
 
     @Override
