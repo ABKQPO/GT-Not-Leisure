@@ -11,6 +11,7 @@ import com.science.gtnl.common.command.CommandItemInfo;
 import com.science.gtnl.common.command.CommandPlaySound;
 import com.science.gtnl.common.command.CommandSteamNetwork;
 import com.science.gtnl.common.command.CommandSudo;
+import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandTitle;
 import com.science.gtnl.loader.MaterialLoader;
@@ -112,6 +113,7 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandPlaySound());
         event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
+        event.registerServerCommand(new CommandSuicide());
         RecipeLoader.loadServerStart();
     }
 
