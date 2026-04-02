@@ -1,6 +1,11 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import static gregtech.api.enums.OrePrefixes.*;
+import static gregtech.api.enums.OrePrefixes.dust;
+import static gregtech.api.enums.OrePrefixes.gem;
+import static gregtech.api.enums.OrePrefixes.gemExquisite;
+import static gregtech.api.enums.OrePrefixes.gemFlawless;
+import static gregtech.api.enums.OrePrefixes.ore;
+import static gregtech.api.enums.OrePrefixes.rawOre;
 
 import java.util.ArrayList;
 

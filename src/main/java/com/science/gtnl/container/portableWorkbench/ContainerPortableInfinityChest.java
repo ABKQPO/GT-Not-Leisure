@@ -1,6 +1,6 @@
 package com.science.gtnl.container.portableWorkbench;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.network;
 
 import javax.annotation.Nonnull;
 

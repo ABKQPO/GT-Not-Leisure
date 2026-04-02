@@ -1,7 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static net.minecraft.util.StatCollector.*;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.ArrayList;
 import java.util.Arrays;

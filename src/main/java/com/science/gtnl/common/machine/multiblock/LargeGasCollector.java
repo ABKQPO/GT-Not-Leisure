@@ -1,11 +1,21 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static gregtech.api.GregTechAPI.sBlockCasings6;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.HatchElement.OutputHatch;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
 import java.util.List;

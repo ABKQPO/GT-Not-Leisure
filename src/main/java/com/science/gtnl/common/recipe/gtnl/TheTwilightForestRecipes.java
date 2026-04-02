@@ -1,6 +1,8 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.ExtraUtilities;
+import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
+import static gregtech.api.enums.Mods.TwilightForest;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

@@ -1,6 +1,6 @@
 package com.reavaritia.common.items;
 
-import static com.reavaritia.ReAvaritia.*;
+import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
 
 import java.util.List;
 import java.util.Map.Entry;

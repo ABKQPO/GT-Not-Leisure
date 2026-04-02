@@ -1,9 +1,13 @@
 package com.science.gtnl.common.render.tile;
 
-import static tectech.Reference.*;
-import static tectech.rendering.EOH.EOHRenderingUtils.*;
-import static tectech.rendering.EOH.EOHTileEntitySR.*;
-import static tectech.thing.block.TileEntityEyeOfHarmony.*;
+import static tectech.Reference.MODID;
+import static tectech.rendering.EOH.EOHRenderingUtils.renderBlockInWorld;
+import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
+import static tectech.rendering.EOH.EOHTileEntitySR.spaceModel;
+import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 
 import java.awt.*;
 import java.util.ArrayList;

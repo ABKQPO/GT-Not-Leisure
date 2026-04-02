@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import java.util.ArrayList;
 import java.util.HashMap;

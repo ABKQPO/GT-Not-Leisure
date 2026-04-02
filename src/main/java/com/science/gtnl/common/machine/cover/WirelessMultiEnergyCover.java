@@ -1,7 +1,8 @@
 package com.science.gtnl.common.machine.cover;
 
-import static gregtech.common.misc.WirelessNetworkManager.*;
-import static java.lang.Long.*;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gregtech.common.misc.WirelessNetworkManager.ticks_between_energy_addition;
+import static java.lang.Long.min;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.science.gtnl.common.block.casings.glow;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.block.casings.glow.ItemBlockGlow.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.block.casings.glow.ItemBlockGlow.metaSet;
 
 import java.util.List;
 

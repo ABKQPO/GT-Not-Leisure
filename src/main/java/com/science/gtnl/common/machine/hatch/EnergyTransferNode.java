@@ -1,7 +1,8 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.enums.Dyes.*;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE;
+import static gregtech.api.enums.Dyes.MACHINE_METAL;
 
 import java.util.List;
 

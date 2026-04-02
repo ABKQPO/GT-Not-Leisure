@@ -1,6 +1,8 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeBuilder.TICKS;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

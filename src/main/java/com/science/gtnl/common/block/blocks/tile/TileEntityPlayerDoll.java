@@ -1,6 +1,6 @@
 package com.science.gtnl.common.block.blocks.tile;
 
-import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.fetchUUID;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;

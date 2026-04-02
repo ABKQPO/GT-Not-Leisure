@@ -1,7 +1,12 @@
 package com.science.gtnl.common.render.tile;
 
-import static gregtech.api.GregTechAPI.*;
-import static tectech.rendering.EOH.EOHTileEntitySR.*;
+import static gregtech.api.GregTechAPI.sBlockCasings10;
+import static gregtech.api.GregTechAPI.sBlockCasings4;
+import static gregtech.api.GregTechAPI.sBlockCasings8;
+import static gregtech.api.GregTechAPI.sBlockCasings9;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
 
 import java.nio.FloatBuffer;
 

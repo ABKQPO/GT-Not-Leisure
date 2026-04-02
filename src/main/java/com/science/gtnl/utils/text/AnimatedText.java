@@ -1,6 +1,26 @@
 package com.science.gtnl.utils.text;
 
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.AQUA;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.BLACK;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.BLUE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.BOLD;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.DARK_AQUA;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.DARK_BLUE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.DARK_GREEN;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.DARK_PURPLE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GOLD;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GRAY;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GREEN;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.ITALIC;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.LIGHT_PURPLE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RED;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RESET;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.UNDERLINE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.WHITE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.YELLOW;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.animatedText;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.chain;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.text;
 
 import java.util.function.Supplier;
 

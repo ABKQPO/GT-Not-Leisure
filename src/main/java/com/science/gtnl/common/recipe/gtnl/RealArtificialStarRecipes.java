@@ -1,7 +1,8 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.utils.enums.GTNLItemList.*;
-import static com.science.gtnl.utils.enums.ModList.*;
+import static com.science.gtnl.utils.enums.GTNLItemList.DepletedExcitedNaquadahFuelRod;
+import static com.science.gtnl.utils.enums.GTNLItemList.EnhancementCore;
+import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
 
 import net.minecraft.util.StatCollector;
 

@@ -1,15 +1,24 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
-import static com.science.gtnl.utils.Utils.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
-import static gtnhlanth.common.register.LanthItemList.*;
-import static tectech.thing.casing.TTCasingsContainer.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.HatchElement.OutputHatch;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTUtility.validMTEList;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
+import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
 import java.math.BigInteger;

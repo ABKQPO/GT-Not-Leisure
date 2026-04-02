@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;

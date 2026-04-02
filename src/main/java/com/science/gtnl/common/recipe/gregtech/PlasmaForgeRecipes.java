@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.recipe.RecipeMaps.*;
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.recipe.RecipeMaps.plasmaForgeRecipes;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import com.dreammaster.gthandler.DTPFCalculator;
 import com.science.gtnl.api.IRecipePool;

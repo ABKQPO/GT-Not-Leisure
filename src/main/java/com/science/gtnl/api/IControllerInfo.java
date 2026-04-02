@@ -1,8 +1,8 @@
 package com.science.gtnl.api;
 
-import static gregtech.api.gui.modularui.GTUITextures.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static net.minecraft.util.StatCollector.*;
+import static gregtech.api.gui.modularui.GTUITextures.OVERLAY_BUTTON_POWER_PANEL;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.science.gtnl.utils.event;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.packet.client.SoundHandler.*;
-import static com.science.gtnl.common.render.tile.BallRenderer.*;
+import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.common.packet.client.SoundHandler.PLAYING_SOUNDS;
+import static com.science.gtnl.common.render.tile.BallRenderer.visualStateMap;
 
 import java.util.Map;
 import java.util.Random;

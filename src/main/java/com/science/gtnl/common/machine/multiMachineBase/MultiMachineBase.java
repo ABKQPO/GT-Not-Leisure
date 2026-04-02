@@ -1,8 +1,7 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static com.science.gtnl.utils.Utils.*;
 import static com.science.gtnl.utils.Utils.filterValidMTEs;
-import static gregtech.api.util.GTUtility.*;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,6 +1,6 @@
 package com.science.gtnl.api.mixinHelper;
 
-import static gregtech.GTMod.*;
+import static gregtech.GTMod.proxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;

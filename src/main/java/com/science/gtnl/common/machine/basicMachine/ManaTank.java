@@ -1,8 +1,8 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTUtility.*;
-import static net.minecraft.util.StatCollector.*;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTUtility.formatNumbers;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,10 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static com.science.gtnl.utils.Utils.*;
-import static gregtech.api.enums.GTValues.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
+import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
+import static com.science.gtnl.utils.Utils.mergeArray;
+import static gregtech.api.enums.GTValues.V;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.util.GTRecipeConstants.CHEMPLANT_CASING_TIER;
 
 import net.minecraftforge.fluids.FluidStack;
 

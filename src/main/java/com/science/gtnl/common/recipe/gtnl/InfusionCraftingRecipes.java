@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static thaumcraft.common.config.ConfigItems.*;
+import static thaumcraft.common.config.ConfigItems.itemJarNode;
 
 import java.util.HashSet;
 import java.util.Set;

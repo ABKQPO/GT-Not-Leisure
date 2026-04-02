@@ -1,10 +1,34 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static bartworks.common.loaders.ItemRegistry.*;
-import static gregtech.api.enums.MetaTileEntityIDs.*;
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTRecipeConstants.*;
+import static bartworks.common.loaders.ItemRegistry.bw_realglas;
+import static bartworks.common.loaders.ItemRegistry.cal;
+import static bartworks.common.loaders.ItemRegistry.megaMachines;
+import static gregtech.api.enums.Mods.AE2FluidCraft;
+import static gregtech.api.enums.Mods.Avaritia;
+import static gregtech.api.enums.Mods.AvaritiaAddons;
+import static gregtech.api.enums.Mods.BloodArsenal;
+import static gregtech.api.enums.Mods.BloodMagic;
+import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.DraconicEvolution;
+import static gregtech.api.enums.Mods.EnderIO;
+import static gregtech.api.enums.Mods.EnderStorage;
+import static gregtech.api.enums.Mods.EternalSingularity;
+import static gregtech.api.enums.Mods.GTPlusPlus;
+import static gregtech.api.enums.Mods.GalacticraftAmunRa;
+import static gregtech.api.enums.Mods.GalaxySpace;
+import static gregtech.api.enums.Mods.KekzTech;
+import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
+import static gregtech.api.enums.Mods.RandomThings;
+import static gregtech.api.enums.Mods.Thaumcraft;
+import static gregtech.api.enums.Mods.ThaumicEnergistics;
+import static gregtech.api.enums.Mods.TwilightForest;
+import static gregtech.api.enums.Mods.UniversalSingularities;
+import static gregtech.api.enums.Mods.WitchingGadgets;
+import static gregtech.api.util.GTRecipeBuilder.HOURS;
+import static gregtech.api.util.GTRecipeBuilder.MINUTES;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.RESEARCH_ITEM;
+import static gregtech.api.util.GTRecipeConstants.SCANNING;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -1001,10 +1025,10 @@ public class AssemblingLineRecipes implements IRecipePool {
             .addTo(AL);
 
         RecipeBuilder.builder()
-            .metadata(RESEARCH_ITEM, new ItemStack(GregTechAPI.sBlockMachines, 1, BioLab_LuV.ID))
+            .metadata(RESEARCH_ITEM, new ItemStack(GregTechAPI.sBlockMachines, 1, MetaTileEntityIDs.BioLab_LuV.ID))
             .metadata(SCANNING, new Scanning(30 * MINUTES, TierEU.RECIPE_IV))
             .itemInputs(
-                new ItemStack(GregTechAPI.sBlockMachines, 8, BioLab_LuV.ID),
+                new ItemStack(GregTechAPI.sBlockMachines, 8, MetaTileEntityIDs.BioLab_LuV.ID),
                 WerkstoffLoader.LuVTierMaterial.get(OrePrefixes.plateSuperdense, 1),
                 WerkstoffLoader.LuVTierMaterial.get(OrePrefixes.ring, 32),
                 GTOreDictUnificator.get(OrePrefixes.rotor, Materials.Naquadah, 4),

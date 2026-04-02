@@ -1,6 +1,7 @@
 package com.science.gtnl.common.render.item;
 
-import static com.science.gtnl.common.render.tile.RealArtificialStarRenderer.*;
+import static com.science.gtnl.common.render.tile.RealArtificialStarRenderer.STAR_MODEL;
+import static com.science.gtnl.common.render.tile.RealArtificialStarRenderer.STAR_TEXTURE;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;

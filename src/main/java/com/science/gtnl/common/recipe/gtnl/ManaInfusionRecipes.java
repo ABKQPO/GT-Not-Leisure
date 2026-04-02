@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.Botania;
 
 import java.util.ArrayList;
 import java.util.List;

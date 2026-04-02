@@ -1,6 +1,6 @@
 package com.reavaritia.common.entity;
 
-import static com.reavaritia.common.BlockLoader.*;
+import static com.reavaritia.common.BlockLoader.ExtremeAnvil;
 
 import java.util.ArrayList;
 import java.util.List;

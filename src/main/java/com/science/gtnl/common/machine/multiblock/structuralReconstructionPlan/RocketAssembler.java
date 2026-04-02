@@ -1,13 +1,29 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
-import static com.science.gtnl.loader.BlockLoader.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Textures.BlockIcons.*;
-import static gregtech.api.util.GTStructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
+import static com.science.gtnl.loader.BlockLoader.metaCasing02;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static gregtech.api.GregTechAPI.sBlockCasings4;
+import static gregtech.api.GregTechAPI.sBlockCasings6;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.Collection;
 

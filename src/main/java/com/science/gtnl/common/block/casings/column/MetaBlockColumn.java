@@ -1,7 +1,7 @@
 package com.science.gtnl.common.block.casings.column;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.block.casings.column.ItemBlockColumn.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.block.casings.column.ItemBlockColumn.metaSet;
 
 import java.util.List;
 

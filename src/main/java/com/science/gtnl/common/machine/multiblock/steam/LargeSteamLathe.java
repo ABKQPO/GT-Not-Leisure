@@ -1,12 +1,25 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.loader.BlockLoader.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Textures.BlockIcons.*;
-import static gregtech.api.util.GTStructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.loader.BlockLoader.metaBlockColumn;
+import static com.science.gtnl.loader.BlockLoader.metaCasing02;
+import static gregtech.api.GregTechAPI.sBlockCasings1;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockFrames;
+import static gregtech.api.GregTechAPI.sBlockMetal6;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_GLOW;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

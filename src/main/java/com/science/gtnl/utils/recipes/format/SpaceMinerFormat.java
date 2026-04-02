@@ -1,6 +1,7 @@
 package com.science.gtnl.utils.recipes.format;
 
-import static gtnhintergalactic.recipe.IGRecipeMaps.*;
+import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_LOCATION;
+import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_PROJECT;
 
 import java.util.ArrayList;
 import java.util.List;

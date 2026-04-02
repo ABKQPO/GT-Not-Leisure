@@ -1,12 +1,19 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.enums.GTValues.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
+import static gregtech.api.enums.GTValues.V;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputHatch;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
 import java.util.Arrays;

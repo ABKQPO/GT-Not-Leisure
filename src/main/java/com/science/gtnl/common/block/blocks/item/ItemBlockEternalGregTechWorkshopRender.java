@@ -1,8 +1,12 @@
 package com.science.gtnl.common.block.blocks.item;
 
-import static tectech.rendering.EOH.EOHRenderingUtils.*;
-import static tectech.rendering.EOH.EOHTileEntitySR.*;
-import static tectech.thing.block.RenderForgeOfGods.*;
+import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
+import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
+import static tectech.thing.block.RenderForgeOfGods.disableOpaqueColorInversion;
+import static tectech.thing.block.RenderForgeOfGods.enableOpaqueColorInversion;
+import static tectech.thing.block.RenderForgeOfGods.enablePseudoTransparentColorInversion;
 
 import java.awt.*;
 

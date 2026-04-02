@@ -1,7 +1,7 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.fetchUUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;

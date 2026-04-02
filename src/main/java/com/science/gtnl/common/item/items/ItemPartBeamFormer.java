@@ -1,6 +1,6 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import javax.annotation.Nullable;
 

@@ -1,6 +1,6 @@
 package com.reavaritia.client.render;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;

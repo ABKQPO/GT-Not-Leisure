@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import net.minecraftforge.fluids.FluidStack;
 

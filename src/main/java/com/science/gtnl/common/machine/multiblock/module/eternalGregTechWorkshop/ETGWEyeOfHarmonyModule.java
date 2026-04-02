@@ -1,10 +1,17 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static gregtech.api.util.GTUtility.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
-import static java.lang.Math.*;
-import static kekztech.util.Util.*;
-import static net.minecraft.util.EnumChatFormatting.*;
+import static gregtech.api.util.GTUtility.formatNumbers;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gregtech.common.misc.WirelessNetworkManager.strongCheckOrAddUser;
+import static java.lang.Math.exp;
+import static java.lang.Math.pow;
+import static kekztech.util.Util.toStandardForm;
+import static net.minecraft.util.EnumChatFormatting.BLUE;
+import static net.minecraft.util.EnumChatFormatting.GOLD;
+import static net.minecraft.util.EnumChatFormatting.RED;
+import static net.minecraft.util.EnumChatFormatting.RESET;
+import static net.minecraft.util.EnumChatFormatting.STRIKETHROUGH;
+import static net.minecraft.util.EnumChatFormatting.YELLOW;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

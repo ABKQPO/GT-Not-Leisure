@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.*;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_DUAL_HATCH;
 
 import java.util.Arrays;
 import java.util.Iterator;

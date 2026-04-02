@@ -1,15 +1,25 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.Utils.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
+import static gregtech.api.GregTechAPI.sBlockCasings1;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.HatchElement.OutputHatch;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

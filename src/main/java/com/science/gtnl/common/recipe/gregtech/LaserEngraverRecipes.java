@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

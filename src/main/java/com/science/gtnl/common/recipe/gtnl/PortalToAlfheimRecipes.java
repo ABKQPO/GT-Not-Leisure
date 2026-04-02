@@ -1,6 +1,8 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.Avaritia;
+import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
 
 import java.util.ArrayList;
 import java.util.List;

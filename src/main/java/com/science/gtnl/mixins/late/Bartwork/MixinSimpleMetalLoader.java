@@ -1,6 +1,11 @@
 package com.science.gtnl.mixins.late.Bartwork;
 
-import static gregtech.api.enums.OrePrefixes.*;
+import static gregtech.api.enums.OrePrefixes.cell;
+import static gregtech.api.enums.OrePrefixes.cellMolten;
+import static gregtech.api.enums.OrePrefixes.ingot;
+import static gregtech.api.enums.OrePrefixes.plateDouble;
+import static gregtech.api.enums.OrePrefixes.screw;
+import static gregtech.api.enums.OrePrefixes.turbineBlade;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.*;
+import static gregtech.api.enums.GTValues.TIER_COLORS;
 
 import java.text.MessageFormat;
 import java.util.Collections;

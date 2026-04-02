@@ -1,14 +1,23 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.Utils.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.gui.modularui.GTUITextures.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
-import static net.minecraft.util.StatCollector.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.gui.modularui.GTUITextures.OVERLAY_BUTTON_POWER_PANEL;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
+import static gregtech.api.util.GTUtility.formatShortenedLong;
+import static gregtech.api.util.GTUtility.truncateText;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.io.File;
 import java.io.IOException;

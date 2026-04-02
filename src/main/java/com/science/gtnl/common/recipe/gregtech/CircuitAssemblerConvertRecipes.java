@@ -1,8 +1,11 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.enums.Mods.Minecraft;
+import static gregtech.api.util.GTRecipeBuilder.MINUTES;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.RESEARCH_ITEM;
+import static gregtech.api.util.GTRecipeConstants.SCANNING;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

@@ -1,9 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static bartworks.common.loaders.ItemRegistry.*;
-import static gregtech.api.enums.MetaTileEntityIDs.*;
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static bartworks.common.loaders.ItemRegistry.bw_realglas;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -37,6 +35,8 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsBotania;
 import gregtech.api.enums.MaterialsUEVplus;
+import gregtech.api.enums.MetaTileEntityIDs;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -135,7 +135,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GregtechItemList.QuadrupleCompressedObsidian.get(1),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.StainlessSteel, 4),
-                GTModHandler.getModItem(ExtraUtilities.ID, "decorativeBlock2", 1, 7))
+                GTModHandler.getModItem(Mods.ExtraUtilities.ID, "decorativeBlock2", 1, 7))
             .itemOutputs(GTNLItemList.FortifyGlowstone.get(1))
             .duration(200)
             .eut(7680)
@@ -143,11 +143,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "pylon", 1, 2),
-                GTModHandler.getModItem(Botania.ID, "pylon", 2, 1),
-                GTModHandler.getModItem(Botania.ID, "pylon", 4, 0),
-                GTModHandler.getModItem(Botania.ID, "manaResource", 16, 7),
-                GTModHandler.getModItem(Botania.ID, "manaResource", 16, 8))
+                GTModHandler.getModItem(Mods.Botania.ID, "pylon", 1, 2),
+                GTModHandler.getModItem(Mods.Botania.ID, "pylon", 2, 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pylon", 4, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 7),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 8))
             .itemOutputs(GTNLItemList.ActivatedGaiaPylon.get(1))
             .duration(200)
             .eut(7680)
@@ -158,8 +158,8 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(1),
                 ItemList.Hatch_Input_LuV.get(1L),
                 GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.Terrasteel, 8),
-                GTModHandler.getModItem(Botania.ID, "pylon", 4, 1),
-                GTModHandler.getModItem(Botania.ID, "pool", 1, 3),
+                GTModHandler.getModItem(Mods.Botania.ID, "pylon", 4, 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pool", 1, 3),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 2L))
             .itemOutputs(GTNLItemList.FluidManaInputHatch.get(1))
             .duration(200)
@@ -359,7 +359,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(17),
                 GregtechItemList.Industrial_CuttingFactoryController.get(1L),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 2L),
                 GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.Platinum, 4L),
                 WerkstoffLoader.Ruridit.get(OrePrefixes.plateDouble, 4),
@@ -525,7 +525,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(17),
                 GregtechItemList.Industrial_Electrolyzer.get(1L),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.TungstenSteel, 4L),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
                 ItemList.Electric_Pump_IV.get(2L),
                 MaterialsAlloy.STELLITE.getPlateDouble(4),
                 MaterialsAlloy.STELLITE.getRotor(8),
@@ -577,7 +577,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(17),
                 GregtechItemList.Industrial_Mixer.get(1L),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Naquadah, 4L),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
                 ItemList.Electric_Motor_IV.get(4L),
                 MaterialsAlloy.ZIRCONIUM_CARBIDE.getPlateDouble(4),
                 GTOreDictUnificator.get(OrePrefixes.rotor, Materials.TungstenSteel, 8L),
@@ -695,7 +695,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.BlackPlutonium, 4),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 12),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Bedrockium, 8),
-                GTModHandler.getModItem(Avaritia.ID, "Crystal_Matrix", 4),
+                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 4),
                 ItemList.Electric_Motor_UV.get(2L),
                 ItemList.Sensor_UV.get(4L),
                 ItemList.Emitter_UV.get(4L),
@@ -719,8 +719,8 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(EnderIO.ID, "blockSolarPanel", 1, 0),
-                GTModHandler.getModItem(EnderIO.ID, "itemPowerConduit", 4, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockSolarPanel", 1, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemPowerConduit", 4, 0),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ULV, 4L),
                 GTOreDictUnificator.get(OrePrefixes.cableGt02, Materials.RedAlloy, 4L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 2L))
@@ -731,8 +731,8 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(EnderIO.ID, "blockSolarPanel", 1, 1),
-                GTModHandler.getModItem(EnderIO.ID, "itemPowerConduit", 8, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockSolarPanel", 1, 1),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemPowerConduit", 8, 0),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ULV, 8L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt02, Materials.ElectricalSteel, 4L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Titanium, 2L))
@@ -743,8 +743,8 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(EnderIO.ID, "blockSolarPanel", 1, 2),
-                GTModHandler.getModItem(EnderIO.ID, "itemPowerConduit", 16, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockSolarPanel", 1, 2),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemPowerConduit", 16, 0),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ULV, 16L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt02, Materials.VibrantAlloy, 4L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 2L))
@@ -844,7 +844,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Output_EV.get(1L),
-                GTModHandler.getModItem(AE2FluidCraft.ID, "part_fluid_interface", 1),
+                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "part_fluid_interface", 1),
                 aeMaterials.cardSpeed()
                     .maybeStack(2)
                     .orNull())
@@ -857,7 +857,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Input_ME.get(1L),
-                GTModHandler.getModItem(AE2FluidCraft.ID, "part_fluid_interface", 1),
+                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "part_fluid_interface", 1),
                 ItemList.Electric_Pump_IV.get(1),
                 aeMaterials.cardSpeed()
                     .maybeStack(4)
@@ -1202,7 +1202,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTNLItemList.NinefoldInputHatchIV.get(1),
                 ItemList.Automation_ChestBuffer_IV.get(4),
                 GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.TungstenSteel, 4L),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 1, 0))
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 1, 0))
             .itemOutputs(GTNLItemList.HumongousSolidifierHatch.get(1))
             .fluidInputs(Materials.SolderingAlloy.getMolten(576))
             .duration(600)
@@ -1262,7 +1262,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenCarbide, 2L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenCarbide, 2L),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 2, 0),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 2, 0),
                 GTOreDictUnificator.get(OrePrefixes.spring, Materials.Europium, 1L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 1L),
                 GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Platinum, 1L))
@@ -1273,10 +1273,15 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                ItemUtils
-                    .getItemStack(EnderIO.ID, "blockCapBank", 0, 0, "{storedEnergyRF:2500000,type:\"CREATIVE\"}", null),
-                GTModHandler.getModItem(DraconicEvolution.ID, "draconium", 1, 0))
-            .itemOutputs(GTModHandler.getModItem(DraconicEvolution.ID, "draconium", 1, 2))
+                ItemUtils.getItemStack(
+                    Mods.EnderIO.ID,
+                    "blockCapBank",
+                    0,
+                    0,
+                    "{storedEnergyRF:2500000,type:\"CREATIVE\"}",
+                    null),
+                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "draconium", 1, 0))
+            .itemOutputs(GTModHandler.getModItem(Mods.DraconicEvolution.ID, "draconium", 1, 2))
             .duration(20)
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
@@ -1400,7 +1405,7 @@ public class AssemblerRecipes implements IRecipePool {
                 MaterialsAlloy.INCOLOY_DS.getFrameBox(4),
                 MaterialsAlloy.ENERGYCRYSTAL.getPlateDouble(4),
                 GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.Osmium, 4L),
-                GTModHandler.getModItem(EnderIO.ID, "blockDarkSteelAnvil", 4, 0))
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockDarkSteelAnvil", 4, 0))
             .itemOutputs(GTNLItemList.LargeHammer.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .duration(200)
@@ -1454,7 +1459,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTUtility.getIntegratedCircuit(17),
-                new ItemStack(GregTechAPI.sBlockMachines, 2, BioVat.ID),
+                new ItemStack(GregTechAPI.sBlockMachines, 2, MetaTileEntityIDs.BioVat.ID),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 4L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.EV, 8L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 16L),
@@ -1638,7 +1643,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(7),
                 tectech.thing.CustomItemList.eM_Hollow.get(2),
-                GTModHandler.getModItem(DraconicEvolution.ID, "draconicCore", 1),
+                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "draconicCore", 1),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.DraconiumAwakened, 4),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Mytryl, 4),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Plutonium, 4),
@@ -1704,12 +1709,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_LV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 1),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 1),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, MaterialsBotania.Manasteel, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.RedstoneAlloy, 2))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1720,12 +1725,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_HV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 2),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 2),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 2),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 2),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, MaterialsBotania.ElvenElementium, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.SuperconductorHV, 4))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1736,12 +1741,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_IV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 4),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 4),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, MaterialsBotania.ElvenElementium, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.SuperconductorIV, 8))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1752,12 +1757,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_IV.get(2),
-                GTModHandler.getModItem(Botania.ID, "pump", 8),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 8),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, MaterialsBotania.Terrasteel, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt12, Materials.SuperconductorZPM, 16))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1768,12 +1773,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_LV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 1),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.Manasteel, 6L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.RedstoneAlloy, 2))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1784,12 +1789,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_HV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 2),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 2),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 2),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 2),
                 GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.ElvenElementium, 6L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorHV, 4))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1800,12 +1805,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_IV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pump", 4),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 4),
                 GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.ElvenElementium, 6L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorIV, 8))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -1816,12 +1821,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "spark", 4),
-                GTModHandler.getModItem(Botania.ID, "rune", 1, 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "spark", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "rune", 1, 8),
                 ItemList.Super_Tank_IV.get(2),
-                GTModHandler.getModItem(Botania.ID, "pump", 8),
-                GTModHandler.getModItem(Botania.ID, "rfGenerator", 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "pump", 8),
+                GTModHandler.getModItem(Mods.Botania.ID, "rfGenerator", 8),
                 GTOreDictUnificator.get(OrePrefixes.plate, MaterialsBotania.Terrasteel, 6L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorZPM, 16))
             .fluidInputs(Materials.SolderingAlloy.getMolten(1296))
@@ -2020,7 +2025,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTNLItemList.CompressedSteamTurbine.get(4),
                 GTNLItemList.HydraulicSteamReceiver.get(2),
                 GTNLItemList.PrecisionSteamMechanism.get(2),
-                GTModHandler.getModItem(Thaumcraft.ID, "ItemBaubleBlanks", 1, 1))
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 1))
             .itemOutputs(GTNLItemList.SteamFlightModule.get(1))
             .duration(400)
             .eut(100)
@@ -2085,12 +2090,12 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
-                GTModHandler.getModItem(Forestry.ID, "alveary", 2, 0),
-                GTModHandler.getModItem(Forestry.ID, "alveary", 2, 2),
-                GTModHandler.getModItem(Forestry.ID, "alveary", 2, 6),
-                GTModHandler.getModItem(Forestry.ID, "royalJelly", 4),
-                GTModHandler.getModItem(Forestry.ID, "beeswax", 8),
-                GTModHandler.getModItem(Forestry.ID, "pollen", 2),
+                GTModHandler.getModItem(Mods.Forestry.ID, "alveary", 2, 0),
+                GTModHandler.getModItem(Mods.Forestry.ID, "alveary", 2, 2),
+                GTModHandler.getModItem(Mods.Forestry.ID, "alveary", 2, 6),
+                GTModHandler.getModItem(Mods.Forestry.ID, "royalJelly", 4),
+                GTModHandler.getModItem(Mods.Forestry.ID, "beeswax", 8),
+                GTModHandler.getModItem(Mods.Forestry.ID, "pollen", 2),
                 ItemList.IndustrialApiary_Upgrade_FLOWERING.get(2))
             .fluidInputs(Materials.Honey.getFluid(10000L))
             .itemOutputs(GTNLItemList.SteamBeeBreedingModule.get(1))
@@ -2101,7 +2106,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
-                GTModHandler.getModItem(Forestry.ID, "alveary", 2, 0),
+                GTModHandler.getModItem(Mods.Forestry.ID, "alveary", 2, 0),
                 ItemList.IndustrialApiary_Upgrade_PRODUCTION.get(4),
                 ItemList.IndustrialApiary_Upgrade_Acceleration_1.get(4),
                 ItemList.IndustrialApiary_Upgrade_AUTOMATION.get(4))
@@ -2114,7 +2119,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
-                GTModHandler.getModItem(ExtraUtilities.ID, "spike_base_diamond", 9, 0),
+                GTModHandler.getModItem(Mods.ExtraUtilities.ID, "spike_base_diamond", 9, 0),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 8),
                 GTNLItemList.HydraulicPiston.get(8),
                 GTNLItemList.HydraulicConveyor.get(8))
@@ -2159,7 +2164,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Input_HV.get(1),
-                GTModHandler.getModItem(AE2FluidCraft.ID, "fluid_interface", 1),
+                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "fluid_interface", 1),
                 aeMaterials.cardSpeed()
                     .maybeStack(4)
                     .orNull())
@@ -2171,7 +2176,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Input_ME.get(1),
-                GTModHandler.getModItem(AE2FluidCraft.ID, "part_fluid_storage_bus", 1),
+                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "part_fluid_storage_bus", 1),
                 ItemList.Electric_Pump_EV.get(2),
                 aeMaterials.cardCapacity()
                     .maybeStack(9)
@@ -2213,10 +2218,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GregtechItemList.GT4_Crop_Harvester_LV.get(2),
                 new ItemStack(Blocks.dirt, 64),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockCrop", 64),
-                GTModHandler.getModItem(Forestry.ID, "ffarm", 16, 4),
-                GTModHandler.getModItem(Forestry.ID, "ffarm", 16, 2),
-                GTModHandler.getModItem(Forestry.ID, "ffarm", 4, 5))
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockCrop", 64),
+                GTModHandler.getModItem(Mods.Forestry.ID, "ffarm", 16, 4),
+                GTModHandler.getModItem(Mods.Forestry.ID, "ffarm", 16, 2),
+                GTModHandler.getModItem(Mods.Forestry.ID, "ffarm", 4, 5))
             .itemOutputs(GTNLItemList.SteamGreenhouseModule.get(1))
             .fluidInputs(FluidRegistry.getFluidStack("liquid_sunshine", 16000))
             .duration(200)
@@ -2803,7 +2808,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.ShimmerBucket.get(1),
-                GTModHandler.getModItem(OpenComputers.ID, "disassembler", 64))
+                GTModHandler.getModItem(Mods.OpenComputers.ID, "disassembler", 64))
             .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
             .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
             .duration(10 * SECONDS)
@@ -2813,7 +2818,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.HoneyBucket.get(1),
-                GTModHandler.getModItem(PamsHarvestCraft.ID, "royaljellyItem", 64))
+                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "royaljellyItem", 64))
             .itemOutputs(GTNLItemList.InfinityHoneyBucket.get(1))
             .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 100000))
             .duration(10 * SECONDS)
@@ -2830,7 +2835,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 new ItemStack(Items.lava_bucket, 1),
-                GTModHandler.getModItem(ThaumicExploration.ID, "everburnUrn", 1))
+                GTModHandler.getModItem(Mods.ThaumicExploration.ID, "everburnUrn", 1))
             .itemOutputs(GTNLItemList.InfinityLavaBucket.get(1))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_LV)
@@ -2873,11 +2878,11 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Super_Tank_EV.get(1),
-                GTModHandler.getModItem(Botania.ID, "pool", 4, 3),
-                GTModHandler.getModItem(Botania.ID, "spreader", 2, 3),
-                GTModHandler.getModItem(Botania.ID, "corporeaSpark", 4, 1),
-                GTModHandler.getModItem(Botania.ID, "pistonRelay", 4),
-                GTModHandler.getModItem(Botania.ID, "manaBeacon", 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pool", 4, 3),
+                GTModHandler.getModItem(Mods.Botania.ID, "spreader", 2, 3),
+                GTModHandler.getModItem(Mods.Botania.ID, "corporeaSpark", 4, 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "pistonRelay", 4),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaBeacon", 1),
                 ItemRefer.Fluid_Storage_Core_T2.get(2))
             .itemOutputs(GTNLItemList.ManaTank.get(1))
             .fluidInputs(MaterialsBotania.Terrasteel.getMolten(576))
@@ -2888,9 +2893,9 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
-                GTModHandler.getModItem(Minecraft.ID, "skull", 1, 2),
-                GTModHandler.getModItem(EnderIO.ID, "itemBasicCapacitor", 1, 0))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 0))
+                new ItemStack(Items.skull, 1, 2),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemBasicCapacitor", 1, 0))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 0))
             .fluidInputs(Materials.EnergeticAlloy.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
@@ -2899,9 +2904,9 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
-                GTModHandler.getModItem(Minecraft.ID, "skull", 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.RedAlloy, 1L))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 1))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 1))
             .fluidInputs(Materials.Soularium.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
@@ -2909,11 +2914,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 1),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                GTModHandler.getModItem(Minecraft.ID, "skull", 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 new ItemStack(Items.rotten_flesh, 64))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 2))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 2))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
             .addTo(As);
@@ -2921,9 +2926,9 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
-                GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockEndermanSkull", 1, 0),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VibrantAlloy, 1L))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 3))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 3))
             .fluidInputs(Materials.Soularium.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
@@ -2931,11 +2936,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 3),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 3),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockEndermanSkull", 1, 0),
                 new ItemStack(Items.ender_pearl, 32))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 4))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 4))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
             .addTo(As);
@@ -2944,8 +2949,8 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 1L),
                 GTOreDictUnificator.get(OrePrefixes.gem, Materials.Diamond, 1L),
-                GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 2, 5))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemFrankenSkull", 1, 6))
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemMaterial", 2, 5))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemFrankenSkull", 1, 6))
             .fluidInputs(Materials.EnergeticAlloy.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_LV)
@@ -2955,10 +2960,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.SiliconSG, 2L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                GTModHandler.getModItem(Minecraft.ID, "skull", 1, 2),
+                new ItemStack(Items.skull, 1, 2),
                 new ItemStack(Items.ender_pearl, 16),
                 new ItemStack(Items.ender_eye, 2))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 0))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "blockEndermanSkull", 1, 0))
             .fluidInputs(Materials.Soularium.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
@@ -2967,9 +2972,9 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.VividAlloy, 2L),
-                GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 0),
-                GTModHandler.getModItem(EnderIO.ID, "itemBasicCapacitor", 1, 0))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "blockEndermanSkull", 1, 2))
+                GTModHandler.getModItem(Mods.EnderIO.ID, "blockEndermanSkull", 1, 0),
+                GTModHandler.getModItem(Mods.EnderIO.ID, "itemBasicCapacitor", 1, 0))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "blockEndermanSkull", 1, 2))
             .fluidInputs(Materials.Soularium.getMolten(288))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
@@ -3106,12 +3111,12 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(GalacticraftCore.ID, "tile.rocketWorkbench", 1),
+                GTModHandler.getModItem(Mods.GalacticraftCore.ID, "tile.rocketWorkbench", 1),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.StainlessSteel, 16),
                 ItemList.Casing_CleanStainlessSteel.get(8),
                 ItemList.Conveyor_Module_HV.get(4),
                 ItemList.Robot_Arm_HV.get(4),
-                GTModHandler.getModItem(GalacticraftCore.ID, "item.basicItem", 1, 14),
+                GTModHandler.getModItem(Mods.GalacticraftCore.ID, "item.basicItem", 1, 14),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4))
             .itemOutputs(GTNLItemList.RocketAssembler.get(1))
             .fluidInputs(Materials.Polytetrafluoroethylene.getMolten(1152))
@@ -3136,7 +3141,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(2),
                 GTNLItemList.SteelTurbine.get(8),
-                GTModHandler.getModItem(EtFuturumRequiem.ID, "soul_torch", 32),
+                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "soul_torch", 32),
                 GTNLItemList.HydraulicSteamJetSpewer.get(2),
                 GTNLItemList.HydraulicSteamReceiver.get(2),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 4))
@@ -3149,7 +3154,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(4),
                 GTNLItemList.CompressedSteamTurbine.get(8),
-                GTModHandler.getModItem(EtFuturumRequiem.ID, "soul_torch", 64),
+                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "soul_torch", 64),
                 GTNLItemList.HydraulicSteamJetSpewer.get(2),
                 GTNLItemList.HydraulicVaporGenerator.get(2),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 8))
@@ -3161,8 +3166,8 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.SteamCompactPipeCasing.get(1),
-                GTModHandler.getModItem(Natura.ID, "Cloud", 64, 1),
-                GTModHandler.getModItem(Thaumcraft.ID, "blockCrystal", 2, 6),
+                GTModHandler.getModItem(Mods.Natura.ID, "Cloud", 64, 1),
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCrystal", 2, 6),
                 GTNLItemList.HydraulicPump.get(4),
                 GTNLItemList.HydraulicSteamReceiver.get(4),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 4))
@@ -3301,7 +3306,7 @@ public class AssemblerRecipes implements IRecipePool {
         loadWirelessHatch();
         loadLaserHatch();
 
-        if (NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
 
         if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
     }
@@ -3625,10 +3630,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.magicBeans", 64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.giantSword", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.giantPick", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.GiantObsidian", 16))
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.magicBeans", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.giantSword", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.giantPick", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.GiantObsidian", 16))
             .itemOutputs(GTNLItemList.GiantBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
             .duration(300)
@@ -3639,9 +3644,9 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.nagaScale", 64),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.TFSpiralBricks", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.nagaScale", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFSpiralBricks", 64),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.Steeleaf, 16))
             .itemOutputs(GTNLItemList.NagaBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
@@ -3653,9 +3658,9 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 0),
-                GTModHandler.getModItem(TwilightForest.ID, "item.hydraChop", 64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.fieryBlood", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 0),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.hydraChop", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.fieryBlood", 64),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 16))
             .itemOutputs(GTNLItemList.HydraBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
@@ -3667,10 +3672,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 4),
-                GTModHandler.getModItem(TwilightForest.ID, "item.tripleBow", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.TFAuroraBrick", 64),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.AuroraPillar", 64))
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 4),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.tripleBow", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFAuroraBrick", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.AuroraPillar", 64))
             .itemOutputs(GTNLItemList.SnowQueenBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
             .duration(300)
@@ -3681,9 +3686,9 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 6),
-                GTModHandler.getModItem(TwilightForest.ID, "item.phantomHelm", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.phantomPlate", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 6),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.phantomHelm", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.phantomPlate", 1),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.Knightmetal, 16))
             .itemOutputs(GTNLItemList.KnightPhantomBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
@@ -3695,10 +3700,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 3),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.TFTowerDevice", 64, 0),
-                GTModHandler.getModItem(TwilightForest.ID, "tile.TFTowerDevice", 64, 2),
-                GTModHandler.getModItem(TwilightForest.ID, "item.carminite", 32))
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 3),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFTowerDevice", 64, 0),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFTowerDevice", 64, 2),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.carminite", 32))
             .itemOutputs(GTNLItemList.UrGhastBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
             .duration(300)
@@ -3709,9 +3714,9 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 5),
-                GTModHandler.getModItem(TwilightForest.ID, "item.meefStroganoff", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.meefSteak", 64),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 5),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.meefStroganoff", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.meefSteak", 64),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.IronWood, 16))
             .itemOutputs(GTNLItemList.MinotaurBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
@@ -3723,10 +3728,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 7),
-                GTModHandler.getModItem(TwilightForest.ID, "item.alphaFur", 16),
-                GTModHandler.getModItem(TwilightForest.ID, "item.iceBomb", 16),
-                GTModHandler.getModItem(TwilightForest.ID, "item.arcticFur", 64))
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 7),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.alphaFur", 16),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.iceBomb", 16),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.arcticFur", 64))
             .itemOutputs(GTNLItemList.AlphaYetiBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
             .duration(300)
@@ -3737,10 +3742,10 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Items.book, 64),
                 NHItemList.TwilightCrystal.getIS(64),
-                GTModHandler.getModItem(TwilightForest.ID, "item.trophy", 1, 2),
-                GTModHandler.getModItem(TwilightForest.ID, "item.scepterLifeDrain", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.scepterTwilight", 1),
-                GTModHandler.getModItem(TwilightForest.ID, "item.scepterZombie", 1))
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 2),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.scepterLifeDrain", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.scepterTwilight", 1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "item.scepterZombie", 1))
             .itemOutputs(GTNLItemList.LichBook.get(1))
             .fluidInputs(Materials.FierySteel.getFluid(4000))
             .duration(300)
@@ -3750,8 +3755,8 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Dynamo_IV.get(1),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 32, 0),
-                GTModHandler.getModItem(IndustrialCraft2.ID, "reactorReflectorThick", 1, 1),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 32, 0),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "reactorReflectorThick", 1, 1),
                 BlockList.TungstensteelPlatedReinforcedStone.getIS(2),
                 CustomItemList.ReinforcedTungstenSteelIronPlate.get(2),
                 GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Tungsten, 2),

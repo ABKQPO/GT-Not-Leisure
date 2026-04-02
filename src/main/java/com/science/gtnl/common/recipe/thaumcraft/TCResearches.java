@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
-import static com.reavaritia.common.ItemLoader.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.reavaritia.common.ItemLoader.ChronarchsClock;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.util.Objects;
 

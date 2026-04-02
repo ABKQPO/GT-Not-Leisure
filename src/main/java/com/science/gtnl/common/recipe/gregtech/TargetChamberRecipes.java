@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gtnhlanth.api.recipe.LanthanidesRecipeMaps.*;
+import static gtnhlanth.api.recipe.LanthanidesRecipeMaps.TARGET_CHAMBER_METADATA;
 
 import net.minecraft.item.ItemStack;
 
@@ -13,6 +12,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -46,7 +46,7 @@ public class TargetChamberRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_IV)
             .addTo(TCR);
 
-        if (NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
     }
 
     @Optional.Method(modid = "dreamcraft")

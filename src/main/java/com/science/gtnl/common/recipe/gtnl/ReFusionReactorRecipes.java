@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.utils.enums.GTNLItemList.*;
+import static com.science.gtnl.utils.enums.GTNLItemList.TrollFace;
 
 import net.minecraft.util.StatCollector;
 

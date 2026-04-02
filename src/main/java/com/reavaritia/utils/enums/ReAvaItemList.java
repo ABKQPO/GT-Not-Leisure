@@ -1,7 +1,7 @@
 package com.reavaritia.utils.enums;
 
-import static com.science.gtnl.utils.enums.GTNLItemList.*;
-import static gregtech.api.enums.GTValues.*;
+import static com.science.gtnl.utils.enums.GTNLItemList.TestMetaBlock01_0;
+import static gregtech.api.enums.GTValues.NI;
 
 import java.util.Locale;
 

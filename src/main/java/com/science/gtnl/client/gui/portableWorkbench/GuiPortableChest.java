@@ -1,6 +1,6 @@
 package com.science.gtnl.client.gui.portableWorkbench;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;

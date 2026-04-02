@@ -1,6 +1,9 @@
 package com.science.gtnl.common.block.blocks.tile;
 
-import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.*;
+import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_BLUE;
+import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_GAMMA;
+import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_GREEN;
+import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_RED;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.item;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.util.Arrays;
 import java.util.List;

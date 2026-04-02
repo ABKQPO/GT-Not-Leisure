@@ -1,6 +1,6 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.utils.Utils.*;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

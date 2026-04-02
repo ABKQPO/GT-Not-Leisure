@@ -1,6 +1,6 @@
 package com.science.gtnl.common.render.item;
 
-import static net.minecraft.client.renderer.ItemRenderer.*;
+import static net.minecraft.client.renderer.ItemRenderer.renderItemIn2D;
 
 import java.awt.*;
 import java.util.Objects;

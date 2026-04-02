@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
-import static gregtech.api.enums.GTValues.*;
+import static gregtech.api.enums.GTValues.V;
 
 import javax.annotation.Nonnull;
 

@@ -1,7 +1,9 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.utils.Utils.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
+import static com.science.gtnl.utils.Utils.hasPermission;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
+import static gregtech.common.misc.WirelessNetworkManager.setUserEU;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

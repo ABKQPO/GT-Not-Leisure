@@ -1,6 +1,6 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.network;
 
 import java.util.ArrayList;
 import java.util.List;

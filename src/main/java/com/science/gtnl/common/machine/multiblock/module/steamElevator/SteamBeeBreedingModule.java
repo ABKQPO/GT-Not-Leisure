@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static forestry.api.apiculture.BeeManager.*;
+import static forestry.api.apiculture.BeeManager.beeRoot;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;

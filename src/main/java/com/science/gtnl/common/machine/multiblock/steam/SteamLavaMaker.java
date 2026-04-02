@@ -1,10 +1,17 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputHatch;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

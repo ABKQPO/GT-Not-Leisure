@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.Dyes.*;
+import static gregtech.api.enums.Dyes.MACHINE_METAL;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;

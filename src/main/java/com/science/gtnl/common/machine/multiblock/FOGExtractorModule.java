@@ -1,10 +1,14 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTUtility.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
-import static net.minecraft.util.EnumChatFormatting.*;
-import static net.minecraft.util.StatCollector.*;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTUtility.formatNumbers;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
+import static net.minecraft.util.EnumChatFormatting.GREEN;
+import static net.minecraft.util.EnumChatFormatting.RED;
+import static net.minecraft.util.EnumChatFormatting.RESET;
+import static net.minecraft.util.EnumChatFormatting.YELLOW;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

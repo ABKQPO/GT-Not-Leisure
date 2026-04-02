@@ -1,6 +1,6 @@
 package com.science.gtnl.common.packet;
 
-import static com.science.gtnl.utils.event.SubscribeEventUtils.*;
+import static com.science.gtnl.utils.event.SubscribeEventUtils.circuitNanitesDataLoad;
 
 import com.science.gtnl.loader.RecipeLoader;
 

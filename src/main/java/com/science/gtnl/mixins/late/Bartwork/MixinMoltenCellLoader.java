@@ -1,8 +1,9 @@
 package com.science.gtnl.mixins.late.Bartwork;
 
-import static gregtech.api.enums.OrePrefixes.*;
-import static gregtech.api.recipe.RecipeMaps.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.enums.OrePrefixes.dust;
+import static gregtech.api.enums.OrePrefixes.material;
+import static gregtech.api.recipe.RecipeMaps.fluidSolidifierRecipes;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

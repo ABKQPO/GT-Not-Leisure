@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -11,6 +9,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -99,7 +98,7 @@ public class CuttingRecipes implements IRecipePool {
             .addTo(CR);
 
         registerCutterRecipes(
-            new ItemStack[] { GTModHandler.getModItem(IndustrialCraft2.ID, "blockRubWood", 1) },
+            new ItemStack[] { GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockRubWood", 1) },
             new ItemStack[] { new ItemStack(Blocks.planks, 6),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Wood, 1) },
             1,

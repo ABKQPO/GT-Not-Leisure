@@ -1,12 +1,22 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
-import static kekztech.common.Blocks.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static gregtech.api.GregTechAPI.mEUtoRF;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTUtility.formatShortenedLong;
+import static gregtech.api.util.GTUtility.truncateText;
+import static gregtech.api.util.GTUtility.validMTEList;
+import static kekztech.common.Blocks.lscLapotronicEnergyUnit;
 
 import java.util.ArrayList;
 import java.util.Collections;

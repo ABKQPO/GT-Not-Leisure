@@ -1,7 +1,23 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.Textures.BlockIcons.*;
-import static tectech.recipe.TecTechRecipeMaps.*;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_GLOW;
+import static tectech.recipe.TecTechRecipeMaps.researchStationFakeRecipes;
+import static tectech.recipe.TecTechRecipeMaps.researchableALRecipeList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;

@@ -1,12 +1,21 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static bartworks.system.material.WerkstoffLoader.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.*;
+import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
+import static bartworks.system.material.WerkstoffLoader.BWBlockCasingsAdvanced;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static gregtech.api.GregTechAPI.sBlockCasings1;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
 import java.util.List;

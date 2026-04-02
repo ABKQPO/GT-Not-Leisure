@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -14,6 +13,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -41,7 +41,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockAlloyGlass", 3),
+                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 3),
                 GTOreDictUnificator.get(OrePrefixes.pipeSmall, Materials.Steel, 2),
                 GTOreDictUnificator.get(OrePrefixes.plateTriple, Materials.Silver, 3),
                 ItemList.Hull_HP_Bricks.get(1))
@@ -274,11 +274,11 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .addTo(SMFR)
             .addTo(As);
 
-        if (StorageDrawers.isModLoaded()) {
+        if (Mods.StorageDrawers.isModLoaded()) {
             // Drawer template
             RecipeBuilder.builder()
                 .itemInputs(new ItemStack(Blocks.piston, 1), GTOreDictUnificator.get("drawerBasic", 1))
-                .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 3, 0))
+                .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 3, 0))
                 .duration(10 * SECONDS)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(SMFR);
@@ -286,10 +286,10 @@ public class SteamManufacturerRecipes implements IRecipePool {
             // Drawer controller
             RecipeBuilder.builder()
                 .itemInputs(
-                    GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1, 0),
+                    GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1, 0),
                     GTOreDictUnificator.get("drawerBasic", 1),
                     GTNLMaterials.Breel.get(OrePrefixes.gearGt, 2))
-                .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "controller", 1, 0))
+                .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "controller", 1, 0))
                 .duration(5 * SECONDS)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(SMFR);
@@ -338,7 +338,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(BuildCraftFactory.ID, "tankBlock", 1L, 0),
+                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1L, 0),
                 ItemList.Casing_BronzePlatedBricks.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Rubber, 6),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Rubber, 1),
@@ -349,7 +349,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .addTo(SMFR);
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(BuildCraftFactory.ID, "tankBlock", 1L, 0),
+                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1L, 0),
                 ItemList.Casing_BronzePlatedBricks.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Rubber, 6),
                 GTOreDictUnificator.get(OrePrefixes.ring, Materials.Rubber, 1),
@@ -433,7 +433,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(BuildCraftFactory.ID, "tankBlock", 1),
+                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
                 MaterialsAlloy.TUMBAGA.getPlate(4),
                 GTUtility.getIntegratedCircuit(1))
@@ -445,7 +445,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(BuildCraftFactory.ID, "tankBlock", 1),
+                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1),
                 MaterialsAlloy.TUMBAGA.getPlate(4),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
                 GTUtility.getIntegratedCircuit(2))
@@ -855,76 +855,76 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 5),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 2))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 2))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Gold, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Gold, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 3))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 3))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Obsidian, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Obsidian, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 4))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 4))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Aluminium, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Diamond, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Diamond, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 5))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 5))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Tantalum, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Emerald, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Emerald, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 6))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 6))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.StainlessSteel, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Ruby, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Ruby, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 7))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 7))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(StorageDrawers.ID, "upgradeTemplate", 1),
+                GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgradeTemplate", 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Titanium, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Tanzanite, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Tanzanite, 1))
-            .itemOutputs(GTModHandler.getModItem(StorageDrawers.ID, "upgrade", 1, 8))
+            .itemOutputs(GTModHandler.getModItem(Mods.StorageDrawers.ID, "upgrade", 1, 8))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);

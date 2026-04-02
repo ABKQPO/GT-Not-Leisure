@@ -1,6 +1,21 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.Textures.BlockIcons.*;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_GLOW;
 
 import net.minecraft.util.StatCollector;
 

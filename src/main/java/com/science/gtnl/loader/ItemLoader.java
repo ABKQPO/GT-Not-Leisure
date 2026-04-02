@@ -1,7 +1,8 @@
 package com.science.gtnl.loader;
 
-import static com.science.gtnl.common.item.items.SuspiciousStew.*;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
+import static com.science.gtnl.common.item.items.SuspiciousStew.registerFlower;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.addItemTooltip;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.text;
 
 import java.util.ArrayList;
 import java.util.List;

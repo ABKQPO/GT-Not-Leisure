@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;

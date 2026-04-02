@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.recipes;
 
-import static gregtech.api.util.GTRecipeMapUtil.*;
+import static gregtech.api.util.GTRecipeMapUtil.SPECIAL_VALUE_ALIASES;
 
 import java.util.ArrayList;
 import java.util.List;

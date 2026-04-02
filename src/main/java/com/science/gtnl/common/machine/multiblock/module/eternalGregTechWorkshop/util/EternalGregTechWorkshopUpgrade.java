@@ -1,8 +1,16 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.*;
-import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.*;
-import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.*;
+import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.LARGE;
+import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.STANDARD;
+import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.CATALYST;
+import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.CHARGE;
+import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.COMPOSITION;
+import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.CONVERSION;
+import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.BLUE;
+import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.GREEN;
+import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.ORANGE;
+import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.PURPLE;
+import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.RED;
 
 import java.util.ArrayList;
 import java.util.Arrays;

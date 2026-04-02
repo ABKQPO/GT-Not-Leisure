@@ -1,6 +1,21 @@
 package com.science.gtnl.utils.gui.recipe;
 
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.*;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT1Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT1Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT2Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT2Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT3Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT3Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT4Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT4Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT5Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT5Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT6Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT6Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT7Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT7Output;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT8Inputs;
+import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT8Output;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

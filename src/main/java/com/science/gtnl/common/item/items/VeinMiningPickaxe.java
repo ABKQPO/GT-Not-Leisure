@@ -1,7 +1,8 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.item.ItemUtils.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.item.ItemUtils.setToolDamage;
+import static com.science.gtnl.utils.item.ItemUtils.setToolMaxDamage;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

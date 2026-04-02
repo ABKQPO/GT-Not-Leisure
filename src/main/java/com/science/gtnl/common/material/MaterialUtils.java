@@ -1,7 +1,12 @@
 package com.science.gtnl.common.material;
 
-import static gregtech.api.recipe.RecipeMaps.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.recipe.RecipeMaps.extruderRecipes;
+import static gregtech.api.recipe.RecipeMaps.fluidSolidifierRecipes;
+import static gregtech.api.recipe.RecipeMaps.wiremillRecipes;
+import static gregtech.api.util.GTRecipeBuilder.HALF_INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeBuilder.TICKS;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.recipes.RecipeBuilder;

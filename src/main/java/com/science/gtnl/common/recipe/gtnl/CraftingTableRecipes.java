@@ -1,6 +1,27 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.Avaritia;
+import static gregtech.api.enums.Mods.AvaritiaAddons;
+import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.BuildCraftFactory;
+import static gregtech.api.enums.Mods.Chisel;
+import static gregtech.api.enums.Mods.DraconicEvolution;
+import static gregtech.api.enums.Mods.EnderIO;
+import static gregtech.api.enums.Mods.EnderStorage;
+import static gregtech.api.enums.Mods.EnhancedLootBags;
+import static gregtech.api.enums.Mods.EtFuturumRequiem;
+import static gregtech.api.enums.Mods.ExtraUtilities;
+import static gregtech.api.enums.Mods.GalacticraftCore;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.enums.Mods.IronChests;
+import static gregtech.api.enums.Mods.MineAndBladeBattleGear2;
+import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
+import static gregtech.api.enums.Mods.OpenBlocks;
+import static gregtech.api.enums.Mods.PamsHarvestCraft;
+import static gregtech.api.enums.Mods.SGCraft;
+import static gregtech.api.enums.Mods.Thaumcraft;
+import static gregtech.api.enums.Mods.ThaumicBases;
+import static gregtech.api.enums.Mods.TinkerConstruct;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;

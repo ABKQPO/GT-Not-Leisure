@@ -1,8 +1,8 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.NANO_FORGE_TIER;
 
 import com.dreammaster.gthandler.CustomItemList;
 import com.science.gtnl.api.IRecipePool;

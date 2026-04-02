@@ -1,7 +1,10 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.enums.Mods.EnderIO;
+import static gregtech.api.enums.Mods.EtFuturumRequiem;
+import static gregtech.api.enums.Mods.Forestry;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

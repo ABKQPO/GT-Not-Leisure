@@ -1,7 +1,9 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.utils.Utils.*;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.*;
+import static com.science.gtnl.utils.Utils.hasPermission;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.setUserSteam;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

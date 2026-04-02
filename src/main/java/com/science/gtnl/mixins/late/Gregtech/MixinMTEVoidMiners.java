@@ -1,8 +1,13 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.enums.GTValues.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTUtility.*;
+import static gregtech.api.enums.GTValues.VN;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;

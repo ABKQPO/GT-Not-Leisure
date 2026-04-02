@@ -1,13 +1,19 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static bartworks.system.material.WerkstoffLoader.*;
-import static com.science.gtnl.utils.enums.GTNLMachineID.*;
-import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.*;
-import static net.minecraft.util.StatCollector.*;
+import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
+import static com.science.gtnl.utils.enums.GTNLMachineID.BIG_STEAM_INPUT_HATCH;
+import static com.science.gtnl.utils.enums.GTNLMachineID.PIPELESS_STEAM_HATCH;
+import static gregtech.api.GregTechAPI.sBlockCasings1;
+import static gregtech.api.GregTechAPI.sBlockCasings2;
+import static gregtech.api.GregTechAPI.sBlockCasings3;
+import static gregtech.api.GregTechAPI.sBlockFrames;
+import static gregtech.api.GregTechAPI.sBlockMetal6;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTUtility.filterValidMTEs;
+import static gregtech.api.util.GTUtility.validMTEList;
+import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

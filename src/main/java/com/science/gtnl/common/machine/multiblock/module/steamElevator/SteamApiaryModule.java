@@ -1,11 +1,13 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static forestry.api.apiculture.BeeManager.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTUtility.*;
-import static kubatech.api.gui.KubaTechUITextures.*;
-import static kubatech.api.utils.ItemUtils.*;
-import static net.minecraft.util.StatCollector.*;
+import static forestry.api.apiculture.BeeManager.beeRoot;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTUtility.formatShortenedLong;
+import static gregtech.api.util.GTUtility.truncateText;
+import static kubatech.api.gui.KubaTechUITextures.APIARY_INVENTORY_BACKGROUND;
+import static kubatech.api.utils.ItemUtils.readItemStackFromNBT;
+import static kubatech.api.utils.ItemUtils.writeItemStackToNBT;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;

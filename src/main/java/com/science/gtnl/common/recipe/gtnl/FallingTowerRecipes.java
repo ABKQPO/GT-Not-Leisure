@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
-
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
@@ -11,6 +9,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
+import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 
@@ -26,8 +25,8 @@ public class FallingTowerRecipes implements IRecipePool {
             ItemStack input = data.input;
 
             if (input != null) {
-                if (input.isItemEqual(GTModHandler.getModItem(IndustrialCraft2.ID, "blockNuke", 1))
-                    || input.isItemEqual(GTModHandler.getModItem(BloodArsenal.ID, "blood_tnt", 1))) {
+                if (input.isItemEqual(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockNuke", 1))
+                    || input.isItemEqual(GTModHandler.getModItem(Mods.BloodArsenal.ID, "blood_tnt", 1))) {
                     continue;
                 }
             }

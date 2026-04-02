@@ -1,7 +1,7 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static ggfab.GGItemList.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static ggfab.GGItemList.SingleUseScrewdriver;
 
 import java.util.ArrayList;
 import java.util.List;

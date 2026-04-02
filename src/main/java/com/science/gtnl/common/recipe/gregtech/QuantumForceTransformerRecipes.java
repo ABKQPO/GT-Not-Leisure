@@ -1,8 +1,9 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTRecipeConstants.*;
-import static gtPlusPlus.api.recipe.GTPPRecipeMaps.*;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.QFT_CATALYST;
+import static gregtech.api.util.GTRecipeConstants.QFT_FOCUS_TIER;
+import static gtPlusPlus.api.recipe.GTPPRecipeMaps.quantumForceTransformerRecipes;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.recipes.RecipeBuilder;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.*;
+import static gregtech.api.enums.GTValues.V;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;

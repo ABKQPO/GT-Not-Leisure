@@ -1,6 +1,8 @@
 package com.science.gtnl.utils.enums;
 
-import static com.science.gtnl.utils.enums.BlockIcons.*;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_INDICATOR_GREEN;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_INDICATOR_RED;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_INDICATOR_YELLOW;
 
 import gregtech.api.enums.Textures;
 

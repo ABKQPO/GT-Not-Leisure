@@ -1,8 +1,9 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.item.ItemUtils.*;
-import static gregtech.api.enums.Mods.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.utils.item.ItemUtils.setToolDamage;
+import static com.science.gtnl.utils.item.ItemUtils.setToolMaxDamage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ import detrav.utils.BartWorksHelper;
 import detrav.utils.GTppHelper;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.ItemData;
 import gregtech.api.util.GTLanguageManager;
@@ -279,7 +281,7 @@ public class ElectricProspectorTool extends Item {
                 setToolDamage(aStack, MetaGeneratedTool.getToolDamage(aStack) + (long) this.mCosts * chunks.size() / 4);
             }
 
-            if (VisualProspecting.isModLoaded()) {
+            if (Mods.VisualProspecting.isModLoaded()) {
                 if (data == 0 || data == 1) {
                     VisualProspecting_API.LogicalServer.sendProspectionResultsToClient(
                         (EntityPlayerMP) aPlayer,
@@ -478,7 +480,7 @@ public class ElectricProspectorTool extends Item {
             aPlayer.addChatMessage(msg);
         }
 
-        if (VisualProspecting.isModLoaded()) {
+        if (Mods.VisualProspecting.isModLoaded()) {
             VisualProspecting_API.LogicalServer.sendProspectionResultsToClient(
                 (EntityPlayerMP) aPlayer,
                 VisualProspecting_API.LogicalServer.prospectOreVeinsWithinRadius(
@@ -512,7 +514,7 @@ public class ElectricProspectorTool extends Item {
             addChatMassageByValue(aPlayer, value, key);
         }
 
-        if (VisualProspecting.isModLoaded()) {
+        if (Mods.VisualProspecting.isModLoaded()) {
             VisualProspecting_API.LogicalServer.sendProspectionResultsToClient(
                 (EntityPlayerMP) aPlayer,
                 VisualProspecting_API.LogicalServer.prospectOreVeinsWithinRadius(

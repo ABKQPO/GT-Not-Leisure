@@ -1,8 +1,12 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTRecipeConstants.*;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.NUGGETS;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeConstants.ADDITIVE_AMOUNT;
+import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
+import static gregtech.api.util.GTRecipeConstants.NO_GAS;
+import static gregtech.api.util.GTRecipeConstants.NO_GAS_CIRCUIT_CONFIG;
 
 import net.minecraft.item.ItemStack;
 
@@ -14,6 +18,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
@@ -84,7 +89,7 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .metadata(COIL_HEAT, 7500)
             .addTo(BFR);
 
-        if (Forestry.isModLoaded()) {
+        if (Mods.Forestry.isModLoaded()) {
             RecipeBuilder.builder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(2),

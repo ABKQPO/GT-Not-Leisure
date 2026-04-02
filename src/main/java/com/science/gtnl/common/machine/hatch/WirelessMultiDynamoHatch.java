@@ -1,7 +1,11 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.*;
-import static gregtech.api.enums.GTValues.*;
+import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.BOLD;
+import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GRAY;
+import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GREEN;
+import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.YELLOW;
+import static gregtech.api.enums.GTValues.AuthorColen;
+import static gregtech.api.enums.GTValues.V;
 
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;

@@ -1,7 +1,8 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.*;
-import static gregtech.api.enums.Textures.BlockIcons.*;
+import static gregtech.api.enums.GTValues.TIER_COLORS;
+import static gregtech.api.enums.GTValues.VN;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

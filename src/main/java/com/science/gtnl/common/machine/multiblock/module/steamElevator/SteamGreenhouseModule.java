@@ -1,7 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
+import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.CONFIGURATION_WINDOW_ID;
+import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.MUIContainer_Greenhouse;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.io.IOException;
 import java.util.ArrayList;

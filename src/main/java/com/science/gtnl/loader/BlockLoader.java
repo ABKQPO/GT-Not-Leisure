@@ -1,6 +1,14 @@
 package com.science.gtnl.loader;
 
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.*;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.AQUA;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.BLUE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GOLD;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GREEN;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.LIGHT_PURPLE;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RED;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RESET;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.YELLOW;
+import static com.science.gtnl.utils.text.AnimatedTooltipHandler.addItemTooltip;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.bloodMagic;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.IndustrialCraft2;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,7 +1,16 @@
 package com.science.gtnl.common.render.tile;
 
-import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.*;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_UUIDS;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.UUID_CACHE;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.fetchUUID;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.offlineMode;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.DEFAULT_SKIN;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.TextureType;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.downloadAndCacheCustomCape;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.downloadAndCacheCustomSkin;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.isValidUsername;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.loadProfileTexture;
+import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.renderModel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

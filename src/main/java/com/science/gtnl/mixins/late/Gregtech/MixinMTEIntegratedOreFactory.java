@@ -1,7 +1,31 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.*;
-import static gregtech.api.enums.HatchElement.*;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.ALL_PROCESSABLE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.CENTRIFUGE_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.CHEMBATH_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.MAC_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.OC_CALC;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.RAND;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.SIFTER_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.THERMAL_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.WASH_CACHE;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.checkTypes;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.getCachedRecipe;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.getDisplayMode;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.initHash;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isCrushedOre;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isCrushedPureOre;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isImpureDust;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isInit;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isOre;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isPureDust;
+import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isThermal;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
 
 import java.util.List;
 import java.util.Random;

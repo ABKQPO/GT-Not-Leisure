@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.HardcoreEnderExpansion;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

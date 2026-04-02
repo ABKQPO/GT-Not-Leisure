@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.machine;
 
-import static com.science.gtnl.utils.machine.PortalToAlfheimExplosion.*;
+import static com.science.gtnl.utils.machine.PortalToAlfheimExplosion.EXPLOSION;
 
 import java.util.List;
 

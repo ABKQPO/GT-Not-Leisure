@@ -1,11 +1,20 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE_GLOW;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
+import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.io.File;
 import java.io.IOException;

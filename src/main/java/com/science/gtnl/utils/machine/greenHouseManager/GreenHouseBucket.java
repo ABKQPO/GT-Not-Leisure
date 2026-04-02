@@ -1,7 +1,9 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import static com.science.gtnl.utils.item.ItemUtils.*;
-import static gregtech.api.enums.Mods.*;
+import static com.science.gtnl.utils.item.ItemUtils.readItemStackFromNBT;
+import static com.science.gtnl.utils.item.ItemUtils.writeItemStackToNBT;
+import static gregtech.api.enums.Mods.ThaumicBases;
+import static gregtech.api.enums.Mods.ThaumicTinkerer;
 
 import java.util.LinkedList;
 

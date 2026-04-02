@@ -1,6 +1,7 @@
 package com.science.gtnl.common.block.casings.column;
 
-import static com.science.gtnl.utils.item.MetaItemStackUtils.*;
+import static com.science.gtnl.utils.item.MetaItemStackUtils.initMetaItemStack;
+import static com.science.gtnl.utils.item.MetaItemStackUtils.metaItemStackTooltipsAdd;
 
 import java.util.Arrays;
 import java.util.List;

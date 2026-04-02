@@ -1,12 +1,24 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.utils.enums.BlockIcons.*;
-import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTModHandler.*;
-import static gregtech.api.util.GTStructureUtility.*;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.LOG;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE_GLOW;
+import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_GLOW;
+import static gregtech.api.enums.HatchElement.Energy;
+import static gregtech.api.enums.HatchElement.ExoticEnergy;
+import static gregtech.api.enums.HatchElement.Maintenance;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.Mods.BloodMagic;
+import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.Thaumcraft;
+import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
+import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,9 +1,6 @@
 package com.science.gtnl.utils.item;
 
-import static com.science.gtnl.utils.enums.ModList.*;
-import static com.science.gtnl.utils.enums.ModList.Baubles;
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTModHandler.*;
+import static gregtech.api.util.GTModHandler.getModItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -245,7 +242,7 @@ public class ItemUtils {
             }
         }
 
-        if (Baubles.isModLoaded()) {
+        if (Mods.Baubles.isModLoaded()) {
             IInventory baublesInventory = BaublesApi.getBaubles(player);
             if (baublesInventory != null) {
                 for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
@@ -316,7 +313,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName, int amount) {
-        ItemStack stack = GTModHandler.getModItem(Botania.ID, "specialFlower", amount);
+        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", amount);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();
@@ -330,7 +327,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName) {
-        ItemStack stack = GTModHandler.getModItem(Botania.ID, "specialFlower", 1);
+        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", 1);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();

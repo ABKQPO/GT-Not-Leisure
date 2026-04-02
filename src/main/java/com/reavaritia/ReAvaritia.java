@@ -1,6 +1,8 @@
 package com.reavaritia;
 
-import static com.reavaritia.ReAvaritia.*;
+import static com.reavaritia.ReAvaritia.MODID;
+import static com.reavaritia.ReAvaritia.MODNAME;
+import static com.reavaritia.ReAvaritia.VERSION;
 
 import net.minecraftforge.common.MinecraftForge;
 

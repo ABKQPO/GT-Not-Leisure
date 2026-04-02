@@ -1,6 +1,7 @@
 package com.reavaritia.client.gui;
 
-import static com.reavaritia.ReAvaritia.*;
+import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
+import static com.reavaritia.ReAvaritia.network;
 
 import java.util.List;
 

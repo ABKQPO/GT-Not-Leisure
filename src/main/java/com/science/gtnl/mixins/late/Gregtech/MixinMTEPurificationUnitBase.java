@@ -1,10 +1,11 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.utils.Utils.*;
-import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.util.GTUtility.*;
-import static gregtech.common.misc.WirelessNetworkManager.*;
-import static net.minecraft.util.StatCollector.*;
+import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
+import static com.science.gtnl.utils.Utils.ZERO_STRING;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTUtility.validMTEList;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

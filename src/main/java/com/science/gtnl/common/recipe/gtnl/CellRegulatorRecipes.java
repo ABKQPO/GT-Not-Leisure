@@ -1,6 +1,7 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.util.GTRecipeBuilder.MINUTES;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;

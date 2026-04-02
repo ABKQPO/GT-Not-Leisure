@@ -1,6 +1,6 @@
 package com.science.gtnl.loader;
 
-import static com.science.gtnl.utils.CardboardBoxUtils.*;
+import static com.science.gtnl.utils.CardboardBoxUtils.addBoxBlacklist;
 
 import net.blay09.mods.craftingtweaks.api.CraftingTweaksAPI;
 import net.blay09.mods.craftingtweaks.api.SimpleTweakProvider;

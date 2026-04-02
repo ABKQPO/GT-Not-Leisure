@@ -1,8 +1,10 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.recipe.RecipeMaps.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
-import static gregtech.api.util.GTUtility.*;
+import static gregtech.api.recipe.RecipeMaps.fluidSolidifierRecipes;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeBuilder.TICKS;
+import static gregtech.api.util.GTUtility.calculateRecipeEU;
 
 import net.minecraft.item.ItemStack;
 

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.*;
-
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
@@ -18,6 +16,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import gregtech.api.enums.Mods;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
@@ -50,7 +49,7 @@ public class ExtremeExtremeEntityCrusherRecipes {
 
         MobHandlerLoader.MobEECRecipe eecRecipe = new MobHandlerLoader.MobEECRecipe(drops, mobRecipe);
 
-        ItemStack spawner = GTModHandler.getModItem(EnderIO.ID, "blockPoweredSpawner", 1);
+        ItemStack spawner = GTModHandler.getModItem(Mods.EnderIO.ID, "blockPoweredSpawner", 1);
         if (spawner == null) return;
 
         NBTTagCompound nbt = new NBTTagCompound();

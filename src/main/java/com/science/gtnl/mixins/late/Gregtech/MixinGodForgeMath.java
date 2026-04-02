@@ -1,6 +1,7 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.*;
+import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.FDIM;
+import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.QGPIU;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,8 +1,11 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.*;
-import static gregtech.api.util.GTModHandler.*;
-import static gregtech.api.util.GTRecipeBuilder.*;
+import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.DraconicEvolution;
+import static gregtech.api.enums.Mods.EtFuturumRequiem;
+import static gregtech.api.enums.Mods.OpenBlocks;
+import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

@@ -1,8 +1,14 @@
 package com.science.gtnl.utils.event;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
-import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_CAPE_URLS;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_NAMES;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_SKIN_URLS;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_UUIDS;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.UUID_CACHE;
+import static com.science.gtnl.common.render.PlayerDollRenderManager.offlineMode;
+import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.loadInstance;
 
 import java.util.Arrays;
 import java.util.HashSet;

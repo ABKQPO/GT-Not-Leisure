@@ -1,6 +1,6 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.enums.HatchElement.*;
+import static gregtech.api.enums.HatchElement.InputBus;
 
 import java.util.ArrayList;
 import java.util.List;

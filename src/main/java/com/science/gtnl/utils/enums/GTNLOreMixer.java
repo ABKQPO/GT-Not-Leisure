@@ -1,6 +1,9 @@
 package com.science.gtnl.utils.enums;
 
-import static gregtech.common.OreMixBuilder.*;
+import static gregtech.common.OreMixBuilder.NETHER;
+import static gregtech.common.OreMixBuilder.OW;
+import static gregtech.common.OreMixBuilder.THE_END;
+import static gregtech.common.OreMixBuilder.TWILIGHT_FOREST;
 
 import galacticgreg.WorldgenOreLayerSpace;
 import galacticgreg.api.enums.DimensionDef;

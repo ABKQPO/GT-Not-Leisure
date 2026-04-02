@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.enums;
 
-import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IIconContainer;
