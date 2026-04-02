@@ -106,6 +106,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
         addDoll(itemStacks, "Huan_F", "§r幻方", RENDER_CAPE);
         addDoll(itemStacks, "Circulation_", "§r流光通明", RENDER_OFF);
         addDoll(itemStacks, "Psimo", "§r赛莫", RENDER_OFF);
+        addDoll(itemStacks, "LuoYangYuLi", "§r落阳宇理", RENDER_OFF);
     }
 
     public void addDoll(List<ItemStack> list, String owner, String name, byte capeMode) {
