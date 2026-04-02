@@ -1,7 +1,6 @@
 package com.science.gtnl;
 
-import static com.science.gtnl.ScienceNotLeisure.MODID;
-import static com.science.gtnl.ScienceNotLeisure.MODNAME;
+import static com.science.gtnl.ScienceNotLeisure.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

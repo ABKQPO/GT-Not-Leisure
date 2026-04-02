@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.gui.recipe;
 
-import static gregtech.api.util.GTRecipeConstants.FOG_UPGRADE_NAME_SHORT;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import java.util.List;
 

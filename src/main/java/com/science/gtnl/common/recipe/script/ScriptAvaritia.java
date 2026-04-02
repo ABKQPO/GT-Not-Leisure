@@ -1,8 +1,10 @@
 package com.science.gtnl.common.recipe.script;
 
-import static com.science.gtnl.utils.enums.ModList.ScienceNotLeisure;
+import static com.science.gtnl.utils.enums.ModList.*;
 import static gregtech.api.enums.MetaTileEntityIDs.*;
 import static gregtech.api.enums.Mods.*;
+import static gregtech.api.enums.Mods.GalaxySpace;
+import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
 
 import java.util.Arrays;
 import java.util.List;

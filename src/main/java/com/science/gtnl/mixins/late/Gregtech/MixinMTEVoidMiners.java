@@ -2,10 +2,6 @@ package com.science.gtnl.mixins.late.Gregtech;
 
 import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTUtility.*;
 
 import net.minecraft.item.ItemStack;

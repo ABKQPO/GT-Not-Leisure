@@ -1,12 +1,11 @@
 package com.science.gtnl.common.render.tile;
 
-import static tectech.Reference.MODID;
+import static tectech.Reference.*;
 import static tectech.rendering.EOH.EOHRenderingUtils.*;
 import static tectech.rendering.EOH.EOHTileEntitySR.*;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
 import static tectech.thing.block.TileEntityEyeOfHarmony.*;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;

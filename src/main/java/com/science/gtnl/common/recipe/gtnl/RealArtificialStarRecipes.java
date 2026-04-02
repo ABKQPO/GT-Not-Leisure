@@ -1,8 +1,7 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.config.MainConfig.*;
 import static com.science.gtnl.utils.enums.GTNLItemList.*;
-import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
+import static com.science.gtnl.utils.enums.ModList.*;
 
 import net.minecraft.util.StatCollector;
 

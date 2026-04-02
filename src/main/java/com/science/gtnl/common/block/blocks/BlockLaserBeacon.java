@@ -1,6 +1,6 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.utils.enums.BlockIcons.LASER_BEACON_TOP;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;

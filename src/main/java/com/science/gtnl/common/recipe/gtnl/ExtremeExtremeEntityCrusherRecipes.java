@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.EnderIO;
+import static gregtech.api.enums.Mods.*;
 
 import java.util.ArrayList;
 

@@ -1,8 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.DraconicEvolution;
-import static gregtech.api.enums.Mods.GalacticraftAmunRa;
-import static gregtech.api.util.GTRecipeConstants.DEFC_CASING_TIER;
+import static gregtech.api.enums.Mods.*;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;

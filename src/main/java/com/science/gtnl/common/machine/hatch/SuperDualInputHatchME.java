@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
 import static gregtech.api.enums.GTValues.*;
-import static gregtech.api.enums.GTValues.VN;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 
 import java.io.IOException;

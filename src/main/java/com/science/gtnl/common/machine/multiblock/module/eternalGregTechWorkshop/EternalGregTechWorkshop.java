@@ -1,20 +1,18 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.*;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_GOD_FORGE_MODULE_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.metatileentity.BaseTileEntity.*;
+import static gregtech.api.util.GTRecipeBuilder.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gregtech.api.util.GTUtility.filterValidMTEs;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import static gregtech.api.util.GTUtility.*;
+import static gregtech.common.misc.WirelessNetworkManager.*;
 import static java.lang.Math.*;
-import static java.lang.Math.floor;
-import static net.minecraft.util.StatCollector.translateToLocal;
+import static java.lang.Math.max;
+import static net.minecraft.util.StatCollector.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

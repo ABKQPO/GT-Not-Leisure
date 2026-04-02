@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.VN;
+import static gregtech.api.enums.GTValues.*;
 
 import java.util.ArrayList;
 import java.util.function.LongConsumer;

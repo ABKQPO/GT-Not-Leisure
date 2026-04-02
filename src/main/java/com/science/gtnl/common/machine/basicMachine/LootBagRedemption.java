@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.GTValues.V;
+import static gregtech.api.enums.GTValues.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;

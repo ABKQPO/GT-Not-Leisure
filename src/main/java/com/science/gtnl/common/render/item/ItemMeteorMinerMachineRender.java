@@ -1,6 +1,6 @@
 package com.science.gtnl.common.render.item;
 
-import static com.science.gtnl.utils.enums.GTNLMachineID.METEOR_MINER;
+import static com.science.gtnl.utils.enums.GTNLMachineID.*;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

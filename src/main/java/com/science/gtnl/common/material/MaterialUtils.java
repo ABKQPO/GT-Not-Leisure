@@ -1,7 +1,6 @@
 package com.science.gtnl.common.material;
 
 import static gregtech.api.recipe.RecipeMaps.*;
-import static gregtech.api.recipe.RecipeMaps.wiremillRecipes;
 import static gregtech.api.util.GTRecipeBuilder.*;
 
 import com.science.gtnl.client.GTNLCreativeTabs;

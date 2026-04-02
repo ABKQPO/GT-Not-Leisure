@@ -1,6 +1,6 @@
 package com.science.gtnl.mixins.late.Gregtech.AssLineRemover;
 
-import static com.science.gtnl.utils.recipes.AssLineRecipeHook.RECIPE_TO_REMOVE;
+import static com.science.gtnl.utils.recipes.AssLineRecipeHook.*;
 import static gregtech.api.util.GTRecipeConstants.*;
 
 import java.util.Collection;

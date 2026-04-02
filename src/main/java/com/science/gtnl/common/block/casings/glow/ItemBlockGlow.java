@@ -1,7 +1,6 @@
 package com.science.gtnl.common.block.casings.glow;
 
-import static com.science.gtnl.utils.item.MetaItemStackUtils.initMetaItemStack;
-import static com.science.gtnl.utils.item.MetaItemStackUtils.metaItemStackTooltipsAdd;
+import static com.science.gtnl.utils.item.MetaItemStackUtils.*;
 
 import java.util.Arrays;
 import java.util.List;

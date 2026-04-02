@@ -1,10 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 

@@ -1,14 +1,13 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.GregTechAPI.sBlockFrames;
 import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTUtility.validMTEList;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
+import static gregtech.api.util.GTStructureUtility.*;
+import static gregtech.api.util.GTUtility.*;
+import static gtPlusPlus.core.block.ModBlocks.*;
 
 import java.util.ArrayList;
 import java.util.List;

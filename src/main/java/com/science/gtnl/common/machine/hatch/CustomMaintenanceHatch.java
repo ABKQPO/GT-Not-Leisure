@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_FULLAUTOMAINTENANCE;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

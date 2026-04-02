@@ -1,10 +1,9 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUS;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.api.metatileentity.BaseTileEntity.*;
-import static gregtech.api.objects.XSTR.XSTR_INSTANCE;
+import static gregtech.api.objects.XSTR.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

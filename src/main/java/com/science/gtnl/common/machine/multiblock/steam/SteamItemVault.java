@@ -1,8 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.utils.enums.BlockIcons.*;
 import static gregtech.api.enums.HatchElement.*;

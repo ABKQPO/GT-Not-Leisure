@@ -1,7 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.enums.Materials.*;
-import static gregtech.api.util.GTRecipeConstants.SIEVERT;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

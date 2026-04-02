@@ -1,8 +1,7 @@
 package com.science.gtnl.client;
 
-import static codechicken.nei.NEIClientConfig.isEnabled;
-import static codechicken.nei.NEIClientConfig.isHidden;
-import static com.gtnewhorizons.modularui.api.KeyboardUtil.isAltKeyDown;
+import static codechicken.nei.NEIClientConfig.*;
+import static com.gtnewhorizons.modularui.api.KeyboardUtil.*;
 
 import java.util.Map;
 

@@ -1,8 +1,9 @@
 package com.science.gtnl.utils.item;
 
+import static com.science.gtnl.utils.enums.ModList.*;
 import static com.science.gtnl.utils.enums.ModList.Baubles;
-import static gregtech.api.enums.Mods.Botania;
-import static gregtech.api.util.GTModHandler.getModItem;
+import static gregtech.api.enums.Mods.*;
+import static gregtech.api.util.GTModHandler.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

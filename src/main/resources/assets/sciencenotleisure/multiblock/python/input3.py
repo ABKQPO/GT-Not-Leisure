@@ -1,5 +1,6 @@
-import sys
 import re
+import sys
+
 
 def camel_to_snake(name):
     """
@@ -27,7 +28,7 @@ def read_inner_lines_count(mapping_file):
 def merge_lines(file_path, output_path, n):
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
-    
+
     merged_lines = ['' for _ in range(n)]
     for i in range(len(lines)):
         merged_lines[i % n] += lines[i].rstrip('\n') + ','
@@ -44,21 +45,21 @@ def merge_lines(file_path, output_path, n):
 def calc_dimensions_and_append(file_path, append_file):
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    
+
     height = len(lines)
     max_width = 0
     length = 0  # 每行字段数，按第一行计算
-    
+
     if height > 0:
         length = lines[0].count(',') + 1
-    
+
     for line in lines:
         fields = line.split(',')
         for field in fields:
             field_len = len(field)
             if field_len > max_width:
                 max_width = field_len - 1  # 减1可选
-    
+
     with open(append_file, 'a', encoding='utf-8') as f:
         f.write(f"\n宽: {max_width}\n")
         f.write(f"高: {height}\n")

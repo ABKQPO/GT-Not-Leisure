@@ -1,8 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gregtech.api.enums.GTValues.V;
+import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.Mods.*;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.metatileentity.BaseTileEntity.*;
 
 import java.util.ArrayList;
 import java.util.List;

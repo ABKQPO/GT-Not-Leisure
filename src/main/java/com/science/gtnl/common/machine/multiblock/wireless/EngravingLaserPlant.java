@@ -1,14 +1,14 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static goodgenerator.loader.Loaders.compactFusionCoil;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
+import static goodgenerator.loader.Loaders.*;
 import static gregtech.api.GregTechAPI.*;
-import static gregtech.api.enums.GTValues.V;
+import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
+import static tectech.thing.casing.TTCasingsContainer.*;
 
 import java.util.Arrays;
 import java.util.Collection;

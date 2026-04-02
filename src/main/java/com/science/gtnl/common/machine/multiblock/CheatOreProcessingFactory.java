@@ -1,13 +1,12 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasingsAdvanced;
+import static bartworks.system.material.WerkstoffLoader.*;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
+import static gtPlusPlus.core.block.ModBlocks.*;
 
 import java.util.ArrayList;
 import java.util.List;

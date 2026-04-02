@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_INPUT_HATCH_2x2;
+import static gregtech.api.enums.Textures.BlockIcons.*;
 
 import javax.annotation.Nonnull;
 

@@ -1,7 +1,7 @@
 package com.science.gtnl.common.block.casings.glass;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.block.casings.glass.ItemBlockGlass.metaSet;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.common.block.casings.glass.ItemBlockGlass.*;
 
 import java.util.List;
 

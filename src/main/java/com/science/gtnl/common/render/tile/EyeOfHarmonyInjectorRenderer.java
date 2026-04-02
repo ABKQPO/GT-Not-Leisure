@@ -2,10 +2,7 @@ package com.science.gtnl.common.render.tile;
 
 import static tectech.Reference.*;
 import static tectech.rendering.EOH.EOHRenderingUtils.*;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderBlockInWorld;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderStar;
 import static tectech.rendering.EOH.EOHTileEntitySR.*;
-import static tectech.thing.block.TileEntityEyeOfHarmony.*;
 
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ChunkCoordinates;

@@ -1,10 +1,9 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static gregtech.api.util.GTUtility.formatNumbers;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.strongCheckOrAddUser;
+import static gregtech.api.util.GTUtility.*;
+import static gregtech.common.misc.WirelessNetworkManager.*;
 import static java.lang.Math.*;
-import static kekztech.util.Util.toStandardForm;
+import static kekztech.util.Util.*;
 import static net.minecraft.util.EnumChatFormatting.*;
 
 import java.math.BigInteger;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.render.tile;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_INDICATOR;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

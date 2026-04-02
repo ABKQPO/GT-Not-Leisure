@@ -1,8 +1,7 @@
 package com.science.gtnl.common.machine.basicMachine;
 
 import static gregtech.api.enums.Textures.BlockIcons.*;
-import static tectech.recipe.TecTechRecipeMaps.researchStationFakeRecipes;
-import static tectech.recipe.TecTechRecipeMaps.researchableALRecipeList;
+import static tectech.recipe.TecTechRecipeMaps.*;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;

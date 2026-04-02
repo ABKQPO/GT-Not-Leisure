@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.Botania;
+import static gregtech.api.enums.Mods.*;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

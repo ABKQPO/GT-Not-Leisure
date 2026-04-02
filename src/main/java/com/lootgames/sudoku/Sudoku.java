@@ -1,7 +1,6 @@
 package com.lootgames.sudoku;
 
-import static com.lootgames.sudoku.Sudoku.MODID;
-import static com.lootgames.sudoku.Sudoku.MODNAME;
+import static com.lootgames.sudoku.Sudoku.*;
 
 import net.minecraftforge.common.MinecraftForge;
 

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.GTValues.V;
+import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
 
 import net.minecraft.util.StatCollector;

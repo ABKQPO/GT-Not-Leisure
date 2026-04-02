@@ -1,6 +1,4 @@
-# Blender 3.5.1
-# www.blender.org
-mtllib Sol.mtl.mtl
+
 o Sol
 v 0.000000 2.994080 -0.188372
 v 0.000000 2.905750 -0.746070

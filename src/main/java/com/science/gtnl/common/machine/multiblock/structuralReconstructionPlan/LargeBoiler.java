@@ -1,11 +1,11 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static gregtech.api.enums.GTValues.STEAM_PER_WATER;
+import static gregtech.api.enums.GTValues.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.ItemList.Circuit_Integrated;
+import static gregtech.api.enums.ItemList.*;
 import static gregtech.api.enums.Textures.BlockIcons.*;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.*;
 
 import java.util.ArrayList;
 

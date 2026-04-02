@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.IndustrialCraft2;
+import static gregtech.api.enums.Mods.*;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

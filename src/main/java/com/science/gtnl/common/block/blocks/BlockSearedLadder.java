@@ -1,7 +1,6 @@
 package com.science.gtnl.common.block.blocks;
 
 import static com.science.gtnl.ScienceNotLeisure.*;
-import static net.minecraftforge.common.util.ForgeDirection.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

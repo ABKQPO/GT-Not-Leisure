@@ -1,8 +1,8 @@
 package com.reavaritia.common.items;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.ModList.Baubles;
-import static com.science.gtnl.utils.item.ItemUtils.removeItemFromPlayer;
+import static com.reavaritia.ReAvaritia.*;
+import static com.science.gtnl.utils.enums.ModList.*;
+import static com.science.gtnl.utils.item.ItemUtils.*;
 
 import java.util.List;
 import java.util.UUID;

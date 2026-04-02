@@ -1,9 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.BOLD;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GRAY;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GREEN;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.YELLOW;
+import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.*;
 import static gregtech.api.enums.GTValues.*;
 
 import net.minecraft.util.StatCollector;

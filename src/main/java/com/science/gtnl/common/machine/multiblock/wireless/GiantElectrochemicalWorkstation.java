@@ -7,7 +7,6 @@ import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
 import static gtPlusPlus.core.block.ModBlocks.*;
-import static tectech.thing.casing.TTCasingsContainer.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;

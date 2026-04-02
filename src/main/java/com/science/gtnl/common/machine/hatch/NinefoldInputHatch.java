@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NINE_HATCH;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NINE_HATCH_COLOR;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import java.util.ArrayList;
 

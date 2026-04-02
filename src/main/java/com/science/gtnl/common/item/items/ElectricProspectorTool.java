@@ -1,9 +1,8 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.utils.item.ItemUtils.*;
-import static gregtech.api.enums.Mods.VisualProspecting;
+import static gregtech.api.enums.Mods.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

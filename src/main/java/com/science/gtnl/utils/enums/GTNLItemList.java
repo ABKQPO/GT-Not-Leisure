@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.enums;
 
-import static gregtech.api.enums.GTValues.NI;
+import static gregtech.api.enums.GTValues.*;
 
 import java.util.Locale;
 

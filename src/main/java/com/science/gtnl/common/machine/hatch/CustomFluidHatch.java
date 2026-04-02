@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.Textures.BlockIcons.FLUID_STEAM_IN_SIGN;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_PIPE_IN;
+import static gregtech.api.enums.Textures.BlockIcons.*;
 
 import java.util.ArrayList;
 import java.util.Set;

@@ -1,8 +1,8 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.item.ItemUtils.removeItemFromPlayer;
-import static gregtech.api.enums.GTValues.V;
+import static com.science.gtnl.ScienceNotLeisure.*;
+import static com.science.gtnl.utils.item.ItemUtils.*;
+import static gregtech.api.enums.GTValues.*;
 
 import java.util.List;
 

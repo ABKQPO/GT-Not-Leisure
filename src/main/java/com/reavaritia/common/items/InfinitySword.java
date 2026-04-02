@@ -1,6 +1,6 @@
 package com.reavaritia.common.items;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
+import static com.reavaritia.ReAvaritia.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;

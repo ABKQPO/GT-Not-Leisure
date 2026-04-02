@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.*;
-
 import net.minecraft.util.StatCollector;
 
 import gregtech.api.interfaces.ITexture;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.render.item;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;

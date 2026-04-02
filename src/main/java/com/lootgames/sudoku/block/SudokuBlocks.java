@@ -1,6 +1,6 @@
 package com.lootgames.sudoku.block;
 
-import static ru.timeconqueror.lootgames.registry.LGBlocks.regBlock;
+import static ru.timeconqueror.lootgames.registry.LGBlocks.*;
 
 import java.util.function.Supplier;
 

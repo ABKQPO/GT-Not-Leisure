@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.recipes.metadata;
 
-import static kubatech.api.Variables.numberFormat;
+import static kubatech.api.Variables.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

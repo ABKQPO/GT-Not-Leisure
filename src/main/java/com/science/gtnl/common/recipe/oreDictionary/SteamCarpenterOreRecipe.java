@@ -1,8 +1,7 @@
 package com.science.gtnl.common.recipe.oreDictionary;
 
-import static gregtech.api.recipe.RecipeMaps.latheRecipes;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeBuilder.TICKS;
+import static gregtech.api.recipe.RecipeMaps.*;
+import static gregtech.api.util.GTRecipeBuilder.*;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

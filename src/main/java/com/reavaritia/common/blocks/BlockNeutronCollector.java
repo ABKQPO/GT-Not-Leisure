@@ -1,7 +1,7 @@
 package com.reavaritia.common.blocks;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
-import static net.minecraft.block.BlockPistonBase.getPistonOrientation;
+import static com.reavaritia.ReAvaritia.*;
+import static net.minecraft.block.BlockPistonBase.*;
 
 import java.util.Random;
 

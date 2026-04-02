@@ -1,6 +1,6 @@
 package com.science.gtnl.common.packet;
 
-import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.ScienceNotLeisure.*;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;

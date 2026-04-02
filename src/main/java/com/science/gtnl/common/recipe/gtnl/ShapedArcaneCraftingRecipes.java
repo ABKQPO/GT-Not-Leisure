@@ -1,6 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static thaumcraft.common.config.ConfigItems.itemJarNode;
+import static thaumcraft.common.config.ConfigItems.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

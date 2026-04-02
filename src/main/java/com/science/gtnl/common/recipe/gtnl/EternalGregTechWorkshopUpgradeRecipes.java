@@ -1,8 +1,8 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.EternalSingularity;
-import static gregtech.api.util.GTModHandler.getModItem;
-import static gregtech.api.util.GTRecipeConstants.FOG_UPGRADE_NAME_SHORT;
+import static gregtech.api.enums.Mods.*;
+import static gregtech.api.util.GTModHandler.*;
+import static gregtech.api.util.GTRecipeConstants.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 

@@ -2,7 +2,7 @@ package com.science.gtnl.utils.event;
 
 import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.common.render.PlayerDollRenderManager.*;
-import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.loadInstance;
+import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.*;
 
 import java.util.Arrays;
 import java.util.HashSet;

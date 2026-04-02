@@ -2,11 +2,6 @@ package com.science.gtnl.mixins.late.Gregtech;
 
 import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.*;
 import static gregtech.api.enums.HatchElement.*;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 
 import java.util.List;
 import java.util.Random;

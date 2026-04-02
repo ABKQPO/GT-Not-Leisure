@@ -1,6 +1,6 @@
 package com.science.gtnl.common.material;
 
-import static bartworks.util.BWUtil.subscriptNumbers;
+import static bartworks.util.BWUtil.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 

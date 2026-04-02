@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_PARALLEL_CONTROLLER;
+import static com.science.gtnl.utils.enums.BlockIcons.*;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

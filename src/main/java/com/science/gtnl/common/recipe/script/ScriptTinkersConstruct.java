@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.script;
 
 import static gregtech.api.enums.Mods.*;
-import static gregtech.api.enums.Mods.GregTech;
 
 import java.util.Arrays;
 import java.util.List;

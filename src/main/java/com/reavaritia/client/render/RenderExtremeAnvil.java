@@ -1,6 +1,6 @@
 package com.reavaritia.client.render;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
+import static com.reavaritia.ReAvaritia.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;

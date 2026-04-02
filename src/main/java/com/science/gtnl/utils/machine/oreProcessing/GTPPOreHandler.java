@@ -1,7 +1,7 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
 import static gtPlusPlus.core.material.MaterialMisc.*;
-import static gtPlusPlus.core.material.MaterialsAlloy.KOBOLDITE;
+import static gtPlusPlus.core.material.MaterialsAlloy.*;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;

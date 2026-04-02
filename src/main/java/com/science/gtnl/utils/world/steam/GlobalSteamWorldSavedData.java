@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.world.steam;
 
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.GlobalSteam;
+import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

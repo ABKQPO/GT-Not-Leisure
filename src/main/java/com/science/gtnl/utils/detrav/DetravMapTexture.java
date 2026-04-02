@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.detrav;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 

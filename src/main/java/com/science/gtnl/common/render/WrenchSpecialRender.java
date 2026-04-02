@@ -1,6 +1,6 @@
 package com.science.gtnl.common.render;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;

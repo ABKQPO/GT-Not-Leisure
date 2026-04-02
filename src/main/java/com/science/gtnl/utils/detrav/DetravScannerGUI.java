@@ -1,6 +1,6 @@
 package com.science.gtnl.utils.detrav;
 
-import static com.science.gtnl.ScienceNotLeisure.network;
+import static com.science.gtnl.ScienceNotLeisure.*;
 
 import java.util.ArrayList;
 import java.util.List;

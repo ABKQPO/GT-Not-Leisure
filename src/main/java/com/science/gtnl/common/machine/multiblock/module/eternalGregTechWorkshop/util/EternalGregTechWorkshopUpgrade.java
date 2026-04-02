@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.LARGE;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.STANDARD;
+import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.BGWindowSize.*;
 import static tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon.*;
 import static tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor.*;
 

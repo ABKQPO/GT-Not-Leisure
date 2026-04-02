@@ -1,15 +1,15 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.ScienceNotLeisure.*;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.*;
-import static goodgenerator.loader.Loaders.FRF_Coil_1;
+import static goodgenerator.loader.Loaders.*;
 import static gregtech.api.GregTechAPI.*;
 import static gregtech.api.enums.HatchElement.*;
 import static gregtech.api.util.GTStructureUtility.*;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
-import static kekztech.common.Blocks.lscLapotronicEnergyUnit;
+import static gtPlusPlus.core.block.ModBlocks.*;
+import static gtnhlanth.common.register.LanthItemList.*;
+import static kekztech.common.Blocks.*;
 
 import java.util.Arrays;
 import java.util.Collection;

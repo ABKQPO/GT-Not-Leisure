@@ -1,7 +1,5 @@
 package com.science.gtnl.mixins.early.Stick;
 
-import static net.minecraft.client.renderer.ItemRenderer.*;
-
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

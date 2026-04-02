@@ -1,10 +1,10 @@
 package com.science.gtnl.common.block.blocks.item;
 
-import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
+import static tectech.rendering.EOH.EOHRenderingUtils.*;
 import static tectech.rendering.EOH.EOHTileEntitySR.*;
 import static tectech.thing.block.RenderForgeOfGods.*;
 
-import java.awt.Color;
+import java.awt.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

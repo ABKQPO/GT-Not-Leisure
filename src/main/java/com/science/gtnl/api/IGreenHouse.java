@@ -1,6 +1,6 @@
 package com.science.gtnl.api;
 
-import static gregtech.api.util.GTUtility.validMTEList;
+import static gregtech.api.util.GTUtility.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;

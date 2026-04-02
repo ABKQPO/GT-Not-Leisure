@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.util.GTUtility.areStacksEqual;
-import static gregtech.api.util.GTUtility.isStackInvalid;
+import static gregtech.api.util.GTUtility.*;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
