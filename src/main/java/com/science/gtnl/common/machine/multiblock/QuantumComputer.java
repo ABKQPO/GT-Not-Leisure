@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static gregtech.api.enums.Textures.BlockIcons.*;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_INPUT_HATCH;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_INPUT_HATCH_ACTIVE;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -1068,12 +1069,14 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return getProxy().getNode();
     }
 
+    @Override
     public AECableType getCableConnectionType(ForgeDirection forgeDirection) {
         return AECableType.DENSE_COVERED;
     }
 
     private AENetworkProxy gridProxy;
 
+    @Override
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
             var bmte = getBaseMetaTileEntity();
