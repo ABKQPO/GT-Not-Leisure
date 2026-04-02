@@ -1282,9 +1282,9 @@ text.beam_former.show=Showing beam.
 
 tile.BeamFormer.name=ME Beam Former
 
-tile.AEChisel.name=ME Chisel
-container.AEChisel=ME Chisel
-text.ae_chisel.gui.parallel=Set Pattern Parallel
+tile.MEChisel.name=ME Chisel
+container.MEChisel=ME Chisel
+text.me_chisel.gui.parallel=Set Pattern Parallel
 
 tile.DimensionRespawnAnchor.name=Dimension Respawn Anchor
 Info_DimensionRespawnAnchor_NoBedOrAnchor=You have no home bed or respawn anchor, or it was obstructed

@@ -3,17 +3,17 @@ package com.science.gtnl.container;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotFake;
 
-public class ContainerAEChisel extends AEBaseContainer {
+public class ContainerMEChisel extends AEBaseContainer {
 
-    public TileEntityAEChisel tile;
+    public TileEntityMEChisel tile;
     public SlotFake slotFake;
 
-    public ContainerAEChisel(InventoryPlayer ip, TileEntityAEChisel myTile) {
+    public ContainerMEChisel(InventoryPlayer ip, TileEntityMEChisel myTile) {
         super(ip, myTile, null);
         this.tile = myTile;
         this.addSlotToContainer(slotFake = new SlotFake(myTile.getInternalInventory(), 0, 80, 37) {

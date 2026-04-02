@@ -16,10 +16,10 @@ import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
-import com.science.gtnl.client.gui.GuiAEChisel;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
+import com.science.gtnl.client.gui.GuiMEChisel;
 import com.science.gtnl.client.gui.GuiSuperInterface;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAnvil;
@@ -32,13 +32,13 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompress
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityBeamFormer;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
@@ -129,7 +129,7 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.direPatternEncoder), ItemRenderer.INSTANCE);
 
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.aeChisel), ItemRenderer.INSTANCE);
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.meChisel), ItemRenderer.INSTANCE);
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.superInterface), ItemRenderer.INSTANCE);
 
@@ -262,10 +262,10 @@ public class ClientProxy extends CommonProxy {
                 yield null;
             }
             case PortableDarkSteelChestGUI -> new GuiPortableChest.DarkSteel(player.inventory, player.getHeldItem());
-            case AEChiselGUI -> {
+            case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
-                if (t instanceof TileEntityAEChisel d) {
-                    yield new GuiAEChisel(player.inventory, d);
+                if (t instanceof TileEntityMEChisel d) {
+                    yield new GuiMEChisel(player.inventory, d);
                 }
                 yield null;
             }

@@ -1282,9 +1282,9 @@ text.beam_former.show=已显示光束。
 
 tile.BeamFormer.name=ME光束成型器
 
-tile.AEChisel.name=ME雕凿机
-container.AEChisel=ME雕凿机
-text.ae_chisel.gui.parallel=设置样板并行
+tile.MEChisel.name=ME雕凿机
+container.MEChisel=ME雕凿机
+text.me_chisel.gui.parallel=设置样板并行
 
 tile.DimensionRespawnAnchor.name=维度重生锚
 Info_DimensionRespawnAnchor_NoBedOrAnchor=你的床或已充能的重生锚不存在或已被阻挡

@@ -56,7 +56,7 @@ import gregtech.api.enums.Mods;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
-public class TileEntityAEChisel extends AENetworkInvTile implements IInterfaceHost, IGridTickable {
+public class TileEntityMEChisel extends AENetworkInvTile implements IInterfaceHost, IGridTickable {
 
     private static final EnumSet<ForgeDirection> targets = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
     public final DualityInterface duality = new DualityInterface(this.getProxy(), this);

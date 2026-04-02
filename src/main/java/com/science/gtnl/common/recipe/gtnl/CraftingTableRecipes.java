@@ -1380,6 +1380,22 @@ public class CraftingTableRecipes implements IRecipePool {
                 'D', aeParts.cableSmart()
                     .stack(AEColor.Transparent, 1) });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.MEChisel.get(1),
+            new Object[] { "ABA", "CDC", "EFE", 'A', aeMaterials.cell128SpatialPart()
+                .maybeStack(1)
+                .orNull(), 'B', GTModHandler.getModItem(Chisel.ID, "diamondChisel", 1), 'C',
+                aeBlocks.iface()
+                    .maybeStack(1)
+                    .orNull(),
+                'D', aeBlocks.molecularAssembler()
+                    .maybeStack(1)
+                    .orNull(),
+                'E', aeMaterials.cardPatternCapacity()
+                    .maybeStack(1)
+                    .orNull(),
+                'F', GregtechItemList.GT_Chisel_HV.get(1) });
+
         if (NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
             if (MainConfig.recipe.enableSomethingRecipe) loadExtraRecipe();

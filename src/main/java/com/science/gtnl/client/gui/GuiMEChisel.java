@@ -6,22 +6,22 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
-import com.science.gtnl.common.packet.AEChiselSyncParallel;
-import com.science.gtnl.container.ContainerAEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.packet.MEChiselSyncParallel;
+import com.science.gtnl.container.ContainerMEChisel;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.core.localization.GuiText;
 
-public class GuiAEChisel extends AEBaseGui {
+public class GuiMEChisel extends AEBaseGui {
 
-    private final TileEntityAEChisel te;
+    private final TileEntityMEChisel te;
     private MEGuiTextField parallel;
     private int oldParallel;
 
-    public GuiAEChisel(InventoryPlayer inventoryPlayer, TileEntityAEChisel te) {
-        super(new ContainerAEChisel(inventoryPlayer, te));
+    public GuiMEChisel(InventoryPlayer inventoryPlayer, TileEntityMEChisel te) {
+        super(new ContainerMEChisel(inventoryPlayer, te));
         this.ySize = 166;
         this.te = te;
         this.oldParallel = te.getParallel();
@@ -30,7 +30,7 @@ public class GuiAEChisel extends AEBaseGui {
     @Override
     public void initGui() {
         super.initGui();
-        this.parallel = new MEGuiTextField(64, 12, I18n.format("text.ae_chisel.gui.parallel")) {
+        this.parallel = new MEGuiTextField(64, 12, I18n.format("text.me_chisel.gui.parallel")) {
 
             @Override
             public boolean textboxKeyTyped(char keyChar, int keyID) {
@@ -108,7 +108,7 @@ public class GuiAEChisel extends AEBaseGui {
             }
             te.setParallel((int) l);
             if (te.getParallel() != oldParallel) {
-                ScienceNotLeisure.network.sendToServer(new AEChiselSyncParallel(te));
+                ScienceNotLeisure.network.sendToServer(new MEChiselSyncParallel(te));
                 oldParallel = te.getParallel();
             }
         }
@@ -116,7 +116,7 @@ public class GuiAEChisel extends AEBaseGui {
 
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.fontRendererObj.drawString(this.getGuiDisplayName(I18n.format("tile.AEChisel.name")), 8, 6, 4210752);
+        this.fontRendererObj.drawString(this.getGuiDisplayName(I18n.format("tile.MEChisel.name")), 8, 6, 4210752);
         this.fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 

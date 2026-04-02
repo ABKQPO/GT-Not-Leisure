@@ -27,8 +27,8 @@ public class NetWorkHandler {
         registerMessage(PortableInfinityChestSyncPacket.class, i++, Side.SERVER);
         registerMessage(PktPatternTermUploadPattern.class, i++, Side.SERVER);
         registerMessage(DirePatternHandler.class, i++, Side.SERVER);
-        registerMessage(AEChiselSyncParallel.class, i++, Side.SERVER);
-        registerMessage(AEChiselSyncParallel.class, i++, Side.CLIENT);
+        registerMessage(MEChiselSyncParallel.class, i++, Side.SERVER);
+        registerMessage(MEChiselSyncParallel.class, i++, Side.CLIENT);
         registerMessage(PortableInfinityChestSyncPacket.class, i++, Side.CLIENT);
         registerMessage(StatusMessage.class, i++, Side.CLIENT);
         registerMessage(SyncCircuitNanitesPacket.class, i++, Side.CLIENT);

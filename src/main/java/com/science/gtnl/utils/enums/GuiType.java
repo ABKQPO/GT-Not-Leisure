@@ -22,7 +22,7 @@ public enum GuiType {
     PortableNetheriteChestGUI(17),
     PortableDarkSteelChestGUI(18),
     DirePatternEncoderGUI(19),
-    AEChiselGUI(20),
+    MEChiselGUI(20),
     SuperInterfaceGUI(21),
     CustomPriorityGUI(22),
     ActiveFormationPlaneGUI(23);

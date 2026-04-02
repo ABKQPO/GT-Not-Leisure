@@ -2,7 +2,7 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -11,18 +11,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
-public class AEChiselSyncParallel implements IMessage, IMessageHandler<AEChiselSyncParallel, IMessage> {
+public class MEChiselSyncParallel implements IMessage, IMessageHandler<MEChiselSyncParallel, IMessage> {
 
     private int x;
     private int y;
     private int z;
     private int parallel;
 
-    public AEChiselSyncParallel() {
+    public MEChiselSyncParallel() {
 
     }
 
-    public AEChiselSyncParallel(TileEntityAEChisel te) {
+    public MEChiselSyncParallel(TileEntityMEChisel te) {
         x = te.xCoord;
         y = te.yCoord;
         z = te.zCoord;
@@ -46,11 +46,11 @@ public class AEChiselSyncParallel implements IMessage, IMessageHandler<AEChiselS
     }
 
     @Override
-    public IMessage onMessage(AEChiselSyncParallel message, MessageContext ctx) {
+    public IMessage onMessage(MEChiselSyncParallel message, MessageContext ctx) {
         switch (ctx.side) {
             case SERVER -> {
                 var world = ctx.getServerHandler().playerEntity.worldObj;
-                if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityAEChisel te) {
+                if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityMEChisel te) {
                     te.setParallel(message.parallel);
                 }
             }
@@ -60,9 +60,9 @@ public class AEChiselSyncParallel implements IMessage, IMessageHandler<AEChiselS
     }
 
     @SideOnly(Side.CLIENT)
-    public void onClient(AEChiselSyncParallel message, MessageContext ctx) {
+    public void onClient(MEChiselSyncParallel message, MessageContext ctx) {
         var world = Minecraft.getMinecraft().thePlayer.worldObj;
-        if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityAEChisel te) {
+        if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityMEChisel te) {
             te.setParallel(message.parallel);
         }
     }

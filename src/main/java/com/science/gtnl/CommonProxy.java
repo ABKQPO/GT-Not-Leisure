@@ -7,8 +7,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
@@ -20,10 +20,10 @@ import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
-import com.science.gtnl.container.ContainerAEChisel;
 import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.container.ContainerCustomPriority;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
+import com.science.gtnl.container.ContainerMEChisel;
 import com.science.gtnl.container.ContainerSuperInterface;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAnvil;
@@ -196,10 +196,10 @@ public class CommonProxy implements IGuiHandler {
                 }
                 yield null;
             }
-            case AEChiselGUI -> {
+            case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
-                if (t instanceof TileEntityAEChisel d) {
-                    yield new ContainerAEChisel(player.inventory, d);
+                if (t instanceof TileEntityMEChisel d) {
+                    yield new ContainerMEChisel(player.inventory, d);
                 }
                 yield null;
             }

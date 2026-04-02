@@ -8,7 +8,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.science.gtnl.common.block.blocks.BlockAEChisel;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
 import com.science.gtnl.common.block.blocks.BlockBeamFormer;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
@@ -19,6 +18,7 @@ import com.science.gtnl.common.block.blocks.BlockEssentiaHatch;
 import com.science.gtnl.common.block.blocks.BlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.BlockHoneyFluid;
 import com.science.gtnl.common.block.blocks.BlockLaserBeacon;
+import com.science.gtnl.common.block.blocks.BlockMEChisel;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.BlockPlayerDoll;
 import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
@@ -59,7 +59,7 @@ public class BlockLoader {
     public static BlockSearedLadder searedLadder;
     public static BlockPlayerLeash playerLeash;
     public static BlockDirePatternEncoder direPatternEncoder;
-    public static BlockAEChisel aeChisel;
+    public static BlockMEChisel meChisel;
     public static BlockSuperInterface superInterface;
     public static BlockBeamFormer beamFormer;
     public static BlockNanoPhagocytosisPlantRender nanoPhagocytosisPlantRender;
@@ -95,7 +95,7 @@ public class BlockLoader {
         playerLeash = new BlockPlayerLeash();
         searedLadder = new BlockSearedLadder();
         direPatternEncoder = new BlockDirePatternEncoder();
-        aeChisel = new BlockAEChisel();
+        meChisel = new BlockMEChisel();
         superInterface = new BlockSuperInterface();
         beamFormer = new BlockBeamFormer();
         cardboardBox = new BlockCardboardBox();

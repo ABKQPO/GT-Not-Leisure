@@ -46,7 +46,7 @@ public enum GTNLItemList implements IItemContainer {
     WaterCandle,
     SearedLadder,
     DirePatternEncoder,
-    AEChisel,
+    MEChisel,
     DimensionRespawnAnchor,
     EssentiaHatch,
     EnderElevatorBlock,

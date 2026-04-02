@@ -4,9 +4,9 @@ import net.minecraft.block.Block;
 
 import appeng.block.AEBaseItemBlock;
 
-public class ItemBlockAEChisel extends AEBaseItemBlock {
+public class ItemBlockMEChisel extends AEBaseItemBlock {
 
-    public ItemBlockAEChisel(Block block) {
+    public ItemBlockMEChisel(Block block) {
         super(block);
     }
 }
