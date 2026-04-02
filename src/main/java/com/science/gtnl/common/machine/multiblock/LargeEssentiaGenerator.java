@@ -9,7 +9,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.enums.HatchElement.Dynamo;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.Textures.BlockIcons.MACHINE_CASING_DRAGONEGG;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -580,12 +579,12 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
         int colorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.of(MACHINE_CASING_DRAGONEGG), TextureFactory.builder()
+                TextureFactory.of(Textures.BlockIcons.MACHINE_CASING_DRAGONEGG), TextureFactory.builder()
                     .addIcon(Textures.BlockIcons.MACHINE_CASING_DRAGONEGG_GLOW)
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.of(MACHINE_CASING_DRAGONEGG) };
+                TextureFactory.of(Textures.BlockIcons.MACHINE_CASING_DRAGONEGG) };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }

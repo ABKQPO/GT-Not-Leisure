@@ -1,6 +1,8 @@
 package com.science.gtnl.utils.machine;
 
 import gregtech.api.enums.SoundResource;
+import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.recipe.RecipeMaps;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 
@@ -84,7 +86,15 @@ public class ProcessingArrayRecipeLoader {
         ProcessingArrayManager.addRecipeMapToPA("basicmachine.fluidheater", RecipeMaps.fluidHeaterRecipes);
         ProcessingArrayManager.addSoundResourceToPA("basicmachine.fluidheater", SoundResource.NONE);
         // Fluid Solidifier
-        ProcessingArrayManager.addRecipeMapToPA("basicmachine.fluidsolidifier", RecipeMaps.fluidSolidifierRecipes);
+        ProcessingArrayManager.addRecipeMapToPA(
+            "basicmachine.fluidsolidifier",
+            RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                .maxIO(1, 1, 1, 0)
+                .minInputs(1, 1)
+                .slotOverlays(
+                    (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                        : null)
+                .build());
         ProcessingArrayManager.addSoundResourceToPA("basicmachine.fluidsolidifier", SoundResource.NONE);
         // Forge Hammer
         ProcessingArrayManager.addRecipeMapToPA("basicmachine.hammer", RecipeMaps.hammerRecipes);

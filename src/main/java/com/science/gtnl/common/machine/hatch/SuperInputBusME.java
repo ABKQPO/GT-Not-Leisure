@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.TIER_COLORS;
-import static gregtech.api.enums.GTValues.VN;
-
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -53,6 +50,7 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.util.item.AEItemStack;
+import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.IDataCopyable;
@@ -118,8 +116,9 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
         List<String> strings = new ArrayList<>(8);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_00"));
         strings.add(
-            StatCollector.translateToLocal("Tooltip_SuperInputBusME_01") + TIER_COLORS[autoPullAvailable ? 7 : 4]
-                + VN[autoPullAvailable ? 7 : 4]);
+            StatCollector.translateToLocal("Tooltip_SuperInputBusME_01")
+                + GTValues.TIER_COLORS[autoPullAvailable ? 7 : 4]
+                + GTValues.VN[autoPullAvailable ? 7 : 4]);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_02"));
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_03"));
 

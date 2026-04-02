@@ -14,7 +14,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
 import static gregtech.api.GregTechAPI.sBlockMetal5;
 import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -54,6 +53,7 @@ import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesDat
 import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
 
 import bartworks.util.BWUtil;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -314,7 +314,7 @@ public class NanitesIntegratedProcessingCenter
 
             @Override
             public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
 

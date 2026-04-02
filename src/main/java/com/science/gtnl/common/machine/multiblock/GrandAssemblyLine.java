@@ -6,10 +6,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElement
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.toLongSafe;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
@@ -18,7 +14,6 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
@@ -72,6 +67,8 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
@@ -121,7 +118,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     private static final int VERTICAL_OFF_SET = 2;
     private static final int DEPTH_OFF_SET = 0;
     public List<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
-    public String costingEUText = ZERO_STRING;
+    public String costingEUText = Utils.ZERO_STRING;
     public UUID ownerUUID;
     public boolean wirelessMode = false;
     public int minRecipeTime = 20;
@@ -173,12 +170,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         if (sideDirection == facingDirection) {
             if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_TECTECH_MULTIBLOCK)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK)
                     .extFacing()
                     .build() };
         }
@@ -204,7 +201,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         long energyEU;
 
         if (wirelessMode) {
-            energyEU = toLongSafe(getUserEU(ownerUUID));
+            energyEU = Utils.toLongSafe(getUserEU(ownerUUID));
         } else {
             energyEU = getMaxInputEu();
         }
@@ -255,7 +252,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         if (AssemblyLineUtils.isItemDataStick(mInventory[1])) {
             validRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(mInventory[1]));
         }
-        for (MTEHatchDataAccess dataAccess : validMTEList(mDataAccessHatches)) {
+        for (MTEHatchDataAccess dataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
             validRecipes.addAll(dataAccess.getAssemblyLineRecipes());
         }
         if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_DATA_STICKS;
@@ -760,7 +757,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     @Override
     public boolean onRunningTick(ItemStack aStack) {
-        for (MTEHatchDataAccess hatch_dataAccess : validMTEList(mDataAccessHatches)) {
+        for (MTEHatchDataAccess hatch_dataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
             hatch_dataAccess.setActive(true);
         }
         return super.onRunningTick(aStack);

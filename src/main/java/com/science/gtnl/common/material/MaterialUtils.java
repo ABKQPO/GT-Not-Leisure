@@ -1,7 +1,6 @@
 package com.science.gtnl.common.material;
 
 import static gregtech.api.recipe.RecipeMaps.extruderRecipes;
-import static gregtech.api.recipe.RecipeMaps.fluidSolidifierRecipes;
 import static gregtech.api.recipe.RecipeMaps.wiremillRecipes;
 import static gregtech.api.util.GTRecipeBuilder.HALF_INGOTS;
 import static gregtech.api.util.GTRecipeBuilder.INGOTS;
@@ -16,9 +15,11 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.metatileentity.implementations.MTECable;
 import gregtech.api.metatileentity.implementations.MTEFluidPipe;
 import gregtech.api.metatileentity.implementations.MTEItemPipe;
+import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
@@ -217,35 +218,70 @@ public class MaterialUtils {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeTiny, material, 1))
             .duration(material.getMass() * TICKS)
             .eut(TierEU.RECIPE_LV)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Pipe_Small.get(0))
             .fluidInputs(material.getMolten(1 * INGOTS))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeSmall, material, 1))
             .duration(material.getMass() * 2 * TICKS)
             .eut(TierEU.RECIPE_LV)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Pipe_Medium.get(0))
             .fluidInputs(material.getMolten(3 * INGOTS))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeMedium, material, 1))
             .duration(material.getMass() * 6 * TICKS)
             .eut(TierEU.RECIPE_LV)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Pipe_Large.get(0))
             .fluidInputs(material.getMolten(6 * INGOTS))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeLarge, material, 1))
             .duration(material.getMass() * 12 * TICKS)
             .eut(TierEU.RECIPE_LV)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Pipe_Huge.get(0))
             .fluidInputs(material.getMolten(1728))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeHuge, material, 1))
             .duration(material.getMass() * 24 * TICKS)
             .eut(TierEU.RECIPE_LV)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
     }
 
     public static void registerWires(int startID, Werkstoff material, int amperage, int voltage, int loss,

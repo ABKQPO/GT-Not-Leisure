@@ -9,7 +9,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -59,6 +58,7 @@ import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.ItemRegistry;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -324,7 +324,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4
+                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4
                     && machineMode != MACHINEMODE_DTPF) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
@@ -368,7 +368,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public void setProcessingLogicPower(ProcessingLogic logic) {
         if (wirelessMode) {
             logic.setAvailableVoltage(
-                machineMode == MACHINEMODE_DTPF ? Integer.MAX_VALUE * 8L : V[Math.min(mParallelTier + 1, 14)]);
+                machineMode == MACHINEMODE_DTPF ? Integer.MAX_VALUE * 8L : GTValues.V[Math.min(mParallelTier + 1, 14)]);
             logic.setAvailableAmperage(8L << (2L * mParallelTier) - 2L);
             logic.setAmperageOC(true);
             logic.enablePerfectOverclock();

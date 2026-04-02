@@ -1,9 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.item.ItemUtils.setToolDamage;
-import static com.science.gtnl.utils.item.ItemUtils.setToolMaxDamage;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +31,12 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.github.bsideup.jabel.Desugar;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -60,7 +58,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
         this.setUnlocalizedName("VeinMiningPickaxe");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "VeinMiningPickaxe");
+        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "VeinMiningPickaxe");
         this.setMaxStackSize(1);
         this.setMaxDamage(20000000);
         MinecraftForge.EVENT_BUS.register(this);
@@ -109,7 +107,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        setToolDamage(stack, damage);
+        ItemUtils.setToolDamage(stack, damage);
     }
 
     @Override
@@ -141,7 +139,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item aItem, CreativeTabs aCreativeTabs, List<ItemStack> aList) {
         ItemStack stack = new ItemStack(ItemLoader.veinMiningPickaxe, 1);
-        setToolMaxDamage(stack, 20000000);
+        ItemUtils.setToolMaxDamage(stack, 20000000);
         aList.add(stack);
     }
 
@@ -318,7 +316,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
                             isEnable = false;
                             break;
                         } else {
-                            setToolDamage(stack, MetaGeneratedTool.getToolDamage(stack) + 1);
+                            ItemUtils.setToolDamage(stack, MetaGeneratedTool.getToolDamage(stack) + 1);
                         }
                     }
                 }

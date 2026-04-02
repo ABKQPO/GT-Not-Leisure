@@ -1,11 +1,7 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -57,6 +53,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import gregtech.api.gui.modularui.GTUITextures;
@@ -148,7 +145,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
 
     @Unique
-    public String gtnl$costingEUText = ZERO_STRING;
+    public String gtnl$costingEUText = Utils.ZERO_STRING;
 
     @Getter
     @Setter
@@ -179,7 +176,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
         if (!gtnl$wirelessMode) return;
         this.storedFluids = this.getStoredFluids();
         gtnl$costingEU = BigInteger.ZERO;
-        gtnl$costingEUText = ZERO_STRING;
+        gtnl$costingEUText = Utils.ZERO_STRING;
 
         CheckRecipeResult result = overrideRecipeCheck();
         if (result == null) result = gtnl$findRecipeForInputsLong(storedFluids.toArray(new FluidStack[] {}));
@@ -206,7 +203,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
             BigInteger costEU = BigInteger.valueOf(gtnl$effectiveParallelLong)
                 .multiply(BigInteger.valueOf(getBasePowerUsage()));
 
-            if (!addEUToGlobalEnergyMap(gtnl$ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(gtnl$ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
                 cir.setReturnValue(CheckRecipeResultRegistry.insufficientPower(costEU.longValue()));
                 return;
             }
@@ -465,7 +462,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public ArrayList<FluidStack> getStoredFluidsForColor(Optional<Byte> color) {
         ArrayList<FluidStack> rList = new ArrayList<>();
         Map<Fluid, FluidStack> inputsFromME = new HashMap<>();
-        for (MTEHatchInput tHatch : validMTEList(mInputHatches)) {
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
             byte hatchColor = tHatch.getColor();
             if (color.isPresent() && hatchColor != -1 && hatchColor != color.get()) continue;
             setHatchRecipeMap(tHatch);
@@ -506,7 +503,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
         ArrayList<ItemStack> rList = new ArrayList<>();
         Map<GTUtility.ItemId, ItemStack> inputsFromME = new HashMap<>();
-        for (MTEHatchInputBus tHatch : validMTEList(mInputBusses)) {
+        for (MTEHatchInputBus tHatch : GTUtility.validMTEList(mInputBusses)) {
             if (tHatch instanceof MTEHatchCraftingInputME) {
                 continue;
             }
@@ -576,7 +573,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(translateToLocal("GT5U.tpm.parallelwindow"))
+            .addTooltip(StatCollector.translateToLocal("GT5U.tpm.parallelwindow"))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(174, 112)
             .setSize(16, 16));

@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.Textures.BlockIcons.FLUID_STEAM_IN_SIGN;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_PIPE_IN;
-
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -171,17 +168,17 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         return GTMod.gregtechproxy.mRenderIndicatorsOnHatch
-            ? new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_PIPE_IN),
-                TextureFactory.of(FLUID_STEAM_IN_SIGN) }
-            : new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_PIPE_IN) };
+            ? new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
+                TextureFactory.of(Textures.BlockIcons.FLUID_STEAM_IN_SIGN) }
+            : new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN) };
     }
 
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
         return GTMod.gregtechproxy.mRenderIndicatorsOnHatch
-            ? new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_PIPE_IN),
-                TextureFactory.of(FLUID_STEAM_IN_SIGN) }
-            : new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_PIPE_IN) };
+            ? new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
+                TextureFactory.of(Textures.BlockIcons.FLUID_STEAM_IN_SIGN) }
+            : new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN) };
     }
 
     @Override

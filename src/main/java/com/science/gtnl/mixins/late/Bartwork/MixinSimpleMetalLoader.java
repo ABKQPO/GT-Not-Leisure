@@ -17,6 +17,8 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.system.material.Werkstoff;
 import bartworks.system.material.werkstoff_loaders.recipe.SimpleMetalLoader;
 import gregtech.api.enums.ItemList;
+import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
@@ -38,7 +40,14 @@ public abstract class MixinSimpleMetalLoader {
                                 .getMass(),
                             1L))
                     .eut(16)
-                    .addTo(RecipeMaps.fluidSolidifierRecipes);
+                    .addTo(
+                        RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                            .maxIO(1, 1, 1, 0)
+                            .minInputs(1, 1)
+                            .slotOverlays(
+                                (index, isFluid, isOutput,
+                                    isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
+                            .build());
             }
 
             if (werkstoff.hasItemType(cell)) {
@@ -52,7 +61,14 @@ public abstract class MixinSimpleMetalLoader {
                                 .getMass(),
                             1L))
                     .eut(16)
-                    .addTo(RecipeMaps.fluidSolidifierRecipes);
+                    .addTo(
+                        RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                            .maxIO(1, 1, 1, 0)
+                            .minInputs(1, 1)
+                            .slotOverlays(
+                                (index, isFluid, isOutput,
+                                    isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
+                            .build());
             }
 
             RecipeBuilder.builder()

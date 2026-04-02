@@ -14,13 +14,7 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.formatNumbers;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static net.minecraft.util.EnumChatFormatting.GREEN;
-import static net.minecraft.util.EnumChatFormatting.RED;
-import static net.minecraft.util.EnumChatFormatting.RESET;
-import static net.minecraft.util.EnumChatFormatting.YELLOW;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -73,6 +67,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.casing.TTCasingsContainer;
@@ -202,26 +197,30 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         str.add(
             StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.progress",
-                GREEN + formatNumbers(mProgresstime / 20) + RESET,
-                YELLOW + formatNumbers(mMaxProgresstime / 20) + RESET));
+                EnumChatFormatting.GREEN + GTUtility.formatNumbers(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + EnumChatFormatting.RESET));
         str.add(
             StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.currently_using",
-                RED + (getBaseMetaTileEntity().isActive() ? formatNumbers(EUt) : "0") + RESET));
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0")
+                    + EnumChatFormatting.RESET));
         str.add(
-            YELLOW + StatCollector
-                .translateToLocalFormatted("tt.infodata.multi.max_parallel", RESET + formatNumbers(Integer.MAX_VALUE)));
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.max_parallel",
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(Integer.MAX_VALUE)));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.parallel.current",
-                RESET + (getBaseMetaTileEntity().isActive() ? formatNumbers(currentParallel) : "0")));
+                EnumChatFormatting.RESET
+                    + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
         str.add(
-            YELLOW + StatCollector
-                .translateToLocalFormatted("tt.infodata.multi.capacity.heat", RESET + formatNumbers(getHeat())));
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.capacity.heat",
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getHeat())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
-                RESET + formatNumbers(mSpeedBoost)));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(mSpeedBoost)));
         return str.toArray(new String[0]);
     }
 
@@ -368,7 +367,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         builder.widget(
             new DrawableWidget().setSize(18, 18)
                 .setPos(172, 67)
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.clickhere"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.clickhere"))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY));
 
         builder.widget(

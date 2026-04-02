@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.enums;
 
-import static gregtech.api.enums.GTValues.NI;
-
 import java.util.Locale;
 
 import net.minecraft.block.Block;
@@ -13,6 +11,7 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.Utils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.IItemContainer;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
@@ -1703,7 +1702,7 @@ public enum GTNLItemList implements IItemContainer {
     @Override
     public ItemStack getWithName(long aAmount, String aDisplayName, Object... aReplacements) {
         ItemStack rStack = get(1, aReplacements);
-        if (GTUtility.isStackInvalid(rStack)) return NI;
+        if (GTUtility.isStackInvalid(rStack)) return GTValues.NI;
 
         // CamelCase alphanumeric words from aDisplayName
         StringBuilder tCamelCasedDisplayNameBuilder = new StringBuilder();

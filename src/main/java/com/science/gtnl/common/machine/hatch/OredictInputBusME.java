@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.TIER_COLORS;
-
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Iterator;
@@ -54,6 +52,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.OreFilteredList;
+import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
@@ -132,7 +131,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     @Override
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("Tooltip_OredictInputBusME_00"),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_01") + TIER_COLORS[isSuper ? 8 : 6],
+            StatCollector.translateToLocal("Tooltip_OredictInputBusME_01") + GTValues.TIER_COLORS[isSuper ? 8 : 6],
             StatCollector.translateToLocal("Tooltip_OredictInputBusME_02"),
             StatCollector.translateToLocalFormatted("Tooltip_OredictInputBusME_03", isSuper ? 100 : 16),
             StatCollector.translateToLocal("Tooltip_OredictInputBusME_04"),

@@ -1,22 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_GLOW;
-
 import net.minecraft.util.StatCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,6 +13,7 @@ import com.gtnewhorizons.modularui.common.widget.ProgressBar;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -84,17 +68,17 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     @Override
     public ITexture[] getSideFacingActive(byte aColor) {
         return new ITexture[] { super.getSideFacingActive(aColor)[0],
-            TextureFactory.of(OVERLAY_SIDE_DISASSEMBLER_ACTIVE), TextureFactory.builder()
-                .addIcon(OVERLAY_SIDE_DISASSEMBLER_ACTIVE_GLOW)
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_ACTIVE_GLOW)
                 .glow()
                 .build() };
     }
 
     @Override
     public ITexture[] getSideFacingInactive(byte aColor) {
-        return new ITexture[] { super.getSideFacingInactive(aColor)[0], TextureFactory.of(OVERLAY_SIDE_DISASSEMBLER),
-            TextureFactory.builder()
-                .addIcon(OVERLAY_SIDE_DISASSEMBLER_GLOW)
+        return new ITexture[] { super.getSideFacingInactive(aColor)[0],
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_SIDE_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
     }
@@ -102,35 +86,35 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     @Override
     public ITexture[] getFrontFacingActive(byte aColor) {
         return new ITexture[] { super.getFrontFacingActive(aColor)[0],
-            TextureFactory.of(OVERLAY_FRONT_DISASSEMBLER_ACTIVE), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW)
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW)
                 .glow()
                 .build() };
     }
 
     @Override
     public ITexture[] getFrontFacingInactive(byte aColor) {
-        return new ITexture[] { super.getFrontFacingInactive(aColor)[0], TextureFactory.of(OVERLAY_FRONT_DISASSEMBLER),
-            TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_DISASSEMBLER_GLOW)
+        return new ITexture[] { super.getFrontFacingInactive(aColor)[0],
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
     }
 
     @Override
     public ITexture[] getTopFacingActive(byte aColor) {
-        return new ITexture[] { super.getTopFacingActive(aColor)[0], TextureFactory.of(OVERLAY_TOP_DISASSEMBLER_ACTIVE),
-            TextureFactory.builder()
-                .addIcon(OVERLAY_TOP_DISASSEMBLER_ACTIVE_GLOW)
+        return new ITexture[] { super.getTopFacingActive(aColor)[0],
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_ACTIVE_GLOW)
                 .glow()
                 .build() };
     }
 
     @Override
     public ITexture[] getTopFacingInactive(byte aColor) {
-        return new ITexture[] { super.getTopFacingInactive(aColor)[0], TextureFactory.of(OVERLAY_TOP_DISASSEMBLER),
-            TextureFactory.builder()
-                .addIcon(OVERLAY_TOP_DISASSEMBLER_GLOW)
+        return new ITexture[] { super.getTopFacingInactive(aColor)[0],
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_TOP_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
     }
@@ -138,8 +122,8 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     @Override
     public ITexture[] getBottomFacingActive(byte aColor) {
         return new ITexture[] { super.getBottomFacingActive(aColor)[0],
-            TextureFactory.of(OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE), TextureFactory.builder()
-                .addIcon(OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE_GLOW)
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_ACTIVE_GLOW)
                 .glow()
                 .build() };
     }
@@ -147,8 +131,8 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     @Override
     public ITexture[] getBottomFacingInactive(byte aColor) {
         return new ITexture[] { super.getBottomFacingInactive(aColor)[0],
-            TextureFactory.of(OVERLAY_BOTTOM_DISASSEMBLER), TextureFactory.builder()
-                .addIcon(OVERLAY_BOTTOM_DISASSEMBLER_GLOW)
+            TextureFactory.of(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
     }

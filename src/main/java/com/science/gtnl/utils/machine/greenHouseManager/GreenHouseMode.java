@@ -1,8 +1,5 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import static com.science.gtnl.utils.item.ItemUtils.readItemStackFromNBT;
-import static kubatech.kubatech.error;
-
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,12 +24,14 @@ import com.gtnewhorizons.modularui.common.builder.UIInfo;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import com.science.gtnl.api.IGreenHouse;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import kubatech.kubatech;
 
 public abstract class GreenHouseMode {
 
@@ -114,7 +113,7 @@ public abstract class GreenHouseMode {
     private void dealWithDuplicateFactoryId(String factoryId) {
         if (this.factories.containsKey(factoryId)) {
             // TODO: Check with devs to see if they want a throw instead.
-            error("Duplicate EIG bucket index detected!!!: " + factoryId);
+            kubatech.error("Duplicate EIG bucket index detected!!!: " + factoryId);
             // remove duplicate from ordered list
             this.orderedFactories.remove(this.factories.get(factoryId));
         }
@@ -158,18 +157,18 @@ public abstract class GreenHouseMode {
             // validate nbt
             NBTTagCompound bucketNBT = bucketNBTList.getCompoundTagAt(i);
             if (bucketNBT.hasNoTags()) {
-                error("Empty nbt bucket found in EIG nbt.");
+                kubatech.error("Empty nbt bucket found in EIG nbt.");
                 continue;
             }
             if (!bucketNBT.hasKey("type", 8)) {
-                error("Failed to identify bucket type in EIG nbt.");
+                kubatech.error("Failed to identify bucket type in EIG nbt.");
                 continue;
             }
             // identify bucket type
             String bucketType = bucketNBT.getString("type");
             IGreenHouseBucketFactory factory = factories.getOrDefault(bucketType, null);
             if (factory == null) {
-                error("failed to find EIG bucket factory for type: " + bucketType);
+                kubatech.error("failed to find EIG bucket factory for type: " + bucketType);
                 continue;
             }
             // restore bucket
@@ -186,12 +185,13 @@ public abstract class GreenHouseMode {
         public boolean isValid;
 
         public EIGMigrationHolder(NBTTagCompound nbt) {
-            this.seed = readItemStackFromNBT(nbt.getCompoundTag("input"));
+            this.seed = ItemUtils.readItemStackFromNBT(nbt.getCompoundTag("input"));
             if (this.seed != null) {
                 this.count = this.seed.stackSize;
                 this.seed.stackSize = 1;
             }
-            this.supportBlock = nbt.hasKey("undercrop", 10) ? readItemStackFromNBT(nbt.getCompoundTag("undercrop"))
+            this.supportBlock = nbt.hasKey("undercrop", 10)
+                ? ItemUtils.readItemStackFromNBT(nbt.getCompoundTag("undercrop"))
                 : null;
             this.useNoHumidity = nbt.getBoolean("noHumidity");
             this.isValid = true;

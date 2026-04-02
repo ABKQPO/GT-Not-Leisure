@@ -3,9 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.ModList.TwistSpaceTechnology;
-import static goodgenerator.loader.Loaders.compactFusionCoil;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
@@ -13,9 +10,6 @@ import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
-import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static tectech.thing.casing.TTCasingsContainer.SpacetimeCompressionFieldGenerators;
@@ -50,6 +44,7 @@ import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
@@ -57,8 +52,11 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModList;
 
+import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -83,7 +81,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     private static final int VERTICAL_OFF_SET = 88;
     private static final int DEPTH_OFF_SET = 15;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String RAS_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/real_artificial_star";
+    private static final String RAS_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
+        + "multiblock/real_artificial_star";
     private static final String[][] shape = StructureUtils.readStructureFromFile(RAS_STRUCTURE_FILE_PATH);
     public static long MaxOfDepletedExcitedNaquadahFuelRod = MainConfig.machine.artificial_star.euEveryDepletedExcitedNaquadahFuelRod;
     public static long MaxOfEnhancementCore = MainConfig.machine.artificial_star.euEveryEnhancementCore;
@@ -105,17 +104,18 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static boolean configEnableDefaultRender = MainConfig.machine.artificial_star.enableRenderDefaultArtificialStar;
     public boolean enableRender = configEnableDefaultRender;
 
-    public static final ItemStack TST_PROTO = GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 17);
+    public static final ItemStack TST_PROTO = GTModHandler
+        .getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 17);
     private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
     private static final ItemStack ENHANCEMENT_CORE = GTNLItemList.EnhancementCore.get(1);
-    private static final ItemStack TST_ANTIMATTER = TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 14)
+    private static final ItemStack TST_ANTIMATTER = ModList.TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 14)
         : null;
-    private static final ItemStack TST_FUEL_ROD = TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 16)
+    private static final ItemStack TST_FUEL_ROD = ModList.TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 16)
         : null;
-    private static final ItemStack TST_STRANGE_ROD = TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(TwistSpaceTechnology.ID, "MetaItem01", 1, 29)
+    private static final ItemStack TST_STRANGE_ROD = ModList.TwistSpaceTechnology.isModLoaded()
+        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 29)
         : null;
 
     public RealArtificialStar(int aID, String aName, String aNameRegional) {
@@ -255,7 +255,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                     BigInteger.valueOf(MaxOfEnhancementCore)
                         .multiply(BigInteger.valueOf(size)));
                 matched = true;
-            } else if (TwistSpaceTechnology.isModLoaded()) {
+            } else if (ModList.TwistSpaceTechnology.isModLoaded()) {
                 if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfAntimatter)
@@ -314,14 +314,14 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         }
@@ -362,7 +362,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     // }
 
     public ItemStack[] getRecoversTST(long amount) {
-        if (amount <= 0 || !TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
+        if (amount <= 0 || !ModList.TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
 
         List<ItemStack> list = new ArrayList<>();
 
@@ -535,7 +535,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                         (t, m) -> t.tierTimeField = m,
                         t -> t.tierTimeField)))
             .addElement('B', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('C', ofBlock(compactFusionCoil, 4))
+            .addElement('C', ofBlock(Loaders.compactFusionCoil, 4))
             .addElement(
                 'D',
                 buildHatchAdder(RealArtificialStar.class).atLeast(Maintenance, InputBus, OutputBus)
@@ -681,17 +681,17 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
             if (aActive) {
-                return new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
-                    .addIcon(OVERLAY_DTPF_ON)
+                return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
                     .extFacing()
                     .build() };
             }
-            return new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
-                .addIcon(OVERLAY_DTPF_OFF)
+            return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
                 .extFacing()
                 .build() };
         }
-        return new ITexture[] { casingTexturePages[0][12] };
+        return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12] };
     }
 
     public void createRenderBlock() {

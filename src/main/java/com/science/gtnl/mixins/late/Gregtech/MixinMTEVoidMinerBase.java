@@ -1,7 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.util.GTUtility.validMTEList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -160,9 +158,9 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Unique
     private long gtnl$getMaxInputVoltage() {
         long rVoltage = 0;
-        for (MTEHatchEnergy h : validMTEList(mEnergyHatches)) rVoltage += h.getBaseMetaTileEntity()
+        for (MTEHatchEnergy h : GTUtility.validMTEList(mEnergyHatches)) rVoltage += h.getBaseMetaTileEntity()
             .getInputVoltage();
-        for (MTEHatch h : validMTEList(mExoticEnergyHatches)) rVoltage += h.getBaseMetaTileEntity()
+        for (MTEHatch h : GTUtility.validMTEList(mExoticEnergyHatches)) rVoltage += h.getBaseMetaTileEntity()
             .getInputVoltage();
         return rVoltage;
     }
@@ -234,7 +232,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     public boolean gtnl$drainEnergyInput(long aEU) {
         if (aEU <= 0) return true;
 
-        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
             long tDrain = Math.min(
                 tHatch.getBaseMetaTileEntity()
                     .getStoredEU(),
@@ -245,7 +243,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
 
             if (aEU <= 0) return true;
         }
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
             long tDrain = Math.min(
                 tHatch.getBaseMetaTileEntity()
                     .getStoredEU(),

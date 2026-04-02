@@ -13,8 +13,6 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_ACTIVE;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
@@ -43,6 +41,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
+import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -50,7 +49,7 @@ import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.objects.GTDualInputPattern;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMaps;
+import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
@@ -87,12 +86,12 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_MULTI_CANNER_ACTIVE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_MULTI_CANNER)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER)
                     .extFacing()
                     .build() };
         }
@@ -106,7 +105,12 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.fluidSolidifierRecipes;
+        return RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+            .maxIO(1, 1, 1, 0)
+            .minInputs(1, 1)
+            .slotOverlays(
+                (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
+            .build();
     }
 
     @Override
@@ -126,8 +130,14 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                 GTDualInputPattern inputs = inv.getPatternInputs();
                 setInputItems(inputs.inputItems);
                 setInputFluids(inputs.inputFluid);
-                Set<GTRecipe> recipes = findRecipeMatches(RecipeMaps.fluidSolidifierRecipes)
-                    .collect(Collectors.toSet());
+                Set<GTRecipe> recipes = findRecipeMatches(
+                    RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                        .maxIO(1, 1, 1, 0)
+                        .minInputs(1, 1)
+                        .slotOverlays(
+                            (index, isFluid, isOutput,
+                                isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
+                        .build()).collect(Collectors.toSet());
                 if (!recipes.isEmpty()) {
                     dualInvWithPatternToRecipeCache.put(inv, recipes);
                     activeDualInv = inv;

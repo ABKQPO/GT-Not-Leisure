@@ -4,9 +4,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
 import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
 import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
@@ -19,7 +16,6 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -67,6 +63,8 @@ import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -103,7 +101,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public ArrayList<SteamElevatorModule> mModuleHatches = new ArrayList<>();
     public boolean isLoadedChunk;
     public boolean wirelessMode = false;
-    public String costingEUText = ZERO_STRING;
+    public String costingEUText = Utils.ZERO_STRING;
 
     private static final int HORIZONTAL_OFF_SET = 17;
     private static final int VERTICAL_OFF_SET = 39;
@@ -364,21 +362,21 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public int getAvailableAmount(Fluid fluid) {
         int total = 0;
 
-        for (MTEHatchCustomFluidBase tHatch : validMTEList(mSteamInputFluids)) {
+        for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             FluidStack stack = tHatch.getFluid();
             if (stack != null && stack.getFluid() == fluid) {
                 total += stack.amount;
             }
         }
 
-        for (CustomFluidHatch tHatch : validMTEList(mSteamBigInputFluids)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamBigInputFluids)) {
             FluidStack stack = tHatch.getFluid();
             if (stack != null && stack.getFluid() == fluid) {
                 total += stack.amount;
             }
         }
 
-        for (CustomFluidHatch tHatch : validMTEList(mSteamWirelessInputFluids)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamWirelessInputFluids)) {
             FluidStack stack = tHatch.getFluid();
             if (stack != null && stack.getFluid() == fluid) {
                 total += stack.amount;
@@ -391,7 +389,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public int depleteInput(Fluid fluid, int maxDrainAmount) {
         int totalDrained = 0;
 
-        for (MTEHatchCustomFluidBase tHatch : validMTEList(mSteamInputFluids)) {
+        for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
@@ -402,7 +400,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             }
         }
 
-        for (CustomFluidHatch tHatch : validMTEList(mSteamBigInputFluids)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamBigInputFluids)) {
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
@@ -413,7 +411,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             }
         }
 
-        for (CustomFluidHatch tHatch : validMTEList(mSteamWirelessInputFluids)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamWirelessInputFluids)) {
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
@@ -464,7 +462,8 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         if (side == facing) {
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 new TTRenderedExtendedFacingTexture(
-                    aActive ? OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE : OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
+                    aActive ? BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE
+                        : BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }

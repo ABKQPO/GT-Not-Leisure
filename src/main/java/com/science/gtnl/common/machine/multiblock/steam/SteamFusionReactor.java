@@ -7,8 +7,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
@@ -182,14 +180,14 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 29)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
+                        .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
                         .extFacing()
                         .build() };
             } else {
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 29)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_TOP_STEAM_MACERATOR)
+                        .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR)
                         .extFacing()
                         .build() };
             }

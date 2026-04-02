@@ -1,7 +1,5 @@
 package com.science.gtnl.api;
 
-import static gregtech.api.util.GTUtility.validMTEList;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -294,7 +292,7 @@ public interface IGreenHouse extends IVoidable {
         int totalSeeds = bucket.getSeedCount();
         if (totalSeeds <= 0) return true;
 
-        for (MTEHatchOutputBus tHatch : validMTEList(getOutputBus())) {
+        for (MTEHatchOutputBus tHatch : GTUtility.validMTEList(getOutputBus())) {
             if (!(tHatch instanceof MTEHatchOutputBusME)) continue;
             for (ItemStack stack : bucket.tryRemoveSeed(totalSeeds, false)) {
                 tHatch.storePartial(stack);
@@ -310,7 +308,7 @@ public interface IGreenHouse extends IVoidable {
 
         if (helper.getMaxParallel() > 0) {
             for (ItemStack toOutput : bucket.tryRemoveSeed(helper.getMaxParallel(), false)) {
-                for (MTEHatchOutputBus tHatch : validMTEList(getOutputBus())) {
+                for (MTEHatchOutputBus tHatch : GTUtility.validMTEList(getOutputBus())) {
                     if (tHatch.storePartial(toOutput)) break;
                 }
             }

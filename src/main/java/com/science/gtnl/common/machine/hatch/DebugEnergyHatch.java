@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.VN;
-
 import java.util.ArrayList;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
@@ -25,6 +23,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -262,7 +261,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
                 .setSize(90, 72)
                 .setPos(43, 4))
             .widget(
-                new TextWidget().setStringSupplier(() -> "TIER: " + VN[GTUtility.getTier(Math.abs(mEUT))])
+                new TextWidget().setStringSupplier(() -> "TIER: " + GTValues.VN[GTUtility.getTier(Math.abs(mEUT))])
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
                     .setPos(46, 22))
             .widget(

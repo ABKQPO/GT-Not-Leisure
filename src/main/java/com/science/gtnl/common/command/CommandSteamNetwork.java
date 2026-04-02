@@ -1,6 +1,5 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.utils.Utils.hasPermission;
 import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
 import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
 import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.setUserSteam;
@@ -17,6 +16,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+
+import com.science.gtnl.utils.Utils;
 
 import gregtech.api.util.GTUtility;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
@@ -75,7 +76,7 @@ public class CommandSteamNetwork extends CommandBase {
         }
         switch (strings[0]) {
             case "add" -> {
-                if (!hasPermission(sender, 2)) {
+                if (!Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -115,7 +116,7 @@ public class CommandSteamNetwork extends CommandBase {
 
             }
             case "set" -> {
-                if (!hasPermission(sender, 2)) {
+                if (!Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -177,7 +178,7 @@ public class CommandSteamNetwork extends CommandBase {
 
                 boolean senderIsLeaderOfTeam = uuidSenderLeader.equals(uuidTeam);
 
-                if (!senderIsLeaderOfTeam && !hasPermission(sender, 2)) {
+                if (!senderIsLeaderOfTeam && !Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }

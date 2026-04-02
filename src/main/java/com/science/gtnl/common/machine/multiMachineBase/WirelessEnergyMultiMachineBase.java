@@ -1,9 +1,5 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.mergeArray;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -26,9 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -62,7 +60,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Setter
     public boolean wirelessUpgrade = false;
     public BigInteger costingEU = BigInteger.ZERO;
-    public String costingEUText = ZERO_STRING;
+    public String costingEUText = Utils.ZERO_STRING;
     public int cycleNum = 100_000;
     public int cycleNow = 0;
 
@@ -200,7 +198,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);
@@ -232,7 +230,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         maxParallelStored = -1;
         resetParallelTier();
         costingEU = BigInteger.ZERO;
-        costingEUText = ZERO_STRING;
+        costingEUText = Utils.ZERO_STRING;
         totalOverclockedDuration = 0;
         cycleNow = 0;
         if (!wirelessMode) return super.checkProcessing();
@@ -282,14 +280,14 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
 
-        mOutputItems = mergeArray(mOutputItems, processingLogic.getOutputItems());
-        mOutputFluids = mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+        mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+        mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
         maxParallelStored = maxParallelStored - processingLogic.getCurrentParallels();
 
@@ -306,7 +304,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
         if (wirelessMode) {
-            logic.setAvailableVoltage(V[Math.min(mParallelTier + 1, 14)]);
+            logic.setAvailableVoltage(GTValues.V[Math.min(mParallelTier + 1, 14)]);
             logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
             logic.setAmperageOC(true);
             logic.enablePerfectOverclock();
@@ -319,7 +317,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     public long getMaxInputVoltage() {
-        if (wirelessMode) return V[Math.min(mParallelTier + 1, 14)];
+        if (wirelessMode) return GTValues.V[Math.min(mParallelTier + 1, 14)];
         return super.getMaxInputVoltage();
     }
 

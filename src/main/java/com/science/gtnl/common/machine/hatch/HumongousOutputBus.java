@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.util.GTUtility.areStacksEqual;
-import static gregtech.api.util.GTUtility.isStackInvalid;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -110,7 +107,7 @@ public class HumongousOutputBus extends MTEHatchOutputBus implements IAddGregtec
             ItemStack slot = mInventory[i];
 
             // the slot has an item and the stacks can't be merged; ignore it
-            if (!isStackInvalid(slot) && !areStacksEqual(slot, stack)) continue;
+            if (!GTUtility.isStackInvalid(slot) && !GTUtility.areStacksEqual(slot, stack)) continue;
 
             int inSlot = slot == null ? 0 : slot.stackSize;
 
@@ -120,7 +117,7 @@ public class HumongousOutputBus extends MTEHatchOutputBus implements IAddGregtec
 
             if (!simulate) {
                 // if the slot is invalid create an empty stack in it
-                if (isStackInvalid(slot)) mInventory[i] = slot = stack.splitStack(0);
+                if (GTUtility.isStackInvalid(slot)) mInventory[i] = slot = stack.splitStack(0);
 
                 slot.stackSize += toInsert;
             }

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
-import static gregtech.api.enums.GTValues.V;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.util.StatCollector;
@@ -15,6 +13,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
 import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
@@ -101,7 +100,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
 

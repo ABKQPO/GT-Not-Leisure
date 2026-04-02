@@ -17,7 +17,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.getIntegratedCircuit;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
@@ -197,8 +196,8 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
 
         for (ItemStack item : getAllStoredInputs()) {
             if (item == null) continue;
-            if (GTUtility.areStacksEqual(item, getIntegratedCircuit(1))) hasCircuit1 = true;
-            if (GTUtility.areStacksEqual(item, getIntegratedCircuit(2))) hasCircuit2 = true;
+            if (GTUtility.areStacksEqual(item, GTUtility.getIntegratedCircuit(1))) hasCircuit1 = true;
+            if (GTUtility.areStacksEqual(item, GTUtility.getIntegratedCircuit(2))) hasCircuit2 = true;
         }
 
         if (hasCircuit1 == hasCircuit2) return CheckRecipeResultRegistry.NO_RECIPE;

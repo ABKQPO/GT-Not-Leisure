@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.GTValues.V;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +22,7 @@ import cpw.mods.fml.common.Optional;
 import eu.usrv.enhancedlootbags.core.LootGroupsHandler;
 import eu.usrv.enhancedlootbags.core.items.ItemLootBag;
 import eu.usrv.enhancedlootbags.core.serializer.LootGroups;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TierEU;
@@ -255,7 +254,7 @@ public class LootBagRedemption extends MTEBasicMachine {
 
     @Override
     public long maxEUStore() {
-        return Math.max(getEUVar(), V[6]);
+        return Math.max(getEUVar(), GTValues.V[6]);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gregtech.api.enums.GTValues.V;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +8,7 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 
 import gregtech.GTMod;
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
@@ -80,7 +79,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModule {
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        this.lEUt = mTier * V[3];
+        this.lEUt = mTier * GTValues.V[3];
         this.mEfficiency = 10000;
         this.mMaxProgresstime = 1000;
         IGregTechTileEntity mte = getBaseMetaTileEntity();

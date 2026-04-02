@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.V;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.common.material.GTNLMaterials;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -328,7 +327,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
     @Override
     public long maxEUStore() {
-        return 512L + V[mTier + 1] * 16L;
+        return 512L + GTValues.V[mTier + 1] * 16L;
     }
 
     @Override

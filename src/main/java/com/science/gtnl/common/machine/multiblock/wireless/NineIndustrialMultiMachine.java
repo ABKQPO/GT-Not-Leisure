@@ -1,14 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static bartworks.common.loaders.ItemRegistry.bw_realglas2;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.mergeArray;
-import static goodgenerator.loader.Loaders.FRF_Coil_4;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings5;
@@ -23,7 +17,6 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static kubatech.loaders.BlockLoader.defcCasingBlock;
 import static tectech.thing.casing.TTCasingsContainer.StabilisationFieldGenerators;
 import static tectech.thing.casing.TTCasingsContainer.TimeAccelerationFieldGenerator;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
@@ -45,14 +38,18 @@ import net.minecraftforge.fluids.FluidStack;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.machine.NineIndustrialMultiMachineManager;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import bartworks.common.loaders.ItemRegistry;
+import goodgenerator.loader.Loaders;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -75,7 +72,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     public NineIndustrialMultiMachineManager modeManager = new NineIndustrialMultiMachineManager();
     public static final String[] aToolTipNames = new String[108];
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String NIMM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    private static final String NIMM_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
         + "multiblock/nine_industrial_multi_machine";
     private static final String[][] shape = StructureUtils.readStructureFromFile(NIMM_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 14;
@@ -153,10 +150,10 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     public IStructureDefinition<NineIndustrialMultiMachine> getStructureDefinition() {
         return StructureDefinition.<NineIndustrialMultiMachine>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(bw_realglas2, 0))
-            .addElement('B', ofBlock(FRF_Coil_4, 0))
+            .addElement('A', ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('B', ofBlock(Loaders.FRF_Coil_4, 0))
             .addElement('C', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('D', ofBlock(defcCasingBlock, 12))
+            .addElement('D', ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 12))
             .addElement(
                 'E',
                 buildHatchAdder(NineIndustrialMultiMachine.class).casingIndex(getCasingTextureID())
@@ -362,7 +359,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public CheckRecipeResult checkProcessing() {
         costingEU = BigInteger.ZERO;
-        costingEUText = ZERO_STRING;
+        costingEUText = Utils.ZERO_STRING;
 
         if (!wirelessMode) return handleNonWirelessModeProcessing();
 
@@ -402,7 +399,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
@@ -418,7 +415,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputItems = mergeArray(mOutputItems, outputItems);
+        mOutputItems = Utils.mergeArray(mOutputItems, outputItems);
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
         if (outputFluids != null) {
@@ -430,7 +427,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputFluids = mergeArray(mOutputFluids, outputFluids);
+        mOutputFluids = Utils.mergeArray(mOutputFluids, outputFluids);
 
         endRecipeProcessing();
         return result;

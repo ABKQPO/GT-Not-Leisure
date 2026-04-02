@@ -1,11 +1,10 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static com.science.gtnl.utils.enums.GTNLItemList.TrollFace;
-
 import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
@@ -26,7 +25,7 @@ public class ReFusionReactorRecipes implements IRecipePool {
                 GTUtility
                     .copyAmountUnsafe(Integer.MAX_VALUE, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1)))
             .itemOutputs(
-                TrollFace.get(1)
+                GTNLItemList.TrollFace.get(1)
                     .setStackDisplayName(StatCollector.translateToLocal("RFRRRecipes.1")))
             .fluidOutputs(
                 MaterialsUEVplus.MagMatter.getMolten(Integer.MAX_VALUE),

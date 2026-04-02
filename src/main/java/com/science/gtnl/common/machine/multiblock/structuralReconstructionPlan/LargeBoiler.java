@@ -4,16 +4,10 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.lazy;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.enums.GTValues.STEAM_PER_WATER;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.ItemList.Circuit_Integrated;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -37,6 +31,8 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.GTValues;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures.BlockIcons;
@@ -123,20 +119,20 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         if (side == aFacing) {
             if (aActive) return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_LARGE_BOILER_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_LARGE_BOILER)
+                .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER)
                 .extFacing()
                 .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_LARGE_BOILER_GLOW)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -171,7 +167,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     @NotNull
     public CheckRecipeResult checkProcessing() {
 
-        if (Circuit_Integrated.isStackEqual(mInventory[1], true, true)) {
+        if (ItemList.Circuit_Integrated.isStackEqual(mInventory[1], true, true)) {
             int circuit_config = mInventory[1].getItemDamage();
             if (circuit_config >= 1 && circuit_config <= 25) {
                 this.integratedCircuitConfig = circuit_config;
@@ -239,10 +235,10 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
             int tGeneratedEU = (int) (this.mEUt * 2L * this.mEfficiency / 10000L);
             if (tGeneratedEU > 0) {
 
-                long amount = (tGeneratedEU + STEAM_PER_WATER) / STEAM_PER_WATER;
-                excessWater += amount * STEAM_PER_WATER - tGeneratedEU;
-                amount -= excessWater / STEAM_PER_WATER;
-                excessWater %= STEAM_PER_WATER;
+                long amount = (tGeneratedEU + GTValues.STEAM_PER_WATER) / GTValues.STEAM_PER_WATER;
+                excessWater += amount * GTValues.STEAM_PER_WATER - tGeneratedEU;
+                amount -= excessWater / GTValues.STEAM_PER_WATER;
+                excessWater %= GTValues.STEAM_PER_WATER;
                 startRecipeProcessing();
 
                 if (depleteInput(Materials.Water.getFluid(amount))

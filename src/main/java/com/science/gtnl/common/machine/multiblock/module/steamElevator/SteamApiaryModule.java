@@ -1,14 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static forestry.api.apiculture.BeeManager.beeRoot;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTUtility.formatShortenedLong;
-import static gregtech.api.util.GTUtility.truncateText;
-import static kubatech.api.gui.KubaTechUITextures.APIARY_INVENTORY_BACKGROUND;
-import static kubatech.api.utils.ItemUtils.readItemStackFromNBT;
-import static kubatech.api.utils.ItemUtils.writeItemStackToNBT;
-import static net.minecraft.util.StatCollector.translateToLocal;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -71,6 +62,7 @@ import com.science.gtnl.utils.gui.CircularGaugeDrawable;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.EnumBeeType;
 import forestry.api.apiculture.IAlleleBeeSpecies;
 import forestry.api.apiculture.IBeekeepingMode;
@@ -81,6 +73,7 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
+import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -91,6 +84,8 @@ import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import kubatech.api.DynamicInventory;
+import kubatech.api.gui.KubaTechUITextures;
+import kubatech.api.utils.ItemUtils;
 
 public class SteamApiaryModule extends SteamElevatorModule {
 
@@ -229,7 +224,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 World w = getBaseMetaTileEntity().getWorld();
                 ArrayList<ItemStack> inputs = getStoredInputs();
                 for (ItemStack input : inputs) {
-                    if (beeRoot.getType(input) == EnumBeeType.QUEEN) {
+                    if (BeeManager.beeRoot.getType(input) == EnumBeeType.QUEEN) {
                         SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
                             input,
                             w,
@@ -312,7 +307,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
         }
 
         public BeeSimulator(NBTTagCompound tag) {
-            queenStack = readItemStackFromNBT(tag.getCompoundTag("queenStack"));
+            queenStack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("queenStack"));
             isValid = tag.getBoolean("isValid");
             drops = new ArrayList<>();
             specialDrops = new ArrayList<>();
@@ -326,7 +321,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
         public NBTTagCompound toNBTTagCompound() {
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setTag("queenStack", writeItemStackToNBT(queenStack));
+            tag.setTag("queenStack", ItemUtils.writeItemStackToNBT(queenStack));
             tag.setBoolean("isValid", isValid);
             tag.setInteger("dropssize", drops.size());
             for (int i = 0; i < drops.size(); i++) tag.setTag(
@@ -344,12 +339,12 @@ public class SteamApiaryModule extends SteamElevatorModule {
         }
 
         public void generate(World world, float t) {
-            if (mode == null) mode = beeRoot.getBeekeepingMode(world);
+            if (mode == null) mode = BeeManager.beeRoot.getBeekeepingMode(world);
             drops.clear();
             specialDrops.clear();
-            if (beeRoot.getType(this.queenStack) != EnumBeeType.QUEEN) return;
+            if (BeeManager.beeRoot.getType(this.queenStack) != EnumBeeType.QUEEN) return;
 
-            var queen = beeRoot.getMember(this.queenStack);
+            var queen = BeeManager.beeRoot.getMember(this.queenStack);
             var genome = queen.getGenome();
 
             beeSpeed = genome.getSpeed();
@@ -414,7 +409,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             }
 
             public BeeDrop(NBTTagCompound tag) {
-                stack = readItemStackFromNBT(tag.getCompoundTag("stack"));
+                stack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("stack"));
                 chance = tag.getDouble("chance");
                 beeSpeed = tag.getFloat("beeSpeed");
                 t = tag.getFloat("t");
@@ -423,7 +418,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
             public NBTTagCompound toNBTTagCompound() {
                 NBTTagCompound tag = new NBTTagCompound();
-                tag.setTag("stack", writeItemStackToNBT(stack));
+                tag.setTag("stack", ItemUtils.writeItemStackToNBT(stack));
                 tag.setDouble("chance", chance);
                 tag.setFloat("beeSpeed", beeSpeed);
                 tag.setFloat("t", t);
@@ -500,7 +495,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             SteamApiaryModule mte = parent.get();
             if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
             if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
+            if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
                 if (mte.mMaxProgresstime > 0) {
                     GTUtility.sendChatToPlayer(aPlayer, EnumChatFormatting.RED + "Can't insert while running !");
                     return super.transferStackInSlot(aPlayer, aSlotIndex);
@@ -576,7 +571,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
         final int backgroundPadding = INVENTORY_BORDER_WIDTH * 2;
         builder.widget(
-            new DrawableWidget().setDrawable(APIARY_INVENTORY_BACKGROUND)
+            new DrawableWidget().setDrawable(KubaTechUITextures.APIARY_INVENTORY_BACKGROUND)
                 .setPos(INVENTORY_X - INVENTORY_BORDER_WIDTH, INVENTORY_Y - INVENTORY_BORDER_WIDTH)
                 .setSize(INVENTORY_WIDTH + backgroundPadding, INVENTORY_HEIGHT + backgroundPadding)
                 .setEnabled(w -> isInInventory));
@@ -632,8 +627,8 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(translateToLocal("Info_SteamMachine_00"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .addTooltip(StatCollector.translateToLocal("Info_SteamMachine_00"))
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(174, 112)
             .setSize(16, 16));
 
@@ -651,7 +646,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                     }
                     return ret;
                 })
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setUpdateTooltipEveryTick(true)
                 .setSize(64, 42)
                 .setPos(-64, 100));
@@ -833,10 +828,10 @@ public class SteamApiaryModule extends SteamElevatorModule {
                     .getDisplayName();
                 String itemAmountString = EnumChatFormatting.WHITE + " x "
                     + EnumChatFormatting.GOLD
-                    + formatShortenedLong(itemCount)
+                    + GTUtility.formatShortenedLong(itemCount)
                     + EnumChatFormatting.WHITE
                     + appendRate(false, itemCount, true);
-                String lineText = EnumChatFormatting.AQUA + truncateText(itemName, 20) + itemAmountString;
+                String lineText = EnumChatFormatting.AQUA + GTUtility.truncateText(itemName, 20) + itemAmountString;
                 String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
 
                 processingDetails.widget(

@@ -18,14 +18,9 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -184,21 +179,21 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         if (side == facing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -219,7 +214,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     @Override
     public void startRecipeProcessing() {
-        for (MTEHatchInput hatch : validMTEList(mWaterInputHatches)) {
+        for (MTEHatchInput hatch : GTUtility.validMTEList(mWaterInputHatches)) {
             if (hatch instanceof IRecipeProcessingAwareHatch aware) {
                 aware.startRecipeProcessing();
             }
@@ -229,7 +224,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     @Override
     public void endRecipeProcessing() {
-        for (MTEHatchInput hatch : validMTEList(mWaterInputHatches)) {
+        for (MTEHatchInput hatch : GTUtility.validMTEList(mWaterInputHatches)) {
             if (hatch instanceof IRecipeProcessingAwareHatch aware) {
                 setResultIfFailure(aware.endRecipeProcessing(this));
             }
@@ -510,7 +505,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     public ArrayList<FluidStack> getStoredWater() {
         ArrayList<FluidStack> rList = new ArrayList<>();
         Map<Fluid, FluidStack> inputsFromME = new HashMap<>();
-        for (MTEHatchInput tHatch : validMTEList(mWaterInputHatches)) {
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mWaterInputHatches)) {
             if (tHatch instanceof MTEHatchMultiInput multiInputHatch) {
                 for (FluidStack tFluid : multiInputHatch.getStoredFluid()) {
                     if (tFluid != null) {
@@ -575,11 +570,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
                 }
             }
         }
-        for (MTEHatchInput tHatch : validMTEList(mWaterInputHatches)) tHatch.updateSlots();
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mWaterInputHatches)) tHatch.updateSlots();
     }
 
     public boolean depleteWaterInput(FluidStack fluidStack) {
-        for (MTEHatchInput tHatch : validMTEList(mWaterInputHatches)) {
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mWaterInputHatches)) {
             FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, fluidStack, false);
             if (tLiquid != null && tLiquid.amount >= fluidStack.amount) {
                 tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, fluidStack, true);

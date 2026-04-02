@@ -1,8 +1,6 @@
 package com.science.gtnl.common.item.items.bauble;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.item.ItemUtils.removeItemFromPlayer;
-import static gregtech.api.enums.GTValues.V;
 
 import java.util.List;
 
@@ -23,11 +21,13 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import vazkii.botania.api.item.IBaubleRender;
@@ -100,12 +100,12 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
                             && gtTE.getMetaTileEntity() instanceof MetaTileEntity mte) {
                             if (mte.getEUVar() <= mte.maxEUStore()) {
                                 long storeEU = mte.getEUVar();
-                                long addedEU = V[4];
+                                long addedEU = GTValues.V[4];
                                 mte.setEUVar(Math.min(storeEU + addedEU, mte.maxEUStore()));
                                 itemstack.damageItem(1, player);
                             }
                             if (itemstack.getItemDamage() == itemstack.getMaxDamage() - 1) {
-                                removeItemFromPlayer((EntityPlayer) player, itemstack);
+                                ItemUtils.removeItemFromPlayer((EntityPlayer) player, itemstack);
                                 break;
                             }
                         }

@@ -13,7 +13,6 @@ import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static tectech.thing.metaTileEntity.multi.base.TTMultiblockBase.HatchElement.EnergyMulti;
 
 import java.util.ArrayList;
@@ -142,28 +141,28 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     public void outputAfterRecipe_EM() {
         HashSet<RecipeAssemblyLine> availableRecipes = new HashSet<>();
 
-        for (MTEHatchDataAccess dataAccess : validMTEList(mDataAccessHatches)) {
+        for (MTEHatchDataAccess dataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
             availableRecipes.addAll(dataAccess.getAssemblyLineRecipes());
         }
 
         if (!availableRecipes.isEmpty()) {
             RecipeAssemblyLine[] recipeArray = availableRecipes.toArray(new RecipeAssemblyLine[0]);
 
-            for (MTEHatchDataItemsOutput hatch : validMTEList(mStacksDataOutputs)) {
+            for (MTEHatchDataItemsOutput hatch : GTUtility.validMTEList(mStacksDataOutputs)) {
                 hatch.q = new ALRecipeDataPacket(recipeArray);
             }
 
             if (wirelessModeEnabled) {
-                for (MTEHatchWirelessDataItemsOutput hatch : validMTEList(mWirelessStacksDataOutputs)) {
+                for (MTEHatchWirelessDataItemsOutput hatch : GTUtility.validMTEList(mWirelessStacksDataOutputs)) {
                     hatch.dataPacket = new ALRecipeDataPacket(recipeArray);
                 }
             }
         } else {
-            for (MTEHatchDataItemsOutput hatch : validMTEList(mStacksDataOutputs)) {
+            for (MTEHatchDataItemsOutput hatch : GTUtility.validMTEList(mStacksDataOutputs)) {
                 hatch.q = null;
             }
 
-            for (MTEHatchWirelessDataItemsOutput hatch : validMTEList(mWirelessStacksDataOutputs)) {
+            for (MTEHatchWirelessDataItemsOutput hatch : GTUtility.validMTEList(mWirelessStacksDataOutputs)) {
                 hatch.dataPacket = null;
             }
         }

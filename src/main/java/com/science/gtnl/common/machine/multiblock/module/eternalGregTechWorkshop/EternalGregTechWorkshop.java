@@ -48,11 +48,7 @@ import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.filterValidMTEs;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static java.lang.Math.floor;
-import static java.lang.Math.max;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -880,7 +876,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         fuelConsumption = (long) Math.max(calculateFuelConsumption(this) * 5, 1);
 
         FluidStack fuelToDrain = new FluidStack(validFuelList.get(selectedFuelType), (int) fuelConsumption);
-        for (MTEHatchInput hatch : filterValidMTEs(mInputHatches)) {
+        for (MTEHatchInput hatch : GTUtility.filterValidMTEs(mInputHatches)) {
             FluidStack drained = hatch.drain(ForgeDirection.UNKNOWN, fuelToDrain, true);
             if (drained == null) {
                 continue;
@@ -1123,24 +1119,23 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     public void determineMilestoneProgress() {
         if (milestoneProgress[0] < 7) {
-            powerMilestonePercentage = (float) max(
+            powerMilestonePercentage = (float) Math.max(
                 (Math.log((totalPowerConsumed.divide(BigInteger.valueOf(POWER_MILESTONE_CONSTANT))).longValue())
                     / POWER_LOG_CONSTANT + 1),
                 0) / 7;
-            milestoneProgress[0] = (int) floor(powerMilestonePercentage * 7);
+            milestoneProgress[0] = (int) Math.floor(powerMilestonePercentage * 7);
         }
 
         if (milestoneProgress[1] < 7) {
-            recipeMilestonePercentage = (float) max(
-                (Math.log(totalRecipesProcessed * 1f / RECIPE_MILESTONE_CONSTANT) / RECIPE_LOG_CONSTANT + 1),
-                0) / 7;
-            milestoneProgress[1] = (int) floor(recipeMilestonePercentage * 7);
+            recipeMilestonePercentage = (float) Math
+                .max((Math.log(totalRecipesProcessed * 1f / RECIPE_MILESTONE_CONSTANT) / RECIPE_LOG_CONSTANT + 1), 0)
+                / 7;
+            milestoneProgress[1] = (int) Math.floor(recipeMilestonePercentage * 7);
         }
         if (milestoneProgress[2] < 7) {
-            fuelMilestonePercentage = (float) max(
-                (Math.log(totalFuelConsumed * 1f / FUEL_MILESTONE_CONSTANT) / FUEL_LOG_CONSTANT + 1),
-                0) / 7;
-            milestoneProgress[2] = (int) floor(fuelMilestonePercentage * 7);
+            fuelMilestonePercentage = (float) Math
+                .max((Math.log(totalFuelConsumed * 1f / FUEL_MILESTONE_CONSTANT) / FUEL_LOG_CONSTANT + 1), 0) / 7;
+            milestoneProgress[2] = (int) Math.floor(fuelMilestonePercentage * 7);
         }
 
         if (milestoneProgress[3] <= 7) {
@@ -1207,7 +1202,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .setBackground(
                     () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
                         TecTechUITextures.OVERLAY_BUTTON_HEAT_ON })
-                .addTooltip(translateToLocal("fog.button.fuelconfig.tooltip"))
+                .addTooltip(StatCollector.translateToLocal("fog.button.fuelconfig.tooltip"))
                 .setPos(174, 110)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY))
             .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -1247,7 +1242,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .setBackground(
                     () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
                         TecTechUITextures.OVERLAY_BUTTON_FLAG })
-                .addTooltip(translateToLocal("fog.button.milestones.tooltip"))
+                .addTooltip(StatCollector.translateToLocal("fog.button.milestones.tooltip"))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
                 .setPos(174, 91))
             .widget(
@@ -1260,7 +1255,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                     .setBackground(
                         () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
                             TecTechUITextures.OVERLAY_BUTTON_ARROW_BLUE_UP })
-                    .addTooltip(translateToLocal("fog.button.upgradetree.tooltip"))
+                    .addTooltip(StatCollector.translateToLocal("fog.button.upgradetree.tooltip"))
                     .setPos(174, 129)
                     .setTooltipShowUpDelay(TOOLTIP_DELAY))
             .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -1289,7 +1284,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .setBackground(
                     () -> new IDrawable[] { TecTechUITextures.BUTTON_CELESTIAL_32x32,
                         TecTechUITextures.OVERLAY_CYCLIC_BLUE })
-                .addTooltip(translateToLocal("EGTW_UpdateStructureCheck"))
+                .addTooltip(StatCollector.translateToLocal("EGTW_UpdateStructureCheck"))
                 .setPos(8, 91)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY));
     }
@@ -1299,22 +1294,22 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     }
 
     public Text machineTierHeaderText() {
-        return new Text(translateToLocal("EGTW_MachineTier"));
+        return new Text(StatCollector.translateToLocal("EGTW_MachineTier"));
     }
 
     public Text machineState() {
         if (mProgresstime > 0) {
-            return new Text(translateToLocal("EGTW_MachineRunning"));
+            return new Text(StatCollector.translateToLocal("EGTW_MachineRunning"));
         }
         if (mMachine) {
-            return new Text(translateToLocal("EGTW_MachineStandby"));
+            return new Text(StatCollector.translateToLocal("EGTW_MachineStandby"));
         }
-        return new Text(translateToLocal("EGTW_MachineIncomplete"));
+        return new Text(StatCollector.translateToLocal("EGTW_MachineIncomplete"));
     }
 
     public Text extraModuleHeaderText() {
         if (enableExtraModule) {
-            return new Text(translateToLocal("EGTW_ExtraModule"));
+            return new Text(StatCollector.translateToLocal("EGTW_ExtraModule"));
         }
         return new Text("");
     }
@@ -1322,9 +1317,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public Text extraModuleState() {
         if (enableExtraModule) {
             if (mExtraModule) {
-                return new Text(translateToLocal("EGTW_ExtraModule_On"));
+                return new Text(StatCollector.translateToLocal("EGTW_ExtraModule_On"));
             } else {
-                return new Text(translateToLocal("EGTW_ExtraModule_Off"));
+                return new Text(StatCollector.translateToLocal("EGTW_ExtraModule_Off"));
             }
         }
         return new Text("");
@@ -1393,12 +1388,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             new DrawableWidget().setDrawable(ModularUITextures.ICON_INFO)
                 .setPos(64, 24)
                 .setSize(10, 10)
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.0"))
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.1"))
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.2"))
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.3"))
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.4"))
-                .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.5"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.0"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.1"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.2"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.3"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.4"))
+                .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfo.5"))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY))
             .widget(
                 TextWidget.localised("gt.blockmachines.multimachine.FOG.fueltype")
@@ -1586,7 +1581,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             .setBackground(GTUITextures.BUTTON_STANDARD)
             .setSize(251, 18))
             .addChild(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.consumeUpgradeMats"))
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.consumeUpgradeMats"))
                     .setTextAlignment(Alignment.Center)
                     .setScale(0.75f)
                     .setPos(0, 1)
@@ -1676,7 +1671,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 }
             })
                 .setSize(10, 10)
-                .addTooltip(translateToLocal("fog.button.formatting.tooltip"))
+                .addTooltip(StatCollector.translateToLocal("fog.button.formatting.tooltip"))
                 .setBackground(TecTechUITextures.OVERLAY_CYCLIC_BLUE)
                 .setPos(5, 135)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
@@ -1697,7 +1692,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         int progress = milestoneProgress[milestoneID];
         sum = progress * (progress + 1) / 2;
         return new Text(
-            translateToLocal("gt.blockmachines.multimachine.FOG.shardgain") + ": " + EnumChatFormatting.GRAY + sum);
+            StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.shardgain") + ": "
+                + EnumChatFormatting.GRAY
+                + sum);
     }
 
     public Text totalMilestoneProgress(int milestoneID) {
@@ -1705,25 +1702,25 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         String suffix;
         switch (milestoneID) {
             case 0 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.power");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.power");
                 progress = totalPowerConsumed;
             }
             case 1 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.recipes");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.recipes");
                 progress = totalRecipesProcessed;
             }
             case 2 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.fuelconsumed");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelconsumed");
                 progress = totalFuelConsumed;
             }
             case 3 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.extensions");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.extensions");
                 progress = milestoneProgress[3];
             }
             default -> throw new IllegalArgumentException("Invalid Milestone ID");
         }
         return new Text(
-            translateToLocal("gt.blockmachines.multimachine.FOG.totalprogress") + ": "
+            StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.totalprogress") + ": "
                 + EnumChatFormatting.GRAY
                 + formattingMode.format(progress)
                 + " "
@@ -1733,7 +1730,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public Text currentMilestoneLevel(int milestoneID) {
         int milestoneLevel = Math.min(milestoneProgress[milestoneID], 7);
         return new Text(
-            translateToLocal("gt.blockmachines.multimachine.FOG.milestoneprogress") + ": "
+            StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestoneprogress") + ": "
                 + EnumChatFormatting.GRAY
                 + milestoneLevel);
     }
@@ -1741,9 +1738,9 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public Text milestoneProgressText(int milestoneID) {
         Number max;
         String suffix;
-        String progressText = translateToLocal("gt.blockmachines.multimachine.FOG.progress");
+        String progressText = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.progress");
         Text done = new Text(
-            translateToLocal("gt.blockmachines.multimachine.FOG.milestonecomplete")
+            StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestonecomplete")
                 + (formattingMode != DEFAULT_FORMATTING_MODE ? EnumChatFormatting.DARK_RED + "?" : ""));
 
         if (milestoneProgress[milestoneID] >= 7) {
@@ -1752,23 +1749,23 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         switch (milestoneID) {
             case 0 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.power");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.power");
                 max = BigInteger.valueOf(LongMath.pow(9, milestoneProgress[0]))
                     .multiply(BigInteger.valueOf(LongMath.pow(10, 15)));
 
             }
             case 1 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.recipes");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.recipes");
                 max = LongMath.pow(4, milestoneProgress[1]) * LongMath.pow(10, 7);
             }
             case 2 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.fuelconsumed");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelconsumed");
 
                 max = LongMath.pow(3, milestoneProgress[2]) * LongMath.pow(10, 4);
 
             }
             case 3 -> {
-                suffix = translateToLocal("gt.blockmachines.multimachine.FOG.extensions");
+                suffix = StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.extensions");
                 max = milestoneProgress[3] + 1;
             }
             default -> throw new IllegalArgumentException("Invalid Milestone ID");
@@ -1788,7 +1785,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             case 3 -> new IDrawable[] { TecTechUITextures.PICTURE_GODFORGE_MILESTONE_COMPOSITION_GLOW };
             default -> new IDrawable[] { TecTechUITextures.PICTURE_GODFORGE_MILESTONE_CHARGE_GLOW };
             })
-            .addTooltip(translateToLocal("gt.blockmachines.multimachine.FOG.milestoneinfo"))
+            .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestoneinfo"))
             .setPos(pos)
             .setTooltipShowUpDelay(TOOLTIP_DELAY);
     }
@@ -2046,10 +2043,10 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         }
                         return new IDrawable[0];
                     })
-                    .addTooltip(translateToLocal("fog.upgrade.tt.secret"))
+                    .addTooltip(StatCollector.translateToLocal("fog.upgrade.tt.secret"))
                     .setTooltipShowUpDelay(20))
                 .addChild(
-                    new TextWidget(translateToLocal("fog.upgrade.tt.short.secret")).setScale(0.8f)
+                    new TextWidget(StatCollector.translateToLocal("fog.upgrade.tt.short.secret")).setScale(0.8f)
                         .setDefaultColor(EnumChatFormatting.GOLD)
                         .setTextAlignment(Alignment.Center)
                         .setSize(34, 9)
@@ -2087,10 +2084,10 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         new ButtonWidget().setOnClick((clickData, widget) -> upgrades.resetAll())
                             .setSize(40, 15)
                             .setBackground(GTUITextures.BUTTON_STANDARD)
-                            .addTooltip(translateToLocal("fog.debug.resetbutton.tooltip"))
+                            .addTooltip(StatCollector.translateToLocal("fog.debug.resetbutton.tooltip"))
                             .setTooltipShowUpDelay(TOOLTIP_DELAY))
                     .addChild(
-                        new TextWidget(translateToLocal("fog.debug.resetbutton.text"))
+                        new TextWidget(StatCollector.translateToLocal("fog.debug.resetbutton.text"))
                             .setTextAlignment(Alignment.Center)
                             .setScale(0.57f)
                             .setMaxWidth(36)
@@ -2105,18 +2102,19 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                             .setTextColor(Color.WHITE.normal)
                             .setSize(25, 18)
                             .setPos(4, 16)
-                            .addTooltip(translateToLocal("fog.debug.gravitonshardsetter.tooltip"))
+                            .addTooltip(StatCollector.translateToLocal("fog.debug.gravitonshardsetter.tooltip"))
                             .setTooltipShowUpDelay(TOOLTIP_DELAY)
                             .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                     .addChild(
                         new ButtonWidget().setOnClick((clickData, widget) -> upgrades.unlockAll())
                             .setSize(40, 15)
                             .setBackground(GTUITextures.BUTTON_STANDARD)
-                            .addTooltip(translateToLocal("fog.debug.unlockall.text"))
+                            .addTooltip(StatCollector.translateToLocal("fog.debug.unlockall.text"))
                             .setTooltipShowUpDelay(TOOLTIP_DELAY)
                             .setPos(0, 35))
                     .addChild(
-                        new TextWidget(translateToLocal("fog.debug.unlockall.text")).setTextAlignment(Alignment.Center)
+                        new TextWidget(StatCollector.translateToLocal("fog.debug.unlockall.text"))
+                            .setTextAlignment(Alignment.Center)
                             .setScale(0.57f)
                             .setMaxWidth(36)
                             .setPos(3, 38))

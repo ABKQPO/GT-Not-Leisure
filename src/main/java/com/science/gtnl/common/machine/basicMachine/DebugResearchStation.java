@@ -1,24 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_SCANNER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_SIDE_SCANNER_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_TOP_SCANNER_GLOW;
-import static tectech.recipe.TecTechRecipeMaps.researchStationFakeRecipes;
-import static tectech.recipe.TecTechRecipeMaps.researchableALRecipeList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -32,6 +13,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.GTMod;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -42,6 +24,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import tectech.recipe.TecTechRecipeMaps;
 
 public class DebugResearchStation extends MTEBasicMachine {
 
@@ -60,51 +43,51 @@ public class DebugResearchStation extends MTEBasicMachine {
             1,
             1,
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_SIDE_SCANNER_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_SIDE_SCANNER_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_SIDE_SCANNER_ACTIVE_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_SIDE_SCANNER),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_SIDE_SCANNER),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_SIDE_SCANNER_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_SIDE_SCANNER_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_FRONT_SCANNER_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_SCANNER_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_SCANNER_ACTIVE_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_FRONT_SCANNER),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_FRONT_SCANNER),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_SCANNER_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_SCANNER_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_TOP_SCANNER_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_TOP_SCANNER_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_TOP_SCANNER_ACTIVE_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_TOP_SCANNER),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_TOP_SCANNER),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_TOP_SCANNER_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_TOP_SCANNER_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_BOTTOM_SCANNER_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_BOTTOM_SCANNER_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_ACTIVE_GLOW)
                     .glow()
                     .build()),
             TextureFactory.of(
-                TextureFactory.of(OVERLAY_BOTTOM_SCANNER),
+                TextureFactory.of(Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_BOTTOM_SCANNER_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_SCANNER_GLOW)
                     .glow()
                     .build()));
     }
@@ -174,7 +157,7 @@ public class DebugResearchStation extends MTEBasicMachine {
         }
 
         GTRecipe fakeRecipe = null;
-        for (GTRecipe ttRecipe : researchStationFakeRecipes.getAllRecipes()) {
+        for (GTRecipe ttRecipe : TecTechRecipeMaps.researchStationFakeRecipes.getAllRecipes()) {
             if (GTUtility.areStacksEqual(ttRecipe.mInputs[0], aStack, true)) {
                 fakeRecipe = ttRecipe;
                 break;
@@ -192,7 +175,7 @@ public class DebugResearchStation extends MTEBasicMachine {
         }
 
         GTRecipe.RecipeAssemblyLine realALRecipe = null;
-        for (GTRecipe.RecipeAssemblyLine assRecipe : researchableALRecipeList) {
+        for (GTRecipe.RecipeAssemblyLine assRecipe : TecTechRecipeMaps.researchableALRecipeList) {
             if (GTUtility.areStacksEqual(assRecipe.mResearchItem, aStack, true)) {
                 realALRecipe = assRecipe;
                 break;
@@ -219,7 +202,7 @@ public class DebugResearchStation extends MTEBasicMachine {
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return researchStationFakeRecipes;
+        return TecTechRecipeMaps.researchStationFakeRecipes;
     }
 
     @Override

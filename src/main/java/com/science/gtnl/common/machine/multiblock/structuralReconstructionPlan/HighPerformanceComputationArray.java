@@ -4,16 +4,12 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.network;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +40,13 @@ import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import com.gtnewhorizon.structurelib.util.XSTR;
 import com.science.gtnl.common.packet.SyncHPCAVariablesPacket;
 import com.science.gtnl.common.render.tile.HighPerformanceComputationArrayRenderer;
+import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.HPCAModifier;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -161,7 +159,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
         this.totalLens = 0;
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -183,7 +181,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
         totalLens--;
         eCertainMode = (byte) Math.min(this.totalLens / 3, 5);
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(iGregTechTileEntity.isActive());
         }
@@ -383,11 +381,11 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     public CheckRecipeResult checkProcessing_EM() {
         parametrization.setToDefaults(false, true);
         double maxTemp = 0;
-        lEUt = -V[7];
+        lEUt = -GTValues.V[7];
         int thingsActive = 0;
         int rackComputation;
 
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
 
             if (rack.heat > maxTemp) {
                 maxTemp = rack.heat;
@@ -472,7 +470,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         if (side == facing) {
             return new ITexture[] { Textures.BlockIcons.casingTexturePages[BlockGTCasingsTT.texturePage][3],
                 new TTRenderedExtendedFacingTexture(
-                    aActive ? OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE : OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
+                    aActive ? BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE
+                        : BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
         }
         return new ITexture[] { Textures.BlockIcons.casingTexturePages[BlockGTCasingsTT.texturePage][3] };
     }
@@ -485,7 +484,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public void onRemoval() {
         super.onRemoval();
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -500,7 +499,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     public void extraExplosions_EM() {
         for (MetaTileEntity tTileEntity : mRackHatchs) {
             tTileEntity.getBaseMetaTileEntity()
-                .doExplosion(V[8]);
+                .doExplosion(GTValues.V[8]);
         }
     }
 
@@ -513,7 +512,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     public void stopMachine(@Nonnull ShutDownReason reason) {
         super.stopMachine(reason);
         this.eAvailableData = 0;
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -522,7 +521,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public void afterRecipeCheckFailed() {
         super.afterRecipeCheckFailed();
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }

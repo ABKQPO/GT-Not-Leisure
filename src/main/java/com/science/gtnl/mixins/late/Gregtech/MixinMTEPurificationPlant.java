@@ -1,7 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +26,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
+import com.science.gtnl.utils.Utils;
 
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.util.GTUtility;
@@ -57,7 +56,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
 
     @Unique
-    public String gtnl$costingEUText = ZERO_STRING;
+    public String gtnl$costingEUText = Utils.ZERO_STRING;
 
     public MixinMTEPurificationPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -104,7 +103,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     @Inject(method = "startCycle", at = @At("HEAD"))
     private void gtnl$resetCostingEU(CallbackInfo ci) {
         gtnl$costingEU = BigInteger.ZERO;
-        gtnl$costingEUText = ZERO_STRING;
+        gtnl$costingEUText = Utils.ZERO_STRING;
     }
 
     @Inject(method = "startCycle", at = @At("TAIL"))

@@ -1,28 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.enums.GTValues.V;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BACK;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BACK_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BACK_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BACK_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BOTTOM;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BOTTOM_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BOTTOM_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_BOTTOM_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_FRONT;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_FRONT_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_FRONT_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_FRONT_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_SIDE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_SIDE_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_SIDE_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_SIDE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_TOP;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_TOP_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_TOP_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.GAS_TURBINE_TOP_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAYS_ENERGY_OUT;
-
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -30,6 +7,8 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.enums.GTValues;
+import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -103,21 +82,21 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getFront(byte aColor) {
         return new ITexture[] { super.getFront(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_FRONT),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_FRONT),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_FRONT_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_FRONT_GLOW)
                     .glow()
                     .build()),
-            OVERLAYS_ENERGY_OUT[this.mTier + 1] };
+            Textures.BlockIcons.OVERLAYS_ENERGY_OUT[this.mTier + 1] };
     }
 
     @Override
     public ITexture[] getBack(byte aColor) {
         return new ITexture[] { super.getBack(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_BACK),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_BACK),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_BACK_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_BACK_GLOW)
                     .glow()
                     .build()) };
     }
@@ -126,9 +105,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getBottom(byte aColor) {
         return new ITexture[] { super.getBottom(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_BOTTOM),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_BOTTOM),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_BOTTOM_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_BOTTOM_GLOW)
                     .glow()
                     .build()) };
     }
@@ -137,9 +116,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getTop(byte aColor) {
         return new ITexture[] { super.getTop(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_TOP),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_TOP),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_TOP_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_TOP_GLOW)
                     .glow()
                     .build()) };
     }
@@ -148,9 +127,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getSides(byte aColor) {
         return new ITexture[] { super.getSides(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_SIDE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_SIDE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_SIDE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_SIDE_GLOW)
                     .glow()
                     .build()) };
     }
@@ -159,21 +138,21 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getFrontActive(byte aColor) {
         return new ITexture[] { super.getFrontActive(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_FRONT_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_FRONT_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_FRONT_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_FRONT_ACTIVE_GLOW)
                     .glow()
                     .build()),
-            OVERLAYS_ENERGY_OUT[this.mTier + 1] };
+            Textures.BlockIcons.OVERLAYS_ENERGY_OUT[this.mTier + 1] };
     }
 
     @Override
     public ITexture[] getBackActive(byte aColor) {
         return new ITexture[] { super.getBackActive(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_BACK_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_BACK_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_BACK_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_BACK_ACTIVE_GLOW)
                     .glow()
                     .build()) };
     }
@@ -182,9 +161,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getBottomActive(byte aColor) {
         return new ITexture[] { super.getBottomActive(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_BOTTOM_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_BOTTOM_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_BOTTOM_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_BOTTOM_ACTIVE_GLOW)
                     .glow()
                     .build()) };
     }
@@ -193,9 +172,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getTopActive(byte aColor) {
         return new ITexture[] { super.getTopActive(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_TOP_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_TOP_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_TOP_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_TOP_ACTIVE_GLOW)
                     .glow()
                     .build()) };
     }
@@ -204,9 +183,9 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     public ITexture[] getSidesActive(byte aColor) {
         return new ITexture[] { super.getSidesActive(aColor)[0],
             TextureFactory.of(
-                TextureFactory.of(GAS_TURBINE_SIDE_ACTIVE),
+                TextureFactory.of(Textures.BlockIcons.GAS_TURBINE_SIDE_ACTIVE),
                 TextureFactory.builder()
-                    .addIcon(GAS_TURBINE_SIDE_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.GAS_TURBINE_SIDE_ACTIVE_GLOW)
                     .glow()
                     .build()) };
     }
@@ -223,6 +202,6 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
 
     @Override
     public long maxEUStore() {
-        return Math.max(getEUVar(), V[mTier] * 128L + getMinimumStoredEU());
+        return Math.max(getEUVar(), GTValues.V[mTier] * 128L + getMinimumStoredEU());
     }
 }

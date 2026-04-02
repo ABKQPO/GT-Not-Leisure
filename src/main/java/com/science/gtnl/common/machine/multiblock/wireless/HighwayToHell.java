@@ -8,14 +8,10 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElement
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.mergeArray;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.GregTechAPI.sBlockCasings4;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -24,15 +20,9 @@ import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.Muffler;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.areStacksEqual;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -58,12 +48,14 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.FluidLoader;
 import bartworks.system.material.WerkstoffLoader;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -151,21 +143,21 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -270,7 +262,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             }
         }
         if (mMufflerHatches.size() != 1 || mTurbineHatches.size() != 4) return false;
-        for (MTEHatchTurbine h : validMTEList(this.mTurbineHatches)) {
+        for (MTEHatchTurbine h : GTUtility.validMTEList(this.mTurbineHatches)) {
             if (!h.hasTurbine()) return false;
         }
         return super.checkHatch();
@@ -327,7 +319,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal(staticAnimations ? "Info_HighwayToHell_00" : "Info_HighwayToHell_01"));
-        for (MTEHatchTurbine h : validMTEList(this.mTurbineHatches)) {
+        for (MTEHatchTurbine h : GTUtility.validMTEList(this.mTurbineHatches)) {
             h.mUsingAnimation = staticAnimations;
         }
     }
@@ -365,11 +357,11 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     public CheckRecipeResult checkProcessing() {
         resetParallelTier();
         costingEU = BigInteger.ZERO;
-        costingEUText = ZERO_STRING;
+        costingEUText = Utils.ZERO_STRING;
         totalOverclockedDuration = 0;
         turbineTier = 0;
 
-        for (MTEHatchTurbine h : validMTEList(this.mTurbineHatches)) {
+        for (MTEHatchTurbine h : GTUtility.validMTEList(this.mTurbineHatches)) {
             if (!h.hasTurbine()) return CheckRecipeResultRegistry.NO_RECIPE;
             turbineTier = GTUtility.min(turbineTier, MetaGeneratedTool.getPrimaryMaterial(h.getTurbine()).mToolQuality);
         }
@@ -400,7 +392,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             if (stack == null) continue;
 
             for (ItemStack existing : merged) {
-                if (areStacksEqual(existing, stack)) {
+                if (GTUtility.areStacksEqual(existing, stack)) {
                     continue outer;
                 }
             }
@@ -451,7 +443,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
                         voltageTier = GTUtility.min(mParallelTier + 1, 14);
                     }
 
-                    if (recipe.mEUt > V[voltageTier] * 4) {
+                    if (recipe.mEUt > GTValues.V[voltageTier] * 4) {
                         return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                     }
                 }
@@ -494,14 +486,14 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
 
-        mOutputItems = mergeArray(mOutputItems, processingLogic.getOutputItems());
-        mOutputFluids = mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+        mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+        mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
 
         endRecipeProcessing();
@@ -547,14 +539,14 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
 
     public void setTurbineActive() {
         if (staticAnimations) return;
-        for (MTEHatchTurbine h : validMTEList(this.mTurbineHatches)) {
+        for (MTEHatchTurbine h : GTUtility.validMTEList(this.mTurbineHatches)) {
             h.setActive(true);
             h.onTextureUpdate();
         }
     }
 
     public void setTurbineInactive() {
-        for (MTEHatchTurbine h : validMTEList(this.mTurbineHatches)) {
+        for (MTEHatchTurbine h : GTUtility.validMTEList(this.mTurbineHatches)) {
             h.setActive(false);
             h.onTextureUpdate();
         }

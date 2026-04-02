@@ -1,9 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.TIER_COLORS;
-import static gregtech.api.enums.GTValues.VN;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
@@ -114,9 +110,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Dyes;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
@@ -184,8 +182,9 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public String[] getDescription() {
         List<String> strings = new ArrayList<>(8);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_00"));
-        strings
-            .add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_01") + TIER_COLORS[mTier] + VN[mTier]);
+        strings.add(
+            StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_01") + GTValues.TIER_COLORS[mTier]
+                + GTValues.VN[mTier]);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_02"));
         strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_03"));
 
@@ -1679,7 +1678,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
-        return new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_ME_CRAFTING_INPUT_BUFFER) };
+        return new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER) };
     }
 
     public static class HookHolder {

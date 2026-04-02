@@ -14,7 +14,8 @@ import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
-import gregtech.api.recipe.RecipeMaps;
+import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.recipe.RecipeMapBuilder;
 import gtPlusPlus.core.material.Material;
 import gtPlusPlus.xmod.gregtech.loaders.RecipeGenFluids;
 
@@ -37,7 +38,14 @@ public abstract class MixinRecipeGenFluids {
             .fluidInputs(material.getFluidStack(1 * INGOTS))
             .duration(1 * SECONDS + 12 * TICKS)
             .eut(material.vVoltageMultiplier)
-            .addTo(RecipeMaps.fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
 
         if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", material.getLocalizedName());

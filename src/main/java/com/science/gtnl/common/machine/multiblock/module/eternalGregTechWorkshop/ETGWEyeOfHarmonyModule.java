@@ -1,17 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static gregtech.api.util.GTUtility.formatNumbers;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gregtech.common.misc.WirelessNetworkManager.strongCheckOrAddUser;
-import static java.lang.Math.exp;
-import static java.lang.Math.pow;
-import static kekztech.util.Util.toStandardForm;
-import static net.minecraft.util.EnumChatFormatting.BLUE;
-import static net.minecraft.util.EnumChatFormatting.GOLD;
-import static net.minecraft.util.EnumChatFormatting.RED;
-import static net.minecraft.util.EnumChatFormatting.RESET;
-import static net.minecraft.util.EnumChatFormatting.STRIKETHROUGH;
-import static net.minecraft.util.EnumChatFormatting.YELLOW;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -22,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -54,6 +45,7 @@ import gregtech.common.tileentities.machines.MTEHatchOutputME;
 import gtneioreplugin.plugin.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import kekztech.util.Util;
 import tectech.TecTech;
 import tectech.recipe.EyeOfHarmonyRecipe;
 import tectech.recipe.TecTechRecipeMaps;
@@ -310,9 +302,9 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         double stellarPlasmaExcessPercentage = stellarPlasmaStored
             / (heliumRecipeRequirement * (12.4 / 1_000_000f) * parallelAmount) - 1;
 
-        hydrogenOverflowProbabilityAdjustment = 1 - exp(-pow(30 * hydrogenExcessPercentage, 2));
-        heliumOverflowProbabilityAdjustment = 1 - exp(-pow(30 * heliumExcessPercentage, 2));
-        stellarPlasmaOverflowProbabilityAdjustment = 1 - exp(-pow(30 * stellarPlasmaExcessPercentage, 2));
+        hydrogenOverflowProbabilityAdjustment = 1 - Math.exp(-Math.pow(30 * hydrogenExcessPercentage, 2));
+        heliumOverflowProbabilityAdjustment = 1 - Math.exp(-Math.pow(30 * heliumExcessPercentage, 2));
+        stellarPlasmaOverflowProbabilityAdjustment = 1 - Math.exp(-Math.pow(30 * stellarPlasmaExcessPercentage, 2));
     }
 
     private double recipeChanceCalculator() {
@@ -349,7 +341,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         if (failedParallelAmount > 0) {
             outputFluidToAENetwork(
                 MaterialsUEVplus.SpaceTime.getMolten(1),
-                (long) ((0.5 * 14_400L * pow(2, currentRecipeRocketTier + 1)) * failedParallelAmount));
+                (long) ((0.5 * 14_400L * Math.pow(2, currentRecipeRocketTier + 1)) * failedParallelAmount));
             pityChance += 0.1;
         } else {
             pityChance = Double.MIN_VALUE;
@@ -757,39 +749,67 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     public String[] getInfoData() {
         ArrayList<String> str = new ArrayList<>(Arrays.asList(super.getInfoData()));
         str.add(
-            GOLD.toString() + STRIKETHROUGH
+            EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
                 + "-------------"
-                + RESET
-                + GOLD
+                + EnumChatFormatting.RESET
+                + EnumChatFormatting.GOLD
                 + " Control Block Statistics "
-                + STRIKETHROUGH
+                + EnumChatFormatting.STRIKETHROUGH
                 + "-------------");
         str.add(
-            GOLD.toString() + STRIKETHROUGH
+            EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
                 + "-----------------"
-                + RESET
-                + GOLD
+                + EnumChatFormatting.RESET
+                + EnumChatFormatting.GOLD
                 + " Internal Storage "
-                + STRIKETHROUGH
+                + EnumChatFormatting.STRIKETHROUGH
                 + "----------------");
         validFluidMap.forEach(
-            (key, value) -> str.add(BLUE + key.getLocalizedName() + RESET + " : " + RED + formatNumbers(value)));
-        str.add(BLUE + "Astral Array Fabricators" + RESET + " : " + RED + formatNumbers(astralArrayAmount));
+            (key, value) -> str.add(
+                EnumChatFormatting.BLUE + key.getLocalizedName()
+                    + EnumChatFormatting.RESET
+                    + " : "
+                    + EnumChatFormatting.RED
+                    + GTUtility.formatNumbers(value)));
+        str.add(
+            EnumChatFormatting.BLUE + "Astral Array Fabricators"
+                + EnumChatFormatting.RESET
+                + " : "
+                + EnumChatFormatting.RED
+                + GTUtility.formatNumbers(astralArrayAmount));
         if (recipeRunning) {
             str.add(
-                GOLD.toString() + STRIKETHROUGH
+                EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
                     + "-----------------"
-                    + RESET
-                    + GOLD
+                    + EnumChatFormatting.RESET
+                    + EnumChatFormatting.GOLD
                     + " Other Stats "
-                    + STRIKETHROUGH
+                    + EnumChatFormatting.STRIKETHROUGH
                     + "-----------------");
-            str.add("Recipe Success Chance: " + RED + formatNumbers(successChance) + RESET + "%");
-            str.add("Recipe Yield: " + RED + formatNumbers(100 * yield) + RESET + "%");
-            str.add("Effective Astral Array Fabricators: " + RED + formatNumbers(astralArrayAmount));
-            str.add("Total Parallel: " + RED + formatNumbers(parallelAmount));
-            str.add("EU Output: " + RED + toStandardForm(outputEU_BigInt) + RESET + " EU");
-            str.add("EU Input:  " + RED + toStandardForm(usedEU.abs()) + RESET + " EU");
+            str.add(
+                "Recipe Success Chance: " + EnumChatFormatting.RED
+                    + GTUtility.formatNumbers(successChance)
+                    + EnumChatFormatting.RESET
+                    + "%");
+            str.add(
+                "Recipe Yield: " + EnumChatFormatting.RED
+                    + GTUtility.formatNumbers(100 * yield)
+                    + EnumChatFormatting.RESET
+                    + "%");
+            str.add(
+                "Effective Astral Array Fabricators: " + EnumChatFormatting.RED
+                    + GTUtility.formatNumbers(astralArrayAmount));
+            str.add("Total Parallel: " + EnumChatFormatting.RED + GTUtility.formatNumbers(parallelAmount));
+            str.add(
+                "EU Output: " + EnumChatFormatting.RED
+                    + Util.toStandardForm(outputEU_BigInt)
+                    + EnumChatFormatting.RESET
+                    + " EU");
+            str.add(
+                "EU Input:  " + EnumChatFormatting.RED
+                    + Util.toStandardForm(usedEU.abs())
+                    + EnumChatFormatting.RESET
+                    + " EU");
             int currentMaxProgresstime = Math.max(maxProgresstime(), 1);
             if (starMatter != null && starMatter.fluidStack != null) {
                 FluidStackLong starMatterOutput = new FluidStackLong(
@@ -798,13 +818,13 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                 str.add(
                     "Average " + starMatterOutput.fluidStack.getLocalizedName()
                         + " Output: "
-                        + RED
-                        + formatNumbers(starMatterOutput.amount)
-                        + RESET
+                        + EnumChatFormatting.RED
+                        + GTUtility.formatNumbers(starMatterOutput.amount)
+                        + EnumChatFormatting.RESET
                         + " L, "
-                        + YELLOW
-                        + formatNumbers(starMatterOutput.amount * 20.0 / currentMaxProgresstime)
-                        + RESET
+                        + EnumChatFormatting.YELLOW
+                        + GTUtility.formatNumbers(starMatterOutput.amount * 20.0 / currentMaxProgresstime)
+                        + EnumChatFormatting.RESET
                         + " L/s");
 
                 FluidStackLong stellarPlasmaOutput = new FluidStackLong(
@@ -813,21 +833,27 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                 str.add(
                     "Average " + stellarPlasmaOutput.fluidStack.getLocalizedName()
                         + " Output: "
-                        + RED
-                        + formatNumbers(stellarPlasmaOutput.amount)
-                        + RESET
+                        + EnumChatFormatting.RED
+                        + GTUtility.formatNumbers(stellarPlasmaOutput.amount)
+                        + EnumChatFormatting.RESET
                         + " L, "
-                        + YELLOW
-                        + formatNumbers(stellarPlasmaOutput.amount * 20.0 / currentMaxProgresstime)
-                        + RESET
+                        + EnumChatFormatting.YELLOW
+                        + GTUtility.formatNumbers(stellarPlasmaOutput.amount * 20.0 / currentMaxProgresstime)
+                        + EnumChatFormatting.RESET
                         + " L/s");
             }
             BigInteger euPerTick = (outputEU_BigInt.subtract(usedEU.abs()))
                 .divide(BigInteger.valueOf(currentMaxProgresstime));
 
-            str.add("Estimated EU/t: " + RED + toStandardForm(euPerTick) + RESET + " EU/t");
+            str.add(
+                "Estimated EU/t: " + EnumChatFormatting.RED
+                    + Util.toStandardForm(euPerTick)
+                    + EnumChatFormatting.RESET
+                    + " EU/t");
         }
-        str.add(GOLD.toString() + STRIKETHROUGH + "-----------------------------------------------------");
+        str.add(
+            EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
+                + "-----------------------------------------------------");
         return str.toArray(new String[0]);
     }
 }

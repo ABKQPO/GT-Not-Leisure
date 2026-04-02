@@ -1,9 +1,5 @@
 package com.science.gtnl.api;
 
-import static gregtech.api.gui.modularui.GTUITextures.OVERLAY_BUTTON_POWER_PANEL;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static net.minecraft.util.StatCollector.translateToLocal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +20,7 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.metatileentity.BaseTileEntity;
 import tectech.thing.gui.TecTechUITextures;
 
 public interface IControllerInfo {
@@ -53,7 +50,7 @@ public interface IControllerInfo {
                 .setPos(7, 13)
                 .setSize(280, 15))
             .widget(
-                new TextWidget(translateToLocal("")).setDefaultColor(EnumChatFormatting.GOLD)
+                new TextWidget(StatCollector.translateToLocal("")).setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 30)
                     .setSize(280, 50));
@@ -82,11 +79,11 @@ public interface IControllerInfo {
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(OVERLAY_BUTTON_POWER_PANEL);
+                ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
                 return ret.toArray(new IDrawable[0]);
             })
             .addTooltip(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.clickhere"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(getMachineInfoButtonPos())
             .setSize(16, 16);
         return (ButtonWidget) button;

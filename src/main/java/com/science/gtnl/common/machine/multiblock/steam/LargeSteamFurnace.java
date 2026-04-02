@@ -10,12 +10,10 @@ import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.GregTechAPI.sBlockCasings3;
 import static gregtech.api.GregTechAPI.sBlockFrames;
-import static gregtech.api.enums.GTValues.VP;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 
 import java.util.ArrayList;
@@ -42,6 +40,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -376,7 +375,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
         }
 
         boolean hasMEOutputBus = false;
-        for (final MTEHatch bus : validMTEList(mOutputBusses)) {
+        for (final MTEHatch bus : GTUtility.validMTEList(mOutputBusses)) {
             if (bus instanceof MTEHatchOutputBusME meBus) {
                 if (!meBus.isLocked() && meBus.canAcceptItem()) {
                     hasMEOutputBus = true;
@@ -455,7 +454,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
         this.mEfficiency = 10000 - (getIdealStatus() - getRepairStatus()) * 1000;
         this.mEfficiencyIncrease = 10000;
         this.mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax / (1 << recipeOcCount));
-        this.lEUt = VP[GTUtility.getTier(calculator.getConsumption())] * (1L << (2 * recipeOcCount));
+        this.lEUt = GTValues.VP[GTUtility.getTier(calculator.getConsumption())] * (1L << (2 * recipeOcCount));
         if (this.lEUt > 0) {
             this.lEUt = -this.lEUt;
         }

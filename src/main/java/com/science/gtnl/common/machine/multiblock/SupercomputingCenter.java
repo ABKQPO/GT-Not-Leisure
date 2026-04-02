@@ -5,15 +5,11 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAn
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputHatch;
@@ -21,7 +17,6 @@ import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings5Misc;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
@@ -54,7 +49,10 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -169,7 +167,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     @Override
     public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
         energyWirelessMode = false;
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -179,7 +177,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             return false;
         }
 
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(iGregTechTileEntity.isActive());
         }
@@ -227,7 +225,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             && !aBaseMetaTileEntity.isActive()
             && aTick % 20 == CommonValues.MULTI_CHECK_AT) {
             double maxTemp = 0;
-            for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+            for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
                 if (rack.heat > maxTemp) {
                     maxTemp = rack.heat;
                 }
@@ -252,7 +250,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             for (FluidStack fluidStack : getStoredFluids()) {
                 if (GTUtility.areFluidsEqual(fluidStack, cryotheum)) {
                     useCryotheum = true;
-                    for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+                    for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
                         if (fluidStack.amount <= 0) break;
                         if (rack.heat < 1) continue;
                         int consume = Math.min(fluidStack.amount, Math.max(0, rack.heat / 20));
@@ -264,11 +262,11 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                 }
             }
 
-            lEUt = (long) Math.max(V[7], V[7] * overClockRatio * overVoltageRatio);
+            lEUt = (long) Math.max(GTValues.V[7], GTValues.V[7] * overClockRatio * overVoltageRatio);
             int thingsActive = 0;
             int rackComputation;
 
-            for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+            for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
                 if (rack.heat > maxTemp) {
                     maxTemp = rack.heat;
                 }
@@ -292,7 +290,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
 
             if (energyWirelessMode) {
                 BigInteger costEU = BigInteger.valueOf(lEUt);
-                if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+                if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
                     return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
                 }
                 lEUt = 0;
@@ -390,7 +388,8 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             return new ITexture[] {
                 Textures.BlockIcons.getCasingTextureForId(StructureUtils.getTextureIndex(sBlockCasings9, 7)),
                 new TTRenderedExtendedFacingTexture(
-                    aActive ? OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE : OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
+                    aActive ? BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE
+                        : BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK) };
         }
         return new ITexture[] {
             Textures.BlockIcons.getCasingTextureForId(StructureUtils.getTextureIndex(sBlockCasings9, 7)) };
@@ -404,7 +403,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     @Override
     public void onRemoval() {
         super.onRemoval();
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -414,7 +413,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     public void extraExplosions_EM() {
         for (MetaTileEntity tTileEntity : mRackHatchs) {
             tTileEntity.getBaseMetaTileEntity()
-                .doExplosion(V[8]);
+                .doExplosion(GTValues.V[8]);
         }
     }
 
@@ -427,7 +426,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     public void stopMachine(@Nonnull ShutDownReason reason) {
         super.stopMachine(reason);
         eAvailableData = 0;
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }
@@ -436,7 +435,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     @Override
     public void afterRecipeCheckFailed() {
         super.afterRecipeCheckFailed();
-        for (MTEHatchRack rack : validMTEList(mRackHatchs)) {
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
             rack.getBaseMetaTileEntity()
                 .setActive(false);
         }

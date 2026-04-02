@@ -1,14 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTUtility.formatNumbers;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
-import static net.minecraft.util.EnumChatFormatting.GREEN;
-import static net.minecraft.util.EnumChatFormatting.RED;
-import static net.minecraft.util.EnumChatFormatting.RESET;
-import static net.minecraft.util.EnumChatFormatting.YELLOW;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -40,6 +34,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import tectech.TecTech;
@@ -191,7 +186,7 @@ public class FOGExtractorModule extends MTEBaseModule {
             .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isFluidModeOn, this::setFluidMode), builder)
             .dynamicTooltip(
                 () -> Collections.singletonList(
-                    translateToLocal(
+                    StatCollector.translateToLocal(
                         fluidMode ? "fog.button.fluidmode.tooltip.02" : "fog.button.fluidmode.tooltip.01")))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(174, 91)
@@ -225,32 +220,34 @@ public class FOGExtractorModule extends MTEBaseModule {
         str.add(
             StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.progress",
-                GREEN + formatNumbers(mProgresstime / 20) + RESET,
-                YELLOW + formatNumbers(mMaxProgresstime / 20) + RESET));
+                EnumChatFormatting.GREEN + GTUtility.formatNumbers(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + EnumChatFormatting.RESET));
         str.add(
             StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.currently_using",
-                RED + (getBaseMetaTileEntity().isActive() ? formatNumbers(EUt) : "0") + RESET));
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0")
+                    + EnumChatFormatting.RESET));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.max_parallel",
-                RESET + formatNumbers(getActualParallel())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getActualParallel())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.parallel.current",
-                RESET + (getBaseMetaTileEntity().isActive() ? formatNumbers(currentParallel) : "0")));
+                EnumChatFormatting.RESET
+                    + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
-                RESET + formatNumbers(getSpeedBonus())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getSpeedBonus())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.energy",
-                RESET + formatNumbers(getEnergyDiscount())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getEnergyDiscount())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.divisor.recipe_time.non_perfect_oc",
-                RESET + formatNumbers(getOverclockTimeFactor())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getOverclockTimeFactor())));
         return str.toArray(new String[0]);
     }
 

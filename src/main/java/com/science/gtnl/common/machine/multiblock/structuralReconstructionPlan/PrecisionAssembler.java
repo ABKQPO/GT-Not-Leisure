@@ -16,7 +16,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -326,10 +325,10 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     public int checkEnergyHatchTier() {
         int tier = 0;
-        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
             tier = Math.max(tHatch.mTier, tier);
         }
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
             tier = Math.max(tHatch.mTier, tier);
         }
         return tier;

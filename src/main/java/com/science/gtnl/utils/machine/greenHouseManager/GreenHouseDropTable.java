@@ -1,8 +1,5 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import static com.science.gtnl.utils.item.ItemUtils.readItemStackFromNBT;
-import static com.science.gtnl.utils.item.ItemUtils.writeItemStackToNBT;
-
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -12,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
+import com.science.gtnl.utils.item.ItemUtils;
 
 public class GreenHouseDropTable {
 
@@ -48,7 +46,7 @@ public class GreenHouseDropTable {
         for (int i = 0; i < nbt.tagCount(); i++) {
             NBTTagCompound drop = nbt.getCompoundTagAt(i);
             dropTable.merge(
-                readItemStackFromNBT(drop.getCompoundTag(NBT_DROP_TABLE_ITEM_KEY)),
+                ItemUtils.readItemStackFromNBT(drop.getCompoundTag(NBT_DROP_TABLE_ITEM_KEY)),
                 drop.getDouble(NBT_DROP_TABLE_COUNT_KEY),
                 Double::sum);
         }
@@ -63,7 +61,7 @@ public class GreenHouseDropTable {
         NBTTagList nbt = new NBTTagList();
         for (Map.Entry<ItemStack, Double> entry : this.dropTable.entrySet()) {
             NBTTagCompound entryNBT = new NBTTagCompound();
-            entryNBT.setTag(NBT_DROP_TABLE_ITEM_KEY, writeItemStackToNBT(entry.getKey()));
+            entryNBT.setTag(NBT_DROP_TABLE_ITEM_KEY, ItemUtils.writeItemStackToNBT(entry.getKey()));
             entryNBT.setDouble(NBT_DROP_TABLE_COUNT_KEY, entry.getValue());
             nbt.appendTag(entryNBT);
         }

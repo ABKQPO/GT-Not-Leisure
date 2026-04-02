@@ -14,10 +14,6 @@ import static gregtech.api.GregTechAPI.sBlockMetal6;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
@@ -81,20 +77,20 @@ public class LargeSteamLathe extends SteamMultiMachineBase<LargeSteamLathe> impl
             : StructureUtils.getTextureIndex(sBlockCasings1, 10);
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_MULTI_LATHE_ACTIVE)
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE)
                 .extFacing()
                 .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_MULTI_LATHE_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_MULTI_LATHE)
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE)
                 .extFacing()
                 .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_MULTI_LATHE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_LATHE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };

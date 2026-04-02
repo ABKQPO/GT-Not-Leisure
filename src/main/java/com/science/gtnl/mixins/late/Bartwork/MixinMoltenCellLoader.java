@@ -2,7 +2,6 @@ package com.science.gtnl.mixins.late.Bartwork;
 
 import static gregtech.api.enums.OrePrefixes.dust;
 import static gregtech.api.enums.OrePrefixes.material;
-import static gregtech.api.recipe.RecipeMaps.fluidSolidifierRecipes;
 import static gregtech.api.util.GTRecipeBuilder.INGOTS;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +16,8 @@ import bartworks.system.material.Werkstoff;
 import bartworks.system.material.werkstoff_loaders.recipe.MoltenCellLoader;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
+import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.recipe.RecipeMapBuilder;
 
 @Mixin(value = MoltenCellLoader.class, remap = false)
 public abstract class MixinMoltenCellLoader {
@@ -50,7 +51,14 @@ public abstract class MixinMoltenCellLoader {
             .eut(
                 werkstoff.getStats()
                     .getMass() > 128 ? 64 : 30)
-            .addTo(fluidSolidifierRecipes);
+            .addTo(
+                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
+                    .maxIO(1, 1, 1, 0)
+                    .minInputs(1, 1)
+                    .slotOverlays(
+                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
+                            : null)
+                    .build());
 
         if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", material.mRegularLocalName);

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.V;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,6 +7,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -59,7 +58,7 @@ public class TapDynamoHatch extends MTEHatchDynamo {
 
     @Override
     public long maxEUStore() {
-        return 512L + V[mTier + 1] * 16L;
+        return 512L + GTValues.V[mTier + 1] * 16L;
     }
 
     @Override
@@ -89,7 +88,7 @@ public class TapDynamoHatch extends MTEHatchDynamo {
         }
 
         long storeEU = getEUVar();
-        long addedEU = V[mTier] * 16;
+        long addedEU = GTValues.V[mTier] * 16;
         setEUVar(Math.min(storeEU + addedEU, maxEUStore()));
 
         clickCount++;

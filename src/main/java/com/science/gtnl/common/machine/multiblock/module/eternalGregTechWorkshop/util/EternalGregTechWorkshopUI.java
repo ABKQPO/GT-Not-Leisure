@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static net.minecraft.util.StatCollector.translateToLocal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +37,7 @@ import gregtech.api.enums.VoidingMode;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.modularui.IControllerWithOptionalFeatures;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.BaseTileEntity;
 import tectech.TecTech;
 import tectech.thing.gui.TecTechUITextures;
 
@@ -69,7 +67,7 @@ public class EternalGregTechWorkshopUI {
                 new FakeSyncWidget.BooleanSyncer(mte::isInputSeparationEnabled, mte::setInputSeparation),
                 builder)
             .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.input_separation"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(mte.getInputSeparationButtonPos())
             .setSize(16, 16);
         return (ButtonWidget) button;
@@ -94,7 +92,7 @@ public class EternalGregTechWorkshopUI {
             })
             .attachSyncer(new FakeSyncWidget.BooleanSyncer(mte::isBatchModeEnabled, mte::setBatchMode), builder)
             .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.batch_mode"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(mte.getBatchModeButtonPos())
             .setSize(16, 16);
         return (ButtonWidget) button;
@@ -119,7 +117,7 @@ public class EternalGregTechWorkshopUI {
             })
             .attachSyncer(new FakeSyncWidget.BooleanSyncer(mte::isRecipeLockingEnabled, mte::setRecipeLocking), builder)
             .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.lock_recipe"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(mte.getRecipeLockingButtonPos())
             .setSize(16, 16);
         return (ButtonWidget) button;
@@ -164,7 +162,7 @@ public class EternalGregTechWorkshopUI {
                     StatCollector.translateToLocal(
                         mte.getVoidingMode()
                             .getTransKey())))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(mte.getVoidingModeButtonPos())
             .setSize(16, 16);
         return (ButtonWidget) button;
@@ -177,108 +175,121 @@ public class EternalGregTechWorkshopUI {
         ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
 
         builder.setDraggable(true);
-        scrollable.widget(
-            new TextWidget(EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.introduction"))
-                .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
-                .setTextAlignment(Alignment.TopCenter)
-                .setPos(7, 13)
-                .setSize(280, 15))
+        scrollable
             .widget(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.introductioninfotext"))
+                new TextWidget(
+                    EnumChatFormatting.BOLD
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.introduction"))
+                            .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
+                            .setTextAlignment(Alignment.TopCenter)
+                            .setPos(7, 13)
+                            .setSize(280, 15))
+            .widget(
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.introductioninfotext"))
                     .setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 30)
                     .setSize(280, 50))
             .widget(
                 new TextWidget(
-                    EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.tableofcontents"))
-                        .setDefaultColor(EnumChatFormatting.AQUA)
-                        .setTextAlignment(Alignment.CenterLeft)
-                        .setPos(7, 80)
-                        .setSize(150, 15))
+                    EnumChatFormatting.BOLD
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.tableofcontents"))
+                            .setDefaultColor(EnumChatFormatting.AQUA)
+                            .setTextAlignment(Alignment.CenterLeft)
+                            .setPos(7, 80)
+                            .setSize(150, 15))
             .widget(
                 new ButtonWidget().setOnClick((clickData, widget) -> scrollable.setVerticalScrollOffset(150))
                     .setBackground(
-                        new Text(EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.fuel"))
-                            .alignment(Alignment.CenterLeft)
-                            .color(0x55ffff))
+                        new Text(
+                            EnumChatFormatting.BOLD
+                                + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuel"))
+                                    .alignment(Alignment.CenterLeft)
+                                    .color(0x55ffff))
                     .setPos(7, 95)
                     .setSize(150, 15))
             .widget(
                 new ButtonWidget().setOnClick((clickData, widget) -> scrollable.setVerticalScrollOffset(434))
                     .setBackground(
                         new Text(
-                            EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.modules"))
-                                .alignment(Alignment.CenterLeft)
-                                .color(0x55ffff))
+                            EnumChatFormatting.BOLD
+                                + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modules"))
+                                    .alignment(Alignment.CenterLeft)
+                                    .color(0x55ffff))
                     .setPos(7, 110)
                     .setSize(150, 15))
             .widget(
                 new ButtonWidget().setOnClick((clickData, widget) -> scrollable.setVerticalScrollOffset(1088))
                     .setBackground(
                         new Text(
-                            EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.upgrades"))
-                                .alignment(Alignment.CenterLeft)
-                                .color(0x55ffff))
+                            EnumChatFormatting.BOLD
+                                + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.upgrades"))
+                                    .alignment(Alignment.CenterLeft)
+                                    .color(0x55ffff))
                     .setPos(7, 125)
                     .setSize(150, 15))
             .widget(
                 new ButtonWidget().setOnClick((clickData, widget) -> scrollable.setVerticalScrollOffset(1412))
                     .setBackground(
                         new Text(
-                            EnumChatFormatting.BOLD + translateToLocal("gt.blockmachines.multimachine.FOG.milestones"))
-                                .alignment(Alignment.CenterLeft)
-                                .color(0x55ffff))
+                            EnumChatFormatting.BOLD
+                                + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestones"))
+                                    .alignment(Alignment.CenterLeft)
+                                    .color(0x55ffff))
                     .setPos(7, 140)
                     .setSize(150, 15))
             .widget(
                 new TextWidget(
-                    EnumChatFormatting.BOLD + "§N" + translateToLocal("gt.blockmachines.multimachine.FOG.fuel"))
-                        .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
-                        .setTextAlignment(Alignment.TopCenter)
-                        .setPos(127, 160)
-                        .setSize(40, 15))
+                    EnumChatFormatting.BOLD + "§N"
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuel"))
+                            .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
+                            .setTextAlignment(Alignment.TopCenter)
+                            .setPos(127, 160)
+                            .setSize(40, 15))
             .widget(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfotext"))
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuelinfotext"))
                     .setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 177)
                     .setSize(280, 250))
             .widget(
                 new TextWidget(
-                    EnumChatFormatting.BOLD + "§N" + translateToLocal("gt.blockmachines.multimachine.FOG.modules"))
-                        .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
-                        .setTextAlignment(Alignment.TopCenter)
-                        .setPos(7, 440)
-                        .setSize(280, 15))
+                    EnumChatFormatting.BOLD + "§N"
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modules"))
+                            .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
+                            .setTextAlignment(Alignment.TopCenter)
+                            .setPos(7, 440)
+                            .setSize(280, 15))
             .widget(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.moduleinfotext"))
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.moduleinfotext"))
                     .setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 461)
                     .setSize(280, 620))
             .widget(
                 new TextWidget(
-                    EnumChatFormatting.BOLD + "§N" + translateToLocal("gt.blockmachines.multimachine.FOG.upgrades"))
-                        .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
-                        .setTextAlignment(Alignment.TopCenter)
-                        .setPos(7, 1098)
-                        .setSize(280, 15))
+                    EnumChatFormatting.BOLD + "§N"
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.upgrades"))
+                            .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
+                            .setTextAlignment(Alignment.TopCenter)
+                            .setPos(7, 1098)
+                            .setSize(280, 15))
             .widget(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.upgradeinfotext"))
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.upgradeinfotext"))
                     .setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 1115)
                     .setSize(280, 290))
             .widget(
                 new TextWidget(
-                    EnumChatFormatting.BOLD + "§N" + translateToLocal("gt.blockmachines.multimachine.FOG.milestones"))
-                        .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
-                        .setTextAlignment(Alignment.TopCenter)
-                        .setPos(7, 1422)
-                        .setSize(280, 15))
+                    EnumChatFormatting.BOLD + "§N"
+                        + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestones"))
+                            .setDefaultColor(EnumChatFormatting.DARK_PURPLE)
+                            .setTextAlignment(Alignment.TopCenter)
+                            .setPos(7, 1422)
+                            .setSize(280, 15))
             .widget(
-                new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.milestoneinfotext"))
+                new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestoneinfotext"))
                     .setDefaultColor(EnumChatFormatting.GOLD)
                     .setTextAlignment(Alignment.CenterLeft)
                     .setPos(7, 1439)
@@ -370,7 +381,7 @@ public class EternalGregTechWorkshopUI {
         // Shard cost text
         String costStr = " " + EnumChatFormatting.BLUE + upgrade.getShardCost();
         widget.addChild(
-            new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.shardcost") + costStr)
+            new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.shardcost") + costStr)
                 .setTextAlignment(Alignment.Center)
                 .setScale(0.7f)
                 .setMaxWidth(70)
@@ -379,7 +390,7 @@ public class EternalGregTechWorkshopUI {
 
         // Available shards text
         widget.addChild(
-            new TextWidget(translateToLocal("gt.blockmachines.multimachine.FOG.availableshards"))
+            new TextWidget(StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.availableshards"))
                 .setTextAlignment(Alignment.Center)
                 .setScale(0.7f)
                 .setMaxWidth(90)
@@ -412,7 +423,7 @@ public class EternalGregTechWorkshopUI {
                 () -> new IDrawable[] {
                     check.get() ? GTUITextures.BUTTON_STANDARD_PRESSED : GTUITextures.BUTTON_STANDARD })
             .dynamicTooltip(() -> constructionStatusString(check))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY));
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY));
 
         // Complete text overlay
         completeGroup.addChild(
@@ -442,7 +453,8 @@ public class EternalGregTechWorkshopUI {
             .setSize(15, 15)
             .dynamicTooltip(() -> upgradeMaterialRequirements(check))
             .addTooltip(
-                EnumChatFormatting.GRAY + translateToLocal("fog.button.materialrequirements.tooltip.clickhere"));
+                EnumChatFormatting.GRAY
+                    + StatCollector.translateToLocal("fog.button.materialrequirements.tooltip.clickhere"));
     }
 
     private static Text getAvailableShardsText(EternalGregTechWorkshopUpgrade upgrade, Supplier<Integer> shardGetter) {
@@ -455,23 +467,23 @@ public class EternalGregTechWorkshopUI {
 
     private static List<String> constructionStatusString(Supplier<Boolean> check) {
         if (check.get()) {
-            return ImmutableList.of(translateToLocal("fog.upgrade.respec"));
+            return ImmutableList.of(StatCollector.translateToLocal("fog.upgrade.respec"));
         }
-        return ImmutableList.of(translateToLocal("fog.upgrade.confirm"));
+        return ImmutableList.of(StatCollector.translateToLocal("fog.upgrade.confirm"));
     }
 
     private static Text constructionStatusText(Supplier<Boolean> check) {
         if (check.get()) {
-            return new Text(translateToLocal("fog.upgrade.respec"));
+            return new Text(StatCollector.translateToLocal("fog.upgrade.respec"));
         }
-        return new Text(translateToLocal("fog.upgrade.confirm"));
+        return new Text(StatCollector.translateToLocal("fog.upgrade.confirm"));
     }
 
     private static List<String> upgradeMaterialRequirements(Supplier<Boolean> check) {
         if (check.get()) {
-            return ImmutableList.of(translateToLocal("fog.button.materialrequirementsmet.tooltip"));
+            return ImmutableList.of(StatCollector.translateToLocal("fog.button.materialrequirementsmet.tooltip"));
         }
-        return ImmutableList.of(translateToLocal("fog.button.materialrequirements.tooltip"));
+        return ImmutableList.of(StatCollector.translateToLocal("fog.button.materialrequirements.tooltip"));
     }
 
     public static Widget createExtraCostWidget(final ItemStack costStack, Supplier<Integer> paidAmount) {

@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static gregtech.api.enums.GTValues.TIER_COLORS;
-import static gregtech.api.enums.GTValues.VN;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -56,6 +53,7 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.util.item.AEFluidStack;
+import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -115,8 +113,9 @@ public class SuperInputHatchME extends MTEHatchInputME {
         List<String> strings = new ArrayList<>(8);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputHatchME_00"));
         strings.add(
-            StatCollector.translateToLocal("Tooltip_SuperInputHatchME_01") + TIER_COLORS[autoPullAvailable ? 10 : 9]
-                + VN[autoPullAvailable ? 10 : 9]);
+            StatCollector.translateToLocal("Tooltip_SuperInputHatchME_01")
+                + GTValues.TIER_COLORS[autoPullAvailable ? 10 : 9]
+                + GTValues.VN[autoPullAvailable ? 10 : 9]);
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputHatchME_02"));
         strings.add(StatCollector.translateToLocal("Tooltip_SuperInputHatchME_03"));
 

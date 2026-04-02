@@ -1,6 +1,5 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.utils.Utils.hasPermission;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 import static gregtech.common.misc.WirelessNetworkManager.setUserEU;
@@ -18,6 +17,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+
+import com.science.gtnl.utils.Utils;
 
 import gregtech.api.util.GTUtility;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
@@ -60,7 +61,7 @@ public class CommandEnergyNetwork extends CommandBase {
 
         switch (subCommand) {
             case "add": {
-                if (!hasPermission(sender, 2)) {
+                if (!Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -121,7 +122,7 @@ public class CommandEnergyNetwork extends CommandBase {
             }
 
             case "set": {
-                if (!hasPermission(sender, 2)) {
+                if (!Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -204,7 +205,7 @@ public class CommandEnergyNetwork extends CommandBase {
 
                 boolean senderIsLeaderOfTargetTeam = uuidSenderLeader.equals(targetTeamLeader);
 
-                if (!senderIsLeaderOfTargetTeam && !hasPermission(sender, 2)) {
+                if (!senderIsLeaderOfTargetTeam && !Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }

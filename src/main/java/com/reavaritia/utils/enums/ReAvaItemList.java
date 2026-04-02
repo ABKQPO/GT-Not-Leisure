@@ -1,8 +1,5 @@
 package com.reavaritia.utils.enums;
 
-import static com.science.gtnl.utils.enums.GTNLItemList.TestMetaBlock01_0;
-import static gregtech.api.enums.GTValues.NI;
-
 import java.util.Locale;
 
 import net.minecraft.block.Block;
@@ -12,8 +9,10 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.GTNLItemList;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.IItemContainer;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
@@ -89,7 +88,7 @@ public enum ReAvaItemList implements IItemContainer {
         if (GTUtility.isStackInvalid(mStack)) {
             System.out.println("Object in the ReAvaItemList is null at:");
             new NullPointerException().printStackTrace(System.out);
-            return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), TestMetaBlock01_0.get(1));
+            return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), GTNLItemList.TestMetaBlock01_0.get(1));
         }
         return GTUtility.copyAmountUnsafe(Math.toIntExact(aAmount), mStack);
     }
@@ -146,7 +145,7 @@ public enum ReAvaItemList implements IItemContainer {
     @SuppressWarnings("SizeReplaceableByIsEmpty")
     public ItemStack getWithName(int aAmount, String aDisplayName, Object... aReplacements) {
         ItemStack rStack = get(1, aReplacements);
-        if (GTUtility.isStackInvalid(rStack)) return NI;
+        if (GTUtility.isStackInvalid(rStack)) return GTValues.NI;
 
         // CamelCase alphanumeric words from aDisplayName
         StringBuilder tCamelCasedDisplayNameBuilder = new StringBuilder();
@@ -211,7 +210,7 @@ public enum ReAvaItemList implements IItemContainer {
     @Override
     public ItemStack getWithName(long aAmount, String aDisplayName, Object... aReplacements) {
         ItemStack rStack = get(1, aReplacements);
-        if (GTUtility.isStackInvalid(rStack)) return NI;
+        if (GTUtility.isStackInvalid(rStack)) return GTValues.NI;
 
         // CamelCase alphanumeric words from aDisplayName
         StringBuilder tCamelCasedDisplayNameBuilder = new StringBuilder();

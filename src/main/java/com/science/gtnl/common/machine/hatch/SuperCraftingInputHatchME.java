@@ -1,11 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUS;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.objects.XSTR.XSTR_INSTANCE;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +97,7 @@ import gregtech.api.enums.Dyes;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.IMEConnectable;
@@ -112,9 +107,11 @@ import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.objects.GTDualInputPattern;
+import gregtech.api.objects.XSTR;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.extensions.ArrayExt;
@@ -347,18 +344,18 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                     EntityItem entityItem = new EntityItem(
                         world,
                         parentMTE.getBaseMetaTileEntity()
-                            .getXCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         parentMTE.getBaseMetaTileEntity()
-                            .getYCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         parentMTE.getBaseMetaTileEntity()
-                            .getZCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         GTUtility.copy(itemStack));
-                    entityItem.motionX = XSTR_INSTANCE.nextGaussian() * 0.05;
-                    entityItem.motionY = XSTR_INSTANCE.nextGaussian() * 0.25;
-                    entityItem.motionZ = XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
+                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
                     world.spawnEntityInWorld(entityItem);
 
                     itemStack.stackSize = 0;
@@ -387,18 +384,18 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                     EntityItem entityItem = new EntityItem(
                         world,
                         parentMTE.getBaseMetaTileEntity()
-                            .getXCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         parentMTE.getBaseMetaTileEntity()
-                            .getYCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         parentMTE.getBaseMetaTileEntity()
-                            .getZCoord() + XSTR_INSTANCE.nextFloat() * 0.8F
+                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
                             + 0.1F,
                         fluidPacketItemStack);
-                    entityItem.motionX = XSTR_INSTANCE.nextGaussian() * 0.05;
-                    entityItem.motionY = XSTR_INSTANCE.nextGaussian() * 0.25;
-                    entityItem.motionZ = XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
+                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
                     world.spawnEntityInWorld(entityItem);
                 }
             }
@@ -472,7 +469,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         }
     }
 
-    public static UITexture OVERLAY_BUTTON_X2 = UITexture.fullImage(RESOURCE_ROOT_ID, "gui/overlay_button/x2");
+    public static UITexture OVERLAY_BUTTON_X2 = UITexture
+        .fullImage(ScienceNotLeisure.RESOURCE_ROOT_ID, "gui/overlay_button/x2");
     public static int MAX_PATTERN_COUNT = 40 * 9;
     public static int SLOT_MANUAL_SIZE = 81;
     public static int MAX_INV_COUNT = MAX_PATTERN_COUNT + SLOT_MANUAL_SIZE + 1;
@@ -541,7 +539,9 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
         return new ITexture[] { aBaseTexture,
-            TextureFactory.of(supportFluids ? OVERLAY_ME_CRAFTING_INPUT_BUFFER : OVERLAY_ME_CRAFTING_INPUT_BUS) };
+            TextureFactory.of(
+                supportFluids ? Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUFFER
+                    : Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_BUS) };
     }
 
     @Override
@@ -1070,7 +1070,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                         () -> Collections.singletonList(
                             StatCollector
                                 .translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"))))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setUpdateTooltipEveryTick(true)
                     .setPos(194, 28)
                     .setSize(16, 16));

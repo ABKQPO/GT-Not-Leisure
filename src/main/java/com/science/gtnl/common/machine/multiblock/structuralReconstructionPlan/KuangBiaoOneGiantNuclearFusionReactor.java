@@ -4,20 +4,12 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.mergeArray;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings4;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
 import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.GTValues.TIER_COLORS;
-import static gregtech.api.enums.GTValues.V;
-import static gregtech.api.enums.GTValues.VN;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -26,7 +18,6 @@ import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings6Misc;
@@ -59,12 +50,14 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.render.tile.KuangBiaoOneGiantNuclearFusionReactorRenderer;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -112,7 +105,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     public GTRecipe mLastRecipe;
     public long mEUStore;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String KBFR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+    public static final String KBFR_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
         + "multiblock/kuang_biao_giant_nuclear_fusion_reactor";
     private static final int HORIZONTAL_OFF_SET = 19;
     private static final int VERTICAL_OFF_SET = 14;
@@ -247,7 +240,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             .addInfo(
                 StatCollector.translateToLocalFormatted(
                     "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05",
-                    TIER_COLORS[getRecipeMaxTier()] + VN[getRecipeMaxTier()]))
+                    GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]))
             .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06"))
             .addPerfectOCInfo()
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
@@ -311,7 +304,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                     long maxEnergy = maxEUStore();
 
                     if (!this.mEnergyHatches.isEmpty()) {
-                        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
+                        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
                             if (mEUStore >= maxEnergy) break;
 
                             long availableEnergy = tHatch.getBaseMetaTileEntity()
@@ -329,7 +322,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                     }
 
                     if (!this.mExoticEnergyHatches.isEmpty()) {
-                        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+                        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
                             if (mEUStore >= maxEnergy) break;
 
                             long availableEnergy = tHatch.getBaseMetaTileEntity()
@@ -533,7 +526,13 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 'C',
                 buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy), ParallelCon)
+                    .atLeast(
+                        Maintenance,
+                        InputBus,
+                        InputHatch,
+                        OutputHatch,
+                        Energy.or(ExoticEnergy),
+                        CustomHatchElement.ParallelCon)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(getCasing(), getCasingMeta()))))
             .addElement('D', ofBlock(getConcrete(), getConcreteMeta()))
             .addElement('E', ofFrame(Materials.Tungsten))
@@ -802,7 +801,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public UUID ownerUUID;
         public boolean isRecipeProcessing = false;
         public BigInteger costingEU = BigInteger.ZERO;
-        public String costingEUText = ZERO_STRING;
+        public String costingEUText = Utils.ZERO_STRING;
         public int cycleNum = 100_000;
         public int cycleNow = 0;
 
@@ -859,7 +858,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
                         "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05",
-                        TIER_COLORS[getRecipeMaxTier()] + VN[getRecipeMaxTier()]))
+                        GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]))
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
@@ -982,7 +981,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                         .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier));
                     if (wirelessMode) {
                         calculator = calculator.setAmperage((8L << (2 * mParallelTier)) - 2L)
-                            .setEUt(V[Math.min(mParallelTier + 1, 14)]);
+                            .setEUt(GTValues.V[Math.min(mParallelTier + 1, 14)]);
                     }
                     return calculator;
                 }
@@ -995,7 +994,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                         if (!wirelessMode && powerToStart > mEUStore) {
                             return CheckRecipeResultRegistry.insufficientStartupPower(BigInteger.valueOf(powerToStart));
                         }
-                        if (recipe.mEUt > V[getRecipeMaxTier() + 1]) {
+                        if (recipe.mEUt > GTValues.V[getRecipeMaxTier() + 1]) {
                             return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                         }
                     }
@@ -1021,7 +1020,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         @Override
         public void setProcessingLogicPower(ProcessingLogic logic) {
             if (wirelessMode) {
-                logic.setAvailableVoltage(V[Math.min(mParallelTier + 1, 14)]);
+                logic.setAvailableVoltage(GTValues.V[Math.min(mParallelTier + 1, 14)]);
                 logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
                 logic.setAmperageOC(true);
                 logic.enablePerfectOverclock();
@@ -1116,7 +1115,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             maxParallelStored = -1;
             resetParallelTier();
             costingEU = BigInteger.ZERO;
-            costingEUText = ZERO_STRING;
+            costingEUText = Utils.ZERO_STRING;
             totalOverclockedDuration = 0;
             cycleNow = 0;
             if (!wirelessMode) return super.checkProcessing();
@@ -1165,14 +1164,14 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
                 .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-            if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
                 return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
             }
 
             costingEU = costingEU.add(costEU);
 
-            mOutputItems = mergeArray(mOutputItems, processingLogic.getOutputItems());
-            mOutputFluids = mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+            mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+            mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
             totalOverclockedDuration += processingLogic.getDuration();
             maxParallelStored = maxParallelStored - processingLogic.getCurrentParallels();
 

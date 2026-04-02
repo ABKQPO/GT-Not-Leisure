@@ -1,13 +1,11 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.enums.GTValues.VN;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -57,10 +55,10 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
         CallbackInfoReturnable<Boolean> cir) {
         long amp = 0;
 
-        for (MTEHatch tHatch : validMTEList(mEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mEnergyHatches)) {
             amp += tHatch.maxWorkingAmperesIn();
         }
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
             amp += tHatch.maxWorkingAmperesIn();
         }
 
@@ -135,7 +133,8 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
                 .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerI_Casing_03"));
         }
 
-        tt.addEnergyHatch(StatCollector.translateToLocalFormatted("Tooltip_VoidMiner_Casing_00", VN[this.getMinTier()]))
+        tt.addEnergyHatch(
+            StatCollector.translateToLocalFormatted("Tooltip_VoidMiner_Casing_00", GTValues.VN[this.getMinTier()]))
             .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
             .addInputBus(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_02"))
             .addInputHatch(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_03"))

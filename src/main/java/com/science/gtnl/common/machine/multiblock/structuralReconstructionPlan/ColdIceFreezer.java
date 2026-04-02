@@ -17,7 +17,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -185,7 +184,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
 
     @Override
     public void updateSlots() {
-        for (CustomFluidHatch tHatch : validMTEList(mFluidIceInputHatch)) tHatch.updateSlots();
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidIceInputHatch)) tHatch.updateSlots();
         super.updateSlots();
     }
 

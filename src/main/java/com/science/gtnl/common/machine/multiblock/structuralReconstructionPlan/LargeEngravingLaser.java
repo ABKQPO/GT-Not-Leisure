@@ -15,10 +15,6 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
@@ -79,11 +75,11 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings10, 1)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_ENGRAVER_ACTIVE)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_ACTIVE)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_ENGRAVER_ACTIVE_GLOW)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_ACTIVE_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
@@ -92,11 +88,11 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings10, 1)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_ENGRAVER)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_ENGRAVER_GLOW)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ENGRAVER_GLOW)
                         .extFacing()
                         .glow()
                         .build() };

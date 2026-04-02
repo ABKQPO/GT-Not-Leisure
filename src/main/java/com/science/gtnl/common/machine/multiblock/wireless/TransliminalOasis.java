@@ -5,10 +5,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAn
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
-import static com.science.gtnl.utils.Utils.mergeArray;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings3;
 import static gregtech.api.GregTechAPI.sBlockCasings4;
@@ -26,7 +22,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTUtility.areStacksEqual;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -44,10 +39,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Materials;
@@ -72,7 +69,8 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
     private static final int VERTICAL_OFF_SET = 22;
     private static final int DEPTH_OFF_SET = 2;
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String TO_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/transliminal_oasis";
+    private static final String TO_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
+        + "multiblock/transliminal_oasis";
     private static final String[][] shape = StructureUtils.readStructureFromFile(TO_STRUCTURE_FILE_PATH);
 
     public TransliminalOasis(String aName) {
@@ -240,7 +238,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         maxParallelStored = -1;
         resetParallelTier();
         costingEU = BigInteger.ZERO;
-        costingEUText = ZERO_STRING;
+        costingEUText = Utils.ZERO_STRING;
         totalOverclockedDuration = 0;
         cycleNow = 0;
 
@@ -253,7 +251,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             if (stack == null) continue;
 
             for (ItemStack existing : merged) {
-                if (areStacksEqual(existing, stack)) {
+                if (GTUtility.areStacksEqual(existing, stack)) {
                     continue outer;
                 }
             }
@@ -302,13 +300,13 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
-        mOutputItems = mergeArray(mOutputItems, processingLogic.getOutputItems());
-        mOutputFluids = mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+        mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+        mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
 
         endRecipeProcessing();

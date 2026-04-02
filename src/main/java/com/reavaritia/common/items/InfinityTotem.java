@@ -1,9 +1,5 @@
 package com.reavaritia.common.items;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.ModList.Baubles;
-import static com.science.gtnl.utils.item.ItemUtils.removeItemFromPlayer;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -33,10 +29,13 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
+import com.reavaritia.ReAvaritia;
 import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.PlaySound;
 import com.reavaritia.utils.item.SubtitleDisplay;
+import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
@@ -55,7 +54,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityTotem");
+        this.setTextureName(ReAvaritia.RESOURCE_ROOT_ID + ":" + "InfinityTotem");
         this.setMaxDamage(99);
         this.setMaxStackSize(1);
         MinecraftForge.EVENT_BUS.register(this);
@@ -90,7 +89,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
     @SideOnly(Side.CLIENT)
     @Override
     public void playSoundIfReady(EntityPlayer player) {
-        player.worldObj.playSoundAtEntity(player, RESOURCE_ROOT_ID + ":" + "totem.enable", 1.0F, 1.0F);
+        player.worldObj.playSoundAtEntity(player, ReAvaritia.RESOURCE_ROOT_ID + ":" + "totem.enable", 1.0F, 1.0F);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -104,7 +103,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
             }
 
             // 检查玩家饰品栏中的 InfinityTotem
-            if (Baubles.isModLoaded()) {
+            if (ModList.Baubles.isModLoaded()) {
                 IInventory baublesInventory = BaublesApi.getBaubles(player);
                 if (baublesInventory != null) {
                     for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
@@ -146,7 +145,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
             ItemStack stack = getTotemFromPlayer(player);
 
             // 检查玩家饰品栏中的 InfinityTotem
-            if (Baubles.isModLoaded()) {
+            if (ModList.Baubles.isModLoaded()) {
                 if (stack == null) {
                     IInventory baublesInventory = BaublesApi.getBaubles(player);
                     if (baublesInventory != null) {
@@ -166,7 +165,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
                 if (stack.getItemDamage() == stack.getMaxDamage() - 1) {
                     event.setCanceled(true);
                     triggerFinalEffect(player.worldObj, player, stack);
-                    removeItemFromPlayer(player, stack);
+                    ItemUtils.removeItemFromPlayer(player, stack);
                 } else {
                     event.setCanceled(true);
                     triggerNormalEffect(player.worldObj, player, stack);
@@ -247,7 +246,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
         }
 
         // 检查饰品栏
-        if (Baubles.isModLoaded()) {
+        if (ModList.Baubles.isModLoaded()) {
             IInventory baublesInventory = BaublesApi.getBaubles(player);
             if (baublesInventory != null) {
                 for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {

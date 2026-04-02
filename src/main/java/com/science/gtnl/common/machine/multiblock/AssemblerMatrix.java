@@ -4,20 +4,14 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.Utils.ZERO_STRING;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.gui.modularui.GTUITextures.OVERLAY_BUTTON_POWER_PANEL;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTUtility.formatShortenedLong;
-import static gregtech.api.util.GTUtility.truncateText;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +78,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
@@ -175,7 +170,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public UUID ownerUUID;
     public boolean wirelessMode;
     public boolean showPattern = true;
-    public String costingEUText = ZERO_STRING;
+    public String costingEUText = Utils.ZERO_STRING;
     public long recipesDone;
 
     private String customName = "";
@@ -190,7 +185,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     private int patternMultiply = 1;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String AM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/assembler_matrix";
+    private static final String AM_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
+        + "multiblock/assembler_matrix";
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 8;
     private static final int DEPTH_OFF_SET = 0;
@@ -483,7 +479,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(OVERLAY_BUTTON_POWER_PANEL);
+                ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
                 return ret.toArray(new IDrawable[0]);
             })
             .addTooltip(StatCollector.translateToLocal("Info_AssemblerMatrix_01"))
@@ -512,7 +508,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         .add(w - 3, 0)));
 
         builder.widget(
-            new TextWidget(EnumChatFormatting.UNDERLINE + translateToLocal("Info_AssemblerMatrix_01")).setPos(0, 2)
+            new TextWidget(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("Info_AssemblerMatrix_01"))
+                .setPos(0, 2)
                 .setSize(100, 18));
 
         builder.widget(new FakeSyncWidget.IntegerSyncer(() -> patternMultiply, this::setPatternMultiply));
@@ -613,10 +610,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     .getDisplayName();
                 String itemAmountString = EnumChatFormatting.WHITE + " x "
                     + EnumChatFormatting.GOLD
-                    + formatShortenedLong(itemCount)
+                    + GTUtility.formatShortenedLong(itemCount)
                     + EnumChatFormatting.WHITE
                     + appendRate(false, itemCount, true);
-                String lineText = EnumChatFormatting.AQUA + truncateText(itemName, 40 - itemAmountString.length())
+                String lineText = EnumChatFormatting.AQUA
+                    + GTUtility.truncateText(itemName, 40 - itemAmountString.length())
                     + itemAmountString;
                 String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
 
@@ -1168,7 +1166,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (isActive() && machineMode == MODE_OPERATING) {
             if (mMaxSlots > 0 && !inventory.isEmpty() && !outputs.isEmpty()) {
-                costingEUText = ZERO_STRING;
+                costingEUText = Utils.ZERO_STRING;
                 long parallel = mMaxParallelLong;
                 long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
                     : getMaxInputEu();

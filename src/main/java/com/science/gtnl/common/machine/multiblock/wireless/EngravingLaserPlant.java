@@ -11,7 +11,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings6;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.GTValues.V;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -283,14 +282,14 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         if (mCasingTier < 0) return 0;
         if (wirelessMode) {
             if (mCasingTier >= 10) {
-                return V[Math.min(mParallelTier + 1, 14)];
+                return GTValues.V[Math.min(mParallelTier + 1, 14)];
             } else {
-                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
+                return GTValues.V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
             }
         } else if (mCasingTier >= 10) {
-            return V[mEnergyHatchTier];
+            return GTValues.V[mEnergyHatchTier];
         } else {
-            return V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
+            return GTValues.V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
         }
     }
 
@@ -389,7 +388,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
                 if (machineMode == MACHINEMODE_PRECISION_LASER && !upgradeConsumed) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
-                if (wirelessMode && recipe.mEUt > V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);

@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static com.science.gtnl.utils.Utils.filterValidMTEs;
-import static gregtech.api.util.GTUtility.validMTEList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,6 +43,7 @@ import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -411,7 +409,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     public static long getMaxWorkingInputAmps(Collection<? extends MTEHatch> hatches) {
         List<Long> ampsList = new ArrayList<>();
-        for (MTEHatch tHatch : validMTEList(hatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(hatches)) {
             long currentAmp = tHatch.maxWorkingAmperesIn();
             ampsList.add(currentAmp);
         }
@@ -429,10 +427,10 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     public int checkEnergyHatchTier() {
         int tier = 0;
-        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
             tier = Math.max(tHatch.mTier, tier);
         }
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
             tier = Math.max(tHatch.mTier, tier);
         }
         return tier;
@@ -721,7 +719,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public boolean depleteInputFromRestrictedHatches(Collection<CustomFluidHatch> aHatches, int aAmount) {
-        for (CustomFluidHatch tHatch : validMTEList(aHatches)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(aHatches)) {
             FluidStack tLiquid = tHatch.getFluid();
             if (tLiquid == null || tLiquid.amount < aAmount) {
                 continue;
@@ -966,7 +964,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         long injected = 0;
         long totalOutput = 0;
         long aFirstVoltageFound = -1;
-        for (MTEHatchDynamo aDynamo : filterValidMTEs(mDynamoHatches)) {
+        for (MTEHatchDynamo aDynamo : Utils.filterValidMTEs(mDynamoHatches)) {
             long aVoltage = aDynamo.maxEUOutput();
             long aTotal = aDynamo.maxAmperesOut() * aVoltage;
             // Check against voltage to check when hatch mixing
@@ -975,7 +973,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             }
             totalOutput += aTotal;
         }
-        for (MTEHatch aDynamo : filterValidMTEs(mExoticDynamoHatches)) {
+        for (MTEHatch aDynamo : Utils.filterValidMTEs(mExoticDynamoHatches)) {
             long aVoltage = aDynamo.maxEUOutput();
             long aTotal = aDynamo.maxAmperesOut() * aVoltage;
             // Check against voltage to check when hatch mixing
@@ -992,7 +990,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         int aAmpsToInject;
         int aRemainder;
         int ampsOnCurrentHatch;
-        for (MTEHatchDynamo aDynamo : filterValidMTEs(mDynamoHatches)) {
+        for (MTEHatchDynamo aDynamo : Utils.filterValidMTEs(mDynamoHatches)) {
             leftToInject = actualOutputEU - injected;
             aVoltage = aDynamo.maxEUOutput();
             aAmpsToInject = (int) (leftToInject / aVoltage);
@@ -1009,7 +1007,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                 injected += aRemainder;
             }
         }
-        for (MTEHatch aDynamo : filterValidMTEs(mExoticDynamoHatches)) {
+        for (MTEHatch aDynamo : Utils.filterValidMTEs(mExoticDynamoHatches)) {
             leftToInject = actualOutputEU - injected;
             aVoltage = aDynamo.maxEUOutput();
             aAmpsToInject = (int) (leftToInject / aVoltage);
@@ -1097,9 +1095,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public long getMaxInputVoltage() {
         long rVoltage = 0;
-        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
             .getInputVoltage();
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
             .getInputVoltage();
         return rVoltage;
     }
@@ -1128,11 +1126,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public long getMaxInputPower() {
         long eut = 0;
-        for (MTEHatchEnergy tHatch : validMTEList(mEnergyHatches)) {
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
             IGregTechTileEntity baseTile = tHatch.getBaseMetaTileEntity();
             eut += baseTile.getInputVoltage() * baseTile.getInputAmperage();
         }
-        for (MTEHatch tHatch : validMTEList(mExoticEnergyHatches)) {
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
             IGregTechTileEntity baseTile = tHatch.getBaseMetaTileEntity();
             eut += baseTile.getInputVoltage() * baseTile.getInputAmperage();
         }

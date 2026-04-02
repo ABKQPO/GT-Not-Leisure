@@ -8,7 +8,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.GTValues.VP;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -38,6 +37,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -239,7 +239,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
                 .calculate();
 
             progressTime = calculator.getDuration();
-            this.lEUt = -VP[GTUtility.getTier(calculator.getConsumption())];
+            this.lEUt = -GTValues.VP[GTUtility.getTier(calculator.getConsumption())];
 
         } else {
             usedEU = finalParallel * 4L;

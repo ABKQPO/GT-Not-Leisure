@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gregtech.api.enums.GTValues.V;
-
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Optional;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -68,7 +67,7 @@ public class SteamFlightModule extends SteamElevatorModule {
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        this.lEUt = mTier * V[5] * Math.max(recipeOcCount, 1);
+        this.lEUt = mTier * GTValues.V[5] * Math.max(recipeOcCount, 1);
         this.mEfficiency = 10000;
         this.mMaxProgresstime = 800;
         return CheckRecipeResultRegistry.SUCCESSFUL;

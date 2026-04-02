@@ -13,8 +13,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
 import static gregtech.api.GregTechAPI.sBlockGlass1;
-import static gregtech.api.enums.GTValues.V;
-import static gregtech.api.enums.GTValues.VN;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -47,6 +45,7 @@ import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -228,14 +227,14 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
         if (mCasingTier < 0) return 0;
         if (wirelessMode) {
             if (mCasingTier >= 10) {
-                return V[Math.min(mParallelTier + 1, 14)];
+                return GTValues.V[Math.min(mParallelTier + 1, 14)];
             } else {
-                return V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
+                return GTValues.V[Math.min(Math.min(mParallelTier + 1, mCasingTier + 4), 14)];
             }
         } else if (mCasingTier >= 10) {
-            return V[mEnergyHatchTier];
+            return GTValues.V[mEnergyHatchTier];
         } else {
-            return V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
+            return GTValues.V[Math.min(mCasingTier + 4, mEnergyHatchTier)];
         }
     }
 
@@ -257,7 +256,7 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
         ret[origin.length] = StatCollector.translateToLocal("scanner.info.CASS.tier")
-            + (mCasingTier >= 0 ? VN[mCasingTier + 1] : "None!");
+            + (mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1] : "None!");
         return ret;
     }
 

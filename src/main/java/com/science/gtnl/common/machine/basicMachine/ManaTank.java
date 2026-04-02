@@ -1,9 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTUtility.formatNumbers;
-import static net.minecraft.util.StatCollector.translateToLocal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +28,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
@@ -116,7 +113,7 @@ public class ManaTank extends MTEDigitalTankBase {
                 tooltip.add(
                     GTLanguageManager.addStringLocalization("TileEntity_TANK_AMOUNT", "Fluid Amount: ")
                         + EnumChatFormatting.GREEN
-                        + formatNumbers(tContents.amount)
+                        + GTUtility.formatNumbers(tContents.amount)
                         + " L"
                         + EnumChatFormatting.GRAY);
             } else if (stack.stackTagCompound.hasKey("lockedFluidName")) {
@@ -496,7 +493,7 @@ public class ManaTank extends MTEDigitalTankBase {
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
                 .setStaticTexture(GTUITextures.OVERLAY_BUTTON_AUTOOUTPUT_FLUID)
                 .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.autooutput.tooltip"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setPos(7, 63)
                 .setSize(18, 18))
             .widget(new CycleButtonWidget().setToggle(() -> mLockFluid, val -> {
@@ -528,7 +525,7 @@ public class ManaTank extends MTEDigitalTankBase {
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
                 .setStaticTexture(GTUITextures.OVERLAY_BUTTON_LOCK)
                 .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.lockfluid.tooltip"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setPos(25, 63)
                 .setSize(18, 18))
             .widget(new CycleButtonWidget().setToggle(() -> mAllowInputFromOutputSide, val -> {
@@ -536,17 +533,17 @@ public class ManaTank extends MTEDigitalTankBase {
                 if (!mAllowInputFromOutputSide) {
                     GTUtility.sendChatToPlayer(
                         buildContext.getPlayer(),
-                        translateToLocal("gt.interact.desc.input_from_output_off"));
+                        StatCollector.translateToLocal("gt.interact.desc.input_from_output_off"));
                 } else {
                     GTUtility.sendChatToPlayer(
                         buildContext.getPlayer(),
-                        translateToLocal("gt.interact.desc.input_from_output_on"));
+                        StatCollector.translateToLocal("gt.interact.desc.input_from_output_on"));
                 }
             })
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
                 .setStaticTexture(GTUITextures.OVERLAY_BUTTON_INPUT_FROM_OUTPUT_SIDE)
                 .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.inputfromoutput.tooltip"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setPos(43, 63)
                 .setSize(18, 18))
             .widget(new CycleButtonWidget().setToggle(() -> mVoidFluidPart, val -> {
@@ -565,7 +562,7 @@ public class ManaTank extends MTEDigitalTankBase {
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
                 .setStaticTexture(GTUITextures.OVERLAY_BUTTON_TANK_VOID_EXCESS)
                 .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.voidoverflow.tooltip"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setPos(98, 63)
                 .setSize(18, 18))
             .widget(new CycleButtonWidget().setToggle(() -> mVoidFluidFull, val -> {
@@ -582,7 +579,7 @@ public class ManaTank extends MTEDigitalTankBase {
                 .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
                 .setStaticTexture(GTUITextures.OVERLAY_BUTTON_TANK_VOID_ALL)
                 .setGTTooltip(() -> mTooltipCache.getData("GT5U.machines.digitaltank.voidfull.tooltip"))
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                 .setPos(116, 63)
                 .setSize(18, 18));
     }

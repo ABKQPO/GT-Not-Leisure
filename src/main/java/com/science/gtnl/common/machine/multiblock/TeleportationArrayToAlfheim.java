@@ -16,7 +16,6 @@ import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTUtility.validMTEList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,7 +314,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
         if (aLiquid == null) return false;
-        for (MTEHatchInput tHatch : validMTEList(mInputHatches)) {
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
             setHatchRecipeMap(tHatch);
             FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
             if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
@@ -326,7 +325,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                 return tLiquid != null && tLiquid.amount >= aLiquid.amount;
             }
         }
-        for (CustomFluidHatch tHatch : validMTEList(mFluidManaInputHatch)) {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) {
             FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
             if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
                 if (simulate) {
@@ -503,7 +502,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     @Override
     public void updateSlots() {
-        for (CustomFluidHatch tHatch : validMTEList(mFluidManaInputHatch)) tHatch.updateSlots();
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) tHatch.updateSlots();
         super.updateSlots();
     }
 
