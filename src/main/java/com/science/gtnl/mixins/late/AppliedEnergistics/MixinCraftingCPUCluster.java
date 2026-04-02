@@ -21,7 +21,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalLongRef;
-import com.science.gtnl.common.block.blocks.tile.TileEntityAEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.ChiselPatternDetails;
@@ -95,7 +95,7 @@ public abstract class MixinCraftingCPUCluster {
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         assembly.set(false);
-        if ((details instanceof ChiselPatternDetails && instance instanceof TileEntityAEChisel)
+        if ((details instanceof ChiselPatternDetails && instance instanceof TileEntityMEChisel)
             || ((details.isCraftable() || details instanceof DireCraftingPatternDetails)
                 && instance instanceof AssemblerMatrix ef
                 && !ef.isBusy())) {
