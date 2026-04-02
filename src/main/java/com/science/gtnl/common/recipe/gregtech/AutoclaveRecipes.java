@@ -1,9 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.EnderIO;
-import static gregtech.api.enums.Mods.EtFuturumRequiem;
-import static gregtech.api.enums.Mods.Forestry;
-import static gregtech.api.enums.Mods.IndustrialCraft2;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
@@ -17,6 +13,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsGTNH;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -38,7 +35,7 @@ public class AutoclaveRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 16))
             .fluidInputs(GTNLMaterials.Polyetheretherketone.getMolten(9))
-            .itemOutputs(GTModHandler.getModItem(IndustrialCraft2.ID, "itemPartCarbonFibre", 64))
+            .itemOutputs(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemPartCarbonFibre", 64))
             .outputChances(10000)
             .duration(60)
             .eut(TierEU.RECIPE_IV)
@@ -58,7 +55,7 @@ public class AutoclaveRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.Sapphire, 64))
             .fluidInputs(Materials.Enderium.getMolten(9216))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 8))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemMaterial", 64, 8))
             .duration(2400)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
@@ -66,7 +63,7 @@ public class AutoclaveRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.Olivine, 64))
             .fluidInputs(Materials.VividAlloy.getMolten(9216))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 9))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemMaterial", 64, 9))
             .duration(2400)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
@@ -74,7 +71,7 @@ public class AutoclaveRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gem, Materials.GreenSapphire, 64))
             .fluidInputs(Materials.EnergeticSilver.getMolten(9216))
-            .itemOutputs(GTModHandler.getModItem(EnderIO.ID, "itemMaterial", 64, 13))
+            .itemOutputs(GTModHandler.getModItem(Mods.EnderIO.ID, "itemMaterial", 64, 13))
             .duration(2400)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
@@ -101,7 +98,7 @@ public class AutoclaveRecipes implements IRecipePool {
             .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
             .itemOutputs(
                 ItemList.Netherite_Scrap_Seed.get(1),
-                GTModHandler.getModItem(EtFuturumRequiem.ID, "netherite_scrap", 2))
+                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 2))
             .duration(300)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);
@@ -118,7 +115,7 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
 
-        if (Forestry.isModLoaded()) {
+        if (Mods.Forestry.isModLoaded()) {
             RecipeBuilder.builder() // Prismarine + Comb
                 .setNEIDesc("Remove Change by GTNotLeisure")
                 .itemInputs(

@@ -17,7 +17,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialElectrolyzer;
 import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialElectrolyzerActive;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -39,6 +38,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtnhlanth.common.block.BlockCasing;
 
 public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> implements ISurvivalConstructable {
 
@@ -114,7 +114,7 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
     public IStructureDefinition<LargeElectrolyzer> getStructureDefinition() {
         return StructureDefinition.<LargeElectrolyzer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('A', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement(
                 'B',
                 buildHatchAdder(LargeElectrolyzer.class).casingIndex(getCasingTextureID())

@@ -25,7 +25,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofCoil;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static kekztech.common.Blocks.lscLapotronicEnergyUnit;
 
 import java.util.Arrays;
@@ -59,6 +58,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtnhlanth.common.block.BlockCasing;
 
 public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBase<MagneticEnergyReactionFurnace> {
 
@@ -143,7 +143,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement('A', ofBlock(FRF_Coil_1, 0))
             .addElement('B', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('C', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('C', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('D', ofBlock(sBlockCasings10, 0))
             .addElement('E', ofBlock(sBlockCasings10, 6))
             .addElement('F', ofBlock(sBlockCasings2, 6))

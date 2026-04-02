@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.NewHorizonsCoreMod;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeConstants.NANO_FORGE_TIER;
 
@@ -14,6 +13,7 @@ import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
@@ -70,7 +70,7 @@ public class NanoForgeRecipes implements IRecipePool {
             .eut(40_000_000)
             .addTo(NFR);
 
-        if (NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
     }
 
     @Optional.Method(modid = "dreamcraft")

@@ -12,10 +12,6 @@ import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Mods.BloodMagic;
-import static gregtech.api.enums.Mods.Botania;
-import static gregtech.api.enums.Mods.Thaumcraft;
-import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
@@ -61,6 +57,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import bartworks.system.material.BWTileEntityMetaGeneratedOre;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -78,6 +75,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
@@ -360,7 +358,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     public boolean isSpecificItem(ItemStack stack, String modId, String itemName) {
-        ItemStack specificItem = getModItem(modId, itemName, 1, 0);
+        ItemStack specificItem = GTModHandler.getModItem(modId, itemName, 1, 0);
         return stack.getItem() == specificItem.getItem() && stack.getItemDamage() == specificItem.getItemDamage();
     }
 
@@ -511,11 +509,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     public int getFortuneTierForItem(ItemStack stack) {
-        if (isSpecificItem(stack, Botania.ID, "terraPick")) {
+        if (isSpecificItem(stack, Mods.Botania.ID, "terraPick")) {
             return 4;
-        } else if (isSpecificItem(stack, BloodMagic.ID, "boundPickaxe")) {
+        } else if (isSpecificItem(stack, Mods.BloodMagic.ID, "boundPickaxe")) {
             return 3;
-        } else if (isSpecificItem(stack, Thaumcraft.ID, "ItemPickaxeElemental")) {
+        } else if (isSpecificItem(stack, Mods.Thaumcraft.ID, "ItemPickaxeElemental")) {
             return 2;
         } else {
             return 0;

@@ -2,8 +2,6 @@ package com.science.gtnl.utils.machine.greenHouseManager;
 
 import static com.science.gtnl.utils.item.ItemUtils.readItemStackFromNBT;
 import static com.science.gtnl.utils.item.ItemUtils.writeItemStackToNBT;
-import static gregtech.api.enums.Mods.ThaumicBases;
-import static gregtech.api.enums.Mods.ThaumicTinkerer;
 
 import java.util.LinkedList;
 
@@ -20,6 +18,7 @@ import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseRainbo
 import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseSeedBucket;
 import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseStemBucket;
 
+import gregtech.api.enums.Mods;
 import gregtech.api.util.GTUtility;
 import lombok.Getter;
 
@@ -63,12 +62,12 @@ public abstract class GreenHouseBucket {
         // IC2 buckets
         GreenHouseModes.IC2.addLowPriorityFactory(GreenHouseIC2Bucket.factory);
 
-        if (ThaumicTinkerer.isModLoaded()) {
+        if (Mods.ThaumicTinkerer.isModLoaded()) {
             GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseInfusedSeedBucket.factory);
         }
 
         // Regular Mode Buckets
-        if (ThaumicBases.isModLoaded()) {
+        if (Mods.ThaumicBases.isModLoaded()) {
             GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseRainbowCactusBucket.factory);
         }
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseFlowerBucket.factory);

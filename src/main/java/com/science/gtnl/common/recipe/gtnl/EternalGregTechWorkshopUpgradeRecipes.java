@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeConstants.FOG_UPGRADE_NAME_SHORT;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -19,6 +18,7 @@ import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -36,7 +36,7 @@ public class EternalGregTechWorkshopUpgradeRecipes implements IRecipePool {
             GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.SuperconductorUIVBase, 64),
             ItemList.SuperconductorComposite.get(32),
             GGMaterial.metastableOganesson.get(OrePrefixes.gearGt, 16),
-            getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 8L),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 8L),
             ItemList.Robot_Arm_UIV.get(64L),
             ItemList.Field_Generator_UEV.get(64L));
 
@@ -44,7 +44,7 @@ public class EternalGregTechWorkshopUpgradeRecipes implements IRecipePool {
             GregtechItemList.Mega_AlloyBlastSmelter.get(16L),
             ItemList.Casing_Coil_Hypogen.get(64L),
             CustomItemList.Godforge_HarmonicPhononTransmissionConduit.get(32L),
-            getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16L),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16L),
             ItemRefer.Field_Restriction_Coil_T3.get(48),
             ItemList.Robot_Arm_UIV.get(64L),
             ItemList.Field_Generator_UEV.get(64L));
@@ -56,7 +56,7 @@ public class EternalGregTechWorkshopUpgradeRecipes implements IRecipePool {
             ItemList.UHTResistantMesh.get(64),
             MaterialsAlloy.QUANTUM.getPlateDense(48),
             MaterialsElements.STANDALONE.RHUGNOR.getGear(32),
-            getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16L),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16L),
             ItemList.Robot_Arm_UIV.get(64L),
             ItemList.Field_Generator_UEV.get(64L));
 
@@ -68,7 +68,7 @@ public class EternalGregTechWorkshopUpgradeRecipes implements IRecipePool {
             ItemList.Machine_Multi_TranscendentPlasmaMixer.get(4),
             MaterialsElements.STANDALONE.RHUGNOR.getGear(64),
             GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Ichorium, 64),
-            getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 32L),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 32L),
             ItemList.Robot_Arm_UIV.get(64L),
             ItemList.Field_Generator_UEV.get(64L));
 

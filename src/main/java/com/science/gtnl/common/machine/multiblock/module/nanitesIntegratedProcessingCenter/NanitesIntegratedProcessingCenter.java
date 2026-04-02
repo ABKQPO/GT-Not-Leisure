@@ -28,7 +28,6 @@ import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofCoil;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
@@ -74,6 +73,7 @@ import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtnhlanth.common.block.BlockCasing;
 import gtnhlanth.common.register.LanthItemList;
 
 public class NanitesIntegratedProcessingCenter
@@ -212,7 +212,7 @@ public class NanitesIntegratedProcessingCenter
                     .dot(1)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
             .addElement('B', ofBlock(sBlockCasingsTT, 0))
-            .addElement('C', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('C', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('D', ofBlock(sBlockCasings3, 10))
             .addElement('E', ofBlock(sBlockMetal5, 1))
             .addElement('F', ofBlock(BlockLoader.metaCasing, 5))

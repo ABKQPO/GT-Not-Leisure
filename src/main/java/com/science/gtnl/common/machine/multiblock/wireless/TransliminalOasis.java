@@ -6,7 +6,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static com.science.gtnl.utils.Utils.NEGATIVE_ONE;
 import static com.science.gtnl.utils.Utils.ZERO_STRING;
 import static com.science.gtnl.utils.Utils.mergeArray;
@@ -24,13 +23,11 @@ import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Mods.RandomThings;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.api.util.GTUtility.areStacksEqual;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -54,6 +51,7 @@ import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -65,6 +63,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtnhlanth.common.block.BlockCasing;
 import tectech.thing.casing.TTCasingsContainer;
 
 public class TransliminalOasis extends WirelessEnergyMultiMachineBase<TransliminalOasis> {
@@ -151,7 +150,13 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addElement(
                 'F',
                 buildHatchAdder(TransliminalOasis.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Energy.or(ExoticEnergy), ParallelCon)
+                    .atLeast(
+                        Maintenance,
+                        InputBus,
+                        OutputBus,
+                        InputHatch,
+                        Energy.or(ExoticEnergy),
+                        CustomHatchElement.ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
@@ -163,10 +168,10 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addElement('L', ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
             .addElement(
                 'M',
-                RandomThings.isModLoaded()
+                Mods.RandomThings.isModLoaded()
                     ? ofChain(
-                        ofBlockAnyMeta(GameRegistry.findBlock(RandomThings.ID, "fertilizedDirt")),
-                        ofBlockAnyMeta(GameRegistry.findBlock(RandomThings.ID, "fertilizedDirt_tilled")))
+                        ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt")),
+                        ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt_tilled")))
                     : ofBlockAnyMeta(Blocks.dirt))
             .addElement('N', ofBlock(sBlockCasingsDyson, 9))
             .addElement('O', ofBlock(sBlockTintedGlass, 0))
@@ -175,7 +180,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addElement('R', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement('S', ofBlock(sBlockGlass1, 0))
             .addElement('T', ofFrame(Materials.Polytetrafluoroethylene))
-            .addElement('U', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('U', ofBlockAnyMeta(new BlockCasing("electrode")))
             .build();
     }
 

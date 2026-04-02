@@ -1,12 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gregtech.api.enums.GTValues.V;
-import static gregtech.api.enums.Mods.Botania;
-import static gregtech.api.enums.Mods.Minecraft;
-import static gregtech.api.enums.Mods.Thaumcraft;
-import static gregtech.api.enums.Mods.ThaumicHorizons;
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +35,14 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
 import com.science.gtnl.utils.enums.ModList;
 
+import gregtech.api.enums.GTValues;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -646,7 +642,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        this.lEUt = machineEffectsCount * V[3] * Math.max(1, setMaxEffectLevel() * 2);
+        this.lEUt = machineEffectsCount * GTValues.V[3] * Math.max(1, setMaxEffectLevel() * 2);
         this.mEfficiency = 10000;
         this.mMaxProgresstime = 1000;
         return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -722,7 +718,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         player.addPotionEffect(new PotionEffect(ModPotions.featherfeet.id, 300, setMaxEffectLevel()));
                         setEnableFeatherFeetEffect(enableFeatherFeetEffect); // 更新启用状态
                     }
-                    if (ThaumicHorizons.isModLoaded() && enableVisRegenEffect) {
+                    if (Mods.ThaumicHorizons.isModLoaded() && enableVisRegenEffect) {
                         player.addPotionEffect(new PotionEffect(PotionVisRegen.instance.id, 300, setMaxEffectLevel()));
                         setEnableVisRegenEffect(enableVisRegenEffect); // 更新启用状态
                     }
@@ -733,29 +729,29 @@ public class SteamBeaconModule extends SteamElevatorModule {
     }
 
     public static final UITexture SPEED_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 198, 18, 216);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 198, 18, 216);
     public static final UITexture STRENGTH_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 198, 90, 216);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 198, 90, 216);
     public static final UITexture JUMP_BOOST_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 216, 54, 234);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 216, 54, 234);
     public static final UITexture RESISTANCE_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 108, 216, 126, 234);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 108, 216, 126, 234);
     public static final UITexture HEALTH_REGENERATION_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 198, 144, 216);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 198, 144, 216);
     public static final UITexture NIGHT_VISION_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 216, 90, 234);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 216, 90, 234);
     public static final UITexture HASTE_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 198, 54, 216);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 198, 54, 216);
     public static final UITexture WATER_BREATHING_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 234, 18, 252);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 234, 18, 252);
     public static final UITexture FIRE_RESISTANCE_EFFECT = UITexture
-        .partly(Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 216, 144, 234);
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 216, 144, 234);
     public static final UITexture WARP_WARD_EFFECT = UITexture
-        .partly(Thaumcraft.resourceDomain, "misc/potions", 256, 256, 54, 234, 72, 252);
+        .partly(Mods.Thaumcraft.resourceDomain, "misc/potions", 256, 256, 54, 234, 72, 252);
     public static final UITexture FEATHER_FEET_EFFECT = UITexture
-        .partly(Botania.resourceDomain, "gui/potions", 256, 256, 18, 198, 36, 216);
+        .partly(Mods.Botania.resourceDomain, "gui/potions", 256, 256, 18, 198, 36, 216);
     public static final UITexture VIS_REGEN_EFFECT = UITexture
-        .partly(ThaumicHorizons.resourceDomain, "misc/potions", 256, 256, 54, 198, 72, 216);
+        .partly(Mods.ThaumicHorizons.resourceDomain, "misc/potions", 256, 256, 54, 198, 72, 216);
 
     public static final UITexture BEACON_MATERIAL = UITexture
         .fullImage(ModList.ScienceNotLeisure.resourceDomain, "gui/picture/steam_beacon");
@@ -822,7 +818,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                 return ret.toArray(new IDrawable[0]);
             })
             .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_00"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(174, 91)
             .setSize(16, 16));
     }
@@ -871,7 +867,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                     })
                     .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasSpeedEffect, this::setSpeedEffect), builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_00"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 18)
                     .setSize(16, 16))
             .widget(
@@ -893,7 +889,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         new FakeSyncWidget.BooleanSyncer(this::hasStrengthEffect, this::setStrengthEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_01"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(24, 18)
                     .setSize(16, 16))
             .widget(
@@ -915,7 +911,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         new FakeSyncWidget.BooleanSyncer(this::hasJumpBoostEffect, this::setJumpBoostEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_02"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(42, 18)
                     .setSize(16, 16))
             .widget(
@@ -937,7 +933,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         new FakeSyncWidget.BooleanSyncer(this::hasResistanceEffect, this::setResistanceEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_03"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 36)
                     .setSize(16, 16))
             .widget(
@@ -961,7 +957,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                             this::setHealthRegenerationEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_04"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(24, 36)
                     .setSize(16, 16))
             .widget(
@@ -983,7 +979,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         new FakeSyncWidget.BooleanSyncer(this::hasNightVisionEffect, this::setNightVisionEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_05"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(42, 36)
                     .setSize(16, 16));
         if (mTier > 1) {
@@ -1004,7 +1000,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                     })
                     .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasHasteEffect, this::setHasteEffect), builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_06"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 54)
                     .setSize(16, 16))
                 .widget(
@@ -1028,7 +1024,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                                 this::setFireResistanceEffect),
                             builder)
                         .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_07"))
-                        .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                        .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(24, 54)
                         .setSize(16, 16))
                 .widget(
@@ -1052,7 +1048,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                                 this::setWaterBreathingEffect),
                             builder)
                         .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_08"))
-                        .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                        .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(42, 54)
                         .setSize(16, 16));
         }
@@ -1076,7 +1072,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                         new FakeSyncWidget.BooleanSyncer(this::hasWarpWardEffect, this::setWarpWardEffect),
                         builder)
                     .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_09"))
-                    .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                    .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 72)
                     .setSize(16, 16))
                 .widget(
@@ -1098,11 +1094,11 @@ public class SteamBeaconModule extends SteamElevatorModule {
                             new FakeSyncWidget.BooleanSyncer(this::hasFeatherFeetEffect, this::setFeatherFeetEffect),
                             builder)
                         .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_10"))
-                        .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                        .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(24, 72)
                         .setSize(16, 16));
 
-            if (ThaumicHorizons.isModLoaded()) {
+            if (Mods.ThaumicHorizons.isModLoaded()) {
                 builder.widget(
                     new ButtonWidget().setOnClick((clickData, widget) -> toggleVisRegenEffect())
                         .setPlayClickSoundResource(
@@ -1122,7 +1118,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
                             new FakeSyncWidget.BooleanSyncer(this::hasVisRegenEffect, this::setVisRegenEffect),
                             builder)
                         .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_11"))
-                        .setTooltipShowUpDelay(TOOLTIP_DELAY)
+                        .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(42, 72)
                         .setSize(16, 16));
             }
@@ -1148,7 +1144,7 @@ public class SteamBeaconModule extends SteamElevatorModule {
             })
             .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasMachineCanWork, this::setMachineCanWork), builder)
             .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_01"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(66, 37)
             .setSize(16, 16))
             .widget(

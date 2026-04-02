@@ -31,7 +31,6 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings6Misc;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -97,6 +96,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.render.IMTERenderer;
+import gtnhlanth.common.block.BlockCasing;
 import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -527,7 +527,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     public IStructureDefinition<KuangBiaoOneGiantNuclearFusionReactor> getStructureDefinition() {
         return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('A', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('B', ofBlock(sBlockCasings8, 10))
             .addElement(
                 'C',

@@ -26,7 +26,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofCoil;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsBA0;
 
 import java.util.Arrays;
@@ -59,6 +58,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
+import gtnhlanth.common.block.BlockCasing;
 
 public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionCore> {
 
@@ -179,7 +179,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
             .addElement('K', ofBlock(sBlockCasings9, 7))
             .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
             .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('N', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('O', ofFrame(Materials.Polytetrafluoroethylene))
             .addElement('P', ofBlock(sBlockCasings8, 0))
             .addElement('Q', ofFrame(Materials.BlackSteel))

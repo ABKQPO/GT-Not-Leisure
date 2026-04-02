@@ -18,7 +18,6 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.api.util.GTUtility.getIntegratedCircuit;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
@@ -55,6 +54,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtnhlanth.common.block.BlockCasing;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> implements ISurvivalConstructable {
@@ -128,7 +128,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
         return StructureDefinition.<MatterFabricator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement('A', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('B', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('C', ofBlock(sBlockCasings1, 7))
             .addElement('D', ofBlock(sBlockCasings1, 15))
             .addElement('E', ofBlock(sBlockCasings3, 11))

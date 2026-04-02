@@ -38,7 +38,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtnhlanth.common.register.LanthItemList;
+import gtnhlanth.common.block.BlockCasing;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -116,7 +116,7 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
         return StructureDefinition.<AetronPressor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement('A', ofBlock(sBlockCasingsTT, 6))
-            .addElement('B', ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('C', ofBlock(sBlockCasingsTT, 0))
             .addElement('D', ofBlock(sBlockCasings9, 14))
             .addElement('E', ofBlock(BlockLoader.metaCasing, 18))

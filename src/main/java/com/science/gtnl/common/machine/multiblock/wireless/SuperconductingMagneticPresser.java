@@ -21,7 +21,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -48,6 +47,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtnhlanth.common.block.BlockCasing;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -144,7 +144,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
             .addElement('H', ofBlock(sBlockCasingsTT, 6))
             .addElement('I', ofBlock(sBlockCasingsTT, 4))
             .addElement('J', ofBlock(sBlockCasings8, 10))
-            .addElement('K', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('K', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('L', ofBlock(sBlockCasings3, 11))
             .addElement('M', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.DraconicEvolution;
-
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -11,6 +9,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -48,7 +47,7 @@ public class CentrifugeRecipes implements IRecipePool {
             .addTo(CNCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(DraconicEvolution.ID, "magnet", 0, 1))
+            .itemInputs(GTModHandler.getModItem(Mods.DraconicEvolution.ID, "magnet", 0, 1))
             .fluidInputs(GTNLMaterials.RareEarthChlorides.getFluidOrGas(2000))
             .fluidOutputs(
                 GTNLMaterials.LaNdOxidesSolution.getFluidOrGas(250),

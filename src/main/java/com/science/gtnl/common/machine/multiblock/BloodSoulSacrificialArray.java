@@ -9,7 +9,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings8;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Mods.Avaritia;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 
@@ -350,7 +349,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public CheckRecipeResult checkProcessing() {
         isCreativeOrb = false;
 
-        ItemStack requiredItem = GTModHandler.getModItem(Avaritia.ID, "Orb_Armok", 1);
+        ItemStack requiredItem = GTModHandler.getModItem(Mods.Avaritia.ID, "Orb_Armok", 1);
 
         for (ItemStack item : getAllStoredInputs()) {
             if (item != null && item.isItemEqual(requiredItem)) {

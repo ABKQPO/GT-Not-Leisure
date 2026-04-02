@@ -17,7 +17,6 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTUtility.validMTEList;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
@@ -88,6 +87,7 @@ import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
+import gtnhlanth.common.block.BlockCasing;
 
 public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopying> implements ISurvivalConstructable {
 
@@ -415,7 +415,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         return StructureDefinition.<ElementCopying>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement('A', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('B', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement(
                 'C',
                 buildHatchAdder(ElementCopying.class).casingIndex(getCasingTextureID())

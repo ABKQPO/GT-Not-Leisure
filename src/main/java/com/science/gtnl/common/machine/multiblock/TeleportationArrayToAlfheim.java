@@ -15,7 +15,6 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Mods.Botania;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTUtility.validMTEList;
 
@@ -59,6 +58,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -97,7 +97,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public static final int RUNE_MODE = 3;
     public boolean enableInfinityMana = false;
     public static final ItemStack asgardandelion = ItemUtils
-        .getItemStack(Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
+        .getItemStack(Mods.Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
 
     public ArrayList<CustomFluidHatch> mFluidManaInputHatch = new ArrayList<>();
 
@@ -483,7 +483,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public void setupParameters() {
         super.setupParameters();
-        if (GTUtility.areStacksEqual(getControllerSlot(), GTModHandler.getModItem(Botania.ID, "pool", 1, 1), true)
+        if (GTUtility.areStacksEqual(getControllerSlot(), GTModHandler.getModItem(Mods.Botania.ID, "pool", 1, 1), true)
             || GTUtility.areStacksEqual(getControllerSlot(), asgardandelion, true)) {
             enableInfinityMana = true;
         }

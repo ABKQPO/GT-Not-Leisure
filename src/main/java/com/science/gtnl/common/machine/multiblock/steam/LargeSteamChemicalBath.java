@@ -14,7 +14,6 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Mods.GTPlusPlus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
@@ -33,6 +32,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -95,7 +95,7 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
     public IStructureDefinition<LargeSteamChemicalBath> getStructureDefinition() {
         return StructureDefinition.<LargeSteamChemicalBath>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(GameRegistry.findBlock(GTPlusPlus.ID, "blockBlockPotin"), 0))
+            .addElement('A', ofBlock(GameRegistry.findBlock(Mods.GTPlusPlus.ID, "blockBlockPotin"), 0))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(

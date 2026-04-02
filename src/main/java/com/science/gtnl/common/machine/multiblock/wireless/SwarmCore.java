@@ -5,7 +5,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAn
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.GregTechAPI.sBlockCasings5;
@@ -18,17 +17,9 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Mods.DraconicEvolution;
-import static gregtech.api.enums.Mods.EternalSingularity;
-import static gregtech.api.enums.Mods.GalacticraftAmunRa;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW;
-import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW;
 import static gregtech.api.util.GTStructureUtility.activeCoils;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import javax.annotation.Nonnull;
@@ -64,6 +55,7 @@ import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -82,6 +74,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import gtnhlanth.common.block.BlockCasing;
 import lombok.Getter;
 import tectech.thing.CustomItemList;
 
@@ -102,7 +95,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             GTUtility.copyAmountUnsafe(64, MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(1)),
             ItemList.Electric_Motor_UEV.get(32), ItemList.Emitter_UEV.get(8), ItemList.Sensor_UEV.get(8),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.TengamAttuned, 32),
-            GTModHandler.getModItem(EternalSingularity.ID, "eternal_singularity", 16),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16),
             GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUEV, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Glowstone, 16),
             GTUtility.copyAmountUnsafe(16, GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.nanite, 1)),
@@ -110,14 +103,14 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
         { GTUtility.copyAmountUnsafe(128, ItemRefer.MagneticFluxCasing.get(1)),
             GTUtility.copyAmountUnsafe(128, GregtechItemList.InfinityInfusedManipulator.get(1)),
             GTUtility.copyAmountUnsafe(128, GregtechItemList.InfinityInfusedShieldingCore.get(1)),
-            GTModHandler.getModItem(GalacticraftAmunRa.ID, "tile.baseBlockRock", 48, 14),
+            GTModHandler.getModItem(Mods.GalacticraftAmunRa.ID, "tile.baseBlockRock", 48, 14),
             GTUtility.copyAmountUnsafe(128, ItemRefer.GravityStabilizationCasing.get(1)),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.SpaceTime, 32),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.Creon, 64),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.Mellion, 64),
             GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UMV, 64),
             GTUtility.copyAmountUnsafe(64, ItemList.Field_Generator_UIV.get(1)),
-            GTModHandler.getModItem(DraconicEvolution.ID, "chaoticCore", 32),
+            GTModHandler.getModItem(Mods.DraconicEvolution.ID, "chaoticCore", 32),
             GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, MaterialsUEVplus.SixPhasedCopper, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Gold, 64) },
@@ -305,21 +298,21 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -339,7 +332,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             .addElement('F', ofBlock(sBlockCasings1, 14))
             .addElement('G', activeCoils(ofBlock(sBlockCasings5, 13)))
             .addElement('H', ofBlock(sBlockCasings10, 2))
-            .addElement('I', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('I', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('J', ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'K',
@@ -351,7 +344,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
                         InputBus,
                         OutputBus,
                         Energy.or(ExoticEnergy),
-                        ParallelCon)
+                        CustomHatchElement.ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))

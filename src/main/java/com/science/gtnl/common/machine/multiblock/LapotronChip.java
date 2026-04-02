@@ -15,7 +15,6 @@ import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.Mods.ExtraUtilities;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import net.minecraft.block.Block;
@@ -39,6 +38,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.INEIPreviewModifier;
 import gregtech.api.interfaces.ITexture;
@@ -131,7 +131,7 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     ofBlocksTiered(
                         LapotronChip::getLapisCaelestisTier,
-                        ExtraUtilities.isModLoaded() ? getGreenScreenVariants() : getGlass(),
+                        Mods.ExtraUtilities.isModLoaded() ? getGreenScreenVariants() : getGlass(),
                         -1,
                         (t, m) -> t.tierLapisCaelestis = m,
                         t -> t.tierLapisCaelestis)))

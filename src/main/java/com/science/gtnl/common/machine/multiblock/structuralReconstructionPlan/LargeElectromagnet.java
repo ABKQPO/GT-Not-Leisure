@@ -17,7 +17,6 @@ import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_EMS_ACTIVE_GL
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_EMS_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtnhlanth.common.register.LanthItemList.ELECTRODE_CASING;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +46,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtnhlanth.common.block.BlockCasing;
 
 public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> implements ISurvivalConstructable {
 
@@ -139,7 +139,7 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
     public IStructureDefinition<LargeElectromagnet> getStructureDefinition() {
         return StructureDefinition.<LargeElectromagnet>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(ELECTRODE_CASING))
+            .addElement('A', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement(
                 'B',
                 buildHatchAdder(LargeElectromagnet.class).casingIndex(getCasingTextureID())

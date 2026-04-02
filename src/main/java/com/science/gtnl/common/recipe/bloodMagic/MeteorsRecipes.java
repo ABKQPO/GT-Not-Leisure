@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.bloodMagic;
 
-import static gregtech.api.enums.Mods.IndustrialCraft2;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +35,7 @@ public class MeteorsRecipes implements IRecipePool {
         List<String> meteorDrops = getTNTMeteor();
 
         MeteorRegistry.registerMeteor(
-            GTModHandler.getModItem(IndustrialCraft2.ID, "blockNuke", 1),
+            GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockNuke", 1),
             meteorDrops.toArray(new String[0]),
             100,
             114514);

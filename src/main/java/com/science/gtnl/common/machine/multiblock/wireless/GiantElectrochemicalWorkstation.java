@@ -50,7 +50,7 @@ import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
-import gtnhlanth.common.register.LanthItemList;
+import gtnhlanth.common.block.BlockCasing;
 
 public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineBase<GiantElectrochemicalWorkstation> {
 
@@ -178,7 +178,7 @@ public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineB
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
                             .getItem())))
-            .addElement('M', ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement('M', ofBlockAnyMeta(new BlockCasing("electrode")))
             .build();
     }
 

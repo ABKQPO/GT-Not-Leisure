@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.HardcoreEnderExpansion;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -16,6 +14,7 @@ import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -632,7 +631,8 @@ public class SpaceMinerRecipes implements IRecipePool {
                     .copyAmountUnsafe(160, GTOreDictUnificator.get(OrePrefixes.ore, Materials.VanadiumMagnetite, 1)),
                 GTUtility.copyAmountUnsafe(80, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Gold, 1)),
                 GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.HeeEndium, 1)),
-                GTUtility.copyAmountUnsafe(60, GTModHandler.getModItem(HardcoreEnderExpansion.ID, "end_powder_ore", 1)),
+                GTUtility
+                    .copyAmountUnsafe(60, GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID, "end_powder_ore", 1)),
                 GTUtility.copyAmountUnsafe(240, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cheese, 1)))
             .fluidInputs(Materials.GasolinePremium.getFluid(10000))
             .specialValue(1)
@@ -652,7 +652,8 @@ public class SpaceMinerRecipes implements IRecipePool {
                     .copyAmountUnsafe(160, GTOreDictUnificator.get(OrePrefixes.ore, Materials.VanadiumMagnetite, 1)),
                 GTUtility.copyAmountUnsafe(80, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Gold, 1)),
                 GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.HeeEndium, 1)),
-                GTUtility.copyAmountUnsafe(60, GTModHandler.getModItem(HardcoreEnderExpansion.ID, "end_powder_ore", 1)),
+                GTUtility
+                    .copyAmountUnsafe(60, GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID, "end_powder_ore", 1)),
                 GTUtility.copyAmountUnsafe(240, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cheese, 1)))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.RP1RocketFuel, 6000))
             .specialValue(1)

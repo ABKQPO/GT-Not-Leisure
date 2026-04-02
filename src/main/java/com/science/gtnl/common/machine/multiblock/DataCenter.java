@@ -52,7 +52,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.WirelessComputationPacket;
-import gtnhlanth.common.register.LanthItemList;
+import gtnhlanth.common.block.BlockCasing;
 import tectech.mechanics.dataTransport.ALRecipeDataPacket;
 import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.casing.TTCasingsContainer;
@@ -303,7 +303,7 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
                     .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1))
             .addElement('D', ofBlock(sBlockCasings8, 7))
             .addElement('E', ofBlock(sBlockCasings10, 9))
-            .addElement('F', ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement('F', ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement('G', ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
             .addElement('H', ofBlock(TTCasingsContainer.sBlockCasingsTT, 2))
             .addElement('I', ofBlock(BlockLoader.metaCasing, 4))

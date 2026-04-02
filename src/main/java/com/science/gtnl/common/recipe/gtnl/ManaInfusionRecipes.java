@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.Botania;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
@@ -35,9 +34,9 @@ public class ManaInfusionRecipes implements IRecipePool {
             FluidStack mana = GTNLMaterials.FluidMana.getFluidOrGas(recipe.getManaToConsume());
 
             if (isAlchemy) {
-                inputs.add(GTModHandler.getModItem(Botania.ID, "alchemyCatalyst", 0));
+                inputs.add(GTModHandler.getModItem(Mods.Botania.ID, "alchemyCatalyst", 0));
             } else if (isConjuration) {
-                inputs.add(GTModHandler.getModItem(Botania.ID, "conjurationCatalyst", 0));
+                inputs.add(GTModHandler.getModItem(Mods.Botania.ID, "conjurationCatalyst", 0));
             } else {
                 inputs.add(GTUtility.getIntegratedCircuit(1));
             }
@@ -77,11 +76,11 @@ public class ManaInfusionRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Botania.ID, "terraPlate", 0),
-                GTModHandler.getModItem(Botania.ID, "manaResource", 1, 0),
-                GTModHandler.getModItem(Botania.ID, "manaResource", 1, 1),
-                GTModHandler.getModItem(Botania.ID, "manaResource", 1, 2))
-            .itemOutputs(GTModHandler.getModItem(Botania.ID, "manaResource", 1, 4))
+                GTModHandler.getModItem(Mods.Botania.ID, "terraPlate", 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 0),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 1),
+                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 2))
+            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 4))
             .fluidInputs(GTNLMaterials.FluidMana.getFluidOrGas(500000))
             .duration(20)
             .eut(2048)

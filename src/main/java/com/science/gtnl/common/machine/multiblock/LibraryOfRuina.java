@@ -18,9 +18,7 @@ import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.enums.Mods.TwilightForest;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtnhlanth.common.register.LanthItemList.SHIELDED_ACCELERATOR_CASING;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -57,6 +55,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtnhlanth.common.register.LanthItemList;
 
 public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implements ISurvivalConstructable {
 
@@ -189,7 +188,10 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlockAnyMeta(SHIELDED_ACCELERATOR_CASING))))
+                    .buildAndChain(
+                        onElementPass(
+                            x -> ++x.mCountCasing,
+                            ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))))
             .addElement('E', ofBlock(sBlockCasings10, 4))
             .addElement('F', ofBlock(sBlockCasings10, 11))
             .addElement('G', ofBlock(sBlockCasings9, 11))
@@ -199,7 +201,8 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
                 ofChain(
                     ofBlock(Blocks.water, 0),
                     ofBlockAnyMeta(
-                        TwilightForest.isModLoaded() ? GameRegistry.findBlock(TwilightForest.ID, "tile.TFPortal")
+                        Mods.TwilightForest.isModLoaded()
+                            ? GameRegistry.findBlock(Mods.TwilightForest.ID, "tile.TFPortal")
                             : Blocks.end_portal)))
             .build();
     }
@@ -270,8 +273,8 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
         int perpZ = perpDir.offsetZ;
 
         Block targetBlock = Blocks.end_portal;
-        if (TwilightForest.isModLoaded()) {
-            targetBlock = GameRegistry.findBlock(TwilightForest.ID, "tile.TFPortal");
+        if (Mods.TwilightForest.isModLoaded()) {
+            targetBlock = GameRegistry.findBlock(Mods.TwilightForest.ID, "tile.TFPortal");
             if (targetBlock == null) targetBlock = Blocks.end_portal;
         }
 
@@ -316,8 +319,8 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
                 int y = baseY - 1;
 
                 Block block = world.getBlock(x, y, z);
-                if (block == Blocks.end_portal || (TwilightForest.isModLoaded()
-                    && block == GameRegistry.findBlock(TwilightForest.ID, "tile.TFPortal"))) {
+                if (block == Blocks.end_portal || (Mods.TwilightForest.isModLoaded()
+                    && block == GameRegistry.findBlock(Mods.TwilightForest.ID, "tile.TFPortal"))) {
                     world.setBlock(x, y, z, Blocks.water, 0, 3);
                 }
             }

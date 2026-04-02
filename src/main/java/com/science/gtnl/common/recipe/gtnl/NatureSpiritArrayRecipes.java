@@ -1,13 +1,12 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.Botania;
-
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 
@@ -46,7 +45,7 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
             .addTo(NSAR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Botania.ID, "pool", 0, 1))
+            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "pool", 0, 1))
             .fluidOutputs(GTNLMaterials.FluidMana.getFluidOrGas(2147483647))
             .duration(20)
             .eut(7864320)

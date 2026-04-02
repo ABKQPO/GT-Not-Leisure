@@ -1,10 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.enums.Mods.Botania;
-import static gregtech.api.enums.Mods.DraconicEvolution;
-import static gregtech.api.enums.Mods.EtFuturumRequiem;
-import static gregtech.api.enums.Mods.OpenBlocks;
-import static gregtech.api.util.GTModHandler.getModItem;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import net.minecraft.init.Blocks;
@@ -19,6 +14,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -41,7 +37,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .addTo(cBR);
 
         RecipeBuilder.builder()
-            .itemInputs(getModItem(Botania.ID, "elfGlass", 1, 0))
+            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "elfGlass", 1, 0))
             .fluidInputs(FluidRegistry.getFluidStack("molten.terrasteel", 576))
             .itemOutputs(GTNLItemList.TerraGlass.get(1))
             .duration(200)
@@ -49,7 +45,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .addTo(cBR);
 
         RecipeBuilder.builder()
-            .itemInputs(getModItem(OpenBlocks.ID, "sponge", 1))
+            .itemInputs(GTModHandler.getModItem(Mods.OpenBlocks.ID, "sponge", 1))
             .fluidInputs(FluidRegistry.getFluidStack("dye.chemical.dyeyellow", 576))
             .itemOutputs(new ItemStack(Blocks.sponge, 1))
             .duration(100)
@@ -59,7 +55,7 @@ public class ChemicalBathRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Blocks.dragon_egg, 1))
             .fluidInputs(Materials.DraconiumAwakened.getMolten(576))
-            .itemOutputs(GTModHandler.getModItem(DraconicEvolution.ID, "dragonHeart", 1))
+            .itemOutputs(GTModHandler.getModItem(Mods.DraconicEvolution.ID, "dragonHeart", 1))
             .duration(100)
             .eut(1966080)
             .addTo(cBR);
@@ -99,7 +95,7 @@ public class ChemicalBathRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Blocks.sponge, 1))
             .fluidInputs(Materials.Water.getFluid(16000))
-            .itemOutputs(GTModHandler.getModItem(EtFuturumRequiem.ID, "sponge", 1, 1))
+            .itemOutputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "sponge", 1, 1))
             .duration(100)
             .eut(TierEU.RECIPE_LV)
             .addTo(cBR);
@@ -125,7 +121,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(Materials.PoorNetherWaste.getFluid(8_000))
             .itemOutputs(
                 ItemList.Brittle_Netherite_Scrap.get(48),
-                getModItem(EtFuturumRequiem.ID, "netherite_scrap", 16))
+                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 16))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_UHV)
             .addTo(cBR);
