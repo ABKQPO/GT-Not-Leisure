@@ -281,7 +281,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 this.lEUt = -GTValues.V[4] * mMaxSlots;
                 this.mEfficiency = 10000;
                 this.mEfficiencyIncrease = 10000;
-                this.mMaxProgresstime = 600;
+                this.mMaxProgresstime = 6000;
                 this.mOutputItems = stacks.toArray(new ItemStack[0]);
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
