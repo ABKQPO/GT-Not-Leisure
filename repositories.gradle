@@ -1,25 +1,8 @@
 // Add any additional repositories for your dependencies here.
 repositories {
+    mavenLocal()
     maven {
         url = uri("https://jitpack.io")
-        mavenContent {
-            includeGroup("com.github")
-            includeGroupByRegex("com\\.github\\..+")
-        }
-        metadataSources {
-            mavenPom()
-            ignoreGradleMetadataRedirection()
-        }
-    }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = 'glease'
-                url = 'https://maven.glease.net/repos/releases/'
-            }
-        }
-        filter {
-            includeGroup('net.glease')
-        }
     }
 }
+

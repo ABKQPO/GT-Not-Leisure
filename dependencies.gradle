@@ -51,9 +51,10 @@ dependencies {
     implementation('com.google.auto.value:auto-value-annotations:1.10.4')
     annotationProcessor('com.google.auto.value:auto-value:1.10.4')
 
+    compileOnlyApi('com.github.Nxer:Twist-Space-Technology-Mod:0.7.15:dev') { transitive = false }
+    compileOnlyApi('com.github.Keriils:NH-Utilities:1.6.4:dev') { transitive = false }
+
     compileOnlyApi files("libs/extrautilities-1.2.12.jar")
-    compileOnlyApi files("libs/NHUtilities-1.5.11-dev.jar")
-    compileOnlyApi files("libs/TwistSpaceTechnology-0.7.13-dev.jar")
 }
 
 configurations.configureEach {
