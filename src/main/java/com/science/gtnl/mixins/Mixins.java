@@ -15,12 +15,12 @@ public enum Mixins implements IMixins {
 
     FORGE_CORE(Side.COMMON, "Forge.MixinFMLProxyPacket", "Forge.MixinForgeHook"),
 
-    GREGTECH_ACCESSORS(Side.COMMON, "Gregtech.AccessorMTETieredMachineBlock", "Gregtech.AccessorEyeOfHarmonyRecipe",
+    GREGTECH_EARLY(Side.COMMON, "Gregtech.AccessorMTETieredMachineBlock", "Gregtech.AccessorEyeOfHarmonyRecipe",
         "Gregtech.AccessorGTRecipe", "Gregtech.AccessorGTRecipeBuilder", "Gregtech.AccessorGTLanguageManager",
         "Gregtech.AccessorCommonMetaTileEntity", "Gregtech.AccessorMetaTileEntity", "Gregtech.AccessorMTEHatch",
         "Gregtech.AccessorProcessingLogic", "Gregtech.AccessorRecipeDisplayInfo", "Gregtech.MixinMTEBasicMachine"),
 
-    NH_CORE_MOD_ACCESSORS(new MixinBuilder().addCommonMixins("NHCoreMod.AccessorBacteriaRegistry")
+    NH_CORE_MOD_EARLY(new MixinBuilder().addCommonMixins("NHCoreMod.AccessorBacteriaRegistry")
         .setPhase(Phase.EARLY)
         .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
@@ -158,6 +158,10 @@ public enum Mixins implements IMixins {
             "AppliedEnergistics.assembler.MixinGuiMEMonitorable",
             "AppliedEnergistics.assembler.MixinGuiPatternTerm")
         .setPhase(Phase.LATE)),
+
+    GREGTECH_MAIN_FACING(new MixinBuilder().addCommonMixins("Gregtech.MixinMTEBasicMachineFacing")
+        .setPhase(Phase.LATE)
+        .setApplyIf(() -> MainConfig.machine.allowMainFacingInteraction)),
 
     GALAXY_SPACE(new MixinBuilder("Galaxy Space Mixin").addCommonMixins("GalaxySpace.MixinRocketRecipeHandler")
         .setPhase(Phase.LATE)

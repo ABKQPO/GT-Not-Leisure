@@ -127,6 +127,10 @@ public class MainConfig {
         @DefaultInt(256)
         public int beamFormerLength = 256;
 
+        @Comment("Allow interaction with machines from their main facing (similar to GTM behavior)")
+        @DefaultBoolean(false)
+        public boolean allowMainFacingInteraction = false;
+
         @Comment("Enhance the display of input hatch bus in interface terminal to support the machine current recipe map and virtual programming circuit")
         @DefaultBoolean(true)
         public boolean enableHatchInterfaceTerminalEnhance = true;

@@ -93,6 +93,8 @@ gtnl.gui.config.general.machine.beamFormerEnergyConsume.tooltip=ME光束成型�
 gtnl.gui.config.general.machine.beamFormerLength=ME光束成型器激光最大长度
 gtnl.gui.config.general.machine.beamFormerLength.tooltip=ME光束成型器激光的最大长度（单位 方块）
 
+gtnl.gui.config.general.machine.allowMainFacingInteraction=允许从机器正面进行交互
+gtnl.gui.config.general.machine.allowMainFacingInteraction.tooltip=启用后，可以从机器正面进行交互（类似 GTM 行为）
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance=输入仓接口终端显示增强
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance.tooltip=增强输入仓和输入总线在接口终端的显示，使其支持机器的当前配方池和虚拟编程电路
 gtnl.gui.config.general.machine.enableintegratedorefactorychange=集成矿石处理厂改动

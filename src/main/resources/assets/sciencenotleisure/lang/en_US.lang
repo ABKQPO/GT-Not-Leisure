@@ -93,6 +93,8 @@ gtnl.gui.config.general.machine.beamFormerEnergyConsume.tooltip=ME Beam Former e
 gtnl.gui.config.general.machine.beamFormerLength=ME Beam Former maximum beam length (in blocks)
 gtnl.gui.config.general.machine.beamFormerLength.tooltip=ME Beam Former maximum beam length (in blocks)
 
+gtnl.gui.config.general.machine.allowMainFacingInteraction=Allow interaction with machines from their main facing
+gtnl.gui.config.general.machine.allowMainFacingInteraction.tooltip=When enabled, machines can be interacted with from their main facing (similar to GTM behavior)
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance=Hatch Interface Terminal Enhance
 gtnl.gui.config.general.machine.enablehatchinterfaceterminalenhance.tooltip=Enhance the display of input hatches/buses in the interface terminal to support current recipe maps and virtual programming circuits.
 gtnl.gui.config.general.machine.enableintegratedorefactorychange=Integrated Ore Factory Change
