@@ -11,19 +11,13 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMapBuilder;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 
 public class FluidSolidifierRecipes implements IRecipePool {
 
-    public RecipeMap<?> FSR = RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-        .maxIO(1, 1, 1, 0)
-        .minInputs(1, 1)
-        .slotOverlays(
-            (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
-        .build();
+    public RecipeMap<?> FSR = RecipeMaps.fluidSolidifierRecipes;
 
     @Override
 

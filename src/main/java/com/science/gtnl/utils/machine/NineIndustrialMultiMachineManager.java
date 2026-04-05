@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.recipe.RecipeMaps;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
@@ -60,12 +58,7 @@ public class NineIndustrialMultiMachineManager {
         EXTRACTOR(5, RecipeMaps.extractorRecipes),
         LASER(6, RecipeMaps.laserEngraverRecipes),
         AUTOCLAVE(7, RecipeMaps.autoclaveRecipes),
-        FLUIDSOLIDIFY(8, RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-            .maxIO(1, 1, 1, 0)
-            .minInputs(1, 1)
-            .slotOverlays(
-                (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
-            .build()),
+        FLUIDSOLIDIFY(8, RecipeMaps.fluidSolidifierRecipes),
         OREWASHER(9, RecipeMaps.oreWasherRecipes),
         THERMALCENTRIFUGE(10, RecipeMaps.thermalCentrifugeRecipes),
         NEUTRONIUMCOMPRESSOR(11, RecipeMaps.neutroniumCompressorRecipes),

@@ -13,13 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.gui.modularui.GTUITextures;
-import gregtech.api.recipe.RecipeMapBuilder;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTUtility;
 import gregtech.loaders.oreprocessing.ProcessingDust;
 
@@ -33,20 +32,13 @@ public abstract class MixinProcessingDust {
         if (aMaterial.mStandardMoltenFluid == null) return;
         if (aMaterial == Materials.Rubber || aMaterial == Materials.BorosilicateGlass) return;
 
-        GTValues.RA.stdBuilder()
+        RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Ball.get(0))
             .itemOutputs(aMaterial.getDust(1))
             .fluidInputs(aMaterial.getMolten(1 * INGOTS))
             .duration(1 * SECONDS + 12 * TICKS)
             .eut(GTUtility.calculateRecipeEU(aMaterial, 8))
-            .addTo(
-                RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-                    .maxIO(1, 1, 1, 0)
-                    .minInputs(1, 1)
-                    .slotOverlays(
-                        (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
-                            : null)
-                    .build());
+            .addTo(RecipeMaps.fluidSolidifierRecipes);
 
         if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", aMaterial.mLocalizedName);

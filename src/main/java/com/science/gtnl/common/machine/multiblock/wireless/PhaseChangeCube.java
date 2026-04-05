@@ -58,7 +58,6 @@ import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.objects.GTDualInputPattern;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -236,14 +235,8 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
                 GTDualInputPattern inputs = inv.getPatternInputs();
                 setInputItems(inputs.inputItems);
                 setInputFluids(inputs.inputFluid);
-                Set<GTRecipe> recipes = findRecipeMatches(
-                    RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-                        .maxIO(1, 1, 1, 0)
-                        .minInputs(1, 1)
-                        .slotOverlays(
-                            (index, isFluid, isOutput,
-                                isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
-                        .build()).collect(Collectors.toSet());
+                Set<GTRecipe> recipes = findRecipeMatches(RecipeMaps.fluidSolidifierRecipes)
+                    .collect(Collectors.toSet());
                 if (!recipes.isEmpty()) {
                     dualInvWithPatternToRecipeCache.put(inv, recipes);
                     activeDualInv = inv;
@@ -332,28 +325,15 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     public RecipeMap<?> getRecipeMap() {
         if (machineMode == MACHINEMODE_EXTRA) return RecipeMaps.extractorRecipes;
         else if (machineMode == MACHINEMODE_FLUID) return RecipeMaps.fluidExtractionRecipes;
-        else if (machineMode == MACHINEMODE_SOLID) return RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-            .maxIO(1, 1, 1, 0)
-            .minInputs(1, 1)
-            .slotOverlays(
-                (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD : null)
-            .build();
+        else if (machineMode == MACHINEMODE_SOLID) return RecipeMaps.fluidSolidifierRecipes;
         return RecipeMaps.extractorRecipes;
     }
 
     @Nonnull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(
-            RecipeMaps.extractorRecipes,
-            RecipeMaps.fluidExtractionRecipes,
-            RecipeMapBuilder.of("gt.recipe.fluidsolidifier")
-                .maxIO(1, 1, 1, 0)
-                .minInputs(1, 1)
-                .slotOverlays(
-                    (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_MOLD
-                        : null)
-                .build());
+        return Arrays
+            .asList(RecipeMaps.extractorRecipes, RecipeMaps.fluidExtractionRecipes, RecipeMaps.fluidSolidifierRecipes);
     }
 
     @Override
