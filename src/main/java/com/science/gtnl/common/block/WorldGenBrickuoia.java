@@ -33,7 +33,7 @@ public class WorldGenBrickuoia extends WorldGenAbstractTree {
     public boolean generate(World world, Random random, int x, int y, int z) {
         int treeHeight = random.nextInt(this.randomTreeHeight) + this.minTreeHeight;
         boolean flag = true;
-        if ((y >= 1) && (y + treeHeight + 1 <= 256)) {
+        if ((y >= 1) && (y + treeHeight + 1 <= world.getHeight())) {
             for (int i1 = y; i1 <= y + 1 + treeHeight; i1++) {
                 byte b0 = 1;
                 if (i1 == y) {
@@ -44,8 +44,7 @@ public class WorldGenBrickuoia extends WorldGenAbstractTree {
                 }
                 for (int j1 = x - b0; (j1 <= x + b0) && (flag); j1++) {
                     for (int k1 = z - b0; (k1 <= z + b0) && (flag); k1++) {
-                        if ((i1 >= 0) && (i1 < 256)) {
-                            Block block = world.getBlock(j1, i1, k1);
+                        if ((i1 >= 0) && (i1 < world.getHeight())) {
                             if (!isReplaceable(world, j1, i1, k1)) {
                                 flag = false;
                             }
@@ -62,7 +61,7 @@ public class WorldGenBrickuoia extends WorldGenAbstractTree {
 
             boolean isSoil = block2
                 .canSustainPlant(world, x, y - 1, z, ForgeDirection.UP, (BlockSapling) Blocks.sapling);
-            if ((isSoil) && (y < 256 - treeHeight - 1)) {
+            if ((isSoil) && (y < world.getHeight() - treeHeight - 1)) {
                 block2.onPlantGrow(world, x, y - 1, z, x, y, z);
                 final byte v3 = 3;
                 final byte v0 = 0;
@@ -181,8 +180,6 @@ public class WorldGenBrickuoia extends WorldGenAbstractTree {
                                         }
                                     }
                                 }
-                            } else {
-
                             }
                         }
 

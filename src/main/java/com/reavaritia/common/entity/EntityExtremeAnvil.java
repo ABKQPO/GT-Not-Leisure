@@ -188,7 +188,7 @@ public class EntityExtremeAnvil extends Entity {
                                 0.0F);
                         }
                     }
-                } else if (this.timeSinceFalling > 100 && !this.worldObj.isRemote && (j < 1 || j > 256)
+                } else if (this.timeSinceFalling > 100 && !this.worldObj.isRemote && (j < 1 || j > worldObj.getHeight())
                     || this.timeSinceFalling > 600) {
                         if (this.dropItem) {
                             this.entityDropItem(

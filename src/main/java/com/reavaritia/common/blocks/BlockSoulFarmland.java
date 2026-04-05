@@ -108,7 +108,7 @@ public class BlockSoulFarmland extends BlockFarmland {
         while (world.getBlock(x, y + height, z) == crop) {
             height++;
         }
-        if (height < 256) {
+        if (height < world.getHeight()) {
             world.setBlock(x, y + height, z, crop);
         }
     }
