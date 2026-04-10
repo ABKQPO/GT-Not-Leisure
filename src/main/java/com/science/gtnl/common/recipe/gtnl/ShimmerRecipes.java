@@ -50,7 +50,8 @@ public class ShimmerRecipes {
 
         for (ConversionEntry entry : entries) {
             if (entry.matches(input, false)) {
-                return entry.getScaledOutputs(input.stackSize);
+                int ratio = input.stackSize / entry.input.stackSize;
+                return entry.getScaledOutputs(ratio);
             }
         }
 
@@ -82,7 +83,8 @@ public class ShimmerRecipes {
         }
 
         public boolean matches(ItemStack stack, boolean ignoreNBT) {
-            return stack != null && stack.stackSize > 0 && GTUtility.areStacksEqual(stack, input, ignoreNBT);
+            return stack != null && stack.stackSize >= input.stackSize
+                && GTUtility.areStacksEqual(stack, input, ignoreNBT);
         }
 
         public ObjectArrayList<ItemStack> getScaledOutputs(int scale) {
