@@ -159,20 +159,18 @@ public abstract class MixinMTEBasicMachine extends MTEBasicTank implements ICust
         gtnl$customName = name;
     }
 
-    @Override
+    @Inject(method = "getWailaNBTData", at = @At("TAIL"))
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        int z, CallbackInfo ci) {
         if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
         if (!Objects.equals(getCustomName(), getLocalName())) {
             tag.setString("name", getCustomName());
         }
     }
 
-    @Override
+    @Inject(method = "getWailaBody", at = @At("TAIL"))
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currenttip, accessor, config);
+        IWailaConfigHandler config, CallbackInfo ci) {
         if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.hasKey("name")) {

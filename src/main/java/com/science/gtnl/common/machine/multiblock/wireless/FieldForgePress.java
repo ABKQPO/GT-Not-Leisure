@@ -84,7 +84,7 @@ public class FieldForgePress extends WirelessEnergyMultiMachineBase<FieldForgePr
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
             .addTecTechHatchInfo()
-            .beginStructureBlock(15, 25, 27, true)
+            .beginStructureBlock(17, 25, 27, true)
             .addInputBus(StatCollector.translateToLocal("Tooltip_FieldForgePress_Casing"), 1)
             .addOutputBus(StatCollector.translateToLocal("Tooltip_FieldForgePress_Casing"), 1)
             .addInputHatch(StatCollector.translateToLocal("Tooltip_FieldForgePress_Casing"), 1)
