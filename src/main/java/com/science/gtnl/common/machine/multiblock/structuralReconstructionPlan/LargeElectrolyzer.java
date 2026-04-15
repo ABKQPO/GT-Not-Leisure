@@ -28,7 +28,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> implements ISurvivalConstructable {
 
@@ -104,7 +104,7 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
     public IStructureDefinition<LargeElectrolyzer> getStructureDefinition() {
         return StructureDefinition.<LargeElectrolyzer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement(
                 'B',
                 buildHatchAdder(LargeElectrolyzer.class).casingIndex(getCasingTextureID())

@@ -30,7 +30,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
@@ -121,7 +121,7 @@ public class CrystalBuilder extends WirelessEnergyMultiMachineBase<CrystalBuilde
     public IStructureDefinition<CrystalBuilder> getStructureDefinition() {
         return StructureDefinition.<CrystalBuilder>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
             .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))

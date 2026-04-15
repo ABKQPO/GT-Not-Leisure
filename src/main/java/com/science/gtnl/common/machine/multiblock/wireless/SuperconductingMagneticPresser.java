@@ -31,7 +31,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsElements;
-import gtnhlanth.common.block.BlockCasing;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -137,7 +136,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
             .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
             .addElement('I', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('K', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('K', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
             .addElement('M', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(

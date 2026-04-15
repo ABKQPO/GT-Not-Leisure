@@ -52,7 +52,6 @@ import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
 import gtnhlanth.common.register.LanthItemList;
 
 public class NanitesIntegratedProcessingCenter
@@ -200,7 +199,7 @@ public class NanitesIntegratedProcessingCenter
                             x -> ++x.mCountCasing,
                             StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
             .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('C', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 1))
             .addElement('F', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))

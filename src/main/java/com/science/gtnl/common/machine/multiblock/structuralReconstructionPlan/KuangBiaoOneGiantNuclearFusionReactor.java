@@ -71,7 +71,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.render.IMTERenderer;
 import gtPlusPlus.core.block.ModBlocks;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -502,7 +502,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     public IStructureDefinition<KuangBiaoOneGiantNuclearFusionReactor> getStructureDefinition() {
         return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
             .addElement(
                 'C',

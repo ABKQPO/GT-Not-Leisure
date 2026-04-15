@@ -42,7 +42,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> implements ISurvivalConstructable {
@@ -116,7 +116,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
         return StructureDefinition.<MatterFabricator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('B', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 7))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))

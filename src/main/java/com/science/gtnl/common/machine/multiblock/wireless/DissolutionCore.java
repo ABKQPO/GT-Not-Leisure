@@ -39,7 +39,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionCore> {
 
@@ -164,7 +164,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
             .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
             .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('N', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('N', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('O', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
             .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
             .addElement('Q', GTStructureUtility.ofFrame(Materials.BlackSteel))

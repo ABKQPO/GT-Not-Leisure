@@ -42,7 +42,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex> implements ISurvivalConstructable {
 
@@ -120,7 +120,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
             .addElement(
                 'A',
                 StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
-            .addElement('B', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))

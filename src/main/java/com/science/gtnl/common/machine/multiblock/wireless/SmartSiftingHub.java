@@ -32,7 +32,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSiftingHub> {
 
@@ -141,7 +141,7 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
                             .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 10))))
             .addElement('K', StructureUtility.ofBlock(sBlockCasingsTT, 6))
             .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('M', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .build();
     }
 

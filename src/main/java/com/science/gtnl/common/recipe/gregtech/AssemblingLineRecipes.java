@@ -45,7 +45,6 @@ import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.material.Particle;
 import gtPlusPlus.core.recipe.common.CI;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
-import gtnhlanth.common.block.BlockCasing;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.recipe.TTRecipeAdder;
 import tectech.thing.CustomItemList;
@@ -1338,7 +1337,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             40000,
             (int) TierEU.RECIPE_UHV,
             1,
-            new Object[] { GTNLItemList.LargeExtruder.get(64), new ItemStack(new BlockCasing("electrode"), 64),
+            new Object[] { GTNLItemList.LargeExtruder.get(64), new ItemStack(LanthItemList.ELECTRODE_CASING, 64),
                 CustomItemList.eM_Power.get(32), GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Tritanium, 64),
                 ItemList.BlockQuarkPipe.get(8), ItemList.Electric_Motor_UEV.get(32),
                 ItemList.Electric_Piston_UEV.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UIV), 8 },
@@ -1446,7 +1445,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UV,
             1,
             new Object[] { GTNLItemList.LargeElectromagnet.get(64), GTNLItemList.MolybdenumDisilicideCoil.get(64),
-                CustomItemList.eM_Power.get(32), new ItemStack(new BlockCasing("electrode"), 32),
+                CustomItemList.eM_Power.get(32), new ItemStack(LanthItemList.ELECTRODE_CASING, 32),
                 ItemRefer.Speeding_Pipe.get(64), ItemList.Robot_Arm_UHV.get(16), ItemList.Emitter_UHV.get(16),
                 ItemList.Sensor_UHV.get(16), new Object[] { OrePrefixes.circuit.get(Materials.UHV), 32 },
                 GregtechItemList.Laser_Lens_Special.get(1),
@@ -2254,7 +2253,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             new Object[] { GTOreDictUnificator.get(OrePrefixes.lens, Materials.Dilithium, 16),
                 GTNLItemList.LargeEngravingLaser.get(64), ItemList.PrecisionLaserEngraverUHV.get(32),
                 CustomItemList.eM_Containment.get(64), ItemRefer.Compact_Fusion_Coil_T2.get(32),
-                new ItemStack(new BlockCasing("electrode"), 64), CustomItemList.eM_energyTunnel4_UHV.get(32),
+                new ItemStack(LanthItemList.ELECTRODE_CASING, 64), CustomItemList.eM_energyTunnel4_UHV.get(32),
                 ItemList.Emitter_UHV.get(16), ItemList.Electric_Pump_UHV.get(16), ItemList.Electric_Piston_UHV.get(16),
                 ItemList.Field_Generator_UHV.get(8),
                 com.dreammaster.gthandler.CustomItemList.HighEnergyFlowCircuit.get(64),
@@ -2275,7 +2274,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UV,
             1,
             new Object[] { GTNLItemList.LargeArcSmelter.get(64), GTNLItemList.LargeArcSmelter.get(64),
-                ItemList.ArcFurnaceUV.get(32), new ItemStack(new BlockCasing("electrode"), 64),
+                ItemList.ArcFurnaceUV.get(32), new ItemStack(LanthItemList.ELECTRODE_CASING, 64),
                 ItemList.Neutronium_Casing.get(32),
                 GTModHandler.getModItem(Mods.KekzTech.ID, "kekztech_lapotronicenergyunit_block", 64),
                 ItemRefer.Field_Restriction_Coil_T2.get(4), ItemList.Robot_Arm_UV.get(16),
@@ -2407,7 +2406,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UEV,
             1,
             new Object[] { GTNLItemList.LargeElectrolyzer.get(64), ItemList.Neutronium_Stable_Casing.get(64),
-                new ItemStack(new BlockCasing("electrode"), 64), ItemList.Electric_Motor_UHV.get(32),
+                new ItemStack(LanthItemList.ELECTRODE_CASING, 64), ItemList.Electric_Motor_UHV.get(32),
                 ItemRefer.HiC_T5.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UEV), 32L },
                 com.dreammaster.gthandler.CustomItemList.HighEnergyFlowCircuit.get(64),
                 GregtechItemList.Laser_Lens_Special.get(4), GGMaterial.preciousMetalAlloy.get(OrePrefixes.nanite, 4),

@@ -42,7 +42,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.TTCasingsContainer;
 
 public class TransliminalOasis extends WirelessEnergyMultiMachineBase<TransliminalOasis> {
@@ -164,7 +164,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addElement('R', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement('S', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
             .addElement('T', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
-            .addElement('U', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('U', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .build();
     }
 

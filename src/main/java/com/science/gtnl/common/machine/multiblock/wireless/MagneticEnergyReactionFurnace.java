@@ -41,7 +41,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBase<MagneticEnergyReactionFurnace> {
 
@@ -126,7 +126,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(FRF_Coil_1, 0))
             .addElement('B', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('C', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 0))
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))

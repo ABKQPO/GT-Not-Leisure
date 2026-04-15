@@ -37,7 +37,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 public class SuperconductingElectromagnetism extends WirelessEnergyMultiMachineBase<SuperconductingElectromagnetism> {
@@ -122,7 +122,7 @@ public class SuperconductingElectromagnetism extends WirelessEnergyMultiMachineB
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(Loaders.speedingPipe, 0))
             .addElement('B', StructureUtility.ofBlock(Loaders.compactFusionCoil, 0))
-            .addElement('C', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 8))
             .addElement(
                 'E',

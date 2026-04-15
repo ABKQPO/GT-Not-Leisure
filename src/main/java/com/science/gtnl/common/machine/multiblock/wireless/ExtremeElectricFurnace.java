@@ -30,7 +30,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class ExtremeElectricFurnace extends WirelessEnergyMultiMachineBase<ExtremeElectricFurnace> {
 
@@ -147,7 +147,7 @@ public class ExtremeElectricFurnace extends WirelessEnergyMultiMachineBase<Extre
             .addElement('N', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
             .addElement('O', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('Q', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('Q', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('R', GTStructureUtility.ofFrame(Materials.Naquadah))
             .build();
     }

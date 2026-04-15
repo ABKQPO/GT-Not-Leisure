@@ -57,7 +57,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 import lombok.Getter;
 import tectech.thing.CustomItemList;
 
@@ -315,7 +315,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
             .addElement('G', GTStructureUtility.activeCoils(StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 13)))
             .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 2))
-            .addElement('I', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('I', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'K',

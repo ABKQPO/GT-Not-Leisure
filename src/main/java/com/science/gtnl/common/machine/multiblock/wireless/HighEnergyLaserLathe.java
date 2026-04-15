@@ -29,7 +29,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.block.BlockCasing;
+import gtnhlanth.common.register.LanthItemList;
 
 public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEnergyLaserLathe> {
 
@@ -108,7 +108,7 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
     public IStructureDefinition<HighEnergyLaserLathe> getStructureDefinition() {
         return StructureDefinition.<HighEnergyLaserLathe>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
             .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
