@@ -1,28 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -30,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -45,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -55,7 +33,9 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.FluidLoader;
 import bartworks.system.material.WerkstoffLoader;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -72,6 +52,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -134,7 +115,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -168,36 +149,42 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     @Override
     public IStructureDefinition<HighwayToHell> getStructureDefinition() {
         return StructureDefinition.<HighwayToHell>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings2, 15))
-            .addElement('C', ofBlock(sBlockCasings4, 1))
-            .addElement('D', ofBlock(sBlockCasings8, 0))
-            .addElement('E', ofBlock(sBlockCasings8, 2))
-            .addElement('F', ofBlock(sBlockCasings8, 4))
-            .addElement('G', ofBlock(sBlockCasings8, 10))
-            .addElement('H', ofFrame(Materials.Neutronium))
-            .addElement('I', ofBlock(ModBlocks.blockCasings2Misc, 6))
-            .addElement('J', ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
-            .addElement('K', ofBlock(ModBlocks.blockCasingsMisc, 14))
-            .addElement('L', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('M', ofChain(isAir(), ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
-            .addElement('N', Muffler.newAny(getCasingTextureID(), 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('H', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 6))
+            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
+            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement(
+                'M',
+                StructureUtility
+                    .ofChain(StructureUtility.isAir(), StructureUtility.ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
+            .addElement('N', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .addElement(
                 'O',
-                buildHatchAdder(HighwayToHell.class)
+                GTStructureUtility.buildHatchAdder(HighwayToHell.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('P', ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31895))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('P', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31895))
             .addElement('Q', CustomHatchElement.ROTOR_ASSEMBLY.newAny(getCasingTextureID(), 2))
             .build();
     }
@@ -352,7 +339,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         return GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         resetParallelTier();
@@ -457,9 +444,9 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
                 return super.onRecipeStart(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -500,7 +487,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         return result;
     }
 
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe(ItemStack stack) {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
         processingLogic.setInputItems(stack);

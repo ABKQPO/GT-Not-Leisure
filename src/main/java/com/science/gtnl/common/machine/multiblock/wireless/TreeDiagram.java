@@ -1,26 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsNH;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsBA0;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +22,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.NanitesInputBus;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -47,6 +30,8 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
@@ -61,6 +46,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsElements;
+import tectech.thing.casing.TTCasingsContainer;
 
 public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> implements ISurvivalConstructable {
 
@@ -96,11 +82,11 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     @Override
     public IStructureDefinition<TreeDiagram> getStructureDefinition() {
         return StructureDefinition.<TreeDiagram>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
                 GTNLStructureChannels.STRUCTURE_RENDER.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         (block,
                             meta) -> block == Block.getBlockFromItem(
                                 MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getFrameBox(1)
@@ -114,49 +100,52 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
                         -1,
                         (t, m) -> {},
                         t -> -1)))
-            .addElement('B', ofBlock(sBlockCasings1, 6))
-            .addElement('C', ofBlock(sBlockCasings1, 14))
-            .addElement('D', ofBlock(sBlockCasings10, 7))
-            .addElement('E', ofBlock(sBlockCasings10, 8))
-            .addElement('F', ofBlock(sBlockCasings10, 11))
-            .addElement('G', ofBlock(sBlockCasings2, 8))
-            .addElement('H', ofBlock(sBlockCasings8, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 6))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 8))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
             .addElement(
                 'I',
                 buildHatchAdder(TreeDiagram.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon,
                         CustomHatchElement.NanitesInputBus)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 2))))
-            .addElement('J', ofBlock(sBlockCasings8, 7))
-            .addElement('K', ofBlock(sBlockCasings8, 10))
-            .addElement('L', ofBlock(sBlockCasings8, 12))
-            .addElement('M', ofBlock(sBlockCasings9, 0))
-            .addElement('N', ofBlock(sBlockCasings9, 1))
-            .addElement('O', ofBlock(sBlockCasings9, 11))
-            .addElement('P', ofBlock(sBlockCasings9, 12))
-            .addElement('Q', ofBlock(sBlockCasingsBA0, 7))
-            .addElement('R', ofBlock(sBlockCasingsNH, 10))
-            .addElement('S', ofBlock(sBlockCasingsTT, 4))
-            .addElement('T', ofBlock(sBlockCasingsTT, 6))
-            .addElement('U', ofBlock(sBlockCasingsTT, 8))
-            .addElement('V', ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
-            .addElement('W', ofBlock(BlockLoader.metaBlockGlow, 1))
-            .addElement('X', ofBlock(BlockLoader.metaBlockGlow, 17))
-            .addElement('Y', ofBlock(BlockLoader.metaBlockGlow, 25))
-            .addElement('Z', ofBlock(BlockLoader.metaBlockGlow, 27))
-            .addElement('0', ofBlock(BlockLoader.metaBlockGlow, 29))
-            .addElement('1', ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('2', ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('3', ofBlock(BlockLoader.metaCasing, 19))
-            .addElement('4', ofBlock(BlockLoader.metaCasing02, 17))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 12))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 0))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('Q', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 7))
+            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsNH, 10))
+            .addElement('S', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
+            .addElement('T', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
+            .addElement('U', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 8))
+            .addElement('V', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
+            .addElement('W', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 1))
+            .addElement('X', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 17))
+            .addElement('Y', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 25))
+            .addElement('Z', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 27))
+            .addElement('0', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 29))
+            .addElement('1', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
+            .addElement('2', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('3', StructureUtility.ofBlock(BlockLoader.metaCasing, 19))
+            .addElement('4', StructureUtility.ofBlock(BlockLoader.metaCasing02, 17))
             .build();
     }
 
@@ -208,7 +197,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 2);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 2);
     }
 
     @Override

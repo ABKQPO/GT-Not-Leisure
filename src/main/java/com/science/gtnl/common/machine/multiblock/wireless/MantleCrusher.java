@@ -1,23 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import net.minecraft.item.ItemStack;
@@ -30,12 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeRockCrusher;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -45,6 +32,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -99,7 +87,7 @@ public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -123,30 +111,33 @@ public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher>
     @Override
     public IStructureDefinition<MantleCrusher> getStructureDefinition() {
         return StructureDefinition.<MantleCrusher>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings8, 7))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('C', ofBlock(sBlockCasings9, 12))
-            .addElement('D', ofBlock(BlockLoader.metaCasing, 16))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 16))
             .addElement(
                 'E',
-                buildHatchAdder(MantleCrusher.class)
+                GTStructureUtility.buildHatchAdder(MantleCrusher.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('F', ofBlock(sBlockCasingsDyson, 1))
-            .addElement('G', ofBlock(sBlockCasings10, 13))
-            .addElement('H', ofBlock(blockCasings2Misc, 12))
-            .addElement('I', ofFrame(Materials.Naquadah))
-            .addElement('J', ofBlock(sBlockCasingsDyson, 9))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))
+            .addElement('H', StructureUtility.ofBlock(blockCasings2Misc, 12))
+            .addElement('I', GTStructureUtility.ofFrame(Materials.Naquadah))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .build();
     }
 

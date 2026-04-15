@@ -1,26 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -30,8 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -47,6 +26,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
@@ -63,6 +43,8 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -88,6 +70,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -204,12 +187,13 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     public void updateHatchTexture() {
         super.updateHatchTexture();
-        for (MTEHatch h : mWaterInputHatches) h.updateTexture(StructureUtils.getTextureIndex(sBlockCasings10, 3));
+        for (MTEHatch h : mWaterInputHatches)
+            h.updateTexture(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3));
     }
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -233,7 +217,6 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    @Nonnull
     public @NotNull CheckRecipeResult checkProcessing() {
         CheckRecipeResult result = super.checkProcessing();
         if (!result.wasSuccessful()) return result;
@@ -316,7 +299,6 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
@@ -380,52 +362,54 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     public IStructureDefinition<PCBFactory> getStructureDefinition() {
         return StructureDefinition.<PCBFactory>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addShape(STRUCTURE_PIECE_MAIN_T2, transpose(shape_t2))
-            .addShape(STRUCTURE_PIECE_MAIN_T3, transpose(shape_t3))
-            .addElement('A', ofBlock(sBlockCasings10, 3))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN_T2, StructureUtility.transpose(shape_t2))
+            .addShape(STRUCTURE_PIECE_MAIN_T3, StructureUtility.transpose(shape_t3))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
             .addElement(
                 'B',
-                buildHatchAdder(PCBFactory.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(PCBFactory.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(ofBlock(sBlockCasings8, 7)))
-            .addElement('C', ofBlock(sBlockCasings6, 7))
-            .addElement('D', ofBlock(sBlockCasings10, 0))
-            .addElement('E', ofBlock(sBlockCasings8, 10))
-            .addElement('F', chainAllGlasses())
-            .addElement('G', ofFrame(Materials.Neutronium))
+                    .buildAndChain(StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7)))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('F', GTStructureUtility.chainAllGlasses())
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement(
                 'H',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.MARAGING300.getFrameBox(1)
                             .getItem())))
             .addElement(
                 'I',
-                buildHatchAdder(PCBFactory.class).casingIndex(StructureUtils.getTextureIndex(sBlockCasings10, 3))
+                GTStructureUtility.buildHatchAdder(PCBFactory.class)
+                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3))
                     .dot(1)
                     .atLeast(CustomHatchElement.WaterInputHatch)
-                    .buildAndChain(sBlockCasings10, 3))
-            .addElement('J', ofBlock(sBlockCasingsTT, 8))
-            .addElement('K', ofBlock(sBlockCasings1, 5))
-            .addElement('L', ofBlock(blockCasings2Misc, 12))
-            .addElement('M', ofBlock(sBlockCasings2, 5))
-            .addElement('N', ofBlock(sBlockCasingsTT, 0))
-            .addElement('O', ofBlock(sBlockCasings10, 12))
-            .addElement('P', ofBlock(sBlockCasingsTT, 7))
-            .addElement('Q', ofBlock(sBlockCasings9, 13))
-            .addElement('R', ofBlock(sBlockCasings10, 7))
-            .addElement('S', ofBlock(sBlockCasings9, 11))
-            .addElement('T', ofBlock(sBlockCasingsTT, 6))
-            .addElement('U', ofBlock(sBlockCasings8, 7))
+                    .buildAndChain(GregTechAPI.sBlockCasings10, 3))
+            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 5))
+            .addElement('L', StructureUtility.ofBlock(blockCasings2Misc, 12))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('N', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))
+            .addElement('P', StructureUtility.ofBlock(sBlockCasingsTT, 7))
+            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('S', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('T', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('U', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
             .build();
     }
 

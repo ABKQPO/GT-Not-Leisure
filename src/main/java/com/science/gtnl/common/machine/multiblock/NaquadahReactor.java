@@ -1,30 +1,13 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ExoticDynamo;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockCasingsSE;
-import static gregtech.api.enums.HatchElement.Dynamo;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -46,6 +29,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.render.tile.AdvancedHyperNaquadahReactorRenderer;
@@ -59,6 +43,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.Textures;
@@ -72,6 +58,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -133,7 +120,6 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return GTNLOverclockCalculator.ofNoOverclock(recipe);
             }
@@ -158,7 +144,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         useExtraGas = false;
@@ -295,25 +281,33 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public IStructureDefinition<LargeNaquadahReactor> getStructureDefinition() {
             return StructureDefinition.<LargeNaquadahReactor>builder()
-                .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement('A', ofBlock(BlockLoader.metaCasing, 4))
-                .addElement('B', ofBlock(BlockLoader.metaCasing, 5))
+                .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+                .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
                 .addElement(
                     'C',
-                    buildHatchAdder(LargeNaquadahReactor.class).casingIndex(getCasingTextureID())
+                    GTStructureUtility.buildHatchAdder(LargeNaquadahReactor.class)
+                        .casingIndex(getCasingTextureID())
                         .dot(1)
-                        .atLeast(Maintenance, InputHatch, OutputHatch, Dynamo.or(ExoticDynamo))
-                        .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-                .addElement('D', ofBlock(sBlockCasingsTT, 0))
-                .addElement('E', ofFrame(Materials.Naquadria))
-                .addElement('F', ofFrame(Materials.Trinium))
-                .addElement('G', ofBlock(blockCasings4Misc, 10))
+                        .atLeast(
+                            HatchElement.Maintenance,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Dynamo.or(ExoticDynamo))
+                        .buildAndChain(
+                            StructureUtility.onElementPass(
+                                x -> ++x.mCountCasing,
+                                StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+                .addElement('E', GTStructureUtility.ofFrame(Materials.Naquadria))
+                .addElement('F', GTStructureUtility.ofFrame(Materials.Trinium))
+                .addElement('G', StructureUtility.ofBlock(blockCasings4Misc, 10))
                 .build();
         }
 
         @Override
         public int getCasingTextureID() {
-            return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
         }
 
         @Override
@@ -419,27 +413,35 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public IStructureDefinition<HyperNaquadahReactor> getStructureDefinition() {
             return StructureDefinition.<HyperNaquadahReactor>builder()
-                .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addElement('A', ofBlock(sBlockCasingsTT, 0))
-                .addElement('B', ofBlock(BlockLoader.metaCasing, 18))
-                .addElement('C', ofBlock(sBlockCasingsTT, 6))
-                .addElement('D', ofBlock(BlockLoader.metaCasing, 4))
-                .addElement('E', ofBlock(sBlockCasingsSE, 0))
-                .addElement('F', ofBlock(sBlockCasingsTT, 4))
+                .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+                .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+                .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+                .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+                .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 0))
+                .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 4))
                 .addElement(
                     'G',
-                    buildHatchAdder(HyperNaquadahReactor.class).casingIndex(getCasingTextureID())
+                    GTStructureUtility.buildHatchAdder(HyperNaquadahReactor.class)
+                        .casingIndex(getCasingTextureID())
                         .dot(1)
-                        .atLeast(Maintenance, InputHatch, OutputHatch, Dynamo.or(ExoticDynamo))
-                        .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-                .addElement('H', ofBlock(BlockLoader.metaBlockGlass, 2))
-                .addElement('I', ofFrame(Materials.Neutronium))
+                        .atLeast(
+                            HatchElement.Maintenance,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Dynamo.or(ExoticDynamo))
+                        .buildAndChain(
+                            StructureUtility.onElementPass(
+                                x -> ++x.mCountCasing,
+                                StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+                .addElement('I', GTStructureUtility.ofFrame(Materials.Neutronium))
                 .build();
         }
 
         @Override
         public int getCasingTextureID() {
-            return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
         }
 
         @Override
@@ -570,23 +572,31 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public IStructureDefinition<AdvancedHyperNaquadahReactor> getStructureDefinition() {
             return StructureDefinition.<AdvancedHyperNaquadahReactor>builder()
-                .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-                .addShape(STRUCTURE_PIECE_SPHERE, transpose(shapeSphere))
-                .addShape(STRUCTURE_PIECE_SPHERE_AIR, transpose(shapeSphereAir))
-                .addElement('A', ofBlock(sBlockCasingsTT, 6))
-                .addElement('B', ofBlock(sBlockCasings1, 14))
-                .addElement('C', ofBlock(sBlockCasingsDyson, 0))
-                .addElement('D', ofBlock(sBlockCasings9, 13))
-                .addElement('E', ofBlock(sBlockCasings1, 12))
+                .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+                .addShape(STRUCTURE_PIECE_SPHERE, StructureUtility.transpose(shapeSphere))
+                .addShape(STRUCTURE_PIECE_SPHERE_AIR, StructureUtility.transpose(shapeSphereAir))
+                .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+                .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+                .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 0))
+                .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+                .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 12))
                 .addElement(
                     'F',
-                    buildHatchAdder(AdvancedHyperNaquadahReactor.class).casingIndex(getCasingTextureID())
+                    GTStructureUtility.buildHatchAdder(AdvancedHyperNaquadahReactor.class)
+                        .casingIndex(getCasingTextureID())
                         .dot(1)
-                        .atLeast(Maintenance, InputHatch, OutputHatch, Dynamo.or(ExoticDynamo))
-                        .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(Loaders.magneticFluxCasing, 0))))
-                .addElement('G', ofFrame(Materials.Naquadria))
-                .addElement('H', ofBlock(BlockLoader.metaCasing, 18))
-                .addElement('I', isAir())
+                        .atLeast(
+                            HatchElement.Maintenance,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Dynamo.or(ExoticDynamo))
+                        .buildAndChain(
+                            StructureUtility.onElementPass(
+                                x -> ++x.mCountCasing,
+                                StructureUtility.ofBlock(Loaders.magneticFluxCasing, 0))))
+                .addElement('G', GTStructureUtility.ofFrame(Materials.Naquadria))
+                .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+                .addElement('I', StructureUtility.isAir())
                 .build();
         }
 
@@ -621,7 +631,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             rotation += 0.5F;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public CheckRecipeResult checkProcessing() {
             bigEUt = null;

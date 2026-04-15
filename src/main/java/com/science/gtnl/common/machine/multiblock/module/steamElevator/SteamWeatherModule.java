@@ -1,8 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.StatCollector;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.mixins.early.Gregtech.AccessorProcessingLogic;
@@ -57,7 +57,7 @@ public class SteamWeatherModule extends SteamElevatorModule {
         return GTNLRecipeMaps.SteamWeatherModuleRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         // If no logic is found, try legacy checkRecipe

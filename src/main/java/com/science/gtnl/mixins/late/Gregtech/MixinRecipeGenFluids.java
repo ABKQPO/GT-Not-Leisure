@@ -1,9 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.INGOTS;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeBuilder.TICKS;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,6 +11,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.recipe.RecipeMaps;
+import gregtech.api.util.GTRecipeBuilder;
 import gtPlusPlus.core.material.Material;
 import gtPlusPlus.xmod.gregtech.loaders.RecipeGenFluids;
 
@@ -34,8 +31,8 @@ public abstract class MixinRecipeGenFluids {
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Ball.get(0))
             .itemOutputs(material.getDust(1))
-            .fluidInputs(material.getFluidStack(1 * INGOTS))
-            .duration(1 * SECONDS + 12 * TICKS)
+            .fluidInputs(material.getFluidStack(1 * GTRecipeBuilder.INGOTS))
+            .duration(1 * GTRecipeBuilder.SECONDS + 12 * GTRecipeBuilder.TICKS)
             .eut(material.vVoltageMultiplier)
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 

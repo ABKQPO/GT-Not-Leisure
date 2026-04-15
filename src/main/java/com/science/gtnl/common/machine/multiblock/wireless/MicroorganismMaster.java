@@ -1,29 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -36,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -46,7 +26,9 @@ import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -59,6 +41,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
@@ -117,7 +100,7 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 0);
     }
 
     @Override
@@ -141,42 +124,45 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
     @Override
     public IStructureDefinition<MicroorganismMaster> getStructureDefinition() {
         return StructureDefinition.<MicroorganismMaster>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings8, 1))
-            .addElement('B', ofBlock(sBlockCasingsTT, 6))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('D', ofBlock(sBlockReinforced, 2))
-            .addElement('E', ofBlock(sBlockCasings4, 12))
-            .addElement('F', ofBlock(sBlockCasings8, 7))
-            .addElement('G', ofBlock(sBlockCasings9, 13))
-            .addElement('H', ofBlock(sBlockCasings10, 6))
-            .addElement('I', ofBlock(sBlockCasings9, 10))
-            .addElement('J', ofBlock(sBlockCasings4, 10))
-            .addElement('K', ofBlock(ModBlocks.blockSpecialMultiCasings, 11))
-            .addElement('L', ofBlock(sBlockCasingsTT, 4))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 10))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 11))
+            .addElement('L', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'M',
-                buildHatchAdder(MicroorganismMaster.class)
+                GTStructureUtility.buildHatchAdder(MicroorganismMaster.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 0))))
-            .addElement('N', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('O', ofBlock(sBlockCasings10, 7))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))))
+            .addElement('N', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
             .addElement(
                 'P',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Mods.EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(Mods.EtFuturumRequiem.ID, "sponge")
                         : Blocks.sponge,
                     1))
-            .addElement('Q', ofFrame(Materials.Naquadria))
+            .addElement('Q', GTStructureUtility.ofFrame(Materials.Naquadria))
             .build();
     }
 
@@ -229,9 +215,9 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
                 return super.validateRecipe(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());

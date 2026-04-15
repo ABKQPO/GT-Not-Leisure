@@ -1,21 +1,9 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigInteger;
@@ -30,8 +18,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -53,6 +39,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -71,6 +58,7 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
@@ -95,6 +83,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
+import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -187,7 +176,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return RecipeMaps.assemblylineVisualRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.assemblylineVisualRecipes, GTNLRecipeMaps.GrandAssemblyLineSpecialRecipes);
@@ -201,7 +190,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         long energyEU;
 
         if (wirelessMode) {
-            energyEU = Utils.toLongSafe(getUserEU(ownerUUID));
+            energyEU = Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
         } else {
             energyEU = getMaxInputEu();
         }
@@ -304,7 +293,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 recipe.mEUt = Math.max(1, (int) (recipe.mEUt * getEUtDiscount()));
 
                 if (wirelessMode) {
-                    BigInteger available = getUserEU(ownerUUID);
+                    BigInteger available = WirelessNetworkManager.getUserEU(ownerUUID);
                     BigInteger needed = BigInteger.valueOf((long) recipe.mEUt * recipe.mDuration)
                         .multiply(BigInteger.valueOf(finalParallel));
                     if (currentWirelessTotalEnergy.add(needed)
@@ -362,7 +351,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         for (RecipeTask task : tasks) {
             if (wirelessMode) {
                 // 无线模式：基于总量进行超频，尽量压到 minDuration
-                BigInteger userTotal = getUserEU(ownerUUID);
+                BigInteger userTotal = WirelessNetworkManager.getUserEU(ownerUUID);
                 while (true) {
                     long nextPower = task.adjustedPower * 4;
                     int nextTime = task.adjustedTime / overclockFactor;
@@ -417,7 +406,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         .multiply(BigInteger.valueOf(task.parallel));
                     if (currentWirelessTotalEnergy.subtract(currentTotal)
                         .add(extendedTotal)
-                        .compareTo(getUserEU(ownerUUID)) <= 0) {
+                        .compareTo(WirelessNetworkManager.getUserEU(ownerUUID)) <= 0) {
                         currentWirelessTotalEnergy = currentWirelessTotalEnergy.subtract(currentTotal)
                             .add(extendedTotal);
                         task.adjustedPower = (long) (task.adjustedPower * tFactor);
@@ -474,7 +463,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             int finalDuration = totalEU_BI.divide(BigInteger.valueOf(finalEUt))
                 .intValue();
 
-            if (!addEUToGlobalEnergyMap(ownerUUID, totalEU_BI.negate())) {
+            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, totalEU_BI.negate())) {
                 return CheckRecipeResultRegistry.insufficientPower(totalEU_BI.longValue());
             }
 
@@ -788,50 +777,57 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     @Override
     public IStructureDefinition<GrandAssemblyLine> getStructureDefinition() {
         return StructureDefinition.<GrandAssemblyLine>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings2, 5))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 5))
             .addElement(
                 'B',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputBus)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
-            .addElement('C', ofBlock(sBlockCasingsTT, 2))
+                    .atLeast(HatchElement.InputBus)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 2))
             .addElement(
                 'D',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(OutputBus)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
+                    .atLeast(HatchElement.OutputBus)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
             .addElement(
                 'E',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon,
                         DataHatchElement.DataAccess)
                     .buildAndChain(
-                        onElementPass(
+                        StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))))
+                            StructureUtility
+                                .ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))))
             .addElement(
                 'F',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon,
                         DataHatchElement.DataAccess)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
-            .addElement('G', ofBlock(sBlockCasings2, 9))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+            .addElement('G', StructureUtility.ofBlock(sBlockCasings2, 9))
             .build();
     }
 

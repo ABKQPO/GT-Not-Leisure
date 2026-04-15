@@ -1,8 +1,6 @@
 package com.science.gtnl.common.render;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.AsyncDownloader;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_UUIDS;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -105,7 +103,8 @@ public class PlayerDollRenderManagerClient {
     }
 
     public static ResourceLocation loadProfileTexture(String uuid, TextureType type) {
-        if (uuid == null || BLACKLISTED_UUIDS.contains(uuid)) return type == TextureType.SKIN ? DEFAULT_SKIN : null;
+        if (uuid == null || PlayerDollRenderManager.BLACKLISTED_UUIDS.contains(uuid))
+            return type == TextureType.SKIN ? DEFAULT_SKIN : null;
 
         Map<String, ResourceLocation> cache = type == TextureType.SKIN ? TEXTURE_SKIN_CACHE : TEXTURE_CAPE_CACHE;
 
@@ -155,7 +154,7 @@ public class PlayerDollRenderManagerClient {
 
         if (target.exists()) return getLocalTextureFromFile(target, type);
 
-        return AsyncDownloader.getTexture(key, () -> {
+        return PlayerDollRenderManager.AsyncDownloader.getTexture(key, () -> {
             try (InputStream in = new URL(url).openStream(); FileOutputStream out = new FileOutputStream(target)) {
 
                 byte[] buf = new byte[8192];

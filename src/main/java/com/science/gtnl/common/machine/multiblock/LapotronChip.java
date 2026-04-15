@@ -1,20 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import net.minecraft.block.Block;
@@ -32,12 +18,15 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.INEIPreviewModifier;
@@ -100,7 +89,7 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 11);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
     }
 
     @Override
@@ -124,31 +113,41 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
     @Override
     public IStructureDefinition<LapotronChip> getStructureDefinition() {
         return StructureDefinition.<LapotronChip>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(Blocks.iron_block))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(Blocks.iron_block))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LapotronChip::getLapisCaelestisTier,
                         Mods.ExtraUtilities.isModLoaded() ? getGreenScreenVariants() : getGlass(),
                         -1,
                         (t, m) -> t.tierLapisCaelestis = m,
                         t -> t.tierLapisCaelestis)))
-            .addElement('C', ofBlock(sBlockCasings9, 7))
-            .addElement('D', ofBlock(sBlockCasings1, 11))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
             .addElement(
                 'E',
                 buildHatchAdder(LapotronChip.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Maintenance, Energy, Energy.or(ExoticEnergy))
-                    .casingIndex(StructureUtils.getTextureIndex(sBlockCasings8, 10))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('F', ofBlock(BlockLoader.metaBlockGlow, 0))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
             .addElement(
                 'G',
                 GTStructureChannels.STRUCTURE_HEIGHT.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LapotronChip::getTierGlass1,
                         getGlass(),
                         -1,
@@ -157,14 +156,14 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
             .addElement(
                 'H',
                 GTStructureChannels.STRUCTURE_LENGTH.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LapotronChip::getTierGlass2,
                         getGlass(),
                         -1,
                         (t, m) -> t.tierGlass2 = m,
                         t -> t.tierGlass2)))
-            .addElement('I', ofBlock(sBlockCasings1, 15))
-            .addElement('K', ofBlockAnyMeta(Blocks.beacon))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('K', StructureUtility.ofBlockAnyMeta(Blocks.beacon))
             .build();
     }
 

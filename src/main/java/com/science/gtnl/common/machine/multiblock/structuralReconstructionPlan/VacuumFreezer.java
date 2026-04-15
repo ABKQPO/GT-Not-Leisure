@@ -1,18 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import net.minecraft.item.ItemStack;
@@ -25,6 +13,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -32,6 +21,8 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -103,7 +94,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 1);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 1);
     }
 
     @Override
@@ -132,17 +123,29 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
     @Override
     public IStructureDefinition<VacuumFreezer> getStructureDefinition() {
         return StructureDefinition.<VacuumFreezer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('B', ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement(
+                'B',
+                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
             .addElement(
                 'C',
                 buildHatchAdder(VacuumFreezer.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 1))))
-            .addElement('D', ofBlock(sBlockCasings2, 14))
-            .addElement('E', ofBlock(sBlockCasings4, 1))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1))))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
             .build();
     }
 

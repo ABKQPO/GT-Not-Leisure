@@ -2,10 +2,10 @@ package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import gregtech.GTMod;
 import gregtech.api.enums.GTValues;
@@ -63,7 +63,7 @@ public class SteamOilDrillModule extends SteamElevatorModule {
         return tt;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         int dimensionId = getBaseMetaTileEntity().getWorld().provider.dimensionId;

@@ -1,41 +1,29 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockGlass1;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -45,6 +33,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -109,7 +98,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings10, 3);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
     }
 
     @Override
@@ -118,7 +107,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
             : GTNLRecipeMaps.IndustrialInfusionCraftingRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(
@@ -145,24 +134,32 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     @Override
     public IStructureDefinition<IndustrialArcaneAssembler> getStructureDefinition() {
         return StructureDefinition.<IndustrialArcaneAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings10, 7))
-            .addElement('B', ofBlock(sBlockCasingsTT, 0))
-            .addElement('C', ofBlock(sBlockCasings1, 13))
-            .addElement('D', ofBlock(sBlockCasings8, 7))
-            .addElement('E', ofBlock(sBlockCasings10, 6))
-            .addElement('F', ofBlock(sBlockCasings10, 8))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
             .addElement(
                 'G',
-                buildHatchAdder(IndustrialArcaneAssembler.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(IndustrialArcaneAssembler.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
-            .addElement('H', ofBlock(sBlockCasingsTT, 4))
-            .addElement('I', ofBlock(sBlockCasings9, 12))
-            .addElement('J', ofFrame(Materials.Neutronium))
-            .addElement('K', ofFrame(Materials.DarkIron))
-            .addElement('L', ofBlock(sBlockGlass1, 2))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
+            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.DarkIron))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 2))
             .build();
     }
 

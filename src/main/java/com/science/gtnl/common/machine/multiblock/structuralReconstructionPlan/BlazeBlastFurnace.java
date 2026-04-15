@@ -1,38 +1,24 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
@@ -44,6 +30,7 @@ import bartworks.util.BWUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
@@ -61,6 +48,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -126,37 +114,40 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     @Override
     public IStructureDefinition<BlazeBlastFurnace> getStructureDefinition() {
         return StructureDefinition.<BlazeBlastFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings2, 15))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 15))
             .addElement(
                 'B',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(BlazeBlastFurnace::setMCoilLevel, BlazeBlastFurnace::getMCoilLevel))))
-            .addElement('C', ofBlock(ModBlocks.blockCasings3Misc, 11))
-            .addElement('D', ofBlock(ModBlocks.blockCasingsMisc, 14))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(BlazeBlastFurnace::setMCoilLevel, BlazeBlastFurnace::getMCoilLevel))))
+            .addElement('C', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 11))
+            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
             .addElement(
                 'E',
-                ofChain(
-                    buildHatchAdder(BlazeBlastFurnace.class)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(BlazeBlastFurnace.class)
                         .atLeast(
-                            InputBus,
-                            OutputBus,
-                            InputHatch,
-                            OutputHatch,
-                            Energy.or(ExoticEnergy),
-                            Maintenance,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            HatchElement.Maintenance,
                             ParallelCon)
                         .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(ModBlocks.blockCasingsMisc, 15)),
-                    buildHatchAdder(BlazeBlastFurnace.class).adder(BlazeBlastFurnace::addFluidBlazeInputHatch)
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15)),
+                    GTStructureUtility.buildHatchAdder(BlazeBlastFurnace.class)
+                        .adder(BlazeBlastFurnace::addFluidBlazeInputHatch)
                         .hatchId(21503)
                         .shouldReject(x -> !x.mFluidBlazeInputHatch.isEmpty())
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build()))
-            .addElement('F', Muffler.newAny(TAE.getIndexFromPage(2, 11), 1))
+            .addElement('F', HatchElement.Muffler.newAny(TAE.getIndexFromPage(2, 11), 1))
             .build();
     }
 
@@ -261,9 +252,9 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(getMachineHeat())
@@ -273,7 +264,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             }
 
             @Override
-            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @NotNull CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }

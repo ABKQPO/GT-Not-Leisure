@@ -1,10 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -28,6 +23,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
@@ -37,6 +33,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -143,14 +140,21 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
         return StructureDefinition.<FurnaceArray>builder()
             .addShape(
                 STRUCTURE_PIECE_MAIN,
-                transpose(
+                StructureUtility.transpose(
                     new String[][] { { "AAA", "AAA", "AAA" }, { "A~A", "A A", "AAA" }, { "AAA", "AAA", "AAA" }, }))
             .addElement(
                 'A',
                 buildHatchAdder(FurnaceArray.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(SteamHatchElement.InputBus_Steam, SteamHatchElement.OutputBus_Steam, InputBus, OutputBus)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(BlockLoader.metaCasing02, 20))))
+                    .atLeast(
+                        SteamHatchElement.InputBus_Steam,
+                        SteamHatchElement.OutputBus_Steam,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(BlockLoader.metaCasing02, 20))))
             .build();
     }
 

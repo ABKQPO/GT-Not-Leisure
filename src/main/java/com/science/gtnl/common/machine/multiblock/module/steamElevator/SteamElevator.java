@@ -1,21 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -44,6 +30,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -67,7 +54,10 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.StructureError;
@@ -80,6 +70,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.GTChunkManager;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
@@ -147,10 +138,10 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     @Override
     public IStructureDefinition<SteamElevator> getStructureDefinition() {
         return StructureDefinition.<SteamElevator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamElevator.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
                         .dot(1)
@@ -161,32 +152,33 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                     buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
                         .dot(1)
                         .buildAndChain(BlockLoader.metaCasing, 25)))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 31))
-            .addElement('C', ofBlock(sBlockCasings1, 10))
-            .addElement('D', ofBlock(sBlockCasings2, 0))
-            .addElement('E', ofBlock(sBlockCasings3, 14))
-            .addElement('F', ofFrame(Materials.Steel))
-            .addElement('G', ofBlock(Blocks.brick_block, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('G', StructureUtility.ofBlock(Blocks.brick_block, 0))
             .addElement(
                 'H',
-                buildHatchAdder(SteamElevator.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(SteamElevator.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
                         SteamHatchElement.InputBus_Steam,
                         SteamHatchElement.OutputBus_Steam,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus)
-                    .buildAndChain(sBlockCasings2, 0))
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus)
+                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
             .addElement(
                 'I',
                 HatchElementBuilder.<SteamElevator>builder()
                     .atLeast(SteamModuleElement.SteamModule)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(sBlockCasings2, 0))
-            .addElement('J', ofBlock(Blocks.stonebrick, 0))
+                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
+            .addElement('J', StructureUtility.ofBlock(Blocks.stonebrick, 0))
             .build();
     }
 
@@ -295,9 +287,10 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                         }
                         for (SteamElevatorModule mModule : mModuleHatches) {
                             mModule.connect();
-                            if (wirelessMode && getUserSteam(ownerUUID).compareTo(BigInteger.ZERO) > 0) {
+                            if (wirelessMode && SteamWirelessNetworkManager.getUserSteam(ownerUUID)
+                                .compareTo(BigInteger.ZERO) > 0) {
                                 long used = mModule.increaseStoredEU(perModuleEnergy);
-                                addSteamToGlobalSteamMap(ownerUUID, -used);
+                                SteamWirelessNetworkManager.addSteamToGlobalSteamMap(ownerUUID, -used);
                                 usedSteam += used;
                             } else {
                                 long tAvailableEnergy = getEUVar();
@@ -470,7 +463,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
     }
 
     @Override

@@ -1,33 +1,12 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings11;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,14 +14,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -107,7 +91,7 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -141,14 +125,14 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
     @Override
     public IStructureDefinition<ExtremeCompressor> getStructureDefinition() {
         return StructureDefinition.<ExtremeCompressor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings10, 5))
-            .addElement('B', ofBlock(sBlockCasings10, 3))
-            .addElement('C', ofBlock(sBlockCasings6, 9))
-            .addElement('D', ofBlock(sBlockCasings2, 15))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
             .addElement(
                 'E',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.STABALLOY.getFrameBox(1)
                             .getItem())))
@@ -156,27 +140,30 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
                 'F',
                 buildHatchAdder(ExtremeCompressor.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
-            .addElement('G', ofBlock(blockCasings3Misc, 1))
-            .addElement('H', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('I', ofBlock(sBlockCasings11, 4))
-            .addElement('J', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('K', Muffler.newAny(getCasingTextureID(), 5))
-            .addElement('L', ofBlock(sBlockCasings8, 10))
-            .addElement('M', ofBlock(sBlockCasingsDyson, 1))
-            .addElement('N', ofBlock(sBlockCasings9, 9))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+            .addElement('G', StructureUtility.ofBlock(blockCasings3Misc, 1))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 4))
+            .addElement('J', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('K', HatchElement.Muffler.newAny(getCasingTextureID(), 5))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
             .addElement(
                 'O',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.INCOLOY_MA956.getFrameBox(1)
                             .getItem())))
@@ -228,7 +215,7 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
             : RecipeMaps.neutroniumCompressorRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays

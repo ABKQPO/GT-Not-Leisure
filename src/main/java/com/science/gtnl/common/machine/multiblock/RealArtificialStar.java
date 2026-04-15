@@ -1,21 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static tectech.thing.casing.TTCasingsContainer.SpacetimeCompressionFieldGenerators;
-import static tectech.thing.casing.TTCasingsContainer.StabilisationFieldGenerators;
-import static tectech.thing.casing.TTCasingsContainer.TimeAccelerationFieldGenerator;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -56,6 +43,7 @@ import com.science.gtnl.utils.enums.ModList;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -514,14 +502,14 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     @Override
     public IStructureDefinition<RealArtificialStar> getStructureDefinition() {
         return StructureDefinition.<RealArtificialStar>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
                 GTStructureChannels.EOH_DILATION.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         RealArtificialStar::getTierTimeFieldBlockFromBlock,
                         ImmutableList.of(
-                            Pair.of(sBlockCasingsTT, 14),
+                            Pair.of(TTCasingsContainer.sBlockCasingsTT, 14),
                             Pair.of(TTCasingsContainer.TimeAccelerationFieldGenerator, 0),
                             Pair.of(TTCasingsContainer.TimeAccelerationFieldGenerator, 1),
                             Pair.of(TTCasingsContainer.TimeAccelerationFieldGenerator, 2),
@@ -534,19 +522,20 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                         -1,
                         (t, m) -> t.tierTimeField = m,
                         t -> t.tierTimeField)))
-            .addElement('B', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('C', ofBlock(Loaders.compactFusionCoil, 4))
+            .addElement('B', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('C', StructureUtility.ofBlock(Loaders.compactFusionCoil, 4))
             .addElement(
                 'D',
-                buildHatchAdder(RealArtificialStar.class).atLeast(Maintenance, InputBus, OutputBus)
+                buildHatchAdder(RealArtificialStar.class)
+                    .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
                     .adder(RealArtificialStar::addInputBusOrOutputBusToMachineList)
                     .dot(1)
                     .casingIndex(13)
-                    .buildAndChain(sBlockCasings1, 13))
+                    .buildAndChain(GregTechAPI.sBlockCasings1, 13))
             .addElement(
                 'E',
                 GTStructureChannels.EOH_COMPRESSION.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         RealArtificialStar::getTierDimensionFieldBlockFromBlock,
                         ImmutableList.of(
                             Pair.of(GregTechAPI.sBlockCasings1, 14),
@@ -562,31 +551,31 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                         -1,
                         (t, m) -> t.tierDimensionField = m,
                         t -> t.tierDimensionField)))
-            .addElement('F', ofBlock(sBlockCasings10, 11))
-            .addElement('G', ofBlock(sBlockCasings8, 10))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
             .addElement(
                 'H',
                 GTStructureChannels.EOH_STABILISATION.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         RealArtificialStar::getTierStabilisationFieldBlockFromBlock,
                         ImmutableList.of(
-                            Pair.of(sBlockCasingsTT, 9),
-                            Pair.of(StabilisationFieldGenerators, 0),
-                            Pair.of(StabilisationFieldGenerators, 1),
-                            Pair.of(StabilisationFieldGenerators, 2),
-                            Pair.of(StabilisationFieldGenerators, 3),
-                            Pair.of(StabilisationFieldGenerators, 4),
-                            Pair.of(StabilisationFieldGenerators, 5),
-                            Pair.of(StabilisationFieldGenerators, 6),
-                            Pair.of(StabilisationFieldGenerators, 7),
-                            Pair.of(StabilisationFieldGenerators, 8)),
+                            Pair.of(TTCasingsContainer.sBlockCasingsTT, 9),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 0),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 1),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 2),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 3),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 4),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 5),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 6),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 7),
+                            Pair.of(TTCasingsContainer.StabilisationFieldGenerators, 8)),
                         -1,
                         (t, m) -> t.tierStabilisationField = m,
                         t -> t.tierStabilisationField)))
-            .addElement('I', ofBlock(sBlockCasingsDyson, 0))
-            .addElement('J', ofBlock(sBlockCasingsDyson, 5))
-            .addElement('K', ofBlock(sBlockCasingsDyson, 8))
-            .addElement('L', ofBlock(BlockQuantumGlass.INSTANCE, 0))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 0))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 5))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
+            .addElement('L', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
             .build();
     }
 
@@ -594,23 +583,23 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static Integer getTierDimensionFieldBlockFromBlock(Block block, int meta) {
         if (block == null) return null;
         if (block == GregTechAPI.sBlockCasings1 && 14 == meta) return 1;
-        if (block == SpacetimeCompressionFieldGenerators) return meta + 2;
+        if (block == TTCasingsContainer.SpacetimeCompressionFieldGenerators) return meta + 2;
         return null;
     }
 
     @Nullable
     public static Integer getTierTimeFieldBlockFromBlock(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasingsTT && 14 == meta) return 1;
-        if (block == TimeAccelerationFieldGenerator) return meta + 2;
+        if (block == TTCasingsContainer.sBlockCasingsTT && 14 == meta) return 1;
+        if (block == TTCasingsContainer.TimeAccelerationFieldGenerator) return meta + 2;
         return null;
     }
 
     @Nullable
     public static Integer getTierStabilisationFieldBlockFromBlock(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasingsTT && 9 == meta) return 1;
-        if (block == StabilisationFieldGenerators) return meta + 2;
+        if (block == TTCasingsContainer.sBlockCasingsTT && 9 == meta) return 1;
+        if (block == TTCasingsContainer.StabilisationFieldGenerators) return meta + 2;
         return null;
     }
 

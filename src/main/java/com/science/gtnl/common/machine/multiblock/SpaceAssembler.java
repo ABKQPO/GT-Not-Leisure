@@ -1,25 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE;
-import static com.science.gtnl.utils.recipes.RecipeUtil.NOT_IN_SPACE_STATION;
-import static com.science.gtnl.utils.recipes.RecipeUtil.isValidForMothership;
-import static com.science.gtnl.utils.recipes.RecipeUtil.isValidForSpaceStation;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasingsSEMotor;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -32,9 +14,14 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.recipes.RecipeUtil;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -42,6 +29,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhintergalactic.recipe.IGRecipeMaps;
@@ -75,12 +63,12 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
         if (sideDirection == facingDirection) {
             if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_TECTECH_MULTIBLOCK)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK)
                     .extFacing()
                     .build() };
         }
@@ -89,7 +77,7 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 13);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 13);
     }
 
     @Override
@@ -100,11 +88,11 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        if (isValidForSpaceStation(getBaseMetaTileEntity().getWorld().provider.dimensionId)
-            || isValidForMothership(getBaseMetaTileEntity().getWorld().provider.dimensionId)) {
+        if (RecipeUtil.isValidForSpaceStation(getBaseMetaTileEntity().getWorld().provider.dimensionId)
+            || RecipeUtil.isValidForMothership(getBaseMetaTileEntity().getWorld().provider.dimensionId)) {
             return super.checkProcessing();
         }
-        return NOT_IN_SPACE_STATION;
+        return RecipeUtil.NOT_IN_SPACE_STATION;
     }
 
     @Override
@@ -133,17 +121,26 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
     @Override
     public IStructureDefinition<SpaceAssembler> getStructureDefinition() {
         return StructureDefinition.<SpaceAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings1, 13))
-            .addElement('C', ofBlock(sBlockCasingsSEMotor, 2))
-            .addElement('D', ofBlock(sBlockCasingsTT, 2))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 2))
+            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 2))
             .addElement(
                 'E',
-                buildHatchAdder(SpaceAssembler.class).casingIndex(BlockGTCasingsTT.textureOffset + 3)
+                GTStructureUtility.buildHatchAdder(SpaceAssembler.class)
+                    .casingIndex(BlockGTCasingsTT.textureOffset + 3)
                     .dot(1)
-                    .atLeast(InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 3))))
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
             .build();
     }
 

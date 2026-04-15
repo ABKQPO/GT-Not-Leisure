@@ -1,45 +1,30 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -49,6 +34,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -104,7 +90,7 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 11);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
     }
 
     @Override
@@ -133,30 +119,34 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
     @Override
     public IStructureDefinition<WoodDistillation> getStructureDefinition() {
         return StructureDefinition.<WoodDistillation>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 2))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
             .addElement(
                 'B',
-                buildHatchAdder(WoodDistillation.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(WoodDistillation.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 11))))
-            .addElement('C', ofBlock(sBlockCasings2, 1))
-            .addElement('D', ofBlock(sBlockCasings2, 13))
-            .addElement('E', ofBlock(sBlockCasings3, 11))
-            .addElement('F', ofBlock(sBlockCasings3, 14))
-            .addElement('G', ofBlock(sBlockCasings4, 1))
-            .addElement('H', ofBlock(sBlockCasings4, 10))
-            .addElement('I', ofBlock(sBlockCasings6, 3))
-            .addElement('J', ofFrame(Materials.StainlessSteel))
-            .addElement('K', Muffler.newAny(getCasingTextureID(), 2))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 3))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.StainlessSteel))
+            .addElement('K', HatchElement.Muffler.newAny(getCasingTextureID(), 2))
             .build();
     }
 
@@ -209,7 +199,7 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
         return 1 - (Math.max(0, mParallelTier - 1) / 50.0);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         if (processingLogic == null) {

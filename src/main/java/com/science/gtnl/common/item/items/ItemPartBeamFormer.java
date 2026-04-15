@@ -2,14 +2,14 @@ package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;

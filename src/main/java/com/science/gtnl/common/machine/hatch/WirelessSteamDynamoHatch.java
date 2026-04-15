@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -20,6 +18,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -215,7 +215,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     }
 
     @Override
-    public boolean canStoreFluid(@Nonnull FluidStack fluidStack) {
+    public boolean canStoreFluid(@NotNull FluidStack fluidStack) {
         return mFluid == null || GTUtility.areFluidsEqual(mFluid, fluidStack);
     }
 

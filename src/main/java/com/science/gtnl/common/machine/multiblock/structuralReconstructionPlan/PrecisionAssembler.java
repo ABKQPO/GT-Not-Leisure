@@ -1,26 +1,11 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +23,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -46,6 +32,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -64,6 +51,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -138,7 +126,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
             : GoodGeneratorRecipeMaps.preciseAssemblerRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.assemblerRecipes, GoodGeneratorRecipeMaps.preciseAssemblerRecipes);
@@ -170,12 +158,12 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     @Override
     public IStructureDefinition<PrecisionAssembler> getStructureDefinition() {
         return StructureDefinition.<PrecisionAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         PrecisionAssembler::getMachineTier,
                         ImmutableList.of(
                             Pair.of(sBlockCasings1, 0),
@@ -191,18 +179,25 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
                         -1,
                         (t, m) -> t.mMachineTier = m,
                         t -> t.mMachineTier)))
-            .addElement('C', ofFrame(Materials.TungstenSteel))
+            .addElement('C', GTStructureUtility.ofFrame(Materials.TungstenSteel))
             .addElement(
                 'D',
-                ofChain(
-                    buildHatchAdder(PrecisionAssembler.class).casingIndex(getCasingTextureID())
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(PrecisionAssembler.class)
+                        .casingIndex(getCasingTextureID())
                         .dot(1)
-                        .atLeast(InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
+                        .atLeast(
+                            HatchElement.InputHatch,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            ParallelCon)
                         .buildAndChain(
-                            onElementPass(
+                            StructureUtility.onElementPass(
                                 x -> ++x.mCountCasing,
                                 GTStructureChannels.PRASS_UNIT_CASING.use(
-                                    ofBlocksTiered(
+                                    StructureUtility.ofBlocksTiered(
                                         PrecisionAssembler::getCasingTier,
                                         ImmutableList.of(
                                             Pair.of(Loaders.impreciseUnitCasing, 0),
@@ -338,9 +333,9 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (machineMode == 1) {
                     if (recipe.mSpecialValue > (Math.max(0, mCasingTier + 1))) {
                         return CheckRecipeResultRegistry.insufficientMachineTier(recipe.mSpecialValue);
@@ -349,7 +344,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
-            @Nonnull
+            @NotNull
             @Override
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)

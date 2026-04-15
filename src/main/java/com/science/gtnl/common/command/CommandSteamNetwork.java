@@ -1,9 +1,5 @@
 package com.science.gtnl.common.command;
 
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.setUserSteam;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +14,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
 import gregtech.api.util.GTUtility;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
@@ -93,12 +90,13 @@ public class CommandSteamNetwork extends CommandBase {
                     + GTUtility.formatNumbers(new BigInteger(Steam_String))
                     + EnumChatFormatting.RESET;
 
-                if (addSteamToGlobalSteamMap(uuid, new BigInteger(Steam_String))) sender.addChatMessage(
-                    new ChatComponentText(
-                        "Successfully added " + EU_string_formatted
-                            + "Steam to the global steam network of "
-                            + formatted_username
-                            + "."));
+                if (SteamWirelessNetworkManager.addSteamToGlobalSteamMap(uuid, new BigInteger(Steam_String)))
+                    sender.addChatMessage(
+                        new ChatComponentText(
+                            "Successfully added " + EU_string_formatted
+                                + "Steam to the global steam network of "
+                                + formatted_username
+                                + "."));
                 else sender.addChatMessage(
                     new ChatComponentText(
                         "Failed to add " + EU_string_formatted
@@ -110,7 +108,10 @@ public class CommandSteamNetwork extends CommandBase {
                     new ChatComponentText(
                         formatted_username + " currently has "
                             + EnumChatFormatting.RED
-                            + GTUtility.formatNumbers(new BigInteger(getUserSteam(uuid).toString()))
+                            + GTUtility.formatNumbers(
+                                new BigInteger(
+                                    SteamWirelessNetworkManager.getUserSteam(uuid)
+                                        .toString()))
                             + EnumChatFormatting.RESET
                             + " Steam in their network."));
 
@@ -136,7 +137,7 @@ public class CommandSteamNetwork extends CommandBase {
                     break;
                 }
 
-                setUserSteam(uuid, new BigInteger(Steam_String_0));
+                SteamWirelessNetworkManager.setUserSteam(uuid, new BigInteger(Steam_String_0));
 
                 sender.addChatMessage(
                     new ChatComponentText(
@@ -234,7 +235,7 @@ public class CommandSteamNetwork extends CommandBase {
                         "User " + formatted_username
                             + " has "
                             + EnumChatFormatting.RED
-                            + GTUtility.formatNumbers(getUserSteam(userUUID))
+                            + GTUtility.formatNumbers(SteamWirelessNetworkManager.getUserSteam(userUUID))
                             + EnumChatFormatting.RESET
                             + "Steam in their network."));
                 if (!userUUID.equals(teamUUID)) sender.addChatMessage(

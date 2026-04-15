@@ -1,12 +1,6 @@
 package com.science.gtnl.common.render.tile;
 
 import static tectech.Reference.MODID;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderBlockInWorld;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
-import static tectech.rendering.EOH.EOHTileEntitySR.spaceModel;
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 
 import java.awt.*;
@@ -37,6 +31,8 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gtneioreplugin.plugin.block.ModBlocks;
 import lombok.Getter;
+import tectech.rendering.EOH.EOHRenderingUtils;
+import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.thing.block.TileEntityEyeOfHarmony;
 
 @SideOnly(Side.CLIENT)
@@ -232,9 +228,9 @@ public class BallRenderer {
 
         if (type == IItemRenderer.ItemRenderType.INVENTORY) GL11.glRotated(180, 0, 1, 0);
 
-        renderStarLayer(0, STAR_LAYER_0, color, 1.0f, size);
-        renderStarLayer(1, STAR_LAYER_1, color, 0.4f, size);
-        renderStarLayer(2, STAR_LAYER_2, color, 0.2f, size);
+        EOHRenderingUtils.renderStarLayer(0, EOHTileEntitySR.STAR_LAYER_0, color, 1.0f, size);
+        EOHRenderingUtils.renderStarLayer(1, EOHTileEntitySR.STAR_LAYER_1, color, 0.4f, size);
+        EOHRenderingUtils.renderStarLayer(2, EOHTileEntitySR.STAR_LAYER_2, color, 0.2f, size);
 
         GL11.glPopMatrix();
     }
@@ -263,7 +259,7 @@ public class BallRenderer {
 
         GL11.glColor4f(1, 1, 1, 1);
 
-        spaceModel.renderAll();
+        EOHTileEntitySR.spaceModel.renderAll();
 
         GL11.glPopMatrix();
         GL11.glPopAttrib();
@@ -291,7 +287,7 @@ public class BallRenderer {
             .getTextureManager()
             .bindTexture(TextureMap.locationBlocksTexture);
 
-        renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
+        EOHRenderingUtils.renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
 
         GL11.glPopMatrix();
     }

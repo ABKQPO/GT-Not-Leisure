@@ -1,42 +1,29 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -48,6 +35,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -141,33 +129,37 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
     @Override
     public IStructureDefinition<MegaBrewer> getStructureDefinition() {
         return StructureDefinition.<MegaBrewer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 0))
-            .addElement('B', ofBlock(sBlockCasings6, 10))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', ofBlock(sBlockCasingsTT, 6))
-            .addElement('E', ofBlock(sBlockCasings8, 7))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 10))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
             .addElement(
                 'F',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(MegaBrewer::setMCoilLevel, MegaBrewer::getMCoilLevel))))
-            .addElement('G', ofBlock(BlockLoader.metaCasing, 7))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility
+                        .activeCoils(GTStructureUtility.ofCoil(MegaBrewer::setMCoilLevel, MegaBrewer::getMCoilLevel))))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
             .addElement(
                 'H',
-                buildHatchAdder(MegaBrewer.class)
+                GTStructureUtility.buildHatchAdder(MegaBrewer.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(ModBlocks.blockCasings2Misc, 11))))
-            .addElement('I', ofBlock(sBlockCasings8, 0))
-            .addElement('J', ofFrame(Materials.Neutronium))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 11))))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.Neutronium))
             .build();
     }
 
@@ -215,7 +207,7 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
         return (machineMode == MACHINEMODE_FREWERY) ? RecipeMaps.brewingRecipes : RecipeMaps.fermentingRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.brewingRecipes, RecipeMaps.fermentingRecipes);

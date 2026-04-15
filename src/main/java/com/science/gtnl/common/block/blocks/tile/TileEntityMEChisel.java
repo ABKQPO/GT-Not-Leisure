@@ -250,7 +250,6 @@ public class TileEntityMEChisel extends AENetworkInvTile implements IInterfaceHo
     }
 
     @Override
-    @NotNull
     public AECableType getCableConnectionType(@NotNull ForgeDirection dir) {
         return AECableType.SMART;
     }

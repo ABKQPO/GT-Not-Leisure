@@ -2,10 +2,10 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.utils.recipes.DisassemblerHelper;

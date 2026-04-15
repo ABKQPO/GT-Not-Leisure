@@ -1,22 +1,10 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialWireMill;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialWireMillActive;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -26,9 +14,11 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -38,6 +28,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class LargeAutoclave extends GTMMultiMachineBase<LargeAutoclave> implements ISurvivalConstructable {
 
@@ -67,12 +58,12 @@ public class LargeAutoclave extends GTMMultiMachineBase<LargeAutoclave> implemen
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialWireMillActive)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMillActive)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialWireMill)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMill)
                     .extFacing()
                     .build() };
         }
@@ -112,21 +103,23 @@ public class LargeAutoclave extends GTMMultiMachineBase<LargeAutoclave> implemen
     @Override
     public IStructureDefinition<LargeAutoclave> getStructureDefinition() {
         return StructureDefinition.<LargeAutoclave>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings2, 13))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 13))
             .addElement(
                 'B',
                 buildHatchAdder(LargeAutoclave.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings2Misc, 4))))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 4))))
             .build();
     }
 

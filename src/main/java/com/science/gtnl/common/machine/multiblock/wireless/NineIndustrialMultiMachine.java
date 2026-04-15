@@ -1,33 +1,11 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings5;
-import static gregtech.api.GregTechAPI.sBlockCasingsNH;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static tectech.thing.casing.TTCasingsContainer.StabilisationFieldGenerators;
-import static tectech.thing.casing.TTCasingsContainer.TimeAccelerationFieldGenerator;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -35,9 +13,13 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -50,6 +32,8 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -63,9 +47,11 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import tectech.thing.casing.TTCasingsContainer;
 
 public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine> {
 
@@ -149,28 +135,38 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public IStructureDefinition<NineIndustrialMultiMachine> getStructureDefinition() {
         return StructureDefinition.<NineIndustrialMultiMachine>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(ItemRegistry.bw_realglas2, 0))
-            .addElement('B', ofBlock(Loaders.FRF_Coil_4, 0))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('D', ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 12))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('B', StructureUtility.ofBlock(Loaders.FRF_Coil_4, 0))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('D', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 12))
             .addElement(
                 'E',
-                buildHatchAdder(NineIndustrialMultiMachine.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(NineIndustrialMultiMachine.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++this.mCountCasing, ofBlock(sBlockCasings1, 12))))
-            .addElement('F', ofBlock(sBlockCasings1, 13))
-            .addElement('G', ofBlock(sBlockCasings1, 14))
-            .addElement('H', ofBlock(sBlockCasings10, 6))
-            .addElement('I', ofBlock(sBlockCasings10, 7))
-            .addElement('J', ofBlock(sBlockCasings10, 11))
-            .addElement('K', ofBlock(sBlockCasings5, 13))
-            .addElement('L', ofBlock(sBlockCasingsNH, 12))
-            .addElement('M', ofBlock(sBlockCasingsTT, 4))
-            .addElement('N', ofFrame(Materials.Neutronium))
-            .addElement('O', ofBlock(StabilisationFieldGenerators, 2))
-            .addElement('P', ofBlock(TimeAccelerationFieldGenerator, 8))
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++this.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 12))))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 13))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsNH, 12))
+            .addElement('M', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
+            .addElement('N', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('O', StructureUtility.ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 2))
+            .addElement('P', StructureUtility.ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
             .build();
     }
 
@@ -205,7 +201,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 12);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 12);
     }
 
     @Override
@@ -258,7 +254,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
             private ItemStack lastCircuit = null;
             private int lastMode = -1;
 
-            @Nonnull
+            @NotNull
             @Override
             public Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
                 ItemStack circuit = getCircuit(inputItems);
@@ -280,9 +276,9 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 return super.findRecipeMatches(foundMap);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
                 return new GTNLParallelHelper().setRecipe(recipe)
                     .setAvailableEUt(Long.MAX_VALUE)
                     .setMachine(machine, protectItems, protectFluids)
@@ -294,8 +290,8 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
             }
 
             @Override
-            public double calculateDuration(@Nonnull GTRecipe recipe, @Nonnull GTNLParallelHelper helper,
-                @Nonnull GTNLOverclockCalculator calculator) {
+            public double calculateDuration(@NotNull GTRecipe recipe, @NotNull GTNLParallelHelper helper,
+                @NotNull GTNLOverclockCalculator calculator) {
                 if (batchMode) {
                     return 1;
                 } else {
@@ -355,7 +351,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         costingEU = BigInteger.ZERO;
@@ -433,7 +429,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         return result;
     }
 
-    @Nonnull
+    @NotNull
     private CheckRecipeResult handleNonWirelessModeProcessing() {
         if (processingLogic == null) {
             return checkRecipe(mInventory[1]) ? CheckRecipeResultRegistry.SUCCESSFUL

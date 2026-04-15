@@ -1,11 +1,11 @@
 package com.science.gtnl.utils.recipes.metadata;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
 

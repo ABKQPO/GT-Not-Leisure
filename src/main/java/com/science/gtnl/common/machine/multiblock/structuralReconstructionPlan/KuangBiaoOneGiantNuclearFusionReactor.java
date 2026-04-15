@@ -1,27 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings6Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -29,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,6 +27,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -65,7 +43,9 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
@@ -85,10 +65,12 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.render.IMTERenderer;
+import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.block.BlockCasing;
 import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -431,9 +413,9 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 return result;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public CalculationResult validateAndCalculateRecipe(@Nonnull GTRecipe recipe) {
+            public CalculationResult validateAndCalculateRecipe(@NotNull GTRecipe recipe) {
                 CheckRecipeResult result = validateRecipe(recipe);
                 if (!result.wasSuccessful()) {
                     return CalculationResult.ofFailure(result);
@@ -519,29 +501,33 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     @Override
     public IStructureDefinition<KuangBiaoOneGiantNuclearFusionReactor> getStructureDefinition() {
         return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('B', ofBlock(sBlockCasings8, 10))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
             .addElement(
                 'C',
-                buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         CustomHatchElement.ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(getCasing(), getCasingMeta()))))
-            .addElement('D', ofBlock(getConcrete(), getConcreteMeta()))
-            .addElement('E', ofFrame(Materials.Tungsten))
-            .addElement('F', ofFrame(getFrame()))
-            .addElement('G', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('H', ofBlock(blockCasingsMisc, 5))
-            .addElement('I', ofBlock(Loaders.compactFusionCoil, getCoilMeta()))
-            .addElement('J', ofBlock(blockCasingsMisc, 15))
-            .addElement('K', ofBlock(sBlockCasings10, 3))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(getCasing(), getCasingMeta()))))
+            .addElement('D', StructureUtility.ofBlock(getConcrete(), getConcreteMeta()))
+            .addElement('E', GTStructureUtility.ofFrame(Materials.Tungsten))
+            .addElement('F', GTStructureUtility.ofFrame(getFrame()))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
+            .addElement('I', StructureUtility.ofBlock(Loaders.compactFusionCoil, getCoilMeta()))
+            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
             .build();
     }
 
@@ -561,7 +547,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     public abstract int getCasingMeta();
 
     public Block getConcrete() {
-        return sBlockCasings9;
+        return GregTechAPI.sBlockCasings9;
     }
 
     public int getConcreteMeta() {
@@ -601,7 +587,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getCasing() {
-            return sBlockCasings1;
+            return GregTechAPI.sBlockCasings1;
         }
 
         @Override
@@ -652,7 +638,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getCasing() {
-            return sBlockCasings4;
+            return GregTechAPI.sBlockCasings4;
         }
 
         @Override
@@ -703,7 +689,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getCasing() {
-            return sBlockCasings4;
+            return GregTechAPI.sBlockCasings4;
         }
 
         @Override
@@ -759,7 +745,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getCasing() {
-            return blockCasings3Misc;
+            return ModBlocks.blockCasings3Misc;
         }
 
         @Override
@@ -769,7 +755,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getConcrete() {
-            return sBlockCasingsDyson;
+            return GregTechAPI.sBlockCasingsDyson;
         }
 
         @Override
@@ -1068,7 +1054,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getCasing() {
-            return blockCasings6Misc;
+            return ModBlocks.blockCasings6Misc;
         }
 
         @Override
@@ -1078,7 +1064,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public Block getConcrete() {
-            return sBlockCasingsDyson;
+            return GregTechAPI.sBlockCasingsDyson;
         }
 
         @Override
@@ -1109,7 +1095,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             return result;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public CheckRecipeResult checkProcessing() {
             maxParallelStored = -1;

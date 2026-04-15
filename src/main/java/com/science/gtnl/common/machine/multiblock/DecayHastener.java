@@ -1,26 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_DECAY_HASTENER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_DECAY_HASTENER_ACTIVE;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -30,10 +11,14 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -41,6 +26,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements ISurvivalConstructable {
@@ -71,12 +57,12 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DECAY_HASTENER_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DECAY_HASTENER)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER)
                     .extFacing()
                     .build() };
         }
@@ -85,7 +71,7 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -114,25 +100,29 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
     @Override
     public IStructureDefinition<DecayHastener> getStructureDefinition() {
         return StructureDefinition.<DecayHastener>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings1, 15))
-            .addElement('B', ofBlock(sBlockCasings10, 3))
-            .addElement('C', ofBlock(sBlockCasings4, 6))
-            .addElement('D', ofBlock(sBlockCasings6, 8))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 6))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 8))
             .addElement(
                 'E',
-                buildHatchAdder(DecayHastener.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(DecayHastener.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('F', ofFrame(Materials.BlackSteel))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.BlackSteel))
             .build();
     }
 

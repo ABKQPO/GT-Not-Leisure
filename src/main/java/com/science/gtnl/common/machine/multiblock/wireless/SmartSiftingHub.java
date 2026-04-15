@@ -1,24 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings5Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.block.Block;
@@ -30,10 +14,12 @@ import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -42,7 +28,9 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtnhlanth.common.block.BlockCasing;
 
@@ -120,38 +108,40 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
     @Override
     public IStructureDefinition<SmartSiftingHub> getStructureDefinition() {
         return StructureDefinition.<SmartSiftingHub>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofFrame(Materials.TungstenSteel))
-            .addElement('B', ofBlock(blockCasings5Misc, 0))
-            .addElement('C', ofFrame(Materials.Quantium))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.ofFrame(Materials.TungstenSteel))
+            .addElement('B', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 0))
+            .addElement('C', GTStructureUtility.ofFrame(Materials.Quantium))
             .addElement(
                 'D',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_C276.getFrameBox(1)
                             .getItem())))
-            .addElement('E', ofBlock(blockCasings2Misc, 2))
-            .addElement('F', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('G', ofFrame(Materials.Europium))
-            .addElement('H', ofBlock(blockSpecialMultiCasings, 8))
-            .addElement('I', ofBlock(sBlockCasingsTT, 4))
+            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
+            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Europium))
+            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
+            .addElement('I', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'J',
-                buildHatchAdder(SmartSiftingHub.class)
+                GTStructureUtility.buildHatchAdder(SmartSiftingHub.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('K', ofBlock(sBlockCasingsTT, 6))
-            .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', ofBlockAnyMeta(new BlockCasing("electrode")))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 10))))
+            .addElement('K', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('M', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
             .build();
     }
 

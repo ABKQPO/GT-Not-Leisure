@@ -1,16 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.enums.HatchElement.Dynamo;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -26,10 +16,13 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
@@ -40,6 +33,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -205,15 +199,23 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     @Override
     public IStructureDefinition<PhotovoltaicPowerStation> getStructureDefinition() {
         return StructureDefinition.<PhotovoltaicPowerStation>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                buildHatchAdder(PhotovoltaicPowerStation.class).casingIndex(getCasingTextureIndex())
+                GTStructureUtility.buildHatchAdder(PhotovoltaicPowerStation.class)
+                    .casingIndex(getCasingTextureIndex())
                     .dot(1)
-                    .atLeast(Maintenance, InputHatch, Dynamo, Maintenance)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(getCasingBlock(), getCasingMeta()))))
-            .addElement('B', ofFrame(Materials.StainlessSteel))
-            .addElement('D', ofBlock(getPhotovoltaicBlock(), getPhotovoltaicMeta()))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.Dynamo,
+                        HatchElement.Maintenance)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(getCasingBlock(), getCasingMeta()))))
+            .addElement('B', GTStructureUtility.ofFrame(Materials.StainlessSteel))
+            .addElement('D', StructureUtility.ofBlock(getPhotovoltaicBlock(), getPhotovoltaicMeta()))
             .build();
     }
 
@@ -243,7 +245,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public Block getCasingBlock() {
-            return sBlockCasings2;
+            return GregTechAPI.sBlockCasings2;
         }
 
         @Override
@@ -268,7 +270,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
         }
 
         @Override
@@ -303,7 +305,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public Block getCasingBlock() {
-            return sBlockCasings4;
+            return GregTechAPI.sBlockCasings4;
         }
 
         @Override
@@ -328,7 +330,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(sBlockCasings4, 2);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 2);
         }
 
         @Override
@@ -363,7 +365,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public Block getCasingBlock() {
-            return sBlockCasings4;
+            return GregTechAPI.sBlockCasings4;
         }
 
         @Override
@@ -388,7 +390,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(sBlockCasings4, 0);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
         }
 
         @Override

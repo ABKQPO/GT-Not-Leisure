@@ -1,8 +1,5 @@
 package com.reavaritia.client.gui;
 
-import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
-import static com.reavaritia.ReAvaritia.network;
-
 import java.util.List;
 
 import net.minecraft.client.gui.GuiTextField;
@@ -21,6 +18,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.reavaritia.ReAvaritia;
 import com.reavaritia.common.packet.ExtremeAnvilPacket;
 import com.reavaritia.container.ContainerExtremeAnvil;
 
@@ -31,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
 
     public static final ResourceLocation ANVIL_TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/gui/extreme_anvil.png");
+        ReAvaritia.RESOURCE_ROOT_ID + ":" + "textures/gui/extreme_anvil.png");
 
     public GuiTextField itemNameTextField;
     public final ContainerExtremeAnvil containerAnvil;
@@ -132,7 +130,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
 
         this.containerAnvil.updateItemName(itemName.trim());
 
-        network.sendToServer(new ExtremeAnvilPacket(itemName));
+        ReAvaritia.network.sendToServer(new ExtremeAnvilPacket(itemName));
     }
 
     @Override

@@ -1,12 +1,9 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.BOLD;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GRAY;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.GREEN;
-import static com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler.YELLOW;
-
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
@@ -62,11 +59,16 @@ public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implem
         return new String[] { StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_00"),
             StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_01"),
             StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_02"),
-            GTValues.AuthorColen + GRAY + BOLD + " & " + GREEN + BOLD + "Chrom",
+            GTValues.AuthorColen + AnimatedTooltipHandler.GRAY
+                + AnimatedTooltipHandler.BOLD
+                + " & "
+                + AnimatedTooltipHandler.GREEN
+                + AnimatedTooltipHandler.BOLD
+                + "Chrom",
             StatCollector.translateToLocal("gt.blockmachines.hatch.energytunnel.desc.1") + ": "
-                + YELLOW
+                + AnimatedTooltipHandler.YELLOW
                 + GTUtility.formatNumbers(maxAmperes * GTValues.V[mTier])
-                + GRAY
+                + AnimatedTooltipHandler.GRAY
                 + " EU/t" };
     }
 }

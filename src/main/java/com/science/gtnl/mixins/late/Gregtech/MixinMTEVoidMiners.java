@@ -1,12 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -21,6 +14,7 @@ import com.science.gtnl.config.MainConfig;
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import bwcrossmod.galacticgreg.MTEVoidMiners;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -43,8 +37,9 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
     private static IHatchElement<?>[] modifyAtLeastArgs(IHatchElement<?>[] elements) {
         if (!MainConfig.machine.enableVoidMinerTweak) return elements;
         for (IHatchElement<?> e : elements) {
-            if (e == Energy) {
-                return new IHatchElement<?>[] { InputHatch, OutputBus, InputBus, Maintenance, Energy.or(ExoticEnergy) };
+            if (e == HatchElement.Energy) {
+                return new IHatchElement<?>[] { HatchElement.InputHatch, HatchElement.OutputBus, HatchElement.InputBus,
+                    HatchElement.Maintenance, HatchElement.Energy.or(HatchElement.ExoticEnergy) };
             }
         }
         return elements;

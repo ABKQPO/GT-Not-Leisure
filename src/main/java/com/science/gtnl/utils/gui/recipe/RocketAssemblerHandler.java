@@ -1,22 +1,5 @@
 package com.science.gtnl.utils.gui.recipe;
 
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT1Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT1Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT2Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT2Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT3Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT3Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT4Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT4Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT5Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT5Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT6Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT6Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT7Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT7Output;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT8Inputs;
-import static com.science.gtnl.utils.gui.recipe.RocketAssemblerFrontend.rocketT8Output;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
@@ -69,36 +52,36 @@ public class RocketAssemblerHandler extends GTNEIDefaultHandler {
 
         switch (recipe.mSpecialValue) {
             case 1 -> {
-                selectedInputs = rocketT1Inputs;
-                selectedOutput = rocketT1Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT1Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT1Output;
             }
             case 2 -> {
-                selectedInputs = rocketT2Inputs;
-                selectedOutput = rocketT2Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT2Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT2Output;
             }
             case 3 -> {
-                selectedInputs = rocketT3Inputs;
-                selectedOutput = rocketT3Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT3Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT3Output;
             }
             case 4 -> {
-                selectedInputs = rocketT4Inputs;
-                selectedOutput = rocketT4Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT4Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT4Output;
             }
             case 5 -> {
-                selectedInputs = rocketT5Inputs;
-                selectedOutput = rocketT5Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT5Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT5Output;
             }
             case 6 -> {
-                selectedInputs = rocketT6Inputs;
-                selectedOutput = rocketT6Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT6Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT6Output;
             }
             case 7 -> {
-                selectedInputs = rocketT7Inputs;
-                selectedOutput = rocketT7Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT7Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT7Output;
             }
             case 8 -> {
-                selectedInputs = rocketT8Inputs;
-                selectedOutput = rocketT8Output;
+                selectedInputs = RocketAssemblerFrontend.rocketT8Inputs;
+                selectedOutput = RocketAssemblerFrontend.rocketT8Output;
             }
             default -> {}
         }

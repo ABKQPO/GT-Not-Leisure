@@ -1,9 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.INGOTS;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeBuilder.TICKS;
-
 import net.minecraft.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +15,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMaps;
+import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import gregtech.loaders.oreprocessing.ProcessingDust;
 
@@ -35,8 +32,8 @@ public abstract class MixinProcessingDust {
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Ball.get(0))
             .itemOutputs(aMaterial.getDust(1))
-            .fluidInputs(aMaterial.getMolten(1 * INGOTS))
-            .duration(1 * SECONDS + 12 * TICKS)
+            .fluidInputs(aMaterial.getMolten(1 * GTRecipeBuilder.INGOTS))
+            .duration(1 * GTRecipeBuilder.SECONDS + 12 * GTRecipeBuilder.TICKS)
             .eut(GTUtility.calculateRecipeEU(aMaterial, 8))
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 

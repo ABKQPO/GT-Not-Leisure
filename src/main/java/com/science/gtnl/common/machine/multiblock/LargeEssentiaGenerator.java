@@ -1,21 +1,11 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofSpecificTileAdder;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ExoticDynamo;
-import static gregtech.api.enums.HatchElement.Dynamo;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,12 +19,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -43,6 +35,7 @@ import com.science.gtnl.utils.machine.LargeEssentiaEnergyData;
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -218,7 +211,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
         return StructureDefinition.<LargeEssentiaGenerator>builder()
             .addShape(
                 mName,
-                transpose(
+                StructureUtility.transpose(
                     new String[][] {
                         { "A       A", "         ", "         ", "         ", "    ~    ", "         ", "         ",
                             "         ", "A       A" },
@@ -226,13 +219,13 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
                             "   CEC   ", "T   C   T" },
                         { "T  TXT  T", "  TCXCT  ", " TCCXCCT ", "TCCCXCCCT", "XXXXXXXXX", "TCCCXCCCT", " TCCXCCT ",
                             "  TCXCT  ", "T  TXT  T" } }))
-            .addElement('A', ofBlock(ConfigBlocks.blockCosmeticOpaque, 1))
-            .addElement('T', ofBlock(ConfigBlocks.blockCosmeticSolid, 7))
-            .addElement('C', ofBlock(Loaders.magicCasing, 0))
+            .addElement('A', StructureUtility.ofBlock(ConfigBlocks.blockCosmeticOpaque, 1))
+            .addElement('T', StructureUtility.ofBlock(ConfigBlocks.blockCosmeticSolid, 7))
+            .addElement('C', StructureUtility.ofBlock(Loaders.magicCasing, 0))
             .addElement(
                 'E',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeEssentiaGenerator::getTierCasing,
                         ImmutableList.of(
                             Pair.of(Loaders.essentiaCell, 0),
@@ -244,14 +237,17 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
                         t -> t.tierMachine)))
             .addElement(
                 'X',
-                ofChain(
+                StructureUtility.ofChain(
                     buildHatchAdder(LargeEssentiaGenerator.class)
-                        .atLeast(Dynamo.or(ExoticDynamo), Maintenance, InputHatch)
+                        .atLeast(
+                            HatchElement.Dynamo.or(ExoticDynamo),
+                            HatchElement.Maintenance,
+                            HatchElement.InputHatch)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    ofBlock(Loaders.magicCasing, 0),
-                    ofSpecificTileAdder(
+                    StructureUtility.ofBlock(Loaders.magicCasing, 0),
+                    StructureUtility.ofSpecificTileAdder(
                         LargeEssentiaGenerator::addEssentiaHatch,
                         TileEntityEssentiaHatch.class,
                         Loaders.magicCasing,

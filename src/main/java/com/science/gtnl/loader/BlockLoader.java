@@ -1,15 +1,5 @@
 package com.science.gtnl.loader;
 
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.AQUA;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.BLUE;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GOLD;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.GREEN;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.LIGHT_PURPLE;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RED;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.RESET;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.YELLOW;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.addItemTooltip;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
@@ -154,11 +144,11 @@ public class BlockLoader {
         GTNLItemList.ShimmerFluidBlock.set(new ItemStack(shimmerFluidBlock));
 
         GTNLItemList.ShirabonReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 1));
-        addItemTooltip(
+        AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1),
             AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
         GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 2));
-        addItemTooltip(
+        AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1),
             AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
     }
@@ -167,60 +157,61 @@ public class BlockLoader {
 
         GTNLItemList.TestMetaBlock01_0.set(ItemBlockBase.initMetaBlock(0));
         GTNLItemList.NewHorizonsCoil.set(
-            ItemBlockBase
-                .initMetaBlock(1, new String[] { RESET + StatCollector.translateToLocal("gt.coilheattooltip") }));
+            ItemBlockBase.initMetaBlock(
+                1,
+                new String[] { AnimatedTooltipHandler.RESET + StatCollector.translateToLocal("gt.coilheattooltip") }));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.NewHorizonsCoil.get(1),
             AnimatedTooltipHandler.animatedText(
                 "179,769,313,486,231,590,772,930,519,078,902,473,361,797,697,894,230,657,273,430,081,",
                 1,
                 80,
-                RED,
-                GOLD,
-                YELLOW,
-                GREEN,
-                AQUA,
-                BLUE,
-                LIGHT_PURPLE));
+                AnimatedTooltipHandler.RED,
+                AnimatedTooltipHandler.GOLD,
+                AnimatedTooltipHandler.YELLOW,
+                AnimatedTooltipHandler.GREEN,
+                AnimatedTooltipHandler.AQUA,
+                AnimatedTooltipHandler.BLUE,
+                AnimatedTooltipHandler.LIGHT_PURPLE));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.NewHorizonsCoil.get(1),
             AnimatedTooltipHandler.animatedText(
                 "157,732,675,805,500,963,132,708,477,322,407,536,021,120,113,879,871,393,357,658,789,",
                 1,
                 80,
-                GOLD,
-                YELLOW,
-                GREEN,
-                AQUA,
-                BLUE,
-                LIGHT_PURPLE,
-                RED));
+                AnimatedTooltipHandler.GOLD,
+                AnimatedTooltipHandler.YELLOW,
+                AnimatedTooltipHandler.GREEN,
+                AnimatedTooltipHandler.AQUA,
+                AnimatedTooltipHandler.BLUE,
+                AnimatedTooltipHandler.LIGHT_PURPLE,
+                AnimatedTooltipHandler.RED));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.NewHorizonsCoil.get(1),
             AnimatedTooltipHandler.animatedText(
                 "768,814,416,622,492,847,430,639,474,124,377,767,893,424,865,485,276,302,219,601,246,",
                 1,
                 80,
-                YELLOW,
-                GREEN,
-                AQUA,
-                BLUE,
-                LIGHT_PURPLE,
-                RED,
-                GOLD));
+                AnimatedTooltipHandler.YELLOW,
+                AnimatedTooltipHandler.GREEN,
+                AnimatedTooltipHandler.AQUA,
+                AnimatedTooltipHandler.BLUE,
+                AnimatedTooltipHandler.LIGHT_PURPLE,
+                AnimatedTooltipHandler.RED,
+                AnimatedTooltipHandler.GOLD));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.NewHorizonsCoil.get(1),
             AnimatedTooltipHandler.animatedText(
                 "094,119,453,082,952,085,005,768,838,150,682,342,462,881,473,913,110,540,827,237,163,",
                 1,
                 80,
-                GREEN,
-                AQUA,
-                BLUE,
-                LIGHT_PURPLE,
-                RED,
-                GOLD,
-                YELLOW));
+                AnimatedTooltipHandler.GREEN,
+                AnimatedTooltipHandler.AQUA,
+                AnimatedTooltipHandler.BLUE,
+                AnimatedTooltipHandler.LIGHT_PURPLE,
+                AnimatedTooltipHandler.RED,
+                AnimatedTooltipHandler.GOLD,
+                AnimatedTooltipHandler.YELLOW));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.NewHorizonsCoil.get(1),
             AnimatedTooltipHandler.animatedText(
@@ -228,13 +219,13 @@ public class BlockLoader {
                     + StatCollector.translateToLocal("gt.coilunittooltip"),
                 1,
                 80,
-                AQUA,
-                BLUE,
-                LIGHT_PURPLE,
-                RED,
-                GOLD,
-                YELLOW,
-                GREEN));
+                AnimatedTooltipHandler.AQUA,
+                AnimatedTooltipHandler.BLUE,
+                AnimatedTooltipHandler.LIGHT_PURPLE,
+                AnimatedTooltipHandler.RED,
+                AnimatedTooltipHandler.GOLD,
+                AnimatedTooltipHandler.YELLOW,
+                AnimatedTooltipHandler.GREEN));
 
         GTNLItemList.StargateCoil.set(ItemBlockBase.initMetaBlock(2));
         GTNLItemList.BlackLampOff.set(

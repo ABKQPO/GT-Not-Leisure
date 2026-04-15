@@ -1,8 +1,5 @@
 package com.science.gtnl.common.render.item;
 
-import static com.science.gtnl.common.render.tile.RealArtificialStarRenderer.STAR_MODEL;
-import static com.science.gtnl.common.render.tile.RealArtificialStarRenderer.STAR_TEXTURE;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +7,7 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
 import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.relauncher.Side;
@@ -44,8 +42,8 @@ public class ItemBlockArtificialStarRender implements IItemRenderer {
         GL11.glScaled(0.25, 0.25, 0.25);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glRotated(5, 1, 1, 1);
-        Minecraft.getMinecraft().renderEngine.bindTexture(STAR_TEXTURE);
-        STAR_MODEL.renderAll();
+        Minecraft.getMinecraft().renderEngine.bindTexture(RealArtificialStarRenderer.STAR_TEXTURE);
+        RealArtificialStarRenderer.STAR_MODEL.renderAll();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
 

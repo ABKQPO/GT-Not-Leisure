@@ -1,16 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -22,6 +12,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
@@ -30,6 +21,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -40,6 +32,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -69,13 +62,13 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     @Override
     public IStructureDefinition<SteamFusionReactor> getStructureDefinition() {
         return StructureDefinition.<SteamFusionReactor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 26))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 29))
-            .addElement('C', chainAllGlasses())
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 26))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 29))
+            .addElement('C', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'D',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamFusionReactor.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 29))
                         .dot(1)
@@ -87,11 +80,12 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
                     buildSteamInput(SteamFusionReactor.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 29))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(SteamFusionReactor.class).atLeast(Maintenance, InputHatch, OutputHatch)
+                    GTStructureUtility.buildHatchAdder(SteamFusionReactor.class)
+                        .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.OutputHatch)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 29))
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(BlockLoader.metaCasing, 29)))
+                    StructureUtility.ofBlock(BlockLoader.metaCasing, 29)))
             .build();
     }
 
@@ -129,7 +123,6 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())

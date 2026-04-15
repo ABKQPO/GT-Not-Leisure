@@ -1,34 +1,10 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockGlass1;
-import static gregtech.api.GregTechAPI.sBlockTintedGlass;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -36,9 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -47,6 +26,8 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -57,6 +38,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -115,7 +97,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings10, 3);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
     }
 
     @Override
@@ -139,46 +121,50 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
     @Override
     public IStructureDefinition<TransliminalOasis> getStructureDefinition() {
         return StructureDefinition.<TransliminalOasis>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings8, 10))
-            .addElement('B', ofBlock(sBlockCasings9, 12))
-            .addElement('C', ofBlock(sBlockCasings9, 11))
-            .addElement('D', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', ofBlock(sBlockCasings3, 11))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
             .addElement(
                 'F',
-                buildHatchAdder(TransliminalOasis.class)
+                GTStructureUtility.buildHatchAdder(TransliminalOasis.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         CustomHatchElement.ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
-            .addElement('G', ofBlock(sBlockCasings9, 6))
-            .addElement('H', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('I', ofBlock(sBlockCasings4, 1))
-            .addElement('J', ofBlock(sBlockCasings8, 0))
-            .addElement('K', ofBlock(sBlockCasings8, 2))
-            .addElement('L', ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
+            .addElement('L', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
             .addElement(
                 'M',
                 Mods.RandomThings.isModLoaded()
-                    ? ofChain(
-                        ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt")),
-                        ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt_tilled")))
-                    : ofBlockAnyMeta(Blocks.dirt))
-            .addElement('N', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('O', ofBlock(sBlockTintedGlass, 0))
-            .addElement('P', ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('Q', ofBlock(sBlockCasings9, 1))
-            .addElement('R', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('S', ofBlock(sBlockGlass1, 0))
-            .addElement('T', ofFrame(Materials.Polytetrafluoroethylene))
-            .addElement('U', ofBlockAnyMeta(new BlockCasing("electrode")))
+                    ? StructureUtility.ofChain(
+                        StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt")),
+                        StructureUtility
+                            .ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt_tilled")))
+                    : StructureUtility.ofBlockAnyMeta(Blocks.dirt))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 0))
+            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
+            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('R', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('S', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
+            .addElement('T', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
+            .addElement('U', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
             .build();
     }
 
@@ -232,7 +218,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         return GTNLRecipeMaps.WoodcutterRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         maxParallelStored = -1;
@@ -313,7 +299,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         return result;
     }
 
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe(ItemStack stack) {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
         processingLogic.setInputItems(stack);

@@ -1,33 +1,13 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockMetal5;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 import static tectech.util.TTUtility.replaceLetters;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -39,9 +19,12 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
@@ -50,6 +33,8 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -59,6 +44,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
@@ -147,7 +133,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 12);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
     }
 
     @Override
@@ -171,46 +157,54 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     @Override
     public IStructureDefinition<NanoPhagocytosisPlant> getStructureDefinition() {
         return StructureDefinition.<NanoPhagocytosisPlant>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_ONE, transpose(shapeRingOne))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_TWO, transpose(shapeRingTwo))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_THREE, transpose(shapeRingThree))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_ONE_AIR, transpose(shapeRingOneAir))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_TWO_AIR, transpose(shapeRingTwoAir))
-            .addShape(STRUCTURE_PIECE_MAIN_RING_THREE_AIR, transpose(shapeRingThreeAir))
-            .addElement('A', ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('F', ofBlock(sBlockCasings1, 15))
-            .addElement('G', ofBlock(sBlockCasings10, 3))
-            .addElement('H', ofBlock(sBlockCasings10, 7))
-            .addElement('I', ofBlock(sBlockCasings10, 8))
-            .addElement('J', ofBlock(sBlockCasings3, 10))
-            .addElement('K', ofBlock(sBlockCasings4, 11))
-            .addElement('L', ofBlock(sBlockCasings4, 12))
-            .addElement('M', ofBlock(sBlockCasings8, 7))
-            .addElement('N', ofBlock(sBlockCasings8, 10))
-            .addElement('O', ofBlock(sBlockCasings8, 11))
-            .addElement('P', ofBlock(sBlockCasings9, 12))
-            .addElement('Q', ofBlock(sBlockCasings9, 13))
-            .addElement('R', ofBlock(sBlockCasingsTT, 0))
-            .addElement('S', ofBlock(sBlockCasingsTT, 6))
-            .addElement('T', ofFrame(Materials.EnrichedHolmium))
-            .addElement('U', ofBlock(sBlockMetal5, 1))
-            .addElement('V', ofBlock(blockCasingsMisc, 5))
-            .addElement('W', ofBlock(sBlockCasings4, 7))
-            .addElement('X', ofBlock(Loaders.compactFusionCoil, 2))
-            .addElement('Y', ofBlock(Loaders.compactFusionCoil, 0))
-            .addElement('Z', isAir())
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_ONE, StructureUtility.transpose(shapeRingOne))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_TWO, StructureUtility.transpose(shapeRingTwo))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_THREE, StructureUtility.transpose(shapeRingThree))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_ONE_AIR, StructureUtility.transpose(shapeRingOneAir))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_TWO_AIR, StructureUtility.transpose(shapeRingTwoAir))
+            .addShape(STRUCTURE_PIECE_MAIN_RING_THREE_AIR, StructureUtility.transpose(shapeRingThreeAir))
+            .addElement('A', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('E', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 11))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 11))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+            .addElement('R', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('S', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('T', GTStructureUtility.ofFrame(Materials.EnrichedHolmium))
+            .addElement('U', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 1))
+            .addElement('V', StructureUtility.ofBlock(blockCasingsMisc, 5))
+            .addElement('W', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('X', StructureUtility.ofBlock(Loaders.compactFusionCoil, 2))
+            .addElement('Y', StructureUtility.ofBlock(Loaders.compactFusionCoil, 0))
+            .addElement('Z', StructureUtility.isAir())
             .addElement(
                 'a',
-                buildHatchAdder(NanoPhagocytosisPlant.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy), ParallelCon)
-                    .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 12))
+                GTStructureUtility.buildHatchAdder(NanoPhagocytosisPlant.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12))
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings9, 12))))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
             .build();
     }
 
@@ -538,7 +532,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         return machineMode == MACHINEMODE_MACERATOR ? RecipeMaps.maceratorRecipes : GTNLRecipeMaps.IsaMillRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.maceratorRecipes, GTNLRecipeMaps.IsaMillRecipes);

@@ -1,32 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.ALL_PROCESSABLE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.CENTRIFUGE_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.CHEMBATH_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.MAC_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.OC_CALC;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.RAND;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.SIFTER_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.THERMAL_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.WASH_CACHE;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.checkTypes;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.getCachedRecipe;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.getDisplayMode;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.initHash;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isCrushedOre;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isCrushedPureOre;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isImpureDust;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isInit;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isOre;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isPureDust;
-import static com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule.isThermal;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -44,6 +17,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamOreProcessorModule;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import gregtech.api.enums.HatchElement;
@@ -102,7 +76,8 @@ public abstract class MixinMTEIntegratedOreFactory
     private static IHatchElement<?>[] modifyAtLeastArgs(IHatchElement<?>[] elements) {
         for (IHatchElement<?> e : elements) {
             if (e == HatchElement.Energy) {
-                return new IHatchElement<?>[] { InputHatch, OutputBus, InputBus, Maintenance, Energy.or(ExoticEnergy) };
+                return new IHatchElement<?>[] { HatchElement.InputHatch, HatchElement.OutputBus, HatchElement.InputBus,
+                    HatchElement.Maintenance, HatchElement.Energy.or(HatchElement.ExoticEnergy) };
             }
         }
         return elements;
@@ -118,9 +93,9 @@ public abstract class MixinMTEIntegratedOreFactory
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
-        if (!isInit) {
-            initHash();
-            isInit = true;
+        if (!SteamOreProcessorModule.isInit) {
+            SteamOreProcessorModule.initHash();
+            SteamOreProcessorModule.isInit = true;
         }
 
         List<ItemStack> tInput = getStoredInputs();
@@ -138,7 +113,7 @@ public abstract class MixinMTEIntegratedOreFactory
 
         int maxParallel = 65536 * GTUtility.getTier(getMaxInputEu());
 
-        GTNLOverclockCalculator calculator = OC_CALC.get()
+        GTNLOverclockCalculator calculator = SteamOreProcessorModule.OC_CALC.get()
             .reset()
             .setEUt(availableEUt)
             .setRecipeEUt(requiredEUt)
@@ -175,7 +150,7 @@ public abstract class MixinMTEIntegratedOreFactory
         for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            if (!SteamOreProcessorModule.ALL_PROCESSABLE.contains(tID)) continue;
             int add = Math.min(ore.stackSize, currentParallel - itemParallel);
             if (add <= 0) break;
             itemParallel += add;
@@ -197,7 +172,7 @@ public abstract class MixinMTEIntegratedOreFactory
             if (remainingCost <= 0) break;
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            if (!SteamOreProcessorModule.ALL_PROCESSABLE.contains(tID)) continue;
             if (remainingCost >= ore.stackSize) {
                 simulatedOres.add(GTUtility.copy(ore));
                 remainingCost -= ore.stackSize;
@@ -211,38 +186,53 @@ public abstract class MixinMTEIntegratedOreFactory
 
         switch (sMode) {
             case 0 -> {
-                gtnl$doMac(isOre);
-                gtnl$doWash(isCrushedOre);
-                gtnl$doThermal(isCrushedPureOre, isCrushedOre);
-                gtnl$doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doWash(SteamOreProcessorModule.isCrushedOre);
+                gtnl$doThermal(SteamOreProcessorModule.isCrushedPureOre, SteamOreProcessorModule.isCrushedOre);
+                gtnl$doMac(
+                    SteamOreProcessorModule.isThermal,
+                    SteamOreProcessorModule.isOre,
+                    SteamOreProcessorModule.isCrushedOre,
+                    SteamOreProcessorModule.isCrushedPureOre);
             }
             case 1 -> {
-                gtnl$doMac(isOre);
-                gtnl$doWash(isCrushedOre);
-                gtnl$doMac(isOre, isCrushedOre, isCrushedPureOre);
-                gtnl$doCentrifuge(isImpureDust, isPureDust);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doWash(SteamOreProcessorModule.isCrushedOre);
+                gtnl$doMac(
+                    SteamOreProcessorModule.isOre,
+                    SteamOreProcessorModule.isCrushedOre,
+                    SteamOreProcessorModule.isCrushedPureOre);
+                gtnl$doCentrifuge(SteamOreProcessorModule.isImpureDust, SteamOreProcessorModule.isPureDust);
             }
             case 2 -> {
-                gtnl$doMac(isOre);
-                gtnl$doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
-                gtnl$doCentrifuge(isImpureDust, isPureDust);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doMac(
+                    SteamOreProcessorModule.isThermal,
+                    SteamOreProcessorModule.isOre,
+                    SteamOreProcessorModule.isCrushedOre,
+                    SteamOreProcessorModule.isCrushedPureOre);
+                gtnl$doCentrifuge(SteamOreProcessorModule.isImpureDust, SteamOreProcessorModule.isPureDust);
             }
             case 3 -> {
-                gtnl$doMac(isOre);
-                gtnl$doWash(isCrushedOre);
-                gtnl$doSift(isCrushedPureOre);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doWash(SteamOreProcessorModule.isCrushedOre);
+                gtnl$doSift(SteamOreProcessorModule.isCrushedPureOre);
             }
             case 4 -> {
-                gtnl$doMac(isOre);
-                gtnl$doChemWash(isCrushedOre, isCrushedPureOre);
-                gtnl$doMac(isCrushedOre, isCrushedPureOre);
-                gtnl$doCentrifuge(isImpureDust, isPureDust);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doChemWash(SteamOreProcessorModule.isCrushedOre, SteamOreProcessorModule.isCrushedPureOre);
+                gtnl$doMac(SteamOreProcessorModule.isCrushedOre, SteamOreProcessorModule.isCrushedPureOre);
+                gtnl$doCentrifuge(SteamOreProcessorModule.isImpureDust, SteamOreProcessorModule.isPureDust);
             }
             case 5 -> {
-                gtnl$doMac(isOre);
-                gtnl$doChemWash(isCrushedOre, isCrushedPureOre);
-                gtnl$doThermal(isCrushedPureOre, isCrushedOre);
-                gtnl$doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
+                gtnl$doMac(SteamOreProcessorModule.isOre);
+                gtnl$doChemWash(SteamOreProcessorModule.isCrushedOre, SteamOreProcessorModule.isCrushedPureOre);
+                gtnl$doThermal(SteamOreProcessorModule.isCrushedPureOre, SteamOreProcessorModule.isCrushedOre);
+                gtnl$doMac(
+                    SteamOreProcessorModule.isThermal,
+                    SteamOreProcessorModule.isOre,
+                    SteamOreProcessorModule.isCrushedOre,
+                    SteamOreProcessorModule.isCrushedPureOre);
             }
             default -> {
                 return CheckRecipeResultRegistry.NO_RECIPE;
@@ -264,7 +254,7 @@ public abstract class MixinMTEIntegratedOreFactory
         for (ItemStack ore : tInput) {
             int tID = GTUtility.stackToInt(ore);
             if (tID == 0) continue;
-            if (!ALL_PROCESSABLE.contains(tID)) continue;
+            if (!SteamOreProcessorModule.ALL_PROCESSABLE.contains(tID)) continue;
             if (consumeLeft >= ore.stackSize) {
                 consumeLeft -= ore.stackSize;
                 ore.stackSize = 0;
@@ -296,10 +286,10 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
                     // cache by intID
-                    GTRecipe tRecipe = getCachedRecipe(
-                        MAC_CACHE,
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.MAC_CACHE,
                         tID,
                         () -> RecipeMaps.maceratorRecipes.findRecipeQuery()
                             .caching(false)
@@ -324,9 +314,9 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = getCachedRecipe(
-                        WASH_CACHE,
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.WASH_CACHE,
                         tID,
                         () -> RecipeMaps.oreWasherRecipes.findRecipeQuery()
                             .caching(false)
@@ -352,9 +342,9 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = getCachedRecipe(
-                        THERMAL_CACHE,
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.THERMAL_CACHE,
                         tID,
                         () -> RecipeMaps.thermalCentrifugeRecipes.findRecipeQuery()
                             .caching(false)
@@ -379,9 +369,9 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = getCachedRecipe(
-                        CENTRIFUGE_CACHE,
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.CENTRIFUGE_CACHE,
                         tID,
                         () -> RecipeMaps.centrifugeRecipes.findRecipeQuery()
                             .items(aStack)
@@ -405,9 +395,9 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = getCachedRecipe(
-                        SIFTER_CACHE,
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.SIFTER_CACHE,
                         tID,
                         () -> RecipeMaps.sifterRecipes.findRecipeQuery()
                             .items(aStack)
@@ -431,9 +421,9 @@ public abstract class MixinMTEIntegratedOreFactory
         if (sMidProduct != null) {
             for (ItemStack aStack : sMidProduct) {
                 int tID = GTUtility.stackToInt(aStack);
-                if (checkTypes(tID, aTables)) {
-                    GTRecipe tRecipe = getCachedRecipe(
-                        CHEMBATH_CACHE,
+                if (SteamOreProcessorModule.checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = SteamOreProcessorModule.getCachedRecipe(
+                        SteamOreProcessorModule.CHEMBATH_CACHE,
                         tID,
                         () -> RecipeMaps.chemicalBathRecipes.findRecipeQuery()
                             .items(aStack)
@@ -475,7 +465,7 @@ public abstract class MixinMTEIntegratedOreFactory
     @Unique
     public List<ItemStack> gtnl$getOutputStack(GTRecipe aRecipe, int aStacksize) {
         ObjectArrayList<ItemStack> tOutput = new ObjectArrayList<>();
-        Random random = RAND.get();
+        Random random = SteamOreProcessorModule.RAND.get();
         for (int i = 0; i < aRecipe.mOutputs.length; i++) {
             if (aRecipe.getOutput(i) == null) {
                 continue;
@@ -528,7 +518,7 @@ public abstract class MixinMTEIntegratedOreFactory
 
     @Override
     public String getMachineModeName() {
-        List<String> des = getDisplayMode(sMode);
+        List<String> des = SteamOreProcessorModule.getDisplayMode(sMode);
         return String.join("\n", des);
     }
 

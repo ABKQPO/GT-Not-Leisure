@@ -1,43 +1,29 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockMetal8;
-import static gregtech.api.GregTechAPI.sBlockMetal9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -138,40 +124,42 @@ public class MagneticConfinementDimensionalityShockDevice
     @Override
     public IStructureDefinition<MagneticConfinementDimensionalityShockDevice> getStructureDefinition() {
         return StructureDefinition.<MagneticConfinementDimensionalityShockDevice>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings1, 13))
-            .addElement('B', ofBlock(sBlockCasings10, 7))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', ofBlock(sBlockCasings4, 7))
-            .addElement('E', ofBlock(sBlockCasings9, 9))
-            .addElement('F', ofBlock(sBlockCasings1, 14))
-            .addElement('G', ofBlock(sBlockMetal9, 11))
-            .addElement('H', ofBlock(sBlockCasings1, 12))
-            .addElement('I', ofBlock(sBlockCasings9, 13))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockMetal9, 11))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 12))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
             .addElement(
                 'J',
                 buildHatchAdder(MagneticConfinementDimensionalityShockDevice.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('K', ofBlock(sBlockMetal8, 10))
-            .addElement('L', ofBlock(ModBlocks.blockCasings2Misc, 9))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal8, 10))
+            .addElement('L', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 9))
             .addElement(
                 'M',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_X.getFrameBox(1)
                             .getItem())))
-            .addElement('N', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('O', ofBlock(sBlockCasings10, 6))
+            .addElement('N', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
             .build();
     }
 
@@ -220,9 +208,9 @@ public class MagneticConfinementDimensionalityShockDevice
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());

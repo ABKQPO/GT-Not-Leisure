@@ -1,12 +1,6 @@
 package com.science.gtnl.common.block.blocks.item;
 
 import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
-import static tectech.thing.block.RenderForgeOfGods.disableOpaqueColorInversion;
-import static tectech.thing.block.RenderForgeOfGods.enableOpaqueColorInversion;
-import static tectech.thing.block.RenderForgeOfGods.enablePseudoTransparentColorInversion;
 
 import java.awt.*;
 
@@ -16,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
+
+import tectech.rendering.EOH.EOHTileEntitySR;
+import tectech.thing.block.RenderForgeOfGods;
 
 public class ItemBlockNanoPhagocytosisPlantRender extends ItemBlock implements IItemRenderer {
 
@@ -50,13 +47,13 @@ public class ItemBlockNanoPhagocytosisPlantRender extends ItemBlock implements I
             GL11.glDisable(GL11.GL_BLEND);
 
             // Innermost layer should be opaque
-            enableOpaqueColorInversion();
-            renderStarLayer(0, STAR_LAYER_0, new Color(1.0f, 0.4f, 0.05f, 1.0f), 1.0f, 1);
-            disableOpaqueColorInversion();
+            RenderForgeOfGods.enableOpaqueColorInversion();
+            renderStarLayer(0, EOHTileEntitySR.STAR_LAYER_0, new Color(1.0f, 0.4f, 0.05f, 1.0f), 1.0f, 1);
+            RenderForgeOfGods.disableOpaqueColorInversion();
 
-            enablePseudoTransparentColorInversion();
-            renderStarLayer(1, STAR_LAYER_1, new Color(1.0f, 0.4f, 0.05f, 1.0f), 0.4f, 1);
-            renderStarLayer(2, STAR_LAYER_2, new Color(1.0f, 0.4f, 0.05f, 1.0f), 0.2f, 1);
+            RenderForgeOfGods.enablePseudoTransparentColorInversion();
+            renderStarLayer(1, EOHTileEntitySR.STAR_LAYER_1, new Color(1.0f, 0.4f, 0.05f, 1.0f), 0.4f, 1);
+            renderStarLayer(2, EOHTileEntitySR.STAR_LAYER_2, new Color(1.0f, 0.4f, 0.05f, 1.0f), 0.2f, 1);
 
             GL11.glPopAttrib();
             GL11.glPopMatrix();

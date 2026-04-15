@@ -1,18 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE_GLOW;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
@@ -51,12 +40,14 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.IItemVault;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEFluidStack;
@@ -65,6 +56,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.ITexture;
@@ -262,12 +254,16 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     public IStructureDefinition<SingularityDataHub> getStructureDefinition() {
         return StructureDefinition.<SingularityDataHub>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 18))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
             .addElement(
                 'B',
-                ofChain(
-                    buildHatchAdder(SingularityDataHub.class).atLeast(InputBus, InputHatch, Energy.or(ExoticEnergy))
+                StructureUtility.ofChain(
+                    buildHatchAdder(SingularityDataHub.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
                         .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
@@ -277,14 +273,15 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> x.mCountCasing++, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('C', ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', ofBlock(ModBlocks.blockCasings3Misc, 10))
-            .addElement('E', ofBlock(sBlockCasings10, 7))
-            .addElement('F', ofBlock(sBlockCasingsTT, 8))
-            .addElement('G', ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', ofBlock(sBlockCasingsTT, 6))
-            .addElement('I', ofBlock(BlockQuantumGlass.INSTANCE, 0))
+                    StructureUtility
+                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasings10, 7))
+            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
             .build();
     }
 
@@ -374,17 +371,17 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         if (side == facing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE_GLOW)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_SINGULARITY_DATA_HUB)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB)
                     .extFacing()
                     .build() };
         }

@@ -1,8 +1,6 @@
 package com.science.gtnl.common.render.tile;
 
 import static tectech.Reference.MODID;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderBlockInWorld;
-import static tectech.rendering.EOH.EOHRenderingUtils.renderStar;
 import static tectech.rendering.EOH.EOHTileEntitySR.spaceModel;
 
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -17,6 +15,7 @@ import com.science.gtnl.common.machine.multiblock.EyeOfHarmonyInjector;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tectech.rendering.EOH.EOHRenderingUtils;
 import tectech.thing.block.TileEntityEyeOfHarmony;
 
 @SideOnly(Side.CLIENT)
@@ -44,7 +43,7 @@ public class EyeOfHarmonyInjectorRenderer {
         renderOrbitObjects(machine);
 
         // Render the star itself.
-        renderStar(IItemRenderer.ItemRenderType.INVENTORY, 2);
+        EOHRenderingUtils.renderStar(IItemRenderer.ItemRenderType.INVENTORY, 2);
         GL11.glPopAttrib();
 
         GL11.glPopMatrix();
@@ -77,7 +76,7 @@ public class EyeOfHarmonyInjectorRenderer {
             .getClient()
             .getTextureManager()
             .bindTexture(TextureMap.locationBlocksTexture);
-        renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
+        EOHRenderingUtils.renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
 
         GL11.glPopMatrix();
     }

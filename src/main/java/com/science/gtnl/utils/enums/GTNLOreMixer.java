@@ -1,10 +1,5 @@
 package com.science.gtnl.utils.enums;
 
-import static gregtech.common.OreMixBuilder.NETHER;
-import static gregtech.common.OreMixBuilder.OW;
-import static gregtech.common.OreMixBuilder.THE_END;
-import static gregtech.common.OreMixBuilder.TWILIGHT_FOREST;
-
 import galacticgreg.WorldgenOreLayerSpace;
 import galacticgreg.api.enums.DimensionDef;
 import gregtech.api.enums.Materials;
@@ -19,7 +14,7 @@ public enum GTNLOreMixer {
         .weight(160)
         .density(999)
         .size(32)
-        .enableInDim(OW, NETHER, THE_END, TWILIGHT_FOREST)
+        .enableInDim(OreMixBuilder.OW, OreMixBuilder.NETHER, OreMixBuilder.THE_END, OreMixBuilder.TWILIGHT_FOREST)
         .enableInDim(DimensionDef.values())
         .primary(Materials.SulfuricAcid)
         .secondary(Materials.NitricAcid)
@@ -31,7 +26,7 @@ public enum GTNLOreMixer {
         .weight(160)
         .density(999)
         .size(32)
-        .enableInDim(OW, NETHER, THE_END, TWILIGHT_FOREST)
+        .enableInDim(OreMixBuilder.OW, OreMixBuilder.NETHER, OreMixBuilder.THE_END, OreMixBuilder.TWILIGHT_FOREST)
         .enableInDim(DimensionDef.values())
         .primary(Materials.OilLight)
         .secondary(Materials.OilHeavy)
@@ -43,7 +38,7 @@ public enum GTNLOreMixer {
         .weight(160)
         .density(999)
         .size(32)
-        .enableInDim(OW, NETHER, THE_END, TWILIGHT_FOREST)
+        .enableInDim(OreMixBuilder.OW, OreMixBuilder.NETHER, OreMixBuilder.THE_END, OreMixBuilder.TWILIGHT_FOREST)
         .enableInDim(DimensionDef.values())
         .primary(Materials.Oxygen)
         .secondary(Materials.Hydrogen)
@@ -55,7 +50,7 @@ public enum GTNLOreMixer {
         .weight(160)
         .density(16)
         .size(32)
-        .enableInDim(OW)
+        .enableInDim(OreMixBuilder.OW)
         .primary(MaterialsUEVplus.SpaceTime)
         .secondary(MaterialsUEVplus.MagnetohydrodynamicallyConstrainedStarMatter)
         .inBetween(MaterialsUEVplus.Universium)

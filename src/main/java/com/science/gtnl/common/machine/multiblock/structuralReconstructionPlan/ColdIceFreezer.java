@@ -1,22 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -29,6 +14,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
@@ -37,6 +23,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
@@ -51,6 +38,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.ExoticEnergyInputHelper;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -110,27 +98,37 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
     @Override
     public IStructureDefinition<ColdIceFreezer> getStructureDefinition() {
         return StructureDefinition.<ColdIceFreezer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement(
+                'A',
+                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
             .addElement(
                 'B',
-                ofChain(
-                    buildHatchAdder(ColdIceFreezer.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy), Maintenance)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(ColdIceFreezer.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            HatchElement.Maintenance)
                         .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(GregTechAPI.sBlockCasings2, 1)),
-                    buildHatchAdder(ColdIceFreezer.class).adder(ColdIceFreezer::addFluidIceInputHatch)
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1)),
+                    GTStructureUtility.buildHatchAdder(ColdIceFreezer.class)
+                        .adder(ColdIceFreezer::addFluidIceInputHatch)
                         .hatchId(21502)
                         .shouldReject(x -> !x.mFluidIceInputHatch.isEmpty())
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build()))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('D', ofFrame(Materials.Aluminium))
-            .addElement('E', ofBlock(ModBlocks.blockCasings3Misc, 10))
-            .addElement('F', Muffler.newAny(TAE.getIndexFromPage(2, 10), 1))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Aluminium))
+            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
+            .addElement('F', HatchElement.Muffler.newAny(TAE.getIndexFromPage(2, 10), 1))
             .build();
     }
 

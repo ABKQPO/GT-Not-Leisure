@@ -1,18 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
@@ -47,6 +36,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.FluidDrawable;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
@@ -65,6 +55,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -411,25 +402,27 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     @Override
     public IStructureDefinition<ElementCopying> getStructureDefinition() {
         return StructureDefinition.<ElementCopying>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
             .addElement(
                 'C',
                 buildHatchAdder(ElementCopying.class).casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        InputBus,
-                        OutputBus,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
-                        Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        HatchElement.Maintenance,
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('D', ofBlock(sBlockCasingsTT, 6))
-            .addElement('E', ofBlock(sBlockCasingsTT, 7))
-            .addElement('F', ofBlock(sBlockCasingsTT, 8))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 7))
+            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
             .build();
     }
 

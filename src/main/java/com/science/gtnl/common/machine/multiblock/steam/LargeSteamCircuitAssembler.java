@@ -1,17 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import net.minecraft.item.ItemStack;
@@ -25,10 +14,13 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -72,8 +64,8 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
                 .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
@@ -90,12 +82,12 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
     @Override
     public IStructureDefinition<LargeSteamCircuitAssembler> getStructureDefinition() {
         return StructureDefinition.<LargeSteamCircuitAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 1))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofChain(
+                    StructureUtility.ofChain(
                         buildSteamWirelessInput(LargeSteamCircuitAssembler.class).casingIndex(getCasingTextureID())
                             .dot(1)
                             .build(),
@@ -110,16 +102,18 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
                             .atLeast(
                                 SteamHatchElement.InputBus_Steam,
                                 SteamHatchElement.OutputBus_Steam,
-                                InputBus,
-                                OutputBus,
-                                InputHatch,
-                                Maintenance)
+                                HatchElement.InputBus,
+                                HatchElement.OutputBus,
+                                HatchElement.InputHatch,
+                                HatchElement.Maintenance)
                             .buildAndChain(
-                                onElementPass(
+                                StructureUtility.onElementPass(
                                     x -> ++x.mCountCasing,
-                                    ofBlocksTiered(
+                                    StructureUtility.ofBlocksTiered(
                                         LargeSteamCircuitAssembler::getTierMachineCasing,
-                                        ImmutableList.of(Pair.of(sBlockCasings1, 10), Pair.of(sBlockCasings2, 0)),
+                                        ImmutableList.of(
+                                            Pair.of(GregTechAPI.sBlockCasings1, 10),
+                                            Pair.of(GregTechAPI.sBlockCasings2, 0)),
                                         -1,
                                         (t, m) -> t.tierMachineCasing = m,
                                         t -> t.tierMachineCasing))))))
@@ -127,9 +121,10 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
             .addElement(
                 'C',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamCircuitAssembler::getTierPipeCasing,
-                        ImmutableList.of(Pair.of(sBlockCasings2, 12), Pair.of(sBlockCasings2, 13)),
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockCasings2, 12), Pair.of(GregTechAPI.sBlockCasings2, 13)),
                         -1,
                         (t, m) -> t.tierPipeCasing = m,
                         t -> t.tierPipeCasing)))

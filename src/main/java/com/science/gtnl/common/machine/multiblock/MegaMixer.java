@@ -1,23 +1,9 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialMixer;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDIndustrialMixerActive;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -29,10 +15,12 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -42,8 +30,10 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurvivalConstructable {
 
@@ -75,12 +65,12 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialMixerActive)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixerActive)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDIndustrialMixer)
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixer)
                     .extFacing()
                     .build() };
         }
@@ -122,39 +112,45 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     @Override
     public IStructureDefinition<MegaMixer> getStructureDefinition() {
         return StructureDefinition.<MegaMixer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 0))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
             .addElement(
                 'B',
-                buildHatchAdder(MegaMixer.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(MegaMixer.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
-            .addElement('C', ofBlock(sBlockCasingsTT, 4))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 7))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'D',
-                buildHatchAdder(MegaMixer.class).casingIndex(TAE.GTPP_INDEX(11))
+                GTStructureUtility.buildHatchAdder(MegaMixer.class)
+                    .casingIndex(TAE.GTPP_INDEX(11))
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasingsMisc, 11))))
-            .addElement('E', ofBlock(sBlockCasings8, 10))
-            .addElement('F', ofFrame(Materials.Neutronium))
-            .addElement('G', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('H', ofBlock(BlockLoader.metaCasing, 5))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 11))))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasings8, 10))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
             .build();
     }
 

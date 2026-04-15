@@ -2,10 +2,11 @@ package com.science.gtnl.utils.recipes.metadata;
 
 import static kubatech.api.Variables.numberFormat;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.minecraft.util.StatCollector;
+
+import org.jetbrains.annotations.Nullable;
 
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.MethodsReturnNonnullByDefault;

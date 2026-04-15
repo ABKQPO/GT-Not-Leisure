@@ -29,8 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -423,7 +421,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     }
 
     @Override
-    public void stopMachine(@Nonnull ShutDownReason reason) {
+    public void stopMachine(@NotNull ShutDownReason reason) {
         super.stopMachine(reason);
         eAvailableData = 0;
         for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {

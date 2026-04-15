@@ -6,11 +6,6 @@
 
 package com.science.gtnl.utils.bloodMagic;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +23,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
@@ -58,21 +54,21 @@ public class AltarStructure {
         // spotless:off
         altarBuilder
                 .addShape(STRUCTURE_ALTAR, new String[][] {{"a"}})
-                .addShape(STRUCTURE_TIER_2, transpose(new String[][] {{"rrr","r r","rrr"}}))
-                .addShape(STRUCTURE_TIER_3, transpose(new String[][] {{"g     g","       ","       ","       ","       ","       ","g     g"},
+                .addShape(STRUCTURE_TIER_2, StructureUtility.transpose(new String[][] {{"rrr","r r","rrr"}}))
+                .addShape(STRUCTURE_TIER_3, StructureUtility.transpose(new String[][] {{"g     g","       ","       ","       ","       ","       ","g     g"},
                         {"t     t","       ","       ","       ","       ","       ","t     t"},
                         {"t     t","       ","       ","       ","       ","       ","t     t"},
                         {" rrrrr ","r     r","r     r","r     r","r     r","r     r"," rrrrr "}}))
-                .addShape(STRUCTURE_TIER_4, transpose(new String[][]
+                .addShape(STRUCTURE_TIER_4, StructureUtility.transpose(new String[][]
                         {{"b         b","           ","           ","           ","           ","           ","           ","           ","           ","           ","b         b"},
                                 {"v         v","           ","           ","           ","           ","           ","           ","           ","           ","           ","v         v"},
                                 {"v         v","           ","           ","           ","           ","           ","           ","           ","           ","           ","v         v"},
                                 {"v         v","           ","           ","           ","           ","           ","           ","           ","           ","           ","v         v"},
                                 {"v         v","           ","           ","           ","           ","           ","           ","           ","           ","           ","v         v"},
                                 {"  rrrrrrr  ","           ","r         r","r         r","r         r","r         r","r         r","r         r","r         r","           ","  rrrrrrr  "}}))
-                .addShape(STRUCTURE_TIER_5, transpose(new String[][] {{"e               e","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","e               e"},
+                .addShape(STRUCTURE_TIER_5, StructureUtility.transpose(new String[][] {{"e               e","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","                 ","e               e"},
                         {"  rrrrrrrrrrrrr  ","                 ","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","r               r","                 ","  rrrrrrrrrrrrr  "}}))
-                .addShape(STRUCTURE_TIER_6, transpose(new String[][]
+                .addShape(STRUCTURE_TIER_6, StructureUtility.transpose(new String[][]
                         {
                                 {"c                     c",T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,"c                     c"},
                                 {"i                     i",T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,"i                     i"},
@@ -84,8 +80,8 @@ public class AltarStructure {
                                 {"i                     i",T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,T6_S,"i                     i"},
                                 {"  rrrrrrrrrrrrrrrrrrr  ",T6_S,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_SR,T6_S, "  rrrrrrrrrrrrrrrrrrr  "},
                         }))
-                .addElement('a',ofBlock(Blocks.command_block,0))
-                .addElement('r',ofChain(ofBlockAnyMeta(ModBlocks.bloodRune),ofBlockAnyMeta(ModBlocks.speedRune),ofBlockAnyMeta(ModBlocks.runeOfSelfSacrifice),ofBlockAnyMeta(ModBlocks.runeOfSacrifice),ofBlockAnyMeta(ModBlocks.efficiencyRune)));
+                .addElement('a',StructureUtility.ofBlock(Blocks.command_block,0))
+                .addElement('r',StructureUtility.ofChain(StructureUtility.ofBlockAnyMeta(ModBlocks.bloodRune),StructureUtility.ofBlockAnyMeta(ModBlocks.speedRune),StructureUtility.ofBlockAnyMeta(ModBlocks.runeOfSelfSacrifice),StructureUtility.ofBlockAnyMeta(ModBlocks.runeOfSacrifice),StructureUtility.ofBlockAnyMeta(ModBlocks.efficiencyRune)));
 
         char[] keys = {'t', 'g', 'v', 'b', 'e', 'i', 'c'};
         List<BlockStack>[] values = new List[] {
@@ -105,11 +101,11 @@ public class AltarStructure {
             }
 
             altarBuilder.addElement(keys[i],
-                    ofChain(
+                    StructureUtility.ofChain(
                             values[i].stream()
                                     .map(s -> s.getMeta() == OreDictionary.WILDCARD_VALUE
-                                            ? ofBlockAnyMeta(s.getBlock())
-                                            : ofBlock(s.getBlock(), s.getMeta()))
+                                            ? StructureUtility.ofBlockAnyMeta(s.getBlock())
+                                            : StructureUtility.ofBlock(s.getBlock(), s.getMeta()))
                                     .toArray(IStructureElement[]::new)
                     )
             );

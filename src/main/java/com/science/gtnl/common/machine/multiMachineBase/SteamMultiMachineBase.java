@@ -1,13 +1,6 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
 import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
-import static com.science.gtnl.utils.enums.GTNLMachineID.BIG_STEAM_INPUT_HATCH;
-import static com.science.gtnl.utils.enums.GTNLMachineID.PIPELESS_STEAM_HATCH;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockFrames;
-import static gregtech.api.GregTechAPI.sBlockMetal6;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
@@ -20,9 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +32,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
@@ -66,6 +57,7 @@ import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.gui.CircularGaugeDrawable;
@@ -74,6 +66,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.StructureError;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IItemLockable;
@@ -164,10 +157,10 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Nullable
     public static Integer getTierMachineCasing(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasings1 && 10 == meta) {
+        if (block == GregTechAPI.sBlockCasings1 && 10 == meta) {
             return 1;
         }
-        if (block == sBlockCasings2 && 0 == meta) {
+        if (block == GregTechAPI.sBlockCasings2 && 0 == meta) {
             return 2;
         }
         return null;
@@ -176,16 +169,16 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Nullable
     public static Integer getTierPipeCasing(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasings2 && 12 == meta) return 1;
-        if (block == sBlockCasings2 && 13 == meta) return 2;
+        if (block == GregTechAPI.sBlockCasings2 && 12 == meta) return 1;
+        if (block == GregTechAPI.sBlockCasings2 && 13 == meta) return 2;
         return null;
     }
 
     @Nullable
     public static Integer getTierGearCasing(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasings2 && 2 == meta) return 1;
-        if (block == sBlockCasings2 && 3 == meta) return 2;
+        if (block == GregTechAPI.sBlockCasings2 && 2 == meta) return 1;
+        if (block == GregTechAPI.sBlockCasings2 && 3 == meta) return 2;
         return null;
     }
 
@@ -193,15 +186,15 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public static Integer getTierMaterialBlockCasing(Block block, int meta) {
         if (block == null) return null;
         if (block == Blocks.iron_block) return 1;
-        if (block == sBlockMetal6 && 13 == meta) return 2;
+        if (block == GregTechAPI.sBlockMetal6 && 13 == meta) return 2;
         return null;
     }
 
     @Nullable
     public static Integer getTierFrameCasing(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockFrames && 300 == meta) return 1;
-        if (block == sBlockFrames && 305 == meta) return 2;
+        if (block == GregTechAPI.sBlockFrames && 300 == meta) return 1;
+        if (block == GregTechAPI.sBlockFrames && 305 == meta) return 2;
         return null;
     }
 
@@ -217,15 +210,15 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public static Integer getTierPlatedCasing(Block block, int meta) {
         if (block == null) return null;
         if (block == ModBlocks.blockCustomMachineCasings && 0 == meta) return 1;
-        if (block == sBlockCasings2 && 0 == meta) return 2;
+        if (block == GregTechAPI.sBlockCasings2 && 0 == meta) return 2;
         return null;
     }
 
     @Nullable
     public static Integer getTierFireboxCasing(Block block, int meta) {
         if (block == null) return null;
-        if (block == sBlockCasings3 && 13 == meta) return 1;
-        if (block == sBlockCasings3 && 14 == meta) return 2;
+        if (block == GregTechAPI.sBlockCasings3 && 13 == meta) return 1;
+        if (block == GregTechAPI.sBlockCasings3 && 14 == meta) return 2;
         return null;
     }
 
@@ -296,9 +289,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
             || tierFrameCasing == 2
             || tierMachineCasing == 2
             || tierMachine == 2) {
-            return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
         }
-        return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
     }
 
     public boolean checkHatches() {
@@ -451,7 +444,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         return new GTNLProcessingLogic() {
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
@@ -1172,7 +1164,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe() {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 
@@ -1522,14 +1514,14 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     public static <T extends SteamMultiMachineBase<T>> HatchElementBuilder<T> buildSteamBigInput(Class<T> typeToken) {
         return buildHatchAdder(typeToken).adder(SteamMultiMachineBase::addToMachineList)
-            .hatchIds(BIG_STEAM_INPUT_HATCH.ID)
+            .hatchIds(GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID)
             .shouldReject(t -> !t.mSteamBigInputFluids.isEmpty());
     }
 
     public static <T extends SteamMultiMachineBase<T>> HatchElementBuilder<T> buildSteamWirelessInput(
         Class<T> typeToken) {
         return buildHatchAdder(typeToken).adder(SteamMultiMachineBase::addToMachineList)
-            .hatchIds(PIPELESS_STEAM_HATCH.ID)
+            .hatchIds(GTNLMachineID.PIPELESS_STEAM_HATCH.ID)
             .shouldReject(t -> !t.mSteamWirelessInputFluids.isEmpty());
     }
 }

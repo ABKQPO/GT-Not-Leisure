@@ -1,10 +1,5 @@
 package com.science.gtnl.common.block.blocks.tile;
 
-import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_BLUE;
-import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_GAMMA;
-import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_GREEN;
-import static tectech.thing.metaTileEntity.multi.godforge.color.ForgeOfGodsStarColor.DEFAULT_RED;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -30,9 +25,10 @@ public class TileEntityNanoPhagocytosisPlant extends TileEntity {
     public ForgeOfGodsStarColor starColor = ForgeOfGodsStarColor.DEFAULT;
 
     // current color data
-    public int currentColor = Color.rgb(DEFAULT_RED, DEFAULT_GREEN, DEFAULT_BLUE);
+    public int currentColor = Color
+        .rgb(ForgeOfGodsStarColor.DEFAULT_RED, ForgeOfGodsStarColor.DEFAULT_GREEN, ForgeOfGodsStarColor.DEFAULT_BLUE);
     @Getter
-    public float gamma = DEFAULT_GAMMA;
+    public float gamma = ForgeOfGodsStarColor.DEFAULT_GAMMA;
 
     // interpolation color data
     public int cycleStep;

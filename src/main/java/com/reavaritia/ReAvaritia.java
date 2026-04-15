@@ -1,9 +1,5 @@
 package com.reavaritia;
 
-import static com.reavaritia.ReAvaritia.MODID;
-import static com.reavaritia.ReAvaritia.MODNAME;
-import static com.reavaritia.ReAvaritia.VERSION;
-
 import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,9 +25,9 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(
-    modid = MODID,
-    version = VERSION,
-    name = MODNAME,
+    modid = ReAvaritia.MODID,
+    version = ReAvaritia.VERSION,
+    name = ReAvaritia.MODNAME,
     dependencies = "required-before:sciencenotleisure;" + "after:eternalsingularity;",
     acceptedMinecraftVersions = "1.7.10")
 public class ReAvaritia {
@@ -44,7 +40,7 @@ public class ReAvaritia {
     public static final String VERSION = "1.0.0";
     public static final String Arthor = "HFstudio";
     public static final String RESOURCE_ROOT_ID = ModList.ModIds.RE_AVARITIA;
-    public static final Logger LOG = LogManager.getLogger(MODID);
+    public static final Logger LOG = LogManager.getLogger(ReAvaritia.MODID);
 
     public static SimpleNetworkWrapper network;
 
@@ -62,7 +58,7 @@ public class ReAvaritia {
     // GameRegistry." (Remove if not needed)
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(ReAvaritia.MODID);
         proxy.preInit(event);
 
         MinecraftForge.EVENT_BUS.register(new SubscribeEventUtils());

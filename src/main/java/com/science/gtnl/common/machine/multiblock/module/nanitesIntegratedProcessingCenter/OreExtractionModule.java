@@ -1,24 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
 import static bartworks.common.loaders.ItemRegistry.bw_realglas;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
 
 import net.minecraft.item.ItemStack;
@@ -27,15 +10,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 
 public class OreExtractionModule extends NanitesBaseModule<OreExtractionModule> {
 
@@ -60,7 +47,7 @@ public class OreExtractionModule extends NanitesBaseModule<OreExtractionModule> 
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
     }
 
     @Override
@@ -84,28 +71,37 @@ public class OreExtractionModule extends NanitesBaseModule<OreExtractionModule> 
     @Override
     public IStructureDefinition<OreExtractionModule> getStructureDefinition() {
         return StructureDefinition.<OreExtractionModule>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings8, 0))
-            .addElement('B', ofBlock(sBlockCasings1, 15))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', ofBlock(sBlockCasings8, 7))
-            .addElement('E', ofBlock(BlockLoader.metaCasing, 8))
-            .addElement('F', ofFrame(Materials.CosmicNeutronium))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('E', StructureUtility.ofBlock(BlockLoader.metaCasing, 8))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
             .addElement(
                 'G',
-                buildHatchAdder(OreExtractionModule.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
+                GTStructureUtility.buildHatchAdder(OreExtractionModule.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 0))))
-            .addElement('H', ofBlock(blockCasings4Misc, 11))
-            .addElement('I', ofBlock(sBlockCasings2, 5))
-            .addElement('J', ofBlock(sBlockCasings10, 8))
-            .addElement('K', ofBlock(sBlockCasings8, 1))
-            .addElement('L', ofBlock(sBlockCasings4, 12))
-            .addElement('M', ofFrame(Materials.Invar))
-            .addElement('N', ofBlock(BlockLoader.metaCasing, 12))
-            .addElement('O', ofBlock(bw_realglas, 14))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))))
+            .addElement('H', StructureUtility.ofBlock(blockCasings4Misc, 11))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('M', GTStructureUtility.ofFrame(Materials.Invar))
+            .addElement('N', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
+            .addElement('O', StructureUtility.ofBlock(bw_realglas, 14))
             .build();
     }
 

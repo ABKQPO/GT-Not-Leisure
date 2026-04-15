@@ -1,10 +1,9 @@
 package com.science.gtnl.mixins.early.Forge;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.network.INetHandler;
 
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

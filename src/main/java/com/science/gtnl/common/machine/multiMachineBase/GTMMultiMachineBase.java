@@ -1,8 +1,8 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTTagCompound;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 
@@ -95,7 +95,7 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
         return 1 << (2 * (mParallelTier - 2));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         resetParallelTier();

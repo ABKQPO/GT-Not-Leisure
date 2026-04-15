@@ -1,24 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTRecipeConstants.GLASS;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +29,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
 import com.science.gtnl.utils.StructureUtils;
@@ -64,7 +48,9 @@ import bartworks.util.BioCulture;
 import bartworks.util.Coords;
 import bartworks.util.ResultWrongSievert;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -82,6 +68,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -166,31 +153,37 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     @Override
     public IStructureDefinition<Incubator> getStructureDefinition() {
         return StructureDefinition.<Incubator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings3, 11))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
             .addElement(
                 'C',
-                ofChain(
-                    buildHatchAdder(Incubator.class).casingIndex(getCasingTextureID())
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(Incubator.class)
+                        .casingIndex(getCasingTextureID())
                         .dot(1)
                         .atLeast(
-                            InputHatch,
-                            OutputHatch,
-                            InputBus,
-                            OutputBus,
-                            Maintenance,
-                            Energy.or(ExoticEnergy),
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
                             RadioHatchElement.RadioHatch)
                         .buildAndChain(),
-                    onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
+                    StructureUtility.onElementPass(
+                        e -> e.mCountCasing++,
+                        StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))))
             .addElement(
                 'D',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Mods.EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(Mods.EtFuturumRequiem.ID, "sponge")
                         : Blocks.sponge,
                     1))
-            .addElement('E', ofChain(isAir(), ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
+            .addElement(
+                'E',
+                StructureUtility
+                    .ofChain(StructureUtility.isAir(), StructureUtility.ofBlockAnyMeta(FluidLoader.bioFluidBlock)))
             .build();
     }
 

@@ -1,23 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsSE;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import net.minecraft.block.Block;
@@ -37,6 +21,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
@@ -46,6 +31,8 @@ import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -163,44 +150,44 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     @Override
     public IStructureDefinition<LibraryOfRuina> getStructureDefinition() {
         return StructureDefinition.<LibraryOfRuina>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
                 GTNLStructureChannels.STRUCTURE_RENDER.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.gravityStabilizationCasing ? 1 : null,
                         ImmutableList.of(Pair.of(Loaders.gravityStabilizationCasing, 0)),
                         -1,
                         (t, m) -> {},
                         t -> -1)))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 13))
-            .addElement('C', ofBlock(sBlockCasingsSE, 1))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 13))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement(
                 'D',
                 buildHatchAdder(LibraryOfRuina.class)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .buildAndChain(
-                        onElementPass(
+                        StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))))
-            .addElement('E', ofBlock(sBlockCasings10, 4))
-            .addElement('F', ofBlock(sBlockCasings10, 11))
-            .addElement('G', ofBlock(sBlockCasings9, 11))
-            .addElement('H', ofBlock(BlockLoader.metaBlockGlass, 2))
+                            StructureUtility.ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
             .addElement(
                 'I',
-                ofChain(
-                    ofBlock(Blocks.water, 0),
-                    ofBlockAnyMeta(
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlock(Blocks.water, 0),
+                    StructureUtility.ofBlockAnyMeta(
                         Mods.TwilightForest.isModLoaded()
                             ? GameRegistry.findBlock(Mods.TwilightForest.ID, "tile.TFPortal")
                             : Blocks.end_portal)))

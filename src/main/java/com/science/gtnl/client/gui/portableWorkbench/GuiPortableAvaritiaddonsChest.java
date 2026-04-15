@@ -2,14 +2,13 @@ package com.science.gtnl.client.gui.portableWorkbench;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
@@ -18,7 +17,7 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
         RESOURCE_ROOT_ID,
         "textures/gui/chest/compressed.png");
 
-    public GuiPortableAvaritiaddonsChest(@Nonnull final Container container) {
+    public GuiPortableAvaritiaddonsChest(@NotNull final Container container) {
         super(container);
         xSize = 500;
         ySize = 276;
@@ -44,6 +43,6 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 169, 183, 0x404040);
     }
 
-    @Nonnull
+    @NotNull
     public abstract String getContainerName();
 }

@@ -1,17 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE_GLOW;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.Collection;
@@ -26,13 +16,16 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
@@ -77,24 +70,24 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     @Override
     public IStructureDefinition<SteamInfernalCokeOven> getStructureDefinition() {
         return StructureDefinition.<SteamInfernalCokeOven>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                ofChain(
+                StructureUtility.ofChain(
                     buildHatchAdder(SteamInfernalCokeOven.class)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
-                            InputBus,
+                            HatchElement.InputBus,
                             SteamHatchElement.OutputBus_Steam,
-                            OutputBus,
-                            OutputHatch,
-                            Maintenance)
+                            HatchElement.OutputBus,
+                            HatchElement.OutputHatch,
+                            HatchElement.Maintenance)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings1, 10))
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(GregTechAPI.sBlockCasings1, 10)))
-            .addElement('B', ofBlock(GregTechAPI.sBlockCasings3, 13))
-            .addElement('C', ofBlock(Blocks.nether_brick, 0))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
+            .addElement('C', StructureUtility.ofBlock(Blocks.nether_brick, 0))
             .build();
     }
 
@@ -112,11 +105,11 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE_GLOW)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
@@ -125,7 +118,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN)
                         .extFacing()
                         .build() };
             }

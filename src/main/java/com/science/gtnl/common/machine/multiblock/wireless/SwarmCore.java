@@ -1,28 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings5;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockGlass1;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
@@ -52,6 +32,8 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.util.ItemRefer;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -70,6 +52,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -289,7 +272,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -323,37 +306,40 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     @Override
     public IStructureDefinition<SwarmCore> getStructureDefinition() {
         return StructureDefinition.<SwarmCore>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 8))
-            .addElement('B', ofBlock(sBlockCasings10, 11))
-            .addElement('C', ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', ofBlock(sBlockCasingsTT, 6))
-            .addElement('F', ofBlock(sBlockCasings1, 14))
-            .addElement('G', activeCoils(ofBlock(sBlockCasings5, 13)))
-            .addElement('H', ofBlock(sBlockCasings10, 2))
-            .addElement('I', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('J', ofBlock(sBlockCasingsTT, 4))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('G', GTStructureUtility.activeCoils(StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 13)))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 2))
+            .addElement('I', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 4))
             .addElement(
                 'K',
-                buildHatchAdder(SwarmCore.class)
+                GTStructureUtility.buildHatchAdder(SwarmCore.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         CustomHatchElement.ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofFrame(Materials.Neutronium))
-            .addElement('O', ofBlock(sBlockGlass1, 1))
-            .addElement('P', ofFrame(Materials.NaquadahAlloy))
-            .addElement('Q', ofBlock(ItemRegistry.bw_realglas2, 0))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('N', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 1))
+            .addElement('P', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
+            .addElement('Q', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
             .build();
     }
 
@@ -405,9 +391,9 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
                 return super.validateRecipe(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());

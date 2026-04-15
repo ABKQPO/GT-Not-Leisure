@@ -1,23 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,15 +8,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 
 public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule> {
 
@@ -58,7 +45,7 @@ public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -82,25 +69,34 @@ public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule
     @Override
     public IStructureDefinition<BioengineeringModule> getStructureDefinition() {
         return StructureDefinition.<BioengineeringModule>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 4))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
             .addElement(
                 'B',
-                buildHatchAdder(BioengineeringModule.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy))
+                GTStructureUtility.buildHatchAdder(BioengineeringModule.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
-            .addElement('C', ofBlock(sBlockReinforced, 2))
-            .addElement('D', ofBlock(sBlockCasings9, 13))
-            .addElement('E', ofBlock(sBlockCasings9, 4))
-            .addElement('F', ofFrame(Materials.CosmicNeutronium))
-            .addElement('G', ofBlock(sBlockCasings2, 5))
-            .addElement('H', ofBlock(sBlockCasings4, 12))
-            .addElement('I', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('J', ofBlock(sBlockCasings8, 1))
-            .addElement('K', ofFrame(Materials.PulsatingIron))
-            .addElement('L', ofBlock(sBlockCasings9, 1))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 4))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.PulsatingIron))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
             .build();
     }
 

@@ -1,23 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -27,10 +11,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -38,6 +25,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
@@ -118,35 +106,37 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
     @Override
     public IStructureDefinition<VortexMatterCentrifuge> getStructureDefinition() {
         return StructureDefinition.<VortexMatterCentrifuge>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('B', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('C', ofBlock(sBlockCasingsTT, 6))
-            .addElement('D', ofBlock(sBlockCasingsTT, 0))
-            .addElement('E', ofBlock(sBlockCasings10, 3))
-            .addElement('F', ofBlock(sBlockCasings1, 9))
-            .addElement('G', ofBlock(sBlockCasingsTT, 8))
-            .addElement('H', ofBlock(sBlockCasings10, 8))
-            .addElement('I', ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('J', ofBlock(sBlockCasings10, 7))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 9))
+            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
             .addElement(
                 'K',
-                buildHatchAdder(VortexMatterCentrifuge.class)
+                GTStructureUtility.buildHatchAdder(VortexMatterCentrifuge.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('L', ofBlock(sBlockCasings8, 10))
-            .addElement('M', ofBlock(sBlockCasings1, 13))
-            .addElement('N', ofFrame(Materials.EnrichedHolmium))
-            .addElement('O', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('N', GTStructureUtility.ofFrame(Materials.EnrichedHolmium))
+            .addElement('O', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
             .build();
     }
 

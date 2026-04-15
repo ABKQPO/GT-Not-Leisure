@@ -1,25 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -30,11 +12,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -44,6 +29,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsAlloy;
@@ -101,7 +87,7 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 12);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
     }
 
     @Override
@@ -126,36 +112,47 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
     @Override
     public IStructureDefinition<NeutroniumWireCutting> getStructureDefinition() {
         return StructureDefinition.<NeutroniumWireCutting>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('C', ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
-            .addElement('D', ofBlock(sBlockCasings10, 6))
-            .addElement('E', ofBlock(sBlockCasings10, 7))
-            .addElement('F', ofBlock(sBlockCasings10, 11))
-            .addElement('G', ofBlock(sBlockCasings3, 11))
-            .addElement('H', ofBlock(sBlockCasings4, 10))
-            .addElement('I', ofBlock(sBlockCasings8, 7))
-            .addElement('J', ofBlock(sBlockCasings9, 3))
-            .addElement('K', ofBlock(sBlockCasings9, 6))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement(
+                'C',
+                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 3))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
             .addElement(
                 'L',
-                buildHatchAdder(NeutroniumWireCutting.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Energy.or(ExoticEnergy), ParallelCon)
+                GTStructureUtility.buildHatchAdder(NeutroniumWireCutting.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings9, 12))))
-            .addElement('M', ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('N', ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
-            .addElement('O', ofFrame(Materials.Neutronium))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
+            .addElement('M', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+            .addElement('N', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
+            .addElement('O', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement(
                 'P',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
                             .getItem())))
-            .addElement('Q', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('R', ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('Q', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('R', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
             .build();
     }
 

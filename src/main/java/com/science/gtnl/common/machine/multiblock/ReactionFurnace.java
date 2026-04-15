@@ -1,21 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +17,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -37,7 +25,9 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -50,6 +40,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.misc.WirelessNetworkManager;
 
 public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurnace> implements ISurvivalConstructable {
 
@@ -93,7 +84,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -123,18 +114,26 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     @Override
     public IStructureDefinition<ReactionFurnace> getStructureDefinition() {
         return StructureDefinition.<ReactionFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings9, 11))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 14))
-            .addElement('C', ofBlock(sBlockCasings9, 7))
-            .addElement('D', ofBlock(sBlockCasings10, 3))
-            .addElement('E', ofBlock(sBlockCasings8, 10))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 14))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
             .addElement(
                 'F',
                 buildHatchAdder(ReactionFurnace.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy), ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
             .build();
     }
 
@@ -171,7 +170,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
         long availableEUt;
 
         if (wirelessMode) {
-            availableEUt = Utils.toLongSafe(getUserEU(ownerUUID));
+            availableEUt = Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
 
             if (availableEUt < 4) {
                 return CheckRecipeResultRegistry.insufficientPower(4);
@@ -243,7 +242,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
 
         } else {
             usedEU = finalParallel * 4L;
-            addEUToGlobalEnergyMap(ownerUUID, -usedEU);
+            WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -usedEU);
             this.lEUt = 0;
         }
 

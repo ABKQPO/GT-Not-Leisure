@@ -1,8 +1,5 @@
 package com.science.gtnl;
 
-import static com.science.gtnl.ScienceNotLeisure.MODID;
-import static com.science.gtnl.ScienceNotLeisure.MODNAME;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +29,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(
-    modid = MODID,
+    modid = ScienceNotLeisure.MODID,
     version = Tags.VERSION,
-    name = MODNAME,
+    name = ScienceNotLeisure.MODNAME,
     dependencies = "after:AWWayofTime;" + "after:Avaritia;"
         + "after:BloodArsenal;"
         + "required-after:Botania;"
@@ -65,7 +62,7 @@ public class ScienceNotLeisure {
     public static final String VERSION = Tags.VERSION;
     public static final String ARTHOR = "HFstudio";
     public static final String RESOURCE_ROOT_ID = ModList.ModIds.SCIENCE_NOT_LEISURE;
-    public static final Logger LOG = LogManager.getLogger(MODID);
+    public static final Logger LOG = LogManager.getLogger(ScienceNotLeisure.MODID);
 
     public static SimpleNetworkWrapper network;
 
@@ -76,7 +73,7 @@ public class ScienceNotLeisure {
     // GameRegistry." (Remove if not needed)
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(ScienceNotLeisure.MODID);
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
         proxy.preInit(event);
         MaterialLoader.loadPreInit();

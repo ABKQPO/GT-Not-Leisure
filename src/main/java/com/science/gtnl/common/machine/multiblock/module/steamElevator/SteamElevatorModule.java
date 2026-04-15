@@ -1,16 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.Collection;
@@ -23,9 +14,11 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -88,10 +81,10 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
     @Override
     public IStructureDefinition<SteamElevatorModule> getStructureDefinition() {
         return StructureDefinition.<SteamElevatorModule>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamElevatorModule.class).casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
@@ -106,12 +99,14 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
                             SteamHatchElement.OutputBus_Steam,
-                            InputBus,
-                            OutputBus,
-                            InputHatch,
-                            OutputHatch,
-                            Maintenance)
-                        .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0)))))
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Maintenance)
+                        .buildAndChain(
+                            StructureUtility
+                                .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings2, 0)))))
             .build();
     }
 

@@ -1,8 +1,6 @@
 package com.science.gtnl.loader;
 
 import static com.science.gtnl.common.item.items.SuspiciousStew.registerFlower;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.addItemTooltip;
-import static com.science.gtnl.utils.text.AnimatedTooltipHandler.text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -557,15 +555,15 @@ public class ItemLoader {
         GTNLItemList.HydraulicSteamValve.set(
             MetaItemAdder
                 .initItem(98, new String[] { StatCollector.translateToLocal("Tooltip_HydraulicSteamValve_00") }));
-        addItemTooltip(
+        AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.HydraulicSteamValve.get(1),
-            AnimatedTooltipHandler.buildTextWithAnimatedEnd(text("Tips: 瑶光Alkaid要的")));
+            AnimatedTooltipHandler.buildTextWithAnimatedEnd(AnimatedTooltipHandler.text("Tips: 瑶光Alkaid要的")));
         GTNLItemList.HydraulicSteamRegulator.set(
             MetaItemAdder
                 .initItem(99, new String[] { StatCollector.translateToLocal("Tooltip_HydraulicSteamRegulator_00") }));
-        addItemTooltip(
+        AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.HydraulicSteamRegulator.get(1),
-            AnimatedTooltipHandler.buildTextWithAnimatedEnd(text("Tips: 瑶光Alkaid要的")));
+            AnimatedTooltipHandler.buildTextWithAnimatedEnd(AnimatedTooltipHandler.text("Tips: 瑶光Alkaid要的")));
         GTNLItemList.SadBapyCatToken.set(
             MetaItemAdder.initItem(100, new String[] { StatCollector.translateToLocal("Tooltip_SadBapyCatToken_00") }));
         GTNLItemList.CompressedSteamTurbine.set(
@@ -642,9 +640,10 @@ public class ItemLoader {
         registryOreBlackList();
         registrySuspiciousStewFlower();
 
-        addItemTooltip(
+        AnimatedTooltipHandler.addItemTooltip(
             new ItemStack(ItemLoader.satietyRing, 1),
-            AnimatedTooltipHandler.buildTextWithAnimatedEnd(text("Most machine recipe by zero_CM")));
+            AnimatedTooltipHandler
+                .buildTextWithAnimatedEnd(AnimatedTooltipHandler.text("Most machine recipe by zero_CM")));
     }
 
     public static void registrySuspiciousStewFlower() {

@@ -1,24 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -35,6 +18,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -42,6 +26,8 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.util.BWUtil;
 import cpw.mods.fml.common.Optional;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -54,6 +40,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
@@ -142,26 +129,31 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public IStructureDefinition<Digester> getStructureDefinition() {
         return StructureDefinition.<Digester>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings1, 11))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
             .addElement(
                 'B',
-                buildHatchAdder(Digester.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(Digester.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 0))))
-            .addElement('C', ofBlock(sBlockCasings4, 1))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
             .addElement(
                 'D',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(Digester::setMCoilLevel, Digester::getMCoilLevel))))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility
+                        .activeCoils(GTStructureUtility.ofCoil(Digester::setMCoilLevel, Digester::getMCoilLevel))))
             .build();
     }
 
@@ -223,7 +215,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
             }
 
             @Override
-            public @Nonnull CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public @NotNull CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (Mods.NewHorizonsCoreMod.isModLoaded() && !checkForNitricAcid())
                     return SimpleCheckRecipeResult.ofFailure("no_nitricacid");
                 return recipe.mSpecialValue <= getMCoilLevel().getHeat() ? CheckRecipeResultRegistry.SUCCESSFUL
@@ -264,7 +256,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
     }
 
     @Optional.Method(modid = "dreamcraft")

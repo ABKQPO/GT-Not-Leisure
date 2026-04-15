@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
@@ -90,7 +88,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModule {
     }
 
     @Override
-    public void stopMachine(@Nonnull ShutDownReason reason) {
+    public void stopMachine(@NotNull ShutDownReason reason) {
         final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
         if (mte.isServerSide()) {
             GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);

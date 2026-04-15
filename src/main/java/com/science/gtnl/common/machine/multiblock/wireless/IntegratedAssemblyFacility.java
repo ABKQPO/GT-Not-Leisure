@@ -1,33 +1,12 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsSE;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -42,6 +21,7 @@ import com.dreammaster.gthandler.CustomItemList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
@@ -59,7 +39,9 @@ import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
 import goodgenerator.util.ItemRefer;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -78,6 +60,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -173,7 +156,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -197,12 +180,12 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Override
     public IStructureDefinition<IntegratedAssemblyFacility> getStructureDefinition() {
         return StructureDefinition.<IntegratedAssemblyFacility>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 4))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
             .addElement(
                 'B',
                 GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.componentAssemblylineCasing ? meta : -1,
                         IntStream.range(0, 13)
                             .mapToObj(i -> Pair.of(Loaders.componentAssemblylineCasing, i))
@@ -212,26 +195,35 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                         t -> t.mCasingTier)))
             .addElement(
                 'C',
-                buildHatchAdder(IntegratedAssemblyFacility.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Energy.or(ExoticEnergy), ParallelCon)
-                    .casingIndex(StructureUtils.getTextureIndex(sBlockCasings8, 7))
+                GTStructureUtility.buildHatchAdder(IntegratedAssemblyFacility.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7))
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
-            .addElement('D', ofBlock(sBlockCasings2, 6))
-            .addElement('E', ofBlock(sBlockCasings9, 1))
-            .addElement('F', ofBlock(sBlockCasings8, 12))
-            .addElement('G', ofFrame(Materials.Neutronium))
-            .addElement('H', ofBlock(sBlockCasings10, 11))
-            .addElement('I', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('J', ofBlock(LanthItemList.NIOBIUM_CAVITY_CASING, 0))
-            .addElement('K', ofBlock(sBlockCasings2, 5))
-            .addElement('L', ofBlock(LanthItemList.COOLANT_DELIVERY_CASING, 0))
-            .addElement('M', ofBlock(sBlockCasingsSE, 1))
-            .addElement('N', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('O', ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('P', ofBlock(sBlockCasings6, 9))
-            .addElement('Q', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('R', ofFrame(Materials.CosmicNeutronium))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 12))
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('I', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('J', StructureUtility.ofBlock(LanthItemList.NIOBIUM_CAVITY_CASING, 0))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('L', StructureUtility.ofBlock(LanthItemList.COOLANT_DELIVERY_CASING, 0))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
+            .addElement('N', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('O', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
+            .addElement('Q', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('R', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
             .build();
     }
 
@@ -315,9 +307,9 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                 return super.validateRecipe(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -358,7 +350,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
             : GoodGeneratorRecipeMaps.componentAssemblyLineRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.assemblerRecipes, GoodGeneratorRecipeMaps.componentAssemblyLineRecipes);

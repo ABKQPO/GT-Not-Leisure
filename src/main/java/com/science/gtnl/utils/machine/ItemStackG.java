@@ -3,12 +3,12 @@ package com.science.gtnl.utils.machine;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import org.jetbrains.annotations.NotNull;
 
 import appeng.api.storage.data.IAEItemStack;
 
@@ -193,7 +193,7 @@ public class ItemStackG {
         }
     }
 
-    public static ItemStackG fromAE(@Nonnull IAEItemStack possible, int intmaxs) {
+    public static ItemStackG fromAE(@NotNull IAEItemStack possible, int intmaxs) {
         ItemStackG ret = new ItemStackG();
 
         long all = possible.getStackSize();

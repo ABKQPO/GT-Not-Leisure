@@ -1,12 +1,5 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
-import static net.minecraft.util.EnumChatFormatting.GREEN;
-import static net.minecraft.util.EnumChatFormatting.RED;
-import static net.minecraft.util.EnumChatFormatting.RESET;
-import static net.minecraft.util.EnumChatFormatting.YELLOW;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 
@@ -25,6 +18,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
+import gregtech.common.misc.WirelessNetworkManager;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
@@ -61,7 +55,8 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
                 }
 
                 wirelessEUt = (long) recipe.mEUt * getActualParallel();
-                if (getUserEU(userUUID).compareTo(BigInteger.valueOf(wirelessEUt * recipe.mDuration)) < 0) {
+                if (WirelessNetworkManager.getUserEU(userUUID)
+                    .compareTo(BigInteger.valueOf(wirelessEUt * recipe.mDuration)) < 0) {
                     return CheckRecipeResultRegistry.insufficientPower(wirelessEUt * recipe.mDuration);
                 }
                 return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -83,7 +78,7 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
             @NotNull
             @Override
             public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                if (!addEUToGlobalEnergyMap(userUUID, -calculatedEut * duration)) {
+                if (!WirelessNetworkManager.addEUToGlobalEnergyMap(userUUID, -calculatedEut * duration)) {
                     return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
                 }
                 addToPowerTally(
@@ -141,32 +136,34 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
         str.add(
             StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.progress",
-                GREEN + GTUtility.formatNumbers(mProgresstime / 20) + RESET,
-                YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + RESET));
+                EnumChatFormatting.GREEN + GTUtility.formatNumbers(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + EnumChatFormatting.RESET));
         str.add(
             StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.currently_using",
-                RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0") + RESET));
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0")
+                    + EnumChatFormatting.RESET));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.max_parallel",
-                RESET + GTUtility.formatNumbers(getActualParallel())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getActualParallel())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.parallel.current",
-                RESET + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
+                EnumChatFormatting.RESET
+                    + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
-                RESET + GTUtility.formatNumbers(getSpeedBonus())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getSpeedBonus())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.energy",
-                RESET + GTUtility.formatNumbers(getEnergyDiscount())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getEnergyDiscount())));
         str.add(
-            YELLOW + StatCollector.translateToLocalFormatted(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.divisor.recipe_time.non_perfect_oc",
-                RESET + GTUtility.formatNumbers(getOverclockTimeFactor())));
+                EnumChatFormatting.RESET + GTUtility.formatNumbers(getOverclockTimeFactor())));
         return str.toArray(new String[0]);
     }
 

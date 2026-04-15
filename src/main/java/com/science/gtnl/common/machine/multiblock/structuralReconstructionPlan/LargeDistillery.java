@@ -1,23 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
@@ -25,22 +10,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures.BlockIcons;
@@ -54,6 +41,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.MTEHatchOutputME;
@@ -156,7 +144,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         return (machineMode == MACHINEMODE_TOWER) ? RecipeMaps.distillationTowerRecipes : RecipeMaps.distilleryRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.distillationTowerRecipes, RecipeMaps.distilleryRecipes);
@@ -221,60 +209,67 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
 
     @Override
     public IStructureDefinition<LargeDistillery> getStructureDefinition() {
-        IHatchElement<LargeDistillery> layeredOutputHatch = OutputHatch
+        IHatchElement<LargeDistillery> layeredOutputHatch = HatchElement.OutputHatch
             .withCount(LargeDistillery::getCurrentLayerOutputHatchCount)
             .withAdder(LargeDistillery::addLayerOutputHatch);
         return StructureDefinition.<LargeDistillery>builder()
-            .addShape(STRUCTURE_PIECE_BASE, transpose(shape_base))
-            .addShape(STRUCTURE_PIECE_LAYER, transpose(shape_layer))
-            .addShape(STRUCTURE_PIECE_LAYER_HINT, transpose(shape_layer_hint))
-            .addShape(STRUCTURE_PIECE_TOP_HINT, transpose(shape_top_hint))
-            .addShape(STRUCTURE_PIECE_TOP, transpose(shape_top))
+            .addShape(STRUCTURE_PIECE_BASE, StructureUtility.transpose(shape_base))
+            .addShape(STRUCTURE_PIECE_LAYER, StructureUtility.transpose(shape_layer))
+            .addShape(STRUCTURE_PIECE_LAYER_HINT, StructureUtility.transpose(shape_layer_hint))
+            .addShape(STRUCTURE_PIECE_TOP_HINT, StructureUtility.transpose(shape_top_hint))
+            .addShape(STRUCTURE_PIECE_TOP, StructureUtility.transpose(shape_top))
             .addElement(
                 'A',
-                ofChain(
-                    buildHatchAdder(LargeDistillery.class)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(LargeDistillery.class)
                         .atLeast(
-                            Maintenance,
-                            Energy.or(ExoticEnergy),
-                            OutputBus,
-                            InputHatch,
-                            InputBus,
-                            Maintenance,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.InputBus,
+                            HatchElement.Maintenance,
                             ParallelCon)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(LargeDistillery::onCasingFound, ofBlock(blockCasingsMisc, 11))))
+                    StructureUtility
+                        .onElementPass(LargeDistillery::onCasingFound, StructureUtility.ofBlock(blockCasingsMisc, 11))))
             .addElement(
                 'B',
-                ofChain(
-                    buildHatchAdder(LargeDistillery.class).atLeast(layeredOutputHatch)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(LargeDistillery.class)
+                        .atLeast(layeredOutputHatch)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .disallowOnly(ForgeDirection.UP, ForgeDirection.DOWN)
                         .build(),
-                    ofHatchAdder(LargeDistillery::addEnergyInputToMachineList, getCasingTextureID(), 1),
-                    ofHatchAdder(LargeDistillery::addLayerOutputHatch, getCasingTextureID(), 1),
-                    ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
-                    onElementPass(LargeDistillery::onCasingFound, ofBlock(blockCasingsMisc, 11))))
-            .addElement('C', ofBlock(sBlockCasings2, 13))
+                    GTStructureUtility
+                        .ofHatchAdder(LargeDistillery::addEnergyInputToMachineList, getCasingTextureID(), 1),
+                    GTStructureUtility.ofHatchAdder(LargeDistillery::addLayerOutputHatch, getCasingTextureID(), 1),
+                    GTStructureUtility
+                        .ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
+                    StructureUtility
+                        .onElementPass(LargeDistillery::onCasingFound, StructureUtility.ofBlock(blockCasingsMisc, 11))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasings2, 13))
             .addElement(
                 'D',
-                ofChain(
-                    ofHatchAdder(LargeDistillery::addOutputToMachineList, getCasingTextureID(), 1),
-                    ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
-                    ofBlock(blockCasingsMisc, 11),
-                    isAir()))
+                StructureUtility.ofChain(
+                    GTStructureUtility.ofHatchAdder(LargeDistillery::addOutputToMachineList, getCasingTextureID(), 1),
+                    GTStructureUtility
+                        .ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
+                    StructureUtility.ofBlock(blockCasingsMisc, 11),
+                    StructureUtility.isAir()))
             .addElement(
                 'E',
-                buildHatchAdder(LargeDistillery.class).atLeast(layeredOutputHatch)
+                GTStructureUtility.buildHatchAdder(LargeDistillery.class)
+                    .atLeast(layeredOutputHatch)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
                     .disallowOnly(ForgeDirection.UP)
                     .buildAndChain(blockCasingsMisc, 11))
-            .addElement('F', ofBlock(blockCasingsMisc, 11))
-            .addElement('G', Muffler.newAny(getCasingTextureID(), 1))
+            .addElement('F', StructureUtility.ofBlock(blockCasingsMisc, 11))
+            .addElement('G', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }
 

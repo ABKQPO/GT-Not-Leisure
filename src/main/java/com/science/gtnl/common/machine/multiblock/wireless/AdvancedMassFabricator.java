@@ -1,21 +1,9 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.GregTechAPI.sBlockCasings5;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static tectech.thing.casing.TTCasingsContainer.GodforgeCasings;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -25,9 +13,11 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -39,6 +29,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import tectech.thing.casing.TTCasingsContainer;
 
 public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<AdvancedMassFabricator>
     implements ISurvivalConstructable {
@@ -117,25 +108,28 @@ public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<Advan
     @Override
     public IStructureDefinition<AdvancedMassFabricator> getStructureDefinition() {
         return StructureDefinition.<AdvancedMassFabricator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings5, 8))
-            .addElement('B', ofBlock(sBlockCasingsTT, 8))
-            .addElement('C', ofBlock(GodforgeCasings, 8))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasings5, 8))
+            .addElement('B', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 8))
+            .addElement('C', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
             .addElement(
                 'D',
                 buildHatchAdder(AdvancedMassFabricator.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(ModBlocks.blockCasings5Misc, 3))))
-            .addElement('E', ofBlock(ModBlocks.blockCasings5Misc, 15))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 3))))
+            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 15))
             .build();
     }
 

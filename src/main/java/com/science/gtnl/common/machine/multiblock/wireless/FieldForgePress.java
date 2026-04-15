@@ -1,26 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.block.Block;
@@ -31,10 +13,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -43,6 +28,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -120,34 +106,36 @@ public class FieldForgePress extends WirelessEnergyMultiMachineBase<FieldForgePr
     @Override
     public IStructureDefinition<FieldForgePress> getStructureDefinition() {
         return StructureDefinition.<FieldForgePress>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings4, 12))
-            .addElement('B', ofBlock(sBlockCasings1, 14))
-            .addElement('C', ofBlock(sBlockCasings10, 3))
-            .addElement('D', ofBlock(sBlockCasings1, 13))
-            .addElement('E', ofBlock(sBlockCasings8, 7))
-            .addElement('F', ofBlock(sBlockCasings9, 9))
-            .addElement('G', ofBlock(blockCasings3Misc, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
+            .addElement('G', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 1))
             .addElement(
                 'H',
                 buildHatchAdder(FieldForgePress.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('I', ofBlock(blockCustomMachineCasings, 3))
-            .addElement('J', ofBlock(sBlockCasings8, 10))
-            .addElement('K', ofBlock(BlockLoader.metaCasing, 12))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCustomMachineCasings, 3))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('K', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
             .addElement(
                 'L',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.INCONEL_792.getFrameBox(1)
                             .getItem())))

@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.recipe.RecipeMap;
@@ -457,7 +457,7 @@ public class RecipeUtil {
             .contains("Mothership");
     }
 
-    @Nonnull
+    @NotNull
     public static final CheckRecipeResult NOT_IN_SPACE_STATION = SimpleCheckRecipeResult
         .ofFailure("not_in_space_station");
 }

@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NINE_HATCH;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NINE_HATCH_COLOR;
-
 import java.util.ArrayList;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +15,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
+import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.interfaces.ITexture;
@@ -99,15 +97,17 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
     @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         byte color = getBaseMetaTileEntity().getColorization();
-        ITexture coloredPipeOverlay = TextureFactory.of(OVERLAY_FRONT_NINE_HATCH_COLOR[color + 1]);
-        return new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_FRONT_NINE_HATCH), coloredPipeOverlay };
+        ITexture coloredPipeOverlay = TextureFactory.of(BlockIcons.OVERLAY_FRONT_NINE_HATCH_COLOR[color + 1]);
+        return new ITexture[] { aBaseTexture, TextureFactory.of(BlockIcons.OVERLAY_FRONT_NINE_HATCH),
+            coloredPipeOverlay };
     }
 
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
         byte color = getBaseMetaTileEntity().getColorization();
-        ITexture coloredPipeOverlay = TextureFactory.of(OVERLAY_FRONT_NINE_HATCH_COLOR[color + 1]);
-        return new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_FRONT_NINE_HATCH), coloredPipeOverlay };
+        ITexture coloredPipeOverlay = TextureFactory.of(BlockIcons.OVERLAY_FRONT_NINE_HATCH_COLOR[color + 1]);
+        return new ITexture[] { aBaseTexture, TextureFactory.of(BlockIcons.OVERLAY_FRONT_NINE_HATCH),
+            coloredPipeOverlay };
     }
 
     @Override

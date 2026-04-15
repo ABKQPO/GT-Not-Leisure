@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -32,6 +29,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
 import com.glodblock.github.api.FluidCraftAPI;
@@ -234,7 +232,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
 
     }
 
-    @NotNull
     public List<? extends IAEStack<?>> getRecord(@NotNull ItemStack stack, @NotNull StorageChannel s) {
         if (stack.hasTagCompound()) {
             if (stack.getTagCompound()
@@ -248,7 +245,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         return Collections.emptyList();
     }
 
-    @NotNull
     private List<? extends IAEStack<?>> getInfinityStack(NBTTagList list, @NotNull StorageChannel s) {
         return switch (s) {
             case ITEMS -> {
@@ -539,7 +535,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         }
 
         @Override
-        public IAEItemStack getAvailableItem(@Nonnull IAEItemStack request, int iteration) {
+        public IAEItemStack getAvailableItem(@NotNull IAEItemStack request, int iteration) {
             return request.copy();
         }
 

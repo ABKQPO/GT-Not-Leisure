@@ -6,10 +6,10 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
@@ -31,9 +31,9 @@ import gregtech.api.util.VoidProtectionHelper;
 @SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class GTNLParallelHelper extends ParallelHelper {
 
-    @Nonnull
+    @NotNull
     public static final CheckRecipeResult PARALLEL_OVERFLOW = SimpleCheckRecipeResult.ofFailure("parallel_overflow");
-    @Nonnull
+    @NotNull
     public static final CheckRecipeResult PARALLEL_ZERO = SimpleCheckRecipeResult.ofFailure("parallel_zero");
 
     public static final double MAX_BATCH_MODE_TICK_TIME = 128;
@@ -135,7 +135,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      * Calculator to use for overclocking
      */
     public GTNLOverclockCalculator calculator;
-    @Nonnull
+    @NotNull
     public CheckRecipeResult result = CheckRecipeResultRegistry.NONE;
 
     public Function<Integer, ItemStack[]> customItemOutputCalculation;
@@ -147,7 +147,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets machine, with current configuration for void protection mode.
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setMachine(IVoidable machine) {
         return setMachine(machine, machine.protectsExcessItem(), machine.protectsExcessFluid());
@@ -156,7 +156,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets machine, with void protection mode forcibly.
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setMachine(IVoidable machine, boolean protectExcessItem, boolean protectExcessFluid) {
         this.protectExcessItem = protectExcessItem;
@@ -168,14 +168,14 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the recipe, which will be used for the parallel calculation
      */
-    @Nonnull
+    @NotNull
     @Override
-    public GTNLParallelHelper setRecipe(@Nonnull GTRecipe aRecipe) {
+    public GTNLParallelHelper setRecipe(@NotNull GTRecipe aRecipe) {
         recipe = Objects.requireNonNull(aRecipe);
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setRecipeLocked(IRecipeLockable singleRecipeMachine, boolean isRecipeLocked) {
         this.singleRecipeMachine = singleRecipeMachine;
@@ -186,7 +186,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the items available for the recipe check
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setItemInputs(ItemStack... aItemInputs) {
         this.itemInputs = aItemInputs;
@@ -196,7 +196,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the fluid inputs available for the recipe check
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setFluidInputs(FluidStack... aFluidInputs) {
         this.fluidInputs = aFluidInputs;
@@ -206,7 +206,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the available eut when trying for more parallels
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setAvailableEUt(long aAvailableEUt) {
         this.availableEUt = aAvailableEUt;
@@ -216,7 +216,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the modifier for recipe eut. 1 does nothing 0.9 is 10% less. 1.1 is 10% more
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setEUtModifier(double aEUtModifier) {
         this.eutModifier = aEUtModifier;
@@ -227,14 +227,14 @@ public class GTNLParallelHelper extends ParallelHelper {
      * Sets the multiplier that is applied on output chances. 1 does nothing. 0.9 is 10% less. 1.1 is 10% more.
      * Only useful for item outputs for sure.
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setChanceMultiplier(double chanceMultiplier) {
         this.chanceMultiplier = chanceMultiplier;
         return this;
     }
 
-    @Nonnull
+    @NotNull
     public GTNLParallelHelper setCalculator(GTNLOverclockCalculator calculator) {
         this.calculator = calculator;
         return this;
@@ -245,7 +245,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      *
      * @param consume Should we consume inputs
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setConsumption(boolean consume) {
         this.consume = consume;
@@ -255,7 +255,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Sets the MaxParallel a multi can handle
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setMaxParallel(int maxParallel) {
         this.maxParallel = maxParallel;
@@ -266,7 +266,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      * Enables Batch mode. Can do up to an additional processed recipes of mCurrentParallel * mBatchModifier A batch
      * modifier of 1 does nothing
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper enableBatchMode(int batchModifier) {
         this.batchMode = batchModifier > 1;
@@ -279,7 +279,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      *
      * @param calculateOutputs Should we calculate outputs with the helper or not
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setOutputCalculation(boolean calculateOutputs) {
         this.calculateOutputs = calculateOutputs;
@@ -290,7 +290,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      * Set a custom way to calculate item outputs. You are given the amount of parallels and must return an ItemStack
      * array
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setCustomItemOutputCalculation(Function<Integer, ItemStack[]> custom) {
         customItemOutputCalculation = custom;
@@ -301,7 +301,7 @@ public class GTNLParallelHelper extends ParallelHelper {
      * Set a custom way to calculate item outputs. You are given the amount of parallels and must return a FluidStack
      * array
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper setCustomFluidOutputCalculation(Function<Integer, FluidStack[]> custom) {
         customFluidOutputCalculation = custom;
@@ -327,7 +327,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * Finishes the GT_ParallelHelper. Anything changed after this will not effect anything
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLParallelHelper build() {
         if (built) {
@@ -369,7 +369,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * @return The ItemOutputs from the recipe
      */
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack[] getItemOutputs() {
         if (!built || !calculateOutputs) {
@@ -382,7 +382,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * @return The FluidOutputs from the recipe
      */
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack[] getFluidOutputs() {
         if (!built || !calculateOutputs) {
@@ -395,7 +395,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     /**
      * @return The result of why a recipe could've failed or succeeded
      */
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult getResult() {
         if (!built) {

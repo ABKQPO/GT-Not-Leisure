@@ -1,17 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -22,17 +11,21 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -102,14 +95,14 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
                         .extFacing()
                         .build() };
             } else {
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_LAVA_MAKER)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER)
                         .extFacing()
                         .build() };
             }
@@ -127,10 +120,10 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     @Override
     public IStructureDefinition<SteamLavaMaker> getStructureDefinition() {
         return StructureDefinition.<SteamLavaMaker>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamLavaMaker.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
                         .dot(1)
@@ -141,14 +134,22 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                     buildSteamInput(SteamLavaMaker.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(SteamLavaMaker.class)
-                        .atLeast(SteamHatchElement.InputBus_Steam, InputBus, OutputHatch, Maintenance)
+                    GTStructureUtility.buildHatchAdder(SteamLavaMaker.class)
+                        .atLeast(
+                            SteamHatchElement.InputBus_Steam,
+                            HatchElement.InputBus,
+                            HatchElement.OutputHatch,
+                            HatchElement.Maintenance)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(BlockLoader.metaCasing, 27)))
-            .addElement('B', chainAllGlasses())
-            .addElement('C', ofChain(ofBlockAnyMeta(Blocks.lava), ofBlockAnyMeta(Blocks.flowing_lava)))
+                    StructureUtility.ofBlock(BlockLoader.metaCasing, 27)))
+            .addElement('B', GTStructureUtility.chainAllGlasses())
+            .addElement(
+                'C',
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(Blocks.lava),
+                    StructureUtility.ofBlockAnyMeta(Blocks.flowing_lava)))
             .build();
     }
 

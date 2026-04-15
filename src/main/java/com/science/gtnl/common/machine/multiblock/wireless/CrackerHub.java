@@ -1,35 +1,10 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,12 +12,17 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -54,6 +34,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import tectech.thing.casing.TTCasingsContainer;
@@ -113,7 +94,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -137,39 +118,43 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
     @Override
     public IStructureDefinition<CrackerHub> getStructureDefinition() {
         return StructureDefinition.<CrackerHub>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings10, 3))
-            .addElement('C', ofBlock(sBlockCasings2, 15))
-            .addElement('D', ofBlock(sBlockCasings3, 10))
-            .addElement('E', ofBlock(sBlockCasings4, 1))
-            .addElement('F', ofBlock(sBlockCasings4, 10))
-            .addElement('G', ofBlock(sBlockCasings4, 12))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
             .addElement(
                 'H',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(CrackerHub::setMCoilLevel, CrackerHub::getMCoilLevel))))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility
+                        .activeCoils(GTStructureUtility.ofCoil(CrackerHub::setMCoilLevel, CrackerHub::getMCoilLevel))))
             .addElement(
                 'I',
-                buildHatchAdder(CrackerHub.class)
+                GTStructureUtility.buildHatchAdder(CrackerHub.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
-            .addElement('J', ofBlock(TTCasingsContainer.sBlockCasingsBA0, 6))
-            .addElement('K', ofFrame(Materials.StainlessSteel))
-            .addElement('L', ofFrame(Materials.Ultimet))
-            .addElement('M', ofFrame(Materials.HSSS))
-            .addElement('N', ofBlock(sBlockReinforced, 10))
-            .addElement('O', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('P', Muffler.newAny(getCasingTextureID(), 16))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('J', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 6))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.StainlessSteel))
+            .addElement('L', GTStructureUtility.ofFrame(Materials.Ultimet))
+            .addElement('M', GTStructureUtility.ofFrame(Materials.HSSS))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 10))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement('P', HatchElement.Muffler.newAny(getCasingTextureID(), 16))
             .build();
     }
 
@@ -239,7 +224,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
         return super.getDurationModifier() * Math.pow(0.95, mGlassTier);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         super.checkProcessing();

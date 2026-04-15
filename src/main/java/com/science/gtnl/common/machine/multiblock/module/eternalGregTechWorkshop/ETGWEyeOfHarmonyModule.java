@@ -1,8 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.strongCheckOrAddUser;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +36,7 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import gregtech.common.tileentities.machines.MTEHatchOutputME;
@@ -238,7 +236,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
             .multiply(BigInteger.valueOf((long) Math.pow(8, currentCircuitMultiplier)));
 
         // Remove EU from the users network.
-        if (!addEUToGlobalEnergyMap(ownerUUID, usedEU)) {
+        if (!WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, usedEU)) {
             return CheckRecipeResultRegistry.insufficientStartupPower(usedEU.abs());
         }
 
@@ -471,7 +469,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         recipeRunning = false;
 
         // Output EU
-        addEUToGlobalEnergyMap(ownerUUID, outputEU_BigInt);
+        WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, outputEU_BigInt);
 
         startEU = 0;
         outputEU_BigInt = BigInteger.ZERO;
@@ -529,7 +527,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
 
         if (aTick == 1) {
             ownerUUID = getBaseMetaTileEntity().getOwnerUuid();
-            strongCheckOrAddUser(ownerUUID);
+            WirelessNetworkManager.strongCheckOrAddUser(ownerUUID);
         }
 
         if (!recipeRunning && mMachine) {

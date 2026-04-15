@@ -1,26 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockMetal5;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -31,11 +12,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -44,6 +27,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -127,35 +111,44 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
     @Override
     public IStructureDefinition<SuperconductingMagneticPresser> getStructureDefinition() {
         return StructureDefinition.<SuperconductingMagneticPresser>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings9, 12))
-            .addElement('B', ofBlock(sBlockCasings10, 8))
-            .addElement('C', ofBlock(sBlockCasings10, 7))
-            .addElement('D', ofBlock(sBlockCasings1, 15))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
             .addElement(
                 'E',
-                buildHatchAdder(SuperconductingMagneticPresser.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Energy.or(ExoticEnergy), ParallelCon)
+                GTStructureUtility.buildHatchAdder(SuperconductingMagneticPresser.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
-            .addElement('F', ofBlock(sBlockCasings1, 13))
-            .addElement('G', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('H', ofBlock(sBlockCasingsTT, 6))
-            .addElement('I', ofBlock(sBlockCasingsTT, 4))
-            .addElement('J', ofBlock(sBlockCasings8, 10))
-            .addElement('K', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('L', ofBlock(sBlockCasings3, 11))
-            .addElement('M', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('I', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('K', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('M', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'N',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     BlockGTCasingsTT.getBlockFromItem(
                         MaterialsElements.STANDALONE.DRAGON_METAL.getFrameBox(1)
                             .getItem())))
-            .addElement('O', ofFrame(Materials.Naquadria))
-            .addElement('P', ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('Q', ofBlock(sBlockMetal5, 2))
+            .addElement('O', GTStructureUtility.ofFrame(Materials.Naquadria))
+            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 2))
             .build();
     }
 

@@ -1,17 +1,5 @@
 package com.science.gtnl.common.render.item;
 
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_UUIDS;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.UUID_CACHE;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.fetchUUID;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.offlineMode;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.DEFAULT_SKIN;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.TextureType;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.downloadAndCacheCustomCape;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.downloadAndCacheCustomSkin;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.isValidUsername;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.loadProfileTexture;
-import static com.science.gtnl.common.render.PlayerDollRenderManagerClient.renderModel;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +9,8 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.common.render.PlayerDollRenderManager;
+import com.science.gtnl.common.render.PlayerDollRenderManagerClient;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
@@ -67,7 +57,7 @@ public class ItemPlayerDollRenderer implements IItemRenderer {
             }
         }
 
-        ResourceLocation skinTexture = DEFAULT_SKIN;
+        ResourceLocation skinTexture = PlayerDollRenderManagerClient.DEFAULT_SKIN;
         ResourceLocation capeTexture = null;
         byte renderMode = 0;
 
@@ -80,45 +70,46 @@ public class ItemPlayerDollRenderer implements IItemRenderer {
         if (nbt.hasKey("SkinHttp", 8)) {
             String skinHttp = nbt.getString("SkinHttp");
             if (!StringUtils.isNullOrEmpty(skinHttp)) {
-                skinTexture = downloadAndCacheCustomSkin(skinHttp);
-                if (skinTexture == null) skinTexture = DEFAULT_SKIN;
+                skinTexture = PlayerDollRenderManagerClient.downloadAndCacheCustomSkin(skinHttp);
+                if (skinTexture == null) skinTexture = PlayerDollRenderManagerClient.DEFAULT_SKIN;
 
                 if (nbt.hasKey("CapeHttp", 8)) {
                     String capeHttp = nbt.getString("CapeHttp");
                     if (!StringUtils.isNullOrEmpty(capeHttp)) {
-                        capeTexture = downloadAndCacheCustomCape(capeHttp);
+                        capeTexture = PlayerDollRenderManagerClient.downloadAndCacheCustomCape(capeHttp);
                     }
                 }
 
-                renderModel(skinTexture, capeTexture, renderMode);
+                PlayerDollRenderManagerClient.renderModel(skinTexture, capeTexture, renderMode);
                 GL11.glPopMatrix();
                 return;
             }
         }
 
-        if (MainConfig.item.player_doll.enableCustomSkin && !offlineMode) {
+        if (MainConfig.item.player_doll.enableCustomSkin && !PlayerDollRenderManager.offlineMode) {
             String ownerUUID = null;
             String playerName;
 
             if (nbt.hasKey("SkullOwner", 8)) {
                 playerName = nbt.getString("SkullOwner");
-                if (StringUtils.isNullOrEmpty(playerName) || !isValidUsername(playerName)) {
+                if (StringUtils.isNullOrEmpty(playerName)
+                    || !PlayerDollRenderManagerClient.isValidUsername(playerName)) {
                     playerName = minecraft.thePlayer.getCommandSenderName();
                 }
 
-                String cachedUUID = UUID_CACHE.get(playerName.toLowerCase());
+                String cachedUUID = PlayerDollRenderManager.UUID_CACHE.get(playerName.toLowerCase());
 
                 if (nbt.hasKey("OwnerUUID", 8)) {
                     ownerUUID = nbt.getString("OwnerUUID");
                     if (cachedUUID == null || !cachedUUID.equals(ownerUUID)) {
-                        String freshUUID = fetchUUID(playerName);
+                        String freshUUID = PlayerDollRenderManager.fetchUUID(playerName);
                         if (freshUUID != null) ownerUUID = freshUUID;
                     }
                 } else {
                     if (cachedUUID != null) {
                         ownerUUID = cachedUUID;
                     } else {
-                        ownerUUID = fetchUUID(playerName);
+                        ownerUUID = PlayerDollRenderManager.fetchUUID(playerName);
                     }
                 }
 
@@ -128,25 +119,27 @@ public class ItemPlayerDollRenderer implements IItemRenderer {
                 ownerUUID = nbt.getString("OwnerUUID");
             }
 
-            if (ownerUUID != null && !BLACKLISTED_UUIDS.contains(ownerUUID)) {
-                skinTexture = loadProfileTexture(ownerUUID, TextureType.SKIN);
+            if (ownerUUID != null && !PlayerDollRenderManager.BLACKLISTED_UUIDS.contains(ownerUUID)) {
+                skinTexture = PlayerDollRenderManagerClient
+                    .loadProfileTexture(ownerUUID, PlayerDollRenderManagerClient.TextureType.SKIN);
 
                 boolean hasCustomCape = false;
                 if (nbt.hasKey("CapeHttp", 8)) {
                     String capeHttp = nbt.getString("CapeHttp");
                     if (!StringUtils.isNullOrEmpty(capeHttp)) {
-                        capeTexture = downloadAndCacheCustomCape(capeHttp);
+                        capeTexture = PlayerDollRenderManagerClient.downloadAndCacheCustomCape(capeHttp);
                         hasCustomCape = true;
                     }
                 }
 
                 if (!hasCustomCape) {
-                    capeTexture = loadProfileTexture(ownerUUID, TextureType.CAPE);
+                    capeTexture = PlayerDollRenderManagerClient
+                        .loadProfileTexture(ownerUUID, PlayerDollRenderManagerClient.TextureType.CAPE);
                 }
             }
         }
 
-        renderModel(skinTexture, capeTexture, renderMode);
+        PlayerDollRenderManagerClient.renderModel(skinTexture, capeTexture, renderMode);
         GL11.glPopMatrix();
     }
 }

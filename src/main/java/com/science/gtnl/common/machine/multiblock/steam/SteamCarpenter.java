@@ -1,16 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER_ACTIVE;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -20,11 +10,14 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -32,6 +25,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -60,10 +54,10 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
     @Override
     public IStructureDefinition<SteamCarpenter> getStructureDefinition() {
         return StructureDefinition.<SteamCarpenter>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamCarpenter.class).casingIndex(10)
                         .dot(1)
                         .build(),
@@ -73,19 +67,19 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                     buildSteamInput(SteamCarpenter.class).casingIndex(10)
                         .dot(1)
                         .build(),
-                    buildHatchAdder(SteamCarpenter.class)
+                    GTStructureUtility.buildHatchAdder(SteamCarpenter.class)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
-                            InputBus,
+                            HatchElement.InputBus,
                             SteamHatchElement.OutputBus_Steam,
-                            OutputBus,
-                            Maintenance)
+                            HatchElement.OutputBus,
+                            HatchElement.Maintenance)
                         .casingIndex(10)
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(GregTechAPI.sBlockCasings1, 10)))
-            .addElement('B', ofBlock(GregTechAPI.sBlockCasings2, 2))
-            .addElement('C', ofFrame(Materials.Wood))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
+            .addElement('C', GTStructureUtility.ofFrame(Materials.Wood))
             .build();
     }
 
@@ -139,7 +133,7 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_CARPENTER_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER_ACTIVE)
                         .extFacing()
                         .build() };
             } else {
@@ -147,7 +141,7 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_CARPENTER)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER)
                         .extFacing()
                         .build() };
             }

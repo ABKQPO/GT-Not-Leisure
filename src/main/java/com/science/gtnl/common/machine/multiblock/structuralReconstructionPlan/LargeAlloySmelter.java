@@ -1,21 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -25,9 +11,12 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -36,6 +25,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
@@ -81,7 +71,7 @@ public class LargeAlloySmelter extends GTMMultiMachineBase<LargeAlloySmelter> im
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 11);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
     }
 
     @Override
@@ -112,20 +102,30 @@ public class LargeAlloySmelter extends GTMMultiMachineBase<LargeAlloySmelter> im
     @Override
     public IStructureDefinition<LargeAlloySmelter> getStructureDefinition() {
         return StructureDefinition.<LargeAlloySmelter>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                buildHatchAdder(LargeAlloySmelter.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(LargeAlloySmelter.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 11))))
-            .addElement('B', ofBlock(sBlockCasings2, 0))
-            .addElement('C', ofBlock(sBlockCasings2, 13))
+                    .atLeast(
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
             .addElement(
                 'D',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(LargeAlloySmelter::setMCoilLevel, LargeAlloySmelter::getMCoilLevel))))
-            .addElement('E', Muffler.newAny(getCasingTextureID(), 1))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(LargeAlloySmelter::setMCoilLevel, LargeAlloySmelter::getMCoilLevel))))
+            .addElement('E', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }
 

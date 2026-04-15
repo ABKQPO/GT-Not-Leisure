@@ -1,53 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.CD;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.CFCE;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.CNTI;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.CTCDD;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.DOP;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.DOR;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.EE;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.END;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.EPEC;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.FDIM;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.GEM;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.GGEBE;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.GISS;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.GPCI;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.IGCC;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.IMKG;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.NDPE;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.NGMS;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.PA;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.POS;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.QGPIU;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.REC;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.SA;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.SEDS;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.SEFCP;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.START;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.STEM;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.TBF;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.TCT;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.TPTP;
-import static com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopUpgrade.TSE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_GOD_FORGE_MODULE_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -76,6 +31,7 @@ import com.google.common.math.LongMath;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -110,10 +66,12 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.SoundResource;
@@ -129,6 +87,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
@@ -400,12 +359,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         if (side == facing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID() + 1),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_GOD_FORGE_MODULE_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_GOD_FORGE_MODULE_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID() + 1),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_TECTECH_MULTIBLOCK)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK)
                     .extFacing()
                     .build() };
         }
@@ -430,44 +389,51 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     @Override
     public IStructureDefinition<EternalGregTechWorkshop> getStructureDefinition() {
         return StructureDefinition.<EternalGregTechWorkshop>builder()
-            .addShape(STRUCTURE_PIECE_MAIN_TOP, transpose(shapeTop))
-            .addShape(STRUCTURE_PIECE_MAIN_UP, transpose(shapeUp))
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addShape(STRUCTURE_PIECE_MAIN_DOWN, transpose(shapeDown))
-            .addShape(STRUCTURE_PIECE_MAIN_BOTTOM, transpose(shapeBottom))
-            .addShape(STRUCTURE_PIECE_MAIN_EXTRA, transpose(shapeExtra))
-            .addShape(STRUCTURE_PIECE_MAIN_EXTRA_AIR, transpose(shapeExtraAir))
-            .addElement('A', ofBlock(TTCasingsContainer.GodforgeCasings, 0))
-            .addElement('B', ofBlock(Loaders.componentAssemblylineCasing, 12))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('D', ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
-            .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('F', ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('G', ofBlock(TTCasingsContainer.GodforgeCasings, 1))
-            .addElement('H', ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('I', ofBlock(ModBlocks.blockCasings5Misc, 14))
-            .addElement('J', ofBlock(GregTechAPI.sBlockCasings9, 14))
-            .addElement('K', ofFrame(Materials.NaquadahAlloy))
-            .addElement('L', ofBlock(GregTechAPI.sBlockGlass1, 2))
-            .addElement('M', ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addShape(STRUCTURE_PIECE_MAIN_TOP, StructureUtility.transpose(shapeTop))
+            .addShape(STRUCTURE_PIECE_MAIN_UP, StructureUtility.transpose(shapeUp))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN_DOWN, StructureUtility.transpose(shapeDown))
+            .addShape(STRUCTURE_PIECE_MAIN_BOTTOM, StructureUtility.transpose(shapeBottom))
+            .addShape(STRUCTURE_PIECE_MAIN_EXTRA, StructureUtility.transpose(shapeExtra))
+            .addShape(STRUCTURE_PIECE_MAIN_EXTRA_AIR, StructureUtility.transpose(shapeExtraAir))
+            .addElement('A', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0))
+            .addElement('B', StructureUtility.ofBlock(Loaders.componentAssemblylineCasing, 12))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('G', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 14))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 2))
+            .addElement('M', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
             .addElement(
                 'N',
-                buildHatchAdder(EternalGregTechWorkshop.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, OutputHatch)
+                GTStructureUtility.buildHatchAdder(EternalGregTechWorkshop.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch)
                     .casingIndex(getCasingTextureID() + 1)
                     .dot(1)
                     .buildAndChain(
-                        onElementPass(x -> ++x.mCountCasing, ofBlock(TTCasingsContainer.GodforgeCasings, 1))))
-            .addElement('O', ofBlock(GregTechAPI.sBlockCasings10, 2))
-            .addElement('P', ofBlock(TTCasingsContainer.sBlockCasingsBA0, 10))
-            .addElement('Q', ofBlock(TTCasingsContainer.GodforgeCasings, 7))
-            .addElement('R', ofBlock(TTCasingsContainer.GodforgeCasings, 4))
-            .addElement('S', ofBlock(TTCasingsContainer.GodforgeCasings, 8))
-            .addElement('T', ofBlock(Loaders.gravityStabilizationCasing, 0))
-            .addElement('U', ofBlock(TTCasingsContainer.SpacetimeCompressionFieldGenerators, 8))
-            .addElement('V', ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
-            .addElement('W', ofBlock(TTCasingsContainer.sBlockCasingsBA0, 11))
-            .addElement('X', ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 8))
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 2))
+            .addElement('P', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 10))
+            .addElement('Q', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 7))
+            .addElement('R', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 4))
+            .addElement('S', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
+            .addElement('T', StructureUtility.ofBlock(Loaders.gravityStabilizationCasing, 0))
+            .addElement('U', StructureUtility.ofBlock(TTCasingsContainer.SpacetimeCompressionFieldGenerators, 8))
+            .addElement('V', StructureUtility.ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
+            .addElement('W', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 11))
+            .addElement('X', StructureUtility.ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 8))
             .addElement(
                 'Y',
                 HatchElementBuilder.<EternalGregTechWorkshop>builder()
@@ -477,8 +443,10 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                     .buildAndChain(TTCasingsContainer.GodforgeCasings, 0))
             .addElement(
                 'Z',
-                ofChain(ofBlock(GregTechAPI.sBlockCasings1, 14), ofBlock(BlockLoader.eternalGregTechWorkshopRender, 0)))
-            .addElement('a', isAir())
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14),
+                    StructureUtility.ofBlock(BlockLoader.eternalGregTechWorkshopRender, 0)))
+            .addElement('a', StructureUtility.isAir())
             .build();
     }
 
@@ -893,7 +861,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     public static double calculateFuelConsumption(EternalGregTechWorkshop egtw) {
         double upgradeFactor = 1;
-        if (egtw.isUpgradeActive(STEM)) {
+        if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.STEM)) {
             upgradeFactor = 0.8;
         }
         if (egtw.getFuelType() == 0) {
@@ -1375,13 +1343,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         // Syncers for max fuel factor
         builder.widget(
-            upgrades.getSyncer(CFCE)
+            upgrades.getSyncer(EternalGregTechWorkshopUpgrade.CFCE)
                 .setOnClientUpdate($ -> fuelFactor.setMaxValue(calculateMaxFuelFactor(this))));
         builder.widget(
-            upgrades.getSyncer(GEM)
+            upgrades.getSyncer(EternalGregTechWorkshopUpgrade.GEM)
                 .setOnClientUpdate($ -> fuelFactor.setMaxValue(calculateMaxFuelFactor(this))));
         builder.widget(
-            upgrades.getSyncer(TSE)
+            upgrades.getSyncer(EternalGregTechWorkshopUpgrade.TSE)
                 .setOnClientUpdate($ -> fuelFactor.setMaxValue(calculateMaxFuelFactor(this))));
 
         builder.widget(
@@ -1512,13 +1480,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     public static int calculateMaxFuelFactor(EternalGregTechWorkshop egtw) {
         int fuelCap = 5;
-        if (egtw.isUpgradeActive(TSE)) {
+        if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.TSE)) {
             fuelCap = Integer.MAX_VALUE;
         } else {
-            if (egtw.isUpgradeActive(GEM)) {
+            if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.GEM)) {
                 fuelCap += egtw.getTotalActiveUpgrades();
             }
-            if (egtw.isUpgradeActive(CFCE)) {
+            if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.CFCE)) {
                 fuelCap *= 1.2;
             }
         }
@@ -1909,7 +1877,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         gravitonShardsAvailable += upgrade.getShardCost();
         gravitonShardsSpent -= upgrade.getShardCost();
 
-        if (upgrade == END) {
+        if (upgrade == EternalGregTechWorkshopUpgrade.END) {
             gravitonShardEjection = false;
         }
     }
@@ -1991,42 +1959,42 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
         // spotless:off
         scrollable
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 71),  45,  0,      UpgradeColor.BLUE,   START, IGCC))
-            .widget(createUpgradeConnectorLine(new Pos2d(124, 124), 60,  27,     UpgradeColor.BLUE,   IGCC,  STEM))
-            .widget(createUpgradeConnectorLine(new Pos2d(162, 124), 60,  333,    UpgradeColor.BLUE,   IGCC,  CFCE))
-            .widget(createUpgradeConnectorLine(new Pos2d(94,  184), 60,  27,     UpgradeColor.BLUE,   STEM,  GISS))
-            .widget(createUpgradeConnectorLine(new Pos2d(130, 184), 60,  336,    UpgradeColor.BLUE,   STEM,  FDIM))
-            .widget(createUpgradeConnectorLine(new Pos2d(156, 184), 60,  24,     UpgradeColor.BLUE,   CFCE,  FDIM))
-            .widget(createUpgradeConnectorLine(new Pos2d(192, 184), 60,  333,    UpgradeColor.BLUE,   CFCE,  SA))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 251), 45,  0,      UpgradeColor.BLUE,   FDIM,  GPCI))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 311), 45,  0,      UpgradeColor.BLUE,   GPCI,  GEM))
-            .widget(createUpgradeConnectorLine(new Pos2d(78,  250), 110, 5,      UpgradeColor.RED,    GISS,  REC))
-            .widget(createUpgradeConnectorLine(new Pos2d(110, 290), 80,  40,     UpgradeColor.RED,    GPCI,  REC))
-            .widget(createUpgradeConnectorLine(new Pos2d(208, 250), 110, 355,    UpgradeColor.RED,    SA,    CTCDD))
-            .widget(createUpgradeConnectorLine(new Pos2d(176, 290), 80,  320,    UpgradeColor.RED,    GPCI,  CTCDD))
-            .widget(createUpgradeConnectorLine(new Pos2d(100, 355), 80,  313,    UpgradeColor.BLUE,   REC,   QGPIU))
-            .widget(createUpgradeConnectorLine(new Pos2d(186, 355), 80,  47,     UpgradeColor.BLUE,   CTCDD, QGPIU))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 430), 48,  0,      UpgradeColor.ORANGE, QGPIU, TCT))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 490), 48,  0,      UpgradeColor.ORANGE, TCT,   EPEC))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 550), 48,  0,      UpgradeColor.ORANGE, EPEC,  POS))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 610), 48,  0,      UpgradeColor.ORANGE, POS,   NGMS))
-            .widget(createUpgradeConnectorLine(new Pos2d(110, 410), 80,  40,     UpgradeColor.PURPLE, QGPIU, SEFCP))
-            .widget(createUpgradeConnectorLine(new Pos2d(83,  490), 48,  0,      UpgradeColor.PURPLE, SEFCP, CNTI))
-            .widget(createUpgradeConnectorLine(new Pos2d(83,  550), 48,  0,      UpgradeColor.PURPLE, CNTI,  NDPE))
-            .widget(createUpgradeConnectorLine(new Pos2d(101, 590), 80,  320,    UpgradeColor.PURPLE, NDPE,  NGMS))
-            .widget(createUpgradeConnectorLine(new Pos2d(53,  536), 35,  45,     UpgradeColor.PURPLE, CNTI,  DOP))
-            .widget(createUpgradeConnectorLine(new Pos2d(176, 410), 80,  320,    UpgradeColor.GREEN,  QGPIU, GGEBE))
-            .widget(createUpgradeConnectorLine(new Pos2d(203, 490), 48,  0,      UpgradeColor.GREEN,  GGEBE, IMKG))
-            .widget(createUpgradeConnectorLine(new Pos2d(203, 550), 48,  0,      UpgradeColor.GREEN,  IMKG,  DOR))
-            .widget(createUpgradeConnectorLine(new Pos2d(185, 590), 80,  40,     UpgradeColor.GREEN,  DOR,   NGMS))
-            .widget(createUpgradeConnectorLine(new Pos2d(233, 476), 35,  315,    UpgradeColor.GREEN,  GGEBE, TPTP))
-            .widget(createUpgradeConnectorLine(new Pos2d(143, 670), 48,  0,      UpgradeColor.BLUE,   NGMS,  SEDS))
-            .widget(createUpgradeConnectorLine(new Pos2d(101, 707), 75,  62.3f,  UpgradeColor.BLUE,   SEDS,  PA))
-            .widget(createUpgradeConnectorLine(new Pos2d(53,  772), 78,  0,      UpgradeColor.BLUE,   PA,    CD))
-            .widget(createUpgradeConnectorLine(new Pos2d(95,  837), 75,  297.7f, UpgradeColor.BLUE,   CD,    TSE))
-            .widget(createUpgradeConnectorLine(new Pos2d(191, 837), 75,  62.3f,  UpgradeColor.BLUE,   TSE,   TBF))
-            .widget(createUpgradeConnectorLine(new Pos2d(233, 772), 78,  0,      UpgradeColor.BLUE,   TBF,   EE))
-            .widget(createUpgradeConnectorLine(new Pos2d(191, 747), 75,  62.3f,  UpgradeColor.BLUE,   EE,    END));
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 71),  45,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.START, EternalGregTechWorkshopUpgrade.IGCC))
+            .widget(createUpgradeConnectorLine(new Pos2d(124, 124), 60,  27,     UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.IGCC,  EternalGregTechWorkshopUpgrade.STEM))
+            .widget(createUpgradeConnectorLine(new Pos2d(162, 124), 60,  333,    UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.IGCC,  EternalGregTechWorkshopUpgrade.CFCE))
+            .widget(createUpgradeConnectorLine(new Pos2d(94,  184), 60,  27,     UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.STEM,  EternalGregTechWorkshopUpgrade.GISS))
+            .widget(createUpgradeConnectorLine(new Pos2d(130, 184), 60,  336,    UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.STEM,  EternalGregTechWorkshopUpgrade.FDIM))
+            .widget(createUpgradeConnectorLine(new Pos2d(156, 184), 60,  24,     UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.CFCE,  EternalGregTechWorkshopUpgrade.FDIM))
+            .widget(createUpgradeConnectorLine(new Pos2d(192, 184), 60,  333,    UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.CFCE,  EternalGregTechWorkshopUpgrade.SA))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 251), 45,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.FDIM,  EternalGregTechWorkshopUpgrade.GPCI))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 311), 45,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.GPCI,  EternalGregTechWorkshopUpgrade.GEM))
+            .widget(createUpgradeConnectorLine(new Pos2d(78,  250), 110, 5,      UpgradeColor.RED,    EternalGregTechWorkshopUpgrade.GISS,  EternalGregTechWorkshopUpgrade.REC))
+            .widget(createUpgradeConnectorLine(new Pos2d(110, 290), 80,  40,     UpgradeColor.RED,    EternalGregTechWorkshopUpgrade.GPCI,  EternalGregTechWorkshopUpgrade.REC))
+            .widget(createUpgradeConnectorLine(new Pos2d(208, 250), 110, 355,    UpgradeColor.RED,    EternalGregTechWorkshopUpgrade.SA,    EternalGregTechWorkshopUpgrade.CTCDD))
+            .widget(createUpgradeConnectorLine(new Pos2d(176, 290), 80,  320,    UpgradeColor.RED,    EternalGregTechWorkshopUpgrade.GPCI,  EternalGregTechWorkshopUpgrade.CTCDD))
+            .widget(createUpgradeConnectorLine(new Pos2d(100, 355), 80,  313,    UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.REC,   EternalGregTechWorkshopUpgrade.QGPIU))
+            .widget(createUpgradeConnectorLine(new Pos2d(186, 355), 80,  47,     UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.CTCDD, EternalGregTechWorkshopUpgrade.QGPIU))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 430), 48,  0,      UpgradeColor.ORANGE, EternalGregTechWorkshopUpgrade.QGPIU, EternalGregTechWorkshopUpgrade.TCT))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 490), 48,  0,      UpgradeColor.ORANGE, EternalGregTechWorkshopUpgrade.TCT,   EternalGregTechWorkshopUpgrade.EPEC))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 550), 48,  0,      UpgradeColor.ORANGE, EternalGregTechWorkshopUpgrade.EPEC,  EternalGregTechWorkshopUpgrade.POS))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 610), 48,  0,      UpgradeColor.ORANGE, EternalGregTechWorkshopUpgrade.POS,   EternalGregTechWorkshopUpgrade.NGMS))
+            .widget(createUpgradeConnectorLine(new Pos2d(110, 410), 80,  40,     UpgradeColor.PURPLE, EternalGregTechWorkshopUpgrade.QGPIU, EternalGregTechWorkshopUpgrade.SEFCP))
+            .widget(createUpgradeConnectorLine(new Pos2d(83,  490), 48,  0,      UpgradeColor.PURPLE, EternalGregTechWorkshopUpgrade.SEFCP, EternalGregTechWorkshopUpgrade.CNTI))
+            .widget(createUpgradeConnectorLine(new Pos2d(83,  550), 48,  0,      UpgradeColor.PURPLE, EternalGregTechWorkshopUpgrade.CNTI,  EternalGregTechWorkshopUpgrade.NDPE))
+            .widget(createUpgradeConnectorLine(new Pos2d(101, 590), 80,  320,    UpgradeColor.PURPLE, EternalGregTechWorkshopUpgrade.NDPE,  EternalGregTechWorkshopUpgrade.NGMS))
+            .widget(createUpgradeConnectorLine(new Pos2d(53,  536), 35,  45,     UpgradeColor.PURPLE, EternalGregTechWorkshopUpgrade.CNTI,  EternalGregTechWorkshopUpgrade.DOP))
+            .widget(createUpgradeConnectorLine(new Pos2d(176, 410), 80,  320,    UpgradeColor.GREEN,  EternalGregTechWorkshopUpgrade.QGPIU, EternalGregTechWorkshopUpgrade.GGEBE))
+            .widget(createUpgradeConnectorLine(new Pos2d(203, 490), 48,  0,      UpgradeColor.GREEN,  EternalGregTechWorkshopUpgrade.GGEBE, EternalGregTechWorkshopUpgrade.IMKG))
+            .widget(createUpgradeConnectorLine(new Pos2d(203, 550), 48,  0,      UpgradeColor.GREEN,  EternalGregTechWorkshopUpgrade.IMKG,  EternalGregTechWorkshopUpgrade.DOR))
+            .widget(createUpgradeConnectorLine(new Pos2d(185, 590), 80,  40,     UpgradeColor.GREEN,  EternalGregTechWorkshopUpgrade.DOR,   EternalGregTechWorkshopUpgrade.NGMS))
+            .widget(createUpgradeConnectorLine(new Pos2d(233, 476), 35,  315,    UpgradeColor.GREEN,  EternalGregTechWorkshopUpgrade.GGEBE, EternalGregTechWorkshopUpgrade.TPTP))
+            .widget(createUpgradeConnectorLine(new Pos2d(143, 670), 48,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.NGMS,  EternalGregTechWorkshopUpgrade.SEDS))
+            .widget(createUpgradeConnectorLine(new Pos2d(101, 707), 75,  62.3f,  UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.SEDS,  EternalGregTechWorkshopUpgrade.PA))
+            .widget(createUpgradeConnectorLine(new Pos2d(53,  772), 78,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.PA,    EternalGregTechWorkshopUpgrade.CD))
+            .widget(createUpgradeConnectorLine(new Pos2d(95,  837), 75,  297.7f, UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.CD,    EternalGregTechWorkshopUpgrade.TSE))
+            .widget(createUpgradeConnectorLine(new Pos2d(191, 837), 75,  62.3f,  UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.TSE,   EternalGregTechWorkshopUpgrade.TBF))
+            .widget(createUpgradeConnectorLine(new Pos2d(233, 772), 78,  0,      UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.TBF,   EternalGregTechWorkshopUpgrade.EE))
+            .widget(createUpgradeConnectorLine(new Pos2d(191, 747), 75,  62.3f,  UpgradeColor.BLUE,   EternalGregTechWorkshopUpgrade.EE,    EternalGregTechWorkshopUpgrade.END));
         // spotless:on
 
         for (EternalGregTechWorkshopUpgrade upgrade : upgrades.getAllUpgrades()) {

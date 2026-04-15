@@ -1,8 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -37,6 +35,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
+import gregtech.common.misc.WirelessNetworkManager;
 import tectech.TecTech;
 import tectech.thing.gui.TecTechUITextures;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
@@ -76,7 +75,8 @@ public class FOGExtractorModule extends MTEBaseModule {
                 }
 
                 wirelessEUt = (long) recipe.mEUt * getActualParallel();
-                if (getUserEU(userUUID).compareTo(BigInteger.valueOf(wirelessEUt * recipe.mDuration)) < 0) {
+                if (WirelessNetworkManager.getUserEU(userUUID)
+                    .compareTo(BigInteger.valueOf(wirelessEUt * recipe.mDuration)) < 0) {
                     return CheckRecipeResultRegistry.insufficientPower(wirelessEUt * recipe.mDuration);
                 }
                 return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -98,7 +98,7 @@ public class FOGExtractorModule extends MTEBaseModule {
             @NotNull
             @Override
             public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                if (!addEUToGlobalEnergyMap(userUUID, -calculatedEut * duration)) {
+                if (!WirelessNetworkManager.addEUToGlobalEnergyMap(userUUID, -calculatedEut * duration)) {
                     return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
                 }
                 addToPowerTally(

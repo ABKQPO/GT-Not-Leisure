@@ -1,21 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -25,10 +11,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -37,6 +26,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.block.BlockCasing;
 import tectech.thing.block.BlockQuantumGlass;
@@ -114,25 +104,32 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
     @Override
     public IStructureDefinition<AetronPressor> getStructureDefinition() {
         return StructureDefinition.<AetronPressor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 6))
-            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('C', ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', ofBlock(sBlockCasings9, 14))
-            .addElement('E', ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('F', ofBlock(sBlockCasings9, 9))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
+            .addElement('E', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
             .addElement(
                 'G',
-                buildHatchAdder(AetronPressor.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy), ParallelCon)
+                GTStructureUtility.buildHatchAdder(AetronPressor.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 4))))
-            .addElement('H', ofBlock(sBlockCasings8, 10))
-            .addElement('I', ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .addElement('J', ofBlock(sBlockCasings10, 12))
-            .addElement('K', ofFrame(Materials.Tritanium))
-            .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.Tritanium))
+            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
             .build();
     }
 

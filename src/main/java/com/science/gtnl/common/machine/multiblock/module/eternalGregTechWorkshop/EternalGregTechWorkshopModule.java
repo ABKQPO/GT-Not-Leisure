@@ -1,27 +1,14 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_GOD_FORGE_MODULE_ACTIVE;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -57,6 +45,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -67,6 +56,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import lombok.Getter;
 import lombok.Setter;
@@ -180,9 +170,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(getHeat())
                     .setEUtDiscount(getEUtDiscount())
@@ -287,27 +277,33 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     @Override
     public IStructureDefinition<EternalGregTechWorkshopModule> getStructureDefinition() {
         return StructureDefinition.<EternalGregTechWorkshopModule>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(ItemRegistry.bw_realglas2, 0))
-            .addElement('B', ofBlock(Loaders.componentAssemblylineCasing, 12))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('D', ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('F', ofBlock(GregTechAPI.sBlockCasings9, 14))
-            .addElement('G', ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
-            .addElement('H', ofFrame(Materials.NaquadahAlloy))
-            .addElement('I', ofBlock(TTCasingsContainer.GodforgeCasings, 0))
-            .addElement('J', ofBlock(TTCasingsContainer.GodforgeCasings, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('B', StructureUtility.ofBlock(Loaders.componentAssemblylineCasing, 12))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
+            .addElement('H', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
+            .addElement('I', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0))
+            .addElement('J', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))
             .addElement(
                 'K',
-                ofChain(
-                    isAir(),
-                    buildHatchAdder(EternalGregTechWorkshopModule.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch)
+                StructureUtility.ofChain(
+                    StructureUtility.isAir(),
+                    GTStructureUtility.buildHatchAdder(EternalGregTechWorkshopModule.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .buildAndChain(
-                            onElementPass(x -> ++x.mCountCasing, ofBlock(TTCasingsContainer.GodforgeCasings, 0)))))
+                            StructureUtility.onElementPass(
+                                x -> ++x.mCountCasing,
+                                StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0)))))
             .build();
     }
 

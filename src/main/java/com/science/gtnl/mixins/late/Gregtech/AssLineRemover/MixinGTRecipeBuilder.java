@@ -1,18 +1,15 @@
 package com.science.gtnl.mixins.late.Gregtech.AssLineRemover;
 
 import static com.science.gtnl.utils.recipes.AssLineRecipeHook.RECIPE_TO_REMOVE;
-import static gregtech.api.util.GTRecipeConstants.RESEARCH_ITEM;
-import static gregtech.api.util.GTRecipeConstants.SCANNING;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,8 +47,9 @@ public class MixinGTRecipeBuilder {
     private void science$assLineRecipeHook(IRecipeMap recipeMap, CallbackInfoReturnable<Collection<GTRecipe>> cir) {
         if (recipeMap == GTRecipeConstants.AssemblyLine) {
             if (this.metadataStorage != null) {
-                ItemStack researchItem = this.metadataStorage.getMetadata(RESEARCH_ITEM);
-                Scanning scanningData = this.metadataStorage.getMetadataOrDefault(SCANNING, new Scanning(0, 0));
+                ItemStack researchItem = this.metadataStorage.getMetadata(GTRecipeConstants.RESEARCH_ITEM);
+                Scanning scanningData = this.metadataStorage
+                    .getMetadataOrDefault(GTRecipeConstants.SCANNING, new Scanning(0, 0));
                 int time = scanningData.time;
                 if (researchItem != null) {
                     String name = GameData.getItemRegistry()

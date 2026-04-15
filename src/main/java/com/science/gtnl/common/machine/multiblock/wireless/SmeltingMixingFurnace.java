@@ -1,26 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings;
 import static kubatech.loaders.BlockLoader.defcCasingBlock;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -29,9 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,10 +22,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
@@ -58,7 +38,9 @@ import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.ItemRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MaterialsUEVplus;
@@ -74,8 +56,10 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -167,39 +151,41 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     @Override
     public IStructureDefinition<SmeltingMixingFurnace> getStructureDefinition() {
         return StructureDefinition.<SmeltingMixingFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(ItemRegistry.bw_realglas2, 0))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('D', ofBlock(defcCasingBlock, 7))
-            .addElement('E', ofBlock(defcCasingBlock, 10))
-            .addElement('F', ofBlock(sBlockCasings1, 12))
-            .addElement('G', ofBlock(sBlockCasings1, 13))
-            .addElement('H', ofBlock(sBlockCasings10, 7))
-            .addElement('I', ofBlock(sBlockCasings10, 13))
-            .addElement('J', ofBlock(sBlockCasings8, 7))
-            .addElement('K', ofBlock(sBlockCasings9, 12))
-            .addElement('L', ofBlock(sBlockCasingsTT, 6))
-            .addElement('M', ofBlock(sBlockCasingsTT, 8))
-            .addElement('N', ofFrame(Materials.Infinity))
-            .addElement('O', ofBlock(blockCasings2Misc, 4))
-            .addElement('P', ofBlock(blockSpecialMultiCasings, 11))
-            .addElement('Q', ofBlock(blockCasingsMisc, 12))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('D', StructureUtility.ofBlock(defcCasingBlock, 7))
+            .addElement('E', StructureUtility.ofBlock(defcCasingBlock, 10))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 12))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('L', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('M', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('N', GTStructureUtility.ofFrame(Materials.Infinity))
+            .addElement('O', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
+            .addElement('P', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 11))
+            .addElement('Q', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 12))
             .addElement(
                 'R',
-                buildHatchAdder(SmeltingMixingFurnace.class)
+                GTStructureUtility.buildHatchAdder(SmeltingMixingFurnace.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++this.mCountCasing, ofBlock(sBlockCasingsTT, 0))))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++this.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 0))))
             .build();
     }
 
@@ -275,13 +261,13 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
             : RecipeMaps.plasmaForgeRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(GTNLRecipeMaps.SmeltingMixingFurnaceRecipes, RecipeMaps.plasmaForgeRecipes);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         if (this.getRecipeMap() == RecipeMaps.plasmaForgeRecipes) {
@@ -294,7 +280,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
             public Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
                 if (map == null) return Stream.empty();
@@ -333,13 +319,13 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
             @NotNull
             @Override
-            public GTNLParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
                 return super.createParallelHelper(recipeAfterAdjustments(recipe));
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipeAfterAdjustments(recipe))
                     .setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
@@ -349,8 +335,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
-    @Nonnull
-    public GTRecipe recipeAfterAdjustments(@Nonnull GTRecipe recipe) {
+    public GTRecipe recipeAfterAdjustments(@NotNull GTRecipe recipe) {
         if (!enableMnemonic) return recipe;
         GTRecipe tRecipe = recipe.copy();
         for (int i = 0; i < recipe.mFluidInputs.length; i++) {

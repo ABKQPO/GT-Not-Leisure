@@ -1,7 +1,5 @@
 package com.science.gtnl.client;
 
-import static codechicken.nei.NEIClientConfig.isEnabled;
-import static codechicken.nei.NEIClientConfig.isHidden;
 import static com.gtnewhorizons.modularui.api.KeyboardUtil.isAltKeyDown;
 
 import java.util.Map;
@@ -11,6 +9,7 @@ import net.minecraft.util.StatCollector;
 
 import codechicken.nei.BookmarkPanel;
 import codechicken.nei.LayoutManager;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.Widget;
 import codechicken.nei.bookmark.BookmarksGridSlot;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -23,7 +22,9 @@ public class GTNLTooltipManager implements IContainerTooltipHandler {
 
     @Override
     public Map<String, String> handleHotkeys(GuiContainer gui, int mousex, int mousey, Map<String, String> hotkeys) {
-        if (!isHidden() && isEnabled() && GuiContainerManager.shouldShowTooltip(gui) && isAltKeyDown()) {
+        if (!NEIClientConfig.isHidden() && NEIClientConfig.isEnabled()
+            && GuiContainerManager.shouldShowTooltip(gui)
+            && isAltKeyDown()) {
             final Widget focused = LayoutManager.instance()
                 .getWidgetUnderMouse(mousex, mousey);
 

@@ -2,10 +2,10 @@ package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import java.util.Random;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -91,7 +91,7 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
         return 5;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         if (processingLogic == null) {

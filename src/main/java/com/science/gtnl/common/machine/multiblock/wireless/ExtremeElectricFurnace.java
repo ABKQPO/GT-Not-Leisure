@@ -1,31 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings11;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockTintedGlass;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -34,10 +10,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -47,8 +26,10 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.block.BlockCasing;
 
 public class ExtremeElectricFurnace extends WirelessEnergyMultiMachineBase<ExtremeElectricFurnace> {
@@ -104,7 +85,7 @@ public class ExtremeElectricFurnace extends WirelessEnergyMultiMachineBase<Extre
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 12);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
     }
 
     @Override
@@ -128,41 +109,46 @@ public class ExtremeElectricFurnace extends WirelessEnergyMultiMachineBase<Extre
     @Override
     public IStructureDefinition<ExtremeElectricFurnace> getStructureDefinition() {
         return StructureDefinition.<ExtremeElectricFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofFrame(Materials.TungstenSteel))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 12))
-            .addElement('C', ofBlock(BlockLoader.metaBlockColumn, 5))
-            .addElement('D', ofBlock(sBlockCasings3, 10))
-            .addElement('E', ofBlock(sBlockCasings8, 4))
-            .addElement('F', ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('G', ofBlock(blockSpecialMultiCasings, 15))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.ofFrame(Materials.TungstenSteel))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaBlockColumn, 5))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
+            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('G', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
             .addElement(
                 'H',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(ofCoil(ExtremeElectricFurnace::setMCoilLevel, ExtremeElectricFurnace::getMCoilLevel))))
-            .addElement('I', ofBlock(blockCasingsMisc, 15))
-            .addElement('J', ofBlock(sBlockCasings11, 4))
-            .addElement('K', ofBlock(sBlockCasings2, 7))
-            .addElement('L', ofBlock(sBlockTintedGlass, 1))
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(ExtremeElectricFurnace::setMCoilLevel, ExtremeElectricFurnace::getMCoilLevel))))
+            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 4))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 7))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 1))
             .addElement(
                 'M',
-                buildHatchAdder(ExtremeElectricFurnace.class)
+                GTStructureUtility.buildHatchAdder(ExtremeElectricFurnace.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings9, 12))))
-            .addElement('N', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('O', Muffler.newAny(getCasingTextureID(), 1))
-            .addElement('P', ofBlock(sBlockCasings8, 10))
-            .addElement('Q', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('R', ofFrame(Materials.Naquadah))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
+            .addElement('N', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('O', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('Q', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('R', GTStructureUtility.ofFrame(Materials.Naquadah))
             .build();
     }
 

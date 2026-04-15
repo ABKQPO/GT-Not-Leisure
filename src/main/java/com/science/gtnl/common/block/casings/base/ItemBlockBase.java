@@ -1,8 +1,5 @@
 package com.science.gtnl.common.block.casings.base;
 
-import static com.science.gtnl.utils.item.MetaItemStackUtils.initMetaItemStack;
-import static com.science.gtnl.utils.item.MetaItemStackUtils.metaItemStackTooltipsAdd;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +10,7 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.item.MetaItemStackUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,12 +32,12 @@ public class ItemBlockBase extends ItemBlock {
     }
 
     public static ItemStack initMetaBlock(int Meta) {
-        return initMetaItemStack(Meta, BlockLoader.metaBlock, metaSet);
+        return MetaItemStackUtils.initMetaItemStack(Meta, BlockLoader.metaBlock, metaSet);
     }
 
     public static ItemStack initMetaBlock(int Meta, String[] tooltips) {
         if (tooltips != null) {
-            metaItemStackTooltipsAdd(metaItemTooltipsMap, Meta, tooltips);
+            MetaItemStackUtils.metaItemStackTooltipsAdd(metaItemTooltipsMap, Meta, tooltips);
         }
         return initMetaBlock(Meta);
     }

@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -115,7 +113,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         return (machineMode == MACHINEMODE_MINER) ? GTNLRecipeMaps.SpaceMinerRecipes : GTNLRecipeMaps.SpaceDrillRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(GTNLRecipeMaps.SpaceMinerRecipes, GTNLRecipeMaps.SpaceDrillRecipes);

@@ -1,15 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -19,11 +10,13 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -31,6 +24,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -62,14 +56,14 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     @Override
     public IStructureDefinition<HighPressureSteamFusionReactor> getStructureDefinition() {
         return StructureDefinition.<HighPressureSteamFusionReactor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 31))
-            .addElement('B', ofBlock(BlockLoader.metaCasing02, 0))
-            .addElement('C', chainAllGlasses())
-            .addElement('D', ofFrame(Materials.Steel))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing02, 0))
+            .addElement('C', GTStructureUtility.chainAllGlasses())
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement(
                 'E',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(HighPressureSteamFusionReactor.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
                         .dot(1)
@@ -82,11 +76,12 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(HighPressureSteamFusionReactor.class).atLeast(Maintenance, InputHatch, OutputHatch)
+                    GTStructureUtility.buildHatchAdder(HighPressureSteamFusionReactor.class)
+                        .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.OutputHatch)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
                         .dot(1)
                         .buildAndChain(),
-                    chainAllGlasses()))
+                    GTStructureUtility.chainAllGlasses()))
             .build();
     }
 

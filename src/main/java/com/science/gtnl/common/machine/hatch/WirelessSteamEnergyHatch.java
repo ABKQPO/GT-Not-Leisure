@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.addSteamToGlobalSteamMap;
-import static com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager.getUserSteam;
 import static gregtech.common.misc.WirelessNetworkManager.number_of_energy_additions;
 
 import java.math.BigInteger;
@@ -21,6 +19,7 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -126,7 +125,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
         if (isInTeam) {
             teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-            steamDisplay = getUserSteam(ownerUUID);
+            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
         }
 
         tryFetchingSteam();
@@ -151,14 +150,14 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
                 if (isInTeam) {
                     teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-                    steamDisplay = getUserSteam(ownerUUID);
+                    steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
                 }
             }
         }
     }
 
     private void tryFetchingSteam() {
-        BigInteger networkSteam = getUserSteam(ownerUUID);
+        BigInteger networkSteam = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
         int steamForUse;
 
         if (networkSteam.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
@@ -182,7 +181,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
             if (steamToTransfer <= 0) return;
 
-            if (!addSteamToGlobalSteamMap(ownerUUID, -steamToTransfer)) return;
+            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(ownerUUID, -steamToTransfer)) return;
             fill(Materials.Steam.getGas(steamToTransfer), true);
         }
     }

@@ -1,16 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -20,14 +10,17 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -36,6 +29,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -75,7 +69,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE)
                         .extFacing()
                         .build() };
             } else {
@@ -83,7 +77,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_EXTRACTINATOR)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR)
                         .extFacing()
                         .build() };
             }
@@ -95,36 +89,37 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
     @Override
     public IStructureDefinition<SteamExtractinator> getStructureDefinition() {
         return StructureDefinition.<SteamExtractinator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaBlockGlass, 3))
-            .addElement('B', ofBlock(BlockLoader.metaCasing02, 0))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('D', ofBlock(GregTechAPI.sBlockCasings2, 3))
-            .addElement('E', ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('F', ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('G', ofBlock(GregTechAPI.sBlockCasings3, 13))
-            .addElement('H', ofFrame(Materials.Steel))
-            .addElement('I', ofBlock(BlockLoader.metaBlockColumn, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 3))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing02, 0))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
+            .addElement('H', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaBlockColumn, 1))
             .addElement(
                 'J',
-                ofChain(
-                    buildHatchAdder(SteamExtractinator.class)
-                        .atLeast(Maintenance, SteamHatchElement.OutputBus_Steam, OutputBus)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(SteamExtractinator.class)
+                        .atLeast(HatchElement.Maintenance, SteamHatchElement.OutputBus_Steam, HatchElement.OutputBus)
                         .casingIndex(10)
                         .dot(2)
                         .buildAndChain(),
-                    ofBlock(GregTechAPI.sBlockCasings1, 10)))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .addElement(
                 'K',
-                ofChain(
-                    buildHatchAdder(SteamExtractinator.class).atLeast(InputHatch)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(SteamExtractinator.class)
+                        .atLeast(HatchElement.InputHatch)
                         .casingIndex(10)
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(GregTechAPI.sBlockCasings1, 10)))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .addElement(
                 'L',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamExtractinator.class).casingIndex(10)
                         .dot(1)
                         .build(),
@@ -134,7 +129,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                     buildSteamInput(SteamExtractinator.class).casingIndex(10)
                         .dot(3)
                         .build(),
-                    ofBlock(GregTechAPI.sBlockCasings1, 10)))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .build();
     }
 

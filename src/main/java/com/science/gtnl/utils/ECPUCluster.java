@@ -1,6 +1,6 @@
 package com.science.gtnl.utils;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.common.machine.multiblock.QuantumComputer;
 

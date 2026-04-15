@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -14,6 +12,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -50,7 +50,7 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
     }
 
     @Override
-    public boolean canStoreFluid(@Nonnull FluidStack fluidStack) {
+    public boolean canStoreFluid(@NotNull FluidStack fluidStack) {
         if (isFluidsLocked()) {
             if (lockedFluidNames == null || lockedFluidNames.length == 0) {
                 return false;

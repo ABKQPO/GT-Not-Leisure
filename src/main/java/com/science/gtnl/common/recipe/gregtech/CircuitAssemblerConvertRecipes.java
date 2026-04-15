@@ -1,10 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.MINUTES;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeConstants.RESEARCH_ITEM;
-import static gregtech.api.util.GTRecipeConstants.SCANNING;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,6 +21,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.recipe.Scanning;
@@ -480,7 +476,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(1440))
             .itemOutputs(ItemList.Circuit_Crystalmainframe.get(1))
             .eut(TierEU.RECIPE_LuV)
-            .duration(20 * SECONDS)
+            .duration(20 * GTRecipeBuilder.SECONDS)
             .requiresCleanRoom()
             .addTo(CAR);
 
@@ -504,13 +500,13 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             new FluidStack[] { Materials.BioMediumSterilized.getFluid(1000), Materials.Plastic.getMolten(1296),
                 Materials.PolyvinylChloride.getMolten(864), Materials.SolderingAlloy.getMolten(1296) },
             ItemList.Circuit_Chip_BioCPU.get(8),
-            16 * SECONDS,
+            16 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UV);
 
         RecipeBuilder.builder()
             .setNEIDesc("Remove Change by GTNotLeisure")
-            .metadata(RESEARCH_ITEM, ItemList.Circuit_Wetwarecomputer.get(1))
-            .metadata(SCANNING, new Scanning(30 * MINUTES, TierEU.RECIPE_IV))
+            .metadata(GTRecipeConstants.RESEARCH_ITEM, ItemList.Circuit_Wetwarecomputer.get(1))
+            .metadata(GTRecipeConstants.SCANNING, new Scanning(30 * GTRecipeBuilder.MINUTES, TierEU.RECIPE_IV))
             .itemInputs(
                 ItemList.Circuit_Board_Wetware_Extreme.get(1),
                 ItemList.Circuit_Wetwarecomputer.get(2),
@@ -523,7 +519,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             .fluidInputs(Materials.SolderingAlloy.getMolten(1152))
             .itemOutputs(ItemList.Circuit_Wetwaresupercomputer.get(1))
             .eut(TierEU.RECIPE_ZPM)
-            .duration(40 * SECONDS)
+            .duration(40 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(

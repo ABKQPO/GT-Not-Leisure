@@ -1,16 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_SOLAR_BOILER;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +21,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
@@ -41,6 +34,7 @@ import com.science.gtnl.utils.StructureUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.StructureError;
@@ -50,6 +44,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -86,22 +81,26 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     @Override
     public IStructureDefinition<MegaSolarBoiler> getStructureDefinition() {
         return StructureDefinition.<MegaSolarBoiler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses())
-            .addElement('B', ofBlock(sBlockCasings1, 10))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('D', ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('E', ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('F', ofBlock(BlockLoader.metaBlockColumn, 3))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
+            .addElement('B', StructureUtility.ofBlock(sBlockCasings1, 10))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaBlockColumn, 3))
             .addElement(
                 'G',
-                ofChain(
-                    buildHatchAdder(MegaSolarBoiler.class)
-                        .atLeast(SteamHatchElement.InputBus_Steam, InputBus, InputHatch, OutputHatch)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(MegaSolarBoiler.class)
+                        .atLeast(
+                            SteamHatchElement.InputBus_Steam,
+                            HatchElement.InputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch)
                         .casingIndex(10)
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(sBlockCasings1, 10)))
+                    StructureUtility.ofBlock(sBlockCasings1, 10)))
             .build();
     }
 

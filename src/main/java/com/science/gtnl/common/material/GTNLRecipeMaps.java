@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.StatCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -587,7 +585,7 @@ public class GTNLRecipeMaps {
         .frontend((ui, nei) -> new GTNLLogoFrontend(ui, nei) {
 
             @Override
-            @Nonnull
+            @NotNull
             public List<Pos2d> getItemInputPositions(int itemInputCount) {
                 return Collections.singletonList(new Pos2d(9, 13));
             }

@@ -1,49 +1,31 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static goodgenerator.loader.Loaders.FRF_Coil_1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockMetal5;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
 import static kekztech.common.Blocks.lscLapotronicEnergyUnit;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -55,6 +37,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -140,40 +123,42 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
     @Override
     public IStructureDefinition<MagneticEnergyReactionFurnace> getStructureDefinition() {
         return StructureDefinition.<MagneticEnergyReactionFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(FRF_Coil_1, 0))
-            .addElement('B', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('C', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('D', ofBlock(sBlockCasings10, 0))
-            .addElement('E', ofBlock(sBlockCasings10, 6))
-            .addElement('F', ofBlock(sBlockCasings2, 6))
-            .addElement('G', ofBlock(sBlockCasings4, 12))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(FRF_Coil_1, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('C', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
             .addElement(
                 'H',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(
-                        ofCoil(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(
                             MagneticEnergyReactionFurnace::setMCoilLevel,
                             MagneticEnergyReactionFurnace::getMCoilLevel))))
-            .addElement('I', ofBlock(sBlockCasings9, 13))
-            .addElement('J', ofFrame(Materials.Neutronium))
-            .addElement('K', ofBlock(sBlockMetal5, 1))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 1))
             .addElement(
                 'L',
-                buildHatchAdder(MagneticEnergyReactionFurnace.class)
+                GTStructureUtility.buildHatchAdder(MagneticEnergyReactionFurnace.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings4Misc, 3))))
-            .addElement('M', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('N', ofBlock(lscLapotronicEnergyUnit, 0))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings4Misc, 3))))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement('N', StructureUtility.ofBlock(lscLapotronicEnergyUnit, 0))
             .build();
     }
 
@@ -232,7 +217,7 @@ public class MagneticEnergyReactionFurnace extends WirelessEnergyMultiMachineBas
         return (machineMode == MACHINEMODE_ARC) ? RecipeMaps.arcFurnaceRecipes : RecipeMaps.plasmaArcFurnaceRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.arcFurnaceRecipes, RecipeMaps.plasmaArcFurnaceRecipes);

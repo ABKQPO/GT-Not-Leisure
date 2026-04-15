@@ -1,17 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +43,7 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -123,6 +113,7 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.Dyes;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -134,6 +125,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
@@ -1072,23 +1064,43 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public IStructureDefinition<AssemblerMatrix> getStructureDefinition() {
         return StructureDefinition.<AssemblerMatrix>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                buildHatchAdder(AssemblerMatrix.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(AssemblerMatrix.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, InputBus, OutputBus, Energy.or(ExoticEnergy))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .buildAndChain(BlockLoader.metaCasing02, 4))
-            .addElement('B', ofChain(chainAllGlasses(), ofBlock(BlockLoader.metaCasing02, 5)))
+            .addElement(
+                'B',
+                StructureUtility.ofChain(
+                    GTStructureUtility.chainAllGlasses(),
+                    StructureUtility.ofBlock(BlockLoader.metaCasing02, 5)))
             .addElement(
                 'C',
-                ofChain(
-                    onElementPass(t -> t.mCountCasing++, ofBlock(BlockLoader.metaCasing02, 5)),
-                    onElementPass(t -> t.mCountPatternCasing++, ofBlock(BlockLoader.metaCasing02, 6)),
-                    onElementPass(t -> t.mCountCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 7)),
-                    onElementPass(t -> t.mCountSingularityCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 8)),
-                    onElementPass(t -> t.mCountDebugCrafterCasing++, ofBlock(BlockLoader.metaCasing02, 18)),
-                    onElementPass(t -> t.mCountSpeedCasing++, ofBlock(BlockLoader.metaCasing02, 9))))
+                StructureUtility.ofChain(
+                    StructureUtility
+                        .onElementPass(t -> t.mCountCasing++, StructureUtility.ofBlock(BlockLoader.metaCasing02, 5)),
+                    StructureUtility.onElementPass(
+                        t -> t.mCountPatternCasing++,
+                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 6)),
+                    StructureUtility.onElementPass(
+                        t -> t.mCountCrafterCasing++,
+                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 7)),
+                    StructureUtility.onElementPass(
+                        t -> t.mCountSingularityCrafterCasing++,
+                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 8)),
+                    StructureUtility.onElementPass(
+                        t -> t.mCountDebugCrafterCasing++,
+                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 18)),
+                    StructureUtility.onElementPass(
+                        t -> t.mCountSpeedCasing++,
+                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 9))))
             .build();
     }
 

@@ -1,21 +1,5 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static com.science.gtnl.ScienceNotLeisure.LOG;
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE_GLOW;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_METEOR_MINER_GLOW;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,21 +25,25 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import bartworks.system.material.BWTileEntityMetaGeneratedOre;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
@@ -78,6 +66,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -94,8 +83,10 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String STRUCTURE_PIECE_TIER2 = "tier2";
-    private static final String MMO_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/meteor_miner_one";
-    private static final String MMT_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/meteor_miner_two";
+    private static final String MMO_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
+        + "multiblock/meteor_miner_one";
+    private static final String MMT_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
+        + "multiblock/meteor_miner_two";
     private static final String[][] shape_t1 = StructureUtils.readStructureFromFile(MMO_STRUCTURE_FILE_PATH);
     private static final String[][] shape_t2 = StructureUtils.readStructureFromFile(MMT_STRUCTURE_FILE_PATH);
 
@@ -135,41 +126,47 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     @Override
     public IStructureDefinition<MeteorMiner> getStructureDefinition() {
         return StructureDefinition.<MeteorMiner>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape_t1))
-            .addShape(STRUCTURE_PIECE_TIER2, transpose(shape_t2))
-            .addElement('A', chainAllGlasses())
-            .addElement('B', ofBlock(GregTechAPI.sBlockCasings1, 15))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings5, 5))
-            .addElement('D', ofFrame(Materials.StainlessSteel))
-            .addElement('E', ofBlock(ModBlocks.blockSpecialMultiCasings, 6))
-            .addElement('F', ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
-            .addElement('G', ofBlock(BlockLoader.laserBeacon, 0))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape_t1))
+            .addShape(STRUCTURE_PIECE_TIER2, StructureUtility.transpose(shape_t2))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 5))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.StainlessSteel))
+            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6))
+            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.laserBeacon, 0))
             .addElement(
                 'H',
-                buildHatchAdder(MeteorMiner.class).atLeast(Maintenance, OutputBus, Energy)
+                GTStructureUtility.buildHatchAdder(MeteorMiner.class)
+                    .atLeast(HatchElement.Maintenance, HatchElement.OutputBus, HatchElement.Energy)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
+                    .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
             .addElement(
                 'I',
-                buildHatchAdder(MeteorMiner.class).hatchClass(MTEHatchInputBus.class)
+                GTStructureUtility.buildHatchAdder(MeteorMiner.class)
+                    .hatchClass(MTEHatchInputBus.class)
                     .shouldReject(t -> !t.mInputBusses.isEmpty())
                     .adder(MeteorMiner::addInjector)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
+                    .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
             .addElement(
                 'J',
-                buildHatchAdder(MeteorMiner.class).atLeast(Maintenance, OutputBus, Energy.or(ExoticEnergy))
+                GTStructureUtility.buildHatchAdder(MeteorMiner.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(ofBlock(GregTechAPI.sBlockCasings8, 2)))
-            .addElement('K', ofBlock(GregTechAPI.sBlockCasings4, 7))
-            .addElement('L', ofBlock(GregTechAPI.sBlockCasings8, 2))
-            .addElement('M', ofBlock(GregTechAPI.sBlockCasings8, 3))
-            .addElement('N', ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('O', ofFrame(Materials.Neutronium))
-            .addElement('P', ofFrame(Materials.BlackPlutonium))
+                    .buildAndChain(StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2)))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 3))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('O', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('P', GTStructureUtility.ofFrame(Materials.BlackPlutonium))
             .build();
     }
 
@@ -228,22 +225,22 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
             if (aActive) {
                 return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_METEOR_MINER_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_METEOR_MINER_ACTIVE_GLOW)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_METEOR_MINER_ACTIVE_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
             } else {
                 return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_METEOR_MINER)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_METEOR_MINER)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_METEOR_MINER_GLOW)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_METEOR_MINER_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
@@ -581,7 +578,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                     itemDrop.addAll(getOutputByDrops(drops));
                 }
             } catch (Exception e) {
-                LOG.error("GTNL Meteor Miner: GT Ore Error [{},{},{}]", x, y, z, e);
+                ScienceNotLeisure.LOG.error("GTNL Meteor Miner: GT Ore Error [{},{},{}]", x, y, z, e);
             }
         } else {
             itemDrop.addAll(drops);

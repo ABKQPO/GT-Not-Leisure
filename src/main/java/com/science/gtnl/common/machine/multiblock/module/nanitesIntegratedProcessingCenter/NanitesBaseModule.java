@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,9 +84,9 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setRecipeHeat(recipe.mSpecialValue)
                     .setMachineHeat(mHeatingCapacity)
@@ -99,7 +97,7 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
 
             @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }

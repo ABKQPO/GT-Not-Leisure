@@ -8,11 +8,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IConfigurationMaintenance;
@@ -112,28 +112,28 @@ public class GTNLProcessingLogic extends ProcessingLogic {
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLProcessingLogic setInputItems(ItemStack... itemInputs) {
         this.inputItems = itemInputs;
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLProcessingLogic setInputItems(List<ItemStack> itemInputs) {
         this.inputItems = itemInputs.toArray(new ItemStack[0]);
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLProcessingLogic setInputFluids(FluidStack... fluidInputs) {
         this.inputFluids = fluidInputs;
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLProcessingLogic setInputFluids(List<FluidStack> fluidInputs) {
         this.inputFluids = fluidInputs.toArray(new FluidStack[0]);
@@ -411,7 +411,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     /**
      * Executes the recipe check: Find recipe from recipemap, Calculate parallel, overclock and outputs.
      */
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult process() {
         RecipeMap<?> recipeMap = getCurrentRecipeMap();
@@ -475,8 +475,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
      *
      * @param recipe The recipe which will be checked and processed
      */
-    @Nonnull
-    public CalculationResult validateAndCalculateRecipe(@Nonnull GTRecipe recipe) {
+    public CalculationResult validateAndCalculateRecipe(@NotNull GTRecipe recipe) {
         CheckRecipeResult result = validateRecipe(recipe);
         if (!result.wasSuccessful()) {
             return CalculationResult.ofFailure(result);
@@ -499,9 +498,8 @@ public class GTNLProcessingLogic extends ProcessingLogic {
      * Check has been succeeded, so it applies the recipe and calculated parameters.
      * At this point, inputs have been already consumed.
      */
-    @Nonnull
-    public CheckRecipeResult applyRecipe(@Nonnull GTRecipe recipe, @Nonnull GTNLParallelHelper helper,
-        @Nonnull GTNLOverclockCalculator calculator, @Nonnull CheckRecipeResult result) {
+    public CheckRecipeResult applyRecipe(@NotNull GTRecipe recipe, @NotNull GTNLParallelHelper helper,
+        @NotNull GTNLOverclockCalculator calculator, @NotNull CheckRecipeResult result) {
         if (recipe.mCanBeBuffered) {
             lastRecipe = recipe;
         } else {
@@ -552,8 +550,8 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     /**
      * Override to tweak final duration that will be set as a result of this logic class.
      */
-    public double calculateDuration(@Nonnull GTRecipe recipe, @Nonnull GTNLParallelHelper helper,
-        @Nonnull GTNLOverclockCalculator calculator) {
+    public double calculateDuration(@NotNull GTRecipe recipe, @NotNull GTNLParallelHelper helper,
+        @NotNull GTNLOverclockCalculator calculator) {
         return calculator.getDuration() * helper.getDurationMultiplierDouble();
     }
 
@@ -564,7 +562,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
      * <p>
      * Override this method if it doesn't startAEWork with normal recipemaps.
      */
-    @Nonnull
+    @NotNull
     @Override
     public Stream<GTRecipe> findRecipeMatches(@Nullable RecipeMap<?> map) {
         if (map == null) {
@@ -581,18 +579,18 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     /**
      * Override to do additional check for found recipe if needed.
      */
-    @Nonnull
+    @NotNull
     @Override
-    public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+    public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
     /**
      * Override to tweak parallel logic if needed.
      */
-    @Nonnull
+    @NotNull
     @Override
-    public GTNLParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+    public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
         return new GTNLParallelHelper().setRecipe(recipe)
             .setItemInputs(inputItems)
             .setFluidInputs(inputFluids)
@@ -609,9 +607,9 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     /**
      * Override to tweak overclock logic if needed.
      */
-    @Nonnull
+    @NotNull
     @Override
-    public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+    public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
         return new GTNLOverclockCalculator().setRecipeEUt(recipe.mEUt)
             .setAmperage(availableAmperage)
             .setEUt(availableVoltage)
@@ -634,9 +632,9 @@ public class GTNLProcessingLogic extends ProcessingLogic {
      * be produced. Returning a result other than SUCCESSFUL will void
      * all inputs!
      */
-    @Nonnull
+    @NotNull
     @Override
-    public CheckRecipeResult onRecipeStart(@Nonnull GTRecipe recipe) {
+    public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 

@@ -1,20 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -22,24 +8,27 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -86,12 +75,12 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_LARGE_GAS_COLLECTOR)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR)
                     .extFacing()
                     .build() };
         }
@@ -104,7 +93,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe() {
         for (ItemStack item : getAllStoredInputs()) {
             if (item != null) {
@@ -223,7 +212,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
     }
 
     @Override
@@ -252,16 +241,25 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     @Override
     public IStructureDefinition<LargeGasCollector> getStructureDefinition() {
         return StructureDefinition.<LargeGasCollector>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
                 buildHatchAdder(LargeGasCollector.class).casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(Maintenance, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0))))
-            .addElement('B', ofBlock(sBlockCasings2, 15))
-            .addElement('C', ofBlock(sBlockCasings3, 10))
-            .addElement('D', ofBlock(sBlockCasings6, 5))
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 5))
             .build();
     }
 

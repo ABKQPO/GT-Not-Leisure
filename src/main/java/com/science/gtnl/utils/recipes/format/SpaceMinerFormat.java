@@ -1,8 +1,5 @@
 package com.science.gtnl.utils.recipes.format;
 
-import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_LOCATION;
-import static gtnhintergalactic.recipe.IGRecipeMaps.SPACE_PROJECT;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gregtech.nei.RecipeDisplayInfo;
 import gregtech.nei.formatter.INEISpecialInfoFormatter;
+import gtnhintergalactic.recipe.IGRecipeMaps;
 
 public class SpaceMinerFormat implements INEISpecialInfoFormatter {
 
@@ -22,8 +20,8 @@ public class SpaceMinerFormat implements INEISpecialInfoFormatter {
         List<String> specialInfo = new ArrayList<>();
         specialInfo.add(StatCollector.translateToLocalFormatted("ig.nei.module", recipeInfo.recipe.mSpecialValue));
 
-        String neededProject = recipeInfo.recipe.getMetadata(SPACE_PROJECT);
-        String neededProjectLocation = recipeInfo.recipe.getMetadata(SPACE_LOCATION);
+        String neededProject = recipeInfo.recipe.getMetadata(IGRecipeMaps.SPACE_PROJECT);
+        String neededProjectLocation = recipeInfo.recipe.getMetadata(IGRecipeMaps.SPACE_LOCATION);
         if (neededProject != null && !neededProject.isEmpty()) {
             specialInfo.add(
                 String.format(

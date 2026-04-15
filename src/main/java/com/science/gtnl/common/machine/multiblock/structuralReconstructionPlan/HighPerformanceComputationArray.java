@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -509,7 +507,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    public void stopMachine(@Nonnull ShutDownReason reason) {
+    public void stopMachine(@NotNull ShutDownReason reason) {
         super.stopMachine(reason);
         this.eAvailableData = 0;
         for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {

@@ -1,16 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_MANUFACTURER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_MANUFACTURER_ACTIVE;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -20,13 +10,16 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -35,6 +28,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -63,12 +57,12 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     @Override
     public IStructureDefinition<SteamManufacturer> getStructureDefinition() {
         return StructureDefinition.<SteamManufacturer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 26))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 28))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 26))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 28))
             .addElement(
                 'C',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamManufacturer.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
                         .dot(1)
@@ -80,19 +74,19 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                     buildSteamInput(SteamManufacturer.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(SteamManufacturer.class)
+                    GTStructureUtility.buildHatchAdder(SteamManufacturer.class)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
-                            InputBus,
+                            HatchElement.InputBus,
                             SteamHatchElement.OutputBus_Steam,
-                            OutputBus,
-                            Maintenance)
+                            HatchElement.OutputBus,
+                            HatchElement.Maintenance)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(BlockLoader.metaCasing, 30)))
-            .addElement('D', ofBlock(GregTechAPI.sBlockCasings2, 3))
-            .addElement('E', ofFrame(Materials.Steel))
+                    StructureUtility.ofBlock(BlockLoader.metaCasing, 30)))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
+            .addElement('E', GTStructureUtility.ofFrame(Materials.Steel))
             .build();
     }
 
@@ -160,7 +154,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_MANUFACTURER_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_MANUFACTURER_ACTIVE)
                         .extFacing()
                         .build() };
             } else {
@@ -168,7 +162,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                     Textures.BlockIcons
                         .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_STEAM_MANUFACTURER)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_MANUFACTURER)
                         .extFacing()
                         .build() };
             }

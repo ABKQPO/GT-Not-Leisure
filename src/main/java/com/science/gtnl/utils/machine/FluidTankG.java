@@ -3,14 +3,14 @@ package com.science.gtnl.utils.machine;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+
+import org.jetbrains.annotations.NotNull;
 
 import appeng.api.storage.data.IAEFluidStack;
 
@@ -189,7 +189,7 @@ public class FluidTankG {
         }
     }
 
-    public void fromAE(@Nonnull IAEFluidStack possible, int intmaxs) {
+    public void fromAE(@NotNull IAEFluidStack possible, int intmaxs) {
         if (possible == null) {
             arr.clear();
             return;

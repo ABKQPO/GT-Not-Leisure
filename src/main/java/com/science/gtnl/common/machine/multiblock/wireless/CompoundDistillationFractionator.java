@@ -1,29 +1,11 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,13 +13,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -47,6 +34,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.material.MaterialsAlloy;
@@ -104,7 +92,7 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 7);
     }
 
     @Override
@@ -138,37 +126,40 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
     @Override
     public IStructureDefinition<CompoundDistillationFractionator> getStructureDefinition() {
         return StructureDefinition.<CompoundDistillationFractionator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings1, 9))
-            .addElement('B', ofBlock(sBlockCasings4, 1))
-            .addElement('C', ofBlock(sBlockCasings9, 4))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 9))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 4))
             .addElement(
                 'D',
-                buildHatchAdder(CompoundDistillationFractionator.class)
+                GTStructureUtility.buildHatchAdder(CompoundDistillationFractionator.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings9, 7))))
-            .addElement('E', ofBlock(sBlockCasings9, 6))
-            .addElement('F', ofBlock(blockCasings2Misc, 4))
-            .addElement('G', ofBlock(sBlockCasings9, 12))
-            .addElement('H', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('I', ofBlock(BlockLoader.metaCasing, 4))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
+            .addElement('F', StructureUtility.ofBlock(blockCasings2Misc, 4))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
             .addElement(
                 'J',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.AQUATIC_STEEL.getFrameBox(1)
                             .getItem())))
-            .addElement('K', ofFrame(Materials.TungstenCarbide))
-            .addElement('L', ofFrame(Materials.DarkSteel))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.TungstenCarbide))
+            .addElement('L', GTStructureUtility.ofFrame(Materials.DarkSteel))
             .build();
     }
 
@@ -211,7 +202,7 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
         return (machineMode == MACHINEMODE_TOWER) ? RecipeMaps.distillationTowerRecipes : RecipeMaps.distilleryRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.distillationTowerRecipes, RecipeMaps.distilleryRecipes);

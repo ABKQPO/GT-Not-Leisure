@@ -1,27 +1,10 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,6 +19,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
@@ -44,7 +28,9 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -60,6 +46,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -77,12 +64,12 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     @Override
     public IStructureDefinition<ComponentAssembler> getStructureDefinition() {
         return StructureDefinition.<ComponentAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'B',
                 GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.componentAssemblylineCasing ? meta : -1,
                         IntStream.range(0, 8)
                             .mapToObj(i -> Pair.of(Loaders.componentAssemblylineCasing, i))
@@ -92,22 +79,31 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
                         t -> t.mCasingTier)))
             .addElement(
                 'C',
-                buildHatchAdder(ComponentAssembler.class)
-                    .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Maintenance, Energy.or(ExoticEnergy))
+                GTStructureUtility.buildHatchAdder(ComponentAssembler.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .dot(1)
                     .casingIndex(getCasingTextureID())
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0))))
-            .addElement('D', ofBlock(sBlockCasings2, 5))
-            .addElement('E', ofBlock(sBlockCasings2, 6))
-            .addElement('F', ofBlock(sBlockCasings3, 10))
-            .addElement('G', ofFrame(Materials.Steel))
-            .addElement('H', ofBlock(blockCasings3Misc, 2))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('H', StructureUtility.ofBlock(blockCasings3Misc, 2))
             .build();
     }
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
     }
 
     @Override
@@ -216,7 +212,6 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())

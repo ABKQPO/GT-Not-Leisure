@@ -1,24 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
@@ -28,10 +11,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -41,6 +27,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
@@ -98,7 +85,7 @@ public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 11);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
     }
 
     @Override
@@ -132,34 +119,38 @@ public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
     @Override
     public IStructureDefinition<MegaWiremill> getStructureDefinition() {
         return StructureDefinition.<MegaWiremill>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 8))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 5))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
             .addElement(
                 'C',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(MegaWiremill::setMCoilLevel, MegaWiremill::getMCoilLevel))))
-            .addElement('D', ofBlock(sBlockCasings2, 5))
-            .addElement('E', ofBlock(ModBlocks.blockCasings2Misc, 2))
-            .addElement('F', ofBlock(sBlockCasings2, 11))
-            .addElement('G', ofBlock(sBlockCasings3, 10))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(MegaWiremill::setMCoilLevel, MegaWiremill::getMCoilLevel))))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
             .addElement(
                 'H',
-                buildHatchAdder(MegaWiremill.class)
+                GTStructureUtility.buildHatchAdder(MegaWiremill.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 11))))
-            .addElement('I', ofBlock(sBlockCasings2, 9))
-            .addElement('J', ofBlock(sBlockCasingsTT, 4))
-            .addElement('K', ofFrame(Materials.TungstenSteel))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 9))
+            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.TungstenSteel))
             .build();
     }
 

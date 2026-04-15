@@ -1,29 +1,10 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static com.science.gtnl.loader.BlockLoader.metaCasing02;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -38,6 +19,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.render.tile.RocketAssemblerRenderer;
@@ -48,6 +30,8 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
@@ -60,6 +44,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.render.IMTERenderer;
@@ -147,7 +132,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 1);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1);
     }
 
     @Override
@@ -176,36 +161,45 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     @Override
     public IStructureDefinition<RocketAssembler> getStructureDefinition() {
         return StructureDefinition.<RocketAssembler>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(metaCasing02, 3))
-            .addElement('B', ofBlock(sBlockCasings2, 0))
-            .addElement('C', ofBlock(sBlockCasings2, 3))
-            .addElement('D', ofBlock(sBlockCasings2, 13))
-            .addElement('E', ofBlock(sBlockCasings3, 10))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(metaCasing02, 3))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
             .addElement(
                 'F',
-                buildHatchAdder(RocketAssembler.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(RocketAssembler.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 1))))
-            .addElement('G', ofBlock(sBlockCasings6, 1))
-            .addElement('H', ofBlock(sBlockCasings6, 3))
-            .addElement('I', ofFrame(Materials.Steel))
-            .addElement('J', ofFrame(Materials.StainlessSteel))
+                    .atLeast(
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 1))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 3))
+            .addElement('I', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement(
                 'K',
-                ofChain(
-                    ofBlockAnyMeta(GCBlocks.landingPad, 0),
-                    ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
-                    ofBlockAnyMeta(GCBlocks.fakeBlock),
-                    isAir()))
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPad, 0),
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.fakeBlock),
+                    StructureUtility.isAir()))
             .addElement(
                 'L',
-                ofChain(
-                    ofBlockAnyMeta(GCBlocks.landingPad, 0),
-                    ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
-                    ofBlockAnyMeta(GCBlocks.fakeBlock),
-                    isAir()))
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPad, 0),
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
+                    StructureUtility.ofBlockAnyMeta(GCBlocks.fakeBlock),
+                    StructureUtility.isAir()))
             .build();
     }
 
@@ -253,7 +247,6 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
         return new GTNLProcessingLogic() {
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
@@ -267,9 +260,9 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
                     .setMaxOverclocks(getMaxOverclocks());
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public CalculationResult validateAndCalculateRecipe(@Nonnull GTRecipe recipe) {
+            public CalculationResult validateAndCalculateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe == RocketAssemblerBackend.notFoundRecipe)
                     return CalculationResult.ofFailure(SimpleCheckRecipeResult.ofFailure("missing_schematic"));
                 return super.validateAndCalculateRecipe(recipe);

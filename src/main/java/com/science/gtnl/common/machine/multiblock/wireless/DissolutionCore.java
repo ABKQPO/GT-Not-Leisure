@@ -1,46 +1,30 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings11;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsBA0;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -50,6 +34,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -111,7 +96,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -145,41 +130,45 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     @Override
     public IStructureDefinition<DissolutionCore> getStructureDefinition() {
         return StructureDefinition.<DissolutionCore>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings10, 7))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
             .addElement(
                 'B',
-                buildHatchAdder(DissolutionCore.class)
+                GTStructureUtility.buildHatchAdder(DissolutionCore.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10))))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
             .addElement(
                 'C',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(DissolutionCore::setMCoilLevel, DissolutionCore::getMCoilLevel))))
-            .addElement('D', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('E', ofBlock(sBlockCasings8, 1))
-            .addElement('F', ofBlock(sBlockCasings9, 11))
-            .addElement('G', ofBlock(sBlockCasings11, 2))
-            .addElement('H', ofBlock(sBlockCasingsBA0, 6))
-            .addElement('I', ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 7))
-            .addElement('J', ofBlock(blockCasings2Misc, 0))
-            .addElement('K', ofBlock(sBlockCasings9, 7))
-            .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('O', ofFrame(Materials.Polytetrafluoroethylene))
-            .addElement('P', ofBlock(sBlockCasings8, 0))
-            .addElement('Q', ofFrame(Materials.BlackSteel))
-            .addElement('R', ofBlock(sBlockCasings9, 12))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(DissolutionCore::setMCoilLevel, DissolutionCore::getMCoilLevel))))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 2))
+            .addElement('H', StructureUtility.ofBlock(sBlockCasingsBA0, 6))
+            .addElement('I', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 7))
+            .addElement('J', StructureUtility.ofBlock(blockCasings2Misc, 0))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
+            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('N', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('O', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('Q', GTStructureUtility.ofFrame(Materials.BlackSteel))
+            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
             .build();
     }
 
@@ -228,7 +217,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
             : LanthanidesRecipeMaps.digesterRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(LanthanidesRecipeMaps.dissolutionTankRecipes, LanthanidesRecipeMaps.digesterRecipes);

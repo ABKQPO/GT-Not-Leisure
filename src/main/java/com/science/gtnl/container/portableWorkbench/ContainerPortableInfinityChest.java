@@ -2,8 +2,6 @@ package com.science.gtnl.container.portableWorkbench;
 
 import static com.science.gtnl.ScienceNotLeisure.network;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.packet.PortableInfinityChestSyncPacket;
 
@@ -20,7 +20,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddonsChest {
 
-    public ContainerPortableInfinityChest(@Nonnull ItemStack stack, InventoryPlayer playerInv) {
+    public ContainerPortableInfinityChest(@NotNull ItemStack stack, InventoryPlayer playerInv) {
         super(stack, playerInv, true);
     }
 

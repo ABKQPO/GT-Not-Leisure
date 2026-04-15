@@ -1,24 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.recipe.RecipeMaps.compressorRecipes;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -32,12 +16,15 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -48,6 +35,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -83,11 +71,11 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     @Override
     public IStructureDefinition<MegaSteamCompressor> getStructureDefinition() {
         return StructureDefinition.<MegaSteamCompressor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses())
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'B',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(MegaSteamCompressor.class)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
                         .dot(1)
@@ -96,20 +84,22 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(MegaSteamCompressor.class)
+                    GTStructureUtility.buildHatchAdder(MegaSteamCompressor.class)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
                         .dot(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
                             SteamHatchElement.OutputBus_Steam,
-                            InputBus,
-                            OutputBus,
-                            InputHatch,
-                            OutputHatch,
-                            Maintenance)
-                        .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings2, 0)))))
-            .addElement('C', ofBlock(GregTechAPI.sBlockCasings1, 10))
-            .addElement('D', ofFrame(Materials.Steel))
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Maintenance)
+                        .buildAndChain(
+                            StructureUtility
+                                .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings2, 0)))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
             .build();
     }
 
@@ -161,11 +151,11 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
@@ -173,11 +163,11 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                 return new ITexture[] {
                     Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW)
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW)
                         .extFacing()
                         .glow()
                         .build() };

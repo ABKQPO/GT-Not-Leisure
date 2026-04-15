@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.CONFIGURATION_WINDOW_ID;
-import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.MUIContainer_Greenhouse;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.io.IOException;
@@ -332,16 +330,17 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
         return true;
     }
 
-    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode.createGreenhouseUI(MUIContainer_Greenhouse::new);
+    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
+        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
     public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
+        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
             new ButtonWidget().setOnClick(
                 (clickData, widget) -> {
                     if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(CONFIGURATION_WINDOW_ID);
+                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
                 })
                 .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
                 .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))

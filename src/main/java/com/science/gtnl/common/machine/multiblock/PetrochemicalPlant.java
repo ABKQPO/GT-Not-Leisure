@@ -1,52 +1,29 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsTieredGTPP;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -58,9 +35,11 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 import kekztech.common.Blocks;
 
 public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> implements ISurvivalConstructable {
@@ -120,7 +99,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings10, 3);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
     }
 
     @Override
@@ -153,43 +132,56 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
     @Override
     public IStructureDefinition<PetrochemicalPlant> getStructureDefinition() {
         return StructureDefinition.<PetrochemicalPlant>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(Blocks.yszUnit))
-            .addElement('B', Muffler.newAny(getCasingTextureID(), 8))
-            .addElement('C', ofBlock(sBlockCasings2, 0))
-            .addElement('D', ofBlock(sBlockCasings2, 12))
-            .addElement('E', ofBlock(sBlockCasings2, 13))
-            .addElement('F', ofBlock(sBlockCasings2, 14))
-            .addElement('G', ofBlock(sBlockCasings4, 2))
-            .addElement('H', ofBlock(sBlockCasings4, 1))
-            .addElement('I', ofBlock(sBlockCasings4, 9))
-            .addElement('J', ofBlock(sBlockCasings4, 10))
-            .addElement('K', ofBlock(blockCasings3Misc, 2))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(Blocks.yszUnit))
+            .addElement('B', HatchElement.Muffler.newAny(getCasingTextureID(), 8))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 2))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 9))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 2))
             .addElement(
                 'L',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(PetrochemicalPlant::setMCoilLevel, PetrochemicalPlant::getMCoilLevel))))
-            .addElement('M', ofBlock(sBlockCasings8, 1))
-            .addElement('N', ofBlock(blockCasingsTieredGTPP, 4))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(PetrochemicalPlant::setMCoilLevel, PetrochemicalPlant::getMCoilLevel))))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('N', StructureUtility.ofBlock(ModBlocks.blockCasingsTieredGTPP, 4))
             .addElement(
                 'O',
-                buildHatchAdder(PetrochemicalPlant.class)
-                    .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
+                GTStructureUtility.buildHatchAdder(PetrochemicalPlant.class)
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
-            .addElement('P', ofBlock(sBlockCasings10, 4))
-            .addElement('Q', ofBlock(blockCasingsMisc, 14))
-            .addElement('R', ofBlock(sBlockCasings9, 0))
-            .addElement('S', ofFrame(Materials.NiobiumTitanium))
-            .addElement('T', ofFrame(Materials.StainlessSteel))
-            .addElement('U', ofFrame(Materials.Steel))
-            .addElement('V', ofFrame(Materials.RedstoneAlloy))
-            .addElement('W', ofFrame(Materials.Vanadium))
-            .addElement('X', ofBlock(blockCasings2Misc, 4))
-            .addElement('Y', ofBlock(blockCasingsMisc, 11))
-            .addElement('Z', ofBlock(blockCustomMachineCasings, 1))
-            .addElement('0', ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))
+            .addElement('Q', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
+            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 0))
+            .addElement('S', GTStructureUtility.ofFrame(Materials.NiobiumTitanium))
+            .addElement('T', GTStructureUtility.ofFrame(Materials.StainlessSteel))
+            .addElement('U', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('V', GTStructureUtility.ofFrame(Materials.RedstoneAlloy))
+            .addElement('W', GTStructureUtility.ofFrame(Materials.Vanadium))
+            .addElement('X', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
+            .addElement('Y', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 11))
+            .addElement('Z', StructureUtility.ofBlock(ModBlocks.blockCustomMachineCasings, 1))
+            .addElement(
+                '0',
+                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
             .build();
     }
 
@@ -232,7 +224,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
         return getMCoilLevel().getTier() * 40;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         if (processingLogic == null) {

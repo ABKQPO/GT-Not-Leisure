@@ -1,29 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -35,6 +13,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -43,6 +22,8 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -57,8 +38,10 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.block.BlockCasing;
 
 public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex> implements ISurvivalConstructable {
@@ -133,34 +116,42 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     @Override
     public IStructureDefinition<FuelRefiningComplex> getStructureDefinition() {
         return StructureDefinition.<FuelRefiningComplex>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
-            .addElement('B', ofBlockAnyMeta(new BlockCasing("electrode")))
-            .addElement('C', ofBlock(sBlockCasings2, 5))
-            .addElement('D', ofBlock(sBlockCasings4, 0))
-            .addElement('E', ofBlock(sBlockCasings4, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement(
+                'A',
+                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(new BlockCasing("electrode")))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
             .addElement(
                 'F',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(FuelRefiningComplex::setMCoilLevel, FuelRefiningComplex::getMCoilLevel))))
-            .addElement('G', ofBlock(sBlockCasings6, 6))
-            .addElement('H', ofBlock(sBlockCasings8, 0))
-            .addElement('I', ofBlock(sBlockCasings8, 1))
-            .addElement('J', ofFrame(Materials.TungstenSteel))
-            .addElement('K', ofBlock(blockCasings2Misc, 4))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(FuelRefiningComplex::setMCoilLevel, FuelRefiningComplex::getMCoilLevel))))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 6))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('J', GTStructureUtility.ofFrame(Materials.TungstenSteel))
+            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
             .addElement(
                 'L',
-                buildHatchAdder(FuelRefiningComplex.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(FuelRefiningComplex.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings3Misc, 1))))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 1))))
             .build();
     }
 
@@ -210,7 +201,7 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
 
             @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
                 if (recipeReq > 0) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);

@@ -1,26 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -38,6 +20,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.ProcessingArrayManager;
@@ -47,6 +30,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -68,6 +52,7 @@ import gregtech.api.recipe.metadata.CompressionTierKey;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.blocks.ItemMachines;
@@ -148,7 +133,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 2);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 2);
     }
 
     @Override
@@ -251,9 +236,9 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(CompressionTierKey.INSTANCE, 0) > 0)
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 if (GTMod.proxy.mLowGravProcessing && (recipe.mSpecialValue == -100 || recipe.mSpecialValue == -300)
@@ -265,7 +250,6 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
@@ -323,21 +307,32 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     @Override
     public IStructureDefinition<ProcessingArray> getStructureDefinition() {
         return StructureDefinition.<ProcessingArray>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                buildHatchAdder(ProcessingArray.class)
-                    .atLeast(Maintenance, InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy)
+                GTStructureUtility.buildHatchAdder(ProcessingArray.class)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 2))))
-            .addElement('B', ofBlock(sBlockCasings2, 14))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 2))))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
             .addElement(
                 'C',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(ProcessingArray::setMCoilLevel, ProcessingArray::getMCoilLevel))))
-            .addElement('D', ofFrame(Materials.Titanium))
-            .addElement('E', Muffler.newAny(getCasingTextureID(), 1))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(ProcessingArray::setMCoilLevel, ProcessingArray::getMCoilLevel))))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Titanium))
+            .addElement('E', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }
 

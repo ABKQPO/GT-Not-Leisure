@@ -1,31 +1,11 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockReinforced;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -36,11 +16,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -52,6 +34,8 @@ import bartworks.common.tileentities.tiered.MTERadioHatch;
 import bartworks.util.BWUtil;
 import bartworks.util.ResultWrongSievert;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IHatchElement;
@@ -67,6 +51,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -131,34 +116,41 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     @Override
     public IStructureDefinition<LargeIncubator> getStructureDefinition() {
         return StructureDefinition.<LargeIncubator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('C', ofBlock(sBlockCasings8, 1))
-            .addElement('D', ofBlock(sBlockCasings9, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
             .addElement(
                 'E',
-                ofChain(
-                    buildHatchAdder(LargeIncubator.class)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(LargeIncubator.class)
                         .atLeast(
-                            InputBus,
-                            OutputBus,
-                            InputHatch,
-                            OutputHatch,
-                            Maintenance,
-                            Energy.or(ExoticEnergy),
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
                             RadioHatchElement.RadioHatch)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(e -> e.mCountCasing++, ofBlock(sBlockReinforced, 2))))
+                    StructureUtility.onElementPass(
+                        e -> e.mCountCasing++,
+                        StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))))
             .addElement(
                 'F',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Mods.EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(Mods.EtFuturumRequiem.ID, "sponge")
                         : Blocks.sponge,
                     1))
-            .addElement('G', ofChain(isAir(), ofBlockAnyMeta(Blocks.flowing_water), ofBlockAnyMeta(Blocks.water)))
+            .addElement(
+                'G',
+                StructureUtility.ofChain(
+                    StructureUtility.isAir(),
+                    StructureUtility.ofBlockAnyMeta(Blocks.flowing_water),
+                    StructureUtility.ofBlockAnyMeta(Blocks.water)))
             .build();
     }
 

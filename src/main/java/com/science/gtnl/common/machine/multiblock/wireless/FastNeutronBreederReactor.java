@@ -1,52 +1,32 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE_GLOW;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_GLOW;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings6;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockCasingsSE;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -56,6 +36,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
@@ -124,21 +105,21 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE_GLOW)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_NEUTRON_ACTIVATOR)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_NEUTRON_ACTIVATOR_GLOW)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NEUTRON_ACTIVATOR_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -149,35 +130,37 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
     @Override
     public IStructureDefinition<FastNeutronBreederReactor> getStructureDefinition() {
         return StructureDefinition.<FastNeutronBreederReactor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('B', ofBlock(sBlockCasingsSE, 1))
-            .addElement('C', ofBlockAnyMeta(LanthItemList.COOLANT_DELIVERY_CASING))
-            .addElement('D', ofBlock(sBlockCasings6, 7))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
+            .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.COOLANT_DELIVERY_CASING))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 7))
             .addElement(
                 'E',
-                buildHatchAdder(FastNeutronBreederReactor.class)
+                GTStructureUtility.buildHatchAdder(FastNeutronBreederReactor.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings2Misc, 12))))
-            .addElement('F', ofBlock(sBlockCasings10, 3))
-            .addElement('G', ofBlock(sBlockCasings8, 7))
-            .addElement('H', ofBlock(Loaders.MAR_Casing, 0))
-            .addElement('I', ofBlock(sBlockCasingsDyson, 9))
-            .addElement('J', ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))
-            .addElement('K', ofBlock(blockCasings2Misc, 9))
-            .addElement('L', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', ofBlock(sBlockCasings1, 15))
-            .addElement('N', ofFrame(Materials.TungstenCarbide))
-            .addElement('O', ofBlock(sBlockCasings9, 7))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 12))))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('H', StructureUtility.ofBlock(Loaders.MAR_Casing, 0))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
+            .addElement('J', StructureUtility.ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))
+            .addElement('K', StructureUtility.ofBlock(blockCasings2Misc, 9))
+            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('N', GTStructureUtility.ofFrame(Materials.TungstenCarbide))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
             .build();
     }
 
@@ -226,7 +209,7 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(

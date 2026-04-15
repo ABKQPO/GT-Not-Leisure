@@ -1,7 +1,5 @@
 package com.science.gtnl.container.portableWorkbench;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.bogosorter.api.IPosSetter;
 import com.cleanroommc.bogosorter.api.ISortableContainer;

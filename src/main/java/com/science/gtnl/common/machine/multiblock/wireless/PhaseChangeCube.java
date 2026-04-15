@@ -1,23 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
@@ -25,8 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -46,7 +29,9 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -63,6 +48,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -149,31 +135,34 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     @Override
     public IStructureDefinition<PhaseChangeCube> getStructureDefinition() {
         return StructureDefinition.<PhaseChangeCube>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 6))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 6))
             .addElement(
                 'B',
-                buildHatchAdder(PhaseChangeCube.class)
+                GTStructureUtility.buildHatchAdder(PhaseChangeCube.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsTT, 0))))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 0))))
             .addElement(
                 'C',
-                GTStructureChannels.HEATING_COIL
-                    .use(activeCoils(ofCoil(PhaseChangeCube::setMCoilLevel, PhaseChangeCube::getMCoilLevel))))
-            .addElement('D', ofBlock(sBlockCasings10, 7))
-            .addElement('E', ofBlock(sBlockCasingsTT, 4))
-            .addElement('F', ofFrame(Materials.SuperconductorUEVBase))
-            .addElement('G', ofBlock(sBlockCasings9, 12))
-            .addElement('H', ofBlock(BlockLoader.metaBlockGlass, 2))
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(PhaseChangeCube::setMCoilLevel, PhaseChangeCube::getMCoilLevel))))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.SuperconductorUEVBase))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
             .build();
     }
 
@@ -254,9 +243,9 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
                 return super.validateRecipe(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -265,7 +254,7 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkRecipeForCustomHatches(CheckRecipeResult lastResult) {
         if (machineMode != MACHINEMODE_SOLID) return lastResult;
@@ -329,7 +318,7 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
         return RecipeMaps.extractorRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays

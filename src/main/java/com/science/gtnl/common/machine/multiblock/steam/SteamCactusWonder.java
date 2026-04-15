@@ -1,17 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_CACTUS_WONDER;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_CACTUS_WONDER_ACTIVE;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +18,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
@@ -36,10 +27,12 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.StructureError;
@@ -49,6 +42,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -100,29 +94,29 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     public IStructureDefinition<SteamCactusWonder> getStructureDefinition() {
         return StructureDefinition.<SteamCactusWonder>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addShape(
                 STRUCTURE_PIECE_MAIN_SURVIVAL,
-                Arrays.stream(transpose(shape))
+                Arrays.stream(StructureUtility.transpose(shape))
                     .map(
                         sa -> Arrays.stream(sa)
                             .map(s -> s.replaceAll("E", " "))
                             .toArray(String[]::new))
                     .toArray(String[][]::new))
-            .addElement('A', chainAllGlasses())
-            .addElement('B', ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
             .addElement(
                 'C',
-                ofChain(
-                    buildHatchAdder(SteamCactusWonder.class)
-                        .atLeast(SteamHatchElement.InputBus_Steam, InputBus, OutputHatch)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(SteamCactusWonder.class)
+                        .atLeast(SteamHatchElement.InputBus_Steam, HatchElement.InputBus, HatchElement.OutputHatch)
                         .casingIndex(10)
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(GregTechAPI.sBlockCasings3, 13)))
-            .addElement('D', ofFrame(Materials.Steel))
-            .addElement('E', ofBlock(Blocks.cactus, 0))
-            .addElement('F', ofBlock(Blocks.sand, 0))
+                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13)))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('E', StructureUtility.ofBlock(Blocks.cactus, 0))
+            .addElement('F', StructureUtility.ofBlock(Blocks.sand, 0))
             .build();
     }
 
@@ -138,11 +132,11 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
             return new ITexture[] {
                 Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings1, 10)),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_CACTUS_WONDER)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_CACTUS_WONDER)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_CACTUS_WONDER_ACTIVE)
+                    .addIcon(BlockIcons.OVERLAY_FRONT_CACTUS_WONDER_ACTIVE)
                     .extFacing()
                     .glow()
                     .build() };

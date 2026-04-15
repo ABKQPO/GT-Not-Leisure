@@ -1,13 +1,5 @@
 package com.science.gtnl.common.render.tile;
 
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
-
 import java.nio.FloatBuffer;
 
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -33,7 +25,9 @@ import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
 import tectech.Reference;
+import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.util.StructureVBO;
 import tectech.util.TextureUpdateRequester;
 
@@ -73,10 +67,10 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
     }
 
     private void initRings() {
-        StructureVBO ringStructure = (new StructureVBO()).addMapping('I', sBlockCasings10, 8)
-            .addMapping('N', sBlockCasings8, 10)
-            .addMapping('P', sBlockCasings9, 12)
-            .addMapping('W', sBlockCasings4, 7)
+        StructureVBO ringStructure = (new StructureVBO()).addMapping('I', GregTechAPI.sBlockCasings10, 8)
+            .addMapping('N', GregTechAPI.sBlockCasings8, 10)
+            .addMapping('P', GregTechAPI.sBlockCasings9, 12)
+            .addMapping('W', GregTechAPI.sBlockCasings4, 7)
             .addMapping('X', Loaders.compactFusionCoil, 2)
             .addMapping('Y', Loaders.compactFusionCoil, 0);
 
@@ -142,19 +136,19 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         GL20.glUniform1f(u_Gamma, tile.getGamma());
         RenderStarLayer(
             new Vector4f(r, g, b, 1f),
-            STAR_LAYER_0,
+            EOHTileEntitySR.STAR_LAYER_0,
             size,
             new Vector3f(0F, 1F, 1).normalize(),
             130 + (timer) % 360000);
         RenderStarLayer(
             new Vector4f(r, g, b, 0.4f),
-            STAR_LAYER_1,
+            EOHTileEntitySR.STAR_LAYER_1,
             size * 1.02f,
             new Vector3f(1F, 1F, 0F).normalize(),
             -49 + (timer) % 360000);
         RenderStarLayer(
             new Vector4f(r, g, b, 0.2f),
-            STAR_LAYER_2,
+            EOHTileEntitySR.STAR_LAYER_2,
             size * 1.04f,
             new Vector3f(1F, 0F, 1F).normalize(),
             67 + (timer) % 360000);

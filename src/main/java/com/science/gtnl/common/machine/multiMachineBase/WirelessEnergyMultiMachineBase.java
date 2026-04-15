@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -204,9 +202,9 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
                 return super.validateRecipe(recipe);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@Nonnull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier());
@@ -224,7 +222,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         return 1.0 / (wirelessUpgrade ? 10.0 : 5.0) * Math.pow(0.75, mParallelTier);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         maxParallelStored = -1;

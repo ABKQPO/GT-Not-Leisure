@@ -1,32 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings11;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
-import static gregtech.api.GregTechAPI.sBlockTintedGlass;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings6Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings;
 import static kubatech.loaders.BlockLoader.defcCasingBlock;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -43,6 +18,7 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
@@ -53,6 +29,8 @@ import com.science.gtnl.utils.StructureUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
@@ -62,10 +40,12 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.render.IMTERenderer;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtnhlanth.common.register.LanthItemList;
 
@@ -259,7 +239,7 @@ public class KerrNewmanHomogenizer extends WirelessEnergyMultiMachineBase<KerrNe
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -295,99 +275,110 @@ public class KerrNewmanHomogenizer extends WirelessEnergyMultiMachineBase<KerrNe
     @Override
     public IStructureDefinition<KerrNewmanHomogenizer> getStructureDefinition() {
         return StructureDefinition.<KerrNewmanHomogenizer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(blockCasings3Misc, 13))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 13))
             .addElement(
                 'B',
-                buildHatchAdder(KerrNewmanHomogenizer.class)
+                GTStructureUtility.buildHatchAdder(KerrNewmanHomogenizer.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 3))))
-            .addElement('C', ofBlock(sBlockCasings10, 11))
-            .addElement('D', ofFrame(Materials.TungstenCarbide))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.TungstenCarbide))
             .addElement(
                 'E',
-                buildHatchAdder(KerrNewmanHomogenizer.class)
+                GTStructureUtility.buildHatchAdder(KerrNewmanHomogenizer.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
             .addElement(
                 'F',
-                buildHatchAdder(KerrNewmanHomogenizer.class)
+                GTStructureUtility.buildHatchAdder(KerrNewmanHomogenizer.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(defcCasingBlock, 7))))
-            .addElement('G', ofBlock(blockCasings2Misc, 2))
-            .addElement('H', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('I', ofBlock(sBlockCasings10, 12))
-            .addElement('J', ofBlock(sBlockCasings3, 12))
-            .addElement('K', ofBlock(sBlockCasings11, 4))
-            .addElement('L', ofBlock(sBlockCasings9, 0))
-            .addElement('M', ofBlock(sBlockCasings9, 7))
-            .addElement('N', ofBlock(sBlockTintedGlass, 1))
-            .addElement('O', ofBlock(sBlockCasings10, 7))
-            .addElement('P', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('Q', ofFrame(Materials.Trinium))
-            .addElement('R', ofBlock(Loaders.gravityStabilizationCasing, 0))
-            .addElement('S', ofBlock(blockCasings6Misc, 0))
-            .addElement('T', ofBlock(sBlockCasingsTT, 6))
-            .addElement('U', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('V', ofBlock(sBlockCasingsDyson, 1))
-            .addElement('W', ofBlock(sBlockCasings9, 11))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(defcCasingBlock, 7))))
+            .addElement('G', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 12))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 4))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 0))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 1))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('Q', GTStructureUtility.ofFrame(Materials.Trinium))
+            .addElement('R', StructureUtility.ofBlock(Loaders.gravityStabilizationCasing, 0))
+            .addElement('S', StructureUtility.ofBlock(ModBlocks.blockCasings6Misc, 0))
+            .addElement('T', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('U', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('V', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
+            .addElement('W', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
             .addElement(
                 'X',
-                buildHatchAdder(KerrNewmanHomogenizer.class)
+                GTStructureUtility.buildHatchAdder(KerrNewmanHomogenizer.class)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        OutputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings2Misc, 12))))
-            .addElement('Y', ofBlock(sBlockCasings1, 14))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 12))))
+            .addElement('Y', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
             .addElement(
                 'Z',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
                             .getItem())))
-            .addElement('0', ofBlock(blockSpecialMultiCasings, 15))
-            .addElement('1', ofBlock(sBlockCasings1, 14))
+            .addElement('0', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
+            .addElement('1', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
             .addElement(
                 '2',
-                ofBlockAnyMeta(
+                StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_C276.getFrameBox(1)
                             .getItem())))
-            .addElement('3', ofFrame(Materials.NaquadahAlloy))
+            .addElement('3', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
             .build();
     }
 

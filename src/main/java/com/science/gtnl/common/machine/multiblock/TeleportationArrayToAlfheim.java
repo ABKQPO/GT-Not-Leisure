@@ -1,20 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -22,8 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,6 +27,7 @@ import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
@@ -57,6 +42,8 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -128,7 +115,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(
@@ -175,7 +162,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + this.machineMode));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         boolean shouldExplode = false;
@@ -209,7 +196,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe() {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 
@@ -391,30 +378,37 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public IStructureDefinition<TeleportationArrayToAlfheim> getStructureDefinition() {
         return StructureDefinition.<TeleportationArrayToAlfheim>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('B', ofBlock(sBlockCasings10, 3))
-            .addElement('C', ofBlock(sBlockCasings4, 7))
-            .addElement('D', ofBlock(sBlockCasings8, 7))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
             .addElement(
                 'E',
-                ofChain(
+                StructureUtility.ofChain(
                     buildHatchAdder(TeleportationArrayToAlfheim.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, OutputHatch, Energy.or(ExoticEnergy), Maintenance)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            HatchElement.Maintenance)
                         .dot(1)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings8, 10))
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 10)),
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10)),
                     buildHatchAdder(TeleportationArrayToAlfheim.class)
                         .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
                         .hatchId(21501)
                         .shouldReject(x -> !x.mFluidManaInputHatch.isEmpty())
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings8, 10))
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
                         .dot(1)
                         .build()))
-            .addElement('F', ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('G', ofBlock(BlockLoader.metaBlockGlass, 0))
-            .addElement('H', ofBlock(BlockLoader.metaBlockGlass, 1))
+            .addElement('F', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 0))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 1))
             .build();
     }
 
@@ -450,7 +444,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -527,23 +521,22 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            @Nonnull
+            @NotNull
             @Override
-            public GTNLParallelHelper createParallelHelper(@Nonnull GTRecipe recipe) {
+            public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
                 if (enableInfinityMana && inputFluids != null && inputFluids.length > 0) {
                     inputFluids[0] = GTNLMaterials.FluidMana.getFluidOrGas(Integer.MAX_VALUE);
                 }
                 return super.createParallelHelper(recipe).setFluidInputs(inputFluids);
             }
 
-            @Nonnull
+            @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 return super.validateRecipe(recipeWithMultiplier(recipe));
             }
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())

@@ -1,8 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTRecipeBuilder.MINUTES;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -11,6 +8,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GTRecipeBuilder;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.util.minecraft.FluidUtils;
 import gtPlusPlus.core.util.minecraft.MaterialUtils;
@@ -30,7 +28,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 25000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.NickelFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
 
@@ -41,7 +39,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 35000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.PlatinumFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -52,7 +50,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 140000))
             .fluidOutputs(FluidUtils.getFluidStack(MilledOre.NaquadahEnrichedFlotationFroth, 1000))
-            .duration(8 * MINUTES)
+            .duration(8 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -63,7 +61,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 18000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.AlmandineFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
 
@@ -74,7 +72,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 12000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.ChalcopyriteFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
 
@@ -85,7 +83,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 28000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.GrossularFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -96,7 +94,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 8000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.PyropeFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
 
@@ -107,7 +105,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 35000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.SpessartineFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -118,7 +116,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 14000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.SphaleriteFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -129,7 +127,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 14000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.PentlanditeFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -140,7 +138,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 30000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.MonaziteFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_LuV)
             .addTo(CRR);
 
@@ -151,7 +149,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PineOil, 13000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedstoneFlotationFroth, 1000))
-            .duration(4 * MINUTES)
+            .duration(4 * GTRecipeBuilder.MINUTES)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
 
@@ -161,7 +159,7 @@ public class CellRegulatorRecipes implements IRecipePool {
                     .getMilled(64))
             .fluidInputs(Materials.NefariousOil.getFluid(2000))
             .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.NetherrackFlotationFroth, 1000))
-            .duration(30 * SECONDS)
+            .duration(30 * GTRecipeBuilder.SECONDS)
             .eut(TierEU.RECIPE_IV)
             .addTo(CRR);
     }

@@ -1,13 +1,5 @@
 package com.science.gtnl.utils.event;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.ScienceNotLeisure.network;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_CAPE_URLS;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_NAMES;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_SKIN_URLS;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.BLACKLISTED_UUIDS;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.UUID_CACHE;
-import static com.science.gtnl.common.render.PlayerDollRenderManager.offlineMode;
 import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.loadInstance;
 
 import java.util.Arrays;
@@ -46,6 +38,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.item.BaubleItem;
@@ -56,6 +49,7 @@ import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
 import com.science.gtnl.common.packet.SyncRecipePacket;
 import com.science.gtnl.common.packet.TitlePacket;
+import com.science.gtnl.common.render.PlayerDollRenderManager;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.AchievementsLoader;
 import com.science.gtnl.loader.RecipeLoader;
@@ -116,8 +110,8 @@ public class SubscribeEventUtils {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player instanceof EntityPlayerMP player) {
             player.triggerAchievement(AchievementsLoader.welcome);
-            network.sendTo(new SoundPacket(true), player);
-            network.sendTo(new SyncCircuitNanitesPacket(player.worldObj.getSeed()), player);
+            ScienceNotLeisure.network.sendTo(new SoundPacket(true), player);
+            ScienceNotLeisure.network.sendTo(new SyncCircuitNanitesPacket(player.worldObj.getSeed()), player);
 
             if (Mods.GalaxySpace.isModLoaded() && Mods.GalacticraftCore.isModLoaded()) {
                 addRocketUnlockedPage(player);
@@ -213,7 +207,7 @@ public class SubscribeEventUtils {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void EntityJoinWorldEvent(EntityJoinWorldEvent event) {
         if (event == null || !(event.entity instanceof EntityPlayerMP player) || !SideReference.Side.Server) return;
-        network.sendTo(new SyncRecipePacket(), player);
+        ScienceNotLeisure.network.sendTo(new SyncRecipePacket(), player);
     }
 
     @SubscribeEvent
@@ -358,7 +352,7 @@ public class SubscribeEventUtils {
         if (block == TTCasingsContainer.GodforgeCasings && meta == 8) {
 
             if (world.rand.nextInt(1000) == 0) {
-                world.playSoundEffect(x, y, z, RESOURCE_ROOT_ID + ":tidal.wave", 1.0F, 1.0F);
+                world.playSoundEffect(x, y, z, ScienceNotLeisure.RESOURCE_ROOT_ID + ":tidal.wave", 1.0F, 1.0F);
             }
         }
     }
@@ -378,13 +372,13 @@ public class SubscribeEventUtils {
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
-        offlineMode = false;
+        PlayerDollRenderManager.offlineMode = false;
         circuitNanitesDataLoad = false;
-        BLACKLISTED_UUIDS.clear();
-        BLACKLISTED_NAMES.clear();
-        BLACKLISTED_SKIN_URLS.clear();
-        BLACKLISTED_CAPE_URLS.clear();
-        UUID_CACHE.clear();
+        PlayerDollRenderManager.BLACKLISTED_UUIDS.clear();
+        PlayerDollRenderManager.BLACKLISTED_NAMES.clear();
+        PlayerDollRenderManager.BLACKLISTED_SKIN_URLS.clear();
+        PlayerDollRenderManager.BLACKLISTED_CAPE_URLS.clear();
+        PlayerDollRenderManager.UUID_CACHE.clear();
         ElectrocellGeneratorFrontend.initializedRecipes.clear();
         RocketAssemblerFrontend.initializedRecipes.clear();
         CircuitNanitesRecipeData.recipeDataMap.clear();

@@ -1,8 +1,5 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import static gtPlusPlus.core.material.MaterialMisc.RARE_EARTH_HIGH;
-import static gtPlusPlus.core.material.MaterialMisc.RARE_EARTH_LOW;
-import static gtPlusPlus.core.material.MaterialMisc.RARE_EARTH_MID;
 import static gtPlusPlus.core.material.MaterialsAlloy.KOBOLDITE;
 
 import java.lang.reflect.Field;
@@ -14,14 +11,15 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gtPlusPlus.core.material.Material;
+import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsOres;
 
 public class GTPPOreHandler {
 
     public Set<Material> addSpecials(Set<Material> set) {
-        set.add(RARE_EARTH_LOW);
-        set.add(RARE_EARTH_MID);
-        set.add(RARE_EARTH_HIGH);
+        set.add(MaterialMisc.RARE_EARTH_LOW);
+        set.add(MaterialMisc.RARE_EARTH_MID);
+        set.add(MaterialMisc.RARE_EARTH_HIGH);
         set.add(KOBOLDITE);
         return set;
     }

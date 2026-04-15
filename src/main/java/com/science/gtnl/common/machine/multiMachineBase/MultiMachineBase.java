@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -325,7 +323,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return new GTNLProcessingLogic() {
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
@@ -586,7 +583,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      * <p>
      * For generic machine working with recipemap, use {@link #createProcessingLogic()} to make use of shared codebase.
      */
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         // If no logic is found, try legacy checkRecipe
@@ -615,7 +612,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public CheckRecipeResult doCheckRecipe() {
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 

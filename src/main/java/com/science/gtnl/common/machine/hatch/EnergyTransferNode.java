@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE;
-import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE;
 import static gregtech.api.enums.Dyes.MACHINE_METAL;
 
 import java.util.List;
@@ -15,6 +13,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.Textures;
@@ -97,14 +97,15 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
-            return new ITexture[] { TextureFactory.of(OVERLAY_ENERGY_TRANSFER_NODE),
+            return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
                 TextureFactory.of(
                     getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
                         : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER),
-                TextureFactory
-                    .of(OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE, Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
+                TextureFactory.of(
+                    BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE,
+                    Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
         } else {
-            return new ITexture[] { TextureFactory.of(OVERLAY_ENERGY_TRANSFER_NODE),
+            return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
                 TextureFactory.of(
                     getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
                         : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER,

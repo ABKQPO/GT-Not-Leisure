@@ -1,13 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.lazy;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
@@ -25,6 +17,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -32,6 +25,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -288,28 +282,31 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         return StructureDefinition.<LargeBoiler>builder()
             .addShape(
                 STRUCTURE_PIECE_MAIN,
-                transpose(
+                StructureUtility.transpose(
                     new String[][] { { "ccc", "ccc", "ccc" }, { "ccc", "cPc", "ccc" }, { "ccc", "cPc", "ccc" },
                         { "ccc", "cPc", "ccc" }, { "f~f", "fff", "fff" }, }))
-            .addElement('P', lazy(t -> ofBlock(t.getPipeBlock(), t.getPipeMeta())))
+            .addElement('P', StructureUtility.lazy(t -> StructureUtility.ofBlock(t.getPipeBlock(), t.getPipeMeta())))
             .addElement(
                 'c',
-                lazy(
-                    t -> buildHatchAdder(LargeBoiler.class).atLeast(OutputHatch)
+                StructureUtility.lazy(
+                    t -> buildHatchAdder(LargeBoiler.class).atLeast(HatchElement.OutputHatch)
                         .casingIndex(t.getCasingTextureIndex())
                         .dot(2)
                         .buildAndChain(
-                            onElementPass(LargeBoiler::onCasingAdded, ofBlock(t.getCasingBlock(), t.getCasingMeta())))))
+                            StructureUtility.onElementPass(
+                                LargeBoiler::onCasingAdded,
+                                StructureUtility.ofBlock(t.getCasingBlock(), t.getCasingMeta())))))
             .addElement(
                 'f',
-                lazy(
-                    t -> buildHatchAdder(LargeBoiler.class).atLeast(Maintenance, InputHatch, InputBus)
+                StructureUtility.lazy(
+                    t -> buildHatchAdder(LargeBoiler.class)
+                        .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.InputBus)
                         .casingIndex(t.getFireboxTextureIndex())
                         .dot(1)
                         .buildAndChain(
-                            onElementPass(
+                            StructureUtility.onElementPass(
                                 LargeBoiler::onFireboxAdded,
-                                ofBlock(t.getFireboxBlock(), t.getFireboxMeta())))))
+                                StructureUtility.ofBlock(t.getFireboxBlock(), t.getFireboxMeta())))))
             .build();
     }
 

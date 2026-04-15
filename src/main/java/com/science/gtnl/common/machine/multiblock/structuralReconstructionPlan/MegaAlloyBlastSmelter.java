@@ -1,49 +1,31 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDAlloyBlastSmelter;
-import static gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock.oMCDAlloyBlastSmelterActive;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import bartworks.util.BWUtil;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -55,9 +37,11 @@ import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSmelter>
     implements ISurvivalConstructable {
@@ -91,12 +75,12 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDAlloyBlastSmelterActive)
+                    .addIcon(TexturesGtBlock.oMCDAlloyBlastSmelterActive)
                     .extFacing()
                     .build() };
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(oMCDAlloyBlastSmelter)
+                    .addIcon(TexturesGtBlock.oMCDAlloyBlastSmelter)
                     .extFacing()
                     .build() };
         }
@@ -143,32 +127,37 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
     @Override
     public IStructureDefinition<MegaAlloyBlastSmelter> getStructureDefinition() {
         return StructureDefinition.<MegaAlloyBlastSmelter>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings2, 15))
-            .addElement('C', ofBlock(sBlockCasings3, 14))
-            .addElement('D', ofBlock(sBlockCasings3, 15))
-            .addElement('E', ofBlock(sBlockCasings4, 3))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 15))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 3))
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(ofCoil(MegaAlloyBlastSmelter::setMCoilLevel, MegaAlloyBlastSmelter::getMCoilLevel))))
-            .addElement('G', ofBlock(sBlockCasings8, 4))
-            .addElement('H', ofBlock(blockCasingsMisc, 14))
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(MegaAlloyBlastSmelter::setMCoilLevel, MegaAlloyBlastSmelter::getMCoilLevel))))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
+            .addElement('H', StructureUtility.ofBlock(blockCasingsMisc, 14))
             .addElement(
                 'I',
-                buildHatchAdder(MegaAlloyBlastSmelter.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(MegaAlloyBlastSmelter.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasingsMisc, 15))))
-            .addElement('J', Muffler.newAny(getCasingTextureID(), 1))
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 15))))
+            .addElement('J', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }
 
@@ -256,7 +245,7 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
         logic.setAmperageOC(true);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         CheckRecipeResult result = super.checkProcessing();

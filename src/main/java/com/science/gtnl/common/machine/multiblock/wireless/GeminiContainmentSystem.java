@@ -1,48 +1,29 @@
 package com.science.gtnl.common.machine.multiblock.wireless;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockTintedGlass;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings5Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -53,9 +34,11 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class GeminiContainmentSystem extends WirelessEnergyMultiMachineBase<GeminiContainmentSystem> {
@@ -113,7 +96,7 @@ public class GeminiContainmentSystem extends WirelessEnergyMultiMachineBase<Gemi
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
     }
 
     @Override
@@ -147,42 +130,46 @@ public class GeminiContainmentSystem extends WirelessEnergyMultiMachineBase<Gemi
     @Override
     public IStructureDefinition<GeminiContainmentSystem> getStructureDefinition() {
         return StructureDefinition.<GeminiContainmentSystem>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(blockCasingsMisc, 0))
-            .addElement('B', ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 12))
-            .addElement('D', ofBlock(blockCasings5Misc, 0))
-            .addElement('E', ofBlock(sBlockCasings10, 8))
-            .addElement('F', ofBlock(sBlockCasings2, 4))
-            .addElement('G', ofBlock(sBlockCasings2, 5))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
+            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 4))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
             .addElement(
                 'H',
-                buildHatchAdder(GeminiContainmentSystem.class)
+                GTStructureUtility.buildHatchAdder(GeminiContainmentSystem.class)
                     .atLeast(
-                        Maintenance,
-                        InputHatch,
-                        OutputHatch,
-                        InputBus,
-                        OutputBus,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings8, 7))))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
             .addElement(
                 'I',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(
-                        ofCoil(GeminiContainmentSystem::setMCoilLevel, GeminiContainmentSystem::getMCoilLevel))))
-            .addElement('J', ofBlock(blockCasings2Misc, 2))
-            .addElement('K', ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('L', ofBlock(blockSpecialMultiCasings, 8))
-            .addElement('M', ofBlock(sBlockCasings2, 7))
-            .addElement('N', ofBlock(sBlockTintedGlass, 1))
-            .addElement('O', ofBlock(sBlockCasingsTT, 6))
-            .addElement('P', ofBlock(sBlockCasings10, 1))
-            .addElement('Q', ofBlock(blockSpecialMultiCasings, 11))
-            .addElement('R', ofFrame(Materials.Naquadah))
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(GeminiContainmentSystem::setMCoilLevel, GeminiContainmentSystem::getMCoilLevel))))
+            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
+            .addElement('K', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('L', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
+            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 7))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 1))
+            .addElement('O', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 1))
+            .addElement('Q', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 11))
+            .addElement('R', GTStructureUtility.ofFrame(Materials.Naquadah))
             .build();
     }
 
@@ -230,7 +217,7 @@ public class GeminiContainmentSystem extends WirelessEnergyMultiMachineBase<Gemi
         return (machineMode == MACHINEMODE_PACKAGER) ? RecipeMaps.packagerRecipes : RecipeMaps.unpackagerRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(RecipeMaps.packagerRecipes, RecipeMaps.unpackagerRecipes);

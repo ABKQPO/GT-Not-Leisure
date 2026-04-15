@@ -1,22 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.Collection;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,13 +10,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
@@ -41,6 +32,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurnace> implements ISurvivalConstructable {
@@ -135,28 +127,32 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
     @Override
     public IStructureDefinition<BrickedBlastFurnace> getStructureDefinition() {
         return StructureDefinition.<BrickedBlastFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings3, 13))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
             .addElement(
                 'B',
-                buildHatchAdder(BrickedBlastFurnace.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(BrickedBlastFurnace.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
                         SteamHatchElement.InputBus_Steam,
-                        InputBus,
+                        HatchElement.InputBus,
                         SteamHatchElement.OutputBus_Steam,
-                        OutputBus,
-                        Maintenance)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings4, 15))))
-            .addElement('C', ofFrame(Materials.Bronze))
-            .addElement('D', ofBlock(sBlockCasings1, 10))
-            .addElement('E', ofBlockAnyMeta(Blocks.stonebrick))
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 15))))
+            .addElement('C', GTStructureUtility.ofFrame(Materials.Bronze))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
+            .addElement('E', StructureUtility.ofBlockAnyMeta(Blocks.stonebrick))
             .build();
     }
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 15);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 15);
     }
 
     @Override
@@ -200,7 +196,7 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
         return RecipeMaps.primitiveBlastRecipes;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         CheckRecipeResult result = super.checkProcessing();

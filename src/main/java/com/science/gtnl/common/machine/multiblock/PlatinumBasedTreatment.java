@@ -1,30 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sSolenoidCoilCasings;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.Muffler;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,12 +11,15 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -54,9 +33,11 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 
 public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatment> implements ISurvivalConstructable {
 
@@ -84,33 +65,47 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     @Override
     public IStructureDefinition<PlatinumBasedTreatment> getStructureDefinition() {
         return StructureDefinition.<PlatinumBasedTreatment>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', ofBlock(sBlockCasings1, 11))
-            .addElement('C', ofBlock(sSolenoidCoilCasings, 3))
-            .addElement('D', ofBlock(sBlockCasings10, 13))
-            .addElement('E', ofBlock(sBlockCasings10, 14))
-            .addElement('F', ofBlock(sBlockCasings4, 0))
-            .addElement('G', ofBlock(sBlockCasings4, 1))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sSolenoidCoilCasings, 3))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 14))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
             .addElement(
                 'H',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(ofCoil(PlatinumBasedTreatment::setMCoilLevel, PlatinumBasedTreatment::getMCoilLevel))))
-            .addElement('I', ofBlock(sBlockCasings8, 0))
-            .addElement('J', ofBlock(sBlockCasings8, 1))
-            .addElement('K', ofFrame(Materials.BlackSteel))
-            .addElement('L', ofBlock(blockCasings2Misc, 5))
-            .addElement('M', ofBlock(blockCasings2Misc, 6))
-            .addElement('N', ofBlock(blockCasings2Misc, 11))
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility
+                            .ofCoil(PlatinumBasedTreatment::setMCoilLevel, PlatinumBasedTreatment::getMCoilLevel))))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.BlackSteel))
+            .addElement('L', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 5))
+            .addElement('M', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 6))
+            .addElement('N', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 11))
             .addElement(
                 'O',
-                buildHatchAdder(PlatinumBasedTreatment.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(PlatinumBasedTreatment.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
-                    .atLeast(InputHatch, InputBus, OutputHatch, OutputBus, Maintenance, Energy.or(ExoticEnergy))
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings3Misc, 2))))
-            .addElement('P', ofBlock(blockCasingsMisc, 0))
-            .addElement('Q', ofBlock(blockCasingsMisc, 5))
-            .addElement('R', Muffler.newAny(StructureUtils.getTextureIndex(sBlockCasings1, 11), 6))
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputHatch,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 2))))
+            .addElement('P', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 0))
+            .addElement('Q', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
+            .addElement(
+                'R',
+                HatchElement.Muffler.newAny(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11), 6))
             .build();
     }
 
@@ -181,7 +176,8 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     @Override
     public void updateHatchTexture() {
         super.updateHatchTexture();
-        for (MTEHatch h : mMufflerHatches) h.updateTexture(StructureUtils.getTextureIndex(sBlockCasings1, 11));
+        for (MTEHatch h : mMufflerHatches)
+            h.updateTexture(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11));
     }
 
     @Override

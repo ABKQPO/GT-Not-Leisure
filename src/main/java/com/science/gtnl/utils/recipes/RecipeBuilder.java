@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.mixins.early.Gregtech.AccessorGTRecipe;

@@ -1,14 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Dynamo;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -29,12 +22,14 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.MaterialsKevlar;
 import gregtech.api.enums.MaterialsUEVplus;
 import gregtech.api.enums.Mods;
@@ -46,6 +41,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
@@ -228,29 +224,33 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     @Override
     public IStructureDefinition<WhiteNightGenerator> getStructureDefinition() {
         return StructureDefinition.<WhiteNightGenerator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
-                buildHatchAdder(WhiteNightGenerator.class).atLeast(Maintenance, Dynamo)
+                GTStructureUtility.buildHatchAdder(WhiteNightGenerator.class)
+                    .atLeast(HatchElement.Maintenance, HatchElement.Dynamo)
                     .dot(1)
                     .casingIndex(getCasingTextureID())
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(GregTechAPI.sBlockCasings10, 13))))
-            .addElement('B', ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
-            .addElement('C', ofBlock(BlockLoader.defcCasingBlock, 12))
-            .addElement('D', ofBlock(TTCasingsContainer.GodforgeCasings, 8))
-            .addElement('E', ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('F', ofBlock(GregTechAPI.sBlockCasingsSE, 1))
-            .addElement('G', ofFrame(MaterialsUEVplus.SixPhasedCopper))
-            .addElement('H', ofBlock(TTCasingsContainer.GodforgeCasings, 8))
-            .addElement('I', ofBlock(ModBlocks.blockCasings3Misc, 11))
-            .addElement('J', ofBlock(sBlockCasings9, 5))
-            .addElement('K', ofBlock(Loaders.gravityStabilizationCasing, 0))
-            .addElement('L', ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
-            .addElement('M', ofBlock(sBlockCasings9, 5))
-            .addElement('N', ofBlock(GregTechAPI.sBlockCasings10, 14))
-            .addElement('O', ofBlock(GregTechAPI.sBlockCasings10, 14))
-            .addElement('P', ofBlock(sBlockCasings9, 5))
-            .addElement('Q', ofFrame(MaterialsKevlar.Kevlar))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 12))
+            .addElement('D', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
+            .addElement('G', GTStructureUtility.ofFrame(MaterialsUEVplus.SixPhasedCopper))
+            .addElement('H', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
+            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 11))
+            .addElement('J', StructureUtility.ofBlock(sBlockCasings9, 5))
+            .addElement('K', StructureUtility.ofBlock(Loaders.gravityStabilizationCasing, 0))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
+            .addElement('M', StructureUtility.ofBlock(sBlockCasings9, 5))
+            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 14))
+            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 14))
+            .addElement('P', StructureUtility.ofBlock(sBlockCasings9, 5))
+            .addElement('Q', GTStructureUtility.ofFrame(MaterialsKevlar.Kevlar))
             .build();
     }
 

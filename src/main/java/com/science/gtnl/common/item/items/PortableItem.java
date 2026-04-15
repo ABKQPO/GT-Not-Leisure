@@ -5,8 +5,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -25,6 +23,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.InvWrapper;
 import com.science.gtnl.CommonProxy;
@@ -242,7 +242,7 @@ public class PortableItem extends Item {
         saveFurnaceInventory.save(stack, inv);
     }
 
-    public static PortableType getPortableType(@Nonnull ItemStack stack) {
+    public static PortableType getPortableType(@NotNull ItemStack stack) {
         return PortableType.byMeta(stack.getItemDamage());
     }
 
@@ -307,7 +307,7 @@ public class PortableItem extends Item {
     @FunctionalInterface
     public interface PortableInventorySave {
 
-        void save(@Nonnull ItemStack stack, @Nonnull IInventory inv);
+        void save(@NotNull ItemStack stack, @NotNull IInventory inv);
     }
 
     public static IInventory getInventory(ItemStack stack, int size) {
@@ -328,7 +328,7 @@ public class PortableItem extends Item {
         return inv;
     }
 
-    public static InventoryInfinityChest getInfinityInventory(@Nonnull ItemStack stack) {
+    public static InventoryInfinityChest getInfinityInventory(@NotNull ItemStack stack) {
         InventoryInfinityChest inv = new InventoryInfinityChest(
             getPortableType(stack) == PortableType.INFINITYCHEST ? Integer.MAX_VALUE : 64);
         if (!stack.hasTagCompound()) return inv;
@@ -479,14 +479,14 @@ public class PortableItem extends Item {
             this.inventorySave = null;
         }
 
-        PortableType(String baseName, GuiType gui, @Nonnull PortableInventory p) {
+        PortableType(String baseName, GuiType gui, @NotNull PortableInventory p) {
             this.baseName = baseName;
             this.gui = gui;
             this.inventory = p;
             this.inventorySave = saveInventory;
         }
 
-        PortableType(String baseName, GuiType gui, @Nonnull PortableInventory p, @Nonnull PortableInventorySave s) {
+        PortableType(String baseName, GuiType gui, @NotNull PortableInventory p, @NotNull PortableInventorySave s) {
             this.baseName = baseName;
             this.gui = gui;
             this.inventory = p;

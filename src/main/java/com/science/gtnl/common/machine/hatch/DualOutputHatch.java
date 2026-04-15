@@ -1,11 +1,11 @@
 package com.science.gtnl.common.machine.hatch;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
@@ -114,7 +114,7 @@ public class DualOutputHatch extends MTEHatchOutput implements IAddUIWidgets {
     }
 
     @Override
-    public boolean canStoreFluid(@Nonnull FluidStack fluidStack) {
+    public boolean canStoreFluid(@NotNull FluidStack fluidStack) {
         if (GTModHandler.isSteam(fluidStack)) {
             if (!outputsSteam()) return false;
         } else {

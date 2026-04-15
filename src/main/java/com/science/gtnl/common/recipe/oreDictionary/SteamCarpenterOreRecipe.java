@@ -1,8 +1,6 @@
 package com.science.gtnl.common.recipe.oreDictionary;
 
 import static gregtech.api.recipe.RecipeMaps.latheRecipes;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeBuilder.TICKS;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -18,6 +16,7 @@ import gregtech.api.interfaces.IOreRecipeRegistrator;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 
 public class SteamCarpenterOreRecipe implements IOreRecipeRegistrator {
@@ -55,7 +54,7 @@ public class SteamCarpenterOreRecipe implements IOreRecipeRegistrator {
                             .itemOutputs(
                                 GTUtility.copyOrNull(tPlanks),
                                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Wood, 1L))
-                            .duration(10 * SECONDS)
+                            .duration(10 * GTRecipeBuilder.SECONDS)
                             .eut(8)
                             .addTo(SCR);
                     }
@@ -68,26 +67,26 @@ public class SteamCarpenterOreRecipe implements IOreRecipeRegistrator {
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(1, aStack), GTUtility.getIntegratedCircuit(1))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stick, Materials.Wood, 2L))
-                .duration(10 * TICKS)
+                .duration(10 * GTRecipeBuilder.TICKS)
                 .eut(8)
                 .addTo(latheRecipes);
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(1, aStack), GTUtility.getIntegratedCircuit(1))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stick, Materials.Wood, 2L))
-                .duration(2 * SECONDS)
+                .duration(2 * GTRecipeBuilder.SECONDS)
                 .eut(8)
                 .addTo(SCR);
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(1, aStack), GTUtility.getIntegratedCircuit(2))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.slab, Materials.Wood, 2L))
-                .duration(2 * SECONDS)
+                .duration(2 * GTRecipeBuilder.SECONDS)
                 .eut(8)
                 .addTo(SCR);
 
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(8, aStack), GTUtility.getIntegratedCircuit(8))
                 .itemOutputs(new ItemStack(Blocks.chest, 1))
-                .duration(2 * SECONDS)
+                .duration(2 * GTRecipeBuilder.SECONDS)
                 .eut(4)
                 .addTo(SCR);
 

@@ -1,20 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasingsAdvanced;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
@@ -34,11 +20,15 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
+import bartworks.system.material.WerkstoffLoader;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -49,6 +39,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -235,22 +226,23 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     @Override
     public IStructureDefinition<CheatOreProcessingFactory> getStructureDefinition() {
         return StructureDefinition.<CheatOreProcessingFactory>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BWBlockCasings, 32066))
-            .addElement('B', ofFrame(Materials.Bronze))
-            .addElement('C', ofBlock(blockCasingsMisc, 2))
-            .addElement('D', ofBlock(sBlockCasings2, 2))
-            .addElement('E', ofBlock(sBlockCasings2, 12))
-            .addElement('F', ofBlock(sBlockCasings3, 13))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 32066))
+            .addElement('B', GTStructureUtility.ofFrame(Materials.Bronze))
+            .addElement('C', StructureUtility.ofBlock(blockCasingsMisc, 2))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
             .addElement(
                 'G',
-                ofChain(
-                    buildHatchAdder(CheatOreProcessingFactory.class).atLeast(Maintenance, InputBus, OutputBus)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings1, 10))
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(CheatOreProcessingFactory.class)
+                        .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
                         .dot(1)
                         .build(),
-                    ofBlock(BWBlockCasingsAdvanced, 32066)))
-            .addElement('H', chainAllGlasses())
+                    StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 32066)))
+            .addElement('H', GTStructureUtility.chainAllGlasses())
             .build();
     }
 
@@ -294,6 +286,6 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
     }
 }

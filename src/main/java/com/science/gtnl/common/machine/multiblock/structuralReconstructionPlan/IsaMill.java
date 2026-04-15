@@ -1,19 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings5Misc;
 
 import java.util.ArrayList;
@@ -29,6 +17,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -36,6 +25,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.IsaMillMetadata;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -51,6 +41,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -103,25 +94,33 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
     @Override
     public IStructureDefinition<IsaMill> getStructureDefinition() {
         return StructureDefinition.<IsaMill>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'B',
-                ofChain(
-                    buildHatchAdder(IsaMill.class).adder(IsaMill::addMillingBallsHatch)
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(IsaMill.class)
+                        .adder(IsaMill::addMillingBallsHatch)
                         .hatchClass(MTEHatchMillingBalls.class)
                         .shouldReject(t -> !t.mMillingBallBuses.isEmpty())
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    buildHatchAdder(IsaMill.class)
-                        .atLeast(InputBus, OutputBus, InputHatch, Maintenance, Energy.or(ExoticEnergy), ParallelCon)
+                    GTStructureUtility.buildHatchAdder(IsaMill.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            ParallelCon)
                         .casingIndex(getCasingTextureID())
                         .dot(1)
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(blockCasings5Misc, 0))))
-            .addElement('C', ofBlock(blockCasings5Misc, 1))
-            .addElement('D', ofBlock(blockCasings5Misc, 2))
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings5Misc, 0))))
+            .addElement('C', StructureUtility.ofBlock(blockCasings5Misc, 1))
+            .addElement('D', StructureUtility.ofBlock(blockCasings5Misc, 2))
             .build();
     }
 

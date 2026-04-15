@@ -1,33 +1,10 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasings;
-import static bartworks.system.material.WerkstoffLoader.BWBlockCasingsAdvanced;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.isAir;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.GregTechAPI.sBlockMetal4;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputHatch;
-import static gregtech.api.util.GTStructureUtility.activeCoils;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
-import static gregtech.api.util.GTStructureUtility.ofCoil;
-import static gregtech.api.util.GTStructureUtility.ofFrame;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +22,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.ITierConverter;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.render.tile.AtomicEnergyExcitationPlantRenderer;
@@ -53,9 +31,12 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
+import bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
+import gregtech.api.GregTechAPI;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -69,6 +50,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -252,7 +234,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 11);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 11);
     }
 
     @Override
@@ -290,47 +272,51 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     @Override
     public IStructureDefinition<AtomicEnergyExcitationPlant> getStructureDefinition() {
         return StructureDefinition.<AtomicEnergyExcitationPlant>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addShape(STRUCTURE_PIECE_SPHERE, transpose(shapeSphere))
-            .addShape(STRUCTURE_PIECE_SPHERE_AIR, transpose(shapeSphereAir))
-            .addElement('A', chainAllGlasses())
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_SPHERE, StructureUtility.transpose(shapeSphere))
+            .addShape(STRUCTURE_PIECE_SPHERE_AIR, StructureUtility.transpose(shapeSphereAir))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         fieldCoilTierConverter(),
                         getAllFieldCoilTiers(),
                         -1,
                         AtomicEnergyExcitationPlant::setCoilTier,
                         AtomicEnergyExcitationPlant::getCoilTier)))
-            .addElement('C', ofBlock(BlockLoader.defcCasingBlock, 7))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 7))
             .addElement(
                 'D',
                 GTStructureChannels.HEATING_COIL.use(
-                    activeCoils(
-                        ofCoil(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(
                             AtomicEnergyExcitationPlant::setMCoilLevel,
                             AtomicEnergyExcitationPlant::getMCoilLevel))))
-            .addElement('E', ofBlock(sBlockCasings10, 7))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
             .addElement(
                 'F',
-                buildHatchAdder(AtomicEnergyExcitationPlant.class).casingIndex(getCasingTextureID())
+                GTStructureUtility.buildHatchAdder(AtomicEnergyExcitationPlant.class)
+                    .casingIndex(getCasingTextureID())
                     .dot(1)
                     .atLeast(
-                        Maintenance,
-                        InputBus,
-                        InputHatch,
-                        OutputHatch,
-                        Maintenance,
-                        Energy.or(ExoticEnergy),
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings9, 11))))
-            .addElement('G', ofFrame(Materials.Neutronium))
-            .addElement('H', ofBlock(BWBlockCasingsAdvanced, 31895))
-            .addElement('I', ofBlock(BWBlockCasings, 31895))
-            .addElement('J', ofBlock(sBlockMetal4, 13))
-            .addElement('K', ofBlock(sBlockMetal4, 14))
-            .addElement('L', isAir())
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))))
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('H', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31895))
+            .addElement('I', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31895))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 13))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 14))
+            .addElement('L', StructureUtility.isAir())
             .build();
     }
 
@@ -494,7 +480,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
             @NotNull
             @Override
-            public CheckRecipeResult validateRecipe(@Nonnull GTRecipe recipe) {
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
                 if (recipeReq > machineTier) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);

@@ -1,13 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.INGOTS;
-import static gregtech.api.util.GTRecipeBuilder.NUGGETS;
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeConstants.ADDITIVE_AMOUNT;
-import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
-import static gregtech.api.util.GTRecipeConstants.NO_GAS;
-import static gregtech.api.util.GTRecipeConstants.NO_GAS_CIRCUIT_CONFIG;
-
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
@@ -25,6 +17,7 @@ import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
 import gregtech.common.items.CombType;
@@ -48,9 +41,9 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.NeutroniumBoule.get(1))
             .duration(18000)
             .eut(TierEU.RECIPE_LuV)
-            .metadata(COIL_HEAT, 10000)
-            .metadata(ADDITIVE_AMOUNT, 32000)
-            .metadata(NO_GAS, false)
+            .metadata(GTRecipeConstants.COIL_HEAT, 10000)
+            .metadata(GTRecipeConstants.ADDITIVE_AMOUNT, 32000)
+            .metadata(GTRecipeConstants.NO_GAS, false)
             .addTo(BFWG);
 
         RecipeBuilder.builder()
@@ -60,10 +53,10 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Europium, 1))
             .duration(400)
             .eut(TierEU.RECIPE_IV)
-            .metadata(COIL_HEAT, 8300)
-            .metadata(ADDITIVE_AMOUNT, 1000)
-            .metadata(NO_GAS, true)
-            .metadata(NO_GAS_CIRCUIT_CONFIG, 1)
+            .metadata(GTRecipeConstants.COIL_HEAT, 8300)
+            .metadata(GTRecipeConstants.ADDITIVE_AMOUNT, 1000)
+            .metadata(GTRecipeConstants.NO_GAS, true)
+            .metadata(GTRecipeConstants.NO_GAS_CIRCUIT_CONFIG, 1)
             .addTo(BFWG);
 
         RecipeBuilder.builder()
@@ -76,17 +69,17 @@ public class BlastFurnaceRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(7, WerkstoffLoader.Sodiumsulfate.get(OrePrefixes.dust, 1)))
             .duration(100)
             .eut(TierEU.RECIPE_HV)
-            .metadata(COIL_HEAT, 3650)
+            .metadata(GTRecipeConstants.COIL_HEAT, 3650)
             .addTo(BFR);
 
         RecipeBuilder.builder()
             .itemInputs(GTUtility.getIntegratedCircuit(1), ItemList.Brittle_Netherite_Scrap.get(1))
-            .fluidInputs(Materials.HellishMetal.getMolten(1 * INGOTS))
+            .fluidInputs(Materials.HellishMetal.getMolten(1 * GTRecipeBuilder.INGOTS))
             .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(1))
-            .fluidOutputs(Materials.Thaumium.getMolten(2 * NUGGETS))
-            .duration(15 * SECONDS)
+            .fluidOutputs(Materials.Thaumium.getMolten(2 * GTRecipeBuilder.NUGGETS))
+            .duration(15 * GTRecipeBuilder.SECONDS)
             .eut(TierEU.RECIPE_ZPM)
-            .metadata(COIL_HEAT, 7500)
+            .metadata(GTRecipeConstants.COIL_HEAT, 7500)
             .addTo(BFR);
 
         if (Mods.Forestry.isModLoaded()) {
@@ -95,12 +88,12 @@ public class BlastFurnaceRecipes implements IRecipePool {
                     GTUtility.getIntegratedCircuit(2),
                     ItemList.Brittle_Netherite_Scrap.get(1),
                     GTBees.combs.getStackForType(CombType.NETHERITE, 32))
-                .fluidInputs(Materials.HellishMetal.getMolten(1 * INGOTS))
+                .fluidInputs(Materials.HellishMetal.getMolten(1 * GTRecipeBuilder.INGOTS))
                 .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(2))
-                .fluidOutputs(Materials.Thaumium.getMolten(2 * NUGGETS))
-                .duration(15 * SECONDS)
+                .fluidOutputs(Materials.Thaumium.getMolten(2 * GTRecipeBuilder.NUGGETS))
+                .duration(15 * GTRecipeBuilder.SECONDS)
                 .eut(TierEU.RECIPE_ZPM)
-                .metadata(COIL_HEAT, 7500)
+                .metadata(GTRecipeConstants.COIL_HEAT, 7500)
                 .addTo(BFR);
         }
     }

@@ -1,22 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.CONFIGURATION_WINDOW_ID;
-import static com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode.MUIContainer_Greenhouse;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
-import static gregtech.api.enums.HatchElement.Energy;
-import static gregtech.api.enums.HatchElement.ExoticEnergy;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.InputHatch;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.io.IOException;
@@ -46,6 +30,7 @@ import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -69,7 +54,9 @@ import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseIC2Bucket;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -115,7 +102,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings10, 5);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 5);
     }
 
     @Override
@@ -151,29 +138,37 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     @Override
     public IStructureDefinition<EdenGarden> getStructureDefinition() {
         return StructureDefinition.<EdenGarden>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
             .addElement(
                 'B',
-                ofChain(
+                StructureUtility.ofChain(
                     buildHatchAdder(EdenGarden.class)
-                        .atLeast(Maintenance, InputBus, OutputBus, InputHatch, Maintenance, Energy.or(ExoticEnergy))
+                        .atLeast(
+                            HatchElement.Maintenance,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
                         .dot(1)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings10, 4))
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 4))
                         .build(),
-                    onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings10, 4))))
-            .addElement('C', ofBlock(sBlockCasings10, 5))
-            .addElement('D', ofBlock(sBlockCasings8, 10))
-            .addElement('E', ofBlock(sBlockCasings9, 11))
-            .addElement('F', ofBlock(ModBlocks.blockCasings2Misc, 3))
-            .addElement('G', ofBlock(LanthItemList.SHIELDED_ACCELERATOR_GLASS, 0))
-            .addElement('H', ofBlock(BlockLoader.metaBlockGlow, 0))
-            .addElement('I', ofBlock(Blocks.farmland, 0))
+                    StructureUtility.onElementPass(
+                        x -> ++x.mCountCasing,
+                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 3))
+            .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_GLASS, 0))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
+            .addElement('I', StructureUtility.ofBlock(Blocks.farmland, 0))
             .addElement(
                 'J',
-                ofChain(
-                    ofBlockAnyMeta(Blocks.water),
-                    ofBlock(BlocksItems.getFluidBlock(InternalName.fluidDistilledWater), 0)))
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(Blocks.water),
+                    StructureUtility.ofBlock(BlocksItems.getFluidBlock(InternalName.fluidDistilledWater), 0)))
             .build();
     }
 
@@ -387,7 +382,8 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode.createGreenhouseUI(MUIContainer_Greenhouse::new);
+    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
+        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
@@ -403,13 +399,13 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
+        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
             new ButtonWidget().setOnClick(
                 (clickData, widget) -> {
                     if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(CONFIGURATION_WINDOW_ID);
+                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
                 })
                 .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
                 .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))

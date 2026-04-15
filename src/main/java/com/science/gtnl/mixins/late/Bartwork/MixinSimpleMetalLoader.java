@@ -1,12 +1,5 @@
 package com.science.gtnl.mixins.late.Bartwork;
 
-import static gregtech.api.enums.OrePrefixes.cell;
-import static gregtech.api.enums.OrePrefixes.cellMolten;
-import static gregtech.api.enums.OrePrefixes.ingot;
-import static gregtech.api.enums.OrePrefixes.plateDouble;
-import static gregtech.api.enums.OrePrefixes.screw;
-import static gregtech.api.enums.OrePrefixes.turbineBlade;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,6 +10,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.system.material.Werkstoff;
 import bartworks.system.material.werkstoff_loaders.recipe.SimpleMetalLoader;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
@@ -26,11 +20,11 @@ public abstract class MixinSimpleMetalLoader {
 
     @Inject(method = "run(Lbartworks/system/material/Werkstoff;)V", at = @At("TAIL"), remap = false)
     private void injectSuperdensePlateRecipe(Werkstoff werkstoff, CallbackInfo ci) {
-        if (werkstoff.hasItemType(turbineBlade)) {
-            if (werkstoff.hasItemType(cellMolten)) {
+        if (werkstoff.hasItemType(OrePrefixes.turbineBlade)) {
+            if (werkstoff.hasItemType(OrePrefixes.cellMolten)) {
                 RecipeBuilder.builder()
                     .itemInputs(ItemList.Shape_Mold_Turbine_Blade.get(0))
-                    .itemOutputs(werkstoff.get(turbineBlade, 1))
+                    .itemOutputs(werkstoff.get(OrePrefixes.turbineBlade, 1))
                     .fluidInputs(werkstoff.getMolten(864))
                     .duration(
                         (int) Math.max(
@@ -41,10 +35,10 @@ public abstract class MixinSimpleMetalLoader {
                     .addTo(RecipeMaps.fluidSolidifierRecipes);
             }
 
-            if (werkstoff.hasItemType(cell)) {
+            if (werkstoff.hasItemType(OrePrefixes.cell)) {
                 RecipeBuilder.builder()
                     .itemInputs(ItemList.Shape_Mold_Turbine_Blade.get(0))
-                    .itemOutputs(werkstoff.get(turbineBlade, 1))
+                    .itemOutputs(werkstoff.get(OrePrefixes.turbineBlade, 1))
                     .fluidInputs(werkstoff.getFluidOrGas(864))
                     .duration(
                         (int) Math.max(
@@ -57,9 +51,9 @@ public abstract class MixinSimpleMetalLoader {
 
             RecipeBuilder.builder()
                 .itemInputs(
-                    werkstoff.get(ingot, 6),
+                    werkstoff.get(OrePrefixes.ingot, 6),
                     GTUtility.copyAmount(0, ItemList.Shape_Extruder_Turbine_Blade.get(1)))
-                .itemOutputs(werkstoff.get(turbineBlade, 1))
+                .itemOutputs(werkstoff.get(OrePrefixes.turbineBlade, 1))
                 .duration(
                     (int) Math.max(
                         werkstoff.getStats()
@@ -69,8 +63,8 @@ public abstract class MixinSimpleMetalLoader {
                 .addTo(RecipeMaps.extruderRecipes);
 
             RecipeBuilder.builder()
-                .itemInputs(werkstoff.get(plateDouble, 3), werkstoff.get(screw, 2))
-                .itemOutputs(werkstoff.get(turbineBlade, 1))
+                .itemInputs(werkstoff.get(OrePrefixes.plateDouble, 3), werkstoff.get(OrePrefixes.screw, 2))
+                .itemOutputs(werkstoff.get(OrePrefixes.turbineBlade, 1))
                 .duration(
                     (int) Math.max(
                         werkstoff.getStats()
@@ -80,9 +74,10 @@ public abstract class MixinSimpleMetalLoader {
                 .addTo(RecipeMaps.formingPressRecipes);
 
             GTModHandler.addCraftingRecipe(
-                werkstoff.get(turbineBlade, 1),
-                new Object[] { "ABC", "DBD", " B ", 'A', "craftingToolFile", 'B', werkstoff.get(plateDouble, 1), 'C',
-                    "craftingToolScrewdriver", 'D', werkstoff.get(screw, 1) });
+                werkstoff.get(OrePrefixes.turbineBlade, 1),
+                new Object[] { "ABC", "DBD", " B ", 'A', "craftingToolFile", 'B',
+                    werkstoff.get(OrePrefixes.plateDouble, 1), 'C', "craftingToolScrewdriver", 'D',
+                    werkstoff.get(OrePrefixes.screw, 1) });
         }
     }
 }

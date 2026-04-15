@@ -1,8 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.FDIM;
-import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.QGPIU;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -17,6 +14,7 @@ import com.science.gtnl.common.machine.multiblock.FOGSolarMuonCatalystModule;
 
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 import tectech.thing.metaTileEntity.multi.godforge.MTEForgeOfGods;
+import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
 import tectech.thing.metaTileEntity.multi.godforge.util.GodforgeMath;
 
 @Mixin(value = GodforgeMath.class, remap = false)
@@ -30,11 +28,11 @@ public abstract class MixinGodForgeMath {
             return;
         }
         if ((module instanceof FOGAlloyBlastSmelterModule || module instanceof FOGExtractorModule)
-            && godforge.isUpgradeActive(FDIM)) {
+            && godforge.isUpgradeActive(ForgeOfGodsUpgrade.FDIM)) {
             cir.setReturnValue(true);
             return;
         }
-        if (module instanceof FOGSolarMuonCatalystModule && godforge.isUpgradeActive(QGPIU)) {
+        if (module instanceof FOGSolarMuonCatalystModule && godforge.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
             cir.setReturnValue(true);
             return;
         }

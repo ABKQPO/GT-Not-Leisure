@@ -1,25 +1,11 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlocksTiered;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockFrames;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -34,13 +20,16 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -71,11 +60,11 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     @Override
     public IStructureDefinition<LargeSteamFurnace> getStructureDefinition() {
         return StructureDefinition.<LargeSteamFurnace>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement(
                 'A',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofChain(
+                    StructureUtility.ofChain(
                         buildSteamWirelessInput(LargeSteamFurnace.class).casingIndex(getCasingTextureID())
                             .dot(1)
                             .build(),
@@ -90,69 +79,74 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                             .atLeast(
                                 SteamHatchElement.InputBus_Steam,
                                 SteamHatchElement.OutputBus_Steam,
-                                InputBus,
-                                OutputBus,
-                                Maintenance)
+                                HatchElement.InputBus,
+                                HatchElement.OutputBus,
+                                HatchElement.Maintenance)
                             .buildAndChain(
-                                onElementPass(
+                                StructureUtility.onElementPass(
                                     x -> ++x.mCountCasing,
-                                    ofBlocksTiered(
+                                    StructureUtility.ofBlocksTiered(
                                         LargeSteamFurnace::getTierMachineCasing,
-                                        ImmutableList.of(Pair.of(sBlockCasings1, 10), Pair.of(sBlockCasings2, 0)),
+                                        ImmutableList.of(
+                                            Pair.of(GregTechAPI.sBlockCasings1, 10),
+                                            Pair.of(GregTechAPI.sBlockCasings2, 0)),
                                         -1,
                                         (t, m) -> t.tierMachineCasing = m,
                                         t -> t.tierMachineCasing))))))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierPipeCasing,
-                        ImmutableList.of(Pair.of(sBlockCasings2, 12), Pair.of(sBlockCasings2, 13)),
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockCasings2, 12), Pair.of(GregTechAPI.sBlockCasings2, 13)),
                         -1,
                         (t, m) -> t.tierPipeCasing = m,
                         t -> t.tierPipeCasing)))
             .addElement(
                 'C',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierFireboxCasing,
-                        ImmutableList.of(Pair.of(sBlockCasings3, 13), Pair.of(sBlockCasings3, 14)),
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockCasings3, 13), Pair.of(GregTechAPI.sBlockCasings3, 14)),
                         -1,
                         (t, m) -> t.tierFireboxCasing = m,
                         t -> t.tierFireboxCasing)))
             .addElement(
                 'D',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierFrameCasing,
-                        ImmutableList.of(Pair.of(sBlockFrames, 300), Pair.of(sBlockFrames, 305)),
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockFrames, 300), Pair.of(GregTechAPI.sBlockFrames, 305)),
                         -1,
                         (t, m) -> t.tierFrameCasing = m,
                         t -> t.tierFrameCasing)))
             .addElement(
                 'E',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierPlatedCasing,
-                        ImmutableList.of(Pair.of(blockCustomMachineCasings, 0), Pair.of(sBlockCasings2, 0)),
+                        ImmutableList.of(Pair.of(blockCustomMachineCasings, 0), Pair.of(GregTechAPI.sBlockCasings2, 0)),
                         -1,
                         (t, m) -> t.tierPlatedCasing = m,
                         t -> t.tierPlatedCasing)))
             .addElement(
                 'F',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierBrickCasing,
                         ImmutableList
                             .of(Pair.of(BlockLoader.metaBlockColumn, 0), Pair.of(BlockLoader.metaBlockColumn, 1)),
                         -1,
                         (t, m) -> t.tierBrickCasing = m,
                         t -> t.tierBrickCasing)))
-            .addElement('G', ofBlock(Blocks.stonebrick, 0))
+            .addElement('G', StructureUtility.ofBlock(Blocks.stonebrick, 0))
             .addElement(
                 'H',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
-                    ofBlocksTiered(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierIndustrialCasing,
                         ImmutableList.of(Pair.of(BlockLoader.metaCasing02, 1), Pair.of(BlockLoader.metaCasing02, 2)),
                         -1,
@@ -193,8 +187,8 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
                 .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE_ACTIVE)
@@ -219,7 +213,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
         return new GTNLProcessingLogic() {
 
             @Override
-            @Nonnull
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(0.5 * tierMachine * (1 << (2 * Math.min(4, recipeOcCount))))

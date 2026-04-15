@@ -1,8 +1,5 @@
 package com.science.gtnl.mixins.late.Bartwork;
 
-import static gregtech.api.enums.OrePrefixes.plate;
-import static gregtech.api.enums.OrePrefixes.plateSuperdense;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,8 +24,8 @@ public abstract class MixinMultipleMetalLoader {
             final CompressionTierKey COMPRESSION_TIER = CompressionTierKey.INSTANCE;
 
             RecipeBuilder.builder()
-                .itemInputs(werkstoff.get(plate, 64))
-                .itemOutputs(werkstoff.get(plateSuperdense, 1))
+                .itemInputs(werkstoff.get(OrePrefixes.plate, 64))
+                .itemOutputs(werkstoff.get(OrePrefixes.plateSuperdense, 1))
 
                 .metadata(COMPRESSION_TIER, 1)
                 .duration(

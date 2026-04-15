@@ -1,15 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.enums.HatchElement.InputBus;
-import static gregtech.api.enums.HatchElement.Maintenance;
-import static gregtech.api.enums.HatchElement.OutputBus;
-import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -20,17 +11,20 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -61,11 +55,11 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     @Override
     public IStructureDefinition<SteamWoodcutter> getStructureDefinition() {
         return StructureDefinition.<SteamWoodcutter>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 23))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 23))
             .addElement(
                 'B',
-                ofChain(
+                StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamWoodcutter.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
                         .dot(1)
@@ -76,20 +70,24 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
                     buildSteamInput(SteamWoodcutter.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
                         .dot(1)
                         .build(),
-                    buildHatchAdder(SteamWoodcutter.class)
+                    GTStructureUtility.buildHatchAdder(SteamWoodcutter.class)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
-                            InputBus,
+                            HatchElement.InputBus,
                             SteamHatchElement.OutputBus_Steam,
-                            OutputBus,
-                            Maintenance)
+                            HatchElement.OutputBus,
+                            HatchElement.Maintenance)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
                         .dot(1)
                         .buildAndChain(),
-                    ofBlock(BlockLoader.metaCasing, 24)))
-            .addElement('C', ofBlock(BlockLoader.metaCasing, 25))
-            .addElement('D', chainAllGlasses())
-            .addElement('E', ofChain(ofBlockAnyMeta(Blocks.dirt), ofBlockAnyMeta(Blocks.grass)))
+                    StructureUtility.ofBlock(BlockLoader.metaCasing, 24)))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 25))
+            .addElement('D', GTStructureUtility.chainAllGlasses())
+            .addElement(
+                'E',
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(Blocks.dirt),
+                    StructureUtility.ofBlockAnyMeta(Blocks.grass)))
             .build();
     }
 

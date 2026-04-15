@@ -1,8 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-import static gregtech.api.util.GTRecipeConstants.QFT_CATALYST;
-import static gregtech.api.util.GTRecipeConstants.QFT_FOCUS_TIER;
 import static gtPlusPlus.api.recipe.GTPPRecipeMaps.quantumForceTransformerRecipes;
 
 import com.science.gtnl.api.IRecipePool;
@@ -16,6 +14,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -39,8 +38,8 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
                 ItemList.SuperconductorComposite.get(1))
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_UHV)
-            .metadata(QFT_CATALYST, GregtechItemList.RareEarthGroupCatalyst.get(0))
-            .metadata(QFT_FOCUS_TIER, 2)
+            .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.RareEarthGroupCatalyst.get(0))
+            .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 2)
             .addTo(QFT);
 
         RecipeBuilder.builder()
@@ -62,8 +61,8 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
                 Materials.Oxygen.getPlasma(100))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_UEV)
-            .metadata(QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
-            .metadata(QFT_FOCUS_TIER, 2)
+            .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
+            .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 2)
             .addTo(QFT);
 
         RecipeBuilder.builder()
@@ -80,8 +79,8 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
             .fluidInputs(Materials.SulfuricAcid.getFluid(16000), Materials.Oxygen.getPlasma(100))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_UEV)
-            .metadata(QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
-            .metadata(QFT_FOCUS_TIER, 2)
+            .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.SimpleNaquadahCatalyst.get(0))
+            .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 2)
             .addTo(QFT);
 
         GTValues.RA.stdBuilder()
@@ -97,8 +96,8 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
                 Materials.Oxygen.getPlasma(100))
             .duration(5 * SECONDS)
             .eut(TierEU.RECIPE_UMV)
-            .metadata(QFT_CATALYST, GregtechItemList.AdvancedNaquadahCatalyst.get(0))
-            .metadata(QFT_FOCUS_TIER, 3)
+            .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.AdvancedNaquadahCatalyst.get(0))
+            .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 3)
             .addTo(quantumForceTransformerRecipes);
 
         RecipeBuilder.builder()
@@ -113,8 +112,8 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
                 Materials.Indium.getDust(64))
             .duration(20 * SECONDS)
             .eut(TierEU.RECIPE_UV)
-            .metadata(QFT_CATALYST, GregtechItemList.TitaTungstenIndiumCatalyst.get(0))
-            .metadata(QFT_FOCUS_TIER, 1)
+            .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.TitaTungstenIndiumCatalyst.get(0))
+            .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 1)
             .addTo(quantumForceTransformerRecipes);
     }
 }

@@ -2,7 +2,7 @@ package com.science.gtnl.utils.recipes;
 
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.OverclockCalculator;
@@ -83,7 +83,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     public static final double LOG4 = Math.log(4);
 
     /** Creates calculator that doesn't do OC at all. Will use recipe duration. */
-    public static GTNLOverclockCalculator ofNoOverclock(@Nonnull GTRecipe recipe) {
+    public static GTNLOverclockCalculator ofNoOverclock(@NotNull GTRecipe recipe) {
         return ofNoOverclock(recipe.mEUt, recipe.mDuration);
     }
 
@@ -100,7 +100,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
 
     // region setters
     /** @param recipeEUt Sets the Recipe's starting voltage */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setRecipeEUt(long recipeEUt) {
         this.recipeEUt = recipeEUt;
@@ -108,7 +108,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** @param machineVoltage Sets the EUt that the machine can use. This is the voltage of the machine */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setEUt(long machineVoltage) {
         this.machineVoltage = machineVoltage;
@@ -116,7 +116,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** @param duration Sets the duration of the recipe */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setDuration(int duration) {
         this.duration = duration;
@@ -124,14 +124,14 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** @param minDuration Sets the min duration of the recipe */
-    @Nonnull
+    @NotNull
     public GTNLOverclockCalculator setMinDuration(int minDuration) {
         this.minDuration = minDuration;
         return this;
     }
 
     /** @param machineAmperage Sets the Amperage that the machine can support */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setAmperage(long machineAmperage) {
         this.machineAmperage = machineAmperage;
@@ -139,7 +139,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Enables Perfect OC in calculation */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator enablePerfectOC() {
         this.durationDecreasePerOC = 4;
@@ -147,14 +147,14 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Enables Perfect OC in calculation */
-    @Nonnull
+    @NotNull
     public GTNLOverclockCalculator setPerfectOC(boolean enable) {
         this.durationDecreasePerOC = enable ? 4 : 2;
         return this;
     }
 
     /** Set if we should be calculating overclocking using EBF's perfectOC */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setHeatOC(boolean heatOC) {
         this.heatOC = heatOC;
@@ -162,7 +162,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets if we should add a heat discount at the start of calculating an overclock, just like the EBF */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setHeatDiscount(boolean heatDiscount) {
         this.heatDiscount = heatDiscount;
@@ -170,7 +170,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets the starting heat of the recipe */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setRecipeHeat(int recipeHeat) {
         this.recipeHeat = recipeHeat;
@@ -178,7 +178,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets the heat of the coils on the machine */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setMachineHeat(int machineHeat) {
         this.machineHeat = machineHeat;
@@ -186,7 +186,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets an EUtDiscount. 0.9 is 10% less energy. 1.1 is 10% more energy */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setEUtDiscount(double aEUtDiscount) {
         this.eutModifier = aEUtDiscount;
@@ -194,7 +194,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets a Speed Boost for the multiblock. 0.9 is 10% faster. 1.1 is 10% slower */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setDurationModifier(double aSpeedBoost) {
         this.durationModifier = aSpeedBoost;
@@ -202,14 +202,14 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets a Extra Speed Boost for the multiblock. 0.9 is 10% faster. 1.1 is 10% slower */
-    @Nonnull
+    @NotNull
     public GTNLOverclockCalculator setExtraDurationModifier(double aSpeedBoost) {
         this.extraDurationModifier = aSpeedBoost;
         return this;
     }
 
     /** Sets the parallel that the multiblock uses */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setParallel(int aParallel) {
         this.parallel = aParallel;
@@ -217,14 +217,14 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets the max tiers above the machine's voltage a valid recipe can be */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setMaxTierSkips(int aMaxTierSkips) {
         this.maxTierSkip = aMaxTierSkips;
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setUnlimitedTierSkips() {
         this.maxTierSkip = Integer.MAX_VALUE;
@@ -235,7 +235,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
      * Sets the heat discount during OC calculation if HeatOC is used. Default: 0.95 = 5% discount Used like a EU/t
      * Discount
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setHeatDiscountMultiplier(double heatDiscountExponent) {
         this.heatDiscountExponent = heatDiscountExponent;
@@ -246,7 +246,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
      * Sets the amount that the eut would be multiplied by per overclock. Do not set as 1(ONE) if the duration decrease
      * is also 1(ONE)!
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setEUtIncreasePerOC(double eutIncreasePerOC) {
         if (eutIncreasePerOC <= 0)
@@ -259,7 +259,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
      * Sets the amount that the duration would be divided by per overclock. Do not set as 1(ONE) if the eut increase is
      * also 1(ONE)!
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setDurationDecreasePerOC(double durationDecreasePerOC) {
         if (durationDecreasePerOC <= 0)
@@ -272,7 +272,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
      * Sets the maximum number of overclocks that can be performed, regardless of how much power is available.
      * Negative values are rounded up to 0.
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setMaxOverclocks(int maxOverclocks) {
         this.maxOverclocks = Math.max(maxOverclocks, 0);
@@ -283,21 +283,21 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
      * Sets the maximum number of regular overclocks that can be performed before exotic (e.g. laser) overclocks,
      * regardless of how much power is available. Negative values are rounded up to 0.
      */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setMaxRegularOverclocks(int maxRegularOverclocks) {
         this.maxRegularOverclocks = Math.max(maxRegularOverclocks, 0);
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setLaserOC(boolean laserOC) {
         this.laserOC = laserOC;
         return this;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setAmperageOC(boolean amperageOC) {
         this.amperageOC = amperageOC;
@@ -305,7 +305,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Set a supplier for calculating custom duration for when its needed under one tick */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setDurationUnderOneTickSupplier(Supplier<Double> supplier) {
         this.durationUnderOneTickSupplier = supplier;
@@ -313,7 +313,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Sets if we should do overclocking or not */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator setNoOverclock(boolean noOverclock) {
         this.noOverclock = noOverclock;
@@ -373,7 +373,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     }
 
     /** Call this when all values have been put it. */
-    @Nonnull
+    @NotNull
     @Override
     public GTNLOverclockCalculator calculate() {
         if (calculated) {

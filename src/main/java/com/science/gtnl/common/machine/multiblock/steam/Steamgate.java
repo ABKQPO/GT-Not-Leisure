@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_STEAM_GATE;
 
@@ -17,6 +15,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -92,9 +91,9 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     @Override
     public IStructureDefinition<Steamgate> getStructureDefinition() {
         return StructureDefinition.<Steamgate>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaCasing, 21))
-            .addElement('B', ofBlock(BlockLoader.metaCasing, 22))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 21))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 22))
             .build();
     }
 
