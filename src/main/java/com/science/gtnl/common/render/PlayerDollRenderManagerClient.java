@@ -2,7 +2,8 @@ package com.science.gtnl.common.render;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.BufferedReader;
