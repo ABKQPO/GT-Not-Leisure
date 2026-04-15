@@ -2,7 +2,7 @@ package com.science.gtnl.common.block.blocks.item;
 
 import static tectech.rendering.EOH.EOHRenderingUtils.renderStarLayer;
 
-import java.awt.*;
+import java.awt.Color;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

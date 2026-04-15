@@ -3,7 +3,7 @@ package com.science.gtnl.common.render.tile;
 import static tectech.Reference.MODID;
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
