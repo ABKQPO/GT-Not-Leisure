@@ -197,6 +197,8 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
                         HatchElement.Maintenance,
                         HatchElement.InputBus,
                         HatchElement.OutputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12))
