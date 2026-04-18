@@ -39,6 +39,7 @@ public enum ModList implements IMod, ITargetMod {
     NewHorizonsCoreMod(ModIds.NEW_HORIZONS_CORE_MOD, Names.NEW_HORIZONS_CORE_MOD,
         "com.dreammaster.coremod.DreamCoreMod"),
     GalaxySpace(ModIds.GALAXY_SPACE, Names.GALAXY_SPACE),
+    BetterQuesting(ModIds.BETTER_QUESTING, Names.BETTER_QUESTING),
     EnhancedLootBags(ModIds.ENHANCED_LOOT_BAGS, Names.ENHANCED_LOOT_BAGS),
     NotEnoughEnergistics(ModIds.NOT_ENOUGH_ENERGISTICS, Names.NOT_ENOUGH_ENERGISTICS),
     NEICustomDiagrams(ModIds.N_E_I_CUSTOM_DIAGRAMS, Names.N_E_I_CUSTOM_DIAGRAMS),
@@ -68,6 +69,7 @@ public enum ModList implements IMod, ITargetMod {
 
         public static final String NEW_HORIZONS_CORE_MOD = "dreamcraft";
         public static final String GALAXY_SPACE = "GalaxySpace";
+        public static final String BETTER_QUESTING = "betterquesting";
         public static final String ENHANCED_LOOT_BAGS = "enhancedlootbags";
         public static final String NOT_ENOUGH_ENERGISTICS = "neenergistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "neicustomdiagram";
@@ -98,6 +100,7 @@ public enum ModList implements IMod, ITargetMod {
 
         public static final String NEW_HORIZONS_CORE_MOD = "GT New Horizons Core Mod";
         public static final String GALAXY_SPACE = "GalaxySpace";
+        public static final String BETTER_QUESTING = "BetterQuesting";
         public static final String ENHANCED_LOOT_BAGS = "Enhanced Loot Bags";
         public static final String NOT_ENOUGH_ENERGISTICS = "Not Enough Energistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "NEI Custom Diagrams";

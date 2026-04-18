@@ -171,6 +171,11 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
+    BETTER_QUESTING_RUNTIME(new MixinBuilder("BetterQuesting Runtime API Mixins")
+        .addCommonMixins("BetterQuesting.MixinQuestCommandDefaults")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.BetterQuesting)),
+
     ENHANCED_LOOT_BAGS(
         new MixinBuilder("Enhanced Loot Bags Mixin").addCommonMixins("EnhancedLootBags.AccessorItemLootBag")
             .setPhase(Phase.LATE)
