@@ -1,0 +1,3 @@
+GTNotLeisure75SteamAge==: Tier 0.75 - Superheated
+GTNotLeisure99SteamAge==: Tier 0.999... - Supercritical
+GTNotLeisureQuestsLine==: GTNotLeisure

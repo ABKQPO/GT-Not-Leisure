@@ -1,0 +1,50 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 5282602499396487894,
+      "questIDLow:4": -7172910624797638119
+    },
+    "1:10": {
+      "questIDHigh:4": 5263079562358443046,
+      "questIDLow:4": -6028473547931973847
+    },
+    "2:10": {
+      "questIDHigh:4": -6219847932878175202,
+      "questIDLow:4": -8161024614964301579
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "Regular steam has been great so far, but some applications will need you to dial the heat up further. For now, you only have one way of making §6superheated§r steam - using your Hyper Pressure Reactor.\n\nNo turning back now.\n\n[note]Tip: You can use this new steam to make wrought iron super efficiently in the mixer.[/note]",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "IC2:fluidSuperheatedSteam"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "Superheated",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 2935763810808253610,
+  "questIDLow:4": -4854258733658814089,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -712936122864811551,
+      "questIDLow:4": -4859747647121866873
+    },
+    "1:10": {
+      "questIDHigh:4": 4630389253776950328,
+      "questIDLow:4": -5857630423989933998
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "turns out that GTNL dont have the open heart blast furnace...\nIf the mod adds it maybe i update the quest for it\nHere take this as compensation\n",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 140,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "Better bla... wait a minute",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 4904242270891625341,
+  "questIDLow:4": -4703223321626287955,
+  "rewards:9": {
+    "0:10": {
+      "ignoreDisabled:1": 0,
+      "index:3": 0,
+      "rewardID:8": "bq_standard:item",
+      "rewards:9": {
+        "0:10": {
+          "Count:3": 12,
+          "Damage:2": 25111,
+          "OreDict:8": "",
+          "id:8": "bartworks:gt.bwMetaGeneratedingot"
+        }
+      }
+    }
+  },
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    }
+  }
+}
