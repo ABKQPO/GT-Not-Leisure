@@ -9,11 +9,13 @@ import com.hfstudio.bqapi.BQApi;
 import com.hfstudio.bqapi.api.builder.Chapters;
 import com.hfstudio.bqapi.api.definition.ChapterDefinition;
 
+import betterquesting.api.utils.UuidConverter;
+
 public class QuestLoader {
 
-    public static final UUID STEAM_AGE_UUID = UUID.fromString("AAAAAAAAAAAAAAAAAAAAAg==");
+    public static final UUID STEAM_AGE_UUID = UuidConverter.decodeUuid("AAAAAAAAAAAAAAAAAAAAAg==");
 
-    public static final UUID COINS_UUID = UUID.fromString("AAAAAAAAAAAAAAAAAAAAEA==");
+    public static final UUID COINS_UUID = UuidConverter.decodeUuid("AAAAAAAAAAAAAAAAAAAAEA==");
 
     public static final String RESOURCE_MOD_ID = "sciencenotleisure";
     public static final String RESOURCE_ROOT = "quest";
