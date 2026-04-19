@@ -395,10 +395,6 @@ Tooltip_OriginalOutputHatch_04=Restricted Output Hatches are given priority for 
 VaultPortHatch=Vault Port Assembly
 Tooltip_VaultPortHatch_00=All-in-one access for the Vault
 
-NanitesInputBus=Nanites Input Bus
-Tooltip_NanitesInputBus_00=Nanites Input for Multiblocks
-Tooltip_NanitesInputBus_01=Capacity: 16 stacks
-
 TypeFilteredInputBusME=Filtered Stocking Input Bus (ME)
 SuperTypeFilteredInputBusME=Super Filtered Stocking Input Bus (ME)
 Tooltip_TypeFilteredInputBusME_00=Advanced filtered item input for Multiblocks

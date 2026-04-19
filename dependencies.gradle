@@ -35,10 +35,6 @@ dependencies {
     compileOnlyApi("com.github.GTNewHorizons:EnhancedLootBags:1.2.8:dev")
     compileOnlyApi("com.github.GTNewHorizons:Chisel:2.17.6-GTNH:dev")
 
-    devOnlyNonPublishable("com.github.GTNewHorizons:BetterQuesting:3.8.32-GTNH:dev")
-    testImplementation("com.github.GTNewHorizons:BetterQuesting:3.8.32-GTNH:dev")
-    testImplementation("junit:junit:4.13.2")
-
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughEnergistics:1.7.14:dev")
 
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.2.2:dev")
@@ -56,6 +52,11 @@ dependencies {
 
     compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.7.15:dev") { transitive = false }
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
+
+    compileOnlyApi("com.github.ABKQPO:BetterQuestingAPI:1.0.2:dev") { transitive = false}
+    compileOnlyApi("com.github.GTNewHorizons:BetterQuesting:3.8.35-GTNH:dev") { transitive = false}
+    testImplementation("com.github.GTNewHorizons:BetterQuesting:3.8.32-GTNH:dev")
+    testImplementation("junit:junit:4.13.2")
 
     compileOnlyApi files("libs/extrautilities-1.2.12.jar")
 }

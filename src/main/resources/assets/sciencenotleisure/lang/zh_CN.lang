@@ -395,10 +395,6 @@ Tooltip_OriginalOutputHatch_04=被设定过的输出仓在多方块中拥有更�
 VaultPortHatch=保险库多方块输入/输出总成
 Tooltip_VaultPortHatch_00=保险库的一站式访问节点
 
-NanitesInputBus=纳米输入总线
-Tooltip_NanitesInputBus_00=为多方块机器输入纳米蜂群
-Tooltip_NanitesInputBus_01=物品容量：16组
-
 TypeFilteredInputBusME=过滤存储输入总线(ME)
 SuperTypeFilteredInputBusME=超级过滤存储输入总线(ME)
 Tooltip_TypeFilteredInputBusME_00=为多方块机器输入匹配物品(进阶)

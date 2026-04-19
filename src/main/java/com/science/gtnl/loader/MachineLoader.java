@@ -39,7 +39,6 @@ import com.science.gtnl.common.machine.hatch.HumongousOutputBus;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
-import com.science.gtnl.common.machine.hatch.NanitesInputBus;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.OredictInputBusME;
 import com.science.gtnl.common.machine.hatch.OriginalInputHatch;
@@ -2527,13 +2526,6 @@ public class MachineLoader {
                 StatCollector.translateToLocal("OredictInputBusME"),
                 false));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OredictInputBusME.get(1), AnimatedText.SNL_SKYINR);
-
-        GTNLItemList.NanitesInputBus.set(
-            new NanitesInputBus(
-                GTNLMachineID.NANITES_INPUT_BUS.ID,
-                "NanitesInputBus",
-                StatCollector.translateToLocal("NanitesInputBus")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanitesInputBus.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.VaultPortHatch.set(
             new VaultPortHatch(

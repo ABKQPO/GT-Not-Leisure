@@ -1196,7 +1196,6 @@ public enum GTNLItemList implements IItemContainer {
     OriginalInputHatch,
     OriginalOutputHatch,
     VaultPortHatch,
-    NanitesInputBus,
     Enchanting,
     OredictInputBusME,
     SuperOredictInputBusME,
