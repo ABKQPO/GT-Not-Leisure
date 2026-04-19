@@ -34,7 +34,7 @@ public class QuestLoader {
                 .resourceFolder(RESOURCE_MOD_ID, RESOURCE_ROOT)
                 .lineDirectory("Tier0999Supercri-GTNotLeisure99SteamAge==")
                 .uuidFromResource()
-                .orderAfter("GTNotLeisure75SteamAge")
+                .orderAfter(UuidConverter.decodeUuid("GTNotLeisure75SteamAge=="))
                 .build(),
             Chapters.imported("GTNotLeisureQuestsLine")
                 .resourceFolder(RESOURCE_MOD_ID, RESOURCE_ROOT)
