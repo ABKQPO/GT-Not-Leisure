@@ -1,0 +1,107 @@
+itemGroup.ReAvaritia=Avaritia: Reborn
+
+gtnl.gui.config.general.re_avaritia=Re:Avaritia
+gtnl.gui.config.general.re_avaritia.tooltip=Adjust the balance and mechanics of Avaritia-related items.
+gtnl.gui.config.general.re_avaritia.unbreakore=Ultimate Anvil Unbreakable OreDict
+gtnl.gui.config.general.re_avaritia.unbreakore.tooltip=OreDict list used to determine unbreakable blocks for the Ultimate Anvil.
+gtnl.gui.config.general.re_avaritia.infinity_sword=Infinity Sword
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablebypass=Infinity Sword Bypass
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablebypass.tooltip=Enable the Infinity Sword's ability to bypass mechanisms like Blood Swords and Draconic Armor.
+gtnl.gui.config.general.re_avaritia.infinity_sword.enableexplosion=Infinity Sword Explosion
+gtnl.gui.config.general.re_avaritia.infinity_sword.enableexplosion.tooltip=Enable an explosion when the Infinity Sword hits a player wearing the full Infinity Suit.
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablespecialrender=Player Special Render
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablespecialrender.tooltip=Enable special visual effects for players holding the Infinity Sword.
+gtnl.gui.config.general.re_avaritia.chronarch_clock=Chronarch's Clock
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockcooldown=Cooldown
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockcooldown.tooltip=Adjust the cooldown time for the Chronarch's Clock.
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockdurationticks=Duration (Ticks)
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockdurationticks.tooltip=Duration of the Chronarch's Clock effect in ticks.
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockradius=Radius
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockradius.tooltip=Effective radius of the Chronarch's Clock in blocks.
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultiplier=Speed Multiplier
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultiplier.tooltip=The speed multiplier applied by the Chronarch's Clock effect.
+
+tile.BlockSoulFarmland.name=Soul Farmland
+
+tile.NeutronCollector.name=§bNeutronium Collector
+tile.DenseNeutronCollector.name=§dDense Neutronium Collector
+tile.DenserNeutronCollector.name=§6Denser Neutronium Collector
+tile.DensestNeutronCollector.name=§cUltimate Dense Neutronium Collector
+container.NeutronCollector=Neutronium Collector
+container.DenseNeutronCollector=Dense Neutronium Collector
+container.DenserNeutronCollector=Denser Neutronium Collector
+container.DensestNeutronCollector=Ultimate Dense Neutronium Collector
+GUI_NeutronCollector_Progress=Progress:
+
+tile.ExtremeAnvil.name=§cThe Final Anvil
+entity.reavaritia.EntityExtremeAnvil.name=§cThe Final Anvil
+container.ExtremeAnvil=The Final Anvil
+
+item.CrystalSword.name=§dCrystal Sword
+Tooltip_CrystalSword_00=§8§oWhere the blade points, the rift is unimpeded; where the shadow falls, the enemy vanishes.
+Tooltip_CrystalSword_Aura_On=Switch to Aura Mode
+Tooltip_CrystalSword_Aura_Off=Switch to Normal Mode
+Tooltip_CrystalSword_Aura_00=Skill cooldown! Remaining time: 
+Tooltip_CrystalSword_Aura_01= seconds
+item.CrystalPickaxe.name=§dCrystal Pickaxe
+Tooltip_CrystalPickaxe_00=§8§oFortune reveals treasures; precision leaves no waste.
+Tooltip_CrystalPickaxe_Enchant_1=Switch to Fortune III
+Tooltip_CrystalPickaxe_Enchant_2=Switch to Silk Touch
+item.CrystalAxe.name=§dCrystal Axe
+Tooltip_CrystalAxe_00=§8§oSplits rocks and shatters shields.
+item.CrystalShovel.name=§dCrystal Shovel
+Tooltip_CrystalShovel_00=§8§oDigs swiftly as the wind; settles calmly when done.
+item.CrystalHoe.name=§dEternal Hoe
+Tooltip_CrystalHoe_00=§8§oOne strike, all things flourish; one lift, years are born.
+
+item.BlazeSword.name=§dBlaze Sword
+Tooltip_BlazeSword_00=§8§oSears enemies on contact.
+item.BlazePickaxe.name=§dBlaze Pickaxe
+Tooltip_BlazePickaxe_00=§8§oSmelts ores upon mining.
+item.BlazeAxe.name=§dBlaze Axe
+Tooltip_BlazeAxe_00=§8§oTurns logs into charcoal.
+item.BlazeShovel.name=§dBlaze Shovel
+Tooltip_BlazeShovel_00=§8§oA shovel infused with Nether heat.
+item.BlazeHoe.name=§dBlaze Hoe
+Tooltip_BlazeHoe_00=§8§oStimulates crop growth with heat.
+Tooltip_Blaze_Smelt_On=Smelting mode activated!
+Tooltip_Blaze_Smelt_Off=Smelting mode deactivated!
+
+item.InfinitySword.name=Sword of the Cosmos
+Tooltip_InfinitySword_00=§8§oGodslayer, heavens fall; to the void, all returns.
+Tooltip_InfinitySword_01=§9Ignores the blocking effect of the Blood Sword while held
+Tooltip_InfinitySword_02=§9Crouch and left-click to bypass Draconic Armor's protection
+Damage_InfinitySword=Infinite
+Tooltip_InfinitySword_Aura_00=Skill cooldown! Remaining time: 
+Tooltip_InfinitySword_Aura_01= seconds
+item.InfinityPickaxe.name=Pickaxe of World Collapse
+Tooltip_InfinityPickaxe_00=§8§oShatter worlds, break all bounds.
+item.InfinityAxe.name=Axe of Nature's Desolation
+Tooltip_InfinityAxe_00=§8§oOne swing silences all nature.
+item.InfinityHoe.name=Hoe of Earth's Rebirth
+Tooltip_InfinityHoe_00=§8§oFrom decay, life awakens.
+item.InfinityShovel.name=Shovel of Planet Devourer
+Tooltip_InfinityShovel_00=§8§oDevours earth, swift as storm.
+Tooltip_Infinity_Mode_1=Switch to Normal Mode
+Tooltip_Infinity_Mode_2=Switch to Area Mode
+
+item.InfinityElytra.name=Infinity Elytra
+Tooltip_InfinityElytra_00=§8§oOne wingbeat, the sky is my path.
+
+item.ChronarchsClock.name=Chronarch's Clock
+Tooltip_ChronarchsClock_00=§8§oManipulates time...
+Tooltip_ChronarchsClock_01=Clock is cooling down!
+
+item.InfinityBucket.name=§6Bucket of the Distant Sea
+Tooltip_InfinityBucket_00=§8§oDevours everything...
+Tooltip_InfinityBucket_01=Current Fluid: %s | Remaining: %s
+Tooltip_InfinityBucket_02=All fluids cleared!
+
+item.InfinityTotem.name=§dInfinity Totem
+Tooltip_InfinityTotem_00=§8§oEternal Protection...
+Tooltip_InfinityTotem_Enable=The Infinity Totem has blocked a death...
+
+item.MatterCluster.name=§bMatter Cluster
+Tooltip_MatterCluster_Counter=Items
+Tooltip_MatterCluster_00=§8§oUsed to destroy everything.
+Tooltip_MatterCluster_01=§8§oPress SHIFT for details.

@@ -8,12 +8,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,12 +62,6 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
         toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityShovel_00"));
-    }
-
-    @Override
-    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        ItemStack pick = new ItemStack(this);
-        list.add(pick);
     }
 
     @Override

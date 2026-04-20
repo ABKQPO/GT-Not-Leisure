@@ -43,7 +43,8 @@ public enum ModList implements IMod, ITargetMod {
     EnhancedLootBags(ModIds.ENHANCED_LOOT_BAGS, Names.ENHANCED_LOOT_BAGS),
     NotEnoughEnergistics(ModIds.NOT_ENOUGH_ENERGISTICS, Names.NOT_ENOUGH_ENERGISTICS),
     NEICustomDiagrams(ModIds.N_E_I_CUSTOM_DIAGRAMS, Names.N_E_I_CUSTOM_DIAGRAMS),
-    AvaritiaAddons(ModIds.AVARITIA_ADDONS, Names.AVARITIA_ADDONS),;
+    AvaritiaAddons(ModIds.AVARITIA_ADDONS, Names.AVARITIA_ADDONS),
+    EtFuturumRequiem(ModIds.ET_FUTURUM_REQUIEM, Names.ET_FUTURUM_REQUIEM),;
 
     public static class ModIds {
 
@@ -74,6 +75,7 @@ public enum ModList implements IMod, ITargetMod {
         public static final String NOT_ENOUGH_ENERGISTICS = "neenergistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "neicustomdiagram";
         public static final String AVARITIA_ADDONS = "avaritiaddons";
+        public static final String ET_FUTURUM_REQUIEM = "etfuturum";
     }
 
     public static class Names {
@@ -105,6 +107,7 @@ public enum ModList implements IMod, ITargetMod {
         public static final String NOT_ENOUGH_ENERGISTICS = "Not Enough Energistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "NEI Custom Diagrams";
         public static final String AVARITIA_ADDONS = "Avaritia Addons";
+        public static final String ET_FUTURUM_REQUIEM = "Et Futurum Requiem";
     }
 
     public final String ID;

@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.network;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.relauncher.Side;
+import gregtech.api.enums.Mods;
 
 public class NetWorkHandler {
 
@@ -36,6 +37,7 @@ public class NetWorkHandler {
         registerMessage(PlaceItemInHotbarPacket.class, i++, Side.CLIENT);
         registerMessage(RequestGameProfilePacket.class, i++, Side.SERVER);
         registerMessage(SwitchToCustomGuiPacket.class, i++, Side.SERVER);
+        if (Mods.EtFuturumRequiem.isModLoaded()) registerMessage(ElytraBoostPacket.class, i++, Side.SERVER);
     }
 
     private static <T extends IMessageHandler<T, IMessage> & IMessage> void registerMessage(Class<T> c, int i,

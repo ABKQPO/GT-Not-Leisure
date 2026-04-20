@@ -1,0 +1,107 @@
+itemGroup.ReAvaritia=无尽：重生
+
+gtnl.gui.config.general.re_avaritia=无尽贪婪重制版
+gtnl.gui.config.general.re_avaritia.tooltip=调整寰宇支配之剑等神器的平衡性
+gtnl.gui.config.general.re_avaritia.unbreakore=终焉之砧不可破坏矿辞
+gtnl.gui.config.general.re_avaritia.unbreakore.tooltip=用于终焉之砧判定不可破坏方块的矿辞
+gtnl.gui.config.general.re_avaritia.infinity_sword=寰宇支配之剑
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablebypass=寰宇支配之剑机制穿透
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablebypass.tooltip=启用寰宇支配之剑对咒灵之剑与龙之护甲的穿透机制
+gtnl.gui.config.general.re_avaritia.infinity_sword.enableexplosion=寰宇支配之剑爆炸
+gtnl.gui.config.general.re_avaritia.infinity_sword.enableexplosion.tooltip=启用后，寰宇支配之剑击中全套无尽护甲时会产生爆炸
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablespecialrender=玩家特效渲染
+gtnl.gui.config.general.re_avaritia.infinity_sword.enablespecialrender.tooltip=启用持有寰宇支配之剑的玩家特效渲染
+gtnl.gui.config.general.re_avaritia.chronarch_clock=时序僭越之钟
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockcooldown=冷却
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockcooldown.tooltip=调整时序僭越之钟的冷却时间
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockdurationticks=持续时间(刻)
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockdurationticks.tooltip=时序僭越之钟效果持续的刻数
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockradius=范围
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockradius.tooltip=时序僭越之钟的有效范围(单位：方块)
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultiplier=速度倍率
+gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultiplier.tooltip=时序僭越之钟效果的速度倍率
+
+tile.BlockSoulFarmland.name=灵魂耕地
+
+tile.NeutronCollector.name=§b中子态素收集器
+tile.DenseNeutronCollector.name=§d致密中子态素收集器
+tile.DenserNeutronCollector.name=§6高致密中子态素收集器
+tile.DensestNeutronCollector.name=§c终极致密中子态素收集器
+container.NeutronCollector=中子态素收集器
+container.DenseNeutronCollector=致密中子态素收集器
+container.DenserNeutronCollector=高致密中子态素收集器
+container.DensestNeutronCollector=终极致密中子态素收集器
+GUI_NeutronCollector_Progress=进度：
+
+tile.ExtremeAnvil.name=§c终焉之砧
+entity.reavaritia.EntityExtremeAnvil.name=§c终焉之砧
+container.ExtremeAnvil=终焉之砧
+
+item.CrystalSword.name=§d双锋裂界之剑
+Tooltip_CrystalSword_00=§8§o锋刃所向，裂界无阻；剑影所至，敌影无存。
+Tooltip_CrystalSword_Aura_On=切换到 剑气模式
+Tooltip_CrystalSword_Aura_Off=切换到 普通模式
+Tooltip_CrystalSword_Aura_00=技能冷却中！ 剩余时间： 
+Tooltip_CrystalSword_Aura_01= 秒
+item.CrystalPickaxe.name=§d魔能双生之镐
+Tooltip_CrystalPickaxe_00=§8§o时运所至，宝物尽现；精准所及，原石无缺。
+Tooltip_CrystalPickaxe_Enchant_1=切换到 时运 III
+Tooltip_CrystalPickaxe_Enchant_2=切换到 精准采集
+item.CrystalAxe.name=§d晶能裂岩之斧
+Tooltip_CrystalAxe_00=§8§o裂岩破盾，坚盾成空。
+item.CrystalShovel.name=§d晶域疾驰之铲
+Tooltip_CrystalShovel_00=§8§o铲起，疾驰如风；铲落，缓慢无踪。
+item.CrystalHoe.name=§d亘古不毁之锄
+Tooltip_CrystalHoe_00=§8§o一锄落，万物兴；再锄起，岁月生。
+
+item.BlazeSword.name=§d炽焰之啄颅剑
+Tooltip_BlazeSword_00=§8§o斩骷髅首级，后烧至焦黑。
+item.BlazePickaxe.name=§d炽岩之熔山镐
+Tooltip_BlazePickaxe_00=§8§o熔山，炽热，熔炼已成。
+item.BlazeAxe.name=§d炽灭之焚林斧
+Tooltip_BlazeAxe_00=§8§o炽灭焚林，木成炭。
+item.BlazeShovel.name=§d炽咒之狱火锹
+Tooltip_BlazeShovel_00=§8§o自下界而生的咒语。
+item.BlazeHoe.name=§d炽魂之耘灵锄
+Tooltip_BlazeHoe_00=§8§o以灵魂之力，助万物生长。
+Tooltip_Blaze_Smelt_On=熔炼模式已激活！ 
+Tooltip_Blaze_Smelt_Off=熔炼模式已取消！ 
+
+item.InfinitySword.name=寰宇支配之剑
+Tooltip_InfinitySword_00=§8§o弑神诛天，归墟始终。
+Tooltip_InfinitySword_01=§9持有此剑时无视咒灵之剑的抵挡
+Tooltip_InfinitySword_02=§9蹲下左键攻击来无视龙之护甲的保护
+Damage_InfinitySword=无限
+Tooltip_InfinitySword_Aura_00=技能冷却中！ 剩余时间： 
+Tooltip_InfinitySword_Aura_01= 秒
+item.InfinityPickaxe.name=世界崩解之镐
+Tooltip_InfinityPickaxe_00=§8§o开天裂地，无物不破。
+item.InfinityAxe.name=自然荒芜之斧
+Tooltip_InfinityAxe_00=§8§o一斧落下，山海俱寂。
+item.InfinityHoe.name=地蕴复生之锄
+Tooltip_InfinityHoe_00=§8§o化枯为生，唤地脉之魂。
+item.InfinityShovel.name=星球吞噬之铲
+Tooltip_InfinityShovel_00=§8§o吞土裂壤，瞬如狂风。
+Tooltip_Infinity_Mode_1=切换到 普通模式
+Tooltip_Infinity_Mode_2=切换到 范围模式
+
+item.InfinityElytra.name=扶摇九霄之翼
+Tooltip_InfinityElytra_00=§8§o振翅一展，万里苍穹皆为途。
+
+item.ChronarchsClock.name=时序僭越之钟
+Tooltip_ChronarchsClock_00=§8§o掌控时间…
+Tooltip_ChronarchsClock_01=时钟冷却中！
+
+item.InfinityBucket.name=§6远海鲸吞之桶
+Tooltip_InfinityBucket_00=§8§o吞噬一切…
+Tooltip_InfinityBucket_01=当前流体：%s | 剩余量：%s
+Tooltip_InfinityBucket_02=已清空所有流体！ 
+
+item.InfinityTotem.name=§d无尽图腾
+Tooltip_InfinityTotem_00=§8§o永恒守护…
+Tooltip_InfinityTotem_Enable=无尽图腾抵挡了一次死亡…
+
+item.MatterCluster.name=§b物质团
+Tooltip_MatterCluster_Counter=物品
+Tooltip_MatterCluster_00=§8§o用于毁灭一切。
+Tooltip_MatterCluster_01=§8§o按下SHIFT显示详细信息。
