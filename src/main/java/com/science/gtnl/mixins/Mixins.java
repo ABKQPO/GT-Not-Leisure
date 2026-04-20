@@ -271,7 +271,11 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
 
-    ;
+    ET_FUTURUM_ELYTRA(
+        new MixinBuilder("InfinityElytra EtFuturum Mixin").addCommonMixins("EtFuturum.MixinStartElytraFlyingHandler")
+            .addClientMixins("EtFuturum.MixinLayerBetterElytra")
+            .setPhase(Phase.LATE)
+            .addRequiredMod(ModList.EtFuturumRequiem)),;
 
     private final MixinBuilder builder;
 

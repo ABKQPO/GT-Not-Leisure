@@ -4,10 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -23,7 +19,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.common.machine.hatch.NanitesInputBus;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
@@ -33,7 +28,6 @@ import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
-import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -41,8 +35,6 @@ import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTUtility;
-import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -56,8 +48,6 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     private static final int HORIZONTAL_OFF_SET = 95;
     private static final int VERTICAL_OFF_SET = 26;
     private static final int DEPTH_OFF_SET = 69;
-
-    public NanitesInputBus nanitesInputBus;
 
     public double euDiscount = 1;
     public double speedBonus = 1;
@@ -118,8 +108,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
                         HatchElement.OutputBus,
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon,
-                        CustomHatchElement.NanitesInputBus)
+                        ParallelCon)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -269,55 +258,4 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.TreeDiagramRecipes;
     }
-
-    public boolean addNanitesInputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) return false;
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (aMetaTileEntity == null) return false;
-        if (aMetaTileEntity instanceof NanitesInputBus bus) {
-            bus.updateTexture(aBaseCasingIndex);
-            bus.updateCraftingIcon(this.getMachineCraftingIcon());
-            nanitesInputBus = bus;
-            return true;
-        }
-        return false;
-    }
-
-    public enum CustomHatchElement implements IHatchElement<TreeDiagram> {
-
-        NanitesInputBus("GT5U.MBTT.InputBus", TreeDiagram::addNanitesInputBusToMachineList, NanitesInputBus.class) {
-
-            @Override
-            public long count(TreeDiagram t) {
-                return t.nanitesInputBus != null ? 1 : 0;
-            }
-        };
-
-        private final String name;
-        private final List<Class<? extends IMetaTileEntity>> mteClasses;
-        private final IGTHatchAdder<TreeDiagram> adder;
-
-        @SafeVarargs
-        CustomHatchElement(String name, IGTHatchAdder<TreeDiagram> adder,
-            Class<? extends IMetaTileEntity>... mteClasses) {
-            this.name = name;
-            this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
-            this.adder = adder;
-        }
-
-        @Override
-        public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
-            return mteClasses;
-        }
-
-        @Override
-        public String getDisplayName() {
-            return GTUtility.translate(name);
-        }
-
-        public IGTHatchAdder<? super TreeDiagram> adder() {
-            return adder;
-        }
-    }
-
 }

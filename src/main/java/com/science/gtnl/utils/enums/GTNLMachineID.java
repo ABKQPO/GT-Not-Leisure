@@ -373,7 +373,7 @@ public enum GTNLMachineID {
 
     ENCHANTING(22589),
 
-    NANITES_INPUT_BUS(22590),
+    // 22590 Unused
 
     VAULT_PORT_HATCH(22591),
 

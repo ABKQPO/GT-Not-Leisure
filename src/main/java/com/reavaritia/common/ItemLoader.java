@@ -16,6 +16,7 @@ import com.reavaritia.common.items.CrystalShovel;
 import com.reavaritia.common.items.CrystalSword;
 import com.reavaritia.common.items.InfinityAxe;
 import com.reavaritia.common.items.InfinityBucket;
+import com.reavaritia.common.items.InfinityElytra;
 import com.reavaritia.common.items.InfinityHoe;
 import com.reavaritia.common.items.InfinityPickaxe;
 import com.reavaritia.common.items.InfinityShovel;
@@ -23,7 +24,10 @@ import com.reavaritia.common.items.InfinitySword;
 import com.reavaritia.common.items.InfinityTotem;
 import com.reavaritia.common.items.MatterCluster;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ganymedes01.etfuturum.configuration.configs.ConfigMixins;
+import gregtech.api.enums.Mods;
 
 public class ItemLoader {
 
@@ -46,6 +50,7 @@ public class ItemLoader {
     public static Item InfinityBucket = new InfinityBucket();
     public static Item MatterCluster = new MatterCluster();
     public static Item ChronarchsClock = new ChronarchsClock();
+    public static Item InfinityElytra;
 
     public static void registerItems() {
         IRegistry(CrystalPickaxe, "CrystalPickaxe");
@@ -69,6 +74,16 @@ public class ItemLoader {
         IRegistry(ChronarchsClock, "ChronarchsClock");
 
         BlockDispenser.dispenseBehaviorRegistry.putObject(ChronarchsClock, ChronarchsClock);
+
+        if (Mods.EtFuturumRequiem.isModLoaded()) {
+            registerInfinityElytra();
+        }
+    }
+
+    @Optional.Method(modid = "etfuturum")
+    public static void registerInfinityElytra() {
+        if (!ConfigMixins.enableElytra) return;
+        InfinityElytra = new InfinityElytra();
     }
 
     public static void IRegistry(Item item, String name) {

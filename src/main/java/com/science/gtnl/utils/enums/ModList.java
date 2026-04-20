@@ -39,10 +39,12 @@ public enum ModList implements IMod, ITargetMod {
     NewHorizonsCoreMod(ModIds.NEW_HORIZONS_CORE_MOD, Names.NEW_HORIZONS_CORE_MOD,
         "com.dreammaster.coremod.DreamCoreMod"),
     GalaxySpace(ModIds.GALAXY_SPACE, Names.GALAXY_SPACE),
+    BetterQuestingAPI(ModIds.BETTER_QUESTING_API, Names.BETTER_QUESTING_API),
     EnhancedLootBags(ModIds.ENHANCED_LOOT_BAGS, Names.ENHANCED_LOOT_BAGS),
     NotEnoughEnergistics(ModIds.NOT_ENOUGH_ENERGISTICS, Names.NOT_ENOUGH_ENERGISTICS),
     NEICustomDiagrams(ModIds.N_E_I_CUSTOM_DIAGRAMS, Names.N_E_I_CUSTOM_DIAGRAMS),
-    AvaritiaAddons(ModIds.AVARITIA_ADDONS, Names.AVARITIA_ADDONS),;
+    AvaritiaAddons(ModIds.AVARITIA_ADDONS, Names.AVARITIA_ADDONS),
+    EtFuturumRequiem(ModIds.ET_FUTURUM_REQUIEM, Names.ET_FUTURUM_REQUIEM),;
 
     public static class ModIds {
 
@@ -68,40 +70,44 @@ public enum ModList implements IMod, ITargetMod {
 
         public static final String NEW_HORIZONS_CORE_MOD = "dreamcraft";
         public static final String GALAXY_SPACE = "GalaxySpace";
+        public static final String BETTER_QUESTING_API = "bqapi";
         public static final String ENHANCED_LOOT_BAGS = "enhancedlootbags";
         public static final String NOT_ENOUGH_ENERGISTICS = "neenergistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "neicustomdiagram";
         public static final String AVARITIA_ADDONS = "avaritiaddons";
+        public static final String ET_FUTURUM_REQUIEM = "etfuturum";
     }
 
     public static class Names {
 
-        public static final String SCIENCE_NOT_LEISURE = "ScienceNotLeisure";
-        public static final String EYE_OF_HARMONY_BUFFER = "EyeOfHarmonyBuffer";
-        public static final String PROGRAMMABLE_HATCHES = "ProgrammableHatches";
-        public static final String TWIST_SPACE_TECHNOLOGY = "TwistSpaceTechnology";
-        public static final String BOX_PLUS_PLUS = "BoxPlusPlus";
+        public static final String SCIENCE_NOT_LEISURE = "Science Not Leisure";
+        public static final String EYE_OF_HARMONY_BUFFER = "Eye Of Harmony Buffer";
+        public static final String PROGRAMMABLE_HATCHES = "Programmable Hatches";
+        public static final String TWIST_SPACE_TECHNOLOGY = "Twist Space Technology";
+        public static final String BOX_PLUS_PLUS = "Box Plus Plus";
         public static final String NH_UTILITIES = "NH-Utilities";
-        public static final String AE2_THING = "AE2Things";
-        public static final String QZ_MINER = "QzMiner";
+        public static final String AE2_THING = "AE2 Things";
+        public static final String QZ_MINER = "Qz Miner";
         public static final String OTH_TECHNOLOGY = "123Technology";
         public static final String BAUBLES = "Baubles";
         public static final String OVER_POWERED = "Overpowered";
-        public static final String THINK_TECH = "ThinkTech";
-        public static final String VMT_TWEAK = "VoidMinerTweak";
-        public static final String GIVECOUNT = "GiveCount";
-        public static final String RE_AVARITIA = "ReAvaritia";
+        public static final String THINK_TECH = "Think Tech";
+        public static final String VMT_TWEAK = "Void Miner Tweak";
+        public static final String GIVECOUNT = "Give Count";
+        public static final String RE_AVARITIA = "Re Avaritia";
         public static final String SUDOKU = "Sudoku";
-        public static final String TAKO_TECH = "TakoTech";
-        public static final String CHROMATIC_TOOLTIPS = "ChromaticTooltips";
-        public static final String CHROMATIC_TOOLTIPS_COMPAT = "ChromaticTooltipsCompat";
+        public static final String TAKO_TECH = "Tako Tech";
+        public static final String CHROMATIC_TOOLTIPS = "Chromatic Tooltips";
+        public static final String CHROMATIC_TOOLTIPS_COMPAT = "Chromatic Tooltips Compat";
 
         public static final String NEW_HORIZONS_CORE_MOD = "GT New Horizons Core Mod";
-        public static final String GALAXY_SPACE = "GalaxySpace";
+        public static final String GALAXY_SPACE = "Galaxy Space";
+        public static final String BETTER_QUESTING_API = "Better Questing API";
         public static final String ENHANCED_LOOT_BAGS = "Enhanced Loot Bags";
         public static final String NOT_ENOUGH_ENERGISTICS = "Not Enough Energistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "NEI Custom Diagrams";
         public static final String AVARITIA_ADDONS = "Avaritia Addons";
+        public static final String ET_FUTURUM_REQUIEM = "Et Futurum Requiem";
     }
 
     public final String ID;
