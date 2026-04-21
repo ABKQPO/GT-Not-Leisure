@@ -14,8 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.reavaritia.client.ReAvaCreativeTabs;
@@ -64,12 +66,27 @@ public class InfinityElytra extends ItemArmorElytra {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
+        boolean advancedToolTips) {
+        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityElytra_00"));
+    }
+
+    @Override
     public boolean isDamageable() {
         return false;
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {}
+
+    @SubscribeEvent
+    public void onPlayerFall(LivingFallEvent event) {
+        if (!(event.entity instanceof EntityPlayer player)) return;
+        if (player.worldObj.isRemote) return;
+        if (!isWearingInfinityElytra(player)) return;
+        event.setCanceled(true);
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onLivingHurt(LivingHurtEvent event) {
@@ -132,7 +149,7 @@ public class InfinityElytra extends ItemArmorElytra {
             }
         }
         if (ModsList.BAUBLES_EXPANDED.isLoaded() && ConfigModCompat.elytraBaublesExpandedCompat != 0) {
-            var elytra = CompatBaublesExpanded.getElytraFromBaubles(entity);
+            ItemStack elytra = CompatBaublesExpanded.getElytraFromBaubles(entity);
             return elytra != null && elytra.getItem() instanceof InfinityElytra;
         }
         return false;

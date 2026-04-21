@@ -4,7 +4,6 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import appeng.api.AEApi;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -22,10 +21,6 @@ public class FluidSolidifierRecipes implements IRecipePool {
     @Override
 
     public void loadRecipes() {
-        var aeMaterials = AEApi.instance()
-            .definitions()
-            .materials();
-
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.block, Materials.BorosilicateGlass, 1))
             .fluidInputs(MaterialsUEVplus.QuarkGluonPlasma.getFluid(1152))
@@ -40,17 +35,6 @@ public class FluidSolidifierRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1))
             .duration(800)
             .eut(TierEU.RECIPE_UMV)
-            .addTo(FSR);
-
-        RecipeBuilder.builder()
-            .itemInputs(ItemList.Shape_Mold_Ball.get(0))
-            .fluidInputs(Materials.Tin.getMolten(576))
-            .itemOutputs(
-                aeMaterials.matterBall()
-                    .maybeStack(1)
-                    .orNull())
-            .duration(20)
-            .eut(TierEU.RECIPE_LV)
             .addTo(FSR);
 
         RecipeBuilder.builder()

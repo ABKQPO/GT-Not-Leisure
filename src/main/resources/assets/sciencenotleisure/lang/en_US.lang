@@ -733,12 +733,12 @@ ManaDynamoHatchIV=Mythical Dynamo Hatch
 ManaDynamoHatchZPM=Gaia Dynamo Hatch
 Tooltip_ManaDynamoHatch_00=Convert mana to EU
 Tooltip_ManaDynamoHatch_01=Can extract mana from nearby mana pools and mana flowers
-Tooltip_ManaDynamoHatch_02=Base efficiency: 1 mana / 200EU
+Tooltip_ManaDynamoHatch_02=Base efficiency: 1 mana / %sEU
 Tooltip_ManaDynamoHatch_03=Fluid capacity:
 Tooltip_ManaDynamoHatch_04=Use screwdriver right-click to toggle modes
 Mode_ManaDynamoHatch_00=Extract mana from Mana Dynamo Hatch to mana pools
 Mode_ManaDynamoHatch_01=Extract mana from mana pools to Mana Dynamo Hatch
-Info_ManaDynamoHatch_00=Mana storage:
+Info_ManaDynamoHatch_00=Mana storage: %sL
 
 ManaEnergyHatchLV=Diluted Mana Energy Hatch
 ManaEnergyHatchHV=Mana Energy Hatch
@@ -746,9 +746,9 @@ ManaEnergyHatchIV=Mythical Energy Hatch
 ManaEnergyHatchZPM=Gaia Energy Hatch
 Tooltip_ManaEnergyHatch_00=Can transfer mana into nearby mana pools
 Tooltip_ManaEnergyHatch_01=Converts EU into Mana
-Tooltip_ManaEnergyHatch_02=Base rate: 250 of EU -> 1 Mana
+Tooltip_ManaEnergyHatch_02=Base efficiency: %sEU / 1 Mana
 Tooltip_ManaEnergyHatch_03=Fluid capacity:
-Info_ManaEnergyHatch_00=Mana storage:
+Info_ManaEnergyHatch_00=Mana storage: %sL
 
 TapDynamoHatchLV=Tap Dynamo Hatch (LV)
 Tooltip_TapDynamoHatch_00=Money talks!

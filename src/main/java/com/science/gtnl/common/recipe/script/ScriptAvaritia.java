@@ -18,7 +18,9 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.AEApi;
 import bartworks.common.loaders.ItemRegistry;
+import cpw.mods.fml.common.Optional;
 import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
+import ganymedes01.etfuturum.configuration.configs.ConfigMixins;
 import ggfab.GGItemList;
 import goodgenerator.loader.Loaders;
 import goodgenerator.util.ItemRefer;
@@ -2264,5 +2266,37 @@ public class ScriptAvaritia implements IScriptLoader {
                 aeMaterials.emptyAdvancedStorageCell()
                     .maybeStack(1)
                     .orNull());
+
+        if (Mods.EtFuturumRequiem.isModLoaded()) {
+            loadEtFuturumRecipe();
+        }
+    }
+
+    @Optional.Method(modid = "etfuturum")
+    public static void loadEtFuturumRecipe() {
+        if (ConfigMixins.enableElytra) {
+            ExtremeCraftingManager.getInstance()
+                .addExtremeShapedOreRecipe(
+                    ReAvaItemList.InfinityElytra.get(1),
+                    "--AA-AA--",
+                    "-BAACAAB-",
+                    "BDBAEABDB",
+                    "DDDB-BDDD",
+                    "DDDD-DDDD",
+                    "DDDD-DDDD",
+                    "DDDD-DDDD",
+                    "DDD---DDD",
+                    "-D-----D-",
+                    'A',
+                    GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
+                    'B',
+                    GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1),
+                    'C',
+                    GTModHandler.getModItem(Mods.Avaritia.ID, "Endest_Pearl", 1),
+                    'D',
+                    GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                    'E',
+                    GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "elytra", 1));
+        }
     }
 }

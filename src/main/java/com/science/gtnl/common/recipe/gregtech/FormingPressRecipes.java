@@ -6,6 +6,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import appeng.api.AEApi;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -21,6 +22,10 @@ public class FormingPressRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
+        var aeMaterials = AEApi.instance()
+            .definitions()
+            .materials();
+
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Ingot.get(0), ItemList.Netherite_Nanoparticles.get(1))
             .fluidInputs(Materials.InfusedGold.getMolten(144))
@@ -311,6 +316,17 @@ public class FormingPressRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.block, Materials.Netherite, 1))
             .duration(100)
             .eut(TierEU.RECIPE_UEV)
+            .addTo(FPR);
+
+        RecipeBuilder.builder()
+            .itemInputs(ItemList.Shape_Mold_Ball.get(0))
+            .fluidInputs(Materials.Tin.getMolten(576))
+            .itemOutputs(
+                aeMaterials.matterBall()
+                    .maybeStack(1)
+                    .orNull())
+            .duration(20)
+            .eut(TierEU.RECIPE_LV)
             .addTo(FPR);
 
         if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();

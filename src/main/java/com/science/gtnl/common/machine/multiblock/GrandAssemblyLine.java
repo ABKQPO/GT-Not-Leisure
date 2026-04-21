@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -56,6 +55,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.HatchElement;
@@ -236,6 +236,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public CheckRecipeResult processRecipeLogic(List<IDualInputInventory> inputInventories, long energyEU,
         int maxParallel, int minDuration) {
+        CheckRecipeResult result = null;
         ObjectList<GTRecipe.RecipeAssemblyLine> validRecipes = new ObjectArrayList<>();
 
         if (AssemblyLineUtils.isItemDataStick(mInventory[1])) {
@@ -247,15 +248,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_DATA_STICKS;
 
         validRecipes.removeIf(
-            recipe -> recipe.mInputs == null || Arrays.stream(recipe.mInputs)
-                .anyMatch(Objects::isNull)
-                || recipe.mFluidInputs == null
-                || Arrays.stream(recipe.mFluidInputs)
-                    .anyMatch(Objects::isNull)
+            recipe -> recipe.mInputs == null || recipe.mFluidInputs == null
                 || recipe.mOutput == null
                 || (!wirelessMode && recipe.mEUt > energyEU));
 
         validRecipes.sort(Comparator.comparingInt(recipe -> recipe.mEUt));
+        if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
 
         List<RecipeTask> tasks = new ArrayList<>();
         int remainingGlobalParallel = maxParallel;
@@ -283,9 +281,15 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 int localMax = remainingGlobalParallel;
 
                 double pFactor = calculateParallelByItemsUnordered(invItems, localMax, recipe);
-                if (pFactor < 1.0) continue;
+                if (pFactor < 1.0) {
+                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    continue;
+                }
                 pFactor = calculateParallelByFluidsUnordered(invFluids, pFactor, recipe.mFluidInputs);
-                if (pFactor < 1.0) continue;
+                if (pFactor < 1.0) {
+                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    continue;
+                }
 
                 int finalParallel = (int) pFactor;
 
@@ -310,7 +314,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     }
                 }
 
-                if (finalParallel <= 0) continue;
+                if (finalParallel <= 0) {
+                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    continue;
+                }
 
                 // 溢出保护检查
                 if (protectsExcessItem()) {
@@ -323,7 +330,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         .setMaxParallel(finalParallel)
                         .build();
                     finalParallel = Math.min(vph.getMaxParallel(), finalParallel);
-                    if (vph.isItemFull()) finalParallel = 0;
+                    if (vph.isItemFull()) {
+                        result = CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+                        finalParallel = 0;
+                    }
                 }
 
                 if (finalParallel <= 0) continue;
@@ -343,7 +353,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             }
         }
 
-        if (tasks.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+        if (tasks.isEmpty()) {
+            if (result != null) return result;
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
 
         // --- 第二阶段：尝试超频 ---
         int overclockFactor = (mParallelTier >= 11) ? 4 : 2;
@@ -473,7 +486,6 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             this.mMaxProgresstime = Math.max(1, finalDuration);
 
         } else {
-
             long requiredEUt = totalEU_Long / Math.max(1, weightedTime);
 
             long finalEUt = Math.max(1, Math.min(requiredEUt, energyEU));

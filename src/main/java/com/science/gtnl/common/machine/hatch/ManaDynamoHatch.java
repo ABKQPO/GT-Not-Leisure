@@ -36,33 +36,33 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     private boolean isLiquidizerMode = true;
     private static final int MANA_POOL_RADIUS = 2;
     private static final int MANA_FLOWER_RADIUS = 6;
-    private static final int MANA_TO_EU_RATE = 200;
+    private static final int MANA_TO_EU_RATE = 20;
     private static final FluidStack fluidMana = GTNLMaterials.FluidMana.getFluidOrGas(1);
     private static int mAmp;
 
     public ManaDynamoHatch(int aID, String aName, String aNameRegional, int aTier, int aAmp) {
-        super(
-            aID,
-            aName,
-            aNameRegional,
-            aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_00"),
-                StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_01"),
-                StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_02"), "",
-                StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_04") });
-        mDescriptionArray[3] = StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_03") + getCapacity() + "L";
+        super(aID, aName, aNameRegional, aTier);
         mAmp = aAmp;
     }
 
     public ManaDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures, int aAmp) {
         super(aName, aTier, aDescription, aTextures);
-        mDescriptionArray[3] = StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_03") + getCapacity() + "L";
         mAmp = aAmp;
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new ManaDynamoHatch(mName, mTier, mDescriptionArray, mTextures, mAmp);
+    }
+
+    @Override
+    public String[] getDescription() {
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_00"));
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_01"));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_02", MANA_TO_EU_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_03", getCapacity()));
+        return desc.toArray(new String[] {});
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
     @Override
     public int getCapacity() {
-        return 1000000 * this.mTier;
+        return 2000000 * this.mTier;
     }
 
     @Override

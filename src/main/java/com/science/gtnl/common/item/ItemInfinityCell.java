@@ -63,10 +63,10 @@ import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.ItemList;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.util.GTUtility;
 
 public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorageFluidCell {
 
@@ -506,10 +506,19 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
             return AccessRestriction.READ_WRITE;
         }
 
+        public boolean matches(IAEItemStack left, IAEItemStack right) {
+            if (left == null || right == null) {
+                return false;
+            }
+            ItemStack leftStack = left.getItemStack();
+            ItemStack rightStack = right.getItemStack();
+            return GTUtility.areStacksEqual(leftStack, rightStack);
+        }
+
         @Override
         public boolean isPrioritized(IAEItemStack stack) {
             for (IAEItemStack item : this.record) {
-                if (item.getItem() == stack.getItem() && item.getItemDamage() == stack.getItemDamage()) {
+                if (matches(item, stack)) {
                     return true;
                 }
             }
@@ -519,7 +528,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         @Override
         public boolean canAccept(IAEItemStack stack) {
             for (IAEItemStack item : this.record) {
-                if (item.getItem() == stack.getItem() && item.getItemDamage() == stack.getItemDamage()) {
+                if (matches(item, stack)) {
                     return true;
                 }
             }
@@ -528,15 +537,18 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
 
         @Override
         public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out, int iteration) {
-            if (out instanceof ItemList) {
-                record.forEach(out::add);
-            }
+            record.forEach(item -> out.add(item.copy()));
             return out;
         }
 
         @Override
         public IAEItemStack getAvailableItem(@NotNull IAEItemStack request, int iteration) {
-            return request.copy();
+            for (IAEItemStack item : this.record) {
+                if (matches(item, request)) {
+                    return item.copy();
+                }
+            }
+            return null;
         }
 
         @Override
@@ -557,7 +569,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         @Override
         public IAEItemStack injectItems(IAEItemStack stack, Actionable mode, BaseActionSource src) {
             for (IAEItemStack item : this.record) {
-                if (item.getItem() == stack.getItem() && item.getItemDamage() == stack.getItemDamage()) {
+                if (matches(item, stack)) {
                     return null;
                 }
             }
@@ -567,8 +579,8 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         @Override
         public IAEItemStack extractItems(final IAEItemStack stack, final Actionable mode, final BaseActionSource src) {
             for (IAEItemStack item : this.record) {
-                if (item.getItem() == stack.getItem() && item.getItemDamage() == stack.getItemDamage()) {
-                    return stack;
+                if (matches(item, stack)) {
+                    return stack.copy();
                 }
             }
             return null;
@@ -584,6 +596,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
             super(o, container);
             this.record = stack;
             this.record.forEach(i -> i.setStackSize(StorageSIZE));
+            this.loadCellFluids();
         }
 
         @Override
@@ -604,6 +617,12 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                 }
             }
             return null;
+        }
+
+        @Override
+        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out, int iteration) {
+            this.record.forEach(fluid -> out.add(fluid.copy()));
+            return out;
         }
 
         @Override

@@ -14,7 +14,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:tile.playerDoll"
+        "id:8": "sciencenotleisure:tile.PlayerDoll"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -46,7 +46,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.playerDoll"
+          "id:8": "sciencenotleisure:tile.PlayerDoll"
         }
       },
       "taskID:8": "bq_standard:retrieval"

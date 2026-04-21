@@ -27,7 +27,7 @@ import vazkii.botania.common.block.tile.mana.TilePool;
 public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
     private static final int MANA_POOL_RADIUS = 5;
-    private static final int EU_TO_MANA_RATE = 250;
+    private static final int EU_TO_MANA_RATE = 25;
     private static final FluidStack fluidMana = GTNLMaterials.FluidMana.getFluidOrGas(1);
     private static int mAmp;
 
@@ -48,14 +48,11 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
     @Override
     public String[] getDescription() {
-
         ArrayList<String> desc = new ArrayList<>();
-
         desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_00"));
         desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_02"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_03") + getCapacity() + "L");
-
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_02", EU_TO_MANA_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_03", getCapacity()));
         return desc.toArray(new String[] {});
     }
 
@@ -131,7 +128,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
     @Override
     public int getCapacity() {
-        return 1000000 * this.mTier;
+        return 2000000 * this.mTier;
     }
 
     private boolean isDropMetaValid(TilePool pool) {

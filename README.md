@@ -42,6 +42,8 @@
   - [🔮 Thaumcraft](#-thaumcraft)
   - [🌸 Botania \& Twilight Forest](#-botania--twilight-forest)
 - [📥 Downloads \& Compatibility](#-downloads--compatibility)
+- [🧩 Quest Loading](#-quest-loading)
+- [🧱 Dependency Requirements](#-dependency-requirements)
 - [⚠️ Installation \& Update Instructions](#️-installation--update-instructions)
 - [📜 Credits \& Attributions](#-credits--attributions)
 
@@ -137,6 +139,57 @@ GTNL provides industrial-grade automation for your favorite magic mods.
 |  **2.8.0+**  |   `0.2.2`   | ✅ **Recommended** | [![v0.2.1](https://img.shields.io/badge/Download-v0.2.2-orange)](https://github.com/ABKQPO/GT-Not-Leisure/releases/v0.2.2)       |
 |  **2.7.x**   |  `0.1.9.1`  |       ❌ EOL       | [![v0.1.9.1](https://img.shields.io/badge/Download-v0.1.9.1-orange)](https://github.com/ABKQPO/GT-Not-Leisure/releases/v0.1.9.1) |
 
+## 🧩 Quest Loading
+
+GTNL uses **BetterQuesting + BetterQuestingAPI** to import built-in quest lines from resources during startup.
+
+### What loads by default
+
+The following quest lines are always registered:
+
+* `GTNotLeisure75SteamAge`
+* `GTNotLeisure99SteamAge`
+
+### Optional extra quest line
+
+An additional debug/extended quest line (`GTNotLeisureQuestsLine`) is available but disabled by default.
+
+To enable it:
+
+1. Start the game once to generate config files.
+2. Open `config/GTNotLeisure/GTNotLeisure.cfg`.
+3. Set `debug.enableQuest=true`.
+4. Restart the game/server.
+
+### Resource source path
+
+Quest resources are shipped inside this mod at:
+
+* `src/main/resources/assets/sciencenotleisure/quest`
+
+If you maintain custom builds, keep folder names and encoded line directories unchanged to preserve UUID/order behavior.
+
+## 🧱 Dependency Requirements
+
+### Runtime requirements (for modpack/server use)
+
+* **Minecraft**: `1.7.10`
+* **Forge**: `10.13.4.1614`
+* **GTNH**: `2.8.0+` (recommended `2.8.4`)
+* **Required mods for quest loading**:
+  * `BetterQuesting` (`3.7.15-GTNH` or compatible)
+  * `BetterQuestingAPI` (`1.1.0` or compatible)
+
+Without both of the above quest mods, GTNL quests will not be injected.
+
+### Development/build requirements (for contributors)
+
+* **Java**: JDK `25`
+* **Gradle wrapper**: use the included `gradlew` / `gradlew.bat`
+* Build command:
+  * Windows: `gradlew.bat clean build`
+  * Linux/macOS: `./gradlew clean build`
+
 ## ⚠️ Installation & Update Instructions
 
 > **IMPORTANT:** When updating `GT-Not-Leisure`, you **must** reset the configuration to prevent recipe conflicts.
@@ -144,7 +197,7 @@ GTNL provides industrial-grade automation for your favorite magic mods.
 1.  **Backup** your save/instance.
 2.  Delete the old `.jar` from your mods folder.
 3.  **Delete/Reset** the GT language file: `GregTech.lang` (The mod injects new entries here).
-4.  **Delete/Reset** the config file: `config/GTNotLeisure/main.cfg`.
+4.  **Delete/Reset** the config file: `config/GTNotLeisure/GTNotLeisure.cfg` (older packs may still use `main.cfg`).
 
 <hr>
 
