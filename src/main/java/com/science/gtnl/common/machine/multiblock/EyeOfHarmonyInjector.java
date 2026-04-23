@@ -701,8 +701,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
             for (ItemStack stack : inputItemStack) {
                 if (!(stack.getItem() instanceof ItemFluidPacket)) continue;
-                NBTTagCompound fluidNBT = stack.getTagCompound()
-                    .getCompoundTag("FluidStack");
+                NBTTagCompound stackNbt = stack.getTagCompound();
+                if (stackNbt == null) continue;
+                NBTTagCompound fluidNBT = stackNbt.getCompoundTag("FluidStack");
                 String fluidName = fluidNBT.getString("FluidName");
                 long amount = fluidNBT.getLong("Amount");
 

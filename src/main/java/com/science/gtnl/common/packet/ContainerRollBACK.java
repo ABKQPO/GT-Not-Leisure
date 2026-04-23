@@ -2,6 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.inventory.ContainerPlayer;
 
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.utils.RCAEBaseContainer;
@@ -26,22 +28,24 @@ public class ContainerRollBACK implements IMessage, IMessageHandler<ContainerRol
         switch (ctx.side) {
             case SERVER -> {
                 var entityPlayerMP = ctx.getServerHandler().playerEntity;
-                var newContainer = entityPlayerMP.openContainer;
-                if (newContainer instanceof RCAEBaseContainer rac) {
-                    var gtnl$oldContainer = rac.rc$getOldContainer();
-                    if (gtnl$oldContainer != null) {
-                        if (gtnl$oldContainer instanceof ContainerPlayer) {
-                            entityPlayerMP.closeContainer();
-                        } else {
-                            entityPlayerMP.getNextWindowId();
-                            entityPlayerMP.closeContainer();
-                            int windowId = entityPlayerMP.currentWindowId;
-                            entityPlayerMP.openContainer = gtnl$oldContainer;
-                            entityPlayerMP.openContainer.windowId = windowId;
+                ServerThreadUtil.addScheduledTask(() -> {
+                    var newContainer = entityPlayerMP.openContainer;
+                    if (newContainer instanceof RCAEBaseContainer rac) {
+                        var gtnl$oldContainer = rac.rc$getOldContainer();
+                        if (gtnl$oldContainer != null) {
+                            if (gtnl$oldContainer instanceof ContainerPlayer) {
+                                entityPlayerMP.closeContainer();
+                            } else {
+                                entityPlayerMP.getNextWindowId();
+                                entityPlayerMP.closeContainer();
+                                int windowId = entityPlayerMP.currentWindowId;
+                                entityPlayerMP.openContainer = gtnl$oldContainer;
+                                entityPlayerMP.openContainer.windowId = windowId;
+                            }
                         }
                     }
-                }
-                ScienceNotLeisure.network.sendTo(message, entityPlayerMP);
+                    ScienceNotLeisure.network.sendTo(message, entityPlayerMP);
+                });
             }
             case CLIENT -> clientRun();
         }

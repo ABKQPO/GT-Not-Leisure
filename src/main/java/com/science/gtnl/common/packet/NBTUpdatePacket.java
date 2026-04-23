@@ -5,6 +5,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -48,23 +52,19 @@ public class NBTUpdatePacket implements IMessage, IMessageHandler<NBTUpdatePacke
     @Override
     public IMessage onMessage(NBTUpdatePacket message, MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-        if (message.slot < 0 || message.slot >= player.inventory.getSizeInventory()) return null;
+        ServerThreadUtil.addScheduledTask(() -> {
+            if (message.slot < 0 || message.slot >= player.inventory.getSizeInventory()) return;
 
-        ItemStack stack = player.inventory.getStackInSlot(message.slot);
-        if (stack == null) return null;
+            ItemStack stack = player.inventory.getStackInSlot(message.slot);
+            if (stack == null) return;
 
-        String actualId = Item.itemRegistry.getNameForObject(stack.getItem());
-        int actualDamage = stack.getItemDamage();
+            String actualId = Item.itemRegistry.getNameForObject(stack.getItem());
+            int actualDamage = stack.getItemDamage();
 
-        if (!actualId.equals(message.itemId) || actualDamage != message.damage) {
-            return null;
-        }
+            if (!actualId.equals(message.itemId) || actualDamage != message.damage) return;
 
-        if (message.tag != null) {
             stack.setTagCompound(message.tag);
-        } else {
-            stack.setTagCompound(null);
-        }
+        });
         return null;
     }
 }

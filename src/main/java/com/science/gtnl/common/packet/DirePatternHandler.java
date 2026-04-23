@@ -2,6 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -50,13 +52,16 @@ public class DirePatternHandler implements IMessage, IMessageHandler<DirePattern
 
     @Override
     public IMessage onMessage(DirePatternHandler message, MessageContext ctx) {
-        if (ctx.getServerHandler().playerEntity.openContainer instanceof ContainerDirePatternEncoder c) {
-            switch (message.id) {
-                case 0 -> c.encode(message.isShift);
-                case 1 -> c.clear();
-                case 2 -> c.writeNEINBT(message.nbt);
+        var player = ctx.getServerHandler().playerEntity;
+        ServerThreadUtil.addScheduledTask(() -> {
+            if (player.openContainer instanceof ContainerDirePatternEncoder c) {
+                switch (message.id) {
+                    case 0 -> c.encode(message.isShift);
+                    case 1 -> c.clear();
+                    case 2 -> c.writeNEINBT(message.nbt);
+                }
             }
-        }
+        });
         return null;
     }
 }

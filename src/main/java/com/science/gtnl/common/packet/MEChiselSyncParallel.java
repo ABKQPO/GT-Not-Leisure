@@ -2,6 +2,7 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -50,9 +51,11 @@ public class MEChiselSyncParallel implements IMessage, IMessageHandler<MEChiselS
         switch (ctx.side) {
             case SERVER -> {
                 var world = ctx.getServerHandler().playerEntity.worldObj;
-                if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityMEChisel te) {
-                    te.setParallel(message.parallel);
-                }
+                ServerThreadUtil.addScheduledTask(() -> {
+                    if (world.getTileEntity(message.x, message.y, message.z) instanceof TileEntityMEChisel te) {
+                        te.setParallel(message.parallel);
+                    }
+                });
             }
             case CLIENT -> onClient(message, ctx);
         }
