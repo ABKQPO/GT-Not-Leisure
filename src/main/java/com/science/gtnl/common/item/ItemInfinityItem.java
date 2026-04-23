@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -181,15 +182,15 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
 
     public void clearConnectedFluid(World world, int x, int y, int z, Block fluidBlock, int limit) {
         FLUID_CLEAR_EXECUTOR.submit(() -> {
-            Queue<int[]> queue = new ArrayDeque<>();
+            Queue<BlockPos> queue = new ArrayDeque<>();
             LongSet visited = new LongOpenHashSet();
-            List<int[]> blocksToClear = new ArrayList<>();
+            List<BlockPos> blocksToClear = new ArrayList<>();
 
-            queue.add(new int[] { x, y, z });
+            queue.add(new BlockPos(x, y, z));
 
             while (!queue.isEmpty() && blocksToClear.size() < limit) {
-                int[] pos = queue.poll();
-                int px = pos[0], py = pos[1], pz = pos[2];
+                BlockPos pos = queue.poll();
+                int px = pos.x, py = pos.y, pz = pos.z;
                 long key = (((long) px) & 0x3FFFFFF) << 38 | (((long) py) & 0xFFF) << 26 | (((long) pz) & 0x3FFFFFF);
                 if (visited.contains(key)) continue;
                 visited.add(key);
@@ -198,12 +199,12 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
 
                 Block block = world.getBlock(px, py, pz);
                 if (block == fluidBlock) {
-                    blocksToClear.add(new int[] { px, py, pz });
+                    blocksToClear.add(new BlockPos(px, py, pz));
                     for (int dx = -1; dx <= 1; dx++) {
                         for (int dy = -1; dy <= 1; dy++) {
                             for (int dz = -1; dz <= 1; dz++) {
                                 if (Math.abs(dx) + Math.abs(dy) + Math.abs(dz) == 1) {
-                                    queue.add(new int[] { px + dx, py + dy, pz + dz });
+                                    queue.add(new BlockPos(px + dx, py + dy, pz + dz));
                                 }
                             }
                         }
@@ -212,8 +213,8 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
             }
 
             MainThreadTaskQueue.schedule(() -> {
-                for (int[] pos : blocksToClear) {
-                    int px = pos[0], py = pos[1], pz = pos[2];
+                for (BlockPos pos : blocksToClear) {
+                    int px = pos.x, py = pos.y, pz = pos.z;
                     world.setBlockToAir(px, py, pz);
                     playSound(world, px, py, pz, fluidBlock);
                 }

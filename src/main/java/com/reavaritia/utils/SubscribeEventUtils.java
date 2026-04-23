@@ -105,8 +105,8 @@ public class SubscribeEventUtils {
         ItemStack held = event.harvester.getHeldItem();
         if (held.getItem() instanceof InfinityPickaxe) {
             if (Mods.Avaritia.isModLoaded()) extraLuck(event, 5);
-            if (held.getTagCompound() != null && held.getTagCompound()
-                .getBoolean("HammerMode")
+            NBTTagCompound nbtPickaxe = held.getTagCompound();
+            if (nbtPickaxe != null && nbtPickaxe.getBoolean("HammerMode")
                 && ToolHelper.hammering.contains(event.harvester)
                 && ToolHelper.hammerdrops.containsKey(event.harvester)
                 && ToolHelper.hammerdrops.get(event.harvester) != null) {
@@ -117,8 +117,8 @@ public class SubscribeEventUtils {
             }
         } else if (held.getItem() instanceof InfinityShovel) {
 
-            if (held.getTagCompound() != null && held.getTagCompound()
-                .getBoolean("DestroyerMode")
+            NBTTagCompound nbtShovel = held.getTagCompound();
+            if (nbtShovel != null && nbtShovel.getBoolean("DestroyerMode")
                 && ToolHelper.hammering.contains(event.harvester)
                 && ToolHelper.hammerdrops.containsKey(event.harvester)
                 && ToolHelper.hammerdrops.get(event.harvester) != null) {

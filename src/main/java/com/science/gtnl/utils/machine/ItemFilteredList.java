@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
 import appeng.util.prioitylist.IPartitionList;
@@ -80,7 +82,7 @@ public class ItemFilteredList implements IPartitionList<IAEItemStack> {
             final Integer fMeta = meta;
 
             return (stack) -> {
-                if (stack == null || stack.getItem() == null) return false;
+                if (ItemUtil.isStackInvalid(stack)) return false;
 
                 String rl = Item.itemRegistry.getNameForObject(stack.getItem());
                 if (rl == null || rl.isEmpty()) return false;

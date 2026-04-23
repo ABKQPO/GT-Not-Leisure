@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL20;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
 import com.gtnewhorizon.gtnhlib.client.renderer.vbo.VertexBuffer;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
 
@@ -57,7 +58,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
             u_ModelMatrix = starProgram.getUniformLocation("u_ModelMatrix");
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            ScienceNotLeisure.LOG.error("[NanoPhagocytosisPlantRenderer] Shader init failed", e);
             return;
         }
 
@@ -209,7 +210,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
             try {
                 initRings();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                ScienceNotLeisure.LOG.error("[NanoPhagocytosisPlantRenderer] Ring init failed", e);
                 failedInit = true;
                 return;
             }

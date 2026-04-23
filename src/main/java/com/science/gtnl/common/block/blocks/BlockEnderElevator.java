@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.science.gtnl.ClientProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEnderElevator;
@@ -200,10 +201,10 @@ public class BlockEnderElevator extends BlockContainer {
         int power = world.getStrongestIndirectPower(x, y, z);
         boolean finalDirection = (power > 0) ? (power < 8) : upHint;
         int color = world.getBlockMetadata(x, y, z);
-        int[] target = te.findTarget(finalDirection, color, y);
+        BlockPos target = te.findTarget(finalDirection, color, y);
 
         if (target != null) {
-            Block targetBlock = world.getBlock(target[0], target[1], target[2]);
+            Block targetBlock = world.getBlock(target.x, target.y, target.z);
             double landingOffset = 1.0;
 
             if (targetBlock instanceof BlockEnderElevator targetElevator) {
@@ -214,9 +215,9 @@ public class BlockEnderElevator extends BlockContainer {
                 }
             }
 
-            double destX = target[0] + 0.5;
-            double destY = target[1] + landingOffset;
-            double destZ = target[2] + 0.5;
+            double destX = target.x + 0.5;
+            double destY = target.y + landingOffset;
+            double destZ = target.z + 0.5;
 
             if (entity != null) {
                 if (entity instanceof EntityPlayer) {
@@ -226,7 +227,7 @@ public class BlockEnderElevator extends BlockContainer {
                 }
 
                 te.startCooldown();
-                TileEntity targetTile = world.getTileEntity(target[0], target[1], target[2]);
+                TileEntity targetTile = world.getTileEntity(target.x, target.y, target.z);
                 if (targetTile instanceof TileEntityEnderElevator targetTe) {
                     targetTe.startCooldown();
                 }

@@ -7,6 +7,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.science.gtnl.common.block.blocks.BlockEnderElevator;
 
 import lombok.Getter;
@@ -84,11 +85,11 @@ public class TileEntityEnderElevator extends TileEntity {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    public int[] findTarget(boolean up, int color, int currentY) {
+    public BlockPos findTarget(boolean up, int color, int currentY) {
         if (this.hasCache) {
             boolean cacheDirectionValid = up ? (cacheY > currentY) : (cacheY < currentY);
             if (cacheDirectionValid && isValid(cacheX, cacheY, cacheZ, color)) {
-                return new int[] { cacheX, cacheY, cacheZ };
+                return new BlockPos(cacheX, cacheY, cacheZ);
             } else {
                 this.hasCache = false;
             }
@@ -96,19 +97,19 @@ public class TileEntityEnderElevator extends TileEntity {
 
         if (up) {
             for (int ty = currentY + 1; ty < 256; ty++) {
-                int[] result = scanLayer(ty, color);
+                BlockPos result = scanLayer(ty, color);
                 if (result != null) return result;
             }
         } else {
             for (int ty = currentY - 1; ty >= 0; ty--) {
-                int[] result = scanLayer(ty, color);
+                BlockPos result = scanLayer(ty, color);
                 if (result != null) return result;
             }
         }
         return null;
     }
 
-    private int[] scanLayer(int ty, int color) {
+    private BlockPos scanLayer(int ty, int color) {
         for (int dx = -64; dx <= 64; dx++) {
             for (int dz = -64; dz <= 64; dz++) {
                 int tx = xCoord + dx;
@@ -118,7 +119,7 @@ public class TileEntityEnderElevator extends TileEntity {
                     this.cacheY = ty;
                     this.cacheZ = tz;
                     this.hasCache = true;
-                    return new int[] { tx, ty, tz };
+                    return new BlockPos(tx, ty, tz);
                 }
             }
         }

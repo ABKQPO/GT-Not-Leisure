@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
@@ -195,7 +196,12 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        try {
+            ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        } catch (IllegalArgumentException e) {
+            ScienceNotLeisure.LOG
+                .warn("[WirelessSteamEnergyHatch] Invalid OwnerUUID in NBT: {}", aNBT.getString("OwnerUUID"), e);
+        }
     }
 
     @Override

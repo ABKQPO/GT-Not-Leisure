@@ -17,6 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.reavaritia.ClientProxy;
 import com.reavaritia.ReAvaritia;
 import com.reavaritia.client.ReAvaCreativeTabs;
@@ -65,12 +66,16 @@ public class BlockExtremeAnvil extends BlockContainer {
         switch (direction) {
             case 0:
                 world.setBlockMetadataWithNotify(x, y, z, 2 | i1, 2);
+                break;
             case 1:
                 world.setBlockMetadataWithNotify(x, y, z, 1 | i1, 2);
+                break;
             case 2:
                 world.setBlockMetadataWithNotify(x, y, z, 3 | i1, 2);
+                break;
             case 3:
                 world.setBlockMetadataWithNotify(x, y, z, i1, 2);
+                break;
         }
     }
 
@@ -128,7 +133,7 @@ public class BlockExtremeAnvil extends BlockContainer {
     }
 
     public boolean hasOreTag(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) return false;
+        if (ItemUtil.isStackInvalid(stack)) return false;
 
         int[] oreIDs = OreDictionary.getOreIDs(stack);
         for (int id : oreIDs) {

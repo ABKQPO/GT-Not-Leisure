@@ -51,6 +51,7 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
@@ -392,7 +393,12 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         super.loadNBTData(aNBT);
         tierMachine = aNBT.getInteger("tierMachine");
         recipeOcCount = aNBT.getInteger("recipeOcCount");
-        ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        try {
+            ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        } catch (IllegalArgumentException e) {
+            ScienceNotLeisure.LOG
+                .warn("[SteamMultiMachineBase] Invalid OwnerUUID in NBT: {}", aNBT.getString("OwnerUUID"), e);
+        }
     }
 
     @Override

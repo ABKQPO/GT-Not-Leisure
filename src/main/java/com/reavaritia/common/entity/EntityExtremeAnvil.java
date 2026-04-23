@@ -21,6 +21,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.reavaritia.ReAvaritia;
 import com.reavaritia.common.blocks.BlockExtremeAnvil;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -153,7 +154,16 @@ public class EntityExtremeAnvil extends Entity {
                                 entity.onDeath(DamageSource.anvil);
                                 entity.setDead();
                             }
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            ReAvaritia.LOG.error(
+                                "Failed to apply anvil damage to entity {} at ({},{},{})",
+                                entity.getClass()
+                                    .getSimpleName(),
+                                (int) this.posX,
+                                (int) this.posY,
+                                (int) this.posZ,
+                                e);
+                        }
                     }
 
                     if (this.worldObj.getBlock(i, j, k) != Blocks.piston_extension) {

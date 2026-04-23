@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
@@ -1255,7 +1256,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     private static boolean isBlockedAe2ThingsInfusionPattern(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) return false;
+        if (ItemUtil.isStackInvalid(stack)) return false;
         if (!ModList.AE2Thing.isModLoaded()) return false;
         if (stack.stackTagCompound == null) return false;
         // AE2Things infusion pattern terminal encodes to standard AE2 pattern item with tc_crafting flag.

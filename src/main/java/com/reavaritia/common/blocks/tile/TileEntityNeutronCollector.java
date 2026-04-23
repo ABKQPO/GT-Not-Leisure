@@ -35,6 +35,7 @@ public class TileEntityNeutronCollector extends TileEntity implements IInventory
 
     @Override
     public void updateEntity() {
+        if (target == null) return;
         if (++progress >= time) {
             if (this.worldObj != null && !this.worldObj.isRemote) {
                 if (output == null) {

@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import com.gtnewhorizon.gtnhlib.util.ObjectPooler;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -100,6 +101,8 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public boolean enableRender = true;
     public final Collection<ItemStack> itemDrop = new ArrayList<>();
     public byte tierMachine = 0;
+
+    private static final ObjectPooler<BlockPos> BLOCK_POS_POOL = new ObjectPooler<>(BlockPos::new);
 
     public ObjectArrayFIFOQueue<BlockPos> scanQueue = new ObjectArrayFIFOQueue<>();
     public ObjectArrayFIFOQueue<ObjectList<BlockPos>> rowQueue = new ObjectArrayFIFOQueue<>();
@@ -391,8 +394,8 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         this.isResetting = false;
         this.hasFinished = true;
         this.isWaiting = false;
-        scanQueue.clear();
-        rowQueue.clear();
+        while (!scanQueue.isEmpty()) BLOCK_POS_POOL.releaseInstance(scanQueue.dequeue());
+        while (!rowQueue.isEmpty()) BLOCK_POS_POOL.releaseInstances(rowQueue.dequeue());
         this.initializeDrillPos();
     }
 
@@ -456,6 +459,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                 while (done < MAX_BLOCKS_PER_CYCLE && !scanQueue.isEmpty()) {
                     BlockPos pos = scanQueue.dequeue();
                     mineAt(pos.x, pos.y, pos.z);
+                    BLOCK_POS_POOL.releaseInstance(pos);
                     done++;
                 }
             } else {
@@ -465,6 +469,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                     for (BlockPos pos : row) {
                         mineAt(pos.x, pos.y, pos.z);
                     }
+                    BLOCK_POS_POOL.releaseInstances(row);
                     rows++;
                 }
             }
@@ -518,7 +523,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     public void prepareScanQueue() {
-        scanQueue.clear();
+        while (!scanQueue.isEmpty()) BLOCK_POS_POOL.releaseInstance(scanQueue.dequeue());
         World w = getBaseMetaTileEntity().getWorld();
         int x0 = xStart - SCAN_WIDTH / 2;
         int y0 = yStart;
@@ -528,7 +533,9 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                 for (int dz = 0; dz < SCAN_DEPTH; dz++) {
                     int x = x0 + dx, y = y0 + dy, z = z0 + dz;
                     if (!w.isAirBlock(x, y, z)) {
-                        scanQueue.enqueue(new BlockPos(x, y, z));
+                        scanQueue.enqueue(
+                            BLOCK_POS_POOL.getInstance()
+                                .set(x, y, z));
                     }
                 }
             }
@@ -538,7 +545,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     public void prepareRowQueue() {
-        rowQueue.clear();
+        while (!rowQueue.isEmpty()) BLOCK_POS_POOL.releaseInstances(rowQueue.dequeue());
         World w = getBaseMetaTileEntity().getWorld();
         int x0 = xStart - SCAN_WIDTH / 2;
         int y0 = yStart;
@@ -549,7 +556,9 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                 for (int dz = 0; dz < SCAN_DEPTH; dz++) {
                     int x = x0 + dx, y = y0 + dy, z = z0 + dz;
                     if (!w.isAirBlock(x, y, z)) {
-                        row.add(new BlockPos(x, y, z));
+                        row.add(
+                            BLOCK_POS_POOL.getInstance()
+                                .set(x, y, z));
                     }
                 }
                 if (!row.isEmpty()) {

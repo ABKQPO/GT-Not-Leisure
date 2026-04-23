@@ -208,7 +208,13 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
 
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt != null && nbt.hasKey("ownerUUID")) {
-            UUID ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
+            UUID ownerUUID;
+            try {
+                ownerUUID = UUID.fromString(nbt.getString("ownerUUID"));
+            } catch (IllegalArgumentException e) {
+                ReAvaritia.LOG.warn("InfinityTotem: invalid ownerUUID in NBT, skipping return", e);
+                return;
+            }
             EntityPlayer player = entityItem.worldObj.func_152378_a(ownerUUID);
 
             if (player != null && !player.worldObj.isRemote) {

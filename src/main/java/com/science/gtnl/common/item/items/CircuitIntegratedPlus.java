@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.gtnewhorizons.modularui.api.UIInfos;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -305,7 +306,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
         ItemStack[] mainInventory = player.inventory.mainInventory;
         for (int i = 0; i < mainInventory.length; i++) {
             ItemStack potentialStack = mainInventory[i];
-            if (potentialStack == null || potentialStack.getItem() == null || potentialStack.stackSize <= 0) continue;
+            if (ItemUtil.isStackEmpty(potentialStack)) continue;
 
             // Circuit Configurator
             if (potentialStack.getItem() instanceof ItemCircuitProgrammer programmer) {
@@ -321,7 +322,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
                 }
                 for (int j = 0; j < toolboxInventory.getSizeInventory(); j++) {
                     ItemStack toolboxStack = toolboxInventory.getStackInSlot(j);
-                    if (toolboxStack == null || toolboxStack.getItem() == null || toolboxStack.stackSize <= 0) continue;
+                    if (ItemUtil.isStackEmpty(toolboxStack)) continue;
 
                     for (int id : OreDictionary.getOreIDs(toolboxStack)) {
                         if (id == screwdriverOreId) {

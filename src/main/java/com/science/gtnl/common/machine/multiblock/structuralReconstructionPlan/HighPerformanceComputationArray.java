@@ -36,6 +36,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import com.gtnewhorizon.structurelib.util.XSTR;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.SyncHPCAVariablesPacket;
 import com.science.gtnl.common.render.tile.HighPerformanceComputationArrayRenderer;
 import com.science.gtnl.utils.enums.BlockIcons;
@@ -200,7 +201,14 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         totalLens = aNBT.getInteger("totalLen");
-        randomUUID = UUID.fromString(aNBT.getString("randomUUID"));
+        try {
+            randomUUID = UUID.fromString(aNBT.getString("randomUUID"));
+        } catch (IllegalArgumentException e) {
+            ScienceNotLeisure.LOG.warn(
+                "[HighPerformanceComputationArray] Invalid randomUUID in NBT: {}",
+                aNBT.getString("randomUUID"),
+                e);
+        }
         if (availableData != null) {
             availableData.set(aNBT.getDouble("computation"));
             this.eAvailableData = (long) availableData.get();

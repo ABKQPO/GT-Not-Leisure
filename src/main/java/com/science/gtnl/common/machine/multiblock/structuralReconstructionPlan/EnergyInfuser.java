@@ -35,6 +35,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumItemBlock;
+import com.gtnewhorizon.gtnhlib.util.ItemUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -178,7 +179,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
         List<ItemStack> toStore = new ArrayList<>();
 
         for (ItemStack stack : getAllStoredInputs()) {
-            if (stack == null || stack.getItem() == null) continue;
+            if (ItemUtil.isStackInvalid(stack)) continue;
             if (!isItemStackFullyCharged(stack) || !isItemStackFullyRepaired(stack)) {
                 toStore.add(stack.copy());
                 stack.stackSize = 0;
@@ -210,7 +211,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
         long euPerItem = totalEU / mStoredItems.size();
 
         for (ItemStack stack : mStoredItems) {
-            if (stack == null || stack.getItem() == null) continue;
+            if (ItemUtil.isStackInvalid(stack)) continue;
 
             int stackSize = stack.stackSize;
             ItemStack[] stackArray = new ItemStack[stackSize];
@@ -280,7 +281,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     private boolean isItemStackFullyCharged(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) {
+        if (ItemUtil.isStackInvalid(stack)) {
             return true;
         }
         Item item = stack.getItem();
@@ -301,7 +302,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     private boolean isItemStackFullyRepaired(ItemStack stack) {
-        if (stack == null || stack.getItem() == null) {
+        if (ItemUtil.isStackInvalid(stack)) {
             return true;
         }
         Item item = stack.getItem();

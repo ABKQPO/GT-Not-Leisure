@@ -61,10 +61,11 @@ public class ReAvaritia {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(ReAvaritia.MODID);
         proxy.preInit(event);
 
-        MinecraftForge.EVENT_BUS.register(new SubscribeEventUtils());
+        SubscribeEventUtils eventHandler = new SubscribeEventUtils();
+        MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance()
             .bus()
-            .register(new SubscribeEventUtils());
+            .register(eventHandler);
 
         BlockLoader.registryBlocks();
         ItemLoader.registerItems();

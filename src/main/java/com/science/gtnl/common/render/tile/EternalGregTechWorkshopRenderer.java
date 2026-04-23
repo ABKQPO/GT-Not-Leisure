@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
 import com.gtnewhorizon.gtnhlib.client.renderer.vbo.VertexBuffer;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshop;
 import com.science.gtnl.config.MainConfig;
@@ -122,7 +123,7 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
                 initRings();
                 initialized = true;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                ScienceNotLeisure.LOG.error("[EternalGregTechWorkshopRenderer] Ring init failed", e);
                 failedInit = true;
                 initialized = true;
                 return;

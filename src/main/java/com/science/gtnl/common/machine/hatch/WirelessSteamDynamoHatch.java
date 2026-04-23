@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.mixins.early.Gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.enums.SteamTypes;
@@ -300,7 +301,12 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        try {
+            ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
+        } catch (IllegalArgumentException e) {
+            ScienceNotLeisure.LOG
+                .warn("[WirelessSteamDynamoHatch] Invalid OwnerUUID in NBT: {}", aNBT.getString("OwnerUUID"), e);
+        }
     }
 
     @Override

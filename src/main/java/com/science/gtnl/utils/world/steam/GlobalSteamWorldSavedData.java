@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 
+import com.science.gtnl.ScienceNotLeisure;
+
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class GlobalSteamWorldSavedData extends WorldSavedData {
@@ -72,8 +74,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                 }
             }
         } catch (IOException | ClassNotFoundException exception) {
-            System.out.println(GlobalSteamNBTTag + " LOAD FAILED");
-            exception.printStackTrace();
+            ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} LOAD FAILED", GlobalSteamNBTTag, exception);
         }
 
         try {
@@ -96,8 +97,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                 }
             }
         } catch (IOException | ClassNotFoundException exception) {
-            System.out.println(GlobalSteamTeamNBTTag + " LOAD FAILED");
-            exception.printStackTrace();
+            ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} LOAD FAILED", GlobalSteamTeamNBTTag, exception);
         }
     }
 
@@ -112,8 +112,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
             nbtTagCompound.setByteArray(GlobalSteamNBTTag, byteArrayOutputStream.toByteArray());
 
         } catch (IOException exception) {
-            System.out.println(GlobalSteamNBTTag + " SAVE FAILED");
-            exception.printStackTrace();
+            ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} SAVE FAILED", GlobalSteamNBTTag, exception);
         }
     }
 }
