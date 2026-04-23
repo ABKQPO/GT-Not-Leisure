@@ -7,8 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 
-import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

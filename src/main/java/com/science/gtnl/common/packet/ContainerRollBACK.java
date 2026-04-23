@@ -3,7 +3,6 @@ package com.science.gtnl.common.packet;
 import net.minecraft.inventory.ContainerPlayer;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.utils.RCAEBaseContainer;

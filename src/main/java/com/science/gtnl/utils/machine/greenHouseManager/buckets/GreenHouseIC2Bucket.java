@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
@@ -130,7 +131,7 @@ public class GreenHouseIC2Bucket extends GreenHouseBucket {
             this.isValid = true;
 
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            ScienceNotLeisure.LOG.error("Failed to initialize IC2 crop bucket", e);
         }
     }
 

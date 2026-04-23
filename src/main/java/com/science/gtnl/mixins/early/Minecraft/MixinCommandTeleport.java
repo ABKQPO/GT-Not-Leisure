@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.TeleporterUtils;
 
 @Mixin(CommandTeleport.class)
@@ -58,7 +59,9 @@ public abstract class MixinCommandTeleport {
 
                 ci.cancel();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            ScienceNotLeisure.LOG.warn("[MixinCommandTeleport] Failed to execute custom teleport", ignored);
+        }
     }
 
     @Unique

@@ -49,6 +49,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.mojang.authlib.GameProfile;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.early.Gregtech.AccessorGTLanguageManager;
 import com.science.gtnl.mixins.early.Minecraft.AccessorStringTranslate;
@@ -799,7 +800,7 @@ public class Utils {
                 try {
                     desiredMeta = Integer.parseInt(parts[2]);
                 } catch (NumberFormatException e) {
-                    System.err.println("Invalid meta value in config: " + spec);
+                    ScienceNotLeisure.LOG.warn("Invalid meta value in config: {}", spec);
                     continue;
                 }
 

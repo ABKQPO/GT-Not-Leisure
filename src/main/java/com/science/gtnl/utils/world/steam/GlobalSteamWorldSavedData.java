@@ -70,7 +70,11 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                                 entry.getKey()
                                     .toString()),
                             entry.getValue());
-                    } catch (RuntimeException ignored) {}
+                    } catch (RuntimeException ignored) {
+                        ScienceNotLeisure.LOG.warn(
+                            "[GlobalSteamWorldSavedData] Skipping invalid UUID key in GlobalSteam: {}",
+                            entry.getKey());
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException exception) {
@@ -93,7 +97,11 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                     try {
                         SpaceProjectManager
                             .putInTeam(UUID.fromString(entry.getKey()), UUID.fromString(entry.getValue()));
-                    } catch (RuntimeException ignored) {}
+                    } catch (RuntimeException ignored) {
+                        ScienceNotLeisure.LOG.warn(
+                            "[GlobalSteamWorldSavedData] Skipping invalid UUID in team entry: {}",
+                            entry.getKey());
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException exception) {

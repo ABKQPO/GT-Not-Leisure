@@ -30,9 +30,7 @@ public class ScriptLoader {
                     ScienceNotLeisure.LOG.info("Loaded {} script in {} ms.", script.getScriptName(), timeToLoad);
                 } catch (Exception ex) {
                     errored.add(script.getScriptName());
-                    ScienceNotLeisure.LOG
-                        .error("There was an error while loading {}! Printing stacktrace:", script.getScriptName());
-                    ex.printStackTrace();
+                    ScienceNotLeisure.LOG.error("There was an error while loading {}!", script.getScriptName(), ex);
                 }
             } else {
                 ScienceNotLeisure.LOG

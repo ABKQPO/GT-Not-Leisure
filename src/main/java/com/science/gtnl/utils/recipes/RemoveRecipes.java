@@ -285,7 +285,7 @@ public class RemoveRecipes {
                     .append(entry.getValue())
                     .append(" recipes");
             }
-            System.out.println(logMessage);
+            ScienceNotLeisure.LOG.info("{}", logMessage);
         }
 
         flushBuffer();

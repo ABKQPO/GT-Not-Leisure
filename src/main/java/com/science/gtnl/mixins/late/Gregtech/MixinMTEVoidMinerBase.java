@@ -29,6 +29,7 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.machine.VMTweakHelper;
@@ -142,7 +143,12 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         try {
             Block block = ModBlocks.getBlock(vmTweak$mLastDimensionOverride);
             ext = new ItemStack(block).getDisplayName();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            ScienceNotLeisure.LOG.debug(
+                "[VMTweakMixin] Failed to get display name for dimension: {}",
+                vmTweak$mLastDimensionOverride,
+                ignored);
+        }
 
         return new Text(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_Dimension_Override")

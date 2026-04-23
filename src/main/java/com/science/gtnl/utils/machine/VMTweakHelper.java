@@ -10,6 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.science.gtnl.ScienceNotLeisure;
 
 import bartworks.common.configs.Configuration;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -46,7 +47,10 @@ public class VMTweakHelper {
                     ((ChunkProviderServer) world.getChunkProvider()).currentChunkProvider.getClass()
                         .getName());
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            ScienceNotLeisure.LOG
+                .debug("Failed to cache chunk provider class for dim {}", event.world.provider.dimensionId, ignored);
+        }
     }
 
     public static String getNameForID(int id) {

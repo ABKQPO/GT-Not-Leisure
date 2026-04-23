@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.block.Block;
 
+import com.science.gtnl.ScienceNotLeisure;
+
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.blocks.BlockCasingsAbstract;
 
@@ -41,7 +43,7 @@ public class StructureUtils {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                ScienceNotLeisure.LOG.error("Failed to load structure file: {}", name, e);
             }
             return structureList.toArray(new String[0][]);
         });
@@ -78,7 +80,7 @@ public class StructureUtils {
      */
     public static void printStructure(String[][] structure) {
         for (String[] row : structure) {
-            System.out.println(String.join(",", row));
+            ScienceNotLeisure.LOG.debug("{}", String.join(",", row));
         }
     }
 

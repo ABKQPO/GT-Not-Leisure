@@ -192,7 +192,7 @@ public class SubscribeEventUtils {
                     tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateAPI.GAME_RULE));
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ScienceNotLeisure.LOG.warn("Failed to read tickrate game rule", ex);
             }
             TickrateAPI.changeClientTickrate(event.player, tickrate);
         }
@@ -236,7 +236,7 @@ public class SubscribeEventUtils {
                     tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateAPI.GAME_RULE));
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                ScienceNotLeisure.LOG.warn("Failed to read tickrate game rule", ex);
             }
             TickrateAPI.changeServerTickrate(tickrate);
             TickrateAPI.changeClientTickrate(null, tickrate);

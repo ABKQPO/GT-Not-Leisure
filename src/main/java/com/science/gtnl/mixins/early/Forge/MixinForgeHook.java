@@ -21,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.science.gtnl.ScienceNotLeisure;
+
 @Mixin(value = ForgeHooks.class, remap = false)
 public class MixinForgeHook {
 
@@ -108,7 +110,7 @@ public class MixinForgeHook {
                                     tileentity.readFromNBT(blockEntityTag);
                                     tileentity.markDirty();
                                 } catch (Throwable e) {
-                                    e.printStackTrace();
+                                    ScienceNotLeisure.LOG.error("Failed to restore TileEntity NBT from held item", e);
                                 }
                             }
                         }

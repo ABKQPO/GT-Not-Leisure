@@ -3,7 +3,6 @@ package com.science.gtnl.common.packet;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
 
 import cpw.mods.fml.common.network.ByteBufUtils;

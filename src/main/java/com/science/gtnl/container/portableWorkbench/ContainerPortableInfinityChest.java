@@ -202,6 +202,7 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
     }
 
     public void syncData(final ItemStack itemStack, final int slot, final int stackSize) {
+        if (slot < 0 || slot >= inventorySlots.size()) return;
         if (itemStack != null) {
             itemStack.stackSize = stackSize;
             inventorySlots.get(slot)

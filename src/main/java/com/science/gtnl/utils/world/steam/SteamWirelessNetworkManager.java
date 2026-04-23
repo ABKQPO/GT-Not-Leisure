@@ -18,9 +18,7 @@ public class SteamWirelessNetworkManager {
     public static void strongCheckOrAddUser(UUID user_uuid) {
         SpaceProjectManager.checkOrCreateTeam(user_uuid);
         user_uuid = SpaceProjectManager.getLeader(user_uuid);
-        if (!GlobalSteam.containsKey(user_uuid)) {
-            GlobalSteam.put(user_uuid, BigInteger.ZERO);
-        }
+        GlobalSteam.putIfAbsent(user_uuid, BigInteger.ZERO);
     }
 
     // ------------------------------------------------------------------------------------

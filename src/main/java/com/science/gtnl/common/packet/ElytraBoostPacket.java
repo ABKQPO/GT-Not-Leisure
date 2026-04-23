@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.reavaritia.common.items.InfinityElytra;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

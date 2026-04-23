@@ -20,8 +20,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
-import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
