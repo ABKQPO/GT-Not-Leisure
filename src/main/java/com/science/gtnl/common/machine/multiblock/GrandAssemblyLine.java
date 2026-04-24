@@ -255,6 +255,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         validRecipes.sort(Comparator.comparingInt(recipe -> recipe.mEUt));
         if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
 
+        BigInteger wirelessUserEU = wirelessMode ? WirelessNetworkManager.getUserEU(ownerUUID) : BigInteger.ZERO;
         List<RecipeTask> tasks = new ArrayList<>();
         int remainingGlobalParallel = maxParallel;
         long currentWiredInstantPower = 0; // 有线模式累计瞬时功率
@@ -266,6 +267,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             ItemStack[] invItems = inventory.getItemInputs();
             FluidStack[] invFluids = inventory.getFluidInputs();
             if (invItems == null || invItems.length == 0) continue;
+
+            Object2LongOpenHashMap<GTUtility.ItemId> itemMap = getInventoryItemMap(invItems);
+            Object2LongOpenHashMap<Fluid> fluidMap = getInventoryFluidMap(invFluids);
 
             for (GTRecipe.RecipeAssemblyLine oldRecipe : validRecipes) {
                 GTRecipe.RecipeAssemblyLine recipe = copyRecipe(oldRecipe);
@@ -280,12 +284,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 int localMax = remainingGlobalParallel;
 
-                double pFactor = calculateParallelByItemsUnordered(invItems, localMax, recipe);
+                double pFactor = calculateParallelByItemsUnordered(itemMap, localMax, recipe);
                 if (pFactor < 1.0) {
                     result = GTNLParallelHelper.PARALLEL_ZERO;
                     continue;
                 }
-                pFactor = calculateParallelByFluidsUnordered(invFluids, pFactor, recipe.mFluidInputs);
+                pFactor = calculateParallelByFluidsUnordered(fluidMap, pFactor, recipe.mFluidInputs);
                 if (pFactor < 1.0) {
                     result = GTNLParallelHelper.PARALLEL_ZERO;
                     continue;
@@ -297,13 +301,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 recipe.mEUt = Math.max(1, (int) (recipe.mEUt * getEUtDiscount()));
 
                 if (wirelessMode) {
-                    BigInteger available = WirelessNetworkManager.getUserEU(ownerUUID);
                     BigInteger needed = BigInteger.valueOf((long) recipe.mEUt * recipe.mDuration)
                         .multiply(BigInteger.valueOf(finalParallel));
                     if (currentWirelessTotalEnergy.add(needed)
-                        .compareTo(available) > 0) {
+                        .compareTo(wirelessUserEU) > 0) {
                         BigInteger perParallel = BigInteger.valueOf((long) recipe.mEUt * recipe.mDuration);
-                        finalParallel = available.subtract(currentWirelessTotalEnergy)
+                        finalParallel = wirelessUserEU.subtract(currentWirelessTotalEnergy)
                             .divide(perParallel)
                             .intValue();
                     }
@@ -338,7 +341,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 if (finalParallel <= 0) continue;
 
-                consumeItemsUnordered(recipe, finalParallel, invItems);
+                consumeItemsUnordered(recipe, finalParallel, invItems, itemMap);
                 consumeFluidsUnordered(recipe, finalParallel, invFluids);
                 tasks.add(new RecipeTask(recipe, finalParallel));
                 remainingGlobalParallel -= finalParallel;
@@ -362,23 +365,23 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         int overclockFactor = (mParallelTier >= 11) ? 4 : 2;
 
         for (RecipeTask task : tasks) {
+            BigInteger taskParallelBI = BigInteger.valueOf(task.parallel);
             if (wirelessMode) {
                 // 无线模式：基于总量进行超频，尽量压到 minDuration
-                BigInteger userTotal = WirelessNetworkManager.getUserEU(ownerUUID);
                 while (true) {
                     long nextPower = task.adjustedPower * 4;
                     int nextTime = task.adjustedTime / overclockFactor;
                     if (nextTime < minDuration) break;
 
                     BigInteger currentTaskTotal = BigInteger.valueOf(task.adjustedPower * task.adjustedTime)
-                        .multiply(BigInteger.valueOf(task.parallel));
+                        .multiply(taskParallelBI);
                     BigInteger nextTaskTotal = BigInteger.valueOf(nextPower * nextTime)
-                        .multiply(BigInteger.valueOf(task.parallel));
+                        .multiply(taskParallelBI);
 
                     // 检查增加超频后总量是否依然足够
                     if (currentWirelessTotalEnergy.subtract(currentTaskTotal)
                         .add(nextTaskTotal)
-                        .compareTo(userTotal) <= 0) {
+                        .compareTo(wirelessUserEU) <= 0) {
                         currentWirelessTotalEnergy = currentWirelessTotalEnergy.subtract(currentTaskTotal)
                             .add(nextTaskTotal);
                         task.adjustedPower = nextPower;
@@ -414,12 +417,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 if (wirelessMode) {
                     // 无线模式只需检查余额
                     BigInteger currentTotal = BigInteger.valueOf(task.adjustedPower * task.adjustedTime)
-                        .multiply(BigInteger.valueOf(task.parallel));
+                        .multiply(taskParallelBI);
                     BigInteger extendedTotal = BigInteger.valueOf((long) (task.adjustedPower * tFactor * 128))
-                        .multiply(BigInteger.valueOf(task.parallel));
+                        .multiply(taskParallelBI);
                     if (currentWirelessTotalEnergy.subtract(currentTotal)
                         .add(extendedTotal)
-                        .compareTo(WirelessNetworkManager.getUserEU(ownerUUID)) <= 0) {
+                        .compareTo(wirelessUserEU) <= 0) {
                         currentWirelessTotalEnergy = currentWirelessTotalEnergy.subtract(currentTotal)
                             .add(extendedTotal);
                         task.adjustedPower = (long) (task.adjustedPower * tFactor);
@@ -527,11 +530,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return fluidMap;
     }
 
-    public static double calculateParallelByItemsUnordered(ItemStack[] invItems, int maxParallel,
-        GTRecipe.RecipeAssemblyLine recipe) {
+    public static double calculateParallelByItemsUnordered(Object2LongOpenHashMap<GTUtility.ItemId> availableMap,
+        int maxParallel, GTRecipe.RecipeAssemblyLine recipe) {
         if (recipe.mInputs == null || recipe.mInputs.length == 0) return 0;
 
-        Object2LongOpenHashMap<GTUtility.ItemId> availableMap = getInventoryItemMap(invItems);
         double currentParallel = maxParallel;
 
         for (int i = 0; i < recipe.mInputs.length; i++) {
@@ -579,10 +581,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return currentParallel;
     }
 
-    public static double calculateParallelByFluidsUnordered(FluidStack[] invFluids, double currentParallel,
-        FluidStack[] recipeFluids) {
+    public static double calculateParallelByFluidsUnordered(Object2LongOpenHashMap<Fluid> availableMap,
+        double currentParallel, FluidStack[] recipeFluids) {
         if (recipeFluids == null || recipeFluids.length == 0) return currentParallel;
-        Object2LongOpenHashMap<Fluid> availableMap = getInventoryFluidMap(invFluids);
 
         for (FluidStack req : recipeFluids) {
             if (req == null) continue;
@@ -603,10 +604,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return currentParallel;
     }
 
-    public void consumeItemsUnordered(GTRecipe.RecipeAssemblyLine recipe, int parallel, ItemStack[] invItems) {
+    public void consumeItemsUnordered(GTRecipe.RecipeAssemblyLine recipe, int parallel, ItemStack[] invItems,
+        Object2LongOpenHashMap<GTUtility.ItemId> availableMap) {
         if (recipe.mInputs == null) return;
-
-        Object2LongOpenHashMap<GTUtility.ItemId> availableMap = getInventoryItemMap(invItems);
 
         for (int i = 0; i < recipe.mInputs.length; i++) {
             ItemStack mainReq = recipe.mInputs[i];
