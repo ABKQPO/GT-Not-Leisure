@@ -43,8 +43,6 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
     public static FluidStack DISTILLED_WATER = GTModHandler.getDistilledWater(1);
 
-    public int fuelConsumption;
-
     public abstract long getOutputEUt();
 
     public abstract int getCasingTextureIndex();
@@ -124,7 +122,6 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         this.lEUt = 0;
-        this.mEfficiency = 0;
         return CheckRecipeResultRegistry.NO_FUEL_FOUND;
     }
 
@@ -156,7 +153,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 + " EU/t",
             StatCollector.translateToLocal("GT5U.engine.consumption") + ": "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(fuelConsumption)
+                + GTUtility.formatNumbers(lEUt / 4)
                 + EnumChatFormatting.RESET
                 + " L/t" };
     }
