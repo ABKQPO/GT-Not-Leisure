@@ -119,11 +119,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         GTOreDictUnificator.get(OrePrefixes.plateSuperdense, MaterialsUEVplus.SpaceTime, 16), ItemList.ZPM6.get(8),
         ItemList.Robot_Arm_UIV.get(64), ItemList.Conveyor_Module_UIV.get(64), ItemList.Field_Generator_UEV.get(64) };
 
-    public static FluidStack distilledWater = GTModHandler.getDistilledWater(7500);
-    public static ItemStack t1Nanite = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Neutronium, 1);
-    public static ItemStack t2Nanite = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 1);
-    public static ItemStack t3Nanite = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Gold, 1);
-    public static FluidStack[] purifiedWater = new FluidStack[] { Materials.Grade1PurifiedWater.getFluid(1),
+    public static FluidStack DISTILLED_WATER = GTModHandler.getDistilledWater(7500);
+    public static ItemStack T1NANITE = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Neutronium, 1);
+    public static ItemStack T2NANITE = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 1);
+    public static ItemStack T3NANITE = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Gold, 1);
+    public static FluidStack[] PURIFIED_WATER = new FluidStack[] { Materials.Grade1PurifiedWater.getFluid(1),
         Materials.Grade3PurifiedWater.getFluid(1), Materials.Grade5PurifiedWater.getFluid(1),
         Materials.Grade7PurifiedWater.getFluid(1), Materials.Grade2PurifiedWater.getFluid(1),
         Materials.Grade4PurifiedWater.getFluid(1), Materials.Grade6PurifiedWater.getFluid(1),
@@ -281,11 +281,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
                 long parallel = 0;
 
                 for (FluidStack fluidStack : getStoredWater()) {
-                    if (GTUtility.areFluidsEqual(fluidStack, purifiedWater[requiredPCBTier - 1])) {
+                    if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[requiredPCBTier - 1])) {
                         parallel += (long) (fluidStack.amount / 100d
                             * GTUtility.powInt(2, machineTier - requiredPCBTier));
                     }
-                    if (GTUtility.areFluidsEqual(fluidStack, purifiedWater[requiredPCBTier + 3])) {
+                    if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[requiredPCBTier + 3])) {
                         parallel += (long) (fluidStack.amount / 50d
                             * GTUtility.powInt(2, machineTier - requiredPCBTier));
                     }
@@ -449,9 +449,9 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     public int getMachineTier() {
         ItemStack stack = getControllerSlot();
-        if (GTUtility.areStacksEqual(stack, t1Nanite)) return 1;
-        if (GTUtility.areStacksEqual(stack, t2Nanite)) return 2;
-        if (GTUtility.areStacksEqual(stack, t3Nanite)) {
+        if (GTUtility.areStacksEqual(stack, T1NANITE)) return 1;
+        if (GTUtility.areStacksEqual(stack, T2NANITE)) return 2;
+        if (GTUtility.areStacksEqual(stack, T3NANITE)) {
             if (upgradeConsumed) {
                 return 4;
             } else {
@@ -479,7 +479,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         if (mStartUpCheck > 0 || !getBaseMetaTileEntity().isServerSide()) return;
         if (isAllowedToWork() && aTick % 100 == 0) {
             startRecipeProcessing();
-            if (!depleteWaterInput(distilledWater)) {
+            if (!depleteWaterInput(DISTILLED_WATER)) {
                 stopMachine(ShutDownReasonRegistry.NONE);
             }
             endRecipeProcessing();
@@ -525,7 +525,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         for (FluidStack fluidStack : getStoredWater()) {
             if (parallel <= 0) break;
             // 先扣“高级净化水”（tier + 3）
-            if (GTUtility.areFluidsEqual(fluidStack, purifiedWater[tier + 3])) {
+            if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier + 3])) {
                 int deductAmount = 50 / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 
@@ -541,7 +541,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             if (parallel <= 0) break;
 
             // 再扣“低级净化水”（tier - 1）
-            if (GTUtility.areFluidsEqual(fluidStack, purifiedWater[tier - 1])) {
+            if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier - 1])) {
                 int deductAmount = 100 / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 

@@ -258,11 +258,6 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
     }
 
     @Override
-    public int getDamageToComponent(ItemStack aStack) {
-        return 1;
-    }
-
-    @Override
     public ArrayList<ItemStack> getStoredInputs() {
         ArrayList<ItemStack> tItems = super.getStoredInputs();
         for (MTEHatchMillingBalls tHatch : GTUtility.validMTEList(mMillingBallBuses)) {
