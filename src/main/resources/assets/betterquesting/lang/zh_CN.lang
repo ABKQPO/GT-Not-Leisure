@@ -1,12 +1,11 @@
-﻿betterquesting.questline.GTNotLeisure75SteamAge.name=第0.75阶-过热蒸汽时代
-betterquesting.questline.GTNotLeisure75SteamAge.desc=探索新事物中…
+﻿betterquesting.questline.GTNotLeisureQuestsLinQ.name=GT不再业余
+betterquesting.questline.GTNotLeisureQuestsLinQ.desc=这确实有趣，但称不上是休闲。
 
-betterquesting.questline.GTNotLeisure99SteamAge.name=第0.999…阶-超临界蒸汽时代
-betterquesting.questline.GTNotLeisure99SteamAge.desc=将蒸汽推向极限！
+betterquesting.questline.GTNotLeisure75SteamAgQ.name=第0.75阶-过热蒸汽时代
+betterquesting.questline.GTNotLeisure75SteamAgQ.desc=探索新事物中…
 
-betterquesting.questline.GTNotLeisureQuestsLine.name=GT不再业余
-betterquesting.questline.GTNotLeisureQuestsLine.desc=这确实有趣，但称不上是休闲。
-
+betterquesting.questline.GTNotLeisure99SteamAgQ.name=第0.999…阶-超临界蒸汽时代
+betterquesting.questline.GTNotLeisure99SteamAgQ.desc=将蒸汽推向极限！
 
 betterquesting.quest.1h93HjX3SxKrBr52ggnf4g.name=碎石
 betterquesting.quest.1h93HjX3SxKrBr52ggnf4g.desc=为了喂饱你的萃取机，你需要大量的石头...
@@ -231,7 +230,7 @@ betterquesting.quest.KVPA-0etR_exr8uMIoM_gA.desc=也许有些机器你现在还�
 betterquesting.quest.l9cws907Td-mnHI2OVBXCw.name=硝苯氮
 betterquesting.quest.l9cws907Td-mnHI2OVBXCw.desc=量产工业TNT。
 betterquesting.quest.Lb1GP74dR-KNMMtuW9wDkA.name=另一个世界的神秘物品
-betterquesting.quest.Lb1GP74dR-KNMMtuW9wDkA.desc=这股力量不属于这个世界。%n%n%n%n§b皇家凝胶：%n%n可以穿在任意 Bauble 饰品栏，%n%n穿上后免疫史莱姆(EntitySlime)的攻击伤害。%n%n%n§6幸运马掌：%n%n可以穿在任意 Bauble 饰品栏，%n%n穿上后免疫摔落伤害，%n%n死亡后有 90% 概率复活，血量设置为 半颗心 并给予 3s 无敌。%n%n%n§e粘鞍：%n%n手持时使用可以召唤一只史莱姆坐骑。%n%n%n§9水蜡烛：%n%n与火把一样放置在地上提供光照，%n%n给予玩家 战斗III 效果。
+betterquesting.quest.Lb1GP74dR-KNMMtuW9wDkA.desc=这股力量不属于这个世界。%n%n%n%n§b皇家凝胶：%n%n可以穿戴在任意 Baubles 饰品栏，%n%n穿戴后免疫史莱姆的攻击伤害。%n%n%n§6幸运马掌：%n%n可以穿戴在任意 Baubles 饰品栏，%n%n穿戴后免疫摔落伤害，%n%n死亡后有 90% 概率复活，生命值设为半颗心，并给予 3s 无敌。%n%n%n§e粘鞍：%n%n手持时使用，可以召唤一只史莱姆坐骑。%n%n%n§9水蜡烛：%n%n可像火把一样放置，并提供光照，%n%n给予玩家 战斗 III 效果。
 betterquesting.quest.lHRmuMX9Ri-WOi1im9A2uw.name=磁约束维度震荡装置
 betterquesting.quest.lHRmuMX9Ri-WOi1im9A2uw.desc=No Description
 betterquesting.quest.Lnn4BHDdQ9OmSnTT48Gluw.name=分类输入
