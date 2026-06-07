@@ -2,19 +2,22 @@ package com.science.gtnl.common.packet;
 
 import java.util.UUID;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
-public class DraconicArmorProjectionSyncPacket implements IMessage {
+public class DraconicArmorProjectionSyncPacket
+    implements IMessage, IMessageHandler<DraconicArmorProjectionSyncPacket, IMessage> {
 
     private UUID playerId;
     private String projectionTypeId;
@@ -56,35 +59,38 @@ public class DraconicArmorProjectionSyncPacket implements IMessage {
         return builder.toString();
     }
 
-    public static class Handler implements IMessageHandler<DraconicArmorProjectionSyncPacket, IMessage> {
+    @Override
+    public IMessage onMessage(DraconicArmorProjectionSyncPacket message, MessageContext ctx) {
+        if (ctx.side == Side.CLIENT) {
+            onClient(message);
+        }
+        return null;
+    }
 
-        @Override
-        public IMessage onMessage(DraconicArmorProjectionSyncPacket message, MessageContext ctx) {
-            World world = FMLClientHandler.instance()
-                .getClient().theWorld;
-            if (world == null) {
-                return null;
-            }
+    @SideOnly(Side.CLIENT)
+    private void onClient(DraconicArmorProjectionSyncPacket message) {
+        World world = Minecraft.getMinecraft().theWorld;
+        if (world == null) {
+            return;
+        }
 
-            EntityPlayer player = world.func_152378_a(message.playerId);
-            if (player == null) {
-                DraconicArmorProjectionState.clear(message.playerId);
-                return null;
-            }
+        EntityPlayer player = world.func_152378_a(message.playerId);
+        if (player == null) {
+            DraconicArmorProjectionState.clear(message.playerId);
+            return;
+        }
 
-            if (message.projectionTypeId.isEmpty()) {
-                DraconicArmorProjectionState.clear(player);
-                return null;
-            }
+        if (message.projectionTypeId.isEmpty()) {
+            DraconicArmorProjectionState.clear(player);
+            return;
+        }
 
-            for (DraconicArmorProjectionType type : DraconicArmorProjectionType.values()) {
-                if (type.getId()
-                    .equals(message.projectionTypeId)) {
-                    DraconicArmorProjectionState.set(player, type);
-                    break;
-                }
+        for (DraconicArmorProjectionType type : DraconicArmorProjectionType.values()) {
+            if (type.getId()
+                .equals(message.projectionTypeId)) {
+                DraconicArmorProjectionState.set(player, type);
+                break;
             }
-            return null;
         }
     }
 }
