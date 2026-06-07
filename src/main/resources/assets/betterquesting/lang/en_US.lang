@@ -1,11 +1,11 @@
-﻿betterquesting.questline.GTNotLeisure75SteamAgQ.name=第0.75阶-过热蒸汽时代
-betterquesting.questline.GTNotLeisure75SteamAgQ.desc=探索新事物中…
+﻿betterquesting.questline.GTNotLeisure75SteamAge.name=第0.75阶-过热蒸汽时代
+betterquesting.questline.GTNotLeisure75SteamAge.desc=探索新事物中…
 
-betterquesting.questline.GTNotLeisure99SteamAgQ.name=第0.999…阶-超临界蒸汽时代
-betterquesting.questline.GTNotLeisure99SteamAgQ.desc=将蒸汽推向极限！
+betterquesting.questline.GTNotLeisure99SteamAge.name=第0.999…阶-超临界蒸汽时代
+betterquesting.questline.GTNotLeisure99SteamAge.desc=将蒸汽推向极限！
 
-betterquesting.questline.GTNotLeisureQuestsLinQ.name=GT不再业余
-betterquesting.questline.GTNotLeisureQuestsLinQ.desc=这确实有趣，但称不上是休闲。
+betterquesting.questline.GTNotLeisureQuestsLine.name=GT不再业余
+betterquesting.questline.GTNotLeisureQuestsLine.desc=这确实有趣，但称不上是休闲。
 
 
 betterquesting.quest.1h93HjX3SxKrBr52ggnf4g.name=碎石
@@ -76,8 +76,8 @@ betterquesting.quest.zUqM918XQA-LSJIeixqzhQ.name=你会爱上这个的
 betterquesting.quest.zUqM918XQA-LSJIeixqzhQ.desc=你以为仅仅因为我们停留在蒸汽时代，你就可以摆脱部件制作了吗？别傻了。\n\n§b§r§3注意到某些部件拥有强大的物流能力，发挥你天马行空的想象力使用它。
 betterquesting.quest._UQG839BQ6mf7b6evuVeAg.name=经典焦炭炉
 betterquesting.quest._UQG839BQ6mf7b6evuVeAg.desc=总是需要更多的蒸汽...你是不是受够了？这个强大的焦炉将为你生产足够一辈子的焦炭和木焦油。希望如此。
-betterquesting.quest.=eHaeoPROSSWmX6tTXJaX5w.name=欢迎来到0.75阶
-betterquesting.quest.=eHaeoPROSSWmX6tTXJaX5w.desc=如果你是一个有经验的GTNH玩家，到目前为止的一切可能都很熟悉。但现在不一样了。既然你选择了蒸汽而非‘电力’的正义之路，它将向你揭示许多奇迹……
+betterquesting.quest.eHaeoPROSSWmX6tTXJaX5w.name=欢迎来到0.75阶
+betterquesting.quest.eHaeoPROSSWmX6tTXJaX5w.desc=如果你是一个有经验的GTNH玩家，到目前为止的一切可能都很熟悉。但现在不一样了。既然你选择了蒸汽而非‘电力’的正义之路，它将向你揭示许多奇迹……
 
 betterquesting.quest.BdHm2_HDS4uOxUSUYwajBA.name=喷流
 betterquesting.quest.BdHm2_HDS4uOxUSUYwajBA.desc=利用被称为§d喷流§r的奇怪隐藏现实平面的力量，你可以大大加速无管网络。
