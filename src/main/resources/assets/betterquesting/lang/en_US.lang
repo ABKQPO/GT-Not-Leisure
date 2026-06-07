@@ -1,4 +1,5 @@
-﻿betterquesting.questline.GTNotLeisureQuestsLinQ.name=GT不再业余
+﻿
+betterquesting.questline.GTNotLeisureQuestsLinQ.name=GT不再业余
 betterquesting.questline.GTNotLeisureQuestsLinQ.desc=这确实有趣，但称不上是休闲。
 
 betterquesting.questline.GTNotLeisure75SteamAgQ.name=第0.75阶-过热蒸汽时代
@@ -44,7 +45,7 @@ betterquesting.quest.LqjbONytQbGbqbczYyR4dg.desc=直焰窑可以极其方便的�
 betterquesting.quest.mC6_hr7yTOKllBrvuYzNpg.name=高精度加工
 betterquesting.quest.mC6_hr7yTOKllBrvuYzNpg.desc=这将是你使用最频繁的机器之一。%n%n[note]可以运行MV电压配方。%n%n你可以使用玩偶代替结构玻璃，它是MAX级玻璃。[/note]
 betterquesting.quest.nwimqpl7TsGuK57C6LQVyQ.name=无线蒸汽网络
-betterquesting.quest.nwimqpl7TsGuK57C6LQVyQ.desc=你最近一直在经历奇怪的幻象……齿轮与阀门的尖塔，在无尽的舞蹈中旋转。%n%n在这些幻象里，你看到了许多技术，但你并不完全理解它们。%n%n不过，你可以创造它们。无管蒸汽……如果这真的可行，你几乎可以实现任何事情。%n%n%n%n[note]使用无管蒸汽仓将创建一个无管网络，类似于“无线网络”，无论那是什么意思。%n%n如果你在多人游戏中，可能会需要知道这些命令：%n%n/steam_networkdisplay \u003c成员\u003e%n%n/steam_networkjoin \u003c要添加的成员\u003e \u003c团队成员\u003e%n%n/steam_networkadd \u003c成员\u003e \u003c数量\u003e%n%n/steam_networkset \u003c成员\u003e \u003c数量\u003e[/note]
+betterquesting.quest.nwimqpl7TsGuK57C6LQVyQ.desc=你最近一直在经历奇怪的幻象……齿轮与阀门的尖塔，在无尽的舞蹈中旋转。%n%n在这些幻象里，你看到了许多技术，但你并不完全理解它们。%n%n不过，你可以创造它们。无管蒸汽……如果这真的可行，你几乎可以实现任何事情。%n%n%n%n[note]使用无管蒸汽仓将创建一个无管网络，类似于“无线网络”，无论那是什么意思。%n%n如果你在多人游戏中，可能会需要知道这些命令：%n%n/steam_networkdisplay <成员>%n%n/steam_networkjoin <要添加的成员> <团队成员>%n%n/steam_networkadd <成员> <数量>%n%n/steam_networkset <成员> <数量>[/note]
 betterquesting.quest.O1LcPUEiRY2uT33NvIX7lg.name=顷刻炼化
 betterquesting.quest.O1LcPUEiRY2uT33NvIX7lg.desc=石器时代即可解锁的超强力熔炉。它不需要燃料。之后你可能会需要升级到大型蒸汽熔炉，它更强。%n%n[warn]不要放入过多煤炭和熔炉。[/warn]
 betterquesting.quest.Ovh7jTzAQzGPV47TutmI7g.name=矿石处理
