@@ -1,0 +1,108 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 3466038342816122349,
+      "questIDLow:4": -5840768866088787175
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "No Description",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21033,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "更好的冷冻机",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -7240126569209116035,
+  "questIDLow:4": -7775117625822864559,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 1002,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 2,
+          "Damage:2": 1,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings2"
+        },
+        "2:10": {
+          "Count:3": 4,
+          "Damage:2": 1428,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "3:10": {
+          "Count:3": 2,
+          "Damage:2": 32602,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.metaitem.01"
+        },
+        "4:10": {
+          "Count:3": 2,
+          "Damage:2": 32612,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.metaitem.01"
+        },
+        "5:10": {
+          "Count:3": 2,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "dreamcraft:item.CircuitEV"
+        },
+        "6:10": {
+          "Count:3": 2,
+          "Damage:2": 21306,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.metaitem.02"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21033,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    }
+  }
+}

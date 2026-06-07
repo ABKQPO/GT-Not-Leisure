@@ -1,0 +1,121 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 4274721151971902861,
+      "questIDLow:4": -5886347865365283946
+    },
+    "1:10": {
+      "questIDHigh:4": 696251456751159245,
+      "questIDLow:4": -8528722399423766182
+    },
+    "2:10": {
+      "questIDHigh:4": 2938360915384877069,
+      "questIDLow:4": -8206078659160937703
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "直焰窑可以极其方便的生产耐火砖、锻铁、砖砌青铜外壳等等。\n\n[note]你应该已经可以制作蓄水仓了，看看它的工作台配方吧。[/note]",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21169,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "加大火力",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 3362178159099068849,
+  "questIDLow:4": -7230046295432071050,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21169,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 40,
+          "Damage:2": 15,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings4"
+        },
+        "1:10": {
+          "Count:3": 9,
+          "Damage:2": 12,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings2"
+        },
+        "2:10": {
+          "Count:3": 10,
+          "Damage:2": 10,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings"
+        },
+        "3:10": {
+          "Count:3": 21,
+          "Damage:2": 13,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings3"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 3,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 31071,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 22592,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

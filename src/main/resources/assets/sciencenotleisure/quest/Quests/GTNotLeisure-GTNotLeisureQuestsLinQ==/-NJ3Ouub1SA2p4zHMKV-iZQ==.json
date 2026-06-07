@@ -1,0 +1,221 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -981575798004169000,
+      "questIDLow:4": -4990881658124440001
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "几乎所有的多方块结构，你都可以找到GTNL的升级版。\n\n也许有些机器你现在还无法制作，先参考吧！",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21088,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "厂房，必须扩大！",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 3791413763449899021,
+  "questIDLow:4": -6205061108649188763,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21049,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 21050,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 21052,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 21053,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "4:10": {
+          "Count:3": 1,
+          "Damage:2": 21054,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "5:10": {
+          "Count:3": 1,
+          "Damage:2": 21055,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "6:10": {
+          "Count:3": 1,
+          "Damage:2": 21056,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "7:10": {
+          "Count:3": 1,
+          "Damage:2": 21058,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "8:10": {
+          "Count:3": 1,
+          "Damage:2": 21059,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "9:10": {
+          "Count:3": 1,
+          "Damage:2": 21060,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "10:10": {
+          "Count:3": 1,
+          "Damage:2": 21061,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "11:10": {
+          "Count:3": 1,
+          "Damage:2": 21065,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "12:10": {
+          "Count:3": 1,
+          "Damage:2": 21066,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "13:10": {
+          "Count:3": 1,
+          "Damage:2": 21069,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "14:10": {
+          "Count:3": 1,
+          "Damage:2": 21077,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "15:10": {
+          "Count:3": 1,
+          "Damage:2": 21080,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "16:10": {
+          "Count:3": 1,
+          "Damage:2": 21081,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "17:10": {
+          "Count:3": 1,
+          "Damage:2": 21088,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "18:10": {
+          "Count:3": 1,
+          "Damage:2": 21195,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "19:10": {
+          "Count:3": 1,
+          "Damage:2": 21038,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "20:10": {
+          "Count:3": 1,
+          "Damage:2": 21040,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "21:10": {
+          "Count:3": 1,
+          "Damage:2": 21041,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "22:10": {
+          "Count:3": 1,
+          "Damage:2": 21042,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "23:10": {
+          "Count:3": 1,
+          "Damage:2": 21043,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "24:10": {
+          "Count:3": 1,
+          "Damage:2": 21044,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "25:10": {
+          "Count:3": 1,
+          "Damage:2": 21045,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "26:10": {
+          "Count:3": 1,
+          "Damage:2": 21046,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "27:10": {
+          "Count:3": 1,
+          "Damage:2": 21048,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

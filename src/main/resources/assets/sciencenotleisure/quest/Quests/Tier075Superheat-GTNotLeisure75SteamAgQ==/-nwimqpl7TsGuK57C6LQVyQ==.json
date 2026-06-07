@@ -1,0 +1,87 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 7990358307346074142,
+      "questIDLow:4": -5610774618007389498
+    },
+    "1:10": {
+      "questIDHigh:4": 2938360915384877069,
+      "questIDLow:4": -8206078659160937703,
+      "type:1": 1
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "你最近一直在经历奇怪的幻象……齿轮与阀门的尖塔，在无尽的舞蹈中旋转。\n\n在这些幻象里，你看到了许多技术，但你并不完全理解它们。\n\n不过，你可以创造它们。无管蒸汽……如果这真的可行，你几乎可以实现任何事情。\n\n\n\n[note]使用无管蒸汽仓将创建一个无管网络，类似于“无线网络”，无论那是什么意思。\n\n如果你在多人游戏中，可能会需要知道这些命令：\n\n/steam_networkdisplay \u003c成员\u003e\n\n/steam_networkjoin \u003c要添加的成员\u003e \u003c团队成员\u003e\n\n/steam_networkadd \u003c成员\u003e \u003c数量\u003e\n\n/steam_networkset \u003c成员\u003e \u003c数量\u003e[/note]",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 22576,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "无线蒸汽网络",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -6987151570215678271,
+  "questIDLow:4": -5896444727146572343,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 22576,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 22577,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 103,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

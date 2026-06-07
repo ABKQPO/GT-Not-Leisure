@@ -1,0 +1,132 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 8680299745933936933,
+      "questIDLow:4": -6458254966101993497
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "石器时代即可解锁的超强力熔炉。它不需要燃料。之后你可能会需要升级到大型蒸汽熔炉，它更强。\n\n[warn]不要放入过多煤炭和熔炉。[/warn]",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21218,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "顷刻炼化",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 4274721151971902861,
+  "questIDLow:4": -5886347865365283946,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21218,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 23,
+          "Damage:2": 20,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaCasing02"
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 31046,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 31047,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21014,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 66,
+          "Damage:2": 300,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockframes"
+        },
+        "2:10": {
+          "Count:3": 70,
+          "Damage:2": 1,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaCasing02"
+        },
+        "3:10": {
+          "Count:3": 32,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "miscutils:gtplusplus.blockspecialcasings.2"
+        },
+        "4:10": {
+          "Count:3": 24,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "minecraft:stonebrick"
+        },
+        "5:10": {
+          "Count:3": 24,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaBlockColumn"
+        },
+        "6:10": {
+          "Count:3": 127,
+          "Damage:2": 10,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings"
+        },
+        "7:10": {
+          "Count:3": 12,
+          "Damage:2": 13,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings3"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

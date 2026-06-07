@@ -1,0 +1,112 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -7449459755498518289,
+      "questIDLow:4": -7083709928496198467
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "是的。\n\n[note]代替T1火箭。[/note]",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:item.SteamRocket"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "蒸汽?...火箭?",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 9096150086267455351,
+  "questIDLow:4": -5475533174158602992,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 38,
+          "OreDict:8": "",
+          "id:8": "StevesCarts:CartModule"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "dreamcraft:item.EngineCore"
+        },
+        "2:10": {
+          "Count:3": 2,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "irontank:diamondTank"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 6334,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.metaitem.03"
+        },
+        "4:10": {
+          "Count:3": 8,
+          "Damage:2": 25109,
+          "OreDict:8": "",
+          "id:8": "bartworks:gt.bwMetaGeneratedplateSuperdense"
+        },
+        "5:10": {
+          "Count:3": 1,
+          "Damage:2": 6,
+          "OreDict:8": "",
+          "id:8": "GraviSuite:itemSimpleItem"
+        },
+        "6:10": {
+          "Count:3": 4,
+          "Damage:2": 7,
+          "OreDict:8": "",
+          "id:8": "Railcraft:machine.beta"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.SteamRocket"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

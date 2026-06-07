@@ -1,0 +1,92 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -197024840815656023,
+      "questIDLow:4": -6922667463181771262
+    },
+    "1:10": {
+      "questIDHigh:4": -5825999199017155413,
+      "questIDLow:4": -8906474183403774849
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "通过用青铁机械方块建造一个巨大的压力室，你可以将蒸汽与易燃液体结合，将其加热到更高的温度。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21124,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "过热",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 4323737210373360150,
+  "questIDLow:4": -5813955127890233115,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21124,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 45,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "IC2:blockAlloyGlass"
+        },
+        "1:10": {
+          "Count:3": 32,
+          "Damage:2": 26,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaCasing"
+        },
+        "2:10": {
+          "Count:3": 77,
+          "Damage:2": 29,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaCasing"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

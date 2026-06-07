@@ -1,0 +1,111 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 6847415236197435677,
+      "questIDLow:4": -8791625680506399327,
+      "type:1": 1
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "这股力量不属于这个世界。\n\n\n\n§6§9§b皇家凝胶：\n\n可以穿在任意 Bauble 饰品栏，\n\n穿上后免疫史莱姆(EntitySlime)的攻击伤害。\n\n\n§6幸运马掌：\n\n可以穿在任意 Bauble 饰品栏，\n\n穿上后免疫摔落伤害，\n\n死亡后有 90% 概率复活，血量设置为 半颗心 并给予 3s 无敌。\n\n\n§8§7§6§5§4§3§2§1§2§3§9§8§9§a§b§c§d§e粘鞍：\n\n手持时使用可以召唤一只史莱姆坐骑。\n\n\n§9水蜡烛：\n\n与火把一样放置在地上提供光照，\n\n给予玩家 战斗III 效果。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:item.RoyalGel"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "另一个世界的神秘物品",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 3295867741891545058,
+  "questIDLow:4": -8272888840631614576,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.RoyalGel"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.LuckyHorseshoe"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "3:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 3,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.SlimeSaddle"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "4:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 4,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.WaterCandle"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

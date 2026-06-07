@@ -1,0 +1,84 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 8680299745933936933,
+      "questIDLow:4": -6458254966101993497
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "没人喜欢收集粘土。让我们看看是否可以给你增加一点乐趣。\n\n从基因层面上改造雨林橡树树苗。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:blockGiantBrickuoiaSapling"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "砖与土之歌",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 696251456751159245,
+  "questIDLow:4": -8528722399423766182,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "miscutils:blockRainforestOakSapling"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 15,
+          "OreDict:8": "",
+          "id:8": "minecraft:dye"
+        },
+        "2:10": {
+          "Count:3": 7,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "minecraft:brick_block"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:blockGiantBrickuoiaSapling"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    }
+  }
+}

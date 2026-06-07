@@ -1,0 +1,108 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 3362178159099068849,
+      "questIDLow:4": -7230046295432071050
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "§k§l§l§m§m§n§n§o§o§n§m§m§k§k§f§0§f可以自动化的高炉，开始大批量生成钢锭！§l",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21028,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "更好的高炉...",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 7262069320756249495,
+  "questIDLow:4": -7147030771937953057,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21028,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 16,
+          "Damage:2": 10,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings"
+        },
+        "1:10": {
+          "Count:3": 24,
+          "Damage:2": 13,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings3"
+        },
+        "2:10": {
+          "Count:3": 70,
+          "Damage:2": 300,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockframes"
+        },
+        "3:10": {
+          "Count:3": 387,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "minecraft:stonebrick"
+        },
+        "4:10": {
+          "Count:3": 353,
+          "Damage:2": 15,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings4"
+        },
+        "5:10": {
+          "Count:3": 1,
+          "Damage:2": 31046,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "6:10": {
+          "Count:3": 1,
+          "Damage:2": 31047,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

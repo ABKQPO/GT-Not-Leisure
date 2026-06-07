@@ -1,0 +1,94 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 8041899444413746337,
+      "questIDLow:4": -6154562403645832579
+    },
+    "1:10": {
+      "questIDHigh:4": -5502796724874556566,
+      "questIDLow:4": -6416193119255858200
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "No Description",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21115,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "黑洞般的力量",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 9137831714304640271,
+  "questIDLow:4": -8916151588895188453,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 0,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21115,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:retrieval"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 144,
+          "Damage:2": 305,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockframes"
+        },
+        "1:10": {
+          "Count:3": 64,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "IC2:blockAlloyGlass"
+        },
+        "2:10": {
+          "Count:3": 988,
+          "Damage:2": 10,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings"
+        },
+        "3:10": {
+          "Count:3": 3670,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings2"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

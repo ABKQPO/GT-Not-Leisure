@@ -1,0 +1,69 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 5234935235503866738,
+      "questIDLow:4": -7775202209545069544
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "在LV就能制作的超强连锁挖掘工具，\n\n挖掘等级17级，足以胜任绝大部分挖掘工作，\n\n无限耐久，挖掘速度:15，挖掘黑曜石仅需5.3s。\n\n\n[note]Shift+鼠标右键可以切换是否精准采集，\n\n默认最多一次采集327670个方块，长按鼠标右键即可以通过滚轮自由调整采集数量上限，\n\nShift加鼠标滚轮即可在0~32(格)自由切换挖掘范围，\n\n按住shift以启用连锁挖掘。[/note]\n\n",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:item.VeinMiningPickaxe",
+        "tag:10": {
+          "GT.ToolStats:10": {
+            "MaxDamage:4": 20000000
+          }
+        }
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "万物泯灭",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 4902694242226291140,
+  "questIDLow:4": -5702906784719441758,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.VeinMiningPickaxe",
+          "tag:10": {
+            "GT.ToolStats:10": {
+              "MaxDamage:4": 20000000
+            }
+          }
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 1882066792336540168,
+      "questIDLow:4": -8222067707768994745,
+      "type:1": 1
+    },
+    "1:10": {
+      "questIDHigh:4": -4919695760175972031,
+      "questIDLow:4": -6152640122931141239
+    },
+    "2:10": {
+      "questIDHigh:4": -5144184044306347309,
+      "questIDLow:4": -5136614987646024602,
+      "type:1": 1
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "抬起头，迎接第二次多方块革命。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21167,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "第二次多方块革命",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 7990358307346074142,
+  "questIDLow:4": -5610774618007389498,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    }
+  }
+}

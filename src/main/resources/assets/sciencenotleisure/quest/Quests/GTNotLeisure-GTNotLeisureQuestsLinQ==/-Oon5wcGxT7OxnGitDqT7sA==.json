@@ -1,0 +1,352 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 6847415236197435677,
+      "questIDLow:4": -8791625680506399327,
+      "type:1": 1
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "有点贵，但是很值得。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 0,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:item.InfinityCell",
+        "tag:10": {
+          "CustomTexture:8": "InfinityDyeCell",
+          "infinityList:9": {
+            "0:10": {
+              "Damage:2": 32414,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "1:10": {
+              "Damage:2": 32415,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "2:10": {
+              "Damage:2": 32416,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "3:10": {
+              "Damage:2": 32417,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "4:10": {
+              "Damage:2": 32418,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "5:10": {
+              "Damage:2": 32419,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "6:10": {
+              "Damage:2": 32420,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "7:10": {
+              "Damage:2": 32421,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "8:10": {
+              "Damage:2": 32422,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "9:10": {
+              "Damage:2": 32423,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "10:10": {
+              "Damage:2": 32424,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "11:10": {
+              "Damage:2": 32425,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "12:10": {
+              "Damage:2": 32426,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "13:10": {
+              "Damage:2": 32427,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "14:10": {
+              "Damage:2": 32428,
+              "id:8": "gregtech:gt.metaitem.02"
+            },
+            "15:10": {
+              "Damage:2": 32429,
+              "id:8": "gregtech:gt.metaitem.02"
+            }
+          },
+          "key:8": "InfinityCell.dye.name",
+          "t:8": "i"
+        }
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "不止于无限水",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 4218177136582807475,
+  "questIDLow:4": -5648524740145120336,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.InfinityCell",
+          "tag:10": {
+            "CustomTexture:8": "InfinityDyeCell",
+            "infinityList:9": {
+              "0:10": {
+                "Damage:2": 32414,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "1:10": {
+                "Damage:2": 32415,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "2:10": {
+                "Damage:2": 32416,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "3:10": {
+                "Damage:2": 32417,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "4:10": {
+                "Damage:2": 32418,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "5:10": {
+                "Damage:2": 32419,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "6:10": {
+                "Damage:2": 32420,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "7:10": {
+                "Damage:2": 32421,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "8:10": {
+                "Damage:2": 32422,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "9:10": {
+                "Damage:2": 32423,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "10:10": {
+                "Damage:2": 32424,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "11:10": {
+                "Damage:2": 32425,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "12:10": {
+                "Damage:2": 32426,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "13:10": {
+                "Damage:2": 32427,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "14:10": {
+                "Damage:2": 32428,
+                "id:8": "gregtech:gt.metaitem.02"
+              },
+              "15:10": {
+                "Damage:2": 32429,
+                "id:8": "gregtech:gt.metaitem.02"
+              }
+            },
+            "key:8": "InfinityCell.dye.name",
+            "t:8": "i"
+          }
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.InfinityCell",
+          "tag:10": {
+            "CustomTexture:8": "InfinityDyeFluidCell",
+            "infinityList:9": {
+              "0:10": {
+                "id:8": "dye.chemical.dyeblack"
+              },
+              "1:10": {
+                "id:8": "dye.chemical.dyepink"
+              },
+              "2:10": {
+                "id:8": "dye.chemical.dyered"
+              },
+              "3:10": {
+                "id:8": "dye.chemical.dyeorange"
+              },
+              "4:10": {
+                "id:8": "dye.chemical.dyeyellow"
+              },
+              "5:10": {
+                "id:8": "dye.chemical.dyegreen"
+              },
+              "6:10": {
+                "id:8": "dye.chemical.dyelime"
+              },
+              "7:10": {
+                "id:8": "dye.chemical.dyeblue"
+              },
+              "8:10": {
+                "id:8": "dye.chemical.dyelightblue"
+              },
+              "9:10": {
+                "id:8": "dye.chemical.dyecyan"
+              },
+              "10:10": {
+                "id:8": "dye.chemical.dyebrown"
+              },
+              "11:10": {
+                "id:8": "dye.chemical.dyemagenta"
+              },
+              "12:10": {
+                "id:8": "dye.chemical.dyepurple"
+              },
+              "13:10": {
+                "id:8": "dye.chemical.dyegray"
+              },
+              "14:10": {
+                "id:8": "dye.chemical.dyelightgray"
+              },
+              "15:10": {
+                "id:8": "dye.chemical.dyewhite"
+              }
+            },
+            "key:8": "InfinityCell.dye.fluid.name",
+            "t:8": "f"
+          }
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:item.InfinityCell",
+          "tag:10": {
+            "CustomTexture:8": "InfinityStoneCell",
+            "infinityList:9": {
+              "0:10": {
+                "Damage:2": 0,
+                "id:8": "minecraft:stone"
+              },
+              "1:10": {
+                "Damage:2": 0,
+                "id:8": "minecraft:cobblestone"
+              },
+              "2:10": {
+                "Damage:2": 0,
+                "id:8": "minecraft:netherrack"
+              },
+              "3:10": {
+                "Damage:2": 0,
+                "id:8": "minecraft:end_stone"
+              },
+              "4:10": {
+                "Damage:2": 0,
+                "id:8": "gregtech:gt.blockgranites"
+              },
+              "5:10": {
+                "Damage:2": 1,
+                "id:8": "gregtech:gt.blockgranites"
+              },
+              "6:10": {
+                "Damage:2": 8,
+                "id:8": "gregtech:gt.blockgranites"
+              },
+              "7:10": {
+                "Damage:2": 9,
+                "id:8": "gregtech:gt.blockgranites"
+              },
+              "8:10": {
+                "Damage:2": 0,
+                "id:8": "gregtech:gt.blockstones"
+              },
+              "9:10": {
+                "Damage:2": 1,
+                "id:8": "gregtech:gt.blockstones"
+              },
+              "10:10": {
+                "Damage:2": 8,
+                "id:8": "gregtech:gt.blockstones"
+              },
+              "11:10": {
+                "Damage:2": 9,
+                "id:8": "gregtech:gt.blockstones"
+              },
+              "12:10": {
+                "Damage:2": 0,
+                "id:8": "etfuturum:deepslate"
+              },
+              "13:10": {
+                "Damage:2": 0,
+                "id:8": "etfuturum:cobbled_deepslate"
+              },
+              "14:10": {
+                "Damage:2": 0,
+                "id:8": "etfuturum:blackstone"
+              },
+              "15:10": {
+                "Damage:2": 0,
+                "id:8": "Botania:stone"
+              },
+              "16:10": {
+                "Damage:2": 1,
+                "id:8": "Botania:stone"
+              },
+              "17:10": {
+                "Damage:2": 2,
+                "id:8": "Botania:stone"
+              },
+              "18:10": {
+                "Damage:2": 3,
+                "id:8": "Botania:stone"
+              }
+            },
+            "key:8": "InfinityCell.stone.name",
+            "t:8": "i"
+          }
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

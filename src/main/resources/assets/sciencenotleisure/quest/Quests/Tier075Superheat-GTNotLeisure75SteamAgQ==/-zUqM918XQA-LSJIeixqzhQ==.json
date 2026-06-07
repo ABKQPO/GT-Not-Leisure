@@ -1,0 +1,109 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 9055918817131645542,
+      "questIDLow:4": -5945591845657514568
+    },
+    "1:10": {
+      "questIDHigh:4": 8478760443405027681,
+      "questIDLow:4": -6227843076602049520
+    },
+    "2:10": {
+      "questIDHigh:4": 7262069320756249495,
+      "questIDLow:4": -7147030771937953057
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "你以为仅仅因为我们停留在蒸汽时代，你就可以摆脱部件制作了吗？别傻了。\n\n§b§r§3注意到某些部件拥有强大的物流能力，发挥你天马行空的想象力使用它。",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 89,
+        "OreDict:8": "",
+        "id:8": "sciencenotleisure:MetaItem"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "你会爱上这个的",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -3653953153577566193,
+  "questIDLow:4": -8410311644233944187,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 89,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 90,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 92,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 93,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "4:10": {
+          "Count:3": 1,
+          "Damage:2": 91,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "5:10": {
+          "Count:3": 1,
+          "Damage:2": 98,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "6:10": {
+          "Count:3": 1,
+          "Damage:2": 99,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        },
+        "7:10": {
+          "Count:3": 1,
+          "Damage:2": 94,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:MetaItem"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

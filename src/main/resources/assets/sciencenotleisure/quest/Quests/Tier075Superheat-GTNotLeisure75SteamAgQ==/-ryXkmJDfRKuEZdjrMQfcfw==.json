@@ -1,0 +1,106 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": 7990358307346074142,
+      "questIDLow:4": -5610774618007389498
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "谁不喜欢太阳能锅炉？这个巨大的锅炉将为你的持续企业产生充足的蒸汽。与普通锅炉不同，它永远不会结垢，也永远不会爆炸。只需加水！",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21116,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 0,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "太阳无与伦比的力量",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": -5825999199017155413,
+  "questIDLow:4": -8906474183403774849,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21116,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    },
+    "2:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 2,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 75,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "IC2:blockAlloyGlass"
+        },
+        "1:10": {
+          "Count:3": 24,
+          "Damage:2": 12,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings2"
+        },
+        "2:10": {
+          "Count:3": 37,
+          "Damage:2": 13,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings2"
+        },
+        "3:10": {
+          "Count:3": 75,
+          "Damage:2": 3,
+          "OreDict:8": "",
+          "id:8": "sciencenotleisure:tile.MetaBlockColumn"
+        },
+        "4:10": {
+          "Count:3": 93,
+          "Damage:2": 10,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockcasings"
+        },
+        "5:10": {
+          "Count:3": 89,
+          "Damage:2": 0,
+          "OreDict:8": "",
+          "id:8": "minecraft:stone"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "preRequisites:9": {
+    "0:10": {
+      "questIDHigh:4": -2853938200805162900,
+      "questIDLow:4": -5726628433165981800
+    }
+  },
+  "properties:10": {
+    "betterquesting:10": {
+      "autoClaim:1": 0,
+      "desc:8": "也许有些机器你现在还无法制作，先参考吧！",
+      "globalShare:1": 0,
+      "icon:10": {
+        "Count:3": 1,
+        "Damage:2": 21161,
+        "OreDict:8": "",
+        "id:8": "gregtech:gt.blockmachines"
+      },
+      "isMain:1": 1,
+      "isSilent:1": 0,
+      "lockedProgress:1": 0,
+      "name:8": "终局机器",
+      "questLogic:8": "AND",
+      "repeatTime:3": -1,
+      "repeat_relative:1": 1,
+      "simultaneous:1": 0,
+      "snd_complete:8": "random.levelup",
+      "snd_update:8": "random.levelup",
+      "taskLogic:8": "AND",
+      "visibility:8": "NORMAL"
+    }
+  },
+  "questIDHigh:4": 2977935964093892599,
+  "questIDLow:4": -5643068005337055360,
+  "rewards:9": {},
+  "tasks:9": {
+    "0:10": {
+      "index:3": 0,
+      "taskID:8": "bq_standard:checkbox"
+    },
+    "1:10": {
+      "autoConsume:1": 0,
+      "consume:1": 0,
+      "groupDetect:1": 0,
+      "ignoreNBT:1": 1,
+      "index:3": 1,
+      "partialMatch:1": 1,
+      "requiredItems:9": {
+        "0:10": {
+          "Count:3": 1,
+          "Damage:2": 21161,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "1:10": {
+          "Count:3": 1,
+          "Damage:2": 21188,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "2:10": {
+          "Count:3": 1,
+          "Damage:2": 21189,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "3:10": {
+          "Count:3": 1,
+          "Damage:2": 21190,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "4:10": {
+          "Count:3": 1,
+          "Damage:2": 21191,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "5:10": {
+          "Count:3": 1,
+          "Damage:2": 21193,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "6:10": {
+          "Count:3": 1,
+          "Damage:2": 21198,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "7:10": {
+          "Count:3": 1,
+          "Damage:2": 21199,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "8:10": {
+          "Count:3": 1,
+          "Damage:2": 21029,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "9:10": {
+          "Count:3": 1,
+          "Damage:2": 21200,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "10:10": {
+          "Count:3": 1,
+          "Damage:2": 21202,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "11:10": {
+          "Count:3": 1,
+          "Damage:2": 21207,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "12:10": {
+          "Count:3": 1,
+          "Damage:2": 21208,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "13:10": {
+          "Count:3": 1,
+          "Damage:2": 21213,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "14:10": {
+          "Count:3": 1,
+          "Damage:2": 21130,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "15:10": {
+          "Count:3": 1,
+          "Damage:2": 21141,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "16:10": {
+          "Count:3": 1,
+          "Damage:2": 21142,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "17:10": {
+          "Count:3": 1,
+          "Damage:2": 21143,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "18:10": {
+          "Count:3": 1,
+          "Damage:2": 21144,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "19:10": {
+          "Count:3": 1,
+          "Damage:2": 21145,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "20:10": {
+          "Count:3": 1,
+          "Damage:2": 21011,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "21:10": {
+          "Count:3": 1,
+          "Damage:2": 21004,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "22:10": {
+          "Count:3": 1,
+          "Damage:2": 21206,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "23:10": {
+          "Count:3": 1,
+          "Damage:2": 21108,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "24:10": {
+          "Count:3": 1,
+          "Damage:2": 21129,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "25:10": {
+          "Count:3": 1,
+          "Damage:2": 21146,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "26:10": {
+          "Count:3": 1,
+          "Damage:2": 21147,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "27:10": {
+          "Count:3": 1,
+          "Damage:2": 21152,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "28:10": {
+          "Count:3": 1,
+          "Damage:2": 21154,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "29:10": {
+          "Count:3": 1,
+          "Damage:2": 21148,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "30:10": {
+          "Count:3": 1,
+          "Damage:2": 21192,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "31:10": {
+          "Count:3": 1,
+          "Damage:2": 21187,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "32:10": {
+          "Count:3": 1,
+          "Damage:2": 21194,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "33:10": {
+          "Count:3": 1,
+          "Damage:2": 21196,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "34:10": {
+          "Count:3": 1,
+          "Damage:2": 21201,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "35:10": {
+          "Count:3": 1,
+          "Damage:2": 21204,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "36:10": {
+          "Count:3": 1,
+          "Damage:2": 21209,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "37:10": {
+          "Count:3": 1,
+          "Damage:2": 21047,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "38:10": {
+          "Count:3": 1,
+          "Damage:2": 21039,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "39:10": {
+          "Count:3": 1,
+          "Damage:2": 21085,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "40:10": {
+          "Count:3": 1,
+          "Damage:2": 21221,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        },
+        "41:10": {
+          "Count:3": 1,
+          "Damage:2": 21217,
+          "OreDict:8": "",
+          "id:8": "gregtech:gt.blockmachines"
+        }
+      },
+      "taskID:8": "bq_standard:optional_retrieval"
+    }
+  }
+}
