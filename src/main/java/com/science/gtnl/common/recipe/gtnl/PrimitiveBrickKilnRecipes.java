@@ -125,6 +125,16 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .eut(16)
             .addTo(PBKR);
 
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Clay, 8),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 8),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Flint, 8))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CrudeSteel, 16))
+            .duration(200)
+            .eut(16)
+            .addTo(PBKR);
+
         if (Mods.NewHorizonsCoreMod.isModLoaded() && Mods.Railcraft.isModLoaded()) loadNHRecipe();
     }
 
