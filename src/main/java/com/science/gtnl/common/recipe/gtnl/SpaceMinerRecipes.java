@@ -37,8 +37,8 @@ public class SpaceMinerRecipes implements IRecipePool {
     private static final RecipeMap<?> SMR = GTNLRecipeMaps.SpaceMinerRecipes;
 
     private static final List<FuelVariant> FUELS = Arrays.asList(
-        new FuelVariant(Materials.GasolinePremium.getFluid(10000), 600),
-        new FuelVariant(new FluidStack(GTPPFluids.RP1RocketFuel, 6000), 400));
+        new FuelVariant(Materials.GasolinePremium.getFluid(100000), 600),
+        new FuelVariant(new FluidStack(GTPPFluids.RP1RocketFuel, 60000), 400));
 
     @Desugar
     private record FuelVariant(FluidStack fuel, int duration) {}
