@@ -36,23 +36,11 @@ public class SpaceMinerRecipes implements IRecipePool {
     private static final ResourceCollectionModuleMetadata MINER_TIER = ResourceCollectionModuleMetadata.INSTANCE;
     private static final RecipeMap<?> SMR = GTNLRecipeMaps.SpaceMinerRecipes;
 
-    private static final List<FuelVariant> FUELS = Arrays.asList(
-        new FuelVariant(Materials.GasolinePremium.getFluid(100000), 600),
-        new FuelVariant(new FluidStack(GTPPFluids.RP1RocketFuel, 60000), 400));
-
     @Desugar
     private record FuelVariant(FluidStack fuel, int duration) {}
 
     @Desugar
     private record MinerTier(int tier, int specialValue, ItemStack drone, long eut) {}
-
-    private static final List<MinerTier> TIERS = Arrays.asList(
-        new MinerTier(1, 1, ItemList.MiningDroneUV.get(0), TierEU.RECIPE_UV),
-        new MinerTier(2, 1, ItemList.MiningDroneUHV.get(0), TierEU.RECIPE_UHV),
-        new MinerTier(3, 1, ItemList.MiningDroneUEV.get(0), TierEU.RECIPE_UEV),
-        new MinerTier(4, 1, ItemList.MiningDroneUIV.get(0), TierEU.RECIPE_UIV),
-        new MinerTier(5, 1, ItemList.MiningDroneUMV.get(0), TierEU.RECIPE_UMV),
-        new MinerTier(6, 1, ItemList.MiningDroneUXV.get(0), TierEU.RECIPE_UXV));
 
     @Desugar
     private record OreGroup(int tier, ItemStack circuit, ItemStack[] outputs) {}
@@ -61,13 +49,36 @@ public class SpaceMinerRecipes implements IRecipePool {
         return stacks;
     }
 
-    private static final List<OreGroup> ORE_GROUPS;
+    private void addSpaceMinerRecipe(OreGroup group, MinerTier tier, FuelVariant fuel) {
+        RecipeBuilder.builder()
+            .itemInputs(group.circuit(), tier.drone())
+            .itemOutputs(group.outputs())
+            .fluidInputs(fuel.fuel())
+            .specialValue(tier.specialValue())
+            .metadata(MINER_TIER, tier.tier())
+            .duration(fuel.duration())
+            .eut(tier.eut())
+            .addTo(SMR);
+    }
 
-    static {
+    @Override
+    public void loadRecipes() {
+        List<FuelVariant> fuels = Arrays.asList(
+            new FuelVariant(Materials.GasolinePremium.getFluid(100000), 600),
+            new FuelVariant(new FluidStack(GTPPFluids.RP1RocketFuel, 60000), 400));
+
+        List<MinerTier> tiers = Arrays.asList(
+            new MinerTier(1, 1, ItemList.MiningDroneUV.get(0), TierEU.RECIPE_UV),
+            new MinerTier(2, 1, ItemList.MiningDroneUHV.get(0), TierEU.RECIPE_UHV),
+            new MinerTier(3, 1, ItemList.MiningDroneUEV.get(0), TierEU.RECIPE_UEV),
+            new MinerTier(4, 1, ItemList.MiningDroneUIV.get(0), TierEU.RECIPE_UIV),
+            new MinerTier(5, 1, ItemList.MiningDroneUMV.get(0), TierEU.RECIPE_UMV),
+            new MinerTier(6, 1, ItemList.MiningDroneUXV.get(0), TierEU.RECIPE_UXV));
+
         var aeBlocks = AEApi.instance()
             .definitions()
             .blocks();
-        ORE_GROUPS = Arrays.asList(
+        List<OreGroup> oreGroups = Arrays.asList(
             new OreGroup(
                 1,
                 GTUtility.getIntegratedCircuit(24),
@@ -471,26 +482,10 @@ public class SpaceMinerRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(20, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Ichorium, 1)),
                 GTUtility.copyAmountUnsafe(20, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Flerovium, 1)),
                 GTUtility.copyAmountUnsafe(20, GTOreDictUnificator.get(OrePrefixes.ore, Materials.TengamRaw, 1)))));
-    }
 
-    private void addSpaceMinerRecipe(OreGroup group, FuelVariant fuel) {
-        MinerTier tier = TIERS.get(group.tier() - 1);
-        RecipeBuilder.builder()
-            .itemInputs(group.circuit(), tier.drone())
-            .itemOutputs(group.outputs())
-            .fluidInputs(fuel.fuel())
-            .specialValue(tier.specialValue())
-            .metadata(MINER_TIER, tier.tier())
-            .duration(fuel.duration())
-            .eut(tier.eut())
-            .addTo(SMR);
-    }
-
-    @Override
-    public void loadRecipes() {
-        for (OreGroup group : ORE_GROUPS) {
-            for (FuelVariant fuel : FUELS) {
-                addSpaceMinerRecipe(group, fuel);
+        for (OreGroup group : oreGroups) {
+            for (FuelVariant fuel : fuels) {
+                addSpaceMinerRecipe(group, tiers.get(group.tier() - 1), fuel);
             }
         }
     }
