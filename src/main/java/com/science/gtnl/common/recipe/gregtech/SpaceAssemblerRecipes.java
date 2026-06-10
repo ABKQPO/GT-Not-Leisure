@@ -71,9 +71,9 @@ public class SpaceAssemblerRecipes implements IRecipePool {
                 ItemList.SpaceElevatorModuleAssemblerT2.get(1),
                 ItemList.SpaceElevatorModuleAssemblerT2.get(1),
                 ItemList.SpaceElevatorBaseCasing.get(16),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 16),
-                MaterialsElements.STANDALONE.HYPOGEN.getScrew(32),
-                MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(16),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 12),
+                MaterialsElements.STANDALONE.HYPOGEN.getScrew(16),
+                MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(8),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.TranscendentMetal, 16),
                 GTOreDictUnificator.get(OrePrefixes.gearGtSmall, Materials.ProtoHalkonite, 24),
                 ItemRefer.HiC_T5.get(48))
