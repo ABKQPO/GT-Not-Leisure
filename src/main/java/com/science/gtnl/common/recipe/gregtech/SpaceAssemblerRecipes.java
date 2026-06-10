@@ -74,18 +74,18 @@ public class SpaceAssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 12),
                 MaterialsElements.STANDALONE.HYPOGEN.getScrew(16),
                 MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(8),
-                GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.TranscendentMetal, 16),
-                GTOreDictUnificator.get(OrePrefixes.gearGtSmall, Materials.ProtoHalkonite, 24),
-                ItemRefer.HiC_T5.get(48))
+                GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.TranscendentMetal, 12),
+                GTOreDictUnificator.get(OrePrefixes.gearGtSmall, Materials.ProtoHalkonite, 16),
+                ItemRefer.HiC_T5.get(36))
             .fluidInputs(
                 Materials.Infinity.getMolten(14400),
-                Materials.DimensionallyShiftedSuperfluid.getFluid(30000),
-                Materials.UUMatter.getFluid(32000),
-                Materials.SpaceTime.getMolten(1296))
+                Materials.DimensionallyShiftedSuperfluid.getFluid(24000),
+                Materials.UUMatter.getFluid(28000),
+                MaterialsElements.STANDALONE.HYPOGEN.getFluidStack(1296))
             .itemOutputs(GTNLItemList.SpaceAssembler.get(1))
-            .metadata(IGRecipeMaps.MODULE_TIER, 3)
+            .metadata(IGRecipeMaps.MODULE_TIER, 2)
             .duration(2400)
-            .eut(TierEU.RECIPE_UIV)
+            .eut(TierEU.RECIPE_UEV)
             .addTo(SAR);
 
         RecipeBuilder.builder()
