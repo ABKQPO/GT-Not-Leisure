@@ -1529,6 +1529,16 @@ public class GTNLMaterials implements Runnable {
         offsetID + 119,
         TextureSet.SET_FLUID);
 
+    public static final Werkstoff TwilightSluice = new Werkstoff(
+        new short[] { 98, 19, 158 },
+        "Twilight Sluice",
+        new Werkstoff.Stats(),
+        Werkstoff.Types.ELEMENT,
+        new Werkstoff.GenerationFeatures().disable()
+            .addCells(),
+        offsetID + 202,
+        TextureSet.SET_FLUID);
+
     public static final Werkstoff EnderAir = new Werkstoff(
         new short[] { 57, 66, 89 },
         "Ender Air",

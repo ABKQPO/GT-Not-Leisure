@@ -136,6 +136,7 @@ public class LanguageLoader {
         addWerkstoffLocalization(GTNLMaterials.SandSluice, "沙子泥浆", false);
         addWerkstoffLocalization(GTNLMaterials.ObsidianSluice, "黑曜石泥浆", false);
         addWerkstoffLocalization(GTNLMaterials.GemSluice, "宝石泥浆", false);
+        addWerkstoffLocalization(GTNLMaterials.TwilightSluice, "暮色泥浆", false);
         addWerkstoffLocalization(GTNLMaterials.EnderAir, "末地空气", false);
         addWerkstoffLocalization(GTNLMaterials.LiquidEnderAir, "液态末地空气", false);
         addWerkstoffLocalization(GTNLMaterials.MixturePineoil, "松油混合物", false);

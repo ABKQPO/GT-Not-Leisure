@@ -182,6 +182,17 @@ public class MixerRecipes implements IRecipePool {
             .addTo(MNCR);
 
         RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(1),
+                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFLog", 16))
+            .fluidInputs(Materials.Water.getFluid(1000))
+            .fluidOutputs(GTNLMaterials.TwilightSluice.getFluidOrGas(4000))
+            .duration(5 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(MCR)
+            .addTo(MNCR);
+
+        RecipeBuilder.builder()
             .itemInputs(new ItemStack(Blocks.sand, 1))
             .itemOutputs(new ItemStack(Blocks.soul_sand, 1))
             .fluidInputs(Materials.NefariousGas.getFluid(500))

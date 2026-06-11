@@ -68,5 +68,16 @@ public class SteamExtractinatorRecipes implements IRecipePool {
             .duration(5 * SECONDS)
             .eut(TierEU.RECIPE_LV)
             .addTo(SER);
+
+        RecipeBuilder.builder()
+            .fluidInputs(GTNLMaterials.TwilightSluice.getFluidOrGas(4000))
+            .itemOutputs(
+                GTOreDictUnificator.get(OrePrefixes.crushed, Materials.Galena, 8),
+                GTOreDictUnificator.get(OrePrefixes.crushed, Materials.Lead, 8),
+                GTOreDictUnificator.get(OrePrefixes.crushed, Materials.Cryolite, 8),
+                GTOreDictUnificator.get(OrePrefixes.crushed, Materials.Garnierite, 8))
+            .duration(5 * SECONDS)
+            .eut(300)
+            .addTo(SER);
     }
 }
