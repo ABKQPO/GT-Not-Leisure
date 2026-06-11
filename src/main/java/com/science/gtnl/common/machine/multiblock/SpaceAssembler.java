@@ -19,7 +19,10 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.api.IControllerUpgrade;
+import com.science.gtnl.common.gui.modularui.SpaceAssemblerGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
@@ -44,6 +47,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhintergalactic.recipe.IGRecipeMaps;
 import lombok.Getter;
@@ -85,6 +89,11 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SpaceAssembler(this.mName);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SpaceAssemblerGui(this);
     }
 
     @Override
@@ -150,6 +159,14 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     }
 
     @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: 已弃用
+        super.addUIWidgets(builder, buildContext);
+        createUpgradeButton(builder, buildContext);
+    }
+
+    @Override
     public ItemStack[] getUpgradeRequiredItems() {
         return REQUIRED_ITEMS;
     }
@@ -168,6 +185,7 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
             .addTecTechHatchInfo()

@@ -3348,9 +3348,12 @@ SpaceAssemblerRecipeType=太空组装机
 Tooltip_SpaceAssembler_00=§d§l字面意义上的在太空组装
 Tooltip_SpaceAssembler_01=必须在空间站运行！
 Tooltip_SpaceAssembler_02=每级玻璃额外提供10%的加速(乘算叠加)
+Tooltip_SpaceAssembler_03=需要升级以启用 MK III 级配方
 Tooltip_SpaceAssembler_Casing=任意进阶电子计算机械方块
 GT5U.gui.text.not_in_space_station=不在空间站！
 Info_SpaceAssembler_00=太空组装机升级
+Info_SpaceAssembler_01=未升级
+Info_SpaceAssembler_02=已升级
 
 NameSmeltingMixingFurnace=合金搅拌炉
 SmeltingMixingFurnaceRecipeType=合金搅拌 / 超维度等离子锻炉
