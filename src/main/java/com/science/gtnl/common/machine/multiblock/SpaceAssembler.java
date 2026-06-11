@@ -5,16 +5,21 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
@@ -22,6 +27,7 @@ import com.science.gtnl.utils.recipes.RecipeUtil;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -30,12 +36,16 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTStructureUtility;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhintergalactic.recipe.IGRecipeMaps;
+import lombok.Getter;
+import lombok.Setter;
 import tectech.thing.casing.BlockGTCasingsTT;
 
-public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implements ISurvivalConstructable {
+public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
+    implements ISurvivalConstructable, IControllerUpgrade {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/space_assembler";
@@ -43,6 +53,20 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
     private static final int HORIZONTAL_OFF_SET = 5;
     private static final int VERTICAL_OFF_SET = 3;
     private static final int DEPTH_OFF_SET = 0;
+
+    public static final ItemStack[] REQUIRED_ITEMS = new ItemStack[] { ItemList.SpaceElevatorModuleAssemblerT3.get(4),
+        GTUtility.copyAmountUnsafe(320, ItemList.SpaceElevatorBaseCasing.get(1)), ItemList.Robot_Arm_UXV.get(32) };
+
+    @Getter
+    public ItemStack[] storedUpgradeWindowItems = new ItemStack[16];
+    @Getter
+    public ItemStackHandler upgradeInputSlotHandler = new ItemStackHandler(16);
+    @Getter
+    public int[] upgradePaidCosts = new int[REQUIRED_ITEMS.length];
+
+    @Getter
+    @Setter
+    public boolean upgradeConsumed = false;
 
     public SpaceAssembler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -93,6 +117,46 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler> implemen
             return super.checkProcessing();
         }
         return RecipeUtil.NOT_IN_SPACE_STATION;
+    }
+
+    @Override
+    public void setItemNBT(NBTTagCompound aNBT) {
+        super.setItemNBT(aNBT);
+        saveUpgradeNBTData(aNBT);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        saveUpgradeNBTData(aNBT);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        loadUpgradeNBTData(aNBT);
+    }
+
+    @Override
+    public void onBlockDestroyed() {
+        super.onBlockDestroyed();
+        dropStoredUpgradeItems(getBaseMetaTileEntity());
+    }
+
+    @Override
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        super.addUIWidgets(builder, buildContext);
+        createUpgradeButton(builder, buildContext);
+    }
+
+    @Override
+    public ItemStack[] getUpgradeRequiredItems() {
+        return REQUIRED_ITEMS;
+    }
+
+    @Override
+    public String getUpgradeButtonTooltip() {
+        return StatCollector.translateToLocal("Info_SpaceAssembler_00");
     }
 
     @Override

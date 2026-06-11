@@ -3414,6 +3414,7 @@ Tooltip_SpaceAssembler_01=Must be operated on a space station!
 Tooltip_SpaceAssembler_02=Each tier of glass provides an additional 10% speed boost (multiplicative).
 Tooltip_SpaceAssembler_Casing=Any Advanced Computer Casing
 GT5U.gui.text.not_in_space_station=Not in Space Station!
+Info_SpaceAssembler_00=Space Assembler Upgrade
 
 NameSmeltingMixingFurnace=Smelting Mixing Furnace
 SmeltingMixingFurnaceRecipeType=Smelting Mixing / Dimensionally Transcendent Plasma Forge

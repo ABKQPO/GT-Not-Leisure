@@ -3414,6 +3414,7 @@ Tooltip_SpaceAssembler_01=必须在空间站运行！
 Tooltip_SpaceAssembler_02=每级玻璃额外提供10%的加速(乘算叠加)
 Tooltip_SpaceAssembler_Casing=任意进阶电子计算机械方块
 GT5U.gui.text.not_in_space_station=不在空间站！
+Info_SpaceAssembler_00=太空组装机升级
 
 NameSmeltingMixingFurnace=合金搅拌炉
 SmeltingMixingFurnaceRecipeType=合金搅拌 / 超维度等离子锻炉
