@@ -152,7 +152,7 @@ public abstract class MixinMinecraft {
             if (!isStop) {
                 this.renderEngine.tick();
             } else {
-                // 获取自身物品栏
+                // Keep the player's own inventory animations ticking.
                 ItemStack[] itemStacks = ((Minecraft) ((Object) this)).thePlayer.inventory.mainInventory;
                 for (int i = 0; i < itemStacks.length; i++) {
                     ItemStack stack = itemStacks[i];

@@ -6,7 +6,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
 
@@ -174,6 +174,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
 
     @Optional.Method(modid = "dreamcraft")
     public Item getEngineCore() {
-        return CustomItemList.EngineCore.getItem();
+        return NHItemList.EngineCore.get(1)
+            .getItem();
     }
 }

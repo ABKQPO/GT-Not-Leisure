@@ -50,7 +50,8 @@ public class MixinBlockCraftingUnit extends AEBaseTileBlock {
                 && ((CraftingCPUCluster) tg.getCluster()).isBusy();
             ItemStack item = p.getHeldItem();
             BlockState blockState;
-            if (p.isSneaking()) {// TODO:拆CPU偶遇安全终端，摧毁整个CPU强如怪物，拼尽全力无法战胜
+            if (p.isSneaking()) {
+                // TODO: Rework CPU dismantling around security terminals without destroying the whole CPU.
                 // if (item == null) {
                 // if (isBusy) {
                 // ScienceNotLeisure.network.sendTo(

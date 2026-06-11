@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.multiblock.steam;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -103,13 +105,13 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofChain(
                         buildSteamWirelessInput(SteamRockBreaker.class).casingIndex(10)
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamBigInput(SteamRockBreaker.class).casingIndex(10)
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamInput(SteamRockBreaker.class).casingIndex(10)
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         GTStructureUtility.buildHatchAdder(SteamRockBreaker.class)
                             .atLeast(
@@ -119,7 +121,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
                                 HatchElement.OutputBus,
                                 HatchElement.Maintenance)
                             .casingIndex(10)
-                            .dot(1)
+                            .hint(1)
                             .buildAndChain(
                                 StructureUtility.onElementPass(
                                     x -> ++x.mCountCasing,
@@ -180,20 +182,20 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatches())
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         if (tierPipeCasing == 1 && tierMachineCasing == 1 && mCountCasing >= 14) {
             updateHatchTexture();
             tierMachine = 1;
-            return true;
+            return;
         }
         if (tierPipeCasing == 2 && tierMachineCasing == 2 && mCountCasing >= 14) {
             updateHatchTexture();
             tierMachine = 2;
-            return true;
+            return;
         }
-        return false;
+        checkStructureCondition(errors, false);
     }
 
     @Override

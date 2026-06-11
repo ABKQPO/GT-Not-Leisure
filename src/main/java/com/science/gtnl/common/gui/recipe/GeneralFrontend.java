@@ -28,7 +28,12 @@ public class GeneralFrontend extends RecipeMapFrontend {
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(uiPropertiesBuilder, neiPropertiesBuilder);
         this.itemRowCount = getItemRowCount();
-        neiProperties.recipeBackgroundSize = new Size(170, 10 + (itemRowCount + getFluidRowCount()) * 18);
+    }
+
+    @Override
+    protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
+        int itemRowCount = getItemRowCount();
+        return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 10 + (itemRowCount + getFluidRowCount()) * 18));
     }
 
     @Override

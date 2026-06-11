@@ -1,11 +1,7 @@
 package com.science.gtnl.common.render.tile;
 
-import static tectech.Reference.MODID;
-import static tectech.rendering.EOH.EOHTileEntitySR.spaceModel;
-
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -43,7 +39,7 @@ public class EyeOfHarmonyInjectorRenderer {
         renderOrbitObjects(machine);
 
         // Render the star itself.
-        EOHRenderingUtils.renderStar(IItemRenderer.ItemRenderType.INVENTORY, 2);
+        EOHRenderingUtils.renderEOHStar(IItemRenderer.ItemRenderType.INVENTORY, partialTicks, 2);
         GL11.glPopAttrib();
 
         GL11.glPopMatrix();
@@ -82,37 +78,7 @@ public class EyeOfHarmonyInjectorRenderer {
     }
 
     public static void renderOuterSpaceShell() {
-
-        // Save current OpenGL state.
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-
-        // Begin animation.
-        GL11.glPushMatrix();
-
-        // Disables lighting, so star is always lit.
-        GL11.glDisable(GL11.GL_LIGHTING);
-        // Merges colors of the various layers of the star.
-        // GL11.glEnable(GL11.GL_BLEND);
-
-        // Bind animation to layer of star.
-        FMLClientHandler.instance()
-            .getClient()
-            .getTextureManager()
-            .bindTexture(new ResourceLocation(MODID, "models/spaceLayer.png"));
-
-        float scale = 0.01f * 29f;
-        // Scale the star up in the x, y and z directions.
-        GL11.glScalef(scale, scale, scale);
-
-        GL11.glColor4f(1, 1, 1, 1);
-
-        spaceModel.renderAll();
-
-        // Finish animation.
-        GL11.glPopMatrix();
-
-        // Restore previous OpenGL state.
-        GL11.glPopAttrib();
+        EOHRenderingUtils.renderOuterSpaceShell(0);
     }
 
 }

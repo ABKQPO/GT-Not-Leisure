@@ -10,10 +10,16 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
+import com.science.gtnl.common.gui.modularui.CustomFluidHatchGui;
 import com.science.gtnl.mixins.early.Gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -41,7 +47,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             aTier,
             3,
             new String[] { StatCollector.translateToLocal("HatchCustomFluid_00"),
-                StatCollector.translateToLocal("HatchCustomFluid_01") + GTUtility.formatNumbers(aAmount) + "L" });
+                StatCollector.translateToLocal("HatchCustomFluid_01") + NumberFormatUtil.formatNumber(aAmount) + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
     }
@@ -55,7 +61,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             aTier,
             3,
             new String[] { StatCollector.translateToLocal("HatchCustomFluid_00"),
-                StatCollector.translateToLocal("HatchCustomFluid_01") + GTUtility.formatNumbers(aAmount) + "L" });
+                StatCollector.translateToLocal("HatchCustomFluid_01") + NumberFormatUtil.formatNumber(aAmount) + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
         this.uiTexture = aUITexture;
@@ -103,11 +109,27 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
         builder.widget(
             new DrawableWidget().setDrawable(uiTexture)
                 .setSize(18, 18)
                 .setPos(151, 62));
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new CustomFluidHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    public boolean usesSteamLogoForMui2() {
+        return uiTexture == ItemUtils.PICTURE_GTNL_STEAM_LOGO;
     }
 
     @Override
@@ -253,7 +275,9 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
+    @Deprecated
     public FluidSlotWidget createFluidSlot() {
+        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
         return super.createFluidSlot().setFilter(mLockedFluids::contains);
     }
 }

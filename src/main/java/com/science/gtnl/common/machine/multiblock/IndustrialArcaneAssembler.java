@@ -5,6 +5,7 @@ import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -17,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -31,11 +33,14 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
 public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcaneAssembler>
     implements ISurvivalConstructable {
@@ -145,7 +150,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
                 'G',
                 GTStructureUtility.buildHatchAdder(IndustrialArcaneAssembler.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputBus,
@@ -190,12 +195,11 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 25;
+        checkStructureCondition(errors, mCountCasing >= 25);
     }
 
     @Override
@@ -222,7 +226,17 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+    }
+
+    @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Industrial Arcane Assembler GUI no longer supports mui1 startup
+        // paths.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
     }

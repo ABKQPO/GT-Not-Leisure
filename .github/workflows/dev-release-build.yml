@@ -2,7 +2,7 @@ name: Release build
 
 on:
   push:
-    branches: [ dev-280 ]
+    branches: [ dev-290 ]
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 32
-          ref: dev-280
+          ref: dev-290
 
       - name: Set up JDK versions
         uses: actions/setup-java@v4
@@ -30,6 +30,7 @@ jobs:
             8
             17
             21
+            25
           distribution: 'zulu'
 
       - name: Setup Gradle

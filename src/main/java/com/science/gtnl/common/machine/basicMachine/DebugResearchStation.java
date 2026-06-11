@@ -5,9 +5,14 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.science.gtnl.common.gui.modularui.DebugResearchStationGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
@@ -102,7 +107,9 @@ public class DebugResearchStation extends MTEBasicMachine {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -206,7 +213,19 @@ public class DebugResearchStation extends MTEBasicMachine {
     }
 
     @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new DebugResearchStationGui(this, getUIProperties()).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
         BasicUIProperties uiProperties = getUIProperties();
         addIOSlots(builder, uiProperties);
         addProgressBar(builder, uiProperties);

@@ -27,14 +27,15 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
+import com.science.gtnl.common.gui.modularui.ResourceCollectionModuleGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
-import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
@@ -45,15 +46,19 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.ErrorType;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
 import gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
 import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
@@ -101,7 +106,9 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this MUI1 logo hook after Resource Collection Module only uses the MUI2 GUI.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -120,13 +127,24 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new ResourceCollectionModuleGui(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
         super.addUIWidgets(builder, buildContext);
         machineModeIcons = new ArrayList<>(4);
         setMachineModeIcons();
@@ -163,29 +181,31 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        structureBuild_EM(STRUCTURE_PIECE_MAIN, 0, 1, 0, stackSize, hintsOnly);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, 0, 1, 0);
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         fixAllIssues();
         mParallelTier = 0;
 
-        if (!structureCheck_EM(STRUCTURE_PIECE_MAIN, 0, 1, 0)) return false;
-
-        mParallelTier = MultiMachineBase.getParallelTier(aStack);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, 0, 1, 0, errors)) return;
 
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
             break;
         }
 
-        return mParallelControllerHatches.size() <= 1;
+        if (mParallelControllerHatches.size() > 1) {
+            errors.add(
+                GTNLStructureErrors
+                    .parallelControllerHatchCount(ErrorType.TOO_MANY, mParallelControllerHatches.size(), 1));
+        }
     }
 
     @Override
-    public void clearHatches_EM() {
-        super.clearHatches_EM();
+    public void clearHatches() {
+        super.clearHatches();
         this.mParallelControllerHatches.clear();
     }
 
@@ -224,8 +244,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     public int getMaxParallelRecipes() {
-        mParallelTier = MultiMachineBase.getParallelTier(getControllerSlot());
-
         if (mParallelControllerHatches != null) {
             for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
                 mParallelTier = module.mTier;

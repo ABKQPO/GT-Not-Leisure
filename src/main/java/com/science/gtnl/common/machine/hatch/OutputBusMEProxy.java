@@ -15,16 +15,12 @@ import net.minecraftforge.common.DimensionManager;
 import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-import appeng.api.networking.GridFlags;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputBusME;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -33,6 +29,7 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
     public MTEHatchOutputBusME master;
     public int masterX, masterY, masterZ, masterDim;
     public boolean masterSet = false; // indicate if values of masterX, masterY, masterZ are valid
+    private long lastProxyFlushTick;
 
     public OutputBusMEProxy(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -64,47 +61,31 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
             trySetMasterFromCoord(masterX, masterY, masterZ, masterDim);
         }
         super.onPostTick(aBaseMetaTileEntity, aTimer);
+        if (aBaseMetaTileEntity.isServerSide() && aTimer > lastProxyFlushTick + 40) {
+            flushCachedStack();
+            lastProxyFlushTick = aTimer;
+        }
     }
 
     @Override
+    public ItemStack getVisual() {
+        return GTNLItemList.OutputBusMEProxy.get(1);
+    }
+
     public void flushCachedStack() {
         if (getMaster() == null) {
-            super.flushCachedStack();
-        } else if (getMaster().canAcceptItem()) {
-            IOutputME master = (IOutputME) getMaster();
-            IOutputME output = (IOutputME) this;
-            IItemList<IAEItemStack> masterCache = master.getItemCache();
-            IItemList<IAEItemStack> itemCache = output.getItemCache();
-
-            for (IAEItemStack stack : itemCache) {
+            return;
+        }
+        if (getMaster().canAcceptAnyItem()) {
+            for (IAEItemStack stack : getProvider().getCacheList()) {
                 if (stack != null && stack.getStackSize() > 0) {
-                    masterCache.addStorage(stack);
+                    getMaster().getProvider()
+                        .storeToCache(stack.copy());
                 }
             }
-
-            itemCache.resetStatus();
-
-            output.setLastOutputTick(output.getTickCounter());
+            getProvider().getCacheList()
+                .forEach(cachedStack -> cachedStack.setStackSize(0));
         }
-    }
-
-    @Override
-    public AENetworkProxy getProxy() {
-        if (gridProxy == null) {
-            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
-                gridProxy = new AENetworkProxy(
-                    (IGridProxyable) getBaseMetaTileEntity(),
-                    "proxy",
-                    GTNLItemList.OutputBusMEProxy.get(1),
-                    true);
-                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-                updateValidGridProxySides();
-                if (getBaseMetaTileEntity().getWorld() != null) gridProxy.setOwner(
-                    getBaseMetaTileEntity().getWorld()
-                        .getPlayerEntityByName(getBaseMetaTileEntity().getOwnerName()));
-            }
-        }
-        return this.gridProxy;
     }
 
     @Override

@@ -17,7 +17,7 @@ import gregtech.common.tileentities.machines.multi.purification.MTEPurificationU
 public class MixinMTEPurificationUnitUVTreatment {
 
     @Redirect(
-        method = "lambda$static$5",
+        method = "lambda$static$2",
         at = @At(
             value = "INVOKE",
             target = "Lgregtech/api/util/HatchElementBuilder;atLeastList(Ljava/util/List;)Lgregtech/api/util/HatchElementBuilder;"))

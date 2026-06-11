@@ -16,7 +16,7 @@ import gtPlusPlus.xmod.bop.blocks.base.SaplingBase;
 public class BlockSaplingBrickuoia extends SaplingBase {
 
     public BlockSaplingBrickuoia() {
-        super("Giant Brickuoia Sapling", "brickuoia", new String[] { "brickuoia" });
+        super("Giant Brickuoia Sapling", new String[] { "brickuoia" });
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
     }
 

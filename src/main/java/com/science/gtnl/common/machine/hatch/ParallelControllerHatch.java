@@ -8,6 +8,10 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -15,6 +19,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.science.gtnl.common.gui.modularui.ParallelControllerHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;
@@ -74,7 +79,9 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after ParallelControllerHatch mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -125,7 +132,11 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        parallel = aNBT.getInteger("parallel");
+        setParallelFromGui(aNBT.getInteger("parallel"));
+    }
+
+    public void setParallelFromGui(int parallel) {
+        this.parallel = Math.min(maxParallel, Math.max(1, parallel));
     }
 
     public int setMaxParallel(int mTier) {
@@ -159,7 +170,19 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new ParallelControllerHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after ParallelControllerHatch mui2 rollout is complete.
         builder.widget(
             TextWidget.localised("Info_ParallelControllerHatch_00")
                 .setPos(49, 18)

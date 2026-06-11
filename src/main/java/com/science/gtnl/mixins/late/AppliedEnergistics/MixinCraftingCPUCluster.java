@@ -3,15 +3,14 @@ package com.science.gtnl.mixins.late.AppliedEnergistics;
 import java.util.Map;
 
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -58,7 +57,7 @@ public abstract class MixinCraftingCPUCluster {
     private boolean r$IgnoreParallel = false;
 
     /**
-     * 在开头计算合成样板允许的最大并行量
+     * Calculates the maximum pattern batch size at the start of crafting execution.
      */
     @WrapOperation(
         method = "executeCrafting",
@@ -81,8 +80,7 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 检查样板是否是合成，并且是否由装配矩阵(或是凿子？) 进行
-     * 若是，重新计算可进行的最大合并项
+     * Checks whether the pattern can be batched by Assembler Matrix or ME Chisel, then clamps the batch size.
      */
     @Inject(
         method = "executeCrafting",
@@ -125,7 +123,7 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 若符合条件，重新计算耗电
+     * Recalculates energy usage for batched patterns.
      */
     @WrapOperation(
         method = "executeCrafting",
@@ -154,28 +152,28 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 根据允许的最大合并数提取材料
+     * Extracts ingredients with the computed batch size.
      */
     @WrapOperation(
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/crafting/MECraftingInventory;extractItems(Lappeng/api/storage/data/IAEItemStack;Lappeng/api/config/Actionable;Lappeng/api/networking/security/BaseActionSource;)Lappeng/api/storage/data/IAEItemStack;"))
-    private IAEItemStack extractItemsR(MECraftingInventory instance, IAEItemStack request, Actionable mode,
-        BaseActionSource src, Operation<IAEItemStack> original, @Share("snl$assembly") LocalBooleanRef assembly,
+            target = "Lappeng/crafting/MECraftingInventory;extractItems(Lappeng/api/storage/data/IAEStack;Lappeng/api/config/Actionable;)Lappeng/api/storage/data/IAEStack;"))
+    private IAEStack<?> extractItemsR(MECraftingInventory instance, IAEStack<?> request, Actionable mode,
+        Operation<IAEStack<?>> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
         if (assembly.get()) {
             request = request.copy()
                 .setStackSize(request.getStackSize() * craftingFrequency.get());
         }
-        return original.call(instance, request, mode, src);
+        return original.call(instance, request, mode);
     }
 
     /**
-     * 根据允许的最大合并数提取材料
+     * Scales stack notifications for batched patterns.
      */
     @Unique
-    private void r$postChange(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void r$postChange(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         LocalBooleanRef assembly, LocalLongRef craftingFrequency, Operation<Void> original) {
         if (assembly.get()) {
             receiver = receiver.copy()
@@ -185,10 +183,10 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 根据允许的最大合并数提取材料
+     * Scales mutable stack notifications for batched patterns.
      */
     @Unique
-    private void r$postChange1(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void r$postChange1(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         LocalBooleanRef assembly, LocalLongRef craftingFrequency, Operation<Void> original) {
         if (assembly.get()) {
             receiver.setStackSize(receiver.getStackSize() * craftingFrequency.get());
@@ -200,9 +198,9 @@ public abstract class MixinCraftingCPUCluster {
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEItemStack;Lappeng/api/networking/security/BaseActionSource;)V",
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEStack;Lappeng/api/networking/security/BaseActionSource;)V",
             ordinal = 1))
-    private void postChangeR1(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void postChangeR1(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         r$postChange1(instance, receiver, single, assembly, craftingFrequencyR, original);
@@ -212,9 +210,9 @@ public abstract class MixinCraftingCPUCluster {
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEItemStack;Lappeng/api/networking/security/BaseActionSource;)V",
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEStack;Lappeng/api/networking/security/BaseActionSource;)V",
             ordinal = 2))
-    private void postChangeR2(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void postChangeR2(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         r$postChange(instance, receiver, single, assembly, craftingFrequencyR, original);
@@ -224,9 +222,9 @@ public abstract class MixinCraftingCPUCluster {
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEItemStack;Lappeng/api/networking/security/BaseActionSource;)V",
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEStack;Lappeng/api/networking/security/BaseActionSource;)V",
             ordinal = 0))
-    private void postChangeR0(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void postChangeR0(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         r$postChange(instance, receiver, single, assembly, craftingFrequencyR, original);
@@ -236,16 +234,16 @@ public abstract class MixinCraftingCPUCluster {
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEItemStack;Lappeng/api/networking/security/BaseActionSource;)V",
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEStack;Lappeng/api/networking/security/BaseActionSource;)V",
             ordinal = 3))
-    private void postChangeR3(CraftingCPUCluster instance, IAEItemStack receiver, BaseActionSource single,
+    private void postChangeR3(CraftingCPUCluster instance, IAEStack<?> receiver, BaseActionSource single,
         Operation<Void> original, @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequencyR) {
         r$postChange1(instance, receiver, single, assembly, craftingFrequencyR, original);
     }
 
     /**
-     * 将输出产物倍增到正确值加入到等待合成列表
+     * Scales expected output stacks before adding them to the waiting list.
      */
     @WrapOperation(
         method = "executeCrafting",
@@ -253,7 +251,7 @@ public abstract class MixinCraftingCPUCluster {
             value = "INVOKE",
             target = "Lappeng/api/storage/data/IItemList;add(Lappeng/api/storage/data/IAEStack;)V",
             ordinal = 0))
-    private void addR(IItemList<IAEItemStack> instance, IAEStack<IAEItemStack> iaeStack, Operation<Void> original,
+    private void addR(IItemList<IAEStack<?>> instance, IAEStack<?> iaeStack, Operation<Void> original,
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
         if (assembly.get()) {
@@ -263,15 +261,15 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 将输出产物倍增到正确值加入到等待合成列表
+     * Scales crafting status updates for batched patterns.
      */
     @WrapOperation(
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postCraftingStatusChange(Lappeng/api/storage/data/IAEItemStack;)V",
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postCraftingStatusChange(Lappeng/api/storage/data/IAEStack;)V",
             ordinal = 0))
-    private void postCraftingStatusChangeR(CraftingCPUCluster instance, IAEItemStack iaeStack, Operation<Void> original,
+    private void postCraftingStatusChangeR(CraftingCPUCluster instance, IAEStack<?> iaeStack, Operation<Void> original,
         @Share("snl$assembly") LocalBooleanRef assembly,
         @Share("snl$craftingFrequency") LocalLongRef craftingFrequency) {
         if (assembly.get()) {
@@ -281,23 +279,27 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 重定向物品数量通过检查
+     * Lets batched patterns pass the complete input extraction check.
      */
     @WrapOperation(
         method = "executeCrafting",
-        at = @At(
-            value = "FIELD",
-            opcode = Opcodes.GETFIELD,
-            target = "Lnet/minecraft/item/ItemStack;stackSize:I",
-            remap = true))
-    private int getCountR(ItemStack instance, Operation<Integer> original,
+        at = @At(value = "INVOKE", target = "Lappeng/api/storage/data/IAEStack;getStackSize()J", ordinal = 0),
+        slice = @Slice(
+            from = @At(
+                value = "INVOKE",
+                target = "Lappeng/util/inv/MEInventoryCrafting;setInventorySlotContents(ILappeng/api/storage/data/IAEStack;)V"),
+            to = @At(
+                value = "INVOKE",
+                target = "Lappeng/me/cluster/implementations/CraftingCPUCluster;postChange(Lappeng/api/storage/data/IAEStack;Lappeng/api/networking/security/BaseActionSource;)V",
+                ordinal = 1)))
+    private long getCountR(IAEStack<?> instance, Operation<Long> original,
         @Share("snl$assembly") LocalBooleanRef assembly) {
-        if (assembly.get()) return 1;
-        else return original.call(instance);
+        if (assembly.get()) return 1L;
+        return original.call(instance);
     }
 
     /**
-     * 重定向物品数量通过检查
+     * Passes the batch size to large crafting inventories.
      */
     @WrapOperation(
         method = "executeCrafting",
@@ -313,7 +315,7 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * 正确的消耗并行处理单元数量
+     * Consumes the correct number of pending task operations for batched patterns.
      */
     @WrapOperation(
         method = "executeCrafting",

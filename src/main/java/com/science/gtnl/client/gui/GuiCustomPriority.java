@@ -2,6 +2,7 @@ package com.science.gtnl.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.ScienceNotLeisure;
@@ -19,38 +20,32 @@ import appeng.parts.PartBasicState;
 public class GuiCustomPriority extends GuiPriority {
 
     private final GuiType customReturnGui;
+    private final ItemStack returnGuiIcon;
+    private GuiTabButton returnGuiButton;
 
     public GuiCustomPriority(InventoryPlayer inventoryPlayer, IPriorityHost te, GuiType returnGui) {
         super(inventoryPlayer, te);
         this.customReturnGui = returnGui;
+        this.returnGuiIcon = te instanceof ICustomGui customGui ? customGui.getOriginGuiIcon() : null;
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        if (this.originalGui == null && this.customReturnGui != null && myIcon != null) {
+        if (this.customReturnGui != null && this.returnGuiIcon != null) {
             this.buttonList.add(
-                this.originalGuiBtn = new GuiTabButton(
+                this.returnGuiButton = new GuiTabButton(
                     this.guiLeft + 154,
                     this.guiTop,
-                    this.myIcon,
-                    this.myIcon.getDisplayName(),
+                    this.returnGuiIcon,
+                    this.returnGuiIcon.getDisplayName(),
                     itemRender));
         }
     }
 
     @Override
-    public void setOriginGUI(Object target) {
-        super.setOriginGUI(target);
-        if (target instanceof ICustomGui original) {
-            this.myIcon = original.getOriginGuiIcon();
-            this.originalGui = null;
-        }
-    }
-
-    @Override
     public void actionPerformed(GuiButton btn) {
-        if (btn == this.originalGuiBtn && this.originalGui == null && this.customReturnGui != null) {
+        if (btn == this.returnGuiButton && this.customReturnGui != null) {
             AEBaseGui.setSwitchingGuis(true);
 
             ForgeDirection side = ForgeDirection.UNKNOWN;

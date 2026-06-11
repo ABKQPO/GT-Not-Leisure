@@ -25,7 +25,7 @@ public abstract class MixinRecipeGenFluids {
             target = "LgtPlusPlus/core/material/Material;getPlate(I)Lnet/minecraft/item/ItemStack;",
             shift = At.Shift.BEFORE,
             ordinal = 0))
-    private void injectBeforeGetPlate(Material material, boolean dO, CallbackInfo ci) {
+    private void injectBeforeGetPlate(Material material, CallbackInfo ci) {
         if (material.getDust(1) == null) return;
 
         RecipeBuilder.builder()

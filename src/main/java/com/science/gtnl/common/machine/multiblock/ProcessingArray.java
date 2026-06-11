@@ -16,6 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -50,6 +51,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.recipe.metadata.CompressionTierKey;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -342,7 +344,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
                         HatchElement.Maintenance,
                         HatchElement.Energy)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -399,11 +401,10 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
-        return mCountCasing >= 40;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
+        checkStructureCondition(errors, mCountCasing >= 40);
     }
 
     @Override
@@ -444,35 +445,35 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         return new String[] {
             StatCollector.translateToLocal("GT5U.multiblock.Progress") + ": "
                 + EnumChatFormatting.GREEN
-                + GTUtility.formatNumbers(mProgresstime / 20)
+                + NumberFormatUtil.formatNumber(mProgresstime / 20)
                 + EnumChatFormatting.RESET
                 + " s / "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(mMaxProgresstime / 20)
+                + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
                 + EnumChatFormatting.RESET
                 + " s",
             StatCollector.translateToLocal("GT5U.multiblock.energy") + ": "
                 + EnumChatFormatting.GREEN
-                + GTUtility.formatNumbers(storedEnergy)
+                + NumberFormatUtil.formatNumber(storedEnergy)
                 + EnumChatFormatting.RESET
                 + " EU / "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(maxEnergy)
+                + NumberFormatUtil.formatNumber(maxEnergy)
                 + EnumChatFormatting.RESET
                 + " EU",
             StatCollector.translateToLocal("GT5U.multiblock.usage") + ": "
                 + EnumChatFormatting.RED
-                + GTUtility.formatNumbers(-lEUt)
+                + NumberFormatUtil.formatNumber(-lEUt)
                 + EnumChatFormatting.RESET
                 + " EU/t",
             StatCollector.translateToLocal("GT5U.multiblock.mei") + ": "
                 + EnumChatFormatting.YELLOW
-                + GTUtility
-                    .formatNumbers(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
+                + NumberFormatUtil
+                    .formatNumber(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
                 + EnumChatFormatting.RESET
                 + " EU/t(*"
-                + GTUtility
-                    .formatNumbers(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList()))
+                + NumberFormatUtil
+                    .formatNumber(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList()))
                 + "A) "
                 + StatCollector.translateToLocal("GT5U.machines.tier")
                 + ": "
@@ -504,7 +505,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
                 + " x",
             StatCollector.translateToLocal("GT5U.PA.parallel") + ": "
                 + EnumChatFormatting.GREEN
-                + GTUtility.formatNumbers(getTrueParallel())
+                + NumberFormatUtil.formatNumber(getTrueParallel())
                 + EnumChatFormatting.RESET };
     }
 

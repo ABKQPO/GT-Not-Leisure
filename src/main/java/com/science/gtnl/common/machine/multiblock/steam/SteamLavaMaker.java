@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -25,6 +27,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -126,13 +129,13 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamLavaMaker.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamLavaMaker.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamLavaMaker.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamLavaMaker.class)
                         .atLeast(
@@ -141,7 +144,7 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                             HatchElement.OutputHatch,
                             HatchElement.Maintenance)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(),
                     StructureUtility.ofBlock(BlockLoader.metaCasing, 27)))
             .addElement('B', GTStructureUtility.chainAllGlasses())
@@ -154,8 +157,8 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

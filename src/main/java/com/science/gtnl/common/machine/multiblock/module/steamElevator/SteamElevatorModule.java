@@ -5,6 +5,7 @@ import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,11 +20,11 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,16 +87,16 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamElevatorModule.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamElevatorModule.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamElevatorModule.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildHatchAdder(SteamElevatorModule.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
                             SteamHatchElement.OutputBus_Steam,
@@ -137,13 +138,13 @@ public abstract class SteamElevatorModule extends SteamMultiMachineBase<SteamEle
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         updateHatchTexture();
-        return true;
+        return;
     }
 
-    @Override
     public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
 
     @Override

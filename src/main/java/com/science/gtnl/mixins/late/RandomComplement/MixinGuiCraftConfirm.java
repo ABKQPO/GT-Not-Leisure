@@ -8,40 +8,36 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
-import com.science.gtnl.common.packet.ContainerRollBACK;
 
 import appeng.client.gui.implementations.GuiCraftConfirm;
+import appeng.client.gui.widgets.GuiAeButton;
 
 @Mixin(value = GuiCraftConfirm.class, remap = false)
 public abstract class MixinGuiCraftConfirm {
 
     @Shadow
-    public abstract void switchToOriginalGUI();
+    private GuiAeButton start;
 
     @Shadow
-    private GuiButton start;
+    private GuiAeButton startWithFollow;
 
-    @Shadow
-    private GuiButton startWithFollow;
-
-    @Redirect(
-        method = "actionPerformed",
-        at = @At(
-            value = "INVOKE",
-            target = "Lappeng/client/gui/implementations/GuiCraftConfirm;switchToOriginalGUI()V"))
-    public void onActionPerformed0(GuiCraftConfirm instance) {
-        GuiScreen oldGui;
-        if ((oldGui = GTNLInputHandler.LAST_GUI_SCREEN) != null) {
-            ScienceNotLeisure.network.sendToServer(new ContainerRollBACK());
-            return;
-        }
-        this.switchToOriginalGUI();
-    }
+    // TODO: Restore this redirect if AE2 reintroduces switchToOriginalGUI.
+    // @Redirect(
+    // method = "actionPerformed",
+    // at = @At(
+    // value = "INVOKE",
+    // target = "Lappeng/client/gui/implementations/GuiCraftConfirm;switchToOriginalGUI()V"))
+    // public void onActionPerformed0(GuiCraftConfirm instance) {
+    // GuiScreen oldGui;
+    // if ((oldGui = GTNLInputHandler.LAST_GUI_SCREEN) != null) {
+    // ScienceNotLeisure.network.sendToServer(new ContainerRollBACK());
+    // return;
+    // }
+    // this.switchToOriginalGUI();
+    // }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     public void onActionPerformed1(GuiButton btn, CallbackInfo ci) {

@@ -5,6 +5,7 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static com.science.gtnl.loader.BlockLoader.metaCasing02;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -43,6 +43,7 @@ import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -171,7 +172,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
                 'F',
                 GTStructureUtility.buildHatchAdder(RocketAssembler.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.InputBus,
                         HatchElement.OutputBus,
@@ -204,15 +205,13 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 1;
+        checkStructureCondition(errors, mCountCasing >= 1);
     }
 
-    @Override
     public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
     }

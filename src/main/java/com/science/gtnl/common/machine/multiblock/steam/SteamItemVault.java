@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,6 +54,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -124,7 +126,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        if (checkStructure(true)) {
+        if (checkStructure(true, getBaseMetaTileEntity())) {
             this.mStartUpCheck = -1;
             this.mUpdate = 200;
         }
@@ -228,7 +230,6 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         }
     }
 
-    @Override
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         this.setDoVoidExcess(!doVoidExcess);
         GTUtility.sendChatToPlayer(
@@ -246,20 +247,20 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 'C',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamItemVault.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamItemVault.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamItemVault.class).casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamItemVault.class)
                         .hatchClass(VaultPortHatch.class)
                         .shouldReject(t -> t.portHatch != null)
                         .adder(SteamItemVault::addPortBusToMachineList)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamItemVault.class)
                         .atLeast(
@@ -268,8 +269,8 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                             HatchElement.InputBus,
                             HatchElement.OutputBus,
                             HatchElement.InputHatch)
-                        .dot(1)
                         .casingIndex(getCasingTextureID())
+                        .hint(1)
                         .build(),
                     StructureUtility
                         .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(BlockLoader.metaCasing02, 0))))
@@ -278,12 +279,11 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         if (portHatch != null && portHatch.controller == null) portHatch.bind(this);
-        return mCountCasing >= 30;
+        checkStructureCondition(errors, mCountCasing >= 30);
     }
 
     @Override

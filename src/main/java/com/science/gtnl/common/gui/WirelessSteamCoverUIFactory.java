@@ -17,6 +17,7 @@ import gregtech.common.gui.modularui.widget.CoverDataControllerWidget;
 import gregtech.common.gui.modularui.widget.CoverDataFollowerToggleButtonWidget;
 import gregtech.common.gui.mui1.cover.CoverLegacyDataUIFactory;
 
+@Deprecated
 public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
 
     private static final int startX = 10;
@@ -31,6 +32,7 @@ public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
     @SuppressWarnings("PointlessArithmeticExpression")
     @Override
     public void addUIWidgets(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 cover factory after the mui2 WirelessSteamCoverGui is fully wired.
         builder
             .widget(
                 new CoverDataControllerWidget.CoverDataIndexedControllerWidget_ToggleButtons<>(

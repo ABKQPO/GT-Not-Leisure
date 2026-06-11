@@ -38,10 +38,13 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.glodblock.github.common.item.ItemFluidDrop;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.google.common.collect.ImmutableList;
-import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Alignment;
@@ -56,6 +59,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.mixinHelper.IMultiblockRecipeMap;
+import com.science.gtnl.common.gui.modularui.SuperCraftingInputHatchMEGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -137,7 +141,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         public final ItemStack pattern;
         @Getter
         public final ICraftingPatternDetails patternDetails;
-        public final ItemId patternItemId;
+        public final GTUtility.ItemId patternItemId;
 
         public final int slotIndex;
 
@@ -158,7 +162,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             this.slotIndex = index;
             this.itemInventory = new ArrayList<>();
             this.fluidInventory = new ArrayList<>();
-            this.patternItemId = ItemId.create(pattern);
+            this.patternItemId = GTUtility.ItemId.create(pattern);
 
             if (nbt == null) return;
             NBTTagList inv = nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
@@ -900,10 +904,10 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                     i,
                     EnumChatFormatting.BLUE + describePattern(slot.patternDetails) + EnumChatFormatting.RESET));
 
-            Object2LongOpenHashMap<ItemId> itemMap = new Object2LongOpenHashMap<>();
+            Object2LongOpenHashMap<GTUtility.ItemId> itemMap = new Object2LongOpenHashMap<>();
             itemMap.putAll(GTUtility.convertItemListToMap(slot.itemInventory));
 
-            for (Map.Entry<ItemId, Long> entry : itemMap.object2LongEntrySet()) {
+            for (Map.Entry<GTUtility.ItemId, Long> entry : itemMap.object2LongEntrySet()) {
                 ItemStack item = entry.getKey()
                     .getItemStack();
                 long amount = entry.getValue();
@@ -964,7 +968,47 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new SuperCraftingInputHatchMEGui(this).build(data, syncManager, uiSettings);
+    }
+
+    public int getPatternRowsForGui() {
+        return MAX_PATTERN_COUNT / rowSize();
+    }
+
+    public int getManualSlotStartForGui() {
+        return SLOT_MANUAL_START;
+    }
+
+    public int getPatternManualSlotStartForGui(int patternSlot) {
+        return MAX_INV_COUNT + patternSlot * 9;
+    }
+
+    public boolean isPatternOptimizationDisabledForGui() {
+        return disablePatternOptimization;
+    }
+
+    public void setPatternOptimizationDisabled(boolean disabled) {
+        disablePatternOptimization = disabled;
+    }
+
+    public boolean isShowPatternForGui() {
+        return showPattern;
+    }
+
+    public void setShowPattern(boolean showPattern) {
+        this.showPattern = showPattern;
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.@NotNull Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after SuperCraftingInputHatchME mui2 parity is verified.
         final Scrollable scrollable = new Scrollable().setVerticalScroll();
         buildContext.addSyncedWindow(MANUAL_SLOT_WINDOW, this::createSlotManualWindow);
         for (int i = 15; i < MAX_PATTERN_COUNT + 15; i++) {
@@ -1162,7 +1206,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         return ArrayExt.withoutNulls(sharedItems, ItemStack[]::new);
     }
 
-    @Override
     public void setProcessingLogic(ProcessingLogic pl) {
         if (!processingLogics.contains(pl)) {
             processingLogics.add(Objects.requireNonNull(pl));
@@ -1371,7 +1414,9 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         return true;
     }
 
+    @Deprecated
     public ModularWindow createSlotManualWindow(final EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after SuperCraftingInputHatchME mui2 parity is verified.
         final int WIDTH = 176;
         final int HEIGHT = 86;
         final int PARENT_WIDTH = getGUIWidth();
@@ -1401,7 +1446,9 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         return builder.build();
     }
 
+    @Deprecated
     public ModularWindow createPatternSlotManualWindow(final EntityPlayer player, int slotID) {
+        // TODO: Remove this mui1 fallback after SuperCraftingInputHatchME mui2 parity is verified.
         final int WIDTH = 68;
         final int HEIGHT = 68;
         final int PARENT_WIDTH = getGUIWidth();

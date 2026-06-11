@@ -37,6 +37,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
@@ -230,7 +231,7 @@ public class TileEntityMEChisel extends AENetworkInvTile implements IInterfaceHo
     }
 
     @Override
-    public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable actionable) {
+    public IAEStack<?> injectCraftedItems(ICraftingLink link, IAEStack<?> items, Actionable actionable) {
         return this.duality.injectCraftedItems(link, items, actionable);
     }
 

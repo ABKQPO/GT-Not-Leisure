@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
-import com.gtnewhorizon.gtnhlib.client.renderer.vbo.VertexBuffer;
+import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshop;
@@ -25,7 +25,7 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
     private static boolean initialized = false;
     private static boolean failedInit = false;
 
-    private VertexBuffer ring;
+    private IVertexArrayObject ring;
 
     private static ShaderProgram fadeBypassProgram;
     private static TextureUpdateRequester textureUpdater;

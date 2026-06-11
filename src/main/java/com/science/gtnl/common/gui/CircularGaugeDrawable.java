@@ -11,8 +11,10 @@ import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Color;
 
+@Deprecated
 public class CircularGaugeDrawable implements IDrawable {
 
+    // TODO: Replace this mui1 drawable with a mui2 drawable for steam gauge displays.
     public DoubleSupplier progressSupplier;
     public float minAngle = (float) Math.toRadians(-235.0);
     public float maxAngle = (float) Math.toRadians(45.0);

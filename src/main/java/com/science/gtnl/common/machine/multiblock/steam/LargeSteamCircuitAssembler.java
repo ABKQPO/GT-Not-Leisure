@@ -3,6 +3,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -28,6 +30,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
@@ -89,16 +92,16 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofChain(
                         buildSteamWirelessInput(LargeSteamCircuitAssembler.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamBigInput(LargeSteamCircuitAssembler.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamInput(LargeSteamCircuitAssembler.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildHatchAdder(LargeSteamCircuitAssembler.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .atLeast(
                                 SteamHatchElement.InputBus_Steam,
                                 SteamHatchElement.OutputBus_Steam,
@@ -158,22 +161,22 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatches())
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         if (tierPipeCasing == 1 && tierMachineCasing == 1 && mCountCasing >= 40) {
             tierMachine = 1;
             getCasingTextureID();
             updateHatchTexture();
-            return true;
+            return;
         }
         if (tierPipeCasing == 2 && tierMachineCasing == 2 && mCountCasing >= 40) {
             tierMachine = 2;
             getCasingTextureID();
             updateHatchTexture();
-            return true;
+            return;
         }
-        return false;
+        checkStructureCondition(errors, false);
     }
 
     @Override

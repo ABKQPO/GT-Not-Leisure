@@ -12,7 +12,6 @@ import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandTitle;
 import com.science.gtnl.loader.MaterialLoader;
-import com.science.gtnl.loader.RecipeLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
 import com.science.gtnl.utils.text.LanguageLoader;
@@ -90,8 +89,6 @@ public class ScienceNotLeisure {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
-        MaterialLoader.loadPostInit();
-        RecipeLoader.loadPostInit();
     }
 
     @Mod.EventHandler
@@ -111,7 +108,6 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
         event.registerServerCommand(new CommandSuicide());
-        RecipeLoader.loadServerStart();
     }
 
     @Mod.EventHandler

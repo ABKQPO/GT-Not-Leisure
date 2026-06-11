@@ -5,6 +5,8 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,6 +31,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -131,7 +134,7 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
                 'D',
                 GTStructureUtility.buildHatchAdder(LargeCanning.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputHatch,
@@ -147,12 +150,11 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 80;
+        checkStructureCondition(errors, mCountCasing >= 80);
     }
 
     @Override

@@ -59,8 +59,8 @@ import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
+import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
-import com.science.gtnl.common.render.item.ItemMeteorMinerMachineRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
@@ -168,9 +168,8 @@ public class ClientProxy extends CommonProxy {
         if (Mods.Avaritia.isModLoaded()) registerFancyHaloRenderer();
 
         if (GTNLEarlyCoreMod.enableAprilFool) {
-            MinecraftForgeClient.registerItemRenderer(
-                Item.getItemFromBlock(GregTechAPI.sBlockMachines),
-                new ItemMeteorMinerMachineRender());
+            MinecraftForgeClient
+                .registerItemRenderer(Item.getItemFromBlock(GregTechAPI.sBlockMachines), new AprilFoolMachineRender());
         }
 
         MinecraftForgeClient.registerItemRenderer(

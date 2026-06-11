@@ -65,7 +65,9 @@ import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.GTUtility.ItemId;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
@@ -152,7 +154,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        if (checkStructure(true)) {
+        if (checkStructure(true, getBaseMetaTileEntity())) {
             this.mStartUpCheck = -1;
             this.mUpdate = 200;
         }
@@ -264,14 +266,14 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                             HatchElement.InputBus,
                             HatchElement.InputHatch,
                             HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                        .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
                     buildHatchAdder(SingularityDataHub.class).hatchClass(VaultPortHatch.class)
                         .shouldReject(t -> t.portHatch != null)
                         .adder(SingularityDataHub::addPortBusToMachineList)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
+                        .hint(1)
                         .build(),
                     StructureUtility
                         .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
@@ -286,12 +288,11 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 100;
+        checkStructureCondition(errors, mCountCasing >= 100);
     }
 
     @Override

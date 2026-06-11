@@ -16,6 +16,13 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.cleanroommc.modularui.api.IGuiHolder;
+import com.cleanroommc.modularui.factory.GuiFactories;
+import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -29,14 +36,16 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.VanillaButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.science.gtnl.common.gui.PlayerDollGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.gui.modularui.GTUIInfos;
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.modularui2.GTGuiThemes;
+import gregtech.api.modularui2.GTModularScreen;
 
-public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI {
+public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI, IGuiHolder<PlayerInventoryGuiData> {
 
     public static final byte RENDER_OFF = 0;
     public static final byte RENDER_CAPE = 1;
@@ -128,15 +137,52 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote && getMovingObjectPositionFromPlayer(world, player, true) == null) {
-            GTUIInfos.openPlayerHeldItemUI(player);
+            GuiFactories.playerInventory()
+                .openFromMainHand(player);
         }
         return stack;
     }
 
     @Override
+    @Deprecated
     public ModularWindow createWindow(UIBuildContext buildContext, ItemStack stack) {
+        // TODO: Remove this mui1 fallback after the Player Doll item GUI is fully ported to mui2.
         if (!(stack.getItem() instanceof ItemBlockPlayerDoll)) return null;
         return new PlayerDollUIFactory(buildContext).createWindow();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
+        return new GTModularScreen(mainPanel, GTGuiThemes.STANDARD);
+    }
+
+    @Override
+    public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new PlayerDollGui(data).build();
+    }
+
+    public static NBTTagCompound getOrCreateTag(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt == null) {
+            nbt = new NBTTagCompound();
+            stack.setTagCompound(nbt);
+        }
+        return nbt;
+    }
+
+    public static byte getRenderMode(ItemStack stack) {
+        if (stack.hasTagCompound()) {
+            NBTTagCompound nbt = stack.getTagCompound();
+            if (nbt.hasKey("RenderCapeMode", 1)) {
+                return nbt.getByte("RenderCapeMode");
+            }
+        }
+        return RENDER_OFF;
+    }
+
+    public static void setRenderMode(ItemStack stack, byte mode) {
+        getOrCreateTag(stack).setByte("RenderCapeMode", mode);
     }
 
     public static class PlayerDollData {
@@ -193,8 +239,10 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
     }
 
     @Desugar
+    @Deprecated
     public record PlayerDollUIFactory(UIBuildContext buildContext) {
 
+        // TODO: Remove this mui1 fallback after the Player Doll item GUI is fully ported to mui2.
         public ModularWindow createWindow() {
             ModularWindow.Builder builder = ModularWindow.builder(300, 97);
             ItemStack stack = buildContext.getPlayer().inventory.getCurrentItem();
@@ -283,12 +331,7 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
         }
 
         public NBTTagCompound getOrCreateTag(ItemStack stack) {
-            NBTTagCompound nbt = stack.getTagCompound();
-            if (nbt == null) {
-                nbt = new NBTTagCompound();
-                stack.setTagCompound(nbt);
-            }
-            return nbt;
+            return ItemBlockPlayerDoll.getOrCreateTag(stack);
         }
 
         public void cycleRenderMode(ItemStack stack) {
@@ -309,17 +352,11 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
         }
 
         public byte getRenderMode(ItemStack stack) {
-            if (stack.hasTagCompound()) {
-                NBTTagCompound nbt = stack.getTagCompound();
-                if (nbt.hasKey("RenderCapeMode", 1)) {
-                    return nbt.getByte("RenderCapeMode");
-                }
-            }
-            return RENDER_OFF;
+            return ItemBlockPlayerDoll.getRenderMode(stack);
         }
 
         public void setRenderMode(ItemStack stack, byte mode) {
-            getOrCreateTag(stack).setByte("RenderCapeMode", mode);
+            ItemBlockPlayerDoll.setRenderMode(stack, mode);
         }
 
         public String getSkullOwner(ItemStack stack) {

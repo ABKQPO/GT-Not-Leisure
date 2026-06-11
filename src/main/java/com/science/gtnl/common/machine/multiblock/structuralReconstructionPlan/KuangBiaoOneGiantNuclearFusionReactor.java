@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -63,6 +64,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTStructureUtility;
@@ -108,12 +110,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 1500;
+        checkStructureCondition(errors, mCountCasing >= 1500);
     }
 
     @Override
@@ -217,7 +218,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03"))
             .addInfo(
                 StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04")
-                    + GTUtility.formatNumbers(maxEUStore())
+                    + NumberFormatUtil.formatNumber(maxEUStore())
                     + " EU")
             .addInfo(
                 StatCollector.translateToLocalFormatted(
@@ -277,7 +278,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 mUpdated = false;
             }
             if (--mUpdate == 0 || --mStartUpCheck == 0) {
-                checkStructure(true);
+                checkStructure(true, getBaseMetaTileEntity());
             }
 
             if (mStartUpCheck < 0) {
@@ -328,8 +329,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                         this.getBaseMetaTileEntity()
                             .decreaseStoredEnergyUnits(-lEUt, true);
                         if (mMaxProgresstime > 0 && ++mProgresstime >= mMaxProgresstime) {
-                            if (mOutputItems != null)
-                                for (ItemStack tStack : mOutputItems) if (tStack != null) addOutput(tStack);
+                            if (mOutputItems != null) addItemOutputs(mOutputItems);
                             if (mOutputFluids != null)
                                 for (FluidStack tStack : mOutputFluids) if (tStack != null) addOutput(tStack);
                             mEfficiency = 10000;
@@ -471,16 +471,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         return new String[] {
             StatCollector.translateToLocal("scanner.info.UX.0") + ": "
                 + EnumChatFormatting.LIGHT_PURPLE
-                + GTUtility.formatNumbers(getTrueParallel())
+                + NumberFormatUtil.formatNumber(getTrueParallel())
                 + EnumChatFormatting.RESET,
             StatCollector.translateToLocal("GT5U.fusion.req") + ": "
                 + EnumChatFormatting.RED
-                + GTUtility.formatNumbers(-lEUt)
+                + NumberFormatUtil.formatNumber(-lEUt)
                 + EnumChatFormatting.RESET
                 + "EU/t",
             StatCollector.translateToLocal("GT5U.fusion.plasma") + ": "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(plasmaOut)
+                + NumberFormatUtil.formatNumber(plasmaOut)
                 + EnumChatFormatting.RESET
                 + "L/t" };
     }
@@ -510,7 +510,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 'C',
                 GTStructureUtility.buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputBus,
@@ -841,7 +841,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03"))
                 .addInfo(
                     StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04")
-                        + GTUtility.formatNumbers(maxEUStore())
+                        + NumberFormatUtil.formatNumber(maxEUStore())
                         + " EU")
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
@@ -1090,11 +1090,13 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
 
         @Override
-        public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
+            List<StructureError> errors) {
             wirelessMode = false;
-            boolean result = super.checkMachine(aBaseMetaTileEntity, aStack);
+            int existingErrors = errors.size();
+            super.checkMachine(aBaseMetaTileEntity, aStack, errors);
+            if (errors.size() > existingErrors) return;
             setWirelessMode(mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty());
-            return result;
         }
 
         @NotNull
@@ -1131,7 +1133,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 return finalResult;
             }
             updateSlots();
-            costingEUText = GTUtility.formatNumbers(costingEU);
+            costingEUText = NumberFormatUtil.formatNumber(costingEU);
 
             mEfficiency = 10000;
             mEfficiencyIncrease = 10000;

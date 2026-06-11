@@ -15,6 +15,6 @@ public class MixinBacteriaRegistry {
 
     @Redirect(method = "runAllPostinit", at = @At(value = "INVOKE", target = "Ljava/util/LinkedHashMap;clear()V"))
     private void disableCultureSetClear(LinkedHashMap<String, BioCulture> instance) {
-        // 拦截 clear 方法，不执行任何操作
+        // Keep registered cultures available after post-init.
     }
 }

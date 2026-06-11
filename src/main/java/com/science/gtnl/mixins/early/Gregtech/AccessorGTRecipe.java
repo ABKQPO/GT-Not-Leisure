@@ -16,10 +16,11 @@ public interface AccessorGTRecipe {
 
     @Invoker("<init>")
     static GTRecipe create(ItemStack[] mInputs, ItemStack[] mOutputs, FluidStack[] mFluidInputs,
-        FluidStack[] mFluidOutputs, int[] mChances, Object mSpecialItems, int mDuration, int mEUt, int mSpecialValue,
-        boolean mEnabled, boolean mHidden, boolean mFakeRecipe, boolean mCanBeBuffered, boolean mNeedsEmptyOutput,
-        boolean nbtSensitive, String[] neiDesc, @Nullable IRecipeMetadataStorage metadataStorage,
-        RecipeCategory recipeCategory) {
+        FluidStack[] mFluidOutputs, int[] mInputChances, int[] mOutputChances, int[] mFluidInputChances,
+        int[] mFluidOutputChances, int mEUt, int mSpecialValue, boolean mEnabled, boolean mHidden, boolean mFakeRecipe,
+        boolean mCanBeBuffered, boolean mNeedsEmptyOutput, boolean nbtSensitive, String[] neiDesc,
+        @Nullable IRecipeMetadataStorage metadataStorage, RecipeCategory recipeCategory, Object mSpecialItems,
+        int mDuration) {
         throw new AssertionError();
     }
 }

@@ -1,6 +1,6 @@
 package com.science.gtnl.mixins.late.Overpowered;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,10 +33,13 @@ public class MixinBehaviourScanner {
 
     @Inject(
         method = "onItemUseFirst(Lgregtech/api/items/MetaBaseItem;Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;IIILnet/minecraftforge/common/util/ForgeDirection;FFF)Z",
-        at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;size()I", shift = At.Shift.BEFORE))
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/nbt/NBTTagCompound;setInteger(Ljava/lang/String;I)V",
+            shift = At.Shift.BEFORE))
     private void GTNotLeisure$addScanInfo(MetaBaseItem aItem, ItemStack aStack, EntityPlayer aPlayer, World aWorld,
         int aX, int aY, int aZ, ForgeDirection side, float hitX, float hitY, float hitZ,
-        CallbackInfoReturnable<Boolean> cir, @Local ArrayList<String> tList) {
+        CallbackInfoReturnable<Boolean> cir, @Local List<String> tList) {
         if (ModList.Overpowered.isModLoaded() || !MainConfig.machine.enableRecipeOutputChance) return;
         TileEntity tile = aWorld.getTileEntity(aX, aY, aZ);
         if (!(tile instanceof BaseMetaTileEntity baseMetaTileEntity)) {

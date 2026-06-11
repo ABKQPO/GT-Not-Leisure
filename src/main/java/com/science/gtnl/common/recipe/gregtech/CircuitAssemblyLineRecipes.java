@@ -1,122 +1,196 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import java.util.HashSet;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-
-import com.google.common.collect.ArrayListMultimap;
 import com.science.gtnl.api.IRecipePool;
-import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
-import bartworks.system.material.CircuitGeneration.CircuitImprintLoader;
-import bartworks.util.BWUtil;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
-import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTRecipe;
+import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GTOreDictUnificator;
+import gtPlusPlus.core.material.MaterialMisc;
+import tectech.thing.CustomItemList;
 
 public class CircuitAssemblyLineRecipes implements IRecipePool {
 
-    public static ArrayListMultimap<NBTTagCompound, GTRecipe> recipeTagMap = ArrayListMultimap.create();
-    public static HashSet<GTRecipe> ORIGINAL_CAL_RECIPES = new HashSet<>();
-    public static HashSet<GTRecipe> MODIFIED_CAL_RECIPES = new HashSet<>();
-    public static HashSet<GTRecipe> CONVERTED_CAL_RECIPES = new HashSet<>();
+    public RecipeMap<?> CALR = BartWorksRecipeMaps.circuitAssemblyLineRecipes;
 
     @Override
     public void loadRecipes() {
-        HashSet<GTRecipe> toRem = new HashSet<>();
-        HashSet<GTRecipe> toAdd = new HashSet<>();
-        deleteConvertedCALRecipes();
-        rebuildCircuitAssemblerMap(toRem, toAdd);
-        exchangeRecipesInList(toRem, toAdd);
+        if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
     }
 
-    private static void deleteConvertedCALRecipes() {
-        BartWorksRecipeMaps.circuitAssemblyLineRecipes.getBackend()
-            .removeRecipes(CONVERTED_CAL_RECIPES);
-        recipeTagMap.clear();
-        CONVERTED_CAL_RECIPES.clear();
-    }
+    public void loadDeleteRecipe() {
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_OpticallyPerfectedCPUs.get(1),
+                ItemList.Wrap_OpticallyCompatibleMemories.get(2),
+                ItemList.Wrap_OpticalSMDCapacitors.get(16),
+                ItemList.Wrap_OpticalSMDDiodes.get(16),
+                CustomItemList.DATApipe.get(64),
+                GTOreDictUnificator.get(OrePrefixes.rod, Materials.EnrichedHolmium, 32))
+            .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(288))
+            .itemOutputs(ItemList.Circuit_OpticalProcessor.get(16))
+            .special(ItemList.CircuitImprint_OpticalProcessor.get(0))
+            .requiresCleanRoom()
+            .duration(3600)
+            .eut(TierEU.RECIPE_UHV)
+            .addTo(CALR);
 
-    private static void rebuildCircuitAssemblerMap(HashSet<GTRecipe> toRem, HashSet<GTRecipe> toAdd) {
-        reAddOriginalRecipes();
-        GTNLRecipeMaps.ConvertToCircuitAssemblerRecipes.getAllRecipes()
-            .forEach(e -> handleCircuitRecipeRebuilding(e, toRem, toAdd));
-    }
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_UltraBioMutatedCircuitBoards.get(1),
+                ItemList.Circuit_Bioprocessor.get(32),
+                GTNLItemList.BiowareSMDInductor.get(64),
+                GTNLItemList.BiowareSMDCapacitor.get(64),
+                ItemList.Wrap_RandomAccessMemoryChips.get(32),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 24))
+            .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(288))
+            .itemOutputs(ItemList.Circuit_Biowarecomputer.get(16))
+            .special(ItemList.CircuitImprint_BiowareAssembly.get(0))
+            .requiresCleanRoom()
+            .duration(3600)
+            .eut(TierEU.RECIPE_UV)
+            .addTo(CALR);
 
-    private static void exchangeRecipesInList(HashSet<GTRecipe> toRem, HashSet<GTRecipe> toAdd) {
-        toAdd.forEach(RecipeMaps.circuitAssemblerRecipes::add);
-        RecipeMaps.circuitAssemblerRecipes.getBackend()
-            .removeRecipes(toRem);
-        ORIGINAL_CAL_RECIPES.addAll(toRem);
-        MODIFIED_CAL_RECIPES.addAll(toAdd);
-    }
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_BioProcessingUnits.get(1L),
+                ItemList.Wrap_QBitProcessingUnits.get(4),
+                GTNLItemList.HighlyAdvancedSoc.get(16),
+                GTNLItemList.BiowareSMDCapacitor.get(64),
+                GTNLItemList.BiowareSMDTransistor.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.Naquadah, 8))
+            .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(288))
+            .itemOutputs(ItemList.Circuit_Bioprocessor.get(32))
+            .special(ItemList.CircuitImprint_BiowareProcessor.get(0))
+            .requiresCleanRoom()
+            .duration(2400)
+            .eut(TierEU.RECIPE_UV)
+            .addTo(CALR);
 
-    private static void reAddOriginalRecipes() {
-        RecipeMaps.circuitAssemblerRecipes.getBackend()
-            .removeRecipes(MODIFIED_CAL_RECIPES);
-        ORIGINAL_CAL_RECIPES.forEach(RecipeMaps.circuitAssemblerRecipes::add);
-        ORIGINAL_CAL_RECIPES.clear();
-        MODIFIED_CAL_RECIPES.clear();
-    }
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_EliteCircuitBoards.get(1L),
+                ItemList.Wrap_CrystalProcessingUnits.get(1),
+                ItemList.Wrap_NanocomponentCentralProcessingUnits.get(2),
+                ItemList.Wrap_AdvancedSMDCapacitors.get(6),
+                ItemList.Wrap_AdvancedSMDTransistors.get(6),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Crystalprocessor.get(16))
+            .special(ItemList.CircuitImprint_CrystalProcessor.get(0))
+            .requiresCleanRoom()
+            .duration(2400)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CALR);
 
-    private static void handleCircuitRecipeRebuilding(GTRecipe circuitRecipe, HashSet<GTRecipe> toRem,
-        HashSet<GTRecipe> toAdd) {
-        ItemStack[] outputs = circuitRecipe.mOutputs;
-        if (outputs == null || outputs.length == 0 || outputs[0] == null) return;
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_EliteCircuitBoards.get(1L),
+                ItemList.Wrap_CrystalSoCs.get(1),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 8),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Crystalprocessor.get(32))
+            .special(ItemList.CircuitImprint_CrystalProcessor.get(0))
+            .requiresCleanRoom()
+            .duration(1200)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CALR);
 
-        boolean isOrePass = isCircuitOreDict(outputs[0]);
-        String unlocalizedName = outputs[0].getUnlocalizedName();
-        if (isOrePass || unlocalizedName.contains("Circuit") || unlocalizedName.contains("circuit")) {
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_EliteCircuitBoards.get(1),
+                ItemList.Circuit_Crystalprocessor.get(32),
+                ItemList.Wrap_AdvancedSMDInductors.get(4),
+                ItemList.Wrap_AdvancedSMDCapacitors.get(8),
+                ItemList.Wrap_RandomAccessMemoryChips.get(24),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 16))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .itemOutputs(ItemList.Circuit_Crystalcomputer.get(32))
+            .special(ItemList.CircuitImprint_CrystalAssembly.get(0))
+            .requiresCleanRoom()
+            .duration(4800)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CALR);
 
-            CircuitImprintLoader.recipeTagMap
-                .put(CircuitImprintLoader.getTagFromStack(outputs[0]), circuitRecipe.copy());
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_EliteCircuitBoards.get(1),
+                ItemList.Circuit_Crystalcomputer.get(32),
+                ItemList.Wrap_RandomAccessMemoryChips.get(4),
+                ItemList.Wrap_NORMemoryChips.get(32),
+                ItemList.Wrap_NANDMemoryChips.get(64),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 32))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .itemOutputs(ItemList.Circuit_Ultimatecrystalcomputer.get(16))
+            .special(ItemList.CircuitImprint_CrystalSupercomputer.get(0))
+            .requiresCleanRoom()
+            .duration(4800)
+            .eut(TierEU.RECIPE_LuV)
+            .addTo(CALR);
 
-            Fluid solderIndalloy = FluidRegistry.getFluid("molten.indalloy140") != null
-                ? FluidRegistry.getFluid("molten.indalloy140")
-                : FluidRegistry.getFluid("molten.solderingalloy");
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_NeuroProcessingUnits.get(1),
+                ItemList.Wrap_CrystalProcessingUnits.get(1),
+                ItemList.Wrap_NanocomponentCentralProcessingUnits.get(1),
+                ItemList.Wrap_AdvancedSMDCapacitors.get(8),
+                ItemList.Wrap_AdvancedSMDTransistors.get(8),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Neuroprocessor.get(16))
+            .special(ItemList.CircuitImprint_WetwareProcessor.get(0))
+            .requiresCleanRoom()
+            .duration(2400)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CALR);
 
-            Fluid solderUEV = FluidRegistry.getFluid("molten.mutatedlivingsolder") != null
-                ? FluidRegistry.getFluid("molten.mutatedlivingsolder")
-                : FluidRegistry.getFluid("molten.solderingalloy");
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                ItemList.Wrap_ExtremeWetwareLifesupportCircuitBoards.get(1),
+                ItemList.Circuit_Neuroprocessor.get(32),
+                ItemList.Wrap_AdvancedSMDInductors.get(6),
+                ItemList.Wrap_AdvancedSMDCapacitors.get(12),
+                ItemList.Wrap_RandomAccessMemoryChips.get(24),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 16))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(32))
+            .special(ItemList.CircuitImprint_WetwareAssembly.get(0))
+            .requiresCleanRoom()
+            .duration(4800)
+            .eut(TierEU.RECIPE_ZPM)
+            .addTo(CALR);
 
-            FluidStack fluid = circuitRecipe.mFluidInputs != null && circuitRecipe.mFluidInputs.length > 0
-                ? circuitRecipe.mFluidInputs[0]
-                : null;
-
-            if (fluid != null && (fluid.isFluidEqual(Materials.SolderingAlloy.getMolten(0))
-                || fluid.isFluidEqual(new FluidStack(solderIndalloy, 0))
-                || fluid.isFluidEqual(new FluidStack(solderUEV, 0)))) {
-
-                GTRecipe newRecipe = CircuitImprintLoader.reBuildRecipe(circuitRecipe);
-                if (newRecipe != null) {
-                    BartWorksRecipeMaps.circuitAssemblyLineRecipes.addRecipe(newRecipe);
-                    CONVERTED_CAL_RECIPES.add(newRecipe);
-                    addCutoffRecipeToSets(toRem, toAdd, circuitRecipe);
-                }
-
-            } else if (circuitRecipe.mEUt > TierEU.IV) {
-                toRem.add(circuitRecipe);
-            }
-        }
-    }
-
-    private static void addCutoffRecipeToSets(HashSet<GTRecipe> toRem, HashSet<GTRecipe> toAdd,
-        GTRecipe circuitRecipe) {
-        if (circuitRecipe.mEUt > TierEU.IV) {
-            toRem.add(circuitRecipe);
-            toAdd.add(circuitRecipe);
-        }
-    }
-
-    private static boolean isCircuitOreDict(ItemStack item) {
-        return BWUtil.isTieredCircuit(item) || BWUtil.getOreNames(item)
-            .stream()
-            .anyMatch(s -> "circuitPrimitiveArray".equals(s));
+        RecipeBuilder.builder()
+            .setNEIDesc("Remove Change by GTNotLeisure")
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.HSSE, 32),
+                ItemList.Circuit_Ultimatecrystalcomputer.get(32),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 32),
+                ItemList.Wrap_AdvancedSMDInductors.get(8),
+                ItemList.Wrap_AdvancedSMDCapacitors.get(16),
+                ItemList.Wrap_AdvancedSMDDiodes.get(8))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .itemOutputs(ItemList.Circuit_Crystalmainframe.get(16))
+            .special(ItemList.CircuitImprint_CrystalMainframe.get(0))
+            .eut(TierEU.RECIPE_LuV)
+            .duration(4800)
+            .requiresCleanRoom()
+            .addTo(CALR);
     }
 }

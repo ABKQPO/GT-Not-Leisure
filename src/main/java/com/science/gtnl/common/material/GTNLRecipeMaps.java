@@ -24,6 +24,7 @@ import com.science.gtnl.common.gui.recipe.IndustrialInfusionCraftingRecipesFront
 import com.science.gtnl.common.gui.recipe.RocketAssemblerBackend;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerFrontend;
 import com.science.gtnl.common.gui.recipe.SpaceMinerFrontend;
+import com.science.gtnl.common.gui.recipe.SteamGateAssemblerBackend;
 import com.science.gtnl.common.gui.recipe.SteamGateAssemblerFrontend;
 import com.science.gtnl.common.gui.recipe.SteamLogoFrontend;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -381,8 +382,8 @@ public class GTNLRecipeMaps {
                 .setMaxRecipesPerPage(1))
         .build();
 
-    public static final RecipeMap<RecipeMapBackend> SteamGateAssemblerRecipes = RecipeMapBuilder
-        .of("gtnl.recipe.SteamGateAssemblerRecipes")
+    public static final RecipeMap<SteamGateAssemblerBackend> SteamGateAssemblerRecipes = RecipeMapBuilder
+        .of("gtnl.recipe.SteamGateAssemblerRecipes", SteamGateAssemblerBackend::new)
         .maxIO(81, 1, 0, 0)
         .progressBar(GTUITextures.PROGRESSBAR_COMPRESS)
         .frontend(SteamGateAssemblerFrontend::new)
@@ -700,10 +701,4 @@ public class GTNLRecipeMaps {
         .disableRegisterNEI()
         .build();
 
-    public static final RecipeMap<RecipeMapBackend> ConvertToCircuitAssemblerRecipes = RecipeMapBuilder
-        .of("gtnl.recipe.ConvertToCircuitAssemblerRecipes")
-        .frontend(GTNLLogoFrontend::new)
-        .maxIO(6, 1, 1, 0)
-        .disableRegisterNEI()
-        .build();
 }

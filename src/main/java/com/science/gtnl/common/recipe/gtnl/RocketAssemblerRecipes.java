@@ -9,7 +9,7 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -137,7 +137,7 @@ public class RocketAssemblerRecipes implements IRecipePool {
 
     @Optional.Method(modid = "dreamcraft")
     public static ItemStack getEngineCore() {
-        return CustomItemList.EngineCore.get(1);
+        return NHItemList.EngineCore.get(1);
     }
 
 }

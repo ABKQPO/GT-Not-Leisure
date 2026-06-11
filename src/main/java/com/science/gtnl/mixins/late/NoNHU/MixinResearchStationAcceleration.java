@@ -12,7 +12,7 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 public abstract class MixinResearchStationAcceleration extends TTMultiblockBase implements ITileEntityTickAcceleration {
 
     @Shadow(remap = false)
-    private long computationRemaining;
+    public long computationRemaining;
 
     @Override
     @SuppressWarnings("AddedMixinMembersNamePattern")

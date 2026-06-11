@@ -58,6 +58,8 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.common.gui.CircularGaugeDrawable;
+import com.science.gtnl.common.gui.modularui.SteamApiaryModuleGui;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
@@ -80,7 +82,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import kubatech.api.DynamicInventory;
@@ -91,6 +93,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     public int mMaxSlots = 8;
     public ArrayList<BeeSimulator> mStorage = new ArrayList<>();
+
     public static final int CONFIGURATION_WINDOW_ID = 10;
 
     public static final int MODE_PRIMARY_INPUT = 0;
@@ -99,6 +102,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     public int mPrimaryMode = MODE_PRIMARY_INPUT;
 
     public HashMap<ItemId, Double> dropProgress = new HashMap<>();
+    private static final double BASE_DROP_ACCELERATION = 32_00d;
 
     public SteamApiaryModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 6);
@@ -115,10 +119,22 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     @Override
     public int getTierRecipes() {
+        refreshMaxSlots();
         return 6 + recipeOcCount;
     }
 
-    @Override
+    public void refreshMaxSlotsForGui() {
+        refreshMaxSlots();
+    }
+
+    public boolean isBeeInventoryLockedForGui() {
+        return mPrimaryMode == MODE_PRIMARY_OPERATING && mMaxProgresstime > 0;
+    }
+
+    private void refreshMaxSlots() {
+        mMaxSlots = 8 << Math.min(4, clampRecipeOcCount(recipeOcCount));
+    }
+
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         if (this.mMaxProgresstime > 0) {
             GTUtility.sendChatToPlayer(aPlayer, "Can't change mode when running !");
@@ -219,6 +235,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     @Override
     @NotNull
     public CheckRecipeResult checkProcessing() {
+        refreshMaxSlots();
         if (mPrimaryMode < 2) { // input and output mode
             if (mPrimaryMode == MODE_PRIMARY_INPUT && mStorage.size() < mMaxSlots) {
                 World w = getBaseMetaTileEntity().getWorld();
@@ -271,7 +288,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 List<ItemStack> stacks = new ArrayList<>();
                 for (int i = 0, mStorageSize = Math.min(mStorage.size(), mMaxSlots); i < mStorageSize; i++) {
                     SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
-                    stacks.addAll(beeSimulator.getDrops(this, 64_00d * boosted));
+                    stacks.addAll(beeSimulator.getDrops(this, BASE_DROP_ACCELERATION * boosted));
                 }
 
                 this.lEUt = -GTValues.V[4] * mMaxSlots;
@@ -294,6 +311,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
         public boolean isValid;
         public float beeSpeed;
         public float maxBeeCycles;
+        public String speciesKey;
         public static IBeekeepingMode mode;
         public static Map<ItemId, ItemStack> dropstacks = new HashMap<>();
 
@@ -317,6 +335,16 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 specialDrops.add(new BeeDrop(tag.getCompoundTag("specialDrops" + i)));
             beeSpeed = tag.getFloat("beeSpeed");
             maxBeeCycles = tag.getFloat("maxBeeCycles");
+            var queen = BeeManager.beeRoot.getMember(this.queenStack);
+            if (queen != null) {
+                var genome = queen.getGenome();
+                speciesKey = genome.getPrimary()
+                    .getUID() + "\0"
+                    + genome.getSecondary()
+                        .getUID()
+                    + "\0"
+                    + beeSpeed;
+            }
         }
 
         public NBTTagCompound toNBTTagCompound() {
@@ -359,6 +387,11 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 .forEach((key, value) -> drops.add(new BeeDrop(key, value / 2f, beeSpeed, t)));
             primary.getSpecialtyChances()
                 .forEach((key, value) -> specialDrops.add(new BeeDrop(key, value, beeSpeed, t)));
+            speciesKey = primary.getUID() + "\0"
+                + genome.getSecondary()
+                    .getUID()
+                + "\0"
+                + beeSpeed;
         }
 
         public List<ItemStack> getDrops(final SteamApiaryModule machine, final double timePassed) {
@@ -427,9 +460,13 @@ public class SteamApiaryModule extends SteamElevatorModule {
         }
     }
 
+    // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
+    @Deprecated
     public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
 
+    @Deprecated
     public static UIInfo<?, ?> createMetaTileEntityUI() {
+        // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
         return UIBuilder.of()
             .container((player, world, x, y, z) -> {
                 TileEntity te = world.getTileEntity(x, y, z);
@@ -461,7 +498,9 @@ public class SteamApiaryModule extends SteamElevatorModule {
             .build();
     }
 
+    @Deprecated
     public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 configuration button after Steam Apiary Module only uses MUI2.
         buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
@@ -475,6 +514,8 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 .setSize(16, 16));
     }
 
+    // TODO: Remove this MUI1 container after Steam Apiary Module only uses MUI2.
+    @Deprecated
     public static class MUIContainer extends ModularUIContainer {
 
         final WeakReference<SteamApiaryModule> parent;
@@ -554,7 +595,9 @@ public class SteamApiaryModule extends SteamElevatorModule {
     public boolean isInInventory = true;
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 fallback after Steam Apiary Module only uses MUI2.
 
         buildContext.addSyncedWindow(OC_WINDOW_ID, this::createRecipeOcCountWindow);
         builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
@@ -663,7 +706,9 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
+    @Deprecated
     public ModularWindow createRecipeOcCountWindow(EntityPlayer player) {
+        // TODO: Remove this MUI1 recipe OC window after Steam Apiary Module only uses MUI2.
         final int WIDTH = 158;
         final int HEIGHT = 52;
         final int PARENT_WIDTH = getGUIWidth();
@@ -685,7 +730,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             .widget(
                 new NumericWidget().setSetter(val -> recipeOcCount = clampRecipeOcCount((int) val))
                     .setGetter(() -> {
-                        mMaxSlots = 8 << Math.min(4, recipeOcCount);
+                        refreshMaxSlots();
                         return clampRecipeOcCount(recipeOcCount);
                     })
                     .setBounds(0, Integer.MAX_VALUE)
@@ -707,18 +752,24 @@ public class SteamApiaryModule extends SteamElevatorModule {
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (aBaseMetaTileEntity.isClientSide()) return true;
-        apiaryUI.open(
-            aPlayer,
-            aBaseMetaTileEntity.getWorld(),
-            aBaseMetaTileEntity.getXCoord(),
-            aBaseMetaTileEntity.getYCoord(),
-            aBaseMetaTileEntity.getZCoord());
+        openGui(aPlayer);
         return true;
     }
 
     private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
 
+    public void setGuiDropProgressFromMui2(HashMap<ItemStack, Double> progress) {
+        GUIDropProgress = progress;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SteamApiaryModuleGui(this);
+    }
+
+    @Deprecated
     public ModularWindow createConfigurationWindow(final EntityPlayer player) {
+        // TODO: Remove this MUI1 configuration window after Steam Apiary Module only uses MUI2.
         ModularWindow.Builder builder = ModularWindow.builder(200, 100);
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
 
@@ -731,7 +782,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 ButtonWidget.closeWindowButton(true)
                     .setPos(185, 3));
 
-        // 主模式选择：输入、输出、运行
+        // Primary mode selector: input, output, and operating.
         builder.widget(
             new Column().widget(
                 new CycleButtonWidget().setLength(3)
@@ -802,7 +853,9 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
+    @Deprecated
     public Widget generateCurrentRecipeInfoWidget() {
+        // TODO: Remove this MUI1 recipe info widget after Steam Apiary Module only uses MUI2.
         DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
         if (mOutputItems == null || GUIDropProgress == null) return processingDetails;
         Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
@@ -849,6 +902,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     public Object2IntOpenHashMap<ItemId> getOutputItemCounts(ItemStack[] outputItems) {
+        if (outputItems == null || outputItems.length == 0) return new Object2IntOpenHashMap<>();
         Object2IntOpenHashMap<ItemId> outputCounts = new Object2IntOpenHashMap<>(outputItems.length);
         for (ItemStack outputItem : outputItems) {
             if (outputItem != null && outputItem.stackSize > 0) {
@@ -859,7 +913,9 @@ public class SteamApiaryModule extends SteamElevatorModule {
     }
 
     @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this MUI1 text sync path after Steam Apiary Module only uses MUI2.
         screenElements.widget(new FakeSyncWidget<>(() -> {
             HashMap<ItemStack, Double> ret = new HashMap<>(this.dropProgress.size());
             for (Map.Entry<ItemId, Double> drop : this.dropProgress.entrySet()) {
@@ -895,16 +951,16 @@ public class SteamApiaryModule extends SteamElevatorModule {
         if (list == null || list.isEmpty() || mappingFunction == null) return;
         int emptySlots = 0;
         boolean ignoreEmptiness = false;
-        for (MTEHatchOutputBus i : mOutputBusses) {
-            if (i instanceof MTEHatchOutputBusME) {
+        for (MTEHatchOutputBus outputBus : mOutputBusses) {
+            if (Utils.isMEOutputBus(outputBus)) {
                 ignoreEmptiness = true;
                 break;
             }
-            for (int j = 0; j < i.getSizeInventory(); j++)
-                if (i.isValidSlot(j)) if (i.getStackInSlot(j) == null) emptySlots++;
+            for (int j = 0; j < outputBus.getSizeInventory(); j++)
+                if (outputBus.isValidSlot(j)) if (outputBus.getStackInSlot(j) == null) emptySlots++;
         }
         if (emptySlots == 0 && !ignoreEmptiness) return;
-        // Use iterator removal to avoid repeated head-shift costs on ArrayList / 使用迭代器移除，避免 ArrayList 头删反复搬移元素
+        // Use iterator removal to avoid repeated head-shift costs on ArrayList.
         for (var iterator = list.iterator(); iterator.hasNext();) {
             Y pendingOutput = iterator.next();
             List<ItemStack> toOutputNow = mappingFunction.apply(pendingOutput);

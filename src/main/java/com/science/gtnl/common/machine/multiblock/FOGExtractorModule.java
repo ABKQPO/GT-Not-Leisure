@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -23,6 +24,8 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.science.gtnl.common.gui.modularui.FOGModuleGui;
+import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -32,12 +35,11 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import tectech.TecTech;
-import tectech.thing.gui.TecTechUITextures;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
 public class FOGExtractorModule extends MTEBaseModule {
@@ -126,12 +128,8 @@ public class FOGExtractorModule extends MTEBaseModule {
     }
 
     @Override
-    public int getMaxParallel() {
-        long value = (long) maximumParallel * 16;
-        if (value > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) value;
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
     }
 
     @Override
@@ -161,12 +159,16 @@ public class FOGExtractorModule extends MTEBaseModule {
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
         super.addUIWidgets(builder, buildContext);
         builder.widget(createFluidModeButton(builder));
     }
 
+    @Deprecated
     public ButtonWidget createFluidModeButton(IWidgetBuilder<?> builder) {
+        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
             TecTech.proxy.playSound(getBaseMetaTileEntity(), "fx_click");
             fluidMode = !fluidMode;
@@ -175,11 +177,11 @@ public class FOGExtractorModule extends MTEBaseModule {
             .setPlayClickSound(false)
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
-                ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (isFluidModeOn()) {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_FURNACE_MODE);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE);
                 } else {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_FURNACE_MODE_OFF);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE_OFF);
                 }
                 return ret.toArray(new IDrawable[0]);
             })
@@ -194,11 +196,11 @@ public class FOGExtractorModule extends MTEBaseModule {
         return (ButtonWidget) button;
     }
 
-    private boolean isFluidModeOn() {
+    public boolean isFluidModeOn() {
         return fluidMode;
     }
 
-    private void setFluidMode(boolean enabled) {
+    public void setFluidMode(boolean enabled) {
         fluidMode = enabled;
     }
 
@@ -220,34 +222,35 @@ public class FOGExtractorModule extends MTEBaseModule {
         str.add(
             StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.progress",
-                EnumChatFormatting.GREEN + GTUtility.formatNumbers(mProgresstime / 20) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + EnumChatFormatting.RESET));
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
+                    + EnumChatFormatting.RESET));
         str.add(
             StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.currently_using",
-                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0")
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
                     + EnumChatFormatting.RESET));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.max_parallel",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getActualParallel())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getActualParallel())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.parallel.current",
                 EnumChatFormatting.RESET
-                    + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
+                    + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getSpeedBonus())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getSpeedBonus())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.energy",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getEnergyDiscount())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getEnergyDiscount())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.divisor.recipe_time.non_perfect_oc",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getOverclockTimeFactor())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getOverclockTimeFactor())));
         return str.toArray(new String[0]);
     }
 

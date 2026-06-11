@@ -3,6 +3,8 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -22,6 +24,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IControllerUpgrade;
+import com.science.gtnl.common.gui.modularui.SwarmCoreGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -48,12 +51,14 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.LanthItemList;
@@ -134,6 +139,19 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SwarmCoreGui(this);
+    }
+
+    public int getMachineTierForGui() {
+        return machineTier;
+    }
+
+    public void setMachineTierFromGui(int machineTier) {
+        this.machineTier = machineTier;
+    }
+
+    @Override
     public int[] getUpgradePaidCosts() {
         return upgradePaidCosts[Math.min(machineTier - 1, 2)];
     }
@@ -181,13 +199,17 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Swarm Core upgrade GUI is fully ported to mui2.
         super.addUIWidgets(builder, buildContext);
         createUpgradeButton(builder, buildContext);
     }
 
     @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the Swarm Core terminal text is fully ported to mui2.
         super.drawTexts(screenElements, inventorySlot);
         screenElements
             .widget(
@@ -327,7 +349,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         CustomHatchElement.ParallelCon)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -368,12 +390,11 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing > 200;
+        checkStructureCondition(errors, mCountCasing > 200);
     }
 
     @Override

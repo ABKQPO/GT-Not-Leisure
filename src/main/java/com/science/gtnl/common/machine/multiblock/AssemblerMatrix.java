@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.gtnhlib.util.ItemUtil;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
@@ -64,6 +65,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
@@ -90,6 +92,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -112,6 +115,7 @@ import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IMEConnectable;
+import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -119,12 +123,13 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -185,6 +190,30 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     public int getPatternMultiply() {
         return patternState.getPatternMultiply();
+    }
+
+    public List<IAEItemStack> getCachedPatternOutputsForGui() {
+        IAEItemStack[] cachedOutputItems = patternState.getCachedOutputItems();
+        if (cachedOutputItems == null || cachedOutputItems.length == 0) {
+            return Collections.emptyList();
+        }
+        return ObjectArrayList.wrap(cachedOutputItems);
+    }
+
+    public void setCachedPatternOutputsFromGui(List<IAEItemStack> cachedOutputItems) {
+        patternState.setCachedOutputItems(cachedOutputItems.toArray(new IAEItemStack[0]));
+    }
+
+    public boolean isShowPattern() {
+        return showPattern;
+    }
+
+    public void setShowPattern(boolean showPattern) {
+        this.showPattern = showPattern;
+    }
+
+    public String getGuiCustomName() {
+        return hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName();
     }
 
     public CombinationPatternsIInventory getInventory() {
@@ -324,7 +353,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
         this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-        if (checkStructure(true)) {
+        if (checkStructure(true, getBaseMetaTileEntity())) {
             this.mStartUpCheck = -1;
             this.mUpdate = 200;
         }
@@ -332,7 +361,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new AssemblerMatrixGui(this);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Assembler Matrix custom GUI is fully ported to mui2.
         addSharedScreen(builder);
         slotWidgets.clear();
         createInventorySlots();
@@ -348,7 +384,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         builder.widget(createPowerSwitchButton(builder))
             .widget(createStructureUpdateButton(builder))
             .widget(createModeSwitchButton(builder))
-            .widget(createMuffleButton(builder));
+            .widget(createMuffleButton(builder, true));
 
         if (supportsPowerPanel()) {
             builder.widget(createPowerPanelButton(builder));
@@ -511,6 +547,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         } catch (IOException ignored) {
 
         }
+    }
+
+    public static IAEItemStack loadAEItemStackForGui(PacketBuffer buffer) {
+        return loadAEItemStack(buffer);
+    }
+
+    public static void writeAEItemStackForGui(PacketBuffer buffer, @NotNull IAEItemStack stack) {
+        writeAEItemStack(buffer, stack);
     }
 
     @Override
@@ -680,7 +724,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Assembler Matrix custom GUI is fully ported to mui2.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_UNPACKAGER);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
@@ -880,16 +926,16 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
             getProxy().setValidSides(emptyDirection);
-            return false;
+            checkStructureCondition(errors, false);
         }
         final var old = mMaxSlots;
         setupParameters();
         if (mMaxSlots != old) upPatterns();
         getProxy().setValidSides(allDirection);
-        return true;
+        return;
     }
 
     public void upPatterns() {
@@ -1004,7 +1050,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 'A',
                 GTStructureUtility.buildHatchAdder(AssemblerMatrix.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputBus,
@@ -1183,7 +1229,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     if (wirelessMode) {
                         WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -2 * usedParallel);
-                        costingEUText = GTUtility.formatNumbers(-lEUt);
+                        costingEUText = NumberFormatUtil.formatNumber(-lEUt);
                         this.lEUt = 0;
                     }
 
@@ -1280,7 +1326,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         info.add(
             StatCollector.translateToLocal("GT5U.multiblock.recipesDone") + ": "
                 + EnumChatFormatting.GREEN
-                + GTUtility.formatNumbers(recipesDone)
+                + NumberFormatUtil.formatNumber(recipesDone)
                 + EnumChatFormatting.RESET);
         if (wirelessMode) {
             info.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
@@ -1459,7 +1505,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
-    public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack items, Actionable mode) {
+    public IAEStack<?> injectCraftedItems(ICraftingLink link, IAEStack<?> items, Actionable mode) {
         return this.getInterfaceDuality()
             .injectCraftedItems(link, items, mode);
     }
@@ -1546,13 +1592,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         int emptySlots = 0;
         boolean ignoreEmptiness = false;
 
-        for (MTEHatchOutputBus i : mOutputBusses) {
-            if (i instanceof MTEHatchOutputBusME) {
+        for (IOutputBus i : mOutputBusses) {
+            if (Utils.isMEOutputBus(i)) {
                 ignoreEmptiness = true;
                 break;
             }
-            for (int j = 0; j < i.getSizeInventory(); j++) {
-                if (i.isValidSlot(j) && i.getStackInSlot(j) == null) {
+            MTEHatchOutputBus outputBus = (MTEHatchOutputBus) i;
+            for (int j = 0; j < outputBus.getSizeInventory(); j++) {
+                if (outputBus.isValidSlot(j) && outputBus.getStackInSlot(j) == null) {
                     emptySlots++;
                 }
             }
@@ -1566,7 +1613,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
             if (!ignoreEmptiness && emptySlots < 1) break;
 
-            addOutput(stack);
+            addItemOutputs(new ItemStack[] { stack });
 
             emptySlots--;
 

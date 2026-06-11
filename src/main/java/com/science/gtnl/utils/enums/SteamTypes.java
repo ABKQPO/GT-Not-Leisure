@@ -8,12 +8,12 @@ import net.minecraftforge.fluids.Fluid;
 import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.enums.Materials;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gregtech.api.util.GTModHandler;
 
 public enum SteamTypes {
 
     STEAM("Steam", Materials.Steam.mGas, 1),
-    SH_STEAM("Superheated Steam", FluidUtils.getSuperHeatedSteam(1)
+    SH_STEAM("Superheated Steam", GTModHandler.getSuperHeatedSteam(1)
         .getFluid(), 10),
     DSC_STEAM("Dense Supercritical Steam", Materials.DenseSupercriticalSteam.mGas, 50),
     CM_STEAM("Compressed Steam", GTNLMaterials.CompressedSteam.getMolten(1)

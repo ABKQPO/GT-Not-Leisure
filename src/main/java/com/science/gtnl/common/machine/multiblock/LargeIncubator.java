@@ -49,6 +49,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTStructureUtility;
@@ -134,7 +135,7 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
                             HatchElement.Energy.or(HatchElement.ExoticEnergy),
                             RadioHatchElement.RadioHatch)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     StructureUtility.onElementPass(
                         e -> e.mCountCasing++,
@@ -310,10 +311,10 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
-            || !checkHatch()) {
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
+        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            checkStructureCondition(errors, false);
         }
         boolean isFlipped = this.getFlip()
             .isHorizontallyFlipped();
@@ -327,7 +328,7 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             "G",
             Blocks.water);
         setupParameters();
-        return mCountCasing > 19;
+        checkStructureCondition(errors, mCountCasing > 19);
     }
 
     @Override

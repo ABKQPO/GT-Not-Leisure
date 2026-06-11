@@ -58,6 +58,8 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -171,24 +173,25 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
+    public void checkMachine(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack,
+        List<StructureError> structureErrors) {
         this.totalLens = 0;
         setRackActiveState(false);
         mRackHatchs.clear();
         rackTable.clear();
 
-        if (!structureCheck_EM("front", 1, 2, 0)) return false;
-        if (!structureCheck_EM("cap", 1, 2, -1)) return false;
+        if (!checkPiece("front", 1, 2, 0, structureErrors)) return;
+        if (!checkPiece("cap", 1, 2, -1, structureErrors)) return;
 
         byte offset = -2;
         while (offset > -18) {
-            if (!structureCheck_EM("slice", 1, 2, offset)) break;
+            if (!checkPiece("slice", 1, 2, offset, structureErrors)) break;
             offset--;
             this.totalLens++;
         }
 
-        if (!structureCheck_EM("cap", 1, 2, ++offset)) return false;
-        if (!structureCheck_EM("back", 1, 2, --offset)) return false;
+        if (!checkPiece("cap", 1, 2, ++offset, structureErrors)) return;
+        if (!checkPiece("back", 1, 2, --offset, structureErrors)) return;
 
         totalLens--;
         eCertainMode = (byte) Math.min(this.totalLens / 3, 5);
@@ -198,7 +201,11 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         }
         machineLens.set(this.totalLens);
         randomColor = generateTwoModifierIndexGroups(randomUUID, this.totalLens);
-        return eUncertainHatches.size() == 1 && mInputHatches.size() <= 1 && this.totalLens >= 3;
+        checkOneUncertaintyHatch(structureErrors);
+        checkHatchMax(structureErrors, InputHatch, 1);
+        if (this.totalLens < 3) {
+            structureErrors.add(StructureErrorRegistry.TOO_SHORT_LENGTH);
+        }
     }
 
     @Override
@@ -271,8 +278,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                 for (int y = 0; y < 3; y++) {
                     MTEHatchRack rack = rackTable.get(x, y);
                     if (rack != null) {
-                        if (rack.heat > maxTemp) {
-                            maxTemp = rack.heat;
+                        if (rack.getHeat() > maxTemp) {
+                            maxTemp = rack.getHeat();
                         }
                     }
                 }
@@ -297,7 +304,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
                         MTEHatchRack rack = rackTable.get(lensIndex, rackIndex);
                         if (rack == null) continue;
-                        rack.heat = Math.max(1, rack.heat);
+                        rack.setHeat(Math.max(1, rack.getHeat()));
                         if (totalSuperCoolant <= 0) break outer;
 
                         int computationPerTick = rack.tickComponents(1, 1) * 8;
@@ -325,21 +332,21 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                         double heatReductionPerUnit = computationPerTick / 20.0 * heatMultiplier;
 
                         double usedCoolantFactor = Math
-                            .min(rack.heat / heatReductionPerUnit, totalSuperCoolant / coolantRequired);
+                            .min(rack.getHeat() / heatReductionPerUnit, totalSuperCoolant / coolantRequired);
 
                         int coolantConsumed = (int) (usedCoolantFactor * coolantRequired);
 
                         if (usedCoolantFactor > 0 && depleteInput(Materials.SuperCoolant.getFluid(coolantConsumed))) {
 
-                            rack.heat -= (int) (usedCoolantFactor * heatReductionPerUnit);
-                            rack.heat = Math.max(1, rack.heat);
+                            rack.setHeat(rack.getHeat() - (int) (usedCoolantFactor * heatReductionPerUnit));
+                            rack.setHeat(Math.max(1, rack.getHeat()));
 
                             totalSuperCoolant -= coolantConsumed;
                             allCoolantUs += coolantConsumed;
 
                         }
 
-                        rack.heat += (int) (100 * heatMultiplier);
+                        rack.setHeat(rack.getHeat() + (int) (100 * heatMultiplier));
                         this.eAvailableData += (long) (computationPerTick * computationMultiplier) / 4;
                     }
                 }
@@ -406,8 +413,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
         for (MTEHatchRack rack : rackHatches) {
 
-            if (rack.heat > maxTemp) {
-                maxTemp = rack.heat;
+            if (rack.getHeat() > maxTemp) {
+                maxTemp = rack.getHeat();
             }
             rackComputation = rack.tickComponents(1, 1);
             if (rackComputation > 0) {
@@ -539,16 +546,16 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        structureBuild_EM("front", 1, 2, 0, stackSize, hintsOnly);
-        structureBuild_EM("cap", 1, 2, -1, stackSize, hintsOnly);
+        buildPiece("front", stackSize, hintsOnly, 1, 2, 0);
+        buildPiece("cap", stackSize, hintsOnly, 1, 2, -1);
 
         byte offset = -2;
         for (int rackSlices = Math.min(Math.max(stackSize.stackSize, 3), 15); rackSlices > 0; rackSlices--) {
-            structureBuild_EM("slice", 1, 2, offset--, stackSize, hintsOnly);
+            buildPiece("slice", stackSize, hintsOnly, 1, 2, offset--);
         }
 
-        structureBuild_EM("cap", 1, 2, offset--, stackSize, hintsOnly);
-        structureBuild_EM("back", 1, 2, offset, stackSize, hintsOnly);
+        buildPiece("cap", stackSize, hintsOnly, 1, 2, offset--);
+        buildPiece("back", stackSize, hintsOnly, 1, 2, offset);
     }
 
     @Override
@@ -590,12 +597,12 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                             HatchElement.InputData,
                             HatchElement.OutputData)
                         .casingIndex(BlockGTCasingsTT.textureOffset + 1)
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1),
                     buildHatchAdder(HighPerformanceComputationArray.class)
                         .adder(HighPerformanceComputationArray::addWirelessDataOutputToMachineList)
                         .casingIndex(BlockGTCasingsTT.textureOffset + 1)
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1)))
             .addElement('B', ofBlock(TTCasingsContainer.sBlockCasingsTT, 1))
             .addElement('C', ofBlock(TTCasingsContainer.sBlockCasingsTT, 2))
@@ -604,19 +611,19 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                 'E',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_0)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
             .addElement(
                 'F',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_1)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
             .addElement(
                 'G',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_2)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
             .build();
     }

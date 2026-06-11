@@ -29,26 +29,27 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.common.gui.modularui.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
 
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
+import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
 public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements ISurvivalConstructable {
 
@@ -74,6 +75,27 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
     public FurnaceArray(String aName) {
         super(aName);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FurnaceArrayGui(this);
+    }
+
+    public long getFurnaceCountForGui() {
+        return furnaceCount;
+    }
+
+    public void setFurnaceCountFromGui(long furnaceCount) {
+        this.furnaceCount = furnaceCount;
+    }
+
+    public long getCoalCountForGui() {
+        return coalCount;
+    }
+
+    public void setCoalCountFromGui(long coalCount) {
+        this.coalCount = coalCount;
     }
 
     @Override
@@ -146,7 +168,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
             .addElement(
                 'A',
                 buildHatchAdder(FurnaceArray.class).casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         SteamHatchElement.InputBus_Steam,
                         SteamHatchElement.OutputBus_Steam,
@@ -160,11 +182,10 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatch();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
-    @Override
     public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
 
     @Override
@@ -253,12 +274,11 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
         }
 
         boolean hasMEOutputBus = false;
-        for (final MTEHatch bus : GTUtility.validMTEList(mOutputBusses)) {
-            if (bus instanceof MTEHatchOutputBusME meBus) {
-                if (!meBus.isLocked() && meBus.canAcceptItem()) {
-                    hasMEOutputBus = true;
-                    break;
-                }
+        for (final IOutputBus bus : GTUtility.validMTEList(mOutputBusses)) {
+            if (!bus.isFiltered() && bus.createTransaction()
+                .hasAvailableSpace()) {
+                hasMEOutputBus = true;
+                break;
             }
         }
 
@@ -350,7 +370,9 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     }
 
     @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the Furnace Array terminal text is fully ported to mui2.
         super.drawTexts(screenElements, inventorySlot);
         screenElements
             .widget(

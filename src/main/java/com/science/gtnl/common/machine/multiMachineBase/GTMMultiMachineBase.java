@@ -57,7 +57,6 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
     @Override
     public void resetParallelTier() {
         super.resetParallelTier();
-        mParallelTier = getParallelTier(getControllerSlot());
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
             break;
@@ -66,7 +65,7 @@ public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> exte
 
     @Override
     public boolean checkHatch() {
-        return super.checkHatch() && checkEnergyHatch();
+        return super.checkHatch();
     }
 
     @Override

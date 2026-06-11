@@ -13,10 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.glodblock.github.client.gui.container.ContainerItemMonitor;
 import com.glodblock.github.common.item.ItemWirelessUltraTerminal;
 import com.glodblock.github.inventory.InventoryHandler;
-import com.glodblock.github.inventory.gui.GuiType;
 import com.glodblock.github.inventory.item.IWirelessTerminal;
 import com.glodblock.github.util.BlockPos;
 import com.glodblock.github.util.Util;
@@ -285,10 +283,10 @@ public class KeyBindingHandler implements IMessage, IMessageHandler<KeyBindingHa
             if (Loader.isModLoaded("Baubles")) {
                 readBaublesS(player, exItem);
             }
-        } else if (container instanceof ContainerMEMonitorable || container instanceof ContainerItemMonitor) {
+        } else if (container instanceof ContainerMEMonitorable) {
             AEBaseContainer aec;
             IGridNode gridNode;
-            if (container instanceof ContainerItemMonitor c) {
+            if (container instanceof ContainerMEMonitorable c) {
                 aec = c;
                 gridNode = c.getNetworkNode();
             } else {
@@ -361,7 +359,7 @@ public class KeyBindingHandler implements IMessage, IMessageHandler<KeyBindingHa
                     player.worldObj,
                     new BlockPos(isBauble ? i + value : i, value, 0),
                     ForgeDirection.UNKNOWN,
-                    GuiType.FLUID_CRAFTING_AMOUNT);
+                    GuiBridge.GUI_CRAFTING_AMOUNT);
             } else {
                 player.openGui(
                     AppEng.instance(),
@@ -396,7 +394,7 @@ public class KeyBindingHandler implements IMessage, IMessageHandler<KeyBindingHa
                 player.worldObj,
                 new BlockPos(wt.getInventorySlot(), Util.GuiHelper.encodeType(0, Util.GuiHelper.GuiType.ITEM), 0),
                 ForgeDirection.UNKNOWN,
-                GuiType.FLUID_CRAFTING_AMOUNT);
+                GuiBridge.GUI_CRAFTING_AMOUNT);
         } else {
             Platform.openGUI(
                 player,

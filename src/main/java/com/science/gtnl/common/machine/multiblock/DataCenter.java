@@ -46,6 +46,8 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTRecipe.RecipeAssemblyLine;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
@@ -116,12 +118,21 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
+    public void checkMachine(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
         mDataAccessHatches.clear();
         mStacksDataOutputs.clear();
         mWirelessStacksDataOutputs.clear();
         slave = false;
-        return structureCheck_EM(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHasAnyEnergy(errors);
+        checkHasMaintenanceHatch(errors);
+        if (mDataAccessHatches.isEmpty()) {
+            errors.add(StructureErrors.of("GT5U.gui.text.structure_error.databank_missing_data_access"));
+        }
+        if (mStacksDataOutputs.isEmpty() && mWirelessStacksDataOutputs.isEmpty()) {
+            errors.add(StructureErrors.of("GT5U.gui.text.structure_error.databank_missing_data_output"));
+        }
     }
 
     @Override
@@ -251,13 +262,7 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        structureBuild_EM(
-            STRUCTURE_PIECE_MAIN,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            stackSize,
-            hintsOnly);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
@@ -283,7 +288,6 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
                 'A',
                 buildHatchAdder(DataCenter.class).atLeast(DataBankHatches.DataStick)
                     .casingIndex(getCasingTextureID())
-                    .dot(2)
                     .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 0))
             .addElement('B', ofBlock(TTCasingsContainer.sBlockCasingsTT, 3))
             .addElement(
@@ -298,7 +302,8 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
                         DataBankHatches.InboundConnector,
                         DataBankHatches.WirelessOutboundConnector)
                     .casingIndex(getCasingTextureID() + 1)
-                    .dot(1)
+                    .hint(2)
+                    .hint(1)
                     .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1))
             .addElement('D', ofBlock(sBlockCasings8, 7))
             .addElement('E', ofBlock(sBlockCasings10, 9))

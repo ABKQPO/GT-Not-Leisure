@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -12,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -32,6 +35,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -138,9 +142,11 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatch()
-            && mCountCasing >= 4;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkStructureCondition(
+            errors,
+            checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+                && mCountCasing >= 4);
     }
 
     @Override
@@ -148,12 +154,12 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         return new String[] {
             StatCollector.translateToLocal("GT5U.engine.output") + ": "
                 + EnumChatFormatting.RED
-                + GTUtility.formatNumbers(lEUt)
+                + NumberFormatUtil.formatNumber(lEUt)
                 + EnumChatFormatting.RESET
                 + " EU/t",
             StatCollector.translateToLocal("GT5U.engine.consumption") + ": "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(lEUt / 4)
+                + NumberFormatUtil.formatNumber(lEUt / 4)
                 + EnumChatFormatting.RESET
                 + " L/t" };
     }
@@ -186,7 +192,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 'A',
                 GTStructureUtility.buildHatchAdder(PhotovoltaicPowerStation.class)
                     .casingIndex(getCasingTextureIndex())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputHatch,

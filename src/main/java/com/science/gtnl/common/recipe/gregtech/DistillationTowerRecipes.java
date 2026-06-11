@@ -18,7 +18,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.fluids.GTPPFluids;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 
 public class DistillationTowerRecipes implements IRecipePool {
@@ -80,7 +79,7 @@ public class DistillationTowerRecipes implements IRecipePool {
                 Materials.NitrogenDioxide.getGas(120000),
                 Materials.Deuterium.getGas(40000),
                 Materials.Helium.getGas(15000),
-                Materials.Helium_3.getGas(12000),
+                Materials.Helium3.getGas(12000),
                 Materials.Tritium.getGas(10000),
                 WerkstoffLoader.Krypton.getFluidOrGas(1000),
                 WerkstoffLoader.Xenon.getFluidOrGas(1000),
@@ -98,7 +97,7 @@ public class DistillationTowerRecipes implements IRecipePool {
             .fluidInputs(GTModHandler.getDistilledWater(128000))
             .fluidOutputs(
                 Materials.Steam.getGas(64000),
-                FluidUtils.getSuperHeatedSteam(16000),
+                GTModHandler.getSuperHeatedSteam(16000),
                 Materials.Creosote.getFluid(2000),
                 Materials.WoodTar.getFluid(2000),
                 new FluidStack(GTPPFluids.PineOil, 32000))

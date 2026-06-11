@@ -13,10 +13,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
-import gregtech.api.util.GTUtility;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class CommandSteamNetwork extends CommandBase {
@@ -87,7 +87,7 @@ public class CommandSteamNetwork extends CommandBase {
                 // Usage is /gt global_energy_add username EU
 
                 String EU_string_formatted = EnumChatFormatting.RED
-                    + GTUtility.formatNumbers(new BigInteger(Steam_String))
+                    + NumberFormatUtil.formatNumber(new BigInteger(Steam_String))
                     + EnumChatFormatting.RESET;
 
                 if (SteamWirelessNetworkManager.addSteamToGlobalSteamMap(uuid, new BigInteger(Steam_String)))
@@ -108,7 +108,7 @@ public class CommandSteamNetwork extends CommandBase {
                     new ChatComponentText(
                         formatted_username + " currently has "
                             + EnumChatFormatting.RED
-                            + GTUtility.formatNumbers(
+                            + NumberFormatUtil.formatNumber(
                                 new BigInteger(
                                     SteamWirelessNetworkManager.getUserSteam(uuid)
                                         .toString()))
@@ -144,7 +144,7 @@ public class CommandSteamNetwork extends CommandBase {
                         "Successfully set " + formatted_username
                             + "'s global steam network to "
                             + EnumChatFormatting.RED
-                            + GTUtility.formatNumbers(new BigInteger(Steam_String_0))
+                            + NumberFormatUtil.formatNumber(new BigInteger(Steam_String_0))
                             + EnumChatFormatting.RESET
                             + " Steam."));
 
@@ -235,7 +235,7 @@ public class CommandSteamNetwork extends CommandBase {
                         "User " + formatted_username
                             + " has "
                             + EnumChatFormatting.RED
-                            + GTUtility.formatNumbers(SteamWirelessNetworkManager.getUserSteam(userUUID))
+                            + NumberFormatUtil.formatNumber(SteamWirelessNetworkManager.getUserSteam(userUUID))
                             + EnumChatFormatting.RESET
                             + "Steam in their network."));
                 if (!userUUID.equals(teamUUID)) sender.addChatMessage(

@@ -7,44 +7,54 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
 import appeng.me.helpers.AENetworkProxy;
+import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
 
 public interface IOutputME {
 
-    default IItemList<IAEItemStack> getItemCache() {
+    default List<IAEItemStack> getItemCache() {
+        return List.of();
+    }
+
+    default List<IAEFluidStack> getFluidCache() {
+        return List.of();
+    }
+
+    default long getLastOutputTick() {
+        return 0;
+    }
+
+    default void setLastOutputTick(long value) {}
+
+    default long getLastInputTick() {
+        return 0;
+    }
+
+    default void setLastInputTick(long value) {}
+
+    default long getTickCounter() {
+        return 0;
+    }
+
+    default void setTickCounter(long value) {}
+
+    default boolean isAdditionalConnection() {
+        return false;
+    }
+
+    default void setAdditionalConnection(boolean value) {}
+
+    default EntityPlayer getLastClickedPlayer() {
         return null;
     }
 
-    default IItemList<IAEFluidStack> getFluidCache() {
-        return null;
-    }
-
-    long getLastOutputTick();
-
-    void setLastOutputTick(long value);
-
-    long getLastInputTick();
-
-    void setLastInputTick(long value);
-
-    long getTickCounter();
-
-    void setTickCounter(long value);
-
-    boolean isAdditionalConnection();
-
-    void setAdditionalConnection(boolean value);
-
-    EntityPlayer getLastClickedPlayer();
-
-    void setLastClickedPlayer(EntityPlayer player);
+    default void setLastClickedPlayer(EntityPlayer player) {}
 
     default List<ItemStack> getLockedItems() {
         return null;
     }
 
-    default void setLockedItems(List<ItemStack> items) {};
+    default void setLockedItems(List<ItemStack> items) {}
 
     default List<String> getLockedFluids() {
         return null;
@@ -63,4 +73,8 @@ public interface IOutputME {
     default void gtnl$checkFluidLock() {}
 
     default void gtnl$flushCachedStack() {}
+
+    default MTEHatchOutputMEBase<?, ?, ?> getOutputProvider() {
+        return null;
+    }
 }

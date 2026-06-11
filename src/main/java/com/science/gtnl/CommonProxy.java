@@ -140,6 +140,8 @@ public class CommonProxy implements IGuiHandler {
         Upgrades.CAPACITY.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 5);
         Upgrades.FUZZY.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
         Upgrades.INVERTER.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
+
+        MaterialLoader.loadPostInit();
     }
 
     public void completeInit(FMLLoadCompleteEvent event) {

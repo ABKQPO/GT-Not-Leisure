@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -50,6 +51,7 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.science.gtnl.common.gui.modularui.GrandAssemblyLineGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -75,6 +77,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeBuilder;
@@ -83,6 +86,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
@@ -484,7 +488,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 return CheckRecipeResultRegistry.insufficientPower(totalEU_BI.longValue());
             }
 
-            costingEUText = GTUtility.formatNumbers(totalEU_BI);
+            costingEUText = NumberFormatUtil.formatNumber(totalEU_BI);
 
             this.lEUt = 0;
             this.mMaxProgresstime = Math.max(1, finalDuration);
@@ -831,7 +835,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .addElement(
                 'B',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(HatchElement.InputBus)
                     .buildAndChain(
                         StructureUtility
@@ -840,7 +844,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .addElement(
                 'D',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(HatchElement.OutputBus)
                     .buildAndChain(
                         StructureUtility
@@ -848,7 +852,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .addElement(
                 'E',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.InputHatch,
                         HatchElement.InputBus,
@@ -864,7 +868,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .addElement(
                 'F',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.InputHatch,
                         HatchElement.InputBus,
@@ -881,10 +885,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
-            || !checkHatch()) return false;
-        return mCountCasing >= 590;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            checkStructureCondition(errors, false);
+        checkStructureCondition(errors, mCountCasing >= 590);
     }
 
     @Override
@@ -953,8 +957,23 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return (1 / 1.67 - (Math.max(0, mParallelTier - 1) / 50.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1);
     }
 
+    public int getMinRecipeTimeForGui() {
+        return minRecipeTime;
+    }
+
+    public void setMinRecipeTimeFromGui(int minRecipeTime) {
+        this.minRecipeTime = Math.max(1, minRecipeTime);
+    }
+
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GrandAssemblyLineGui(this);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after GrandAssemblyLine mui2 parity is verified.
         buildContext.addSyncedWindow(PARALLEL_WINDOW_ID, this::createParallelWindow);
         builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
             if (!widget.isClient()) {
@@ -976,7 +995,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         super.addUIWidgets(builder, buildContext);
     }
 
+    @Deprecated
     public ModularWindow createParallelWindow(final EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after GrandAssemblyLine mui2 parity is verified.
         final int WIDTH = 158;
         final int HEIGHT = 52;
         final int PARENT_WIDTH = getGUIWidth();

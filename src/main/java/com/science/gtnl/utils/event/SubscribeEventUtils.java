@@ -27,7 +27,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -50,7 +49,6 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.packet.DraconicArmorProjectionHitEffectPacket;
 import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
-import com.science.gtnl.common.packet.SyncRecipePacket;
 import com.science.gtnl.common.packet.TitlePacket;
 import com.science.gtnl.common.render.PlayerDollRenderManager;
 import com.science.gtnl.config.MainConfig;
@@ -61,7 +59,6 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
-import bartworks.API.SideReference;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -197,12 +194,6 @@ public class SubscribeEventUtils {
         SchematicRegistry.addUnlockedPage(
             player,
             SchematicRegistry.getMatchingRecipeForID(MainConfig.item.steam_rocket.idSchematicRocketSteam));
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void EntityJoinWorldEvent(EntityJoinWorldEvent event) {
-        if (event == null || !(event.entity instanceof EntityPlayerMP player) || !SideReference.Side.Server) return;
-        ScienceNotLeisure.network.sendTo(new SyncRecipePacket(), player);
     }
 
     @SubscribeEvent

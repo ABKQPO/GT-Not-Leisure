@@ -5,6 +5,7 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import net.minecraft.item.ItemStack;
@@ -16,11 +17,14 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -41,15 +45,18 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.casing.TTCasingsContainer;
 
@@ -64,6 +71,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     private static final int HORIZONTAL_OFF_SET = 14;
     private static final int VERTICAL_OFF_SET = 27;
     private static final int DEPTH_OFF_SET = 0;
+    private static final int MACHINE_MODE_ICON_COUNT = 37;
 
     static {
         for (int id = 0; id < 108; id++) {
@@ -144,7 +152,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 'E',
                 GTStructureUtility.buildHatchAdder(NineIndustrialMultiMachine.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.InputHatch,
                         HatchElement.OutputHatch,
@@ -191,12 +199,11 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return this.mCountCasing > 256;
+        checkStructureCondition(errors, this.mCountCasing > 256);
     }
 
     @Override
@@ -343,7 +350,20 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(createDefaultMachineModeIcons());
+    }
+
+    private static UITexture[] createDefaultMachineModeIcons() {
+        UITexture[] icons = new UITexture[MACHINE_MODE_ICON_COUNT];
+        Arrays.fill(icons, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
+        return icons;
+    }
+
+    @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
         machineModeIcons.clear();
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
         for (int i = 0; i <= 35; i++) {
@@ -372,7 +392,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
         updateSlots();
         if (!succeeded) return finalResult;
-        costingEUText = GTUtility.formatNumbers(costingEU);
+        costingEUText = NumberFormatUtil.formatNumber(costingEU);
 
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;

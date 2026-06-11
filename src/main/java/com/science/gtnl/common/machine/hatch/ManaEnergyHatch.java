@@ -12,6 +12,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.interfaces.ITexture;
@@ -19,7 +20,6 @@ import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
-import gregtech.api.util.GTUtility;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.common.block.tile.mana.TilePool;
@@ -180,11 +180,11 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
                 EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
                     + EnumChatFormatting.RESET
                     + EnumChatFormatting.GREEN
-                    + GTUtility.formatNumbers(currentMana)
+                    + NumberFormatUtil.formatNumber(currentMana)
                     + EnumChatFormatting.RESET
                     + " / "
                     + EnumChatFormatting.YELLOW
-                    + GTUtility.formatNumbers(capacity));
+                    + NumberFormatUtil.formatNumber(capacity));
         }
     }
 
@@ -198,11 +198,11 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
             + EnumChatFormatting.RESET
             + EnumChatFormatting.GREEN
-            + GTUtility.formatNumbers(currentMana)
+            + NumberFormatUtil.formatNumber(currentMana)
             + EnumChatFormatting.RESET
             + " / "
             + EnumChatFormatting.YELLOW
-            + GTUtility.formatNumbers(capacity) };
+            + NumberFormatUtil.formatNumber(capacity) };
     }
 
     @Override

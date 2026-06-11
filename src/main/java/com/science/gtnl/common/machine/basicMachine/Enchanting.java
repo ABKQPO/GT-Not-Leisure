@@ -3,8 +3,13 @@ package com.science.gtnl.common.machine.basicMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -88,11 +93,23 @@ public class Enchanting extends MTEBasicMachine {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after Enchanting mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
                 .setPos(151, 62));
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
     }
 
     @Override

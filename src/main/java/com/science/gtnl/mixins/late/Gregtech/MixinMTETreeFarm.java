@@ -14,7 +14,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.TierEU;
-import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.MTETreeFarm;
+import gregtech.common.tileentities.machines.multi.MTETreeFarm;
 
 @Mixin(value = MTETreeFarm.class, remap = false)
 public class MixinMTETreeFarm {

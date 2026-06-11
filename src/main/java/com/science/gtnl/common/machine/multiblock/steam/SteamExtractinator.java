@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,6 +31,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -105,7 +108,7 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                     GTStructureUtility.buildHatchAdder(SteamExtractinator.class)
                         .atLeast(HatchElement.Maintenance, SteamHatchElement.OutputBus_Steam, HatchElement.OutputBus)
                         .casingIndex(10)
-                        .dot(2)
+                        .hint(2)
                         .buildAndChain(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .addElement(
@@ -114,20 +117,20 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
                     GTStructureUtility.buildHatchAdder(SteamExtractinator.class)
                         .atLeast(HatchElement.InputHatch)
                         .casingIndex(10)
-                        .dot(1)
+                        .hint(3)
                         .buildAndChain(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .addElement(
                 'L',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamExtractinator.class).casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamExtractinator.class).casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamExtractinator.class).casingIndex(10)
-                        .dot(3)
+                        .hint(1)
                         .build(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .build();
@@ -153,8 +156,8 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

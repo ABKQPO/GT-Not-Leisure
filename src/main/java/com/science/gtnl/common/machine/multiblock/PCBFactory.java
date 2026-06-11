@@ -37,6 +37,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IControllerUpgrade;
+import com.science.gtnl.common.gui.modularui.PCBFactoryGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -64,6 +65,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.recipe.metadata.PCBFactoryTierKey;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -73,6 +75,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gtPlusPlus.core.material.MaterialsAlloy;
@@ -148,6 +151,19 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     public PCBFactory(String aName) {
         super(aName);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new PCBFactoryGui(this);
+    }
+
+    public int getMachineTierForGui() {
+        return machineTier;
+    }
+
+    public void setMachineTierFromGui(int machineTier) {
+        this.machineTier = machineTier;
     }
 
     @Override
@@ -369,7 +385,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
                 'B',
                 GTStructureUtility.buildHatchAdder(PCBFactory.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.InputHatch,
                         HatchElement.OutputHatch,
@@ -394,7 +410,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
                 'I',
                 GTStructureUtility.buildHatchAdder(PCBFactory.class)
                     .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3))
-                    .dot(1)
+                    .hint(1)
                     .atLeast(CustomHatchElement.WaterInputHatch)
                     .buildAndChain(GregTechAPI.sBlockCasings10, 3))
             .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 8))
@@ -413,12 +429,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         machineTier = getMachineTier();
-        if (machineTier == 0) return false;
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) {
-            return false;
-        }
+        if (machineTier == 0) checkStructureCondition(errors, false);
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         if (machineTier >= 2
             && !checkPiece(STRUCTURE_PIECE_MAIN_T2, HORIZONTAL_OFF_SET_T2, VERTICAL_OFF_SET_T2, DEPTH_OFF_SET_T2)) {
             machineTier = 1;
@@ -428,10 +443,10 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             machineTier = 2;
         }
         if (!checkHatch()) {
-            return false;
+            checkStructureCondition(errors, false);
         }
         setupParameters();
-        return true;
+        return;
     }
 
     @Override
@@ -586,7 +601,9 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the PCB Factory terminal text is fully ported to mui2.
         super.drawTexts(screenElements, inventorySlot);
         screenElements.widget(
             TextWidget.dynamicText(() -> new Text(StatCollector.translateToLocal("Info_PCBFactory_00") + machineTier))
@@ -596,13 +613,22 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
+    public boolean isUpgradeButtonEnabled() {
+        return machineTier >= 3;
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the PCB Factory upgrade GUI is fully ported to mui2.
         super.addUIWidgets(builder, buildContext);
         createUpgradeButton(builder, buildContext);
     }
 
     @Override
+    @Deprecated
     public void createUpgradeButton(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the PCB Factory upgrade button is fully ported to mui2.
         buildContext.addSyncedWindow(getUpgradeWindowId(), this::createConsumeWindow);
         builder.widget(new FakeSyncWidget.BooleanSyncer(this::isUpgradeConsumed, this::setUpgradeConsumed));
 

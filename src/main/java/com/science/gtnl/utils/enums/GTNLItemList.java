@@ -215,20 +215,7 @@ public enum GTNLItemList implements IItemContainer {
     CosmicSMDInductor,
     CosmicSMDResistor,
     CosmicSMDTransistor,
-    LVParallelControllerCore,
-    MVParallelControllerCore,
-    HVParallelControllerCore,
-    EVParallelControllerCore,
-    IVParallelControllerCore,
-    LuVParallelControllerCore,
-    ZPMParallelControllerCore,
-    UVParallelControllerCore,
-    UHVParallelControllerCore,
-    UEVParallelControllerCore,
-    UIVParallelControllerCore,
-    UMVParallelControllerCore,
-    UXVParallelControllerCore,
-    MAXParallelControllerCore,
+
     NagaBook,
     TwilightForestBook,
     LichBook,
@@ -1170,20 +1157,6 @@ public enum GTNLItemList implements IItemContainer {
     OutputBusMEProxy,
     AdvancedSuperDualInputHatchME,
     SuperDualInputHatchME,
-    HumongousOutputBusLV,
-    HumongousOutputBusMV,
-    HumongousOutputBusHV,
-    HumongousOutputBusEV,
-    HumongousOutputBusIV,
-    HumongousOutputBusLuV,
-    HumongousOutputBusZPM,
-    HumongousOutputBusUV,
-    HumongousOutputBusUHV,
-    HumongousOutputBusUEV,
-    HumongousOutputBusUIV,
-    HumongousOutputBusUMV,
-    HumongousOutputBusUXV,
-    HumongousOutputBusMAX,
     TypeFilteredInputBusME,
     SuperTypeFilteredInputBusME,
     LootBagRedemption,
@@ -1310,11 +1283,6 @@ public enum GTNLItemList implements IItemContainer {
     GasCollectorUIV,
     GasCollectorUMV,
     GasCollectorUXV;
-
-    public static final GTNLItemList[] HUMONGOUS_OUTPUT_BUS = { HumongousOutputBusLV, HumongousOutputBusMV,
-        HumongousOutputBusHV, HumongousOutputBusEV, HumongousOutputBusIV, HumongousOutputBusLuV, HumongousOutputBusZPM,
-        HumongousOutputBusUV, HumongousOutputBusUHV, HumongousOutputBusUEV, HumongousOutputBusUIV,
-        HumongousOutputBusUMV, HumongousOutputBusUXV, HumongousOutputBusMAX };
 
     public static final GTNLItemList[] ENERGY_HATCH_LV = { EnergyHatchLV, EnergyHatchLV4A, EnergyHatchLV16A,
         EnergyHatchLV64A };
@@ -1726,7 +1694,8 @@ public enum GTNLItemList implements IItemContainer {
         // Construct a translation key from UnlocalizedName and CamelCased DisplayName
         final String tKey = rStack.getUnlocalizedName() + ".with." + tCamelCasedDisplayNameBuilder + ".name";
 
-        rStack.setStackDisplayName(GTLanguageManager.addStringLocalization(tKey, aDisplayName));
+        GTLanguageManager.addStringLocalization(tKey, aDisplayName);
+        rStack.setStackDisplayName(aDisplayName);
         return GTUtility.copyAmount(aAmount, rStack);
     }
 

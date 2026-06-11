@@ -59,6 +59,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.OutputBusType;
+import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
@@ -110,6 +112,13 @@ public class Utils {
         return FMLCommonHandler.instance()
             .getEffectiveSide()
             .isClient();
+    }
+
+    public static boolean isMEOutputBus(IOutputBus outputBus) {
+        OutputBusType type = outputBus.getBusType();
+        return type == OutputBusType.MECacheFiltered || type == OutputBusType.MEFiltered
+            || type == OutputBusType.MECacheUnfiltered
+            || type == OutputBusType.MEUnfiltered;
     }
 
     public static <C extends Collection<E>, E extends MetaTileEntity, T extends E> List<T> filterValidMTEs(

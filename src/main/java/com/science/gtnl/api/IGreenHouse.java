@@ -1,16 +1,38 @@
 package com.science.gtnl.api;
 
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
+
+import com.gtnewhorizon.cropsnh.api.IGrowthRequirement;
+import com.gtnewhorizon.cropsnh.api.IMachineGrowthRequirement;
+import com.gtnewhorizon.cropsnh.api.ISeedData;
+import com.gtnewhorizon.cropsnh.blocks.BlockAdvancedHarvestingUnit;
+import com.gtnewhorizon.cropsnh.blocks.BlockFertilizerUnit;
+import com.gtnewhorizon.cropsnh.blocks.BlockGrowthAccelerationUnit;
+import com.gtnewhorizon.cropsnh.blocks.BlockSeedBed;
+import com.gtnewhorizon.cropsnh.farming.registries.HydrationRegistry;
+import com.gtnewhorizon.cropsnh.farming.requirements.BlockUnderRequirement;
+import com.gtnewhorizon.cropsnh.tileentity.TileEntityCropSticks;
+import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
+import com.gtnewhorizon.cropsnh.utility.IFDropTable;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -20,30 +42,49 @@ import com.gtnewhorizons.modularui.common.widget.Column;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDynamicInventory;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.interfaces.tileentity.IVoidable;
-import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
-import gregtech.api.util.VoidProtectionHelper;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
+import gregtech.api.util.ItemEjectionHelper;
 
 public interface IGreenHouse extends IVoidable {
+
+    int CYCLE_DURATION = 5 * SECONDS;
+    int SIMULATED_WATER_STORAGE = 200;
+    int SIMULATED_FERTILIZER_STORAGE_WHEN_FERTILIZER_NOT_PROVIDED = 0;
+    int SIMULATED_FERTILIZER_STORAGE_WHEN_FERTILIZER_PROVIDED = 200;
+    boolean SIMULATED_CAN_SEE_SKY = true;
+
+    int MODE_INPUT = 0;
+    int MODE_FARM = 1;
+    int MODE_OUTPUT = 2;
+
+    CheckRecipeResult BLOCK_UNDER_MISMATCH_INPUT = SimpleCheckRecipeResult
+        .ofFailure("GTNL.greenhouse.blockUnderMismatch.input");
+    CheckRecipeResult BLOCK_UNDER_MISMATCH_FARM = SimpleCheckRecipeResult
+        .ofFailure("GTNL.greenhouse.blockUnderMismatch.farm");
+    CheckRecipeResult BLOCK_UNDER_NOT_FOUND = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.blockUnderNotFound");
+    CheckRecipeResult SEED_BED_TIER_TOO_LOW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedBedTierTooLow");
+    CheckRecipeResult SEEDS_FULL = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedsFull");
+    CheckRecipeResult SEED_TYPES_FULL = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedTypesFull");
+    CheckRecipeResult SEED_OVERFLOW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedOverflow");
+    CheckRecipeResult CANNOT_GROW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.cannotGrow");
+    CheckRecipeResult NOT_ENOUGH_WATER = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.notEnoughWater");
+    CheckRecipeResult NOT_ENOUGH_FERTILIZER = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.notEnoughFertilizer");
 
     IGregTechTileEntity getBaseMetaTileEntity();
 
     ArrayList<ItemStack> getStoredInputs();
-
-    List<GreenHouseBucket> getBuckets();
 
     int getMaxProgressTime();
 
@@ -51,23 +92,29 @@ public interface IGreenHouse extends IVoidable {
 
     void setLEUt(long lEUt);
 
+    @Deprecated
     boolean isUseNoHumidity();
 
+    @Deprecated
     void setUseNoHumidity(boolean useNoHumidity);
 
+    @Deprecated
     int getSetupPhase();
 
     int getMaxSeedTypes();
 
     int getMaxSeedCount();
 
+    @Deprecated
     void setSetupPhase(int setupPhase);
 
+    @Deprecated
     GreenHouseMode getMode();
 
+    @Deprecated
     void setMode(GreenHouseMode mode);
 
-    ArrayList<MTEHatchOutputBus> getOutputBus();
+    ArrayList<? extends IOutputBus> getOutputBus();
 
     ArrayList<FluidStack> getStoredFluids();
 
@@ -75,7 +122,403 @@ public interface IGreenHouse extends IVoidable {
 
     int getWaterUsage();
 
+    List<GreenHouseStoredCrop> getStoredCrops();
+
+    IFDropTable getIndustrialFarmDropTracker();
+
+    void setIndustrialFarmDropTracker(IFDropTable dropTracker);
+
+    IFDropTable getIndustrialFarmGuiDropTracker();
+
+    void setIndustrialFarmGuiDropTracker(IFDropTable dropTracker);
+
+    int getMachineMode();
+
+    void setMachineMode(int machineMode);
+
+    int getIndustrialFarmTier();
+
+    long getIndustrialFarmEUt();
+
+    boolean shouldUseCurrentBiome();
+
+    boolean forcesBestSeedStats();
+
+    double getGreenHouseOutputMultiplier();
+
+    default boolean supportsGreenHouseConfigurationPanel() {
+        return false;
+    }
+
+    GreenHouseViewMode getGreenHouseViewMode();
+
+    void setGreenHouseViewMode(GreenHouseViewMode mode);
+
+    default boolean supportsBlockUnderView() {
+        return true;
+    }
+
+    default boolean isGreenHouseStorageEditable() {
+        return getMaxProgressTime() == 0 && !getBaseMetaTileEntity().isAllowedToWork();
+    }
+
+    default int getTotalStoredCropCount() {
+        return getStoredCrops().stream()
+            .mapToInt(GreenHouseStoredCrop::getSeedCount)
+            .sum();
+    }
+
+    default int getUsedBlockUnderCount() {
+        return getStoredCrops().stream()
+            .mapToInt(crop -> crop.hasBlockUnder() ? crop.getSeedCount() : 0)
+            .sum();
+    }
+
+    default CheckRecipeResult processIndustrialFarmMode() {
+        return switch (getMachineMode()) {
+            case MODE_INPUT -> {
+                getIndustrialFarmDropTracker().clear();
+                yield checkProcessingInputMode();
+            }
+            case MODE_FARM -> {
+                CheckRecipeResult result = checkProcessingFarmMode();
+                if (!result.wasSuccessful()) {
+                    getIndustrialFarmDropTracker().clear();
+                }
+                yield result;
+            }
+            case MODE_OUTPUT -> {
+                getIndustrialFarmDropTracker().clear();
+                yield checkProcessingOutputMode();
+            }
+            default -> CheckRecipeResultRegistry.NO_RECIPE;
+        };
+    }
+
+    default CheckRecipeResult checkProcessingInputMode() {
+        if (getMaxSeedCount() <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
+        for (ItemStack input : getStoredInputs()) {
+            if (CropsNHUtils.isStackInvalid(input)) continue;
+            CheckRecipeResult result = tryAddCropStack(input, false);
+            if (result.wasSuccessful()) {
+                setMaxProgressTime(5);
+                setLEUt(0);
+                updateSlots();
+                return result;
+            }
+            if (result != CheckRecipeResultRegistry.NO_RECIPE) return result;
+        }
+        return CheckRecipeResultRegistry.NO_RECIPE;
+    }
+
+    default CheckRecipeResult tryAddCropStack(ItemStack input, boolean simulate) {
+        ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(input);
+        if (seedData == null) return CheckRecipeResultRegistry.NO_RECIPE;
+        if (seedData.getCrop()
+            .getMinSeedBedTier() > getIndustrialFarmTier()) return SEED_BED_TIER_TOO_LOW;
+        if (getTotalStoredCropCount() >= getMaxSeedCount()) return SEEDS_FULL;
+
+        GreenHouseStoredCrop existing = findStoredCrop(input);
+        if (existing != null) {
+            int consume = Math.min(input.stackSize, getMaxSeedCount() - getTotalStoredCropCount());
+            if (consume <= 0) return SEEDS_FULL;
+            ItemStack blockUnder = existing.getBlockUnderStack();
+            if (CropsNHUtils.isStackValid(blockUnder)) {
+                int availableBlockUnders = blockUnder.stackSize + countMatchingStacks(blockUnder, getStoredInputs());
+                consume = Math.min(consume, availableBlockUnders - existing.getSeedCount());
+                if (consume <= 0) return BLOCK_UNDER_NOT_FOUND;
+                consumeMatchingStacks(blockUnder, getStoredInputs(), consume, simulate);
+                if (!simulate) blockUnder.stackSize += consume;
+            }
+            if (!simulate) {
+                input.stackSize -= consume;
+                existing.getSeedStack().stackSize += consume;
+            }
+            return CheckRecipeResultRegistry.SUCCESSFUL;
+        }
+
+        if (getStoredCrops().size() >= getMaxSeedTypes()) return SEED_TYPES_FULL;
+
+        ItemStack blockUnder = findRequiredBlockUnder(seedData);
+        if (blockUnder == null && needsBlockUnder(seedData)) return BLOCK_UNDER_NOT_FOUND;
+        int consume = Math.min(input.stackSize, getMaxSeedCount() - getTotalStoredCropCount());
+        if (blockUnder != null) {
+            int availableBlockUnders = countMatchingStacks(blockUnder, getStoredInputs());
+            consume = Math.min(consume, availableBlockUnders);
+            if (consume <= 0) return BLOCK_UNDER_NOT_FOUND;
+        }
+        if (consume <= 0) return SEEDS_FULL;
+
+        if (!simulate) {
+            ItemStack storedSeed = CropsNHUtils.copyStackWithSize(input, consume);
+            input.stackSize -= consume;
+            ItemStack storedBlock = null;
+            if (blockUnder != null) {
+                storedBlock = CropsNHUtils.copyStackWithSize(blockUnder, 0);
+                consumeMatchingStacks(storedBlock, getStoredInputs(), consume, false);
+            }
+            getStoredCrops().add(new GreenHouseStoredCrop(storedSeed, storedBlock));
+        }
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    default GreenHouseStoredCrop findStoredCrop(ItemStack input) {
+        for (GreenHouseStoredCrop crop : getStoredCrops()) {
+            if (crop.canStackSeeds(input)) return crop;
+        }
+        return null;
+    }
+
+    default boolean needsBlockUnder(ISeedData seedData) {
+        return seedData.getCrop()
+            .getGrowthRequirements()
+            .stream()
+            .anyMatch(BlockUnderRequirement.class::isInstance);
+    }
+
+    default ItemStack findRequiredBlockUnder(ISeedData seedData) {
+        for (IGrowthRequirement requirement : seedData.getCrop()
+            .getGrowthRequirements()) {
+            if (!(requirement instanceof BlockUnderRequirement blockUnderRequirement)) continue;
+            for (ItemStack input : getStoredInputs()) {
+                if (blockUnderRequirement.isValidBlockUnder(input)) {
+                    ItemStack result = input.copy();
+                    result.stackSize = 0;
+                    return result;
+                }
+            }
+            return null;
+        }
+        return null;
+    }
+
+    default int countMatchingStacks(ItemStack target, List<ItemStack> provider) {
+        int count = 0;
+        for (ItemStack stack : provider) {
+            if (CropsNHUtils.isStackValid(stack) && GTUtility.areStacksEqual(stack, target, false)) {
+                count += stack.stackSize;
+            }
+        }
+        return count;
+    }
+
+    default int consumeMatchingStacks(ItemStack target, List<ItemStack> provider, int amount, boolean simulate) {
+        if (CropsNHUtils.isStackInvalid(target) || amount <= 0) return 0;
+        int consumed = 0;
+        for (ItemStack stack : provider) {
+            if (consumed >= amount) break;
+            if (CropsNHUtils.isStackInvalid(stack) || !GTUtility.areStacksEqual(stack, target, false)) continue;
+            int toConsume = Math.min(amount - consumed, stack.stackSize);
+            consumed += toConsume;
+            if (!simulate) {
+                stack.stackSize -= toConsume;
+            }
+        }
+        if (!simulate) {
+            target.stackSize += consumed;
+        }
+        return consumed;
+    }
+
+    default CheckRecipeResult checkProcessingOutputMode() {
+        List<ItemStack> simulated = new ArrayList<>();
+        for (GreenHouseStoredCrop crop : getStoredCrops()) {
+            if (CropsNHUtils.isStackValid(crop.getSeedStack())) {
+                simulated.add(CropsNHUtils.copyStackWithSize(crop.getSeedStack(), 1));
+            }
+            if (CropsNHUtils.isStackValid(crop.getBlockUnderStack())) {
+                simulated.add(CropsNHUtils.copyStackWithSize(crop.getBlockUnderStack(), 1));
+            }
+        }
+        if (simulated.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+
+        int maxParallels = getStoredCrops().stream()
+            .mapToInt(GreenHouseStoredCrop::getSeedCount)
+            .sum();
+        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+        maxParallels = ejectionHelper.ejectItems(simulated, maxParallels);
+        if (maxParallels <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+
+        int remaining = maxParallels;
+        for (Iterator<GreenHouseStoredCrop> iterator = getStoredCrops().iterator(); iterator.hasNext()
+            && remaining > 0;) {
+            GreenHouseStoredCrop crop = iterator.next();
+            int removed = Math.min(remaining, crop.getSeedCount());
+            ItemStack seed = crop.removeSeeds(removed);
+            ItemStack block = crop.removeBlockUnders(removed);
+            if (seed != null) addItemOutputsToGreenHouse(new ItemStack[] { seed });
+            if (block != null) addItemOutputsToGreenHouse(new ItemStack[] { block });
+            remaining -= removed;
+            crop.clearIfEmpty();
+            if (crop.getSeedCount() <= 0) {
+                iterator.remove();
+            }
+        }
+        setMaxProgressTime(5);
+        setLEUt(0);
+        updateSlots();
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    default CheckRecipeResult checkProcessingFarmMode() {
+        if (getStoredCrops().isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+        if (getTotalStoredCropCount() > getMaxSeedCount()) return SEED_OVERFLOW;
+
+        List<Pair<FluidStack, Integer>> waterToConsume = new ArrayList<>();
+        int waterMissing = getWaterUsage();
+        for (FluidStack fluidStack : getStoredFluids()) {
+            if (CropsNHUtils.isStackInvalid(fluidStack)) continue;
+            int potency = HydrationRegistry.instance.getPotency(fluidStack.getFluid());
+            int amount = getAmountToConsumeBasedOnPotency(waterMissing, potency, fluidStack.amount);
+            if (amount > 0) {
+                waterMissing -= amount * potency;
+                waterToConsume.add(Pair.of(fluidStack, amount));
+            }
+            if (waterMissing <= 0) break;
+        }
+        if (waterMissing > 0) return NOT_ENOUGH_WATER;
+
+        IFDropTable cycleDrops = new IFDropTable();
+        for (GreenHouseStoredCrop storedCrop : getStoredCrops()) {
+            ISeedData seedData = createRuntimeSeedData(storedCrop.getSeedStack());
+            if (seedData == null) return CheckRecipeResultRegistry.NO_RECIPE;
+            CheckRecipeResult canGrow = validateCanGrow(seedData, storedCrop);
+            if (!canGrow.wasSuccessful()) return canGrow;
+            IFDropTable drops = getDropsPerCycle(seedData);
+            if (drops == null) return CANNOT_GROW;
+            drops.addTo(cycleDrops, storedCrop.getSeedCount() * getGreenHouseOutputMultiplier());
+        }
+
+        cycleDrops.addTo(getIndustrialFarmDropTracker());
+        if (getVoidingMode().protectItem) {
+            ItemEjectionHelper helper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+            ItemStack[] drops = getIndustrialFarmDropTracker().getDrops(true);
+            if (drops.length != 0 && helper.ejectItems(Arrays.asList(drops), 1) <= 0) {
+                cycleDrops.addTo(getIndustrialFarmDropTracker(), -1.0d);
+                return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+            }
+        }
+        waterToConsume.forEach(pair -> pair.getLeft().amount -= pair.getRight());
+        setIndustrialFarmGuiDropTracker(cycleDrops);
+        setGreenHouseOutputItems(getIndustrialFarmDropTracker().getDrops(false));
+        setLEUt(-getIndustrialFarmEUt());
+        setMaxProgressTime(CYCLE_DURATION);
+        updateSlots();
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    boolean addItemOutputsToGreenHouse(ItemStack[] outputs);
+
+    void setGreenHouseOutputItems(ItemStack[] outputs);
+
+    default ISeedData createRuntimeSeedData(ItemStack seedStack) {
+        return CropsNHUtils.getAnalyzedSeedData(seedStack);
+    }
+
+    default CheckRecipeResult validateCanGrow(ISeedData seedData, GreenHouseStoredCrop crop) {
+        if (seedData.getStack().stackSize > getMaxSeedCount()) return SEED_OVERFLOW;
+        if (seedData.getCrop()
+            .getMinSeedBedTier() > getIndustrialFarmTier()) return SEED_BED_TIER_TOO_LOW;
+
+        ItemStack[] catalysts = CropsNHUtils.isStackValid(crop.getBlockUnderStack())
+            ? new ItemStack[] { crop.getBlockUnderStack() }
+            : new ItemStack[0];
+        for (IGrowthRequirement requirement : seedData.getCrop()
+            .getGrowthRequirements()) {
+            if (requirement instanceof IMachineGrowthRequirement machineGrowthRequirement
+                && !machineGrowthRequirement.canGrow(seedData, getBaseMetaTileEntity(), catalysts)) {
+                if (requirement instanceof BlockUnderRequirement) return BLOCK_UNDER_MISMATCH_FARM;
+                return CANNOT_GROW;
+            }
+        }
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    default int getAmountToConsumeBasedOnPotency(int missingPotency, int inputPotency, int inputAmount) {
+        if (missingPotency <= 0 || inputPotency <= 0 || inputAmount <= 0) return 0;
+        int maxConsume = missingPotency / inputPotency + (missingPotency % inputPotency > 0 ? 1 : 0);
+        return Math.min(maxConsume, inputAmount);
+    }
+
+    default int getNutrientScore(ISeedData seedData) {
+        if (seedData == null) return 0;
+        if (!shouldUseCurrentBiome()) return TileEntityCropSticks.MAX_NUTRIENT_SCORE;
+        IGregTechTileEntity base = getBaseMetaTileEntity();
+        if (base == null) return 0;
+        BiomeGenBase biome = base.getBiome();
+        Set<BiomeDictionary.Type> biomeTags = new HashSet<>(Arrays.asList(BiomeDictionary.getTypesForBiome(biome)));
+        int likedBiomes = (int) seedData.getCrop()
+            .getLikedBiomeTags()
+            .stream()
+            .filter(biomeTags::contains)
+            .count();
+        return TileEntityCropSticks.getNutrientsPerCycle(
+            likedBiomes,
+            biome.rainfall,
+            SIMULATED_CAN_SEE_SKY,
+            SIMULATED_WATER_STORAGE,
+            SIMULATED_FERTILIZER_STORAGE_WHEN_FERTILIZER_PROVIDED);
+    }
+
+    default int getGrowthSpeedUnscaled(ISeedData seedData) {
+        return TileEntityCropSticks.getGrowthRate(
+            getNutrientScore(seedData),
+            seedData.getCrop()
+                .getTier(),
+            seedData.getStats()
+                .getGrowth());
+    }
+
+    default double getGrowthSpeedMultiplier() {
+        return 1.0d + BlockGrowthAccelerationUnit.GROWTH_SPEED_BONUS;
+    }
+
+    default double getGrowthProgressPerCycle(ISeedData seedData) {
+        int growthSpeed = getGrowthSpeedUnscaled(seedData);
+        if (growthSpeed <= 0) return -1;
+        int duration = seedData.getCrop()
+            .getGrowthDuration();
+        int growthTicksPerHarvest = duration / growthSpeed + (duration % growthSpeed == 0 ? 0 : 1);
+        double growthPercentPerGrowthTick = 1.0d / growthTicksPerHarvest;
+        return growthPercentPerGrowthTick * ((double) CYCLE_DURATION / TileEntityCropSticks.TICK_RATE)
+            * getGrowthSpeedMultiplier();
+    }
+
+    default double getHarvestRoundMultiplier() {
+        double multiplier = 1.0d;
+        multiplier += BlockSeedBed.getHarvestRoundBonus(getIndustrialFarmTier());
+        multiplier += BlockFertilizerUnit.HARVEST_ROUND_BONUS;
+        multiplier *= 1.0d + BlockAdvancedHarvestingUnit.HARVEST_ROUND_MULTIPLIER;
+        return multiplier;
+    }
+
+    default @Nullable IFDropTable getDropsPerCycle(ISeedData seedData) {
+        double progressPerCycle = getGrowthProgressPerCycle(seedData);
+        if (progressPerCycle <= 0) return null;
+        double avgDropIncrease = TileEntityCropSticks.getAvgDropCountIncrease(
+            seedData.getStats()
+                .getGain());
+        double avgDropCount = TileEntityCropSticks.getAvgDropRounds(
+            seedData.getCrop(),
+            seedData.getStats()
+                .getGain());
+        avgDropCount *= getHarvestRoundMultiplier();
+
+        IFDropTable drops = new IFDropTable();
+        for (Map.Entry<ItemStack, Integer> entry : seedData.getCrop()
+            .getDropTable()
+            .entrySet()) {
+            ItemStack stack = entry.getKey();
+            double chance = entry.getValue() / 10_000d;
+            double unscaled = (stack.stackSize + avgDropIncrease) * chance * avgDropCount;
+            drops.addDrop(stack, unscaled * progressPerCycle);
+        }
+        return drops;
+    }
+
+    @Deprecated
     default ModularWindow createConfigurationWindow(final EntityPlayer player) {
+        // TODO: Remove this MUI1 configuration window after greenhouse machines use the MUI2 panel.
         ModularWindow.Builder builder = ModularWindow.builder(200, 100);
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
         builder.widget(
@@ -202,12 +645,14 @@ public interface IGreenHouse extends IVoidable {
         return builder.build();
     }
 
+    @Deprecated
     default void tryChangeMode(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy greenhouse mode toggle after the MUI2 machine mode path replaces it.
         if (this.getMaxProgressTime() > 0) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_Working"));
             return;
         }
-        if (!this.getBuckets()
+        if (!this.getStoredCrops()
             .isEmpty()) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_HasSeeds"));
             return;
@@ -221,7 +666,9 @@ public interface IGreenHouse extends IVoidable {
                     .getName()));
     }
 
+    @Deprecated
     default void tryChangeSetupPhase(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy setup phase toggle after greenhouse setup is fully owned by MUI2 machine modes.
         if (this.getMaxProgressTime() > 0) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Working"));
             return;
@@ -241,7 +688,9 @@ public interface IGreenHouse extends IVoidable {
         GTUtility.sendChatToPlayer(aPlayer, phaseChangeMessage);
     }
 
+    @Deprecated
     default void tryChangeHumidityMode(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy humidity toggle after greenhouse biome handling is fully CropsNH based.
         this.setUseNoHumidity(!this.isUseNoHumidity());
         if (this.isUseNoHumidity()) {
             GTUtility
@@ -252,159 +701,4 @@ public interface IGreenHouse extends IVoidable {
         }
     }
 
-    default GreenHouseDynamicInventory<GreenHouseBucket> getDynamicInventory() {
-        return new GreenHouseDynamicInventory<>(
-            128,
-            60,
-            this::getMaxSeedTypes,
-            this::getMaxSeedCount,
-            this.getBuckets()::size,
-            this::getTotalSeedCount,
-            this.getBuckets(),
-            GreenHouseBucket::getSeedStack).allowInventoryInjection(this::addCrop)
-                .allowInventoryExtraction((bucket, player) -> {
-                    if (bucket == null) return null;
-                    int maxRemove = bucket.getSeedStack()
-                        .getMaxStackSize();
-                    ItemStack[] outputs = bucket.tryRemoveSeed(maxRemove, false);
-                    if (outputs == null || outputs.length == 0) return null;
-                    ItemStack ret = outputs[0];
-                    for (int i = 1; i < outputs.length; i++) {
-                        ItemStack suppertItem = outputs[i];
-                        if (!player.inventory.addItemStackToInventory(suppertItem)) {
-                            player.entityDropItem(suppertItem, 0.f);
-                        }
-                    }
-                    if (bucket.getSeedCount() <= 0) this.getBuckets()
-                        .remove(bucket);
-                    return ret;
-                })
-                .setEnabled(() -> this.getMaxProgressTime() == 0);
-    }
-
-    default int getTotalSeedCount() {
-        return getBuckets().stream()
-            .mapToInt(GreenHouseBucket::getSeedCount)
-            .sum();
-    }
-
-    default boolean tryEmptyBucket(GreenHouseBucket bucket) {
-        int totalSeeds = bucket.getSeedCount();
-        if (totalSeeds <= 0) return true;
-
-        for (MTEHatchOutputBus tHatch : GTUtility.validMTEList(getOutputBus())) {
-            if (!(tHatch instanceof MTEHatchOutputBusME)) continue;
-            for (ItemStack stack : bucket.tryRemoveSeed(totalSeeds, false)) {
-                tHatch.storePartial(stack);
-            }
-            return true;
-        }
-
-        ItemStack[] simulated = bucket.tryRemoveSeed(1, true);
-        VoidProtectionHelper helper = new VoidProtectionHelper().setMachine(this, true, false)
-            .setItemOutputs(simulated)
-            .setMaxParallel(totalSeeds)
-            .build();
-
-        if (helper.getMaxParallel() > 0) {
-            for (ItemStack toOutput : bucket.tryRemoveSeed(helper.getMaxParallel(), false)) {
-                for (MTEHatchOutputBus tHatch : GTUtility.validMTEList(getOutputBus())) {
-                    if (tHatch.storePartial(toOutput)) break;
-                }
-            }
-        }
-
-        return bucket.getSeedCount() <= 0;
-    }
-
-    default boolean tryDrain(FluidStack toConsume, boolean drainPartial) {
-        if (toConsume == null || toConsume.amount <= 0) return true;
-
-        List<FluidStack> fluids = getStoredFluids();
-        int remaining = toConsume.amount;
-
-        for (FluidStack fluid : fluids) {
-            if (!fluid.isFluidEqual(toConsume)) continue;
-            int used = Math.min(remaining, fluid.amount);
-            fluid.amount -= used;
-            remaining -= used;
-            if (remaining <= 0) break;
-        }
-
-        if (!drainPartial && remaining > 0 && !MainConfig.debug.enableDebugMode) return false;
-        return remaining <= 0;
-    }
-
-    default CheckRecipeResult processSetupPhase() {
-        if ((getSetupPhase() == 1 && getBuckets().size() >= getMaxSeedTypes())
-            || (getSetupPhase() == 2 && getBuckets().isEmpty())) {
-            return CheckRecipeResultRegistry.NO_RECIPE;
-        }
-
-        if (getSetupPhase() == 1) {
-            for (ItemStack input : getStoredInputs()) {
-                addCrop(input);
-                if (getBuckets().size() >= getMaxSeedTypes()) break;
-            }
-        } else if (getSetupPhase() == 2) {
-            Iterator<GreenHouseBucket> iter = getBuckets().iterator();
-            while (iter.hasNext()) {
-                GreenHouseBucket bucket = iter.next();
-                if (tryEmptyBucket(bucket)) iter.remove();
-                else {
-                    this.setMaxProgressTime(20);
-                    this.setLEUt(0);
-                    return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
-                }
-            }
-        }
-
-        this.updateSlots();
-        this.setMaxProgressTime(10);
-        this.setLEUt(0);
-        return CheckRecipeResultRegistry.SUCCESSFUL;
-    }
-
-    default ItemStack addCrop(ItemStack input) {
-        return addCrop(input, false) ? input : null;
-    }
-
-    default boolean addCrop(ItemStack input, boolean simulate) {
-        if (input == null || input.stackSize <= 0) return true;
-        if (simulate) input = input.copy();
-
-        int addCap = Math.min(input.stackSize, getMaxSeedCount() - getTotalSeedCount());
-        if (addCap <= 0) return false;
-
-        ItemStack finalInput = input;
-        boolean added = getBuckets().stream()
-            .anyMatch(bucket -> bucket.tryAddSeed(this, finalInput, addCap, simulate) > 0);
-        if (added) return input.stackSize <= 0;
-
-        if (getBuckets().size() >= getMaxSeedTypes()) return false;
-        GreenHouseBucket bucket = getMode().tryCreateNewBucket(this, input, addCap, simulate);
-        if (bucket == null) return false;
-
-        getBuckets().add(bucket);
-        return input.stackSize <= 0;
-    }
-
-    default CheckRecipeResult validateBuckets() {
-        if (getBuckets().size() > getMaxSeedTypes()) return SimpleCheckRecipeResult.ofFailure("EIG_slotoverflow");
-        if (getTotalSeedCount() > getMaxSeedCount()) return SimpleCheckRecipeResult.ofFailure("EIG_seedOverflow");
-
-        Iterator<GreenHouseBucket> iter = getBuckets().iterator();
-        while (iter.hasNext()) {
-            GreenHouseBucket bucket = iter.next();
-            if (bucket.isValid() || bucket.revalidate(this)) continue;
-            tryEmptyBucket(bucket);
-            if (bucket.getSeedCount() <= 0) iter.remove();
-        }
-
-        if (getBuckets().isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
-        if (!tryDrain(new FluidStack(FluidRegistry.WATER, getTotalSeedCount() * getWaterUsage()), false))
-            return SimpleCheckRecipeResult.ofFailure("EIG_missingwater");
-
-        return null;
-    }
 }

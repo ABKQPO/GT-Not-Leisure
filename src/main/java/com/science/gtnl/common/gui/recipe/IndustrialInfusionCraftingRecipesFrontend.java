@@ -1,7 +1,6 @@
 package com.science.gtnl.common.gui.recipe;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -15,6 +14,7 @@ import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
+import gregtech.nei.GTNEIDefaultHandler;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -28,13 +28,27 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(uiPropertiesBuilder, neiPropertiesBuilder);
         this.itemRowCount = getItemRowCount();
-        neiProperties.recipeBackgroundSize = new Size(170, 10 + (itemRowCount * 18));
     }
 
     @Override
-    public void addProgressBar(ModularWindow.@NotNull Builder builder, @NotNull Supplier<Float> progressSupplier,
-        @NotNull Pos2d windowOffset) {
-        super.addProgressBar(builder, progressSupplier, new Pos2d(15, 10));
+    protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
+        return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 10 + (getItemRowCount() * 18)));
+    }
+
+    @Override
+    public void addProgressBar(ModularWindow.@NotNull Builder builder,
+        @NotNull GTNEIDefaultHandler.NEITemplateContext ctx) {
+        super.addProgressBar(
+            builder,
+            new GTNEIDefaultHandler.NEITemplateContext(
+                ctx.itemInputsInventory,
+                ctx.itemOutputsInventory,
+                ctx.specialSlotInventory,
+                ctx.fluidInputsInventory,
+                ctx.fluidOutputsInventory,
+                ctx.progressSupplier,
+                ctx.recipeSupplier,
+                new Pos2d(15, 10)));
     }
 
     private int getItemRowCount() {

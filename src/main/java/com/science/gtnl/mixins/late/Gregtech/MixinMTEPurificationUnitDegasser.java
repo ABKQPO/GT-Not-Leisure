@@ -17,7 +17,7 @@ import gregtech.common.tileentities.machines.multi.purification.MTEPurificationU
 public class MixinMTEPurificationUnitDegasser {
 
     @Redirect(
-        method = "lambda$static$1",
+        method = "lambda$static$0",
         at = @At(
             value = "INVOKE",
             target = "Lgregtech/api/util/HatchElementBuilder;atLeastList(Ljava/util/List;)Lgregtech/api/util/HatchElementBuilder;"))

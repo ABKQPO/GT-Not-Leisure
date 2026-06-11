@@ -27,7 +27,12 @@ public class ExtendQFTFrontend extends QuantumForceTransformerFrontend {
     public ExtendQFTFrontend(BasicUIPropertiesBuilder ui, NEIRecipePropertiesBuilder nei) {
         super(ui, nei);
         this.itemRowCount = getItemRowCount();
-        this.neiProperties.recipeBackgroundSize = new Size(170, 10 + (itemRowCount + getFluidRowCount()) * 18);
+    }
+
+    @Override
+    protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
+        int itemRowCount = getItemRowCount();
+        return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 10 + (itemRowCount + getFluidRowCount()) * 18));
     }
 
     @Override

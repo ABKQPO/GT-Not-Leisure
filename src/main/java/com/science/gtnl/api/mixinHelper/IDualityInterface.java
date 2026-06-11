@@ -2,19 +2,16 @@ package com.science.gtnl.api.mixinHelper;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.YesNo;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.UnlockCraftingEvent;
 import appeng.me.helpers.AENetworkProxy;
-import appeng.me.storage.MEMonitorPassThrough;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -84,14 +81,6 @@ public interface IDualityInterface {
 
     void setPatterns(AppEngInternalInventory patterns);
 
-    MEMonitorPassThrough<IAEItemStack> getItems();
-
-    void setItems(MEMonitorPassThrough<IAEItemStack> items);
-
-    MEMonitorPassThrough<IAEFluidStack> getFluids();
-
-    void setFluids(MEMonitorPassThrough<IAEFluidStack> fluids);
-
     UpgradeInventory getUpgrades();
 
     void setUpgrades(UpgradeInventory upgrades);
@@ -103,14 +92,6 @@ public interface IDualityInterface {
     WrapperInvSlot getSlotInv();
 
     void setSlotInv(WrapperInvSlot slotInv);
-
-    ItemStack getStored();
-
-    void setStored(ItemStack stored);
-
-    IAEItemStack getFuzzyItemStack();
-
-    void setFuzzyItemStack(IAEItemStack stack);
 
     boolean isHasConfig();
 
@@ -128,9 +109,9 @@ public interface IDualityInterface {
 
     void setSharedInventory(boolean value);
 
-    List<ItemStack> getWaitingToSend();
+    List<IAEStack<?>> getWaitingToSend();
 
-    void setWaitingToSend(List<ItemStack> list);
+    void setWaitingToSend(List<IAEStack<?>> list);
 
     IMEInventory<IAEItemStack> getDestination();
 
@@ -148,9 +129,9 @@ public interface IDualityInterface {
 
     void setUnlockEvent(UnlockCraftingEvent event);
 
-    List<IAEItemStack> getUnlockStacks();
+    List<IAEStack<?>> getUnlockStacks();
 
-    void setUnlockStacks(List<IAEItemStack> stacks);
+    void setUnlockStacks(List<IAEStack<?>> stacks);
 
     int getLastInputHash();
 

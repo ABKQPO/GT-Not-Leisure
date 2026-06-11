@@ -68,7 +68,7 @@ public abstract class MixinTTMultiblockBase extends MTEExtendedPowerMultiBlockBa
         }
     }
 
-    @Inject(method = "clearHatches_EM", at = @At(value = "HEAD"))
+    @Inject(method = "clearHatches", at = @At(value = "TAIL"))
     public void injectClearHatches(CallbackInfo ci) {
         mParallelControllerHatches.clear();
     }

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import net.minecraft.item.ItemStack;
-
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -22,7 +20,7 @@ import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
 import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBees;
-import gtPlusPlus.core.item.ModItems;
+import gtPlusPlus.core.util.minecraft.ItemUtils;
 
 public class BlastFurnaceRecipes implements IRecipePool {
 
@@ -65,7 +63,7 @@ public class BlastFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumCarbonate, 6))
             .itemOutputs(
                 GTNLMaterials.UraniumSlag.get(OrePrefixes.dust, 12),
-                new ItemStack(ModItems.dustCalciumCarbonate, 1, 5),
+                ItemUtils.getItemStackOfAmountFromOreDict("dustCalciumCarbonate", 1),
                 GTUtility.copyAmountUnsafe(7, WerkstoffLoader.Sodiumsulfate.get(OrePrefixes.dust, 1)))
             .duration(100)
             .eut(TierEU.RECIPE_HV)

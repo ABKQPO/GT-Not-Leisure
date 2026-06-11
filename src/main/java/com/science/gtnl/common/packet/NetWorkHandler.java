@@ -33,7 +33,6 @@ public class NetWorkHandler {
         registerMessage(PortableInfinityChestSyncPacket.class, i++, Side.CLIENT);
         registerMessage(StatusMessage.class, i++, Side.CLIENT);
         registerMessage(SyncCircuitNanitesPacket.class, i++, Side.CLIENT);
-        registerMessage(SyncRecipePacket.class, i++, Side.CLIENT);
         registerMessage(DraconicArmorProjectionSyncPacket.class, i++, Side.CLIENT);
         registerMessage(DraconicArmorProjectionHitEffectPacket.class, i++, Side.CLIENT);
         registerMessage(PlaceItemInHotbarPacket.class, i++, Side.CLIENT);

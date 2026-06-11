@@ -15,16 +15,12 @@ import net.minecraftforge.common.DimensionManager;
 import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-import appeng.api.networking.GridFlags;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.IGridProxyable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
-import gregtech.common.tileentities.machines.MTEHatchOutputME;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -35,6 +31,7 @@ public class OutputHatchMEProxy extends MTEHatchOutputME {
     public MTEHatchOutputME master;
     public int masterX, masterY, masterZ, masterDim;
     public boolean masterSet = false; // indicate if values of masterX, masterY, masterZ are valid
+    private long lastProxyFlushTick;
 
     public OutputHatchMEProxy(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -65,59 +62,35 @@ public class OutputHatchMEProxy extends MTEHatchOutputME {
         if (aTimer % 100 == 0 && masterSet && getMaster() == null) {
             trySetMasterFromCoord(masterX, masterY, masterZ, masterDim);
         }
-        IOutputME outputME = (IOutputME) this;
-        if (getBaseMetaTileEntity().isServerSide()) {
-            outputME.setTickCounter(aTimer);
-            if (outputME.getTickCounter() > (outputME.getLastOutputTick() + 40)) flushCachedStack();
-            if (outputME.getTickCounter() % 20 == 0) getBaseMetaTileEntity().setActive(isActive());
-        }
-
-        outputME.gtnl$checkFluidLock();
-
         super.onPostTick(aBaseMetaTileEntity, aTimer);
+        if (aBaseMetaTileEntity.isServerSide() && aTimer > lastProxyFlushTick + 40) {
+            flushCachedStack();
+            lastProxyFlushTick = aTimer;
+        }
     }
 
     public void flushCachedStack() {
         IOutputME output = (IOutputME) this;
         if (getMaster() == null) {
-            output.gtnl$flushCachedStack();
-        } else if (getMaster().canAcceptFluid()) {
-            IOutputME master = (IOutputME) getMaster();
-            IItemList<IAEFluidStack> masterCache = master.getFluidCache();
-            IItemList<IAEFluidStack> fluidCache = output.getFluidCache();
+            return;
+        }
+        if (getMaster().canAcceptFluid()) {
+            List<IAEFluidStack> fluidCache = output.getFluidCache();
 
             for (IAEFluidStack stack : fluidCache) {
                 if (stack != null && stack.getStackSize() > 0) {
-                    masterCache.addStorage(stack);
+                    getMaster().getProvider()
+                        .storeToCache(stack.copy());
                 }
             }
 
-            fluidCache.resetStatus();
-
-            output.setLastOutputTick(output.getTickCounter());
+            fluidCache.forEach(stack -> stack.setStackSize(0));
         }
     }
 
     @Override
-    public AENetworkProxy getProxy() {
-        IOutputME outputME = (IOutputME) this;
-        AENetworkProxy gridProxy = outputME.getGridProxy();
-        if (gridProxy == null) {
-            if (getBaseMetaTileEntity() instanceof IGridProxyable) {
-                gridProxy = new AENetworkProxy(
-                    (IGridProxyable) getBaseMetaTileEntity(),
-                    "proxy",
-                    GTNLItemList.OutputHatchMEProxy.get(1),
-                    true);
-                outputME.setGridProxy(gridProxy);
-                gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
-                outputME.gtnl$updateValidGridProxySides();
-                if (getBaseMetaTileEntity().getWorld() != null) gridProxy.setOwner(
-                    getBaseMetaTileEntity().getWorld()
-                        .getPlayerEntityByName(getBaseMetaTileEntity().getOwnerName()));
-            }
-        }
-        return gridProxy;
+    public ItemStack getVisual() {
+        return GTNLItemList.OutputHatchMEProxy.get(1);
     }
 
     @Override

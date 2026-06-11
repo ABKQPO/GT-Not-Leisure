@@ -4,7 +4,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -141,13 +141,13 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
     @Optional.Method(modid = "dreamcraft")
     public void loadNHRecipe() {
         RecipeBuilder.builder()
-            .itemInputs(CustomItemList.CokeOvenBrick.get(4))
+            .itemInputs(NHItemList.CokeOvenBrick.get(4))
             .itemOutputs(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.alpha", 1, 7))
             .duration(200)
             .eut(16)
             .addTo(PBKR);
         RecipeBuilder.builder()
-            .itemInputs(CustomItemList.AdvancedCokeOvenBrick.get(4))
+            .itemInputs(NHItemList.AdvancedCokeOvenBrick.get(4))
             .itemOutputs(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.alpha", 1, 12))
             .duration(200)
             .eut(16)

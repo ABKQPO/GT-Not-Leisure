@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -81,13 +80,13 @@ public abstract class MixinMTEPlasmaForge extends MTEExtendedPowerMultiBlockBase
         return gtnl$lockRuntime ? 0 : (long) efficiency_decay_rate;
     }
 
-    @Inject(method = "getInfoData", at = @At("RETURN"), cancellable = true)
-    public void getInfoData(CallbackInfoReturnable<String[]> cir) {
-        if (!gtnl$lockRuntime) return;
-        String[] original = cir.getReturnValue();
+    @Override
+    public String[] getInfoData() {
+        String[] original = super.getInfoData();
+        if (!gtnl$lockRuntime) return original;
         List<String> list = new ArrayList<>(Arrays.asList(original));
         list.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
-        cir.setReturnValue(list.toArray(new String[0]));
+        return list.toArray(new String[0]);
     }
 
     @Override

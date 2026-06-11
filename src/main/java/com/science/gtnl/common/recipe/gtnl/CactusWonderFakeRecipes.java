@@ -7,7 +7,7 @@ import com.science.gtnl.utils.recipes.metadata.SteamAmountMetadata;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gregtech.api.util.GTModHandler;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 public class CactusWonderFakeRecipes implements IRecipePool {
@@ -47,7 +47,7 @@ public class CactusWonderFakeRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GregtechItemList.DoubleCompressedCactusCharcoal.get(1))
-            .fluidOutputs(FluidUtils.getSuperHeatedSteam(128000))
+            .fluidOutputs(GTModHandler.getSuperHeatedSteam(128000))
             .metadata(OFFER_VALUE, 11390625L)
             .duration(20)
             .eut(0)
@@ -56,7 +56,7 @@ public class CactusWonderFakeRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GregtechItemList.TripleCompressedCactusCharcoal.get(1))
-            .fluidOutputs(FluidUtils.getSuperHeatedSteam(128000))
+            .fluidOutputs(GTModHandler.getSuperHeatedSteam(128000))
             .metadata(OFFER_VALUE, 128144531L)
             .duration(20)
             .eut(0)
@@ -110,7 +110,7 @@ public class CactusWonderFakeRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GregtechItemList.DoubleCompressedCactusCoke.get(1))
-            .fluidOutputs(FluidUtils.getSuperHeatedSteam(128000))
+            .fluidOutputs(GTModHandler.getSuperHeatedSteam(128000))
             .metadata(OFFER_VALUE, 22781250L)
             .duration(20)
             .eut(0)
@@ -119,7 +119,7 @@ public class CactusWonderFakeRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GregtechItemList.TripleCompressedCactusCoke.get(1))
-            .fluidOutputs(FluidUtils.getSuperHeatedSteam(128000))
+            .fluidOutputs(GTModHandler.getSuperHeatedSteam(128000))
             .metadata(OFFER_VALUE, 256289063L)
             .duration(20)
             .eut(0)

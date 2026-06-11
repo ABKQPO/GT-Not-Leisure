@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.enums.GTValues;
@@ -284,11 +285,11 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
                 + EnumChatFormatting.RESET
                 + EnumChatFormatting.GREEN
-                + GTUtility.formatNumbers(currentMana)
+                + NumberFormatUtil.formatNumber(currentMana)
                 + EnumChatFormatting.RESET
                 + " / "
                 + EnumChatFormatting.YELLOW
-                + GTUtility.formatNumbers(capacity) };
+                + NumberFormatUtil.formatNumber(capacity) };
         }
 
         return new String[] {};
@@ -317,11 +318,11 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
                 EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
                     + EnumChatFormatting.RESET
                     + EnumChatFormatting.GREEN
-                    + GTUtility.formatNumbers(currentMana)
+                    + NumberFormatUtil.formatNumber(currentMana)
                     + EnumChatFormatting.RESET
                     + " / "
                     + EnumChatFormatting.YELLOW
-                    + GTUtility.formatNumbers(capacity));
+                    + NumberFormatUtil.formatNumber(capacity));
         }
     }
 

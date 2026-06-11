@@ -3,7 +3,6 @@ package com.science.gtnl.common.gui.recipe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -25,6 +23,7 @@ import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
+import gregtech.nei.GTNEIDefaultHandler;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -62,43 +61,39 @@ public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
     }
 
     @Override
-    public ModularWindow.Builder createNEITemplate(IItemHandlerModifiable itemInputsInventory,
-        IItemHandlerModifiable itemOutputsInventory, IItemHandlerModifiable specialSlotInventory,
-        IItemHandlerModifiable fluidInputsInventory, IItemHandlerModifiable fluidOutputsInventory,
-        Supplier<Float> progressSupplier, Pos2d windowOffset) {
-        // Override regular createNEITemplate method, so we can remove the background texture with the ugly border.
+    public ModularWindow.Builder createNEITemplate(GTNEIDefaultHandler.NEITemplateContext ctx) {
+        // Remove the regular background texture with the border.
         ModularWindow.Builder builder = ModularWindow.builder(neiProperties.recipeBackgroundSize);
 
-        // First gtnl$draw progress bar in background
         if (uiProperties.useProgressBar) {
-            addProgressBar(builder, progressSupplier, windowOffset);
+            addProgressBar(builder, ctx);
         }
 
         UIHelper.forEachSlots(
             (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(itemInputsInventory, i)
+                SlotWidget.phantom(ctx.itemInputsInventory, i)
                     .setBackground(backgrounds)
                     .setPos(pos)
                     .setSize(18, 18)),
             (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(itemOutputsInventory, i)
+                SlotWidget.phantom(ctx.itemOutputsInventory, i)
                     .setBackground(backgrounds)
                     .setPos(pos)
                     .setSize(18, 18)),
             (i, backgrounds, pos) -> {
                 if (uiProperties.useSpecialSlot) builder.widget(
-                    SlotWidget.phantom(specialSlotInventory, 0)
+                    SlotWidget.phantom(ctx.specialSlotInventory, 0)
                         .setBackground(backgrounds)
                         .setPos(pos)
                         .setSize(18, 18));
             },
             (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(fluidInputsInventory, i)
+                SlotWidget.phantom(ctx.fluidInputsInventory, i)
                     .setBackground(backgrounds)
                     .setPos(pos)
                     .setSize(18, 18)),
             (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(fluidOutputsInventory, i)
+                SlotWidget.phantom(ctx.fluidOutputsInventory, i)
                     .setBackground(backgrounds)
                     .setPos(pos)
                     .setSize(18, 18)),
@@ -110,9 +105,9 @@ public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
             uiProperties.maxFluidInputs,
             uiProperties.maxFluidOutputs,
             SteamVariant.NONE,
-            windowOffset);
+            ctx.windowOffset);
 
-        addGregTechLogo(builder, windowOffset);
+        addGregTechLogo(builder, ctx.windowOffset);
 
         for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
             builder.widget(
@@ -123,7 +118,7 @@ public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
                     .setPos(
                         specialTexture.getRight()
                             .getRight()
-                            .add(windowOffset)));
+                            .add(ctx.windowOffset)));
         }
 
         return builder;

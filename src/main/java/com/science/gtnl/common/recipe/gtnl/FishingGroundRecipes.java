@@ -394,7 +394,7 @@ public class FishingGroundRecipes implements IRecipePool {
     @Optional.Method(modid = "dreamcraft")
     public void loadNHRecipe() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(9), NHItemList.MaceratedPlantmass.getIS(16))
+            .itemInputs(GTUtility.getIntegratedCircuit(9), NHItemList.MaceratedPlantmass.get(16))
             .itemOutputs(
                 GregtechItemList.AlgaeBiomass.get(64),
                 GregtechItemList.GreenAlgaeBiomass.get(64),

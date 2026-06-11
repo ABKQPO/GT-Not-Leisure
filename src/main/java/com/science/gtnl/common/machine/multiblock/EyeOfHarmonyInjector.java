@@ -76,6 +76,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.mixinHelper.IEyeOfHarmonyControllerLink;
 import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
+import com.science.gtnl.common.gui.modularui.EyeOfHarmonyInjectorGui;
 import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
@@ -96,9 +97,11 @@ import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtil;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.render.IMTERenderer;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
@@ -324,6 +327,162 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
         return ret.toArray(new String[0]);
     }
 
+    public List<LinkedUnitGuiData> getLinkedUnitGuiData() {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            cleanupInvalidLinks();
+            for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+                updateLinkedUnitForGui(unit);
+            }
+        }
+        List<LinkedUnitGuiData> guiData = new ArrayList<>(mLinkedUnits.size());
+        for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
+            guiData.add(new LinkedUnitGuiData(unit));
+        }
+        return guiData;
+    }
+
+    public void updateLinkedUnitGuiData(List<LinkedUnitGuiData> linkedUnits) {
+        for (LinkedUnitGuiData linkedUnit : linkedUnits) {
+            if (linkedUnit == null) {
+                continue;
+            }
+            findLinkedUnitForGui(linkedUnit.x, linkedUnit.y, linkedUnit.z, linkedUnit.dimensionId).ifPresent(unit -> {
+                unit.maxHeliumAmount = linkedUnit.maxHeliumAmount;
+                unit.maxHydrogenAmount = linkedUnit.maxHydrogenAmount;
+                unit.maxRawStarMatterAmount = linkedUnit.maxRawStarMatterAmount;
+            });
+        }
+    }
+
+    public Optional<LinkedEyeOfHarmonyUnit> findLinkedUnitForGui(int x, int y, int z) {
+        return findLinkedUnitForGui(x, y, z, Integer.MIN_VALUE);
+    }
+
+    public Optional<LinkedEyeOfHarmonyUnit> findLinkedUnitForGui(int x, int y, int z, int dimensionId) {
+        return mLinkedUnits.stream()
+            .filter(
+                unit -> unit.x == x && unit.y == y
+                    && unit.z == z
+                    && (dimensionId == Integer.MIN_VALUE || getDimensionId(unit) == dimensionId))
+            .findFirst();
+    }
+
+    private int getDimensionId(LinkedEyeOfHarmonyUnit unit) {
+        MTEEyeOfHarmony eye = unit.mMetaTileEntity;
+        if (eye == null || eye.getBaseMetaTileEntity() == null
+            || eye.getBaseMetaTileEntity()
+                .getWorld() == null) {
+            return Integer.MIN_VALUE;
+        }
+        return eye.getBaseMetaTileEntity()
+            .getWorld().provider.dimensionId;
+    }
+
+    public void updateLinkedUnitForGui(LinkedEyeOfHarmonyUnit unit) {
+        MTEEyeOfHarmony mte = unit.mMetaTileEntity;
+        if (mte == null) return;
+
+        IEyeOfHarmonyControllerLink link = (IEyeOfHarmonyControllerLink) mte;
+        EyeOfHarmonyRecipe recipe = findRecipe(mte.getControllerSlot());
+        long astralAmount = link.gtnl$getAstralArrayAmount();
+
+        unit.displayHeliumMax = unit.maxHeliumAmount != -1 ? unit.maxHeliumAmount
+            : getAutoComputedAmount(
+                recipe,
+                astralAmount,
+                (long) maxFluidAmount,
+                (long) maxHeliumAmountSetting.get(),
+                0);
+        unit.displayHydrogenMax = unit.maxHydrogenAmount != -1 ? unit.maxHydrogenAmount
+            : getAutoComputedAmount(
+                recipe,
+                astralAmount,
+                (long) maxFluidAmount,
+                (long) maxHydrogenAmountSetting.get(),
+                1);
+        unit.displayRawStarMatterMax = unit.maxRawStarMatterAmount != -1 ? unit.maxRawStarMatterAmount
+            : getAutoComputedAmount(
+                recipe,
+                astralAmount,
+                (long) maxFluidAmount,
+                (long) maxRawStarMatterAmountSetting.get(),
+                2);
+
+        if (unit.displayRawStarMatterMax != 0 && unit.maxHeliumAmount == -1 && unit.maxHydrogenAmount == -1) {
+            unit.displayHeliumMax = 0;
+            unit.displayHydrogenMax = 0;
+        }
+
+        if ((unit.displayHeliumMax != 0 || unit.displayHydrogenMax != 0) && unit.maxRawStarMatterAmount == -1) {
+            unit.displayRawStarMatterMax = 0;
+        }
+
+        unit.heliumAmount = link.gtnl$getHeliumStored();
+        unit.hydrogenAmount = link.gtnl$getHydrogenStored();
+        unit.rawStarMatterAmount = link.gtnl$getStellarPlasmaStored();
+    }
+
+    public static class LinkedUnitGuiData {
+
+        public long maxHeliumAmount;
+        public long maxHydrogenAmount;
+        public long maxRawStarMatterAmount;
+        public long heliumAmount;
+        public long hydrogenAmount;
+        public long rawStarMatterAmount;
+        public long displayHeliumMax;
+        public long displayHydrogenMax;
+        public long displayRawStarMatterMax;
+        public int x;
+        public int y;
+        public int z;
+        public int dimensionId;
+        public String displayName;
+        public String statusText;
+        public ItemStack displayStack;
+
+        public LinkedUnitGuiData(LinkedEyeOfHarmonyUnit unit) {
+            maxHeliumAmount = unit.maxHeliumAmount;
+            maxHydrogenAmount = unit.maxHydrogenAmount;
+            maxRawStarMatterAmount = unit.maxRawStarMatterAmount;
+            heliumAmount = unit.heliumAmount;
+            hydrogenAmount = unit.hydrogenAmount;
+            rawStarMatterAmount = unit.rawStarMatterAmount;
+            displayHeliumMax = unit.displayHeliumMax;
+            displayHydrogenMax = unit.displayHydrogenMax;
+            displayRawStarMatterMax = unit.displayRawStarMatterMax;
+            x = unit.x;
+            y = unit.y;
+            z = unit.z;
+
+            MTEEyeOfHarmony eye = unit.mMetaTileEntity;
+            displayName = eye == null ? "Eye of Harmony" : eye.getLocalName();
+            statusText = eye == null
+                ? EnumChatFormatting.RED + StatCollector.translateToLocal("GT5U.gui.text.status.incomplete")
+                : unit.getStatusString();
+            displayStack = eye == null ? null : eye.getStackForm(1);
+            dimensionId = Integer.MIN_VALUE;
+            if (eye != null && eye.getBaseMetaTileEntity() != null
+                && eye.getBaseMetaTileEntity()
+                    .getWorld() != null) {
+                dimensionId = eye.getBaseMetaTileEntity()
+                    .getWorld().provider.dimensionId;
+            }
+        }
+
+        public LinkedUnitGuiData() {}
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new EyeOfHarmonyInjectorGui(this);
+    }
+
     @Override
     public void onBlockDestroyed() {
         // When the controller is destroyed we want to notify all currently linked units
@@ -333,7 +492,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
         super.onBlockDestroyed();
     }
 
+    @Deprecated
     public ModularWindow createStatusWindow(EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after EyeOfHarmonyInjector mui2 rollout is complete.
         final int windowWidth = 235;
         final int windowHeight = 220;
         ModularWindow.Builder builder = ModularWindow.builder(windowWidth, windowHeight);
@@ -571,7 +732,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after EyeOfHarmonyInjector mui2 rollout is complete.
         super.addUIWidgets(builder, buildContext);
         // Add value syncers, note that we do this here so
         // everything is updated once the status gui opens
@@ -595,7 +758,9 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
     }
 
+    @Deprecated
     public void addSyncers(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after EyeOfHarmonyInjector mui2 rollout is complete.
         // Sync connection list to client
         builder.widget(new FakeSyncWidget.ListSyncer<>(() -> mLinkedUnits, links -> {
             mLinkedUnits.clear();
@@ -1049,7 +1214,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 'P',
                 ofChain(
                     buildHatchAdder(EyeOfHarmonyInjector.class).casingIndex(BlockGTCasingsTT.textureOffset)
-                        .dot(1)
+                        .hint(1)
                         .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
                         .buildAndChain(),
                     onElementPass(e -> e.mCountCasing++, ofBlock(sBlockCasingsTT, 0))))
@@ -1076,18 +1241,12 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        structureBuild_EM(
-            STRUCTURE_PIECE_MAIN,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            stackSize,
-            hintsOnly);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return structureCheck_EM(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     public static INameFunction<EyeOfHarmonyInjector> MAX_HELIUM_AMOUNT_SETTING_NAME = (base, p) -> StatCollector

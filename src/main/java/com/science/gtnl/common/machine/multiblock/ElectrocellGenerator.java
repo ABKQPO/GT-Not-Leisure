@@ -45,6 +45,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -133,7 +134,6 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                             HatchElement.OutputHatch,
                             HatchElement.OutputBus,
                             HatchElement.Dynamo.or(ExoticDynamo))
-                        .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
                     StructureUtility
@@ -150,7 +150,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .shouldReject(t -> t.mRightInputBusses != null)
                         .adder(ElectrocellGenerator::addRightBusToMachineList)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     StructureUtility
                         .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
@@ -162,7 +162,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .shouldReject(t -> t.mLeftInputBusses != null)
                         .adder(ElectrocellGenerator::addLeftBusToMachineList)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     StructureUtility
                         .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
@@ -171,7 +171,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                 GTStructureUtility.buildHatchAdder(ElectrocellGenerator.class)
                     .atLeast(HatchElement.InputHatch)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -263,8 +263,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         List<ItemStack> outputList = new ArrayList<>(recipe.mOutputs.length);
 
                         for (int i = 0; i < recipe.mOutputs.length; i++) {
-                            int chance = (recipe.mChances != null && i < recipe.mChances.length) ? recipe.mChances[i]
-                                : 10000;
+                            int chance = recipe.getOutputChance(i);
 
                             if (random.nextInt(10000) < chance) {
                                 outputList.add(recipe.mOutputs[i]);
@@ -386,12 +385,11 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 55;
+        checkStructureCondition(errors, mCountCasing >= 55);
     }
 
     @Override
@@ -459,6 +457,6 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
 
     @Optional.Method(modid = "dreamcraft")
     public static Block getCompressedGraphite() {
-        return BlockList.CompressedGraphite.getBlock();
+        return BlockList.CompressedGraphite.block;
     }
 }

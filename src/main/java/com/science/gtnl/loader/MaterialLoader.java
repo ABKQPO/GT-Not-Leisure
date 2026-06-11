@@ -105,6 +105,8 @@ public class MaterialLoader {
         }
 
         WirelessNetworkManager.number_of_energy_additions = 4L;
+
+        LoadCompleteRecipeScheduler.schedule();
     }
 
     @Optional.Method(modid = "bogosorter")

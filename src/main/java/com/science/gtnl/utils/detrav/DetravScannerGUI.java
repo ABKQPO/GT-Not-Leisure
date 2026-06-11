@@ -12,11 +12,11 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.packet.TeleportRequestPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.bytes.Byte2ShortMap;
 
 @SideOnly(Side.CLIENT)
@@ -188,7 +188,7 @@ public class DetravScannerGUI extends GuiScreen {
                                     .get(fluidId));
                         info.add(
                             StatCollector.translateToLocal("gui.detrav.scanner.tooltip.fluid_amount")
-                                + GTUtility.formatNumbers(fluidAmount)
+                                + NumberFormatUtil.formatNumber(fluidAmount)
                                 + " L");
                     } else info.add(StatCollector.translateToLocal("gui.detrav.scanner.tooltip.no_fluid"));
                 } else {

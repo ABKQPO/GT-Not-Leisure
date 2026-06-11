@@ -3,6 +3,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
+import java.util.List;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -29,6 +31,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
@@ -97,16 +100,16 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofChain(
                         buildSteamWirelessInput(LargeSteamCutting.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamBigInput(LargeSteamCutting.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildSteamInput(LargeSteamCutting.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .build(),
                         buildHatchAdder(LargeSteamCutting.class).casingIndex(getCasingTextureID())
-                            .dot(1)
+                            .hint(1)
                             .atLeast(
                                 SteamHatchElement.InputBus_Steam,
                                 SteamHatchElement.OutputBus_Steam,
@@ -206,9 +209,9 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatches())
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         if (tierGearCasing == 1 && tierMachineCasing == 1
             && tierFrameCasing == 1
             && tierIndustrialCasing == 1
@@ -218,7 +221,7 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
             tierMachine = 1;
             getCasingTextureID();
             updateHatchTexture();
-            return true;
+            return;
         }
         if (tierGearCasing == 2 && tierMachineCasing == 2
             && tierFrameCasing == 2
@@ -229,10 +232,10 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
             tierMachine = 2;
             getCasingTextureID();
             updateHatchTexture();
-            return true;
+            return;
         }
         updateHatchTexture();
-        return false;
+        checkStructureCondition(errors, false);
     }
 
     @Override

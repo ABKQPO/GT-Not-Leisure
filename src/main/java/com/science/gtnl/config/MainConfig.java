@@ -28,12 +28,6 @@ public class MainConfig {
         @DefaultBoolean(false)
         @RequiresMcRestart
         public boolean enableDebugMode = false;
-
-        @Sync
-        @Comment("Enable GTNL Quest, add more quest")
-        @DefaultBoolean(false)
-        @RequiresMcRestart
-        public boolean enableQuest = false;
     }
 
     public static final Effect effect = new Effect();

@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
 import com.google.common.collect.ImmutableSet;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.basicMachine.DebugResearchStation;
 import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
@@ -35,7 +36,6 @@ import com.science.gtnl.common.machine.hatch.EnergyTransferNode;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.machine.hatch.HumongousDualInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousNinefoldInputHatch;
-import com.science.gtnl.common.machine.hatch.HumongousOutputBus;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
@@ -270,6 +270,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.material.MaterialUtils;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.FluidStackLookup;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.ModList;
@@ -290,6 +291,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GlassTier;
 import gregtech.common.covers.CoverConveyor;
@@ -297,8 +299,6 @@ import gregtech.common.covers.CoverFluidRegulator;
 import gregtech.common.covers.CoverPump;
 import gregtech.common.covers.CoverSteamRegulator;
 import gregtech.common.covers.CoverSteamValve;
-import gtPlusPlus.api.objects.Logger;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.CustomItemList;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
@@ -1925,7 +1925,7 @@ public class MachineLoader {
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             acceptedFluids.add(
-                FluidUtils.getFluidStack("liquid mana", 1)
+                FluidStackLookup.getFluidStack("liquid mana", 1)
                     .getFluid());
         }
 
@@ -1943,7 +1943,7 @@ public class MachineLoader {
         GTNLItemList.FluidIceInputHatch.set(
             new CustomFluidHatch(
                 ImmutableSet.of(
-                    FluidUtils.getFluidStack("ice", 1)
+                    FluidStackLookup.getFluidStack("ice", 1)
                         .getFluid()),
                 256000,
                 GTNLMachineID.FLUID_ICE_INPUT_HATCH.ID,
@@ -1955,7 +1955,7 @@ public class MachineLoader {
         GTNLItemList.FluidBlazeInputHatch.set(
             new CustomFluidHatch(
                 ImmutableSet.of(
-                    FluidUtils.getFluidStack("molten.blaze", 1)
+                    FluidStackLookup.getFluidStack("molten.blaze", 1)
                         .getFluid()),
                 256000,
                 GTNLMachineID.FLUID_BLAZE_INPUT_HATCH.ID,
@@ -2251,7 +2251,7 @@ public class MachineLoader {
             new CustomFluidHatch(
                 ImmutableSet.of(
                     Materials.Steam.mGas,
-                    FluidUtils.getSuperHeatedSteam(1)
+                    GTModHandler.getSuperHeatedSteam(1)
                         .getFluid(),
                     Materials.DenseSupercriticalSteam.mGas,
                     GTNLMaterials.CompressedSteam.getMolten(1)
@@ -2807,132 +2807,6 @@ public class MachineLoader {
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.TypeFilteredInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
-        GTNLItemList.HumongousOutputBusLV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_LV.ID,
-                "HumongousOutputBusLV",
-                StatCollector.translateToLocal("HumongousOutputBusLV"),
-                1));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusMV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_MV.ID,
-                "HumongousOutputBusMV",
-                StatCollector.translateToLocal("HumongousOutputBusMV"),
-                2));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusHV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_HV.ID,
-                "HumongousOutputBusHV",
-                StatCollector.translateToLocal("HumongousOutputBusHV"),
-                3));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusEV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_EV.ID,
-                "HumongousOutputBusEV",
-                StatCollector.translateToLocal("HumongousOutputBusEV"),
-                4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusIV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_IV.ID,
-                "HumongousOutputBusIV",
-                StatCollector.translateToLocal("HumongousOutputBusIV"),
-                5));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusLuV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_LUV.ID,
-                "HumongousOutputBusLuV",
-                StatCollector.translateToLocal("HumongousOutputBusLuV"),
-                6));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusLuV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusZPM.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_ZPM.ID,
-                "HumongousOutputBusZPM",
-                StatCollector.translateToLocal("HumongousOutputBusZPM"),
-                7));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UV.ID,
-                "HumongousOutputBusUV",
-                StatCollector.translateToLocal("HumongousOutputBusUV"),
-                8));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUHV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UHV.ID,
-                "HumongousOutputBusUHV",
-                StatCollector.translateToLocal("HumongousOutputBusUHV"),
-                9));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUEV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UEV.ID,
-                "HumongousOutputBusUEV",
-                StatCollector.translateToLocal("HumongousOutputBusUEV"),
-                10));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUIV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UIV.ID,
-                "HumongousOutputBusUIV",
-                StatCollector.translateToLocal("HumongousOutputBusUIV"),
-                11));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUMV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UMV.ID,
-                "HumongousOutputBusUMV",
-                StatCollector.translateToLocal("HumongousOutputBusUMV"),
-                12));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusUXV.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_UXV.ID,
-                "HumongousOutputBusUXV",
-                StatCollector.translateToLocal("HumongousOutputBusUXV"),
-                13));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusUXV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.HumongousOutputBusMAX.set(
-            new HumongousOutputBus(
-                GTNLMachineID.HUMONGOUS_OUTPUT_BUS_MAX.ID,
-                "HumongousOutputBusMAX",
-                StatCollector.translateToLocal("HumongousOutputBusMAX"),
-                14));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousOutputBusMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
         GTNLItemList.SuperDualInputHatchME.set(
             new SuperDualInputHatchME(
                 GTNLMachineID.SUPER_DUAL_INPUT_HATCH_ME.ID,
@@ -3450,17 +3324,17 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchIV256A.set(CustomItemList.eM_energyTunnel1_IV.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV1024A.set(CustomItemList.eM_energyTunnel2_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV1024A.set(CustomItemList.eM_energyTunnel1_LuV.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV4096A.set(CustomItemList.eM_energyTunnel3_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV4096A.set(CustomItemList.eM_energyTunnel2_LuV.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV16384A.set(CustomItemList.eM_energyTunnel4_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV16384A.set(CustomItemList.eM_energyTunnel2_ZPM.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV65536A.set(CustomItemList.eM_energyTunnel5_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV65536A.set(CustomItemList.eM_energyTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV262144A.set(CustomItemList.eM_energyTunnel6_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV262144A.set(CustomItemList.eM_energyTunnel3_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchIV1048576A.set(CustomItemList.eM_energyTunnel7_IV.get(1));
+        GTNLItemList.LaserEnergyHatchIV1048576A.set(CustomItemList.eM_energyTunnel4_UV.get(1));
 
         GTNLItemList.LaserEnergyHatchIV4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3486,15 +3360,15 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchLuV1024A.set(CustomItemList.eM_energyTunnel2_LuV.get(1));
 
-        GTNLItemList.LaserEnergyHatchLuV4096A.set(CustomItemList.eM_energyTunnel3_LuV.get(1));
+        GTNLItemList.LaserEnergyHatchLuV4096A.set(CustomItemList.eM_energyTunnel2_ZPM.get(1));
 
-        GTNLItemList.LaserEnergyHatchLuV16384A.set(CustomItemList.eM_energyTunnel4_LuV.get(1));
+        GTNLItemList.LaserEnergyHatchLuV16384A.set(CustomItemList.eM_energyTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserEnergyHatchLuV65536A.set(CustomItemList.eM_energyTunnel5_LuV.get(1));
+        GTNLItemList.LaserEnergyHatchLuV65536A.set(CustomItemList.eM_energyTunnel3_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchLuV262144A.set(CustomItemList.eM_energyTunnel6_LuV.get(1));
+        GTNLItemList.LaserEnergyHatchLuV262144A.set(CustomItemList.eM_energyTunnel4_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchLuV1048576A.set(CustomItemList.eM_energyTunnel7_LuV.get(1));
+        GTNLItemList.LaserEnergyHatchLuV1048576A.set(CustomItemList.eM_energyTunnel4_UHV.get(1));
 
         GTNLItemList.LaserEnergyHatchLuV4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3522,13 +3396,13 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchZPM4096A.set(CustomItemList.eM_energyTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserEnergyHatchZPM16384A.set(CustomItemList.eM_energyTunnel4_ZPM.get(1));
+        GTNLItemList.LaserEnergyHatchZPM16384A.set(CustomItemList.eM_energyTunnel3_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchZPM65536A.set(CustomItemList.eM_energyTunnel5_ZPM.get(1));
+        GTNLItemList.LaserEnergyHatchZPM65536A.set(CustomItemList.eM_energyTunnel4_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchZPM262144A.set(CustomItemList.eM_energyTunnel6_ZPM.get(1));
+        GTNLItemList.LaserEnergyHatchZPM262144A.set(CustomItemList.eM_energyTunnel4_UHV.get(1));
 
-        GTNLItemList.LaserEnergyHatchZPM1048576A.set(CustomItemList.eM_energyTunnel7_ZPM.get(1));
+        GTNLItemList.LaserEnergyHatchZPM1048576A.set(CustomItemList.eM_energyTunnel5_UHV.get(1));
 
         GTNLItemList.LaserEnergyHatchZPM4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3558,11 +3432,11 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchUV16384A.set(CustomItemList.eM_energyTunnel4_UV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUV65536A.set(CustomItemList.eM_energyTunnel5_UV.get(1));
+        GTNLItemList.LaserEnergyHatchUV65536A.set(CustomItemList.eM_energyTunnel4_UHV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUV262144A.set(CustomItemList.eM_energyTunnel6_UV.get(1));
+        GTNLItemList.LaserEnergyHatchUV262144A.set(CustomItemList.eM_energyTunnel5_UHV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUV1048576A.set(CustomItemList.eM_energyTunnel7_UV.get(1));
+        GTNLItemList.LaserEnergyHatchUV1048576A.set(CustomItemList.eM_energyTunnel5_UEV.get(1));
 
         GTNLItemList.LaserEnergyHatchUV4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3594,9 +3468,9 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchUHV65536A.set(CustomItemList.eM_energyTunnel5_UHV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUHV262144A.set(CustomItemList.eM_energyTunnel6_UHV.get(1));
+        GTNLItemList.LaserEnergyHatchUHV262144A.set(CustomItemList.eM_energyTunnel5_UEV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUHV1048576A.set(CustomItemList.eM_energyTunnel7_UHV.get(1));
+        GTNLItemList.LaserEnergyHatchUHV1048576A.set(CustomItemList.eM_energyTunnel6_UEV.get(1));
 
         GTNLItemList.LaserEnergyHatchUHV4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3630,7 +3504,7 @@ public class MachineLoader {
 
         GTNLItemList.LaserEnergyHatchUEV262144A.set(CustomItemList.eM_energyTunnel6_UEV.get(1));
 
-        GTNLItemList.LaserEnergyHatchUEV1048576A.set(CustomItemList.eM_energyTunnel7_UEV.get(1));
+        GTNLItemList.LaserEnergyHatchUEV1048576A.set(CustomItemList.eM_energyTunnel6_UIV.get(1));
 
         GTNLItemList.LaserEnergyHatchUEV4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3822,17 +3696,17 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchIV256A.set(CustomItemList.eM_dynamoTunnel1_IV.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV1024A.set(CustomItemList.eM_dynamoTunnel2_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV1024A.set(CustomItemList.eM_dynamoTunnel1_LuV.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV4096A.set(CustomItemList.eM_dynamoTunnel3_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV4096A.set(CustomItemList.eM_dynamoTunnel2_LuV.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV16384A.set(CustomItemList.eM_dynamoTunnel4_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV16384A.set(CustomItemList.eM_dynamoTunnel2_ZPM.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV65536A.set(CustomItemList.eM_dynamoTunnel5_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV65536A.set(CustomItemList.eM_dynamoTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV262144A.set(CustomItemList.eM_dynamoTunnel6_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV262144A.set(CustomItemList.eM_dynamoTunnel3_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchIV1048576A.set(CustomItemList.eM_dynamoTunnel7_IV.get(1));
+        GTNLItemList.LaserDynamoHatchIV1048576A.set(CustomItemList.eM_dynamoTunnel4_UV.get(1));
 
         GTNLItemList.LaserDynamoHatchIV4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -3858,15 +3732,15 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchLuV1024A.set(CustomItemList.eM_dynamoTunnel2_LuV.get(1));
 
-        GTNLItemList.LaserDynamoHatchLuV4096A.set(CustomItemList.eM_dynamoTunnel3_LuV.get(1));
+        GTNLItemList.LaserDynamoHatchLuV4096A.set(CustomItemList.eM_dynamoTunnel2_ZPM.get(1));
 
-        GTNLItemList.LaserDynamoHatchLuV16384A.set(CustomItemList.eM_dynamoTunnel4_LuV.get(1));
+        GTNLItemList.LaserDynamoHatchLuV16384A.set(CustomItemList.eM_dynamoTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserDynamoHatchLuV65536A.set(CustomItemList.eM_dynamoTunnel5_LuV.get(1));
+        GTNLItemList.LaserDynamoHatchLuV65536A.set(CustomItemList.eM_dynamoTunnel3_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchLuV262144A.set(CustomItemList.eM_dynamoTunnel6_LuV.get(1));
+        GTNLItemList.LaserDynamoHatchLuV262144A.set(CustomItemList.eM_dynamoTunnel4_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchLuV1048576A.set(CustomItemList.eM_dynamoTunnel7_LuV.get(1));
+        GTNLItemList.LaserDynamoHatchLuV1048576A.set(CustomItemList.eM_dynamoTunnel4_UHV.get(1));
 
         GTNLItemList.LaserDynamoHatchLuV4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -3894,13 +3768,13 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchZPM4096A.set(CustomItemList.eM_dynamoTunnel3_ZPM.get(1));
 
-        GTNLItemList.LaserDynamoHatchZPM16384A.set(CustomItemList.eM_dynamoTunnel4_ZPM.get(1));
+        GTNLItemList.LaserDynamoHatchZPM16384A.set(CustomItemList.eM_dynamoTunnel3_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchZPM65536A.set(CustomItemList.eM_dynamoTunnel5_ZPM.get(1));
+        GTNLItemList.LaserDynamoHatchZPM65536A.set(CustomItemList.eM_dynamoTunnel4_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchZPM262144A.set(CustomItemList.eM_dynamoTunnel6_ZPM.get(1));
+        GTNLItemList.LaserDynamoHatchZPM262144A.set(CustomItemList.eM_dynamoTunnel4_UHV.get(1));
 
-        GTNLItemList.LaserDynamoHatchZPM1048576A.set(CustomItemList.eM_dynamoTunnel7_ZPM.get(1));
+        GTNLItemList.LaserDynamoHatchZPM1048576A.set(CustomItemList.eM_dynamoTunnel5_UHV.get(1));
 
         GTNLItemList.LaserDynamoHatchZPM4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -3930,11 +3804,11 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchUV16384A.set(CustomItemList.eM_dynamoTunnel4_UV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUV65536A.set(CustomItemList.eM_dynamoTunnel5_UV.get(1));
+        GTNLItemList.LaserDynamoHatchUV65536A.set(CustomItemList.eM_dynamoTunnel4_UHV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUV262144A.set(CustomItemList.eM_dynamoTunnel6_UV.get(1));
+        GTNLItemList.LaserDynamoHatchUV262144A.set(CustomItemList.eM_dynamoTunnel5_UHV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUV1048576A.set(CustomItemList.eM_dynamoTunnel7_UV.get(1));
+        GTNLItemList.LaserDynamoHatchUV1048576A.set(CustomItemList.eM_dynamoTunnel5_UEV.get(1));
 
         GTNLItemList.LaserDynamoHatchUV4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -3966,9 +3840,9 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchUHV65536A.set(CustomItemList.eM_dynamoTunnel5_UHV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUHV262144A.set(CustomItemList.eM_dynamoTunnel6_UHV.get(1));
+        GTNLItemList.LaserDynamoHatchUHV262144A.set(CustomItemList.eM_dynamoTunnel5_UEV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUHV1048576A.set(CustomItemList.eM_dynamoTunnel7_UHV.get(1));
+        GTNLItemList.LaserDynamoHatchUHV1048576A.set(CustomItemList.eM_dynamoTunnel6_UEV.get(1));
 
         GTNLItemList.LaserDynamoHatchUHV4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -4002,7 +3876,7 @@ public class MachineLoader {
 
         GTNLItemList.LaserDynamoHatchUEV262144A.set(CustomItemList.eM_dynamoTunnel6_UEV.get(1));
 
-        GTNLItemList.LaserDynamoHatchUEV1048576A.set(CustomItemList.eM_dynamoTunnel7_UEV.get(1));
+        GTNLItemList.LaserDynamoHatchUEV1048576A.set(CustomItemList.eM_dynamoTunnel6_UIV.get(1));
 
         GTNLItemList.LaserDynamoHatchUEV4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -5187,6 +5061,8 @@ public class MachineLoader {
                 GTNLRecipeMaps.GasCollectorRecipes,
                 3,
                 3,
+                false,
+                true,
                 tier.tier * 100000000,
                 null,
                 MTEBasicMachineWithRecipe.SpecialEffects.NONE,
@@ -5322,7 +5198,7 @@ public class MachineLoader {
             GTNLItemList.HydraulicConveyor.get(1L),
             TextureFactory
                 .of(Textures.BlockIcons.MACHINE_CASINGS[1][0], TextureFactory.of(Textures.BlockIcons.OVERLAY_CONVEYOR)),
-            context -> new CoverConveyor(context, 1, 16, TextureFactory.of(Textures.BlockIcons.OVERLAY_CONVEYOR)));
+            context -> new CoverConveyor(context, 1, 16, 64, TextureFactory.of(Textures.BlockIcons.OVERLAY_CONVEYOR)));
 
         CoverRegistry.registerCover(
             GTNLItemList.HydraulicRegulator.get(1L),
@@ -5428,7 +5304,7 @@ public class MachineLoader {
     }
 
     public static void registry() {
-        Logger.INFO("GTNL Content | Registering MTE Block Machine.");
+        ScienceNotLeisure.LOG.info("GTNL Content | Registering MTE Block Machine.");
         registerHatch();
         registerMachines();
         registerWireAndPipe();

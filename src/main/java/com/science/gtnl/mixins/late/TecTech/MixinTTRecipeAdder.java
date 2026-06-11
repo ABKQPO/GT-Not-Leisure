@@ -15,7 +15,7 @@ public abstract class MixinTTRecipeAdder {
         method = "addResearchableAssemblylineRecipe(Lnet/minecraft/item/ItemStack;IIII[Lnet/minecraft/item/ItemStack;[Lnet/minecraftforge/fluids/FluidStack;Lnet/minecraft/item/ItemStack;II)Z",
         at = @At("HEAD"),
         argsOnly = true,
-        ordinal = 4)
+        name = "assDuration")
     private static int modifyAssemblyLineDuration(int assDuration) {
         if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return assDuration;
         int modified = assDuration;
@@ -37,7 +37,7 @@ public abstract class MixinTTRecipeAdder {
         method = "addResearchableAssemblylineRecipe(Lnet/minecraft/item/ItemStack;IIII[Ljava/lang/Object;[Lnet/minecraftforge/fluids/FluidStack;Lnet/minecraft/item/ItemStack;II)Z",
         at = @At("HEAD"),
         argsOnly = true,
-        ordinal = 4)
+        name = "assDuration")
     private static int modifyAssemblyLineDurationObject(int assDuration) {
         if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return assDuration;
         int modified = assDuration;
