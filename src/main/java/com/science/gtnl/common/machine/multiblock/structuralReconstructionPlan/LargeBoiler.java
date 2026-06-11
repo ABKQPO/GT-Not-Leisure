@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -39,6 +40,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -291,7 +293,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                 StructureUtility.lazy(
                     t -> buildHatchAdder(LargeBoiler.class).atLeast(HatchElement.OutputHatch)
                         .casingIndex(t.getCasingTextureIndex())
-                        .dot(2)
+                        .hint(2)
                         .buildAndChain(
                             StructureUtility.onElementPass(
                                 LargeBoiler::onCasingAdded,
@@ -302,7 +304,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                     t -> buildHatchAdder(LargeBoiler.class)
                         .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.InputBus)
                         .casingIndex(t.getFireboxTextureIndex())
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(
                             StructureUtility.onElementPass(
                                 LargeBoiler::onFireboxAdded,
@@ -311,12 +313,13 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         mCountCasing = 0;
         mFireboxCasing = 0;
 
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, 1, 4, 0)) return false;
-        return mCountCasing >= 20 && mFireboxCasing >= 3;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, 1, 4, 0, errors)) return;
+        checkCasingMin(errors, mCountCasing, 20);
+        checkCasingMin(errors, mFireboxCasing, 3);
     }
 
     @Override

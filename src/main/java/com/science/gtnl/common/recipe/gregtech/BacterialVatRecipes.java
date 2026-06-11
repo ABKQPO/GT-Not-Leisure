@@ -56,6 +56,6 @@ public class BacterialVatRecipes implements IRecipePool {
 
     @Optional.Method(modid = "dreamcraft")
     public ItemStack getTCetiESeaweedExtract() {
-        return NHItemList.TCetiESeaweedExtract.getIS(16);
+        return NHItemList.TCetiESeaweedExtract.get(16);
     }
 }

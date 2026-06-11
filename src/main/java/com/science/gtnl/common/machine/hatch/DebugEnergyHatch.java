@@ -10,6 +10,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.NumberFormatMUI;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -18,6 +22,7 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.science.gtnl.common.gui.modularui.DebugEnergyHatchGui;
 import com.science.gtnl.mixins.early.Gregtech.AccessorMTETieredMachineBlock;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -61,6 +66,24 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DebugEnergyHatch(mName, mDescriptionArray, mTextures);
+    }
+
+    public static String formatPowerSum(long eut, long amp) {
+        return numberFormat.format(amp * eut);
+    }
+
+    public void setMEUTFromGui(long eut) {
+        mEUT = eut;
+        updateProducingState();
+    }
+
+    public void setMAMPFromGui(long amp) {
+        mAMP = amp;
+        updateProducingState();
+    }
+
+    private void updateProducingState() {
+        producing = mAMP * mEUT >= 0;
     }
 
     @Override
@@ -119,7 +142,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         super.loadNBTData(aNBT);
         mEUT = aNBT.getLong("mEUT");
         mAMP = aNBT.getLong("mAMP");
-        producing = mAMP * mEUT >= 0;
+        updateProducingState();
         getBaseMetaTileEntity().setActive(producing);
     }
 
@@ -247,7 +270,19 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new DebugEnergyHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this MUI1 fallback after DebugEnergyHatch only uses the MUI2 GUI.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -255,7 +290,9 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 fallback after DebugEnergyHatch only uses the MUI2 GUI.
         builder.widget(
             new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
                 .setSize(90, 72)
@@ -311,7 +348,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         int changeNumberShift, int changeNumber, int xPos, int yPos) {
         builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
             setter.accept(clickData.shift ? changeNumberShift : changeNumber);
-            producing = mAMP * mEUT >= 0;
+            updateProducingState();
         })
             .setBackground(GTUITextures.BUTTON_STANDARD, overlay)
             .setSize(18, 18)

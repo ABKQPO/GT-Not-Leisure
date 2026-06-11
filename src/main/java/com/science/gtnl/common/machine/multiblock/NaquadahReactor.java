@@ -24,6 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -56,6 +57,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -213,7 +215,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         if (tag.hasKey("mEUt")) {
             currentTip.add(
                 StatCollector.translateToLocal("Info_NaquadahReactor_00") + EnumChatFormatting.WHITE
-                    + GTUtility.formatNumbers(tag.getLong("mEUt"))
+                    + NumberFormatUtil.formatNumber(tag.getLong("mEUt"))
                     + " EU/t"
                     + EnumChatFormatting.RESET);
         }
@@ -238,7 +240,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
     public String[] getInfoData() {
         String[] info = super.getInfoData();
         info[4] = StatCollector.translateToLocal("NaquadahReactor.Generates") + EnumChatFormatting.RED
-            + GTUtility.formatNumbers(Math.abs(this.lEUt))
+            + NumberFormatUtil.formatNumber(Math.abs(this.lEUt))
             + EnumChatFormatting.RESET
             + " EU/t";
         return info;
@@ -289,7 +291,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                     'C',
                     GTStructureUtility.buildHatchAdder(LargeNaquadahReactor.class)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             HatchElement.Maintenance,
                             HatchElement.InputHatch,
@@ -361,10 +363,13 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
 
         @Override
-        public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-            return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
-                && mMaintenanceHatches.size() <= 1
-                && mCountCasing >= 50;
+        public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
+            List<StructureError> errors) {
+            checkStructureCondition(
+                errors,
+                checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+                    && mMaintenanceHatches.size() <= 1
+                    && mCountCasing >= 50);
         }
 
         @Override
@@ -425,7 +430,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                     'G',
                     GTStructureUtility.buildHatchAdder(HyperNaquadahReactor.class)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             HatchElement.Maintenance,
                             HatchElement.InputHatch,
@@ -495,10 +500,13 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
 
         @Override
-        public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-            return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
-                && mMaintenanceHatches.size() <= 1
-                && mCountCasing >= 50;
+        public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
+            List<StructureError> errors) {
+            checkStructureCondition(
+                errors,
+                checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+                    && mMaintenanceHatches.size() <= 1
+                    && mCountCasing >= 50);
         }
 
         @Override
@@ -585,7 +593,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                     'F',
                     GTStructureUtility.buildHatchAdder(AdvancedHyperNaquadahReactor.class)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             HatchElement.Maintenance,
                             HatchElement.InputHatch,
@@ -696,7 +704,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                 GTUtility.sendChatToPlayer(
                     aPlayer,
                     StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
-                checkStructure(true);
+                checkStructure(true, getBaseMetaTileEntity());
             }
             return true;
         }
@@ -787,28 +795,29 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
 
         @Override
-        public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
+            List<StructureError> errors) {
             wirelessMode = false;
             if (isRenderActive) {
-                if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
+                if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
                     || !checkPiece(
                         STRUCTURE_PIECE_SPHERE_AIR,
                         HORIZONTAL_OFF_SET_SPHERE,
                         VERTICAL_OFF_SET_SPHERE,
                         DEPTH_OFF_SET_SPHERE)) {
                     buildSphere();
-                    return false;
+                    checkStructureCondition(errors, false);
                 }
-            } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
+            } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
                 || !checkPiece(
                     STRUCTURE_PIECE_SPHERE,
                     HORIZONTAL_OFF_SET_SPHERE,
                     VERTICAL_OFF_SET_SPHERE,
                     DEPTH_OFF_SET_SPHERE)) {
-                        return false;
+                        checkStructureCondition(errors, false);
                     }
 
-            if (mCountCasing < 50 || mMaintenanceHatches.size() > 1) return false;
+            if (mCountCasing < 50 || mMaintenanceHatches.size() > 1) checkStructureCondition(errors, false);
 
             if (!isRenderActive && enableRender && mTotalRunTime > 0) {
                 destroySphere();
@@ -819,7 +828,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
 
             if (mDynamoHatches.isEmpty() && mExoticDynamoHatches.isEmpty()) wirelessMode = true;
-            return true;
+            return;
         }
 
         @Override
@@ -920,7 +929,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             if (tag.hasKey("bigEUt")) {
                 try {
                     BigInteger big = new BigInteger(tag.getString("bigEUt"));
-                    euText = GTUtility.formatNumbers(big);
+                    euText = NumberFormatUtil.formatNumber(big);
                 } catch (NumberFormatException ignored) {}
             }
 
@@ -966,9 +975,9 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
             String euText;
             if (bigEUt != null) {
-                euText = GTUtility.formatNumbers(bigEUt.abs());
+                euText = NumberFormatUtil.formatNumber(bigEUt.abs());
             } else {
-                euText = GTUtility.formatNumbers(Math.abs(this.lEUt));
+                euText = NumberFormatUtil.formatNumber(Math.abs(this.lEUt));
             }
 
             info[4] = StatCollector.translateToLocal("NaquadahReactor.Generates") + EnumChatFormatting.RED

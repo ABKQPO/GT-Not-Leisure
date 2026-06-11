@@ -2,6 +2,7 @@ package com.science.gtnl.mixins.late.NoNHU;
 
 import net.minecraft.item.ItemStack;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,7 +37,11 @@ public abstract class MixinMTEAdvAssLineAcceleration implements IAccelerationSta
 
     @Inject(
         method = "onRunningTick",
-        at = @At(value = "FIELD", target = "Lggfab/mte/MTEAdvAssLine;baseEUt:J", ordinal = 0),
+        at = @At(
+            value = "FIELD",
+            target = "Lggfab/mte/MTEAdvAssLine;baseEUt:J",
+            ordinal = 0,
+            opcode = Opcodes.GETFIELD),
         cancellable = true)
     private void gtnl$modifyDrainEnergy(ItemStack aStack, CallbackInfoReturnable<Boolean> cir) {
         if (gtnl$isAccelerationState) cir.setReturnValue(true);

@@ -25,7 +25,7 @@ public class WoodDistillationRecipes implements IOreRecipeRegistrator {
         if (aOreDictName.equals("logWood")) {
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.copyAmount(16, aStack))
-                .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.DarkAsh, 4L))
+                .itemOutputs(GTOreDictUnificator.get("dustDarkAsh", 4L))
                 .fluidInputs(Materials.Nitrogen.getGas(1000))
                 .fluidOutputs(
                     Materials.Water.getFluid(400),

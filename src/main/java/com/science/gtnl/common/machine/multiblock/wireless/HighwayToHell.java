@@ -19,6 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
@@ -51,6 +52,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -179,7 +181,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -216,10 +218,9 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         boolean isFlipped = this.getFlip()
             .isHorizontallyFlipped();
         StructureUtils.setStringBlockXZ(
@@ -233,7 +234,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             FluidLoader.bioFluidBlock);
         setupParameters();
         rotateTurbines();
-        return true;
+        return;
     }
 
     @Override
@@ -407,7 +408,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             return finalResult;
         }
         updateSlots();
-        costingEUText = GTUtility.formatNumbers(costingEU);
+        costingEUText = NumberFormatUtil.formatNumber(costingEU);
 
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
@@ -507,19 +508,14 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             return recipe;
         }
 
-        if (recipe.mChances == null) {
-            return recipe;
-        }
-
         GTRecipe tRecipe = recipe.copy();
+        int[] outputChances = new int[tRecipe.mOutputs.length];
 
-        if (tRecipe.mChances == null) {
-            return recipe;
+        for (int i = 0; i < outputChances.length; i++) {
+            outputChances[i] = GTUtility.min(10000, tRecipe.getOutputChance(i) + turbineTier * 100);
         }
 
-        for (int i = 0; i < tRecipe.mChances.length; i++) {
-            tRecipe.mChances[i] = GTUtility.min(10000, tRecipe.mChances[i] + turbineTier * 100);
-        }
+        tRecipe.setOutputChances(outputChances);
 
         return tRecipe;
     }

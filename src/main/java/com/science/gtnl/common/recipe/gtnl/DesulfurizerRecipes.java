@@ -60,7 +60,7 @@ public class DesulfurizerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1))
-            .fluidInputs(Materials.NatruralGas.getGas(12000))
+            .fluidInputs(Materials.NaturalGas.getGas(12000))
             .fluidOutputs(Materials.Gas.getGas(12000))
             .duration(120)
             .eut(30)

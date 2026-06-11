@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.ImmutableSet;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.ScienceNotLeisure;
@@ -100,11 +101,18 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after WirelessSteamEnergyHatch mui2 parity is verified.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
                 .setSize(18, 18)
                 .setPos(151, 62));
+    }
+
+    @Override
+    public boolean usesSteamLogoForMui2() {
+        return true;
     }
 
     @Override
@@ -240,7 +248,8 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
             tag.setString(
                 "SteamNetworkDisplay",
                 steamDisplay.toString()
-                    .length() > 10 ? GTUtility.scientificFormat(steamDisplay) : GTUtility.formatNumbers(steamDisplay));
+                    .length() > 10 ? GTUtility.scientificFormat(steamDisplay)
+                        : NumberFormatUtil.formatNumber(steamDisplay));
             if (!ownerUUID.equals(teamUUID)) {
                 tag.setString("SteamNetworkTeam", SpaceProjectManager.getPlayerNameFromUUID(teamUUID));
             }

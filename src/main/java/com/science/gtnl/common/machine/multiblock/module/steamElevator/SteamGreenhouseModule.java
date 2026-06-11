@@ -23,6 +23,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.drawable.UITexture;
+import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
+import com.gtnewhorizon.cropsnh.utility.IFDropTable;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.drawable.Text;
@@ -40,46 +43,56 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.common.gui.CircularGaugeDrawable;
+import com.science.gtnl.common.gui.modularui.SteamGreenhouseModuleGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
-import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseIC2Bucket;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.check.CheckRecipeResult;
-import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
 public class SteamGreenhouseModule extends SteamElevatorModule implements IGreenHouse {
 
-    @Getter
-    public List<GreenHouseBucket> buckets = new LinkedList<>();
-    public GreenHouseDropTable dropTracker = new GreenHouseDropTable();
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
-    public GreenHouseDropTable guiDropTracker = new GreenHouseDropTable();
     public HashMap<ItemStack, Double> synchedGUIDropTracker = new HashMap<>();
+    @Getter
+    public List<GreenHouseStoredCrop> storedCrops = new LinkedList<>();
+    @Getter
+    @Setter
+    public IFDropTable industrialFarmDropTracker = new IFDropTable();
+    @Getter
+    @Setter
+    public IFDropTable industrialFarmGuiDropTracker = new IFDropTable();
     @Getter
     @Setter
     public int maxSeedTypes = 4, maxSeedCount = 16, setupPhase = 1;
     @Getter
     @Setter
     public GreenHouseMode mode = GreenHouseModes.Normal;
+    @Getter
+    @Setter
+    public GreenHouseViewMode greenHouseViewMode = GreenHouseViewMode.SEEDS;
 
     @Getter
     @Setter
     public boolean useNoHumidity = false;
+    private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
+        GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
 
     @Override
-    public ArrayList<MTEHatchOutputBus> getOutputBus() {
+    public ArrayList<? extends IOutputBus> getOutputBus() {
         return mOutputBusses;
     }
 
@@ -101,6 +114,78 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     @Override
     public int getWaterUsage() {
         return 16000;
+    }
+
+    @Override
+    public int getMachineMode() {
+        return machineMode;
+    }
+
+    @Override
+    public void setMachineMode(int machineMode) {
+        this.machineMode = switch (machineMode) {
+            case MODE_INPUT, MODE_FARM, MODE_OUTPUT -> machineMode;
+            default -> MODE_INPUT;
+        };
+    }
+
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
+    }
+
+    @Override
+    public int nextMachineMode() {
+        machineMode = switch (machineMode) {
+            case MODE_INPUT -> MODE_FARM;
+            case MODE_FARM -> MODE_OUTPUT;
+            default -> MODE_INPUT;
+        };
+        return machineMode;
+    }
+
+    @Override
+    public String getMachineModeName() {
+        return switch (machineMode) {
+            case MODE_FARM -> StatCollector.translateToLocal("Info_EdenGarden_Operating");
+            case MODE_OUTPUT -> StatCollector.translateToLocal("Info_EdenGarden_Output");
+            default -> StatCollector.translateToLocal("Info_EdenGarden_Input");
+        };
+    }
+
+    @Override
+    public int getIndustrialFarmTier() {
+        return 3;
+    }
+
+    @Override
+    public long getIndustrialFarmEUt() {
+        return 8192L;
+    }
+
+    @Override
+    public boolean shouldUseCurrentBiome() {
+        return true;
+    }
+
+    @Override
+    public boolean forcesBestSeedStats() {
+        return false;
+    }
+
+    @Override
+    public double getGreenHouseOutputMultiplier() {
+        return 1.0d;
+    }
+
+    @Override
+    public void setGreenHouseOutputItems(ItemStack[] outputs) {
+        this.mOutputItems = outputs;
+    }
+
+    @Override
+    public boolean addItemOutputsToGreenHouse(ItemStack[] outputs) {
+        return addItemOutputs(outputs);
     }
 
     @Override
@@ -146,19 +231,11 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
         super.onFirstTick(aBaseMetaTileEntity);
         if (this.toMigrate == null) return;
 
-        if (this.mode == GreenHouseModes.IC2) {
-            toMigrate.forEach(holder -> buckets.add(new GreenHouseIC2Bucket(this, holder.seed)));
-        } else {
-            this.mode = GreenHouseModes.Normal;
-            for (GreenHouseMode.EIGMigrationHolder holder : toMigrate) {
-                holder.seed.stackSize = holder.count;
-                GreenHouseBucket bucket = this.mode.tryCreateNewBucket(this, holder.seed, Integer.MAX_VALUE, false);
-                if (bucket != null) {
-                    buckets.add(bucket);
-                } else {
-                    holder.seed.stackSize = holder.count;
-                    addOutput(holder.seed);
-                }
+        for (GreenHouseMode.EIGMigrationHolder holder : toMigrate) {
+            holder.seed.stackSize = holder.count;
+            CheckRecipeResult result = tryAddCropStack(holder.seed, false);
+            if (!result.wasSuccessful() && holder.seed.stackSize > 0) {
+                addOutput(holder.seed);
             }
         }
     }
@@ -166,42 +243,43 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     @Override
     public void onRemoval() {
         super.onRemoval();
-        buckets.removeIf(this::tryEmptyBucket);
-        if (buckets.isEmpty()) return;
-
         IGregTechTileEntity mte = getBaseMetaTileEntity();
-        buckets.forEach(bucket -> {
-            for (ItemStack stack : bucket.tryRemoveSeed(bucket.getSeedCount(), false)) {
-                EntityItem entityitem = new EntityItem(
-                    mte.getWorld(),
-                    mte.getXCoord(),
-                    mte.getYCoord(),
-                    mte.getZCoord(),
-                    stack);
-                entityitem.delayBeforeCanPickup = 10;
-                mte.getWorld()
-                    .spawnEntityInWorld(entityitem);
-            }
-        });
+        for (GreenHouseStoredCrop crop : storedCrops) {
+            dropStoredStack(mte, crop.getSeedStack());
+            dropStoredStack(mte, crop.getBlockUnderStack());
+        }
+        storedCrops.clear();
     }
 
-    @Override
+    private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {
+        if (CropsNHUtils.isStackInvalid(stack)) return;
+        EntityItem entityitem = new EntityItem(
+            mte.getWorld(),
+            mte.getXCoord(),
+            mte.getYCoord(),
+            mte.getZCoord(),
+            stack);
+        entityitem.delayBeforeCanPickup = 10;
+        mte.getWorld()
+            .spawnEntityInWorld(entityitem);
+    }
+
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
-        if (aPlayer.isSneaking()) {
-            tryChangeMode(aPlayer);
-        } else {
-            tryChangeSetupPhase(aPlayer);
-        }
+        nextMachineMode();
+        GTUtility.sendChatToPlayer(aPlayer, getMachineModeName());
     }
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
-        this.tryChangeHumidityMode(aPlayer);
+        greenHouseViewMode = greenHouseViewMode.next();
+        GTUtility.sendChatToPlayer(aPlayer, greenHouseViewMode.name());
         return true;
     }
 
+    @Deprecated
     public void tryChangeSetupPhase(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy MUI1 setup phase toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Working"));
             return;
@@ -227,12 +305,14 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
         GTUtility.sendChatToPlayer(aPlayer, phaseChangeMessage);
     }
 
+    @Deprecated
     public void tryChangeMode(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy MUI1 greenhouse mode toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_Working"));
             return;
         }
-        if (!this.buckets.isEmpty()) {
+        if (!this.storedCrops.isEmpty()) {
             GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_HasSeeds"));
             return;
         }
@@ -242,7 +322,9 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
             StatCollector.translateToLocalFormatted("Info_EdenGarden_Mode_Change", this.mode.getName()));
     }
 
+    @Deprecated
     public void tryChangeHumidityMode(EntityPlayer aPlayer) {
+        // TODO: Remove this legacy humidity toggle after CropsNH biome checks are the only growth environment control.
         this.useNoHumidity = !this.useNoHumidity;
         if (this.useNoHumidity) {
             GTUtility
@@ -256,34 +338,32 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setInteger("setupPhase", this.setupPhase);
-        aNBT.setString("mode", this.mode.getName());
-        aNBT.setBoolean("isNoHumidity", this.useNoHumidity);
-        NBTTagList bucketListNBT = new NBTTagList();
-        for (GreenHouseBucket b : this.buckets) {
-            bucketListNBT.appendTag(b.save());
+        aNBT.setInteger("greenHouseViewMode", this.greenHouseViewMode.ordinal());
+        NBTTagList cropListNBT = new NBTTagList();
+        for (GreenHouseStoredCrop crop : this.storedCrops) {
+            cropListNBT.appendTag(crop.save());
         }
-        aNBT.setTag(
-            "progress",
-            this.dropTracker.intersect(this.guiDropTracker)
-                .save());
-        aNBT.setTag("buckets", bucketListNBT);
+        aNBT.setTag("industrialFarmProgress", this.industrialFarmDropTracker.save());
+        aNBT.setTag("industrialFarmCrops", cropListNBT);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        this.setupPhase = aNBT.getInteger("setupPhase");
-        this.mode = GreenHouseModes.getModeFromName(aNBT.getString("mode"));
-        this.useNoHumidity = aNBT.getBoolean("isNoHumidity");
-        this.mode.restoreBuckets(aNBT.getTagList("buckets", 10), this.buckets);
-        new GreenHouseDropTable(aNBT.getTagList("progress", 10)).addTo(this.dropTracker);
+        this.greenHouseViewMode = GreenHouseViewMode.fromOrdinal(aNBT.getInteger("greenHouseViewMode"));
+        this.industrialFarmDropTracker = new IFDropTable(aNBT, "industrialFarmProgress");
+        this.storedCrops.clear();
+        NBTTagList cropListNBT = aNBT.getTagList("industrialFarmCrops", 10);
+        for (int i = 0; i < cropListNBT.tagCount(); i++) {
+            GreenHouseStoredCrop crop = GreenHouseStoredCrop.load(cropListNBT.getCompoundTagAt(i));
+            if (crop.isValid()) {
+                this.storedCrops.add(crop);
+            }
+        }
     }
 
     public int getTotalSeedCount() {
-        return buckets.stream()
-            .mapToInt(GreenHouseBucket::getSeedCount)
-            .sum();
+        return getTotalStoredCropCount();
     }
 
     @Override
@@ -291,50 +371,29 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     public CheckRecipeResult checkProcessing() {
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;
-        if (setupPhase > 0) return processSetupPhase();
-
-        CheckRecipeResult validation = validateBuckets();
-        if (validation != null) return validation;
-
-        return calculateProgressAndDrops();
-    }
-
-    public CheckRecipeResult calculateProgressAndDrops() {
-        this.guiDropTracker = new GreenHouseDropTable();
-
-        if (mode == GreenHouseModes.IC2) {
-            buckets.forEach(bucket -> bucket.addProgress(5, guiDropTracker));
-        } else {
-            buckets.forEach(bucket -> bucket.addProgress(5, guiDropTracker));
-        }
-
-        guiDropTracker.addTo(dropTracker, 1);
-        mOutputItems = dropTracker.getDrops();
-
-        lEUt = -8192L;
-        mEfficiency = mEfficiencyIncrease = 10000;
-        this.mMaxProgresstime = 1200;
-
-        updateSlots();
-        return CheckRecipeResultRegistry.SUCCESSFUL;
+        return processIndustrialFarmMode();
     }
 
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (aBaseMetaTileEntity.isClientSide()) return true;
-        GreenhouseUI.open(
-            aPlayer,
-            aBaseMetaTileEntity.getWorld(),
-            aBaseMetaTileEntity.getXCoord(),
-            aBaseMetaTileEntity.getYCoord(),
-            aBaseMetaTileEntity.getZCoord());
+        openGui(aPlayer);
         return true;
     }
 
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SteamGreenhouseModuleGui(this).withMachineModeIcons(MODE_ICONS);
+    }
+
+    // TODO: Remove this MUI1 startup path after Steam Greenhouse Module only uses MUI2.
+    @Deprecated
     public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
         .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
+    @Deprecated
     public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 configuration button after Steam Greenhouse Module only uses MUI2.
         buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
         configurationElements.setSynced(false);
         configurationElements.widget(
@@ -351,7 +410,9 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     public boolean isInInventory = true;
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 fallback after Steam Greenhouse Module only uses MUI2.
         isInInventory = !getBaseMetaTileEntity().isActive();
 
         builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
@@ -364,11 +425,6 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
                 .setPos(4, 4)
                 .setSize(190, 85)
                 .setEnabled(w -> !isInInventory));
-        builder.widget(
-            getDynamicInventory().asWidget(builder, buildContext)
-                .setPos(10, 16)
-                .setEnabled(w -> isInInventory));
-
         builder.widget(
             new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
                 .setTextureGetter(
@@ -450,7 +506,8 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
                 .append(String.format("%,.1f", progressPercent))
                 .append("%)\n");
         Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        ArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ArrayList<>(this.synchedGUIDropTracker.entrySet());
+        ArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ArrayList<>(
+            this.industrialFarmGuiDropTracker.entrySet());
         sortedDrops.sort(
             Comparator.comparing(
                 a -> a.getKey()
@@ -508,14 +565,10 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
 
     @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        screenElements.widget(
-            new FakeSyncWidget.BooleanSyncer(
-                () -> this.mode == GreenHouseModes.IC2,
-                b -> this.mode = b ? GreenHouseModes.IC2 : GreenHouseModes.Normal));
         screenElements.widget(new FakeSyncWidget<>(() -> {
             HashMap<ItemStack, Double> ret = new HashMap<>();
 
-            for (Map.Entry<ItemStack, Double> drop : this.guiDropTracker.entrySet()) {
+            for (Map.Entry<ItemStack, Double> drop : this.industrialFarmGuiDropTracker.entrySet()) {
                 ret.merge(drop.getKey(), drop.getValue(), Double::sum);
             }
 
@@ -548,38 +601,24 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     @Override
     public String[] getInfoData() {
         List<String> info = new ArrayList<>(
-            Arrays
-                .asList(
-                    StatCollector.translateToLocalFormatted(
-                        "Info_EdenGarden_01",
-                        EnumChatFormatting.GREEN
-                            + (this.setupPhase == 0 ? this.mode.getName()
-                                : StatCollector.translateToLocal(
-                                    this.setupPhase == 1 ? "Info_EdenGarden_02" : "Info_EdenGarden_03"))
-                            + EnumChatFormatting.RESET),
+            Arrays.asList(
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_01",
+                    EnumChatFormatting.GREEN + getMachineModeName() + EnumChatFormatting.RESET),
 
-                    StatCollector.translateToLocalFormatted(
-                        "Info_EdenGarden_04",
-                        EnumChatFormatting.GREEN,
-                        this.maxSeedTypes,
-                        EnumChatFormatting.RESET),
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_04",
+                    EnumChatFormatting.GREEN,
+                    this.maxSeedCount,
+                    EnumChatFormatting.RESET),
 
-                    StatCollector.translateToLocalFormatted(
-                        "Info_EdenGarden_05",
-                        ((this.buckets.size() > maxSeedTypes) ? EnumChatFormatting.RED : EnumChatFormatting.GREEN),
-                        this.buckets.size())));
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_05",
+                    ((this.getTotalStoredCropCount() > maxSeedCount) ? EnumChatFormatting.RED
+                        : EnumChatFormatting.GREEN),
+                    this.getTotalStoredCropCount())));
 
-        for (GreenHouseBucket bucket : buckets) {
-            info.add(bucket.getInfoData());
-        }
-
-        if (this.buckets.size() > this.maxSeedTypes) {
-            info.add(
-                EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("Info_EdenGarden_06")
-                    + EnumChatFormatting.RESET);
-        }
-
-        if (this.getTotalSeedCount() > this.maxSeedCount) {
+        if (this.getTotalStoredCropCount() > this.maxSeedCount) {
             info.add(
                 EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("Info_EdenGarden_07")
                     + EnumChatFormatting.RESET);

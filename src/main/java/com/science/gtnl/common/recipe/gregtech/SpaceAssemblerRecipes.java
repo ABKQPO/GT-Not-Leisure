@@ -6,6 +6,7 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -15,7 +16,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtnhintergalactic.recipe.IGRecipeMaps;
@@ -48,7 +48,7 @@ public class SpaceAssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Energy_Module.get(1),
-                new ItemStack(ModItems.itemDehydratorCoil, 16, 3),
+                new ItemStack(GameRegistry.findItem("miscutils", "itemDehydratorCoil"), 16, 3),
                 MaterialsAlloy.PIKYONIUM.getPlate(32),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.ZPM, 2),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LuV, 4),

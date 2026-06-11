@@ -5,6 +5,7 @@ import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.FluidStackLookup;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -18,7 +19,6 @@ import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsElements;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class VacuumFurnaceRecipes implements IRecipePool {
 
@@ -37,8 +37,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Indium, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Trinium, 32),
                 GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.dust, 2))
-            .fluidInputs(FluidUtils.getFluidStack(MilledOre.NaquadahEnrichedFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
+            .fluidInputs(FluidStackLookup.getFluidStack(MilledOre.NaquadahEnrichedFlotationFroth, 4000))
+            .fluidOutputs(FluidStackLookup.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_ZPM)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
@@ -60,8 +60,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tellurium, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Nickel, 48),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cobalt, 32))
-            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PlatinumFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
+            .fluidInputs(FluidStackLookup.getFluidStack(GTPPFluids.PlatinumFlotationFroth, 4000))
+            .fluidOutputs(FluidStackLookup.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_LuV)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
@@ -77,8 +77,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lanthanum, 32),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Lutetium, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 8))
-            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.MonaziteFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
+            .fluidInputs(FluidStackLookup.getFluidStack(GTPPFluids.MonaziteFlotationFroth, 4000))
+            .fluidOutputs(FluidStackLookup.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_ZPM)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)
@@ -96,8 +96,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
                 MaterialsElements.getInstance().RUTHENIUM.getDust(48),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Promethium, 32),
                 MaterialsElements.getInstance().HAFNIUM.getDust(16))
-            .fluidInputs(FluidUtils.getFluidStack(GTPPFluids.PentlanditeFlotationFroth, 4000))
-            .fluidOutputs(FluidUtils.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
+            .fluidInputs(FluidStackLookup.getFluidStack(GTPPFluids.PentlanditeFlotationFroth, 4000))
+            .fluidOutputs(FluidStackLookup.getFluidStack(GTPPFluids.RedMud, 200), Materials.Water.getFluid(2000))
             .eut(TierEU.RECIPE_LuV)
             .metadata(COIL_HEAT, 5500)
             .duration(2400)

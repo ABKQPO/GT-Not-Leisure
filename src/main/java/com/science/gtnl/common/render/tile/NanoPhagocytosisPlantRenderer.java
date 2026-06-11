@@ -6,8 +6,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
 
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
@@ -18,7 +16,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
-import com.gtnewhorizon.gtnhlib.client.renderer.vbo.VertexBuffer;
+import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
@@ -28,6 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import tectech.Reference;
+import tectech.rendering.EOH.EOHRenderingUtils;
 import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.util.StructureVBO;
 import tectech.util.TextureUpdateRequester;
@@ -36,15 +35,14 @@ import tectech.util.TextureUpdateRequester;
 public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
     private static ShaderProgram starProgram;
-    private static IModelCustom starModel;
-    private static final float modelNormalize = 0.003f;
+    private static final float STAR_RADIUS = 0.003f * 20f * 74f;
 
     private static boolean initialized = false;
     private static boolean failedInit = false;
     private static int u_Color = -1, u_ModelMatrix = -1, u_Gamma = -1;
     private final Matrix4fStack starModelMatrix = new Matrix4fStack(3);
 
-    private VertexBuffer ringOne, ringTwo, ringThree;
+    private IVertexArrayObject ringOne, ringTwo, ringThree;
 
     private static ShaderProgram fadeBypassProgram;
     private static TextureUpdateRequester textureUpdater;
@@ -62,7 +60,6 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
             return;
         }
 
-        starModel = AdvancedModelLoader.loadModel(new ResourceLocation(Reference.MODID, "models/Star.obj"));
         ShaderProgram.clear();
         initialized = true;
     }
@@ -110,7 +107,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
         GL20.glUniformMatrix4(u_ModelMatrix, false, starModelMatrix.get(matrixBuffer));
         GL20.glUniform4f(u_Color, color.x, color.y, color.z, color.w);
-        starModel.renderAll();
+        EOHRenderingUtils.renderTessellatedSphere(128, 128, 1);
         GL11.glPopAttrib();
         starModelMatrix.popMatrix();
     }
@@ -125,11 +122,8 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         float cx = (float) x + .5f;
         float cy = (float) y + .5f;
         float cz = (float) z + .5f;
-        float size = modelNormalize;
         starModelMatrix.clear();
         starModelMatrix.translate(cx, cy, cz);
-
-        size *= 20;
 
         timer *= 10;
 
@@ -138,19 +132,19 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         RenderStarLayer(
             new Vector4f(r, g, b, 1f),
             EOHTileEntitySR.STAR_LAYER_0,
-            size,
+            STAR_RADIUS,
             new Vector3f(0F, 1F, 1).normalize(),
             130 + (timer) % 360000);
         RenderStarLayer(
             new Vector4f(r, g, b, 0.4f),
             EOHTileEntitySR.STAR_LAYER_1,
-            size * 1.02f,
+            STAR_RADIUS * 1.02f,
             new Vector3f(1F, 1F, 0F).normalize(),
             -49 + (timer) % 360000);
         RenderStarLayer(
             new Vector4f(r, g, b, 0.2f),
             EOHTileEntitySR.STAR_LAYER_2,
-            size * 1.04f,
+            STAR_RADIUS * 1.04f,
             new Vector3f(1F, 0F, 1F).normalize(),
             67 + (timer) % 360000);
 

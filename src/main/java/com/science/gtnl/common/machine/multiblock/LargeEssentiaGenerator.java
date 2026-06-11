@@ -49,6 +49,7 @@ import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -123,8 +124,8 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(mName, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatch();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndHatch(mName, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override
@@ -245,7 +246,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
                             HatchElement.Maintenance,
                             HatchElement.InputHatch)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     StructureUtility.ofBlock(Loaders.magicCasing, 0),
                     StructureUtility.ofSpecificTileAdder(

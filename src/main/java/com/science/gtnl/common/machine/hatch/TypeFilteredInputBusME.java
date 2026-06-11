@@ -8,6 +8,10 @@ import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -17,6 +21,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.science.gtnl.common.gui.modularui.TypeFilteredInputBusMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.machine.ItemFilteredList;
 
@@ -102,6 +107,14 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
         refreshItemList();
     }
 
+    public String getModidForGui() {
+        return modid == null ? "" : modid;
+    }
+
+    public String getNameFilterForGui() {
+        return name == null ? "" : name;
+    }
+
     @Override
     public Predicate<IAEItemStack> createFilter() {
         if (!hasFilter()) return null;
@@ -160,7 +173,17 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     }
 
     @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        if (!isSuper) {
+            return super.buildUI(data, syncManager, uiSettings);
+        }
+        return new TypeFilteredInputBusMEGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public ModularWindow createStackSizeConfigurationWindow(EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after TypeFilteredInputBusME mui2 parity is verified.
         final int WIDTH = 78;
         final int HEIGHT = 237;
         final int PARENT_WIDTH = getGUIWidth();

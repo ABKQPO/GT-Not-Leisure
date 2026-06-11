@@ -39,6 +39,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -221,8 +222,8 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatch();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override
@@ -260,7 +261,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
                     GTStructureUtility.buildHatchAdder(CheatOreProcessingFactory.class)
                         .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
                         .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 32066)))
             .addElement('H', GTStructureUtility.chainAllGlasses())

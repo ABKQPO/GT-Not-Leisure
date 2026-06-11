@@ -69,17 +69,21 @@ public interface IControllerUpgrade {
 
     default void saveUpgradeNBTData(NBTTagCompound aNBT) {
         NBTTagCompound upgradeWindowStorageNBTTag = new NBTTagCompound();
-        int storageIndex = 0;
         boolean hasUpgradeItem = false;
+        ItemStackHandler inputHandler = getUpgradeInputSlotHandler();
+        ItemStack[] storedItems = getStoredUpgradeWindowItems();
 
-        for (ItemStack itemStack : getUpgradeInputSlotHandler().getStacks()) {
+        for (int storageIndex = 0; storageIndex < inputHandler.getSlots(); storageIndex++) {
+            ItemStack itemStack = inputHandler.getStackInSlot(storageIndex);
+            if (itemStack == null && storageIndex < storedItems.length) {
+                itemStack = storedItems[storageIndex];
+            }
             if (itemStack != null) {
                 hasUpgradeItem = true;
                 upgradeWindowStorageNBTTag
                     .setInteger(storageIndex + "stacksizeOfStoredUpgradeItems", itemStack.stackSize);
                 aNBT.setTag(storageIndex + "storedUpgradeItem", itemStack.writeToNBT(new NBTTagCompound()));
             }
-            storageIndex++;
         }
 
         if (hasUpgradeItem) {
@@ -154,6 +158,10 @@ public interface IControllerUpgrade {
 
     String getUpgradeButtonTooltip();
 
+    default boolean isUpgradeButtonEnabled() {
+        return true;
+    }
+
     default int getUpgradeInputSlotsPerRow() {
         return 4;
     }
@@ -173,15 +181,21 @@ public interface IControllerUpgrade {
         return 60 + Math.max(0, Math.max(rows, slotRows) - 1) * 18;
     }
 
+    @Deprecated
     default ModularWindow createConsumeWindow(EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after all controller upgrade windows are fully ported to mui2.
         return createUpgradeWindow(player, 0);
     }
 
+    @Deprecated
     default ModularWindow createPreviewConsumeWindow(EntityPlayer player) {
+        // TODO: Remove this mui1 fallback after all controller upgrade windows are fully ported to mui2.
         return createUpgradeWindow(player, 1);
     }
 
+    @Deprecated
     default ModularWindow createPreviewConsumeWindow(EntityPlayer player, int previewLevel) {
+        // TODO: Remove this mui1 fallback after all controller upgrade windows are fully ported to mui2.
         return createUpgradeWindow(player, previewLevel);
     }
 
@@ -217,7 +231,9 @@ public interface IControllerUpgrade {
         return getMaxPreviewUpgradeLevel() > 0;
     }
 
+    @Deprecated
     default ModularWindow createUpgradeWindow(EntityPlayer player, int previewLevel) {
+        // TODO: Remove this mui1 fallback after all controller upgrade windows are fully ported to mui2.
         final boolean previewMode = previewLevel > 0;
         final int PARENT_WIDTH = getGUIWidth();
         final int PARENT_HEIGHT = getGUIHeight();
@@ -358,7 +374,9 @@ public interface IControllerUpgrade {
         return builder.build();
     }
 
+    @Deprecated
     default void createUpgradeButton(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after all controller upgrade buttons are fully ported to mui2.
         buildContext.addSyncedWindow(getUpgradeWindowId(), this::createConsumeWindow);
         int maxPreviewLevel = getMaxPreviewUpgradeLevel();
         for (int level = 1; level <= maxPreviewLevel; level++) {

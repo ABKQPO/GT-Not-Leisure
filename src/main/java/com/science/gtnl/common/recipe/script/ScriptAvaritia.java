@@ -1,5 +1,7 @@
 package com.science.gtnl.common.recipe.script;
 
+import static kubatech.api.enums.ItemList.HighTemperatureGasCooledReactor;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -769,7 +772,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'O',
                 GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 1),
                 'P',
-                GregtechItemList.ParticleAccelerationCatalyst.get(1),
+                GregtechItemList.HellishForceCatalyst.get(1),
                 'Q',
                 GregtechItemList.AdhesionPromoterCatalyst.get(1),
                 'R',
@@ -815,7 +818,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'b',
                 ItemList.StableAdhesive.get(1),
                 'c',
-                GregtechItemList.SynchrotronCapableCatalyst.get(1),
+                GregtechItemList.CrystalColorizationCatalyst.get(1),
                 'd',
                 GregtechItemList.RawIntelligenceCatalyst.get(1),
                 'e',
@@ -1374,7 +1377,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 '6',
                 GregtechItemList.Machine_Adv_DistillationTower.get(1),
                 '7',
-                new ItemStack(GregTechAPI.sBlockMachines, 1, MetaTileEntityIDs.BioVat.ID),
+                GTUtility.copyAmount(1, ItemRegistry.vat),
                 '8',
                 GregtechItemList.Industrial_Solar_Tower.get(1),
                 '9',
@@ -1471,7 +1474,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 "vwxyz/<>;",
                 ":[]^_=?~!",
                 'A',
-                ItemRegistry.HTGR.copy(),
+                HighTemperatureGasCooledReactor.get(1),
                 'B',
                 GregtechItemList.Industrial_MacerationStack.get(1),
                 'C',

@@ -24,6 +24,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
@@ -38,13 +39,16 @@ import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.tileentities.machines.MTEHatchOutputME;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 
 public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implements ISurvivalConstructable {
 
@@ -151,7 +155,16 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+    }
+
+    @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Large Distillery GUI no longer supports mui1 startup paths.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
     }
@@ -231,7 +244,6 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                             HatchElement.Maintenance,
                             ParallelCon)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
                         .build(),
                     StructureUtility
                         .onElementPass(LargeDistillery::onCasingFound, StructureUtility.ofBlock(blockCasingsMisc, 11))))
@@ -241,7 +253,6 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                     GTStructureUtility.buildHatchAdder(LargeDistillery.class)
                         .atLeast(layeredOutputHatch)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
                         .disallowOnly(ForgeDirection.UP, ForgeDirection.DOWN)
                         .build(),
                     GTStructureUtility
@@ -265,7 +276,9 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                 GTStructureUtility.buildHatchAdder(LargeDistillery.class)
                     .atLeast(layeredOutputHatch)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
+                    .hint(1)
+                    .hint(1)
                     .disallowOnly(ForgeDirection.UP)
                     .buildAndChain(blockCasingsMisc, 11))
             .addElement('F', StructureUtility.ofBlock(blockCasingsMisc, 11))
@@ -274,25 +287,28 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_BASE, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_BASE, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            checkStructureCondition(errors, false);
 
         while (mHeight <= 12) {
             if (!checkPiece(STRUCTURE_PIECE_LAYER, HORIZONTAL_OFF_SET, mHeight, DEPTH_OFF_SET)) {
-                return false;
+                checkStructureCondition(errors, false);
             }
             if (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
-                .isEmpty()) return false;
+                .isEmpty()) checkStructureCondition(errors, false);
             if (checkPiece(STRUCTURE_PIECE_TOP, HORIZONTAL_OFF_SET, mHeight + 1, DEPTH_OFF_SET)) {
                 break;
             }
             mHeight++;
         }
 
-        if (!checkPiece(STRUCTURE_PIECE_TOP_HINT, HORIZONTAL_OFF_SET, mHeight, DEPTH_OFF_SET)) return false;
+        if (!checkPiece(STRUCTURE_PIECE_TOP_HINT, HORIZONTAL_OFF_SET, mHeight, DEPTH_OFF_SET))
+            checkStructureCondition(errors, false);
 
         setupParameters();
-        return checkHatch() && mCountCasing >= 5 * (mHeight + 1) - 5;
+        checkHatch(errors);
+        checkStructureCondition(errors, mCountCasing >= 5 * (mHeight + 1) - 5);
     }
 
     @Override

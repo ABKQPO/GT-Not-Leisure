@@ -52,6 +52,6 @@ public abstract class MixinMoltenCellLoader {
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 
         if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG
-            .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", OrePrefixes.material.mRegularLocalName);
+            .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", werkstoff.getDefaultName());
     }
 }

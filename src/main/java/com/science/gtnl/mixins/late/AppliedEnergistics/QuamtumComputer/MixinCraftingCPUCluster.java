@@ -16,6 +16,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.common.machine.multiblock.QuantumComputer;
 import com.science.gtnl.utils.ECPUCluster;
 
+import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingJob;
@@ -24,6 +25,8 @@ import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -68,7 +71,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         method = "submitJob",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/api/networking/crafting/ICraftingJob;getOutput()Lappeng/api/storage/data/IAEItemStack;"),
+            target = "Lappeng/api/networking/crafting/ICraftingJob;startCrafting(Lappeng/crafting/MECraftingInventory;Lappeng/api/networking/crafting/ICraftingCPU;Lappeng/api/networking/security/BaseActionSource;)V"),
         require = 1)
     private void injectSubmitJob(IGrid g, ICraftingJob job, BaseActionSource src, ICraftingRequester requestingMachine,
         CallbackInfoReturnable<ICraftingLink> cir) {
@@ -79,8 +82,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
     @Inject(method = "cancel", at = @At("RETURN"), require = 1)
     private void injectCancel(final CallbackInfo ci) {
         if (this.ec$virtualCPUOwner == null) return;
-        if (this.inventory.getItemList()
-            .isEmpty()) destroy();
+        if (ec$isInventoryEmpty()) destroy();
     }
 
     @Inject(method = "updateCraftingLogic", at = @At("HEAD"), cancellable = true, require = 1)
@@ -95,8 +97,7 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
         }
         if (this.isComplete && !this.ec$virtualCPUOwner.isVirtualCPU(this)) {
             // Ensure inventory is empty
-            if (this.inventory.getItemList()
-                .isEmpty()) {
+            if (ec$isInventoryEmpty()) {
                 destroy();
                 ci.cancel();
             }
@@ -190,6 +191,15 @@ public abstract class MixinCraftingCPUCluster implements ECPUCluster {
     @Override
     public QuantumComputer ec$getVirtualCPUOwner() {
         return ec$virtualCPUOwner;
+    }
+
+    @Unique
+    private boolean ec$isInventoryEmpty() {
+        IItemList<IAEItemStack> itemList = AEApi.instance()
+            .storage()
+            .createItemList();
+        this.inventory.getAvailableItems(itemList);
+        return itemList.isEmpty();
     }
 
     @Override

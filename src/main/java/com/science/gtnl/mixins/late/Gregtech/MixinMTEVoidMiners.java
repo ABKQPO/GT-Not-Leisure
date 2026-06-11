@@ -1,23 +1,24 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import net.minecraft.item.ItemStack;
+import java.util.List;
+
 import net.minecraft.util.StatCollector;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import bwcrossmod.galacticgreg.MTEVoidMiners;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.interfaces.IHatchElement;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -36,18 +37,15 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
         index = 0)
     private static IHatchElement<?>[] modifyAtLeastArgs(IHatchElement<?>[] elements) {
         if (!MainConfig.machine.enableVoidMinerTweak) return elements;
-        for (IHatchElement<?> e : elements) {
-            if (e == HatchElement.Energy) {
-                return new IHatchElement<?>[] { HatchElement.InputHatch, HatchElement.OutputBus, HatchElement.InputBus,
-                    HatchElement.Maintenance, HatchElement.Energy.or(HatchElement.ExoticEnergy) };
-            }
-        }
-        return elements;
+        return new IHatchElement<?>[] { HatchElement.InputHatch, HatchElement.OutputBus, HatchElement.InputBus,
+            HatchElement.Maintenance, HatchElement.Energy.or(HatchElement.ExoticEnergy) };
     }
 
-    @Inject(method = "checkMachine", at = @At(value = "RETURN"), cancellable = true)
-    private void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
-        CallbackInfoReturnable<Boolean> cir) {
+    @Override
+    protected void checkHatches(List<StructureError> errors) {
+        super.checkHatches(errors);
+        if (!MainConfig.machine.enableVoidMinerTweak) return;
+
         long amp = 0;
 
         for (MTEHatch tHatch : GTUtility.validMTEList(mEnergyHatches)) {
@@ -58,7 +56,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
         }
 
         if (amp > 256) {
-            cir.setReturnValue(false);
+            errors.add(GTNLStructureErrors.energyInputAmperageTooHigh());
         }
     }
 
@@ -94,7 +92,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             .addInfo(
                 StatCollector.translateToLocalFormatted(
                     "Tooltip_VoidMiner_01",
-                    GTUtility.formatNumbers(GTValues.V[this.getMinTier()])))
+                    NumberFormatUtil.formatNumber(GTValues.V[this.getMinTier()])))
             .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_04"))

@@ -30,9 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
 import com.glodblock.github.api.FluidCraftAPI;
-import com.glodblock.github.common.storage.FluidCellInventory;
-import com.glodblock.github.common.storage.FluidCellInventoryHandler;
-import com.glodblock.github.common.storage.IStorageFluidCell;
 import com.glodblock.github.inventory.InventoryHandler;
 import com.glodblock.github.inventory.gui.GuiType;
 import com.glodblock.github.util.BlockPos;
@@ -42,7 +39,6 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.ICellHandler;
@@ -53,12 +49,14 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.core.sync.GuiBridge;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
+import appeng.util.item.AEFluidStackType;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -68,12 +66,15 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorageFluidCell {
+public class ItemInfinityCell extends ItemCreativeStorageCell {
 
     public static final long STORAGE_SIZE = Long.MAX_VALUE / 2;
     public static final String CUSTOM_TEXTURE_TAG = "CustomTexture";
     public static final String DEFAULT_ICON_KEY = "default";
     public static final String DEFAULT_TEXTURE_NAME = "InfinityCell";
+    public static final String TOOLTIP_CELL_CONTENTS = NameConst.TT_KEY + "cell_contents";
+    public static final String TOOLTIP_CELL_EMPTY = NameConst.TT_KEY + "cell_empty";
+    public static final String TOOLTIP_INFINITY_FLUID_STORAGE = NameConst.TT_KEY + "infinity_fluid";
     public static final Map<String, IIcon> ICON_MAP = new Object2ObjectOpenHashMap<>();
     public static final Set<String> REGISTERED_TEXTURES = new ObjectOpenHashSet<>();
     public static final List<ItemStack> REGISTERED_CELLS = new ObjectArrayList<>();
@@ -347,14 +348,14 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                     var isItem = c == StorageChannel.ITEMS;
                     lines.add(
                         StatCollector
-                            .translateToLocal(isItem ? "Tooltip_InfinityCell_Contents" : NameConst.TT_CELL_CONTENTS));
+                            .translateToLocal(isItem ? "Tooltip_InfinityCell_Contents" : TOOLTIP_CELL_CONTENTS));
                     var list = getRecord(stack, c);
                     if (!list.isEmpty()) {
                         for (IAEStack<?> s : list) {
                             lines.add(
                                 String.format(
                                     "  %s %s",
-                                    StatCollector.translateToLocal(NameConst.TT_INFINITY_FLUID_STORAGE_TIPS),
+                                    StatCollector.translateToLocal(TOOLTIP_INFINITY_FLUID_STORAGE),
                                     isItem ? ((IAEItemStack) s).getItemStack()
                                         .getDisplayName()
                                         : ((IAEFluidStack) s).getFluidStack()
@@ -364,14 +365,14 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                     }
                 }
             }
-            lines.add(StatCollector.translateToLocal(NameConst.TT_CELL_EMPTY));
+            lines.add(StatCollector.translateToLocal(TOOLTIP_CELL_EMPTY));
         } else {
             lines.add(StatCollector.translateToLocal(NameConst.TT_CTRL_FOR_MORE));
         }
     }
 
     @Override
-    public long getBytes(ItemStack cellItem) {
+    public int getBytes(ItemStack cellItem) {
         return 0;
     }
 
@@ -381,12 +382,19 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
     }
 
     @Override
-    public boolean isBlackListed(ItemStack cellItem, IAEFluidStack requestedAddition) {
-        return requestedAddition == null || requestedAddition.getFluid() == null
-            || FluidCraftAPI.instance()
-                .isBlacklistedInStorage(
-                    requestedAddition.getFluid()
-                        .getClass());
+    public long getBytesLong(ItemStack cellItem) {
+        return 0;
+    }
+
+    @Override
+    public boolean isBlackListed(IAEStack<?> requestedAddition) {
+        if (!(requestedAddition instanceof IAEFluidStack fluidStack)) {
+            return false;
+        }
+        return fluidStack.getFluid() == null || FluidCraftAPI.instance()
+            .isBlacklistedInStorage(
+                fluidStack.getFluid()
+                    .getClass());
     }
 
     @Override
@@ -424,13 +432,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                 if (!stack.isEmpty()) {
                     return switch (s) {
                         case ITEMS -> new InfinityItemCellHandler((List<IAEItemStack>) stack);
-                        case FLUIDS -> {
-                            try {
-                                yield new InfinityFluidCellHandler(item, host, (List<IAEFluidStack>) stack);
-                            } catch (AppEngException e) {
-                                yield null;
-                            }
-                        }
+                        case FLUIDS -> new InfinityFluidCellHandler(item, host, (List<IAEFluidStack>) stack);
                     };
                 }
             }
@@ -465,7 +467,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                     ((TileEntity) chest).getWorldObj(),
                     new BlockPos((TileEntity) chest),
                     chest.getUp(),
-                    GuiType.FLUID_TERMINAL);
+                    GuiType.LEVEL_TERMINAL);
             }
         }
 
@@ -480,11 +482,96 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
         }
     }
 
-    public static class InfinityFluidCellHandler extends FluidCellInventoryHandler {
+    public static class InfinityFluidCellHandler implements IMEInventoryHandler<IAEFluidStack> {
 
-        public InfinityFluidCellHandler(ItemStack o, ISaveProvider container, List<IAEFluidStack> stack)
-            throws AppEngException {
-            super(new InfinityFluidCellInventory(o, container, stack));
+        private final List<IAEFluidStack> record;
+
+        public InfinityFluidCellHandler(ItemStack ignoredItem, ISaveProvider ignoredContainer,
+            List<IAEFluidStack> stack) {
+            this.record = stack;
+            this.record.forEach(fluid -> fluid.setStackSize(STORAGE_SIZE));
+        }
+
+        @Override
+        public StorageChannel getChannel() {
+            return StorageChannel.FLUIDS;
+        }
+
+        @Override
+        public IAEStackType<?> getStackType() {
+            return AEFluidStackType.FLUID_STACK_TYPE;
+        }
+
+        @Override
+        public AccessRestriction getAccess() {
+            return AccessRestriction.READ_WRITE;
+        }
+
+        public boolean matches(IAEFluidStack left, IAEFluidStack right) {
+            return left != null && right != null && left.getFluid() == right.getFluid();
+        }
+
+        @Override
+        public boolean isPrioritized(IAEFluidStack stack) {
+            return record.stream()
+                .anyMatch(fluid -> matches(fluid, stack));
+        }
+
+        @Override
+        public boolean canAccept(IAEFluidStack stack) {
+            return record.stream()
+                .anyMatch(fluid -> matches(fluid, stack));
+        }
+
+        @Override
+        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out, int iteration) {
+            record.forEach(fluid -> out.add(fluid.copy()));
+            return out;
+        }
+
+        @Override
+        public IAEFluidStack getAvailableItem(@NotNull IAEFluidStack request, int iteration) {
+            for (IAEFluidStack fluid : this.record) {
+                if (matches(fluid, request)) {
+                    return fluid.copy();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public int getPriority() {
+            return 0;
+        }
+
+        @Override
+        public int getSlot() {
+            return 0;
+        }
+
+        @Override
+        public boolean validForPass(final int i) {
+            return true;
+        }
+
+        @Override
+        public IAEFluidStack injectItems(IAEFluidStack stack, Actionable mode, BaseActionSource src) {
+            for (IAEFluidStack fluid : this.record) {
+                if (matches(fluid, stack)) {
+                    return null;
+                }
+            }
+            return stack;
+        }
+
+        @Override
+        public IAEFluidStack extractItems(IAEFluidStack stack, Actionable mode, BaseActionSource src) {
+            for (IAEFluidStack fluid : this.record) {
+                if (matches(fluid, stack)) {
+                    return stack.copy();
+                }
+            }
+            return null;
         }
     }
 
@@ -585,56 +672,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell implements IStorag
                 }
             }
             return null;
-        }
-    }
-
-    public static class InfinityFluidCellInventory extends FluidCellInventory {
-
-        private final List<IAEFluidStack> record;
-
-        public InfinityFluidCellInventory(ItemStack o, ISaveProvider container, List<IAEFluidStack> stack)
-            throws AppEngException {
-            super(o, container);
-            this.record = stack;
-            this.record.forEach(i -> i.setStackSize(STORAGE_SIZE));
-            this.loadCellFluids();
-        }
-
-        @Override
-        public IAEFluidStack injectItems(IAEFluidStack stack, Actionable mode, BaseActionSource src) {
-            for (IAEFluidStack fluid : this.record) {
-                if (fluid.getFluid() == stack.getFluid()) {
-                    return null;
-                }
-            }
-            return stack;
-        }
-
-        @Override
-        public IAEFluidStack extractItems(IAEFluidStack stack, Actionable mode, BaseActionSource src) {
-            for (IAEFluidStack fluid : this.record) {
-                if (fluid.getFluid() == stack.getFluid()) {
-                    return stack;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out, int iteration) {
-            this.record.forEach(fluid -> out.add(fluid.copy()));
-            return out;
-        }
-
-        @Override
-        public void loadCellFluids() {
-            if (this.cellFluids == null) {
-                this.cellFluids = AEApi.instance()
-                    .storage()
-                    .createFluidList();
-            }
-            this.cellFluids.resetStatus();
-            this.record.forEach(this.cellFluids::add);
         }
     }
 }

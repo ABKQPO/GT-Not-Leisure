@@ -1,6 +1,5 @@
 package com.science.gtnl.common.render.tile;
 
-import static tectech.Reference.MODID;
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 
 import java.awt.Color;
@@ -16,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -32,7 +30,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gtneioreplugin.plugin.block.ModBlocks;
 import lombok.Getter;
 import tectech.rendering.EOH.EOHRenderingUtils;
-import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.thing.block.TileEntityEyeOfHarmony;
 
 @SideOnly(Side.CLIENT)
@@ -228,9 +225,7 @@ public class BallRenderer {
 
         if (type == IItemRenderer.ItemRenderType.INVENTORY) GL11.glRotated(180, 0, 1, 0);
 
-        EOHRenderingUtils.renderStarLayer(0, EOHTileEntitySR.STAR_LAYER_0, color, 1.0f, size);
-        EOHRenderingUtils.renderStarLayer(1, EOHTileEntitySR.STAR_LAYER_1, color, 0.4f, size);
-        EOHRenderingUtils.renderStarLayer(2, EOHTileEntitySR.STAR_LAYER_2, color, 0.2f, size);
+        EOHRenderingUtils.renderEOHStar(type, 0, size);
 
         GL11.glPopMatrix();
     }
@@ -240,29 +235,7 @@ public class BallRenderer {
     }
 
     public static void renderOuterSpaceShell() {
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-
-        GL11.glPushMatrix();
-        GL11.glScalef(0.05f, 0.05f, 0.05f);
-
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
-
-        FMLClientHandler.instance()
-            .getClient()
-            .getTextureManager()
-            .bindTexture(new ResourceLocation(MODID, "models/spaceLayer.png"));
-
-        float scale = 0.01f * 17.5f;
-        GL11.glScalef(scale, scale, scale);
-
-        GL11.glColor4f(1, 1, 1, 1);
-
-        EOHTileEntitySR.spaceModel.renderAll();
-
-        GL11.glPopMatrix();
-        GL11.glPopAttrib();
+        EOHRenderingUtils.renderOuterSpaceShell(0);
     }
 
     public static void renderOrbitObjects(float angle) {

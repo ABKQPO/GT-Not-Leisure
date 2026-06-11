@@ -18,10 +18,10 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.metatileentity.BaseTileEntity;
-import tectech.thing.gui.TecTechUITextures;
 
 public interface IControllerInfo {
 
@@ -37,7 +37,9 @@ public interface IControllerInfo {
         return new Pos2d(172, 67);
     }
 
+    @Deprecated
     default ModularWindow createMachineInfo(final EntityPlayer player) {
+        // TODO: Remove this MUI1 window after every controller info consumer has moved to MUI2.
         final Scrollable scrollable = new Scrollable().setVerticalScroll();
         final int WIDTH = 300;
         final int HEIGHT = 300;
@@ -56,7 +58,7 @@ public interface IControllerInfo {
                     .setSize(280, 50));
 
         builder.widget(
-            new DrawableWidget().setDrawable(TecTechUITextures.BACKGROUND_GLOW_WHITE)
+            new DrawableWidget().setDrawable(EternalGregTechWorkshopTextures.BACKGROUND_GLOW_WHITE)
                 .setPos(0, 0)
                 .setSize(300, 300))
             .widget(
@@ -68,7 +70,9 @@ public interface IControllerInfo {
         return builder.build();
     }
 
+    @Deprecated
     default ButtonWidget createMachineInfoButton(IWidgetBuilder<?> builder) {
+        // TODO: Remove this MUI1 button after every controller info consumer has moved to MUI2.
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
             if (supportsMachineInfo()) {
                 if (!widget.isClient()) widget.getContext()

@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -14,7 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,24 +36,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.collect.Lists;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
+import com.science.gtnl.api.mixinHelper.IPurificationUnitLongParallel;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -84,7 +72,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @Mixin(value = MTEPurificationUnitBase.class, remap = false)
 public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMultiBlockBase<MixinMTEPurificationUnitBase>
-    implements IWirelessMode, ICostingEUHolder {
+    implements IWirelessMode, ICostingEUHolder, IPurificationUnitLongParallel {
 
     @Shadow
     protected ArrayList<FluidStack> storedFluids;
@@ -129,12 +117,6 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     @Final
     public static float WATER_BOOST_NEEDED_FLUID;
 
-    @Shadow
-    protected abstract ModularWindow createParallelWindow(EntityPlayer player);
-
-    @Shadow
-    @Final
-    private static int PARALLEL_WINDOW_ID;
     @Unique
     public long gtnl$maxParallelLong = 1;
 
@@ -169,6 +151,21 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     @Override
     public boolean supportsCraftingMEBuffer() {
         return gtnl$wirelessMode;
+    }
+
+    @Override
+    public long gtnl$getMaxParallelLong() {
+        return gtnl$maxParallelLong;
+    }
+
+    @Override
+    public void gtnl$setMaxParallelLong(long maxParallel) {
+        gtnl$maxParallelLong = Math.max(1, maxParallel);
+    }
+
+    @Override
+    public long gtnl$getEffectiveParallelLong() {
+        return gtnl$effectiveParallelLong;
     }
 
     @Inject(method = "checkProcessing", at = @At("HEAD"), cancellable = true)
@@ -209,7 +206,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
                 return;
             }
             gtnl$costingEU = gtnl$costingEU.add(costEU);
-            gtnl$costingEUText = GTUtility.formatNumbers(gtnl$costingEU);
+            gtnl$costingEUText = NumberFormatUtil.formatNumber(gtnl$costingEU);
         }
 
         cir.setReturnValue(result);
@@ -257,7 +254,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
         ItemStack[] recipeOutputs = this.currentRecipe.mOutputs;
         ItemStack[] itemOutputs = new ItemStack[recipeOutputs.length];
-        int[] mChances = this.currentRecipe.mChances;
+        int[] mChances = this.currentRecipe.mOutputChances;
 
         // If this recipe has random item outputs, roll on it and add to outputs
         if (mChances != null) {
@@ -552,78 +549,6 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     @Inject(method = "getActualPowerUsage", at = @At("TAIL"), cancellable = true)
     public void getActualPowerUsage(CallbackInfoReturnable<Long> cir) {
         if (gtnl$wirelessMode) cir.setReturnValue(0L);
-    }
-
-    @Inject(method = "addUIWidgets", at = @At("HEAD"))
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext, CallbackInfo ci) {
-        builder.widget(new FakeSyncWidget.BooleanSyncer(() -> gtnl$wirelessMode, val -> gtnl$wirelessMode = val));
-    }
-
-    @Unique
-    private static final int LONG_PARALLEL_WINDOW_ID = 11;
-
-    @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        builder.widget(new FakeSyncWidget.BooleanSyncer(() -> gtnl$wirelessMode, val -> gtnl$wirelessMode = val));
-
-        buildContext.addSyncedWindow(PARALLEL_WINDOW_ID, this::createParallelWindow);
-        buildContext.addSyncedWindow(LONG_PARALLEL_WINDOW_ID, this::gtnl$createLongParallelWindow);
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(gtnl$wirelessMode ? LONG_PARALLEL_WINDOW_ID : PARALLEL_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .addTooltip(StatCollector.translateToLocal("GT5U.tpm.parallelwindow"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(174, 112)
-            .setSize(16, 16));
-        super.addUIWidgets(builder, buildContext);
-    }
-
-    @Unique
-    public ModularWindow gtnl$createLongParallelWindow(EntityPlayer player) {
-        final int WIDTH = 158;
-        final int HEIGHT = 52;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.BottomRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)
-                        .subtract(0, 10)));
-        builder.widget(
-            TextWidget.localised("GTPP.CC.parallel")
-                .setPos(3, 4)
-                .setSize(150, 20))
-            .widget(
-                new NumericWidget().setSetter(val -> gtnl$maxParallelLong = (long) val)
-                    .setGetter(() -> gtnl$maxParallelLong)
-                    .setBounds(1, Long.MAX_VALUE)
-                    .setDefaultValue(1)
-                    .setScrollValues(1, 1024, 65536)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(150, 18)
-                    .setPos(4, 25)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.LongSyncer(() -> gtnl$maxParallelLong, (val) -> gtnl$maxParallelLong = val),
-                        builder));
-        return builder.build();
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))

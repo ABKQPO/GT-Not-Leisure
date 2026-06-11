@@ -31,6 +31,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -188,15 +189,15 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(PrimitiveDistillationTower.class)
                         .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(PrimitiveDistillationTower.class)
                         .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(PrimitiveDistillationTower.class)
                         .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
                         .atLeast(
@@ -207,7 +208,6 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                             HatchElement.InputBus,
                             HatchElement.Maintenance)
                         .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
-                        .dot(1)
                         .build(),
                     StructureUtility.onElementPass(
                         PrimitiveDistillationTower::onCasingFound,
@@ -221,7 +221,6 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                     GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
                         .atLeast(layeredOutputHatch)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
                         .disallowOnly(ForgeDirection.UP, ForgeDirection.DOWN)
                         .build(),
                     GTStructureUtility
@@ -242,21 +241,23 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                 'D',
                 GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
                     .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .hint(1)
+                    .hint(1)
                     .atLeast(HatchElement.OutputHatch)
-                    .dot(1)
                     .buildAndChain(GregTechAPI.sBlockCasings2, 0))
             .build();
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_BASE, 1, 0, 0) || !checkHatches()) return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_BASE, 1, 0, 0, errors)) checkStructureCondition(errors, false);
         while (mHeight < 7) {
             if (!checkPiece(STRUCTURE_PIECE_LAYER, 1, mHeight, 0)) {
-                return false;
+                checkStructureCondition(errors, false);
             }
             if (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
-                .isEmpty()) return false;
+                .isEmpty()) checkStructureCondition(errors, false);
             if (mTopLayerFound) {
                 break;
             }
@@ -264,7 +265,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         }
         updateHatchTexture();
 
-        return mCountCasing >= 7 * (mHeight + 1) - 5 && mHeight == 6;
+        checkStructureCondition(errors, mCountCasing >= 7 * (mHeight + 1) - 5 && mHeight == 6);
     }
 
     @Override

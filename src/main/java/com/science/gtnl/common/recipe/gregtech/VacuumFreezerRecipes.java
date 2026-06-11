@@ -9,12 +9,10 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 
 public class VacuumFreezerRecipes implements IRecipePool {
 
     public RecipeMap<?> VFR = RecipeMaps.vacuumFreezerRecipes;
-    public RecipeMap<?> AFR = GTPPRecipeMaps.advancedFreezerRecipes;
 
     @Override
     public void loadRecipes() {
@@ -23,8 +21,7 @@ public class VacuumFreezerRecipes implements IRecipePool {
             .fluidOutputs(GTNLMaterials.LiquidEnderAir.getFluidOrGas(4000))
             .duration(80)
             .eut(TierEU.RECIPE_HV)
-            .addTo(VFR)
-            .addTo(AFR);
+            .addTo(VFR);
 
         if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
     }
@@ -37,7 +34,6 @@ public class VacuumFreezerRecipes implements IRecipePool {
             .fluidOutputs(Materials.NetherSemiFluid.getFluid(1_000))
             .duration(200)
             .eut(TierEU.RECIPE_HV)
-            .addTo(VFR)
-            .addTo(AFR);
+            .addTo(VFR);
     }
 }

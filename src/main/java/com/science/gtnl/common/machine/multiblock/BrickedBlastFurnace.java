@@ -2,11 +2,10 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -23,7 +22,6 @@ import com.science.gtnl.utils.StructureUtils;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.StructureError;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -32,6 +30,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
@@ -133,7 +132,7 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
                 'B',
                 GTStructureUtility.buildHatchAdder(BrickedBlastFurnace.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         SteamHatchElement.InputBus_Steam,
                         HatchElement.InputBus,
@@ -176,15 +175,14 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+            || mSteamInputFluids.isEmpty()
+            || mSteamInputs.isEmpty()) {
+            checkStructureCondition(errors, false);
         }
-        return mCountCasing >= 350;
+        checkStructureCondition(errors, mCountCasing >= 350);
     }
-
-    @Override
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
 
     @Override
     public int getMaxParallelRecipes() {

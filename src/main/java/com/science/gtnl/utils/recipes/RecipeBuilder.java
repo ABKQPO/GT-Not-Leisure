@@ -82,7 +82,7 @@ public class RecipeBuilder {
     public ItemStack[][] alts;
     public FluidStack[] inputFluids = GTValues.emptyFluidStackArray;
     public FluidStack[] outputFluids = GTValues.emptyFluidStackArray;
-    public int[] outputChance;
+    public int[] inputChance, inputFluidChance, outputChance, outputFluidChance;
     public Object special;
     public int duration = -1;
     public int eut = -1;
@@ -208,8 +208,23 @@ public class RecipeBuilder {
         return this;
     }
 
+    public RecipeBuilder inputChances(int... outputChance) {
+        this.inputChance = outputChance;
+        return this;
+    }
+
+    public RecipeBuilder inputFluidChances(int... outputChance) {
+        this.inputFluidChance = outputChance;
+        return this;
+    }
+
     public RecipeBuilder outputChances(int... outputChance) {
         this.outputChance = outputChance;
+        return this;
+    }
+
+    public RecipeBuilder outputFluidChances(int... outputChance) {
+        this.outputFluidChance = outputChance;
         return this;
     }
 
@@ -344,8 +359,20 @@ public class RecipeBuilder {
             builder = builder.special(special);
         }
 
+        if (inputChance != null) {
+            builder = builder.outputChances(inputChance);
+        }
+
+        if (inputFluidChance != null) {
+            builder = builder.outputChances(inputFluidChance);
+        }
+
         if (outputChance != null) {
             builder = builder.outputChances(outputChance);
+        }
+
+        if (outputFluidChance != null) {
+            builder = builder.outputChances(outputFluidChance);
         }
 
         if (inputFluids != null) {
@@ -407,9 +434,10 @@ public class RecipeBuilder {
                     outputItems,
                     inputFluids,
                     outputFluids,
+                    inputChance,
+                    inputFluidChance,
                     outputChance,
-                    special,
-                    duration,
+                    outputFluidChance,
                     eut,
                     specialValue,
                     enabled,
@@ -420,7 +448,9 @@ public class RecipeBuilder {
                     nbtSensitive,
                     neiDesc,
                     metadataStorage,
-                    recipeCategory)));
+                    recipeCategory,
+                    special,
+                    duration)));
     }
 
     public void preBuildChecks() {

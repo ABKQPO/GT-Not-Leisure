@@ -4,12 +4,12 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.util.GTUtility;
 import tectech.mechanics.pipe.IConnectsToEnergyTunnel;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessDynamoMulti;
 
@@ -59,7 +59,8 @@ public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implem
         return new String[] { StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_00"),
             StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_01"),
             StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_02"),
-            GTValues.AuthorColen + AnimatedTooltipHandler.GRAY
+            AnimatedTooltipHandler.GRAY + "Author: "
+                + AnimatedTooltipHandler.GRAY
                 + AnimatedTooltipHandler.BOLD
                 + " & "
                 + AnimatedTooltipHandler.GREEN
@@ -67,7 +68,7 @@ public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implem
                 + "Chrom",
             StatCollector.translateToLocal("gt.blockmachines.hatch.energytunnel.desc.1") + ": "
                 + AnimatedTooltipHandler.YELLOW
-                + GTUtility.formatNumbers(maxAmperes * GTValues.V[mTier])
+                + NumberFormatUtil.formatNumber(maxAmperes * GTValues.V[mTier])
                 + AnimatedTooltipHandler.GRAY
                 + " EU/t" };
     }

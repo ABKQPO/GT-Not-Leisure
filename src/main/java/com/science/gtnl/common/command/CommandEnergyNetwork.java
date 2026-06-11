@@ -14,9 +14,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.utils.Utils;
 
-import gregtech.api.util.GTUtility;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
@@ -86,7 +86,7 @@ public class CommandEnergyNetwork extends CommandBase {
                 }
 
                 String formatted_username = EnumChatFormatting.BLUE + username + EnumChatFormatting.RESET;
-                String EU_string_formatted = EnumChatFormatting.RED + GTUtility.formatNumbers(euAmount)
+                String EU_string_formatted = EnumChatFormatting.RED + NumberFormatUtil.formatNumber(euAmount)
                     + EnumChatFormatting.RESET;
 
                 if (WirelessNetworkManager.addEUToGlobalEnergyMap(uuid, euAmount)) {
@@ -113,7 +113,7 @@ public class CommandEnergyNetwork extends CommandBase {
                         String.format(
                             "%s currently has %sEU in their network.",
                             formatted_username,
-                            EnumChatFormatting.RED + GTUtility.formatNumbers(
+                            EnumChatFormatting.RED + NumberFormatUtil.formatNumber(
                                 new BigInteger(
                                     WirelessNetworkManager.getUserEU(uuid)
                                         .toString()))
@@ -159,7 +159,7 @@ public class CommandEnergyNetwork extends CommandBase {
                 WirelessNetworkManager.setUserEU(uuid, euAmount);
 
                 String formatted_username = EnumChatFormatting.BLUE + username + EnumChatFormatting.RESET;
-                String EU_string_formatted = EnumChatFormatting.RED + GTUtility.formatNumbers(euAmount)
+                String EU_string_formatted = EnumChatFormatting.RED + NumberFormatUtil.formatNumber(euAmount)
                     + EnumChatFormatting.RESET;
 
                 sendChatMessage(
@@ -276,7 +276,8 @@ public class CommandEnergyNetwork extends CommandBase {
                         String.format(
                             "User %s has %sEU in their network.",
                             formatted_username,
-                            EnumChatFormatting.RED + GTUtility.formatNumbers(WirelessNetworkManager.getUserEU(userUUID))
+                            EnumChatFormatting.RED
+                                + NumberFormatUtil.formatNumber(WirelessNetworkManager.getUserEU(userUUID))
                                 + EnumChatFormatting.RESET)));
                 if (!userUUID.equals(teamUUID)) {
                     sendChatMessage(

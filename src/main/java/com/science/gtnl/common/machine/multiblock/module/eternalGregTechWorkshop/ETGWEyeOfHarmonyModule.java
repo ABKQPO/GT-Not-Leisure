@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -33,13 +34,14 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
-import gregtech.common.tileentities.machines.MTEHatchOutputME;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputBusME;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 import gtneioreplugin.plugin.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -366,7 +368,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                 if (aBaseMetaTileEntity instanceof BaseTileEntity) {
                     ((BaseTileEntity) aBaseMetaTileEntity).ignoreUnloadedChunks = mMachine;
                 }
-                mMachine = checkMachine(aBaseMetaTileEntity, mInventory[1]);
+                mMachine = checkStructure(true, aBaseMetaTileEntity);
             }
 
             if (mStartUpCheck < 0) {
@@ -448,7 +450,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         if (mOutputItems != null) {
             for (ItemStack tStack : mOutputItems) {
                 if (tStack != null) {
-                    addOutput(tStack);
+                    addItemOutputs(new ItemStack[] { tStack });
                 }
             }
         }
@@ -522,12 +524,12 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         while (amount >= Integer.MAX_VALUE) {
             FluidStack tmpFluid = fluid.copy();
             tmpFluid.amount = Integer.MAX_VALUE;
-            outputHatch.tryFillAE(tmpFluid);
+            outputHatch.fill(tmpFluid, true);
             amount -= Integer.MAX_VALUE;
         }
         FluidStack tmpFluid = fluid.copy();
         tmpFluid.amount = (int) amount;
-        outputHatch.tryFillAE(tmpFluid);
+        outputHatch.fill(tmpFluid, true);
     }
 
     @Override
@@ -705,45 +707,47 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!super.checkMachine(aBaseMetaTileEntity, aStack)) return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        int existingErrors = errors.size();
+        super.checkMachine(aBaseMetaTileEntity, aStack, errors);
+        if (errors.size() > existingErrors) return;
         if (!mDualInputHatches.isEmpty()) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (mOutputBusses.size() != 1) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (getPrimaryOutputBusME() == null) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (mOutputHatches.size() != 1) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (getPrimaryOutputHatchME() == null) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (mInputBusses.size() != 1) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (getPrimaryInputBus() instanceof MTEHatchInputBusME) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (!mEnergyHatches.isEmpty()) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
         if (!mExoticEnergyHatches.isEmpty()) {
-            return false;
+            checkStructureCondition(errors, false);
         }
 
-        return mInputHatches.size() == 2;
+        checkStructureCondition(errors, mInputHatches.size() == 2);
     }
 
     public MTEHatchInputBus getPrimaryInputBus() {
@@ -808,13 +812,13 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                     + EnumChatFormatting.RESET
                     + " : "
                     + EnumChatFormatting.RED
-                    + GTUtility.formatNumbers(value)));
+                    + NumberFormatUtil.formatNumber(value)));
         str.add(
             EnumChatFormatting.BLUE + "Astral Array Fabricators"
                 + EnumChatFormatting.RESET
                 + " : "
                 + EnumChatFormatting.RED
-                + GTUtility.formatNumbers(astralArrayAmount));
+                + NumberFormatUtil.formatNumber(astralArrayAmount));
         if (recipeRunning) {
             str.add(
                 EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
@@ -826,18 +830,18 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                     + "-----------------");
             str.add(
                 "Recipe Success Chance: " + EnumChatFormatting.RED
-                    + GTUtility.formatNumbers(successChance)
+                    + NumberFormatUtil.formatNumber(successChance)
                     + EnumChatFormatting.RESET
                     + "%");
             str.add(
                 "Recipe Yield: " + EnumChatFormatting.RED
-                    + GTUtility.formatNumbers(100 * yield)
+                    + NumberFormatUtil.formatNumber(100 * yield)
                     + EnumChatFormatting.RESET
                     + "%");
             str.add(
                 "Effective Astral Array Fabricators: " + EnumChatFormatting.RED
-                    + GTUtility.formatNumbers(astralArrayAmount));
-            str.add("Total Parallel: " + EnumChatFormatting.RED + GTUtility.formatNumbers(parallelAmount));
+                    + NumberFormatUtil.formatNumber(astralArrayAmount));
+            str.add("Total Parallel: " + EnumChatFormatting.RED + NumberFormatUtil.formatNumber(parallelAmount));
             str.add(
                 "EU Output: " + EnumChatFormatting.RED
                     + Util.toStandardForm(outputEU_BigInt)
@@ -857,11 +861,11 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                     "Average " + starMatterOutput.fluidStack.getLocalizedName()
                         + " Output: "
                         + EnumChatFormatting.RED
-                        + GTUtility.formatNumbers(starMatterOutput.amount)
+                        + NumberFormatUtil.formatNumber(starMatterOutput.amount)
                         + EnumChatFormatting.RESET
                         + " L, "
                         + EnumChatFormatting.YELLOW
-                        + GTUtility.formatNumbers(starMatterOutput.amount * 20.0 / currentMaxProgresstime)
+                        + NumberFormatUtil.formatNumber(starMatterOutput.amount * 20.0 / currentMaxProgresstime)
                         + EnumChatFormatting.RESET
                         + " L/s");
 
@@ -872,11 +876,11 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                     "Average " + stellarPlasmaOutput.fluidStack.getLocalizedName()
                         + " Output: "
                         + EnumChatFormatting.RED
-                        + GTUtility.formatNumbers(stellarPlasmaOutput.amount)
+                        + NumberFormatUtil.formatNumber(stellarPlasmaOutput.amount)
                         + EnumChatFormatting.RESET
                         + " L, "
                         + EnumChatFormatting.YELLOW
-                        + GTUtility.formatNumbers(stellarPlasmaOutput.amount * 20.0 / currentMaxProgresstime)
+                        + NumberFormatUtil.formatNumber(stellarPlasmaOutput.amount * 20.0 / currentMaxProgresstime)
                         + EnumChatFormatting.RESET
                         + " L/s");
             }

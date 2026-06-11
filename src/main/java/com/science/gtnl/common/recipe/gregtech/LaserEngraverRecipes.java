@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -141,7 +142,7 @@ public class LaserEngraverRecipes implements IRecipePool {
 
     @Optional.Method(modid = "dreamcraft")
     public ItemStack getMysteriousCrystalLens() {
-        return com.dreammaster.gthandler.CustomItemList.MysteriousCrystalLens.get(0);
+        return NHItemList.MysteriousCrystalLens.get(0);
     }
 
     public void loadWirelessEnergyCoverRecipes() {

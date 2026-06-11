@@ -16,7 +16,7 @@ import goodgenerator.items.GGMaterial;
 public class MixinItemRegistry {
 
     /**
-     * @see gregtech.api.enums.MaterialsUEVplus#QuarkGluonPlasma
+     * @see gregtech.api.enums.Materials#QuarkGluonPlasma
      */
     @ModifyArgs(
         method = "<clinit>",

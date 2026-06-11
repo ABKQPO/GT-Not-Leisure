@@ -53,6 +53,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -454,12 +455,12 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch())
-            return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         calculateOutputMultiplier();
         recoveryChance = tierDimensionField * tierTimeField * tierStabilisationField;
-        return true;
+        return;
     }
 
     @Override
@@ -529,8 +530,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                 buildHatchAdder(RealArtificialStar.class)
                     .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
                     .adder(RealArtificialStar::addInputBusOrOutputBusToMachineList)
-                    .dot(1)
                     .casingIndex(13)
+                    .hint(1)
                     .buildAndChain(GregTechAPI.sBlockCasings1, 13))
             .addElement(
                 'E',

@@ -3,8 +3,14 @@ package com.science.gtnl.common.machine.basicMachine;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.science.gtnl.common.gui.modularui.GTNLBasicGeneratorGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;
@@ -17,7 +23,6 @@ import gregtech.api.metatileentity.implementations.MTEBasicGenerator;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTUtility;
 
 public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
 
@@ -30,14 +35,14 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
             new String[] { StatCollector.translateToLocal("Tooltip_GasTurbine_00"), "", "" });
         mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_GasTurbine_01", getEfficiency());
         mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_GasTurbine_02", GTUtility.formatNumbers(getCapacity()));
+            .translateToLocalFormatted("Tooltip_GasTurbine_02", NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     public GasTurbine(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
         mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_GasTurbine_01", getEfficiency());
         mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_GasTurbine_02", GTUtility.formatNumbers(getCapacity()));
+            .translateToLocalFormatted("Tooltip_GasTurbine_02", NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     @Override
@@ -51,11 +56,23 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after GasTurbine mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
                 .setPos(151, 62));
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicGeneratorGui<>(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
     }
 
     @Override

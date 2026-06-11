@@ -45,6 +45,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -87,8 +88,8 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
                         HatchElement.InputHatch,
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                    .dot(1)
                     .casingIndex(getCasingTextureID())
+                    .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
@@ -264,12 +265,11 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 50 && mCasingTier < 8;
+        checkStructureCondition(errors, mCountCasing >= 50 && mCasingTier < 8);
     }
 
     @Override
@@ -284,9 +284,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
                 return false;
             }
         }
-        return super.checkHatch() && checkEnergyHatch()
-            && mEnergyHatches.size() <= 2
-            && mMaintenanceHatches.size() == 1;
+        return super.checkHatch() && mEnergyHatches.size() <= 2 && mMaintenanceHatches.size() == 1;
     }
 
     @Override

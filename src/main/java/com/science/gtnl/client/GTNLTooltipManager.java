@@ -1,11 +1,11 @@
 package com.science.gtnl.client;
 
-import static com.gtnewhorizons.modularui.api.KeyboardUtil.isAltKeyDown;
-
 import java.util.Map;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.StatCollector;
+
+import com.cleanroommc.modularui.api.widget.Interactable;
 
 import codechicken.nei.BookmarkPanel;
 import codechicken.nei.LayoutManager;
@@ -24,7 +24,7 @@ public class GTNLTooltipManager implements IContainerTooltipHandler {
     public Map<String, String> handleHotkeys(GuiContainer gui, int mousex, int mousey, Map<String, String> hotkeys) {
         if (!NEIClientConfig.isHidden() && NEIClientConfig.isEnabled()
             && GuiContainerManager.shouldShowTooltip(gui)
-            && isAltKeyDown()) {
+            && Interactable.hasAltDown()) {
             final Widget focused = LayoutManager.instance()
                 .getWidgetUnderMouse(mousex, mousey);
 

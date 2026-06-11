@@ -34,6 +34,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
+import com.science.gtnl.common.gui.modularui.MeteorMinerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
@@ -42,7 +43,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
-import bartworks.system.material.BWTileEntityMetaGeneratedOre;
+import bartworks.system.material.TileEntityMetaGeneratedBlock;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -64,6 +65,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -72,6 +74,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.blocks.TileEntityOres;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
@@ -143,7 +146,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                 GTStructureUtility.buildHatchAdder(MeteorMiner.class)
                     .atLeast(HatchElement.Maintenance, HatchElement.OutputBus, HatchElement.Energy)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
                     .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
             .addElement(
                 'I',
@@ -152,7 +154,8 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                     .shouldReject(t -> !t.mInputBusses.isEmpty())
                     .adder(MeteorMiner::addInjector)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
+                    .hint(1)
                     .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
             .addElement(
                 'J',
@@ -162,7 +165,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                         HatchElement.OutputBus,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2)))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
             .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
@@ -314,17 +317,17 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (checkPiece(STRUCTURE_PIECE_MAIN, 9, 13, 7) && checkHatch()) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (checkPiece(STRUCTURE_PIECE_MAIN, 9, 13, 7, errors)) {
             tierMachine = 1;
-        } else if (checkPiece(STRUCTURE_PIECE_TIER2, 9, 15, 3) && checkHatch()) {
+        } else if (checkPiece(STRUCTURE_PIECE_TIER2, 9, 15, 3, errors)) {
             tierMachine = 2;
         }
         if (mInputBusses.isEmpty() && this.tierMachine == 1 || !findLaserRenderer(getBaseMetaTileEntity().getWorld()))
-            return false;
+            checkStructureCondition(errors, false);
         setupParameters();
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-        return this.tierMachine > 0;
+        checkStructureCondition(errors, this.tierMachine > 0);
     }
 
     @Override
@@ -345,7 +348,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
             getBaseMetaTileEntity().getYCoord() + (this.tierMachine == 1 ? 10 : 15),
             zStart) instanceof TileEntityLaserBeacon laser) {
             renderer = laser;
-            renderer.setRotationFields(getDirection(), getRotation(), getFlip());
+            renderer.setRotationFields(getExtendedFacing());
             return true;
         }
         return false;
@@ -402,7 +405,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public void startReset() {
         this.isResetting = true;
         stopMachine(ShutDownReasonRegistry.NONE);
-        checkStructure(true);
+        checkStructure(true, getBaseMetaTileEntity());
         enableWorking();
     }
 
@@ -481,7 +484,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
             if (queueEmpty) {
                 hasFinished = true;
                 if (renderer != null) renderer.setShouldRender(false);
-                checkStructure(true);
+                checkStructure(true, getBaseMetaTileEntity());
             } else {
                 if (renderer != null) {
                     renderer.setShouldRender(true);
@@ -594,7 +597,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         if (GTUtility.isOre(target, meta)) {
             try {
                 TileEntity te = w.getTileEntity(x, y, z);
-                if (te instanceof TileEntityOres || te instanceof BWTileEntityMetaGeneratedOre) {
+                if (te instanceof TileEntityOres || te instanceof TileEntityMetaGeneratedBlock) {
                     itemDrop.addAll(getOutputByDrops(drops));
                 }
             } catch (Exception e) {
@@ -710,7 +713,14 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new MeteorMinerGui(this);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Meteor Miner reset button is fully ported to mui2.
         super.addUIWidgets(builder, buildContext);
         builder.widget(
             new ButtonWidget().setOnClick((clickData, widget) -> this.startReset())

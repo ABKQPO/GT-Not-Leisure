@@ -18,25 +18,26 @@ import com.science.gtnl.utils.enums.SteamTypes;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.modularui2.CoverGuiData;
 import gregtech.api.util.GTModHandler;
-import gregtech.common.covers.gui.CoverGui;
+import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
 import gregtech.common.modularui2.widget.builder.EnumRowBuilder;
 
-public class WirelessSteamCoverGui extends CoverGui<WirelessSteamCover> {
+public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
 
     public WirelessSteamCoverGui(WirelessSteamCover cover) {
         super(cover);
     }
 
     @Override
-    public String getGuiId() {
+    protected String getGuiId() {
         return "cover.wireless_steam";
     }
 
     @Override
-    public void addUIWidgets(PanelSyncManager syncManager, Flow column) {
+    public void addUIWidgets(PanelSyncManager syncManager, Flow column, CoverGuiData data) {
 
-        EnumSyncValue<SteamTypes> steamModeSyncValue = new EnumSyncValue<>(
+        EnumSyncValue<SteamTypes, ?> steamModeSyncValue = new EnumSyncValue<>(
             SteamTypes.class,
             cover::getSteamMode,
             cover::setSteamMode);

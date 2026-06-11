@@ -4,13 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
 import com.science.gtnl.utils.machine.greenHouseManager.IGreenHouseBucketFactory;
 
-import gregtech.api.enums.ItemList;
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.core.Ic2Items;
@@ -31,7 +31,7 @@ public class GreenHouseIC2Bucket extends GreenHouseBucket {
 
         @Override
         public GreenHouseBucket tryCreateBucket(IGreenHouse greenhouse, ItemStack input) {
-            if (!ItemList.IC2_Crop_Seeds.isStackEqual(input, true, true)) return null;
+            if (CropsNHUtils.getAnalyzedSeedData(input) == null) return null;
             if (!input.hasTagCompound()) return null;
 
             CropCard cc = Crops.instance.getCropCard(input);

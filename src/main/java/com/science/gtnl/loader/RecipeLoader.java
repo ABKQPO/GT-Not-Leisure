@@ -31,7 +31,7 @@ import com.science.gtnl.common.recipe.gregtech.ChemicalBathRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalDehydratorRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalPlantRecipes;
 import com.science.gtnl.common.recipe.gregtech.ChemicalRecipes;
-import com.science.gtnl.common.recipe.gregtech.CircuitAssemblerConvertRecipes;
+import com.science.gtnl.common.recipe.gregtech.CircuitAssemblerRecipes;
 import com.science.gtnl.common.recipe.gregtech.CircuitAssemblyLineRecipes;
 import com.science.gtnl.common.recipe.gregtech.CompressorRecipes;
 import com.science.gtnl.common.recipe.gregtech.CrackingRecipes;
@@ -149,27 +149,7 @@ import tectech.thing.CustomItemList;
 
 public class RecipeLoader {
 
-    public static boolean recipesAdded;
-
-    public static void loadPostInit() {
-        if (MainConfig.recipe.enableDeleteRecipe) {
-            RemoveRecipes.removeCircuitAssemblerRecipes();
-        }
-
-        IRecipePool[] recipePools = new IRecipePool[] { new CircuitAssemblerConvertRecipes(),
-            new GrandAssemblyLineSpecialRecipes() };
-
-        for (IRecipePool recipePool : recipePools) {
-            recipePool.loadRecipes();
-        }
-
-        RecipeUtil.copyAllRecipes(GTNLRecipeMaps.ConvertToCircuitAssemblerRecipes, RecipeMaps.circuitAssemblerRecipes);
-    }
-
-    public static void loadServerStart() {
-        RecipeUtil
-            .removeMatchingRecipes(GTNLRecipeMaps.ConvertToCircuitAssemblerRecipes, RecipeMaps.circuitAssemblerRecipes);
-        if (recipesAdded) return;
+    public static void loadCompleteInit() {
         if (MainConfig.recipe.enableDeleteRecipe) {
             RemoveRecipes.removeRecipes();
         }
@@ -184,12 +164,12 @@ public class RecipeLoader {
             loadBuffTargetChamberRecipe();
         }
 
-        IRecipePool[] recipePools = new IRecipePool[] { new BotaniaManaInfusionRecipes(), new ChemicalRecipes(),
-            new ElectrolyzerRecipes(), new MixerRecipes(), new AssemblerRecipes(), new AutoclaveRecipes(),
-            new AlloyBlastSmelterRecipes(), new CompressorRecipes(), new ReFusionReactorRecipes(),
-            new RealArtificialStarRecipes(), new PortalToAlfheimRecipes(), new NatureSpiritArrayRecipes(),
-            new ManaInfusionRecipes(), new TranscendentPlasmaMixerRecipes(), new CraftingTableRecipes(),
-            new ChemicalBathRecipes(), new SteamCrackerRecipes(), new DesulfurizerRecipes(),
+        IRecipePool[] recipePools = new IRecipePool[] { new GrandAssemblyLineSpecialRecipes(),
+            new BotaniaManaInfusionRecipes(), new ChemicalRecipes(), new ElectrolyzerRecipes(), new MixerRecipes(),
+            new AssemblerRecipes(), new AutoclaveRecipes(), new AlloyBlastSmelterRecipes(), new CompressorRecipes(),
+            new ReFusionReactorRecipes(), new RealArtificialStarRecipes(), new PortalToAlfheimRecipes(),
+            new NatureSpiritArrayRecipes(), new ManaInfusionRecipes(), new TranscendentPlasmaMixerRecipes(),
+            new CraftingTableRecipes(), new ChemicalBathRecipes(), new SteamCrackerRecipes(), new DesulfurizerRecipes(),
             new PetrochemicalPlantRecipes(), new FusionReactorRecipes(), new SmeltingMixingFurnaceRecipes(),
             new FluidExtraction(), new DigesterRecipes(), new DissolutionTankRecipes(), new CentrifugeRecipes(),
             new ChemicalDehydratorRecipes(), new ChemicalPlantRecipes(), new RareEarthCentrifugalRecipes(),
@@ -214,7 +194,8 @@ public class RecipeLoader {
             new NanitesIntegratedProcessingRecipes(), new NanoForgeRecipes(), new SteamWeatherModuleRecipes(),
             new ElectricNeutronActivatorRecipes(), new ReactorProcessingUnitRecipes(),
             new NuclearSaltProcessingPlantRecipes(), new MaceratorRecipes(), new QuantumForceTransformerRecipes(),
-            new MicroorganismMasterRecipes(), new SolarMuonCatalystRecipes() };
+            new MicroorganismMasterRecipes(), new SolarMuonCatalystRecipes(), new CircuitAssemblerRecipes(),
+            new CircuitAssemblyLineRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();
@@ -245,9 +226,16 @@ public class RecipeLoader {
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             loadTSTMegaAssemblyLineRecipes();
+            loadTSTAdvCircuitAssemblyLineRecipes();
         }
+    }
 
-        recipesAdded = true;
+    @Optional.Method(modid = "TwistSpaceTechnology")
+    public static void loadTSTAdvCircuitAssemblyLineRecipes() {
+        GTCMRecipe.advCircuitAssemblyLineRecipes.getBackend()
+            .clearRecipes();
+        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
+        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     public static void loadPlasmaCentrifugeRecipes() {
@@ -282,16 +270,6 @@ public class RecipeLoader {
 
     public static void loadCircuitNanitesData(long worldSeed) {
         new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
-    }
-
-    public static void loadCircuitRelatedRecipes() {
-        RecipeUtil.copyAllRecipes(GTNLRecipeMaps.ConvertToCircuitAssemblerRecipes, RecipeMaps.circuitAssemblerRecipes);
-
-        new CircuitAssemblyLineRecipes().loadRecipes();
-
-        if (ModList.TwistSpaceTechnology.isModLoaded()) {
-            loadTSTAdvCircuitAssemblyLineRecipes();
-        }
     }
 
     public static void loadBuffTargetChamberRecipe() {
@@ -338,14 +316,6 @@ public class RecipeLoader {
     public static void loadTSTMegaAssemblyLineRecipes() {
         AssemblyLineWithoutResearchRecipePool.loadRecipes();
         System.out.println("[GTNL] Register TwistSpaceTechnology MegaAssemblyLine recipes");
-    }
-
-    @Optional.Method(modid = "TwistSpaceTechnology")
-    public static void loadTSTAdvCircuitAssemblyLineRecipes() {
-        GTCMRecipe.advCircuitAssemblyLineRecipes.getBackend()
-            .clearRecipes();
-        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
-        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     public static void loadVillageTrade() {

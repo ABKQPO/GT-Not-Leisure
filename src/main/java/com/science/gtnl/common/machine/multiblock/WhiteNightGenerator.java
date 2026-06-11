@@ -39,6 +39,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -165,12 +166,11 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing > 25;
+        checkStructureCondition(errors, mCountCasing > 25);
     }
 
     @Override
@@ -227,8 +227,8 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
             .addElement(
                 'A',
                 GTStructureUtility.buildHatchAdder(WhiteNightGenerator.class)
+                    .hint(1)
                     .atLeast(HatchElement.Maintenance, HatchElement.Dynamo)
-                    .dot(1)
                     .casingIndex(getCasingTextureID())
                     .buildAndChain(
                         StructureUtility.onElementPass(

@@ -21,6 +21,7 @@ import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.common.gui.mui1.cover.CoverLegacyDataUIFactory;
 
+@Deprecated
 public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
 
     public VoidCoverUIFactory(CoverUIBuildContext buildContext) {
@@ -29,6 +30,7 @@ public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
 
     @Override
     public void addUIWidgets(ModularWindow.Builder builder) {
+        // TODO: Replace this mui1 cover factory with a mui2 cover panel without losing filter controls.
         if (!(getCover() instanceof VoidCover cover)) return;
         SlotGroup slotGroup = SlotGroup.ofItemHandler(cover.lockedInventoryHandler, 10)
             .startFromSlot(0)

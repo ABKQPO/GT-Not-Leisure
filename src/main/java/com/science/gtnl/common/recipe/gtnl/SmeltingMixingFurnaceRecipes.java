@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.FluidStackLookup;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -352,18 +353,6 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
             .itemInputs(GTUtility.getIntegratedCircuit(2))
             .fluidInputs(Materials.Trinium.getMolten(144 * 5), Materials.Naquadah.getMolten(144 * 9))
             .fluidOutputs(MaterialsAlloy.TRINIUM_NAQUADAH.getFluidStack(2106))
-            .duration(800)
-            .eut(960)
-            .addTo(SMFR);
-
-        RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(4))
-            .fluidInputs(
-                Materials.Copper.getMolten(144),
-                Materials.Antimony.getMolten(144 * 2),
-                Materials.Platinum.getMolten(144 * 2),
-                Materials.Tin.getMolten(144 * 15))
-            .fluidOutputs(new FluidStack(MaterialsElements.STANDALONE.WHITE_METAL.getFluid(), 2880))
             .duration(800)
             .eut(960)
             .addTo(SMFR);
@@ -860,7 +849,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.TranscendentMetal.getMolten(144 * 2160),
                 Materials.Tartarite.getMolten(144 * 2160),
                 Materials.Infinity.getMolten(144 * 1080),
-                Materials.DimensionallyTranscendentResidue.getFluid(1080000))
+                FluidStackLookup.getFluidStack("dimensionallytranscendentresidue", 1080000))
             .fluidOutputs(Materials.MoltenProtoHalkoniteBase.getFluid(1152 * 1080))
             .duration(1200 * 1080)
             .eut(TierEU.RECIPE_UEV)
@@ -1148,7 +1137,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Gold.getMolten(144 * 120),
                 Materials.Nitrogen.getGas(120000),
                 Materials.Oxygen.getGas(454000))
-            .fluidOutputs(Materials.EnhancedGalgadorian.getMolten(144 * 160))
+            .fluidOutputs(Materials.GalgadorianEnhanced.getMolten(144 * 160))
             .duration(3000)
             .eut(TierEU.RECIPE_MV)
             .addTo(SMFR);
@@ -1627,7 +1616,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Ardite.getMolten(144 * 16),
                 Materials.Plutonium.getMolten(144 * 63),
                 GGMaterial.atomicSeparationCatalyst.getMolten(144 * 13),
-                Materials.DimensionallyTranscendentResidue.getFluid(5000))
+                FluidStackLookup.getFluidStack("dimensionallytranscendentresidue", 5000))
             .fluidOutputs(Materials.Mellion.getMolten(144 * 63))
             .duration(1142)
             .eut(TierEU.RECIPE_UXV)
@@ -1745,7 +1734,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Thorium.getPlasma(1000),
                 new FluidStack(MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getPlasma(), 1000),
                 Materials.Calcium.getPlasma(1000),
-                Materials.DimensionallyTranscendentResidue.getFluid(1000))
+                FluidStackLookup.getFluidStack("dimensionallytranscendentresidue", 1000))
             .fluidOutputs(Materials.Creon.getPlasma(5000))
             .duration(400)
             .eut(TierEU.RECIPE_UXV)
@@ -1758,7 +1747,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Thorium.getPlasma(1000),
                 new FluidStack(MaterialsElements.STANDALONE.CELESTIAL_TUNGSTEN.getPlasma(), 1000),
                 Materials.Calcium.getPlasma(1000),
-                Materials.DimensionallyTranscendentResidue.getFluid(1000))
+                FluidStackLookup.getFluidStack("dimensionallytranscendentresidue", 1000))
             .fluidOutputs(Materials.Creon.getMolten(5000))
             .duration(400)
             .eut(TierEU.RECIPE_UXV)

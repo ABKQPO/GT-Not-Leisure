@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TextureSet;
 
 public class GTNLMaterials implements Runnable {
@@ -618,25 +617,8 @@ public class GTNLMaterials implements Runnable {
         subscriptNumbers("?"),
         new Werkstoff.Stats(),
         Werkstoff.Types.ELEMENT,
-        new Werkstoff.GenerationFeatures().addPrefix(OrePrefixes.dust)
-            .addPrefix(OrePrefixes.oreBasalt)
-            .addPrefix(OrePrefixes.oreBlackgranite)
-            .addPrefix(OrePrefixes.oreDense)
-            .addPrefix(OrePrefixes.oreEndstone)
-            .addPrefix(OrePrefixes.oreEnd)
-            .addPrefix(OrePrefixes.oreNetherrack)
-            .addPrefix(OrePrefixes.oreNormal)
-            .addPrefix(OrePrefixes.orePoor)
-            .addPrefix(OrePrefixes.oreRedgranite)
-            .addPrefix(OrePrefixes.rawOre)
-            .addPrefix(OrePrefixes.oreMarble)
-            .addPrefix(OrePrefixes.oreRich)
-            .addPrefix(OrePrefixes.oreSmall)
-            .addPrefix(OrePrefixes.dustImpure)
-            .addPrefix(OrePrefixes.dustPure)
-            .addPrefix(OrePrefixes.dustRefined)
-            .addPrefix(OrePrefixes.dustTiny)
-            .addPrefix(OrePrefixes.ore),
+        new Werkstoff.GenerationFeatures().disable()
+            .onlyDust(),
         offsetID + 53,
         TextureSet.SET_FLUID);
 

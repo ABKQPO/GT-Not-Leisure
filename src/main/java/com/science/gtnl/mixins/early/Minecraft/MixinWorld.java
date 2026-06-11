@@ -63,7 +63,7 @@ public abstract class MixinWorld {
         CrashReport crashreport;
         CrashReportCategory crashreportcategory;
 
-        // 时停后不执行部分
+        // Skip weather effect updates while time is stopped.
         if (!isStop) {
             for (i = 0; i < this.weatherEffects.size(); ++i) {
                 entity = this.weatherEffects.get(i);
@@ -121,7 +121,7 @@ public abstract class MixinWorld {
 
         for (i = 0; i < this.loadedEntityList.size(); ++i) {
             entity = this.loadedEntityList.get(i);
-            // 跳过不是玩家的更新
+            // Skip non-player entity updates while time is stopped.
             if (!(entity instanceof EntityPlayer)) continue;
             if (entity.ridingEntity != null) {
                 if (!entity.ridingEntity.isDead && entity.ridingEntity.riddenByEntity == entity) {

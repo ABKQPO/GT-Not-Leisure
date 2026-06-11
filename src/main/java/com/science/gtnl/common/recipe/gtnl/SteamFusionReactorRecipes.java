@@ -9,7 +9,7 @@ import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
+import gregtech.api.util.GTModHandler;
 
 public class SteamFusionReactorRecipes implements IRecipePool {
 
@@ -19,13 +19,13 @@ public class SteamFusionReactorRecipes implements IRecipePool {
     public void loadRecipes() {
         RecipeBuilder.builder()
             .fluidInputs(Materials.Steam.getGas(16000), Materials.Creosote.getFluid(4000))
-            .fluidOutputs(FluidUtils.getSuperHeatedSteam(16000))
+            .fluidOutputs(GTModHandler.getSuperHeatedSteam(16000))
             .duration(10 * TICKS)
             .eut(0)
             .addTo(SFRR);
 
         RecipeBuilder.builder()
-            .fluidInputs(FluidUtils.getSuperHeatedSteam(16000), Materials.Creosote.getFluid(4000))
+            .fluidInputs(GTModHandler.getSuperHeatedSteam(16000), Materials.Creosote.getFluid(4000))
             .fluidOutputs(Materials.DenseSupercriticalSteam.getGas(16000))
             .duration(10 * TICKS)
             .eut(0)

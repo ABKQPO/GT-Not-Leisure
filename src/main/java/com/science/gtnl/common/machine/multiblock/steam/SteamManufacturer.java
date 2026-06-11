@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -28,6 +30,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -65,14 +68,14 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamManufacturer.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamManufacturer.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamManufacturer.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamManufacturer.class)
                         .atLeast(
@@ -82,7 +85,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(),
                     StructureUtility.ofBlock(BlockLoader.metaCasing, 30)))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
@@ -173,8 +176,8 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

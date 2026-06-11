@@ -40,7 +40,13 @@ import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.ImmutableSet;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -49,7 +55,6 @@ import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.drawable.TextRenderer;
 import com.gtnewhorizons.modularui.api.fluids.FluidTankLongDelegate;
 import com.gtnewhorizons.modularui.api.fluids.FluidTanksHandler;
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
@@ -77,6 +82,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
+import com.science.gtnl.common.gui.modularui.SuperDualInputHatchMEGui;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -393,7 +399,14 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     }
 
     @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new SuperDualInputHatchMEGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after SuperDualInputHatchME mui2 parity is verified.
         updateAllInformationSlots();
         SlotWidget[] aeSlotWidgets = new SlotWidget[SLOT_COUNT];
         builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
@@ -973,14 +986,17 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         addGregTechLogo(builder);
     }
 
+    @Deprecated
     public ModularWindow createStoredItemStackSizeWindow(EntityPlayer player, int slotID) {
         return createStoredStackSizeWindow(player, slotID, i_stored, "Info_SuperDualInputHatchME_00");
     }
 
+    @Deprecated
     public ModularWindow createStoredFluidStackSizeWindow(EntityPlayer player, int slotID) {
         return createStoredStackSizeWindow(player, slotID, f_stored, "Info_SuperDualInputHatchME_01");
     }
 
+    @Deprecated
     public ModularWindow createStoredStackSizeWindow(EntityPlayer player, int slotID, long[] storedArray,
         String titleKey) {
         final int WIDTH = 110;
@@ -1062,6 +1078,160 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             refreshItemListF();
         }
         updateAllInformationSlots();
+    }
+
+    public int getDualSlotCountForGui() {
+        return SLOT_COUNT;
+    }
+
+    public boolean isAutoPullItemListForGui() {
+        return autoPullItemList;
+    }
+
+    public long getMinAutoPullItemAmountForGui() {
+        return minAutoPullItemAmount;
+    }
+
+    public void setMinAutoPullItemAmountForGui(long amount) {
+        minAutoPullItemAmount = Math.max(1L, amount);
+    }
+
+    public long getMinAutoPullFluidAmountForGui() {
+        return minAutoPullFluidAmount;
+    }
+
+    public void setMinAutoPullFluidAmountForGui(long amount) {
+        minAutoPullFluidAmount = Math.max(1L, amount);
+    }
+
+    public int getAutoPullRefreshTimeForGui() {
+        return autoPullRefreshTime;
+    }
+
+    public void setAutoPullRefreshTimeForGui(int refreshTime) {
+        autoPullRefreshTime = Math.max(1, refreshTime);
+    }
+
+    public int getIntMaxScaleForGui() {
+        return intmaxs;
+    }
+
+    public void setIntMaxScaleForGui(int value) {
+        intmaxs = Math.max(1, Math.min(10_000, value));
+        updateAllInformationSlots();
+    }
+
+    public ItemStack getFilterItemForGui(int slot) {
+        if (slot < 0 || slot >= i_mark.length) {
+            return null;
+        }
+        return i_mark[slot];
+    }
+
+    public void setFilterItemForGui(int slot, ItemStack stack) {
+        if (slot < 0 || slot >= i_mark.length) {
+            return;
+        }
+        i_mark[slot] = stack;
+        inventoryHandlerMark.setStackInSlot(slot, stack);
+        updateInformationSlot(slot, stack);
+    }
+
+    public ItemStack getInformationItemForGui(int slot) {
+        if (slot < 0 || slot >= i_display.length) {
+            return null;
+        }
+        return i_display[slot];
+    }
+
+    public long getInformationItemAmountForGui(int slot) {
+        if (slot < 0 || slot >= i_client.length) {
+            return 0L;
+        }
+        return i_client[slot];
+    }
+
+    public boolean containsFilterItemForGui(ItemStack stack) {
+        for (int i = 0; i < getDualSlotCountForGui(); ++i) {
+            if (GTUtility.areStacksEqual(i_mark[i], stack, false)) return true;
+        }
+        return false;
+    }
+
+    public long getStoredItemStackSizeForGui(int slot) {
+        if (slot < 0 || slot >= i_stored.length) {
+            return Long.MAX_VALUE;
+        }
+        return i_stored[slot];
+    }
+
+    public void setStoredItemStackSizeForGui(int slot, long stackSize) {
+        if (slot < 0 || slot >= i_stored.length) {
+            return;
+        }
+        i_stored[slot] = Math.max(1L, stackSize);
+        updateInformationSlot(slot, i_mark[slot]);
+    }
+
+    public FluidStack getFilterFluidForGui(int slot) {
+        if (slot < 0 || slot >= f_mark.length) {
+            return null;
+        }
+        return f_mark[slot];
+    }
+
+    public void setFilterFluidForGui(int slot, FluidStack fluid) {
+        if (slot < 0 || slot >= f_mark.length) {
+            return;
+        }
+        f_mark[slot] = fluid;
+        updateInformationSlotF(slot);
+    }
+
+    public FluidStack getInformationFluidForGui(int slot) {
+        if (slot < 0 || slot >= f_display.length) {
+            return null;
+        }
+        return f_display[slot];
+    }
+
+    public long getInformationFluidAmountForGui(int slot) {
+        if (slot < 0 || slot >= f_client.length) {
+            return 0L;
+        }
+        return f_client[slot];
+    }
+
+    public boolean containsFilterFluidForGui(FluidStack fluid) {
+        for (int i = 0; i < getDualSlotCountForGui(); ++i) {
+            if (GTUtility.areFluidsEqual(f_mark[i], fluid, false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public long getStoredFluidStackSizeForGui(int slot) {
+        if (slot < 0 || slot >= f_stored.length) {
+            return Long.MAX_VALUE;
+        }
+        return f_stored[slot];
+    }
+
+    public void setStoredFluidStackSizeForGui(int slot, long stackSize) {
+        if (slot < 0 || slot >= f_stored.length) {
+            return;
+        }
+        f_stored[slot] = Math.max(1L, stackSize);
+        updateInformationSlotF(slot);
+    }
+
+    public Mui2ArrayItemHandler getMui2FilterItemHandler() {
+        return mui2FilterItemHandler;
+    }
+
+    public Mui2ArrayItemHandler getMui2InformationItemHandler() {
+        return mui2InformationItemHandler;
     }
 
     public void refreshItemList() {
@@ -1414,7 +1584,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         return new ItemStack[0];
     }
 
-    @Override
     public void setProcessingLogic(ProcessingLogic pl) {}
 
     public AENetworkProxy gridProxy;
@@ -1651,8 +1820,103 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         autoPullItemList = aNBT.getBoolean("autoPull");
     }
 
-    public IItemHandlerModifiable inventoryHandlerMark = new ItemStackHandler(i_mark);
-    public IItemHandlerModifiable inventoryHandlerDisplay = new ItemStackHandler(i_display);
+    public ItemStackHandler inventoryHandlerMark = new ItemStackHandler(i_mark);
+    public ItemStackHandler inventoryHandlerDisplay = new ItemStackHandler(i_display);
+    private final Mui2ArrayItemHandler mui2FilterItemHandler = new Mui2ArrayItemHandler(i_mark);
+    private final Mui2ArrayItemHandler mui2InformationItemHandler = new Mui2ArrayItemHandler(i_display);
+
+    public static class Mui2ArrayItemHandler implements IItemHandlerModifiable {
+
+        private final ItemStack[] stacks;
+
+        public Mui2ArrayItemHandler(ItemStack[] stacks) {
+            this.stacks = stacks;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, ItemStack stack) {
+            validateSlot(slot);
+            stacks[slot] = stack;
+        }
+
+        @Override
+        public int getSlots() {
+            return stacks.length;
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            validateSlot(slot);
+            return stacks[slot];
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (stack == null) {
+                return null;
+            }
+            validateSlot(slot);
+            ItemStack existing = stacks[slot];
+            if (existing != null && !GTUtility.areStacksEqual(existing, stack, true)) {
+                return stack;
+            }
+            int limit = Math.min(getSlotLimit(slot), stack.getMaxStackSize());
+            int existingAmount = existing == null ? 0 : existing.stackSize;
+            int insertAmount = Math.min(stack.stackSize, limit - existingAmount);
+            if (insertAmount <= 0) {
+                return stack;
+            }
+            if (!simulate) {
+                ItemStack changed = existing == null ? stack.copy() : existing.copy();
+                changed.stackSize = existingAmount + insertAmount;
+                stacks[slot] = changed;
+            }
+            if (insertAmount == stack.stackSize) {
+                return null;
+            }
+            ItemStack remainder = stack.copy();
+            remainder.stackSize -= insertAmount;
+            return remainder;
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            validateSlot(slot);
+            if (amount <= 0 || stacks[slot] == null) {
+                return null;
+            }
+            ItemStack existing = stacks[slot];
+            int extractAmount = Math.min(amount, existing.stackSize);
+            ItemStack extracted = existing.copy();
+            extracted.stackSize = extractAmount;
+            if (!simulate) {
+                if (extractAmount >= existing.stackSize) {
+                    stacks[slot] = null;
+                } else {
+                    existing.stackSize -= extractAmount;
+                }
+            }
+            return extracted;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            validateSlot(slot);
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            validateSlot(slot);
+            return true;
+        }
+
+        private void validateSlot(int slot) {
+            if (slot < 0 || slot >= stacks.length) {
+                throw new RuntimeException("Slot " + slot + " not in valid range");
+            }
+        }
+    }
 
     @Override
     public IGridNode getGridNode(ForgeDirection dir) {
@@ -1899,11 +2163,13 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             StatCollector.translateToLocal("GT5U.waila.stocking_bus.auto_pull." + (autopull ? "enabled" : "disabled")));
         if (autopull) {
             currenttip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_SuperDualInputHatchME_03", GTUtility.formatNumbers(itemMinSize)));
+                StatCollector.translateToLocalFormatted(
+                    "Info_SuperDualInputHatchME_03",
+                    NumberFormatUtil.formatNumber(itemMinSize)));
             currenttip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_SuperDualInputHatchME_04", GTUtility.formatNumbers(fluidMinSize)));
+                StatCollector.translateToLocalFormatted(
+                    "Info_SuperDualInputHatchME_04",
+                    NumberFormatUtil.formatNumber(fluidMinSize)));
         }
         super.getWailaBody(itemStack, currenttip, accessor, config);
     }

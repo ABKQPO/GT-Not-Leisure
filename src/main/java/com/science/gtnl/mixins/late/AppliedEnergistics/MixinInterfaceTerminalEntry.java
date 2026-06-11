@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
 
+import appeng.api.storage.data.IAEStackType;
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
 
 @Mixin(targets = "appeng.client.gui.implementations.GuiInterfaceTerminal$InterfaceTerminalEntry", remap = false)
@@ -18,8 +19,9 @@ public abstract class MixinInterfaceTerminalEntry {
     String dispName;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void gtnl$onInit(GuiInterfaceTerminal init, long id, String name, int rows, int rowSize, boolean online,
-        boolean p2pOutput, CallbackInfo ci) {
+    private void gtnl$onInit(GuiInterfaceTerminal init, long id, String name, String suffix, int rows, int rowSize,
+        int numSlots, boolean online, boolean p2pOutput, IAEStackType<?>[] supportedStackTypes, int priority,
+        CallbackInfo ci) {
         if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
         if (name == null) return;
         this.dispName = Utils.getExtraInterfaceName(name);

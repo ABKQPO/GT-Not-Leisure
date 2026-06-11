@@ -10,16 +10,16 @@ import java.util.function.UnaryOperator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 
+import gregtech.api.modularui2.GTGuiTextures;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
-import tectech.thing.metaTileEntity.multi.godforge.util.MilestoneIcon;
-import tectech.thing.metaTileEntity.multi.godforge.util.UpgradeColor;
 
 public enum EternalGregTechWorkshopUpgrade {
 
@@ -291,8 +291,8 @@ public enum EternalGregTechWorkshopUpgrade {
     private UpgradeColor color;
     private MilestoneIcon icon;
     private BGWindowSize windowSize;
-    @Getter
-    private Pos2d treePos;
+    private int treeX;
+    private int treeY;
 
     // Pre-generated data
     @Getter
@@ -319,12 +319,13 @@ public enum EternalGregTechWorkshopUpgrade {
         this.color = b.color;
         this.icon = b.icon;
         this.windowSize = b.windowSize;
-        this.treePos = b.treePos;
+        this.treeX = b.treeX;
+        this.treeY = b.treeY;
     }
 
     public void addExtraCost(ItemStack... cost) {
         if (extraCost.size() + cost.length > 20) {
-            throw new IllegalArgumentException("Too many inputs for Godforge upgrade cost, cannot be more than 12!");
+            throw new IllegalArgumentException("Too many inputs for Godforge upgrade cost, cannot be more than 20!");
         }
         extraCost.addAll(Arrays.asList(cost));
     }
@@ -341,24 +342,83 @@ public enum EternalGregTechWorkshopUpgrade {
         return extraCost.toArray(new ItemStack[0]);
     }
 
+    @Deprecated
     public UITexture getBackground() {
+        // TODO: Remove this MUI1 texture getter after Eternal GregTech Workshop fallback windows are removed.
         return color.getBackground();
     }
 
+    @Deprecated
     public UITexture getOverlay() {
+        // TODO: Remove this MUI1 texture getter after Eternal GregTech Workshop fallback windows are removed.
         return color.getOverlay();
     }
 
+    public IDrawable getMui2Background() {
+        return color.getMui2Background();
+    }
+
+    public IDrawable getMui2Overlay() {
+        return color.getMui2Overlay();
+    }
+
+    public IDrawable getMui2Connector() {
+        return color.getMui2Connector();
+    }
+
+    public IDrawable getMui2OpaqueConnector() {
+        return color.getMui2OpaqueConnector();
+    }
+
+    public UpgradeColor getColorForGui() {
+        return color;
+    }
+
+    public int getTreeXForGui() {
+        return treeX;
+    }
+
+    public int getTreeYForGui() {
+        return treeY;
+    }
+
+    @Deprecated
+    public Pos2d getTreePos() {
+        // TODO: Remove this MUI1 position getter after Eternal GregTech Workshop fallback windows are removed.
+        return new Pos2d(treeX, treeY);
+    }
+
+    @Deprecated
     public UITexture getSymbol() {
+        // TODO: Remove this MUI1 texture getter after Eternal GregTech Workshop fallback windows are removed.
         return icon.getSymbol();
+    }
+
+    public IDrawable getMui2Symbol() {
+        return switch (icon) {
+            case CHARGE -> GTGuiTextures.PICTURE_GODFORGE_MILESTONE_CHARGE;
+            case CONVERSION -> GTGuiTextures.PICTURE_GODFORGE_MILESTONE_CONVERSION;
+            case CATALYST -> GTGuiTextures.PICTURE_GODFORGE_MILESTONE_CATALYST;
+            case COMPOSITION -> GTGuiTextures.PICTURE_GODFORGE_MILESTONE_COMPOSITION;
+        };
     }
 
     public float getSymbolWidthRatio() {
         return icon.getWidthRatio();
     }
 
+    @Deprecated
     public Size getWindowSize() {
+        // TODO: Remove this MUI1 size getter after Eternal GregTech Workshop fallback windows are removed.
         return windowSize.getWindowSize();
+    }
+
+    public int getWindowWidthForGui() {
+        return windowSize.getWidth();
+    }
+
+    public int getWindowHeightForGui() {
+        return windowSize.getHeight();
     }
 
     public int getLoreYPos() {
@@ -394,7 +454,8 @@ public enum EternalGregTechWorkshopUpgrade {
         private UpgradeColor color = UpgradeColor.BLUE;
         private MilestoneIcon icon = MilestoneIcon.CHARGE;
         private BGWindowSize windowSize = BGWindowSize.STANDARD;
-        private Pos2d treePos = new Pos2d(0, 0);
+        private int treeX;
+        private int treeY;
 
         private Builder() {}
 
@@ -431,7 +492,8 @@ public enum EternalGregTechWorkshopUpgrade {
         }
 
         public Builder treePos(int x, int y) {
-            this.treePos = new Pos2d(x, y);
+            this.treeX = x;
+            this.treeY = y;
             return this;
         }
     }
@@ -443,17 +505,29 @@ public enum EternalGregTechWorkshopUpgrade {
 
         ;
 
-        private final Size size;
+        private final int width;
+        private final int height;
         @Getter
         private final int loreY;
 
         BGWindowSize(int width, int height, int loreY) {
-            this.size = new Size(width, height);
+            this.width = width;
+            this.height = height;
             this.loreY = loreY;
         }
 
+        @Deprecated
         public Size getWindowSize() {
-            return size;
+            // TODO: Remove this MUI1 size getter after Eternal GregTech Workshop fallback windows are removed.
+            return new Size(width, height);
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
         }
 
     }

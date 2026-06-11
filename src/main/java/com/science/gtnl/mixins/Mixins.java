@@ -30,8 +30,8 @@ public enum Mixins implements IMixins {
         "Minecraft.MixinEntityItem", "Minecraft.MixinEntityLivingBase", "Minecraft.MixinEntityLiving",
         "Minecraft.MixinEntityPlayer", "Minecraft.MixinExplosion", "Minecraft.MixinInventoryCrafting",
         "Minecraft.MixinItem", "Minecraft.MixinItemStack", "Minecraft.MixinMinecraftServer",
-        "Minecraft.MixinNBTTagList", "Minecraft.MixinPotion", "Minecraft.MixinPotionEffect",
-        "Minecraft.MixinServerConfigurationManager", "Minecraft.MixinWorld", "Minecraft.MixinWorldServer"),
+        "Minecraft.MixinNBTTagList", "Minecraft.MixinPotionEffect", "Minecraft.MixinServerConfigurationManager",
+        "Minecraft.MixinWorld", "Minecraft.MixinWorldServer"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "AprilFool.MixinBaseMetaTileEntityRenderer", "AprilFool.MixinCommonMetaTileEntity")
@@ -88,14 +88,12 @@ public enum Mixins implements IMixins {
             "AppliedEnergistics.MixinEntityTinyTNTPrimed",
             "AppliedEnergistics.MixinTileIOPort",
             "AppliedEnergistics.assembler.AccessorContainerPatternTerm",
-            "AppliedEnergistics.assembler.AccessorFCContainerEncodeTerminal",
             "AppliedEnergistics.assembler.AccessorInvTracker",
             "AppliedEnergistics.assembler.MixinContainerInterfaceTerminal",
             "AppliedEnergistics.MixinCraftingCPUCluster",
             "AppliedEnergistics.MixinCraftingCPUCluster$AccessorTaskProgress",
             "AppliedEnergistics.QuamtumComputer.MixinCraftingCPUCluster",
             "AppliedEnergistics.QuamtumComputer.MixinCraftingGridCache",
-            "Bartwork.MixinCircuitImprintLoader",
             "Bartwork.MixinItemRegistry",
             "Bartwork.MixinMultipleMetalLoader",
             "Bartwork.MixinSimpleMetalLoader",
@@ -104,7 +102,7 @@ public enum Mixins implements IMixins {
             "Bartwork.MixinMoltenCellLoader",
             "Botania.AccessorEntityDoppleganger",
             "DraconicEvolution.AccessorCustomArmorHandler",
-            "DraconicEvolution.MixinMinecraftForgeEventHandler",
+            "DraconicEvolution.MixinCustomArmorHandler",
             "DraconicEvolution.MixinReactorExplosion",
             "Gregtech.MixinBaseMetaTileEntity",
             "Gregtech.MixinEyeOfHarmonyRecipeStorage",
@@ -125,6 +123,7 @@ public enum Mixins implements IMixins {
             "Gregtech.MixinMTEHatchCraftingInputME",
             "Gregtech.MixinMTEHatchCraftingInputSlave",
             "Gregtech.MixinMTEHatchOutputBeamline",
+            "Gregtech.MixinMTEPurificationUnitBaseGui",
             "Gregtech.MixinMTEDigitalTankBase",
             "Gregtech.MixinMTEHatchDataAccess",
             "Gregtech.MixinMTEHatchSteamBusOutput",
@@ -153,7 +152,6 @@ public enum Mixins implements IMixins {
             "ThaumicTinkerer.MixinItemBloodSword",
             "VisualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
-            "AppliedEnergistics.assembler.MixinGuiFluidPatternTerminal",
             "AppliedEnergistics.assembler.MixinGuiMEMonitorable",
             "AppliedEnergistics.assembler.MixinGuiPatternTerm")
         .setPhase(Phase.LATE)),
@@ -176,9 +174,7 @@ public enum Mixins implements IMixins {
             .addRequiredMod(ModList.EnhancedLootBags)),
 
     NOT_ENOUGH_ENERGISTICS(new MixinBuilder("Not Enough Energistics Mixin")
-        .addCommonMixins(
-            "NotEnoughEnergistics.MixinNEEPatternTerminalHandler",
-            "NotEnoughEnergistics.MixinFluidPatternTerminalRecipeTransferHandler")
+        .addCommonMixins("NotEnoughEnergistics.MixinNEEPatternTerminalHandler")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.NotEnoughEnergistics)),
 
@@ -199,17 +195,14 @@ public enum Mixins implements IMixins {
             "RandomComplement.MixinContainerCraftAmount",
             "RandomComplement.MixinContainerCraftConfirm",
             "RandomComplement.MixinContainerMEMonitorable",
-            "RandomComplement.MixinCPacketCraftRequest",
             "RandomComplement.MixinGuiBridge",
             "RandomComplement.MixinQuantumCluster",
             "RandomComplement.MixinTileQuantumBridge",
             "RandomComplement.MixinWirelessTerminalGuiObject")
         .addClientMixins(
-            "RandomComplement.MixinFCGuiAmount",
             "RandomComplement.MixinGuiAmount",
             "RandomComplement.MixinGuiCraftAmount",
-            "RandomComplement.MixinGuiCraftConfirm",
-            "RandomComplement.MixinGuiFluidCraftAmount")
+            "RandomComplement.MixinGuiCraftConfirm")
         .setPhase(Phase.LATE)),
 
     OVERPOWERED_CHANGE(new MixinBuilder("Overpowered Mixin Changes")

@@ -1,7 +1,12 @@
 package com.science.gtnl.common.block.blocks.tile;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +15,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.glodblock.github.common.item.ItemFluidDrop;
 import com.glodblock.github.common.item.ItemFluidPacket;
@@ -32,8 +39,10 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -114,6 +123,23 @@ public class TileEntitySuperDualInterface extends TileInterface implements ICust
     }
 
     @Override
+    public IMEMonitor<IAEFluidStack> getFluidInventory() {
+        return getDualityFluid().getFluidInventory();
+    }
+
+    @Override
+    @Nullable
+    public IMEMonitor<?> getMEMonitor(@NotNull IAEStackType<?> type) {
+        if (type == ITEM_STACK_TYPE) {
+            return getItemInventory();
+        }
+        if (type == FLUID_STACK_TYPE) {
+            return getFluidInventory();
+        }
+        return getDualityFluid().getMEMonitor(type);
+    }
+
+    @Override
     public AppEngInternalAEInventory getConfig() {
         return dualHostSupport.getConfig();
     }
@@ -176,7 +202,9 @@ public class TileEntitySuperDualInterface extends TileInterface implements ICust
     public void getDrops(World w, int x, int y, int z, List<ItemStack> drops) {
         getDualityFluid().addDrops(drops);
         if (getInterfaceDuality().getWaitingToSend() != null) {
-            for (ItemStack is : getInterfaceDuality().getWaitingToSend()) {
+            for (var waitingStack : getInterfaceDuality().getWaitingToSend()) {
+                if (!(waitingStack instanceof IAEItemStack itemWaitingStack)) continue;
+                ItemStack is = itemWaitingStack.getItemStack();
                 if (is != null && is.getItem() instanceof ItemFluidDrop) {
                     drops.add(ItemFluidPacket.newStack(ItemFluidDrop.getFluidStack(is)));
                     is.stackSize = 0;
@@ -188,12 +216,20 @@ public class TileEntitySuperDualInterface extends TileInterface implements ICust
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return getDualityFluid().getTickingRequest(node);
+        TickingRequest item = super.getTickingRequest(node);
+        TickingRequest fluid = getDualityFluid().getTickingRequest(node);
+        return new TickingRequest(
+            Math.min(item.minTickRate, fluid.minTickRate),
+            Math.max(item.maxTickRate, fluid.maxTickRate),
+            item.isSleeping && fluid.isSleeping,
+            true);
     }
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        return getDualityFluid().tickingRequest(node, ticksSinceLastCall);
+        TickRateModulation item = super.tickingRequest(node, ticksSinceLastCall);
+        TickRateModulation fluid = getDualityFluid().tickingRequest(node, ticksSinceLastCall);
+        return item.ordinal() >= fluid.ordinal() ? item : fluid;
     }
 
     @Override

@@ -7,6 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
@@ -15,9 +19,9 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.api.IConfigurationMaintenance;
+import com.science.gtnl.common.gui.modularui.CustomMaintenanceHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import gregtech.api.gui.modularui.GTUIInfos;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
@@ -113,7 +117,9 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -183,9 +189,9 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mConfigTime = aNBT.getInteger("mConfigTime");
         mMinConfigTime = aNBT.getInteger("mMinConfigTime");
         mMaxConfigTime = aNBT.getInteger("mMaxConfigTime");
+        setConfigTimeFromGui(aNBT.getInteger("mConfigTime"));
     }
 
     @Override
@@ -203,8 +209,12 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     @Override
     public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound aNBT) {
         if (!aNBT.hasKey("mConfigTime")) return false;
-        mConfigTime = aNBT.getInteger("mConfigTime");
+        setConfigTimeFromGui(aNBT.getInteger("mConfigTime"));
         return true;
+    }
+
+    public void setConfigTimeFromGui(int configTime) {
+        mConfigTime = Math.min(getMaxConfigTime(), Math.max(getMinConfigTime(), configTime));
     }
 
     @Override
@@ -215,12 +225,27 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
 
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        if (isConfiguration()) GTUIInfos.openGTTileEntityUI(aBaseMetaTileEntity, aPlayer);
+        if (aBaseMetaTileEntity.isClientSide()) {
+            return true;
+        }
+        if (isConfiguration()) openGui(aPlayer);
         return true;
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new CustomMaintenanceHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
         if (isConfiguration()) {
             builder.widget(
                 TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")

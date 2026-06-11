@@ -203,7 +203,9 @@ public abstract class GreenHouseMode {
         }
     }
 
+    @Deprecated
     public static class MUIContainer_Greenhouse extends ModularUIContainer {
+        // TODO: Remove this MUI1 greenhouse container after all startup paths open MUI2 panels directly.
 
         final WeakReference<? extends IGreenHouse> parent;
 
@@ -229,7 +231,7 @@ public abstract class GreenHouseMode {
                 return super.transferStackInSlot(aPlayer, aSlotIndex);
             }
 
-            mte.addCrop(aStack);
+            mte.tryAddCropStack(aStack, false);
             if (aStack.stackSize <= 0) s.putStack(null);
             else s.putStack(aStack);
             detectAndSendChanges();
@@ -244,8 +246,10 @@ public abstract class GreenHouseMode {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T extends IGreenHouse> UIInfo<?, ?> createGreenhouseUI(
         ContainerConstructor<T> containerConstructor) {
+        // TODO: Remove this MUI1 greenhouse UI factory after all greenhouse machines expose only MUI2 GUI factories.
         return UIBuilder.of()
             .container((player, world, x, y, z) -> {
                 TileEntity te = world.getTileEntity(x, y, z);

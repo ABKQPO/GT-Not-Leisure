@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
+import static gtPlusPlus.api.recipe.GTPPRecipeMaps.simpleWasherRecipes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,6 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -27,6 +30,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -34,6 +38,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -43,6 +48,11 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class SteamOreProcessorModule extends SteamElevatorModule {
+
+    private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_MACERATOR,
+        GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_WASHER, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_CENTRIFUGE,
+        GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_SIFTER, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_BATH,
+        GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_THERMAL, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_FORGE };
 
     public static IntOpenHashSet isCrushedOre = new IntOpenHashSet();
     public static IntOpenHashSet isCrushedPureOre = new IntOpenHashSet();
@@ -68,6 +78,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> CENTRIFUGE_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> SIFTER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> CHEMBATH_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> HAMMER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
+    public static final Int2ObjectLinkedOpenHashMap<GTRecipe> SIMPLE_WASHER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
 
     public static final ThreadLocal<Random> RAND = ThreadLocal.withInitial(Random::new);
 
@@ -193,43 +205,45 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
 
         midProduct = simulatedOres.toArray(new ItemStack[0]);
 
-        switch (machineMode) {
-            case 0 -> {
+        switch (getProcessingMode()) {
+            case MAC_WASH_THERMAL_MAC -> {
                 doMac(isOre);
                 doWash(isCrushedOre);
                 doThermal(isCrushedPureOre, isCrushedOre);
                 doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
             }
-            case 1 -> {
+            case MAC_WASH_MAC_CENTRI -> {
                 doMac(isOre);
                 doWash(isCrushedOre);
                 doMac(isOre, isCrushedOre, isCrushedPureOre);
                 doCentrifuge(isImpureDust, isPureDust);
             }
-            case 2 -> {
+            case MAC_MAC_CENTRI -> {
                 doMac(isOre);
                 doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
                 doCentrifuge(isImpureDust, isPureDust);
             }
-            case 3 -> {
+            case MAC_WASH_SIFT -> {
                 doMac(isOre);
                 doWash(isCrushedOre);
                 doSift(isCrushedPureOre);
             }
-            case 4 -> {
+            case MAC_CHEM_MAC_CENTRI -> {
                 doMac(isOre);
                 doChemWash(isCrushedOre, isCrushedPureOre);
                 doMac(isCrushedOre, isCrushedPureOre);
                 doCentrifuge(isImpureDust, isPureDust);
             }
-            case 5 -> {
+            case MAC_CHEM_THERMAL_MAC -> {
                 doMac(isOre);
                 doChemWash(isCrushedOre, isCrushedPureOre);
                 doThermal(isCrushedPureOre, isCrushedOre);
                 doMac(isThermal, isOre, isCrushedOre, isCrushedPureOre);
             }
-            default -> {
-                return CheckRecipeResultRegistry.NO_RECIPE;
+            case FORGE_FORGE_SIMPLEWASH -> {
+                doForgeHammer(isOre);
+                doForgeHammer(isThermal, isOre, isCrushedOre, isCrushedPureOre);
+                doSimpleWash(isImpureDust, isPureDust);
             }
         }
 
@@ -255,7 +269,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;
         this.mOutputItems = midProduct;
-        this.mMaxProgresstime = 128;
+        this.mMaxProgresstime = getRecipeTickTime(getProcessingMode());
         this.lEUt = calculator.getConsumption();
         if (this.lEUt > 0) {
             this.lEUt = -this.lEUt;
@@ -418,6 +432,58 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         doCompress(tProduct);
     }
 
+    public void doForgeHammer(IntOpenHashSet... aTables) {
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
+        if (midProduct != null) {
+            for (ItemStack aStack : midProduct) {
+                int tID = GTUtility.stackToInt(aStack);
+                if (checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = getCachedRecipe(
+                        HAMMER_CACHE,
+                        tID,
+                        () -> RecipeMaps.hammerRecipes.findRecipeQuery()
+                            .caching(false)
+                            .items(aStack)
+                            .find());
+                    if (tRecipe != null) {
+                        tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
+                    } else {
+                        tProduct.add(aStack);
+                    }
+                } else {
+                    tProduct.add(aStack);
+                }
+            }
+        }
+        doCompress(tProduct);
+    }
+
+    public void doSimpleWash(IntOpenHashSet... aTables) {
+        ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
+        if (midProduct != null) {
+            for (ItemStack aStack : midProduct) {
+                int tID = GTUtility.stackToInt(aStack);
+                if (checkTypes(tID, aTables)) {
+                    GTRecipe tRecipe = getCachedRecipe(
+                        SIMPLE_WASHER_CACHE,
+                        tID,
+                        () -> simpleWasherRecipes.findRecipeQuery()
+                            .items(aStack)
+                            .fluids(Materials.Water.getFluid(100))
+                            .find());
+                    if (tRecipe != null) {
+                        tProduct.addAll(getOutputStack(tRecipe, aStack.stackSize));
+                    } else {
+                        tProduct.add(aStack);
+                    }
+                } else {
+                    tProduct.add(aStack);
+                }
+            }
+        }
+        doCompress(tProduct);
+    }
+
     public void doChemWash(IntOpenHashSet... aTables) {
         ObjectArrayList<ItemStack> tProduct = new ObjectArrayList<>();
         if (midProduct != null) {
@@ -540,6 +606,8 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         super.loadNBTData(aNBT);
         mVoidStone = aNBT.getBoolean("mVoidStone");
         currentParallelism = aNBT.getInteger("currentParallelism");
+        machineMode = ProcessingMode.fromOrdinal(aNBT.getInteger("mMode"))
+            .ordinal();
     }
 
     @Override
@@ -556,94 +624,128 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
 
     @Override
     public String getMachineModeName() {
-        List<String> des = getDisplayMode(machineMode);
+        List<String> des = getDisplayMode(getProcessingMode());
         return String.join("\n", des);
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return super.getGui().withMachineModeIcons(MODE_ICONS);
+    }
+
+    @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Steam Ore Processor Module GUI is fully ported to mui2.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
     }
 
     @Override
     public int nextMachineMode() {
-        return machineMode = (machineMode + 1) % 6;
+        return machineMode = getProcessingMode().next()
+            .ordinal();
     }
 
-    @Override
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         if (aPlayer.isSneaking()) {
             mVoidStone = !mVoidStone;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.void", mVoidStone));
+            GTUtility.sendChatTrans(aPlayer, "GT5U.machines.oreprocessor.void", mVoidStone);
             return;
         }
-        machineMode = (machineMode + 1) % 6;
-        List<String> des = getDisplayMode(machineMode);
-        GTUtility.sendChatToPlayer(aPlayer, String.join("", des));
+        machineMode = getProcessingMode().next()
+            .ordinal();
+        List<String> des = getDisplayMode(getProcessingMode());
+        GTUtility
+            .sendChatTrans(aPlayer, StatCollector.translateToLocal("GT5U.MULTI_MACHINE_CHANGE"), String.join("", des));
+    }
+
+    private ProcessingMode getProcessingMode() {
+        return ProcessingMode.fromOrdinal(machineMode);
+    }
+
+    private static int getRecipeTickTime(ProcessingMode mode) {
+        return switch (mode) {
+            case MAC_WASH_THERMAL_MAC -> 600;
+            case MAC_WASH_MAC_CENTRI -> 300;
+            case MAC_MAC_CENTRI -> 200;
+            case MAC_WASH_SIFT -> 400;
+            case MAC_CHEM_MAC_CENTRI -> 340;
+            case MAC_CHEM_THERMAL_MAC -> 640;
+            case FORGE_FORGE_SIMPLEWASH -> 20;
+        };
     }
 
     public static List<String> getDisplayMode(int mode) {
-        EnumChatFormatting aqua = EnumChatFormatting.AQUA;
+        return getDisplayMode(ProcessingMode.fromOrdinal(mode));
+    }
+
+    private static List<String> getDisplayMode(ProcessingMode mode) {
+        EnumChatFormatting gray = EnumChatFormatting.GRAY;
         String crush = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Macerate");
         String wash = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Ore_Washer")
-            .replace(" ", " " + aqua);
+            .replace(" ", " " + gray);
         String thermal = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Thermal_Centrifuge")
-            .replace(" ", " " + aqua);
+            .replace(" ", " " + gray);
         String centrifuge = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Centrifuge");
         String sifter = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Sifter");
         String chemWash = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Chemical_Bathing")
-            .replace(" ", " " + aqua);
-        String arrow = " " + aqua + "-> ";
+            .replace(" ", " " + gray);
+        String hammer = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Forge_Hammer");
+        String simpleWasher = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Simple_Washer");
+        String arrow = " " + gray + "-> ";
 
         List<String> des = new ArrayList<>();
         des.add(StatCollector.translateToLocalFormatted("GT5U.multiblock.runningMode") + " ");
 
         switch (mode) {
-            case 0 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + wash + arrow);
-                des.add(aqua + thermal + arrow);
-                des.add(aqua + crush + ' ');
+            case MAC_WASH_THERMAL_MAC -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + wash + arrow);
+                des.add(gray + thermal + arrow);
+                des.add(gray + crush + ' ');
             }
-            case 1 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + wash + arrow);
-                des.add(aqua + crush + arrow);
-                des.add(aqua + centrifuge + ' ');
+            case MAC_WASH_MAC_CENTRI -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + wash + arrow);
+                des.add(gray + crush + arrow);
+                des.add(gray + centrifuge + ' ');
             }
-            case 2 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + crush + arrow);
-                des.add(aqua + centrifuge + ' ');
+            case MAC_MAC_CENTRI -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + crush + arrow);
+                des.add(gray + centrifuge + ' ');
             }
-            case 3 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + wash + arrow);
-                des.add(aqua + sifter + ' ');
+            case MAC_WASH_SIFT -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + wash + arrow);
+                des.add(gray + sifter + ' ');
             }
-            case 4 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + chemWash + arrow);
-                des.add(aqua + crush + arrow);
-                des.add(aqua + centrifuge + ' ');
+            case MAC_CHEM_MAC_CENTRI -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + chemWash + arrow);
+                des.add(gray + crush + arrow);
+                des.add(gray + centrifuge + ' ');
             }
-            case 5 -> {
-                des.add(aqua + crush + arrow);
-                des.add(aqua + chemWash + arrow);
-                des.add(aqua + thermal + arrow);
-                des.add(aqua + crush + ' ');
+            case MAC_CHEM_THERMAL_MAC -> {
+                des.add(gray + crush + arrow);
+                des.add(gray + chemWash + arrow);
+                des.add(gray + thermal + arrow);
+                des.add(gray + crush + ' ');
             }
-            default -> des.add(StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.WRONG_MODE"));
+            case FORGE_FORGE_SIMPLEWASH -> {
+                des.add(gray + hammer + arrow);
+                des.add(gray + hammer + arrow);
+                des.add(gray + simpleWasher + ' ');
+            }
         }
 
-        des.add(StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor2", 6.4));
+        des.add(StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor2", getRecipeTickTime(mode) / 20));
 
         return des;
 
@@ -717,5 +819,29 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
+    }
+
+    private enum ProcessingMode {
+
+        MAC_WASH_THERMAL_MAC,
+        MAC_WASH_MAC_CENTRI,
+        MAC_MAC_CENTRI,
+        MAC_WASH_SIFT,
+        MAC_CHEM_MAC_CENTRI,
+        MAC_CHEM_THERMAL_MAC,
+        FORGE_FORGE_SIMPLEWASH;
+
+        private static final ProcessingMode[] VALUES = values();
+
+        public static ProcessingMode fromOrdinal(int ordinal) {
+            if (0 <= ordinal && ordinal < VALUES.length) {
+                return VALUES[ordinal];
+            }
+            return MAC_WASH_THERMAL_MAC;
+        }
+
+        public ProcessingMode next() {
+            return fromOrdinal(ordinal() + 1);
+        }
     }
 }

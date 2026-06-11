@@ -4,11 +4,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
-import gregtech.api.util.GTUtility;
 
 public class OriginalInputHatch extends MTEHatchInput {
 
@@ -28,8 +29,10 @@ public class OriginalInputHatch extends MTEHatchInput {
     @Override
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("Tooltip_OriginalInputHatch_00"),
-            StatCollector.translateToLocal("Tooltip_OriginalInputHatch_01"), StatCollector
-                .translateToLocalFormatted("Tooltip_OriginalInputHatch_02", GTUtility.formatNumbers(getCapacity())) };
+            StatCollector.translateToLocal("Tooltip_OriginalInputHatch_01"),
+            StatCollector.translateToLocalFormatted(
+                "Tooltip_OriginalInputHatch_02",
+                NumberFormatUtil.formatNumber(getCapacity())) };
     }
 
     @Override

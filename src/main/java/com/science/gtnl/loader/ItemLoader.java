@@ -13,6 +13,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;
@@ -63,7 +64,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
 
 public class ItemLoader {
@@ -379,131 +379,6 @@ public class ItemLoader {
         GTNLItemList.TemporallySMDInductor.set(MetaItemAdder.initItem(45));
         GTNLItemList.TemporallySMDResistor.set(MetaItemAdder.initItem(46));
         GTNLItemList.TemporallySMDTransistor.set(MetaItemAdder.initItem(47));
-        GTNLItemList.LVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                48,
-                new String[] { StatCollector.translateToLocal("Tooltip_LVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_LVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_LVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.MVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                49,
-                new String[] { StatCollector.translateToLocal("Tooltip_MVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_MVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_MVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.HVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                50,
-                new String[] { StatCollector.translateToLocal("Tooltip_HVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_HVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_HVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.EVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                51,
-                new String[] { StatCollector.translateToLocal("Tooltip_EVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_EVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_EVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.IVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                52,
-                new String[] { StatCollector.translateToLocal("Tooltip_IVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_IVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_IVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.LuVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                53,
-                new String[] { StatCollector.translateToLocal("Tooltip_LuVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_LuVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_LuVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.ZPMParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                54,
-                new String[] { StatCollector.translateToLocal("Tooltip_ZPMParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_ZPMParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_ZPMParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                55,
-                new String[] { StatCollector.translateToLocal("Tooltip_UVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UHVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                56,
-                new String[] { StatCollector.translateToLocal("Tooltip_UHVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UHVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UHVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UEVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                57,
-                new String[] { StatCollector.translateToLocal("Tooltip_UEVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UEVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UEVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UIVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                58,
-                new String[] { StatCollector.translateToLocal("Tooltip_UIVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UIVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UIVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UMVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                59,
-                new String[] { StatCollector.translateToLocal("Tooltip_UMVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UMVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UMVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.UXVParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                60,
-                new String[] { StatCollector.translateToLocal("Tooltip_UXVParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_UXVParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_UXVParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
-
-        GTNLItemList.MAXParallelControllerCore.set(
-            MetaItemAdder.initItem(
-                61,
-                new String[] { StatCollector.translateToLocal("Tooltip_MAXParallelControllerCore_00"),
-                    StatCollector.translateToLocal("Tooltip_MAXParallelControllerCore_01"),
-                    StatCollector.translateToLocal("Tooltip_MAXParallelControllerCore_02"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_00"),
-                    StatCollector.translateToLocal("Tooltip_ParallelControllerCore_Deprecated_01") }));
 
         GTNLItemList.NagaBook.set(MetaItemAdder.initItem(62));
         GTNLItemList.TwilightForestBook.set(MetaItemAdder.initItem(63));
@@ -615,7 +490,7 @@ public class ItemLoader {
                         StatCollector.translateToLocal("Tooltip_WirelessEnergyCover4A_03"),
                         StatCollector.translateToLocalFormatted(
                             "Tooltip_WirelessEnergyCover4A_04",
-                            GTUtility.formatNumbers(GTValues.V[i + 1]),
+                            NumberFormatUtil.formatNumber(GTValues.V[i + 1]),
                             GTValues.VN[i + 1]) }));
         }
 

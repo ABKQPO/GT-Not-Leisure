@@ -31,6 +31,7 @@ public class GuiActiveFormationPlane extends GuiUpgradeable {
 
     public GuiTabButton priority;
     public GuiImgButton placeMode;
+    public GuiImgButton schedulingMode;
 
     public GuiActiveFormationPlane(InventoryPlayer inventoryPlayer, PartActiveFormationPlane te) {
         super(new ContainerActiveFormationPlane(inventoryPlayer, te));
@@ -77,12 +78,9 @@ public class GuiActiveFormationPlane extends GuiUpgradeable {
             this.getGuiDisplayName(GuiText.FormationPlane.getLocal()),
             8,
             6,
-            GuiColors.FormationPlaneTitle.getColor());
-        this.fontRendererObj.drawString(
-            GuiText.inventory.getLocal(),
-            8,
-            this.ySize - 96 + 3,
-            GuiColors.FormationPlaneInventory.getColor());
+            GuiColors.GuiTextColorGray.getColor());
+        this.fontRendererObj
+            .drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, GuiColors.GuiTextColorGray.getColor());
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

@@ -49,6 +49,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -140,7 +141,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
             GTUtility.sendChatToPlayer(
                 aPlayer,
                 StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
-            checkStructure(true);
+            checkStructure(true, getBaseMetaTileEntity());
         }
         return true;
     }
@@ -298,7 +299,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                 'F',
                 GTStructureUtility.buildHatchAdder(AtomicEnergyExcitationPlant.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.InputBus,
@@ -321,27 +322,28 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         machineTier = -1;
         if (isRenderActive) {
-            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkPiece(
-                STRUCTURE_PIECE_SPHERE_AIR,
-                HORIZONTAL_OFF_SET_SPHERE,
-                VERTICAL_OFF_SET_SPHERE,
-                DEPTH_OFF_SET_SPHERE)) {
+            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+                || !checkPiece(
+                    STRUCTURE_PIECE_SPHERE_AIR,
+                    HORIZONTAL_OFF_SET_SPHERE,
+                    VERTICAL_OFF_SET_SPHERE,
+                    DEPTH_OFF_SET_SPHERE)) {
                 buildSphere();
-                return false;
+                checkStructureCondition(errors, false);
             }
-        } else
-            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkPiece(
+        } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+            || !checkPiece(
                 STRUCTURE_PIECE_SPHERE,
                 HORIZONTAL_OFF_SET_SPHERE,
                 VERTICAL_OFF_SET_SPHERE,
                 DEPTH_OFF_SET_SPHERE)) {
-                    return false;
+                    checkStructureCondition(errors, false);
                 }
 
-        if (mCountCasing < 350 || !checkHatch()) return false;
+        if (mCountCasing < 350) checkStructureCondition(errors, false);
 
         setupParameters();
 
@@ -353,7 +355,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
 
-        return true;
+        return;
     }
 
     @Override

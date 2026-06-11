@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.machine;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.World;
@@ -21,8 +20,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class VMTweakHelper {
 
-    public static final List<String> dimName = Arrays.asList(DimensionHelper.DimName);
-    public static final List<String> dimNameShort = Arrays.asList(DimensionHelper.DimNameDisplayed);
+    public static final List<String> dimName = DimensionHelper.getAllDimNames();
+    public static final List<String> dimNameShort = DimensionHelper.getAllDisplayedNames();
     public static final BiMap<Integer, String> dimMapping = HashBiMap.create();
     public static final Int2ObjectOpenHashMap<String> cache = new Int2ObjectOpenHashMap<>();
 
@@ -35,7 +34,7 @@ public class VMTweakHelper {
 
             int index = dimName.indexOf(name);
             if (index >= 0) {
-                dimMapping.forcePut(i, DimensionHelper.DimNameDisplayed[index]);
+                dimMapping.forcePut(i, dimNameShort.get(index));
             }
         }
 

@@ -64,6 +64,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -178,13 +179,14 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
+    public void checkMachine(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack,
+        List<StructureError> structureErrors) {
         energyWirelessMode = false;
         setRackActiveState(false);
         mRackHatchs.clear();
 
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) {
-            return false;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, structureErrors)) {
+            return;
         }
 
         for (MTEHatchRack rack : getValidRackHatches()) {
@@ -193,7 +195,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
         }
 
         if (mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) energyWirelessMode = true;
-        return eUncertainHatches.size() == 1;
+        checkOneUncertaintyHatch(structureErrors);
     }
 
     @Override
@@ -236,8 +238,8 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             && aTick % 20 == CommonValues.MULTI_CHECK_AT) {
             double maxTemp = 0;
             for (MTEHatchRack rack : getValidRackHatches()) {
-                if (rack.heat > maxTemp) {
-                    maxTemp = rack.heat;
+                if (rack.getHeat() > maxTemp) {
+                    maxTemp = rack.getHeat();
                 }
             }
             maxCurrentTemp.set(maxTemp);
@@ -263,11 +265,11 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                     useCryotheum = true;
                     for (MTEHatchRack rack : rackHatches) {
                         if (fluidStack.amount <= 0) break;
-                        if (rack.heat < 1) continue;
-                        int consume = Math.min(fluidStack.amount, Math.max(0, rack.heat / 20));
+                        if (rack.getHeat() < 1) continue;
+                        int consume = Math.min(fluidStack.amount, Math.max(0, rack.getHeat() / 20));
                         if (consume > 0) {
                             fluidStack.amount -= consume;
-                            rack.heat -= consume * 20;
+                            rack.setHeat(rack.getHeat() - consume * 20);
                         }
                     }
                 }
@@ -278,12 +280,12 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             int rackComputation;
 
             for (MTEHatchRack rack : rackHatches) {
-                if (rack.heat > maxTemp) {
-                    maxTemp = rack.heat;
+                if (rack.getHeat() > maxTemp) {
+                    maxTemp = rack.getHeat();
                 }
                 rackComputation = rack.tickComponents((float) overClockRatio, (float) overVoltageRatio);
                 if (rackComputation > 0) {
-                    rack.heat += rackComputation / 256;
+                    rack.setHeat(rack.getHeat() + rackComputation / 256);
                     if (useCryotheum) rackComputation *= 16;
                     eAvailableData += rackComputation * 16L;
                     thingsActive += 4;
@@ -506,7 +508,6 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                 buildHatchAdder(SupercomputingCenter.class).atLeast(CustomHatchElement.RackHatch)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 1)
                     .shouldReject(t -> !t.mRackHatchs.isEmpty())
-                    .dot(1)
                     .buildAndChain(sBlockCasingsTT, 1))
             .addElement('D', ofBlock(sBlockCasingsTT, 3))
             .addElement('E', ofBlock(sBlockCasingsTT, 1))
@@ -524,12 +525,13 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                             HatchElement.InputData,
                             HatchElement.OutputData)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
-                        .dot(1)
                         .buildAndChain(sBlockCasings9, 7),
                     buildHatchAdder(SupercomputingCenter.class)
                         .adder(SupercomputingCenter::addWirelessDataOutputToMachineList)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
-                        .dot(1)
+                        .hint(1)
+                        .hint(1)
+                        .hint(1)
                         .buildAndChain(sBlockCasings9, 7)))
             .addElement('H', ofBlock(sBlockCasings8, 7))
             .addElement('I', ofBlock(sBlockCasingsTT, 0))

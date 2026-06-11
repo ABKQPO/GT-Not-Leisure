@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,6 +26,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -66,20 +69,20 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(HighPressureSteamFusionReactor.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(HighPressureSteamFusionReactor.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(HighPressureSteamFusionReactor.class)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(HighPressureSteamFusionReactor.class)
                         .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.OutputHatch)
                         .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(),
                     GTStructureUtility.chainAllGlasses()))
             .build();
@@ -163,8 +166,8 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

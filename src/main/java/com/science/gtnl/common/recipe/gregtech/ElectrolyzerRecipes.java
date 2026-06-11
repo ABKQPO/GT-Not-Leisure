@@ -2,8 +2,6 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import net.minecraft.item.ItemStack;
-
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
@@ -15,9 +13,9 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.core.item.ModItems;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
+import gtPlusPlus.core.util.minecraft.ItemUtils;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class ElectrolyzerRecipes implements IRecipePool {
@@ -242,7 +240,7 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .addTo(ENCR);
 
         RecipeBuilder.builder()
-            .itemInputs(new ItemStack(ModItems.dustCalciumCarbonate, 1, 5))
+            .itemInputs(ItemUtils.getItemStackOfAmountFromOreDict("dustCalciumCarbonate", 1))
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Calcium, 1))

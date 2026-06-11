@@ -17,7 +17,20 @@ import gregtech.api.util.MethodsReturnNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class RocketAssemblerBackend extends RecipeMapBackend {
 
-    public static GTRecipe notFoundRecipe = new GTRecipe(false, null, null, null, null, null, null, 0, 0, 0);
+    public static GTRecipe notFoundRecipe = new GTRecipe(
+        false,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        0,
+        0);
 
     static {
         notFoundRecipe.mCanBeBuffered = false;

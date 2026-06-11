@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.FluidStackLookup;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
@@ -18,7 +19,6 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 
 public class CentrifugeRecipes implements IRecipePool {
 
@@ -29,7 +29,7 @@ public class CentrifugeRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .fluidInputs(GTNLMaterials.NeutralisedRedMud.getFluidOrGas(2000))
             .fluidOutputs(
-                FluidUtils.getFluidStack(GTPPFluids.RedMud, 1000),
+                FluidStackLookup.getFluidStack(GTPPFluids.RedMud, 1000),
                 GTNLMaterials.FerricReeChloride.getFluidOrGas(1000),
                 Materials.Hydrogen.getGas(4000))
             .duration(100)
@@ -76,7 +76,7 @@ public class CentrifugeRecipes implements IRecipePool {
             .fluidOutputs(
                 Materials.NitrogenDioxide.getGas(3000),
                 Materials.Deuterium.getGas(1000),
-                Materials.Helium_3.getGas(1000))
+                Materials.Helium3.getGas(1000))
             .duration(400)
             .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);

@@ -50,6 +50,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.common.gui.modularui.EnergyInfuserGui;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
@@ -65,8 +66,10 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
@@ -110,7 +113,9 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this MUI1 logo hook after Energy Infuser only uses the MUI2 GUI.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -128,7 +133,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                 buildHatchAdder(EnergyInfuser.class)
                     .atLeast(InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
                     .casingIndex(1028)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(
                         onElementPass(x -> ++x.mCountCasing, ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))))
             .addElement('D', ofBlock(TTCasingsContainer.sBlockCasingsTT, 7))
@@ -158,11 +163,12 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack) {
+    public void checkMachine(IGregTechTileEntity iGregTechTileEntity, ItemStack itemStack,
+        List<StructureError> structureErrors) {
         wirelessMode = false;
-        if (!structureCheck_EM(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)) return false;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, structureErrors))
+            return;
         wirelessMode = mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty() && eEnergyMulti.isEmpty();
-        return true;
     }
 
     @Override
@@ -255,7 +261,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
 
                 if ((isItemStackFullyCharged(individualStack) && isItemStackFullyRepaired(individualStack))
                     || outputAllItems) {
-                    if (addOutput(individualStack)) {
+                    if (addItemOutputs(new ItemStack[] { individualStack })) {
                         continue;
                     }
                 }
@@ -454,7 +460,46 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new EnergyInfuserGui(this);
+    }
+
+    public List<ItemStack> getStoredItemsForGui() {
+        return mStoredItems != null ? mStoredItems : Collections.emptyList();
+    }
+
+    public void setStoredItemsFromGui(List<ItemStack> storedItems) {
+        mStoredItems = storedItems != null ? new ArrayList<>(storedItems) : new ArrayList<>();
+    }
+
+    public int getProgressTimeForGui() {
+        return mProgresstime;
+    }
+
+    public void setProgressTimeFromGui(int progressTime) {
+        mProgresstime = progressTime;
+    }
+
+    public int getMaxProgressTimeForGui() {
+        return mMaxProgresstime;
+    }
+
+    public void setMaxProgressTimeFromGui(int maxProgressTime) {
+        mMaxProgresstime = maxProgressTime;
+    }
+
+    public String generateCurrentProgressForGui() {
+        return generateCurrentProgress();
+    }
+
+    public String appendRateForGui(boolean isFluid, Long amount, boolean parentheses) {
+        return appendRate(isFluid, amount, parentheses);
+    }
+
+    @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this MUI1 terminal text after Energy Infuser only uses the MUI2 GUI.
         super.drawTexts(screenElements, inventorySlot);
         screenElements.widget(
             TextWidget.dynamicString(this::generateCurrentProgress)

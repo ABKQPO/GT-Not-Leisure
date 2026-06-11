@@ -6,6 +6,8 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.loader.BlockLoader.metaBlockGlow;
+import static com.science.gtnl.loader.BlockLoader.metaCasing;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
 import static gregtech.api.GregTechAPI.sBlockCasingsSE;
@@ -45,6 +47,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -62,6 +65,7 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.common.gui.modularui.SuperSpaceElevatorGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
@@ -79,10 +83,11 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.GTChunkManager;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
-import gregtech.api.util.GTUtility;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gtnhintergalactic.config.IGConfig;
@@ -244,6 +249,42 @@ public class SuperSpaceElevator extends TTMultiblockBase
         return mProjectModuleHatches != null ? mProjectModuleHatches.size() : 0;
     }
 
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SuperSpaceElevatorGui(this);
+    }
+
+    public boolean isMachineForGui() {
+        return mMachine;
+    }
+
+    public boolean isAllowedToWorkForGui() {
+        return getBaseMetaTileEntity().isAllowedToWork();
+    }
+
+    public int getNumberOfModulesForGui() {
+        return getNumberOfModules();
+    }
+
+    public int getTierForGui() {
+        return mTier;
+    }
+
+    public void openCelestialSelection(EntityPlayer player) {
+        if (!isAllowedToWorkForGui() || motorTier <= 0 || !(player instanceof EntityPlayerMP playerBase)) {
+            return;
+        }
+
+        GCPlayerStats stats = GCPlayerStats.get(playerBase);
+        stats.coordsTeleportedFromX = playerBase.posX;
+        stats.coordsTeleportedFromZ = playerBase.posZ;
+        try {
+            WorldUtil.toCelestialSelection(playerBase, stats, 250, GuiCelestialSelection.MapMode.TELEPORTATION);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getChunkX() {
         return getBaseMetaTileEntity().getXCoord() >> 4;
     }
@@ -257,7 +298,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
         return StructureDefinition.<SuperSpaceElevator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shapeBase))
             .addShape(STRUCTURE_PIECE_EXTENDED, transpose(shapeExtended))
-            .addElement('A', ofBlock(com.science.gtnl.loader.BlockLoader.metaCasing, 18))
+            .addElement('A', ofBlock(metaCasing, 18))
             .addElement('B', ofBlock(sBlockCasingsSE, 2))
             .addElement('C', ofBlock(sBlockCasingsTT, 0))
             .addElement(
@@ -274,7 +315,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                 'F',
                 buildHatchAdder(SuperSpaceElevator.class).atLeast(Energy.or(ExoticEnergy), Dynamo)
                     .casingIndex(TileEntitySpaceElevator.CASING_INDEX_BASE)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsSE, 0))))
             .addElement('G', ofBlock(sBlockCasingsDyson, 9))
             .addElement('H', ofBlock(sBlockCasingsSE, 1))
@@ -296,7 +337,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                         HatchElement.InputData,
                         HatchElement.OutputData)
                     .casingIndex(TileEntitySpaceElevator.CASING_INDEX_BASE)
-                    .dot(1)
+                    .hint(1)
                     .buildAndChain(sBlockCasingsSE, 0))
             .addElement(
                 'M',
@@ -304,7 +345,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                     HatchElementBuilder.<SuperSpaceElevator>builder()
                         .atLeast(ProjectModuleElement.ProjectModule)
                         .casingIndex(TileEntitySpaceElevator.CASING_INDEX_BASE)
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(sBlockCasingsSE, 0),
                     buildHatchAdder(SuperSpaceElevator.class)
                         .atLeast(
@@ -319,12 +360,12 @@ public class SuperSpaceElevator extends TTMultiblockBase
                             HatchElement.InputData,
                             HatchElement.OutputData)
                         .casingIndex(TileEntitySpaceElevator.CASING_INDEX_BASE)
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(sBlockCasingsSE, 0)))
             .addElement(
                 'N',
                 ElevatorUtil.ofBlockAdder(SuperSpaceElevator::addCable, GregTechAPI.sSpaceElevatorCable, 0))
-            .addElement('O', ofBlock(com.science.gtnl.loader.BlockLoader.metaBlockGlow, 31))
+            .addElement('O', ofBlock(metaBlockGlow, 31))
             .build();
     }
 
@@ -390,32 +431,34 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
-    public boolean checkMachine_EM(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         motorTier = 0;
         wirelessMode = false;
         mTier = 0;
         mCountCasing = 0;
 
-        if (!structureCheck_EM(
+        if (!checkPiece(
             STRUCTURE_PIECE_MAIN,
             STRUCTURE_PIECE_MAIN_HOR_OFFSET,
             STRUCTURE_PIECE_MAIN_VERT_OFFSET,
-            STRUCTURE_PIECE_MAIN_DEPTH_OFFSET)) {
+            STRUCTURE_PIECE_MAIN_DEPTH_OFFSET,
+            errors)) {
             if (elevatorCable != null) {
                 elevatorCable.setShouldRender(false);
             }
-            return false;
+            return;
         }
 
         if (motorTier > 1) {
             int actualExtensionLayers = 0;
 
             while (actualExtensionLayers < motorTier) {
-                if (!structureCheck_EM(
+                if (!checkPiece(
                     STRUCTURE_PIECE_EXTENDED,
                     STRUCTURE_PIECE_EXTENDED_HOR_OFFSET,
                     STRUCTURE_PIECE_EXTENDED_VERT_OFFSET - actualExtensionLayers * 6,
-                    STRUCTURE_PIECE_EXTENDED_DEPTH_OFFSET)) {
+                    STRUCTURE_PIECE_EXTENDED_DEPTH_OFFSET,
+                    errors)) {
                     break;
                 }
 
@@ -430,12 +473,12 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
         if (motorTier > 2 && mExoticEnergyHatches.isEmpty() && mEnergyHatches.isEmpty()) wirelessMode = true;
 
-        return mCountCasing > 100;
+        checkCasingMin(errors, mCountCasing, 101);
     }
 
     @Override
-    public void clearHatches_EM() {
-        super.clearHatches_EM();
+    public void clearHatches() {
+        super.clearHatches();
         mProjectModuleHatches.clear();
         elevatorCable = null;
         mParallelControllerHatches.clear();
@@ -521,7 +564,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                                 }
                             }
                         }
-                        costingEUText = GTUtility.formatNumbers(totalUsedEU);
+                        costingEUText = NumberFormatUtil.formatNumber(totalUsedEU);
                     }
                 }
             } else {
@@ -571,7 +614,9 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after the Super Space Elevator GUI no longer supports mui1 startup paths.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -579,7 +624,9 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
+    @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the Super Space Elevator GUI no longer supports mui1 startup paths.
         screenElements.setSynced(false)
             .setSpace(0);
         screenElements
@@ -608,31 +655,17 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Super Space Elevator GUI no longer supports mui1 startup paths.
         super.addUIWidgets(builder, buildContext);
 
-        // Teleportation button
         builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
             if (!widget.getContext()
                 .isClient()) {
-                if (getBaseMetaTileEntity().isAllowedToWork() && motorTier > 0) {
-                    EntityPlayer player = widget.getContext()
-                        .getPlayer();
-                    if (player instanceof EntityPlayerMP playerBase) {
-                        final GCPlayerStats stats = GCPlayerStats.get(playerBase);
-                        stats.coordsTeleportedFromX = playerBase.posX;
-                        stats.coordsTeleportedFromZ = playerBase.posZ;
-                        try {
-                            WorldUtil.toCelestialSelection(
-                                playerBase,
-                                stats,
-                                250,
-                                GuiCelestialSelection.MapMode.TELEPORTATION);
-                        } catch (final Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                openCelestialSelection(
+                    widget.getContext()
+                        .getPlayer());
             }
         })
             .setPlayClickSound(false)

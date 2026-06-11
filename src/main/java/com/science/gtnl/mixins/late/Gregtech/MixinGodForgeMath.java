@@ -13,35 +13,33 @@ import com.science.gtnl.common.machine.multiblock.FOGExtractorModule;
 import com.science.gtnl.common.machine.multiblock.FOGSolarMuonCatalystModule;
 
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
-import tectech.thing.metaTileEntity.multi.godforge.MTEForgeOfGods;
 import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
+import tectech.thing.metaTileEntity.multi.godforge.util.ForgeOfGodsData;
 import tectech.thing.metaTileEntity.multi.godforge.util.GodforgeMath;
 
 @Mixin(value = GodforgeMath.class, remap = false)
 public abstract class MixinGodForgeMath {
 
     @Inject(method = "allowModuleConnection", at = @At("HEAD"), cancellable = true)
-    private static void recipesLoader(MTEBaseModule module, MTEForgeOfGods godforge,
-        CallbackInfoReturnable<Boolean> cir) {
+    private static void recipesLoader(MTEBaseModule module, ForgeOfGodsData data, CallbackInfoReturnable<Boolean> cir) {
         if (module instanceof FOGAlloySmelterModule) {
             cir.setReturnValue(true);
             return;
         }
         if ((module instanceof FOGAlloyBlastSmelterModule || module instanceof FOGExtractorModule)
-            && godforge.isUpgradeActive(ForgeOfGodsUpgrade.FDIM)) {
+            && data.isUpgradeActive(ForgeOfGodsUpgrade.FDIM)) {
             cir.setReturnValue(true);
             return;
         }
-        if (module instanceof FOGSolarMuonCatalystModule && godforge.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
+        if (module instanceof FOGSolarMuonCatalystModule && data.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
             cir.setReturnValue(true);
-            return;
         }
     }
 
     @ModifyConstant(
-        method = "calculateMaxParallelForModules(Ltectech/thing/metaTileEntity/multi/godforge/MTEBaseModule;Ltectech/thing/metaTileEntity/multi/godforge/MTEForgeOfGods;I)V",
+        method = "calculateMaxParallelForModules(Ltectech/thing/metaTileEntity/multi/godforge/MTEBaseModule;Ltectech/thing/metaTileEntity/multi/godforge/util/ForgeOfGodsData;I)V",
         constant = @Constant(intValue = 0, ordinal = 0))
-    private static int onCalculateMaxParallelForModules(int constant, MTEBaseModule module, MTEForgeOfGods godforge,
+    private static int onCalculateMaxParallelForModules(int constant, MTEBaseModule module, ForgeOfGodsData data,
         int fuelFactor) {
         if (module instanceof FOGAlloySmelterModule) {
             return 4096;

@@ -8,9 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,71 +20,86 @@ import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.common.machine.hatch.OutputHatchMEProxy;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IItemList;
 import appeng.me.helpers.AENetworkProxy;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
-import gregtech.common.tileentities.machines.MTEHatchOutputME;
-import lombok.Getter;
-import lombok.Setter;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
+import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
+import gregtech.common.tileentities.machines.outputme.filter.MEFilterFluid;
 
 @Mixin(value = MTEHatchOutputME.class, remap = false)
 public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IOutputME, IDataCopyable {
 
-    @Getter
-    @Shadow
-    @Final
-    IItemList<IAEFluidStack> fluidCache;
-
-    @Getter
-    @Setter
-    @Shadow
-    long lastOutputTick;
-
-    @Getter
-    @Setter
-    @Shadow
-    long lastInputTick;
-
-    @Getter
-    @Setter
-    @Shadow
-    long tickCounter;
-
-    @Getter
-    @Setter
-    @Shadow
-    boolean additionalConnection;
-
-    @Getter
-    @Setter
     @Shadow
     EntityPlayer lastClickedPlayer;
 
-    @Getter
-    @Setter
     @Shadow
-    List<String> lockedFluids;
-
-    @Getter
-    @Setter
-    @Shadow
-    @Nullable
-    private AENetworkProxy gridProxy;
-
-    @Shadow
-    protected abstract void updateValidGridProxySides();
-
-    @Shadow
-    protected abstract void checkFluidLock();
-
-    @Shadow
-    protected abstract void flushCachedStack();
+    public abstract MTEHatchOutputMEBase<IAEFluidStack, MEFilterFluid, FluidStack> getProvider();
 
     public MixinMTEHatchOutputME(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
+    }
+
+    @Override
+    public List<IAEFluidStack> getFluidCache() {
+        return getProvider().getCacheList();
+    }
+
+    @Override
+    public long getLastInputTick() {
+        return getProvider().getLastInputTick();
+    }
+
+    @Override
+    public long getTickCounter() {
+        return getProvider().getTickCounter();
+    }
+
+    @Override
+    public boolean isAdditionalConnection() {
+        return getProvider().getAdditionalConnection();
+    }
+
+    @Override
+    public void setAdditionalConnection(boolean value) {
+        getProvider().setAdditionalConnection(value);
+    }
+
+    @Override
+    public EntityPlayer getLastClickedPlayer() {
+        return lastClickedPlayer;
+    }
+
+    @Override
+    public void setLastClickedPlayer(EntityPlayer player) {
+        lastClickedPlayer = player;
+    }
+
+    @Override
+    public AENetworkProxy getGridProxy() {
+        return getProvider().getProxy();
+    }
+
+    @Override
+    public void gtnl$updateValidGridProxySides() {
+        getProvider().updateValidGridProxySides();
+    }
+
+    @Override
+    public void gtnl$checkFluidLock() {
+        getProvider().updateCell();
+    }
+
+    @Override
+    public void gtnl$flushCachedStack() {
+        getProvider().onPostTick(getBaseMetaTileEntity(), getProvider().getTickCounter() + 41);
+    }
+
+    @Override
+    public MTEHatchOutputMEBase<IAEFluidStack, MEFilterFluid, FluidStack> getOutputProvider() {
+        return getProvider();
     }
 
     @Inject(method = "getCopiedData", at = @At("RETURN"), cancellable = true)
@@ -112,21 +126,6 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     }
 
     @Override
-    public void gtnl$updateValidGridProxySides() {
-        updateValidGridProxySides();
-    }
-
-    @Override
-    public void gtnl$checkFluidLock() {
-        checkFluidLock();
-    }
-
-    @Override
-    public void gtnl$flushCachedStack() {
-        flushCachedStack();
-    }
-
-    @Override
     public void onLeftclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (!(aPlayer instanceof EntityPlayerMP)) return;
 
@@ -142,7 +141,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer, ForgeDirection side,
         float aX, float aY, float aZ) {
         if (!(aPlayer instanceof EntityPlayerMP)) {
-            this.lastClickedPlayer = aPlayer;
+            lastClickedPlayer = aPlayer;
             openGui(aPlayer);
             return onRightclick(aBaseMetaTileEntity, aPlayer);
         }
@@ -150,7 +149,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
         ItemStack dataStick = aPlayer.inventory.getCurrentItem();
 
         if (!ItemList.Tool_DataStick.isStackEqual(dataStick, false, true)) {
-            this.lastClickedPlayer = aPlayer;
+            lastClickedPlayer = aPlayer;
             openGui(aPlayer);
             return onRightclick(aBaseMetaTileEntity, aPlayer);
         }

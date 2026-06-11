@@ -4,6 +4,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.utils.FluidStackLookup;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -37,13 +39,13 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gtPlusPlus.core.block.ModBlocks;
-import gtPlusPlus.core.util.minecraft.FluidUtils;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements ISurvivalConstructable {
@@ -113,7 +115,6 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                             HatchElement.OutputHatch,
                             HatchElement.Energy.or(HatchElement.ExoticEnergy),
                             HatchElement.Maintenance)
-                        .dot(1)
                         .casingIndex(getCasingTextureID())
                         .build(),
                     StructureUtility
@@ -123,7 +124,8 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                         .hatchId(21502)
                         .shouldReject(x -> !x.mFluidIceInputHatch.isEmpty())
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
+                        .hint(1)
                         .build()))
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
             .addElement('D', GTStructureUtility.ofFrame(Materials.Aluminium))
@@ -153,12 +155,11 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 50;
+        checkStructureCondition(errors, mCountCasing >= 50);
     }
 
     @Override
@@ -240,7 +241,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                     this.causeMaintenanceIssue();
                     this.stopMachine(
                         ShutDownReasonRegistry
-                            .outOfFluid(Objects.requireNonNull(FluidUtils.getFluidStack("ice", baseAmount))));
+                            .outOfFluid(Objects.requireNonNull(FluidStackLookup.getFluidStack("ice", baseAmount))));
                 }
             }
             endRecipeProcessing();

@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,6 +27,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -59,13 +62,13 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamCarpenter.class).casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamBigInput(SteamCarpenter.class).casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(SteamCarpenter.class).casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamCarpenter.class)
                         .atLeast(
@@ -75,7 +78,7 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
                         .casingIndex(10)
-                        .dot(1)
+                        .hint(1)
                         .buildAndChain(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
             .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
@@ -151,8 +154,8 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

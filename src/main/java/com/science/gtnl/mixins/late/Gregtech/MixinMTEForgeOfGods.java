@@ -65,7 +65,7 @@ public abstract class MixinMTEForgeOfGods {
         method = "onPostTick",
         at = @At(
             value = "INVOKE",
-            target = "Ltectech/thing/metaTileEntity/multi/godforge/util/GodforgeMath;allowModuleConnection(Ltectech/thing/metaTileEntity/multi/godforge/MTEBaseModule;Ltectech/thing/metaTileEntity/multi/godforge/MTEForgeOfGods;)Z"))
+            target = "Ltectech/thing/metaTileEntity/multi/godforge/util/GodforgeMath;allowModuleConnection(Ltectech/thing/metaTileEntity/multi/godforge/MTEBaseModule;Ltectech/thing/metaTileEntity/multi/godforge/util/ForgeOfGodsData;)Z"))
     private void onModuleLoop(IGregTechTileEntity aBaseMetaTileEntity, long aTick, CallbackInfo ci,
         @Local MTEBaseModule module) {
         if (module instanceof IFOGModule fogModule) {

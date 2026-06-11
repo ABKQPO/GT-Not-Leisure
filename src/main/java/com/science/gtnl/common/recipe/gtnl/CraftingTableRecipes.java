@@ -5,7 +5,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.gthandler.CustomItemList;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
@@ -1157,7 +1156,7 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.ElectrocellGenerator.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', OrePrefixes.circuit.get(Materials.EV), 'B',
-                OrePrefixes.wireGt16.get(Materials.Titaniumonabariumdecacoppereikosaoxid), 'C',
+                GTOreDictUnificator.get("wireGt16Titaniumonabariumdecacoppereikosaoxid", 1L), 'C',
                 ItemList.Electric_Pump_HV, 'D', ItemList.Casing_HV, 'E',
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1), 'F',
                 OrePrefixes.cableGt16.get(Materials.Nichrome) });
@@ -1449,9 +1448,9 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.Desulfurizer.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
-                NHItemList.AdsorptionFilter.getIS(1), 'C', ItemList.Electric_Pump_HV.get(1), 'D',
-                ItemList.Hull_HV.get(1), 'E', GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Electrum, 1L),
-                'F', ItemList.Electric_Motor_HV.get(1) });
+                NHItemList.AdsorptionFilter.get(1), 'C', ItemList.Electric_Pump_HV.get(1), 'D', ItemList.Hull_HV.get(1),
+                'E', GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Electrum, 1L), 'F',
+                ItemList.Electric_Motor_HV.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.QuantumComputerUnit.get(1),
@@ -1461,8 +1460,8 @@ public class CraftingTableRecipes implements IRecipePool {
                 aeMaterials.singularity()
                     .maybeStack(1)
                     .orNull(),
-                'C', CustomItemList.EngravedQuantumChip.get(1), 'D',
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.getIS(1) });
+                'C', NHItemList.EngravedQuantumChip.get(1), 'D',
+                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(1) });
     }
 
     public void loadExtraRecipe() {

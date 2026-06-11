@@ -28,6 +28,7 @@ import com.science.gtnl.utils.StructureUtils;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.ITexture;
@@ -38,6 +39,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -125,7 +127,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
                 'G',
                 GTStructureUtility.buildHatchAdder(MatterFabricator.class)
                     .casingIndex(getCasingTextureID())
-                    .dot(1)
+                    .hint(1)
                     .atLeast(
                         HatchElement.Maintenance,
                         HatchElement.OutputHatch,
@@ -142,12 +144,11 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return mCountCasing >= 115;
+        checkStructureCondition(errors, mCountCasing >= 115);
     }
 
     @Override
@@ -203,21 +204,17 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
             ItemData data = GTOreDictUnificator.getItemData(item);
             if (data == null) continue;
 
-            long count;
-            switch (data.mPrefix) {
-                case gem, ingot -> {
-                    count = Math.min(item.stackSize, maxParallel - totalOutput);
-                    item.stackSize -= (int) count;
-                    totalOutput += count;
-                    foundValidInput = true;
-                }
-                case block -> {
-                    count = Math.min(item.stackSize * 9L, (maxParallel - totalOutput) * 9L);
-                    long blocksUsed = count / 9L;
-                    item.stackSize -= (int) blocksUsed;
-                    totalOutput += count;
-                    foundValidInput = true;
-                }
+            if (data.mPrefix == OrePrefixes.gem || data.mPrefix == OrePrefixes.ingot) {
+                long count = Math.min(item.stackSize, maxParallel - totalOutput);
+                item.stackSize -= (int) count;
+                totalOutput += count;
+                foundValidInput = true;
+            } else if (data.mPrefix == OrePrefixes.block) {
+                long count = Math.min(item.stackSize * 9L, (maxParallel - totalOutput) * 9L);
+                long blocksUsed = count / 9L;
+                item.stackSize -= (int) blocksUsed;
+                totalOutput += count;
+                foundValidInput = true;
             }
 
             if (totalOutput >= maxParallel) break;

@@ -24,10 +24,12 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.dreammaster.block.BlockList;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -53,17 +55,20 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.recipe.check.SingleRecipeCheck;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -145,7 +150,18 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
+    }
+
+    @Override
+    @Deprecated
     public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Blood Soul Sacrificial Array GUI no longer supports mui1 startup
+        // paths.
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
         machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
@@ -185,12 +201,11 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) || !checkHatch()) {
-            return false;
-        }
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            return;
         setupParameters();
-        return true;
+        return;
     }
 
     @Override
@@ -232,8 +247,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(BloodSoulSacrificialArray.class)
+                    .hint(1)
                     .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus, ParallelCon)
-                    .dot(1)
                     .casingIndex(getCasingTextureID())
                     .buildAndChain(GregTechAPI.sBlockCasings8, 10))
             .addElement('C', StructureUtility.ofBlock(gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings, 13))
@@ -262,8 +277,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             .addElement(
                 'Z',
                 GTStructureUtility.buildHatchAdder(BloodSoulSacrificialArray.class)
+                    .hint(1)
                     .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus, ParallelCon)
-                    .dot(1)
                     .casingIndex(getCasingTextureID())
                     .buildAndChain(GregTechAPI.sBlockCasings8, 3))
             .addElement('0', StructureUtility.ofBlockAnyMeta(ModBlocks.blockAltar))
@@ -545,7 +560,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public String[] getInfoData() {
         String[] info = super.getInfoData();
         info[4] = StatCollector.translateToLocal("BloodSoulSacrificialArray.LPNetwork") + EnumChatFormatting.RED
-            + GTUtility.formatNumbers(Math.abs(currentEssence))
+            + NumberFormatUtil.formatNumber(Math.abs(currentEssence))
             + EnumChatFormatting.RESET
             + " LP";
         return info;

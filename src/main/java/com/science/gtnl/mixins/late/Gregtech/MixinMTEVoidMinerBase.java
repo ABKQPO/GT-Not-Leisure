@@ -1,10 +1,8 @@
 package com.science.gtnl.mixins.late.Gregtech;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -19,8 +17,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -36,10 +32,14 @@ import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
+import bwcrossmod.galacticgreg.VoidMinerUtility;
+import galacticgreg.api.ModDimensionDef;
+import galacticgreg.api.enums.DimensionDef;
 import gregtech.api.enums.GTValues;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -62,7 +62,20 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     protected abstract ItemStack nextOre();
 
     @Shadow
-    private boolean mBlacklist;
+    public boolean blacklist;
+
+    @Shadow
+    private ModDimensionDef dimensionDef;
+
+    @Shadow
+    private boolean canVoidMine;
+
+    @Shadow
+    public VoidMinerUtility.DropMap dropMap;
+
+    @Shadow
+    public VoidMinerUtility.DropMap extraDropMap;
+
     @Shadow
     private int multiplier;
     @Shadow
@@ -75,29 +88,6 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         super(aName);
     }
 
-    @ModifyVariable(method = "handleExtraDrops", at = @At("HEAD"), require = 1, remap = false, argsOnly = true)
-    private int vmTweak$mapDimensionIdForExtraDrops(int id) {
-        if (!gtnl$enableMixin) return id;
-        return VMTweakHelper.dimMapping.inverse()
-            .getOrDefault(vmTweak$resolveDimensionKey(), id);
-    }
-
-    @ModifyVariable(method = "handleModDimDef", at = @At("HEAD"), require = 1, remap = false, argsOnly = true)
-    private int vmTweak$mapDimensionIdForModDef(int id) {
-        if (!gtnl$enableMixin) return id;
-        return vmTweak$dim = VMTweakHelper.dimMapping.inverse()
-            .getOrDefault(vmTweak$resolveDimensionKey(), id);
-    }
-
-    @ModifyVariable(method = "handleModDimDef", at = @At("STORE"), require = 1, remap = false)
-    private String vmTweak$mapDimensionChunkProviderName(String id) {
-        if (!gtnl$enableMixin) return id;
-        return VMTweakHelper.cache.getOrDefault(vmTweak$dim, id);
-    }
-
-    @Unique
-    private int vmTweak$dim;
-
     @Unique
     private String vmTweak$resolveDimensionKey() {
         if (!gtnl$enableMixin) return "None";
@@ -105,6 +95,25 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
             .filter(s -> s.getItem() instanceof ItemDimensionDisplay)
             .map(ItemDimensionDisplay::getDimension)
             .orElse("None");
+    }
+
+    @Unique
+    private Optional<String> vmTweak$resolveDimensionNameOverride() {
+        String dimensionKey = vmTweak$resolveDimensionKey();
+        if ("None".equals(dimensionKey)) return Optional.empty();
+
+        int displayIndex = VMTweakHelper.dimNameShort.indexOf(dimensionKey);
+        if (displayIndex >= 0) {
+            return Optional.ofNullable(VMTweakHelper.dimName.get(displayIndex));
+        }
+
+        Integer dimensionId = VMTweakHelper.dimMapping.inverse()
+            .get(dimensionKey);
+        if (dimensionId != null) {
+            return Optional.ofNullable(VMTweakHelper.getNameForID(dimensionId));
+        }
+
+        return Optional.of(dimensionKey);
     }
 
     @Unique
@@ -125,15 +134,41 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Inject(method = "working", at = @At("HEAD"), remap = false)
     public void vmTweak$onWorkingTick(CallbackInfoReturnable<Boolean> cir) {
         if (!gtnl$enableMixin) return;
-        String dim = Optional.ofNullable(this.mInventory[1])
-            .filter(s -> s.getItem() instanceof ItemDimensionDisplay)
-            .map(ItemDimensionDisplay::getDimension)
-            .orElse("None");
+        String dim = vmTweak$resolveDimensionKey();
 
         if (!Objects.equals(dim, vmTweak$mLastDimensionOverride)) {
             vmTweak$mLastDimensionOverride = dim;
             totalWeight = 0;
         }
+    }
+
+    @Inject(method = "calculateDropMap", at = @At("HEAD"), cancellable = true)
+    private void vmTweak$calculateDropMap(CallbackInfo ci) {
+        if (!gtnl$enableMixin) return;
+
+        Optional<String> dimensionNameOverride = vmTweak$resolveDimensionNameOverride();
+        if (dimensionNameOverride.isEmpty()) return;
+
+        this.dropMap = null;
+        this.extraDropMap = null;
+        this.totalWeight = 0;
+        this.canVoidMine = false;
+
+        this.dimensionDef = DimensionDef.getDefByName(dimensionNameOverride.get());
+        if (this.dimensionDef == null || !this.dimensionDef.canBeVoidMined()) {
+            ci.cancel();
+            return;
+        }
+
+        this.canVoidMine = true;
+        String dimensionName = this.dimensionDef.getDimensionName();
+        this.dropMap = VoidMinerUtility.dropMapsByDimName.getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
+        this.extraDropMap = VoidMinerUtility.extraDropsByDimName
+            .getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
+        this.dropMap.isDistributionCached(this.extraDropMap);
+        this.totalWeight = this.dropMap.getTotalWeight() + this.extraDropMap.getTotalWeight();
+
+        ci.cancel();
     }
 
     @Unique
@@ -143,11 +178,11 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         try {
             Block block = ModBlocks.getBlock(vmTweak$mLastDimensionOverride);
             ext = new ItemStack(block).getDisplayName();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             ScienceNotLeisure.LOG.debug(
                 "[VMTweakMixin] Failed to get display name for dimension: {}",
                 vmTweak$mLastDimensionOverride,
-                ignored);
+                e);
         }
 
         return new Text(
@@ -278,9 +313,13 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         cir.setReturnValue(false);
     }
 
-    @Redirect(method = "checkHatches", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;isEmpty()Z"))
-    private boolean redirectEnergyHatches(ArrayList<?> list) {
-        return mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty();
+    @Inject(method = "checkHatches", at = @At("HEAD"), cancellable = true)
+    private void gtnl$checkHatches(List<StructureError> errors, CallbackInfo ci) {
+        if (!gtnl$enableMixin) return;
+        checkOneMaintenanceHatch(errors);
+        checkHasOutputBus(errors);
+        checkHasAnyEnergy(errors);
+        ci.cancel();
     }
 
     @Inject(method = "setElectricityStats", at = @At("HEAD"), cancellable = true)
@@ -317,7 +356,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         List<ItemStack> inputOres = this.getStoredInputs()
             .stream()
             .filter(GTUtility::isOre)
-            .collect(Collectors.toList());
+            .toList();
         ItemStack output = this.nextOre();
 
         GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(getMaxInputEu())
@@ -344,11 +383,11 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
             ItemStack stackPart = output.copy();
             stackPart.stackSize = stackSize;
 
-            if (inputOres.isEmpty() || (this.mBlacklist && inputOres.stream()
+            if (inputOres.isEmpty() || (this.blacklist && inputOres.stream()
                 .noneMatch(is -> GTUtility.areStacksEqual(is, output)))
-                || (!this.mBlacklist && inputOres.stream()
+                || (!this.blacklist && inputOres.stream()
                     .anyMatch(is -> GTUtility.areStacksEqual(is, output)))) {
-                this.addOutput(stackPart);
+                this.addItemOutputs(new ItemStack[] { stackPart });
             }
 
             totalCount -= stackSize;

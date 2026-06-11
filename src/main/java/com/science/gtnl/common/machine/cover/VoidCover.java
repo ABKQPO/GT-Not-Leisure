@@ -8,13 +8,16 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.science.gtnl.api.IFluidsLockable;
+import com.science.gtnl.common.gui.VoidCoverGui;
 import com.science.gtnl.common.gui.VoidCoverUIFactory;
 
 import gregtech.api.covers.CoverContext;
@@ -27,6 +30,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.util.GTUtility;
 import gregtech.common.covers.CoverLegacyData;
+import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -173,9 +177,18 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
         return slots;
     }
 
-    @Override
     public String getLockedFluidName() {
         return lockedFluidNames[0];
+    }
+
+    @Override
+    public void setLockedFluid(Fluid lockedFluid) {
+        setLockedFluidName(lockedFluid == null ? null : lockedFluid.getName());
+    }
+
+    @Override
+    public Fluid getLockedFluid() {
+        return FluidRegistry.getFluid(getLockedFluidName());
     }
 
     @Override
@@ -188,7 +201,6 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
         return lockedFluidNames[index];
     }
 
-    @Override
     public void setLockedFluidName(String lockedFluidName) {
         this.lockedFluidNames[0] = lockedFluidName;
     }
@@ -237,8 +249,12 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
         return false;
     }
 
-    @Override
     public boolean acceptsFluidLock(String name) {
+        return true;
+    }
+
+    @Override
+    public boolean acceptsFluidLock(Fluid fluid) {
         return true;
     }
 
@@ -273,7 +289,14 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     }
 
     @Override
+    protected @NotNull CoverBaseGui<?> getCoverGui() {
+        return new VoidCoverGui(this);
+    }
+
+    @Override
+    @Deprecated
     public ModularWindow createWindow(CoverUIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the mui2 VoidCoverGui is validated in all cover opening paths.
         return new VoidCoverUIFactory(buildContext).createWindow();
     }
 

@@ -39,13 +39,16 @@ import gregtech.api.interfaces.modularui.IControllerWithOptionalFeatures;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
 import tectech.TecTech;
-import tectech.thing.gui.TecTechUITextures;
 
 /**
  * Holds UI element builders and other conveniences shared between the primary Forge of the Gods and its modules.
  */
+@Deprecated
 public class EternalGregTechWorkshopUI {
 
+    // TODO: Remove this MUI1 helper class after Eternal GregTech Workshop only uses MUI2 panels.
+
+    @Deprecated
     public static ButtonWidget createInputSeparationButton(final IGregTechTileEntity tileEntity,
         final IControllerWithOptionalFeatures mte, IWidgetBuilder<?> builder) {
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -55,11 +58,11 @@ public class EternalGregTechWorkshopUI {
             .setPlayClickSound(false)
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
-                ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isInputSeparationEnabled()) {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_INPUT_SEPARATION);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_INPUT_SEPARATION);
                 } else {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_INPUT_SEPARATION_OFF);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_INPUT_SEPARATION_OFF);
                 }
                 return ret.toArray(new IDrawable[0]);
             })
@@ -73,6 +76,7 @@ public class EternalGregTechWorkshopUI {
         return (ButtonWidget) button;
     }
 
+    @Deprecated
     public static ButtonWidget createBatchModeButton(final IGregTechTileEntity tileEntity,
         final IControllerWithOptionalFeatures mte, IWidgetBuilder<?> builder) {
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -82,11 +86,11 @@ public class EternalGregTechWorkshopUI {
             .setPlayClickSound(false)
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
-                ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isBatchModeEnabled()) {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_BATCH_MODE);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_BATCH_MODE);
                 } else {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_BATCH_MODE_OFF);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_BATCH_MODE_OFF);
                 }
                 return ret.toArray(new IDrawable[0]);
             })
@@ -98,6 +102,7 @@ public class EternalGregTechWorkshopUI {
         return (ButtonWidget) button;
     }
 
+    @Deprecated
     public static ButtonWidget createLockToSingleRecipeButton(final IGregTechTileEntity tileEntity,
         final IControllerWithOptionalFeatures mte, IWidgetBuilder<?> builder) {
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -107,11 +112,11 @@ public class EternalGregTechWorkshopUI {
             .setPlayClickSound(false)
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
-                ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isRecipeLockingEnabled()) {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_RECIPE_LOCKED);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_RECIPE_LOCKED);
                 } else {
-                    ret.add(TecTechUITextures.OVERLAY_BUTTON_RECIPE_UNLOCKED);
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_RECIPE_UNLOCKED);
                 }
                 return ret.toArray(new IDrawable[0]);
             })
@@ -123,6 +128,7 @@ public class EternalGregTechWorkshopUI {
         return (ButtonWidget) button;
     }
 
+    @Deprecated
     public static ButtonWidget createVoidExcessButton(final IGregTechTileEntity tileEntity,
         final IControllerWithOptionalFeatures mte, IWidgetBuilder<?> builder) {
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -141,12 +147,12 @@ public class EternalGregTechWorkshopUI {
             .setPlayClickSound(false)
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
-                ret.add(TecTechUITextures.BUTTON_CELESTIAL_32x32);
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 switch (mte.getVoidingMode()) {
-                    case VOID_NONE -> ret.add(TecTechUITextures.OVERLAY_BUTTON_VOIDING_OFF);
-                    case VOID_ITEM -> ret.add(TecTechUITextures.OVERLAY_BUTTON_VOIDING_ITEMS);
-                    case VOID_FLUID -> ret.add(TecTechUITextures.OVERLAY_BUTTON_VOIDING_FLUIDS);
-                    case VOID_ALL -> ret.add(TecTechUITextures.OVERLAY_BUTTON_VOIDING_BOTH);
+                    case VOID_NONE -> ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_VOIDING_OFF);
+                    case VOID_ITEM -> ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_VOIDING_ITEMS);
+                    case VOID_FLUID -> ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_VOIDING_FLUIDS);
+                    case VOID_ALL -> ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_VOIDING_BOTH);
                 }
                 return ret.toArray(new IDrawable[0]);
             })
@@ -168,6 +174,7 @@ public class EternalGregTechWorkshopUI {
         return (ButtonWidget) button;
     }
 
+    @Deprecated
     public static ModularWindow createGeneralInfoWindow() {
         final Scrollable scrollable = new Scrollable().setVerticalScroll();
         final int WIDTH = 300;
@@ -299,7 +306,7 @@ public class EternalGregTechWorkshopUI {
                     .setSize(10, 10));
 
         builder.widget(
-            new DrawableWidget().setDrawable(TecTechUITextures.BACKGROUND_GLOW_WHITE)
+            new DrawableWidget().setDrawable(EternalGregTechWorkshopTextures.BACKGROUND_GLOW_WHITE)
                 .setPos(0, 0)
                 .setSize(300, 300))
             .widget(
@@ -312,6 +319,7 @@ public class EternalGregTechWorkshopUI {
         return builder.build();
     }
 
+    @Deprecated
     public static void reopenWindow(Widget widget, int windowId) {
         if (!widget.isClient()) {
             ModularUIContext ctx = widget.getContext();
@@ -322,6 +330,7 @@ public class EternalGregTechWorkshopUI {
         }
     }
 
+    @Deprecated
     public static void closeWindow(Widget widget, int windowId) {
         if (!widget.isClient()) {
             ModularUIContext ctx = widget.getContext();
@@ -331,6 +340,7 @@ public class EternalGregTechWorkshopUI {
         }
     }
 
+    @Deprecated
     public static Widget getIndividualUpgradeGroup(EternalGregTechWorkshopUpgrade upgrade,
         Supplier<Integer> shardGetter, Runnable complete, Runnable respec, Supplier<Boolean> check) {
         MultiChildWidget widget = new MultiChildWidget();
@@ -438,6 +448,7 @@ public class EternalGregTechWorkshopUI {
         return widget;
     }
 
+    @Deprecated
     public static Widget createMaterialInputButton(EternalGregTechWorkshopUpgrade upgrade, Supplier<Boolean> check,
         BiConsumer<Widget.ClickData, Widget> clickAction) {
         Size windowSize = upgrade.getWindowSize();
@@ -447,8 +458,8 @@ public class EternalGregTechWorkshopUI {
         return new ButtonWidget().setOnClick(clickAction)
             .setPlayClickSound(true)
             .setBackground(
-                () -> new IDrawable[] { check.get() ? TecTechUITextures.BUTTON_BOXED_CHECKMARK_18x18
-                    : TecTechUITextures.BUTTON_BOXED_EXCLAMATION_POINT_18x18 })
+                () -> new IDrawable[] { check.get() ? EternalGregTechWorkshopTextures.BUTTON_BOXED_CHECKMARK_18x18
+                    : EternalGregTechWorkshopTextures.BUTTON_BOXED_EXCLAMATION_POINT_18x18 })
             .setPos(w / 2 - 40, (int) (h * 0.9))
             .setSize(15, 15)
             .dynamicTooltip(() -> upgradeMaterialRequirements(check))
@@ -486,6 +497,7 @@ public class EternalGregTechWorkshopUI {
         return ImmutableList.of(StatCollector.translateToLocal("fog.button.materialrequirements.tooltip"));
     }
 
+    @Deprecated
     public static Widget createExtraCostWidget(final ItemStack costStack, Supplier<Integer> paidAmount) {
         MultiChildWidget widget = new MultiChildWidget();
         widget.setSize(36, 18);
@@ -535,7 +547,7 @@ public class EternalGregTechWorkshopUI {
 
         // Completed checkmark
         widget.addChild(
-            new DrawableWidget().setDrawable(TecTechUITextures.GREEN_CHECKMARK_11x9)
+            new DrawableWidget().setDrawable(EternalGregTechWorkshopTextures.GREEN_CHECKMARK_11x9)
                 .setPos(21, 5)
                 .setSize(11, 9)
                 .setEnabled(w -> paidAmount.get() >= costStack.stackSize));

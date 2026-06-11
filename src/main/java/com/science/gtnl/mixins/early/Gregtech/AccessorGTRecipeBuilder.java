@@ -49,10 +49,10 @@ public interface AccessorGTRecipeBuilder {
     @Accessor("fluidOutputs")
     void setFluidOutputs(FluidStack[] value);
 
-    @Accessor("chances")
+    @Accessor("outputChances")
     int[] getChances();
 
-    @Accessor("chances")
+    @Accessor("outputChances")
     void setChances(int[] value);
 
     @Accessor("special")

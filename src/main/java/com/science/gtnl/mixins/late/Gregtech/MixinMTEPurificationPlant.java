@@ -21,15 +21,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.utils.Utils;
 
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
-import gregtech.api.util.GTUtility;
+import gregtech.api.structure.error.StructureError;
 import gregtech.common.tileentities.machines.multi.purification.LinkedPurificationUnit;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBaryonicPerfection;
@@ -50,7 +49,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Shadow
     @Final
-    private List<LinkedPurificationUnit> mLinkedUnits;
+    private List<LinkedPurificationUnit> linkedUnits;
 
     @Unique
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
@@ -63,10 +62,10 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     }
 
     @Override
-    public boolean checkExoticAndNormalEnergyHatches() {
+    public void checkExoticAndNormalEnergyHatches(List<StructureError> errors) {
         boolean t8water = false;
 
-        for (LinkedPurificationUnit unit : mLinkedUnits) {
+        for (LinkedPurificationUnit unit : linkedUnits) {
             if (unit.metaTileEntity() instanceof MTEPurificationUnitBaryonicPerfection) {
                 if (mExoticEnergyHatches.isEmpty() && mEnergyHatches.isEmpty()) {
                     gtnl$wirelessMode = true;
@@ -76,12 +75,13 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
             }
         }
 
-        for (LinkedPurificationUnit unit : mLinkedUnits) {
+        for (LinkedPurificationUnit unit : linkedUnits) {
             ((IWirelessMode) unit.metaTileEntity()).setGtnl$wirelessMode(gtnl$wirelessMode);
         }
 
-        if (t8water) return true;
-        return super.checkExoticAndNormalEnergyHatches();
+        if (!t8water) {
+            super.checkExoticAndNormalEnergyHatches(errors);
+        }
     }
 
     @Override
@@ -108,19 +108,19 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Inject(method = "startCycle", at = @At("TAIL"))
     private void gtnl$setCostingEU(CallbackInfo ci) {
-        gtnl$costingEUText = GTUtility.formatNumbers(gtnl$costingEU);
+        gtnl$costingEUText = NumberFormatUtil.formatNumber(gtnl$costingEU);
     }
 
     @Inject(method = "registerLinkedUnit", at = @At("HEAD"))
     private void gtnl$registerLinkedUnit(CallbackInfo ci) {
-        mLinkedUnits.removeIf(
+        linkedUnits.removeIf(
             link -> link.metaTileEntity() == null || link.metaTileEntity()
                 .getBaseMetaTileEntity() == null);
     }
 
     @Inject(method = "unregisterLinkedUnit", at = @At("HEAD"))
     private void gtnl$unregisterLinkedUnit(CallbackInfo ci) {
-        mLinkedUnits.removeIf(
+        linkedUnits.removeIf(
             link -> link.metaTileEntity() == null || link.metaTileEntity()
                 .getBaseMetaTileEntity() == null);
     }
@@ -137,18 +137,6 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
         if (costingEU.signum() > 0) {
             gtnl$costingEU = gtnl$costingEU.add(costingEU);
         }
-    }
-
-    @Inject(
-        method = "addUIWidgets",
-        at = @At(
-            value = "INVOKE",
-            target = "Lcom/gtnewhorizons/modularui/api/screen/ModularWindow$Builder;widget(Lcom/gtnewhorizons/modularui/api/widget/Widget;)Lcom/gtnewhorizons/modularui/api/widget/IWidgetBuilder;",
-            ordinal = 4,
-            shift = At.Shift.BEFORE))
-    private void gtnl$beforePowerSwitchWidget(ModularWindow.Builder builder, UIBuildContext buildContext,
-        CallbackInfo ci) {
-        builder.widget(createStructureUpdateButton(builder));
     }
 
     @Override

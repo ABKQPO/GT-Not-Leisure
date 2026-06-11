@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.Utils;
@@ -115,7 +116,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public void resetParallelTier() {
         super.resetParallelTier();
-        mParallelTier = getParallelTier(getControllerSlot());
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
             break;
@@ -256,7 +256,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             return finalResult;
         }
         updateSlots();
-        costingEUText = GTUtility.formatNumbers(costingEU);
+        costingEUText = NumberFormatUtil.formatNumber(costingEU);
 
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
@@ -324,8 +324,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         if (wirelessMode && maxParallelStored >= 0) {
             return maxParallelStored;
         }
-        mParallelTier = getParallelTier(getControllerSlot());
-
         for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
             mParallelTier = module.mTier;
             return module.getParallel() << 4;

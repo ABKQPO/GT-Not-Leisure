@@ -1,6 +1,11 @@
 package com.science.gtnl.common.part;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.io.IOException;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,6 +15,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.glodblock.github.inventory.AEFluidInventory;
 import com.glodblock.github.inventory.IAEFluidTank;
@@ -30,8 +37,10 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.misc.PartInterface;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -120,6 +129,23 @@ public class PartSuperDualInterface extends PartInterface implements ICustomGui,
     }
 
     @Override
+    public IMEMonitor<IAEFluidStack> getFluidInventory() {
+        return getDualityFluid().getFluidInventory();
+    }
+
+    @Override
+    @Nullable
+    public IMEMonitor<?> getMEMonitor(@NotNull IAEStackType<?> type) {
+        if (type == ITEM_STACK_TYPE) {
+            return getItemInventory();
+        }
+        if (type == FLUID_STACK_TYPE) {
+            return getFluidInventory();
+        }
+        return getDualityFluid().getMEMonitor(type);
+    }
+
+    @Override
     public AppEngInternalAEInventory getConfig() {
         return dualHostSupport.getConfig();
     }
@@ -183,12 +209,20 @@ public class PartSuperDualInterface extends PartInterface implements ICustomGui,
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return getDualityFluid().getTickingRequest(node);
+        TickingRequest item = super.getTickingRequest(node);
+        TickingRequest fluid = getDualityFluid().getTickingRequest(node);
+        return new TickingRequest(
+            Math.min(item.minTickRate, fluid.minTickRate),
+            Math.max(item.maxTickRate, fluid.maxTickRate),
+            item.isSleeping && fluid.isSleeping,
+            true);
     }
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        return getDualityFluid().tickingRequest(node, ticksSinceLastCall);
+        TickRateModulation item = super.tickingRequest(node, ticksSinceLastCall);
+        TickRateModulation fluid = getDualityFluid().tickingRequest(node, ticksSinceLastCall);
+        return item.ordinal() >= fluid.ordinal() ? item : fluid;
     }
 
     @Override

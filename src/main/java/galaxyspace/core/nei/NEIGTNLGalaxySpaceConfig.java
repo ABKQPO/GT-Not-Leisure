@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.gthandler.CustomItemList;
+import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -112,6 +112,6 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
 
     @Optional.Method(modid = "dreamcraft")
     public ItemStack getEngineCore() {
-        return CustomItemList.EngineCore.get(1);
+        return NHItemList.EngineCore.get(1);
     }
 }

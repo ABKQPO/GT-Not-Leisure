@@ -128,8 +128,8 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .itemOutputs(
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 1),
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.nagaScale", 32),
-                NHItemList.NagaScaleFragment.getIS(32),
-                NHItemList.NagaScaleChip.getIS(64))
+                NHItemList.NagaScaleFragment.get(32),
+                NHItemList.NagaScaleChip.get(64))
             .outputChances(1000, 10000, 5000, 2500)
             .duration(600)
             .eut(1966080)
@@ -139,9 +139,9 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .itemInputs(GTNLItemList.LichBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 2),
-                NHItemList.LichBone.getIS(32),
-                NHItemList.LichBoneFragment.getIS(32),
-                NHItemList.LichBoneChip.getIS(64),
+                NHItemList.LichBone.get(32),
+                NHItemList.LichBoneFragment.get(32),
+                NHItemList.LichBoneChip.get(64),
                 new ItemStack(Items.ender_pearl, 32),
                 new ItemStack(Items.book, 32),
                 new ItemStack(Items.paper, 32))
@@ -156,8 +156,8 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 3),
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.fieryTears", 12),
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.carminite", 16),
-                NHItemList.CarminiteFragment.getIS(32),
-                NHItemList.CarminiteChip.getIS(64),
+                NHItemList.CarminiteFragment.get(32),
+                NHItemList.CarminiteChip.get(64),
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.steeleafIngot", 16),
                 new ItemStack(Blocks.redstone_block, 4))
             .outputChances(1000, 10000, 10000, 5000, 2500, 5000, 7500)
@@ -169,8 +169,8 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .itemInputs(GTNLItemList.SnowQueenBook.get(0))
             .itemOutputs(
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 4),
-                NHItemList.SnowQueenBlood.getIS(16),
-                NHItemList.SnowQueenBloodDrop.getIS(32),
+                NHItemList.SnowQueenBlood.get(16),
+                NHItemList.SnowQueenBloodDrop.get(32),
                 new ItemStack(Blocks.packed_ice, 32),
                 new ItemStack(Items.snowball, 64),
                 GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.TFAuroraBrick", 64),

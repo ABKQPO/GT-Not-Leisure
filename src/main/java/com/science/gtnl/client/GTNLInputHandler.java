@@ -14,8 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Mouse;
 
+import com.cleanroommc.modularui.api.widget.Interactable;
 import com.glodblock.github.common.item.ItemFluidDrop;
-import com.gtnewhorizons.modularui.api.KeyboardUtil;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.common.packet.KeyBindingHandler;
@@ -68,8 +68,8 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
     public static Map<String, BooleanSupplier> createKeyBindings() {
         Map<String, BooleanSupplier> keyBindings = new Object2ObjectOpenHashMap<>(2);
-        keyBindings.put(AE_RETRIEVE_ITEM_KEY, () -> KeyboardUtil.isCtrlKeyDown() && Mouse.isButtonDown(2));
-        keyBindings.put(AE_START_CRAFT_KEY, () -> KeyboardUtil.isAltKeyDown() && Mouse.isButtonDown(2));
+        keyBindings.put(AE_RETRIEVE_ITEM_KEY, () -> GuiScreen.isCtrlKeyDown() && Mouse.isButtonDown(2));
+        keyBindings.put(AE_START_CRAFT_KEY, () -> Interactable.hasAltDown() && Mouse.isButtonDown(2));
         return keyBindings;
     }
 

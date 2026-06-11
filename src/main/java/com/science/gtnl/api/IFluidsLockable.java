@@ -1,12 +1,12 @@
 package com.science.gtnl.api;
 
-import gregtech.api.interfaces.metatileentity.IFluidLockable;
+import gregtech.api.interfaces.metatileentity.IFluidLockableMui2;
 
 /**
  * Implement this interface if your MetaTileEntity supports fluid lock mechanism.
  */
 @SuppressWarnings({ "BooleanMethodIsAlwaysInverted" })
-public interface IFluidsLockable extends IFluidLockable {
+public interface IFluidsLockable extends IFluidLockableMui2 {
 
     /**
      * Multi-fluid version: replace all locked fluid names.

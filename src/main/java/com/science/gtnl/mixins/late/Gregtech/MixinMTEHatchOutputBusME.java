@@ -9,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,54 +19,75 @@ import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.common.machine.hatch.OutputBusMEProxy;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.me.helpers.AENetworkProxy;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
-import gregtech.common.tileentities.machines.MTEHatchOutputBusME;
-import lombok.Getter;
-import lombok.Setter;
+import gregtech.common.tileentities.machines.outputme.MTEHatchOutputBusME;
+import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
+import gregtech.common.tileentities.machines.outputme.filter.MEFilterItem;
 
 @Mixin(value = MTEHatchOutputBusME.class, remap = false)
 public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus implements IOutputME {
 
-    @Getter
-    @Shadow
-    @Final
-    IItemList<IAEItemStack> itemCache;
-
-    @Getter
-    @Setter
-    @Shadow
-    long lastOutputTick;
-
-    @Getter
-    @Setter
-    @Shadow
-    long lastInputTick;
-
-    @Getter
-    @Setter
-    @Shadow
-    long tickCounter;
-
-    @Getter
-    @Setter
-    @Shadow
-    boolean additionalConnection;
-
-    @Getter
-    @Setter
     @Shadow
     EntityPlayer lastClickedPlayer;
 
-    @Getter
-    @Setter
     @Shadow
-    List<ItemStack> lockedItems;
+    public abstract MTEHatchOutputMEBase<IAEItemStack, MEFilterItem, ItemStack> getProvider();
 
     public MixinMTEHatchOutputBusME(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
+    }
+
+    @Override
+    public List<IAEItemStack> getItemCache() {
+        return getProvider().getCacheList();
+    }
+
+    @Override
+    public long getLastInputTick() {
+        return getProvider().getLastInputTick();
+    }
+
+    @Override
+    public long getTickCounter() {
+        return getProvider().getTickCounter();
+    }
+
+    @Override
+    public boolean isAdditionalConnection() {
+        return getProvider().getAdditionalConnection();
+    }
+
+    @Override
+    public void setAdditionalConnection(boolean value) {
+        getProvider().setAdditionalConnection(value);
+    }
+
+    @Override
+    public EntityPlayer getLastClickedPlayer() {
+        return lastClickedPlayer;
+    }
+
+    @Override
+    public void setLastClickedPlayer(EntityPlayer player) {
+        lastClickedPlayer = player;
+    }
+
+    @Override
+    public AENetworkProxy getGridProxy() {
+        return getProvider().getProxy();
+    }
+
+    @Override
+    public void gtnl$updateValidGridProxySides() {
+        getProvider().updateValidGridProxySides();
+    }
+
+    @Override
+    public MTEHatchOutputMEBase<IAEItemStack, MEFilterItem, ItemStack> getOutputProvider() {
+        return getProvider();
     }
 
     @Inject(method = "getCopiedData", at = @At("RETURN"), cancellable = true)

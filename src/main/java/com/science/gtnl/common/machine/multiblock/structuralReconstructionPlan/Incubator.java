@@ -66,6 +66,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTStructureUtility;
@@ -161,7 +162,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                 StructureUtility.ofChain(
                     GTStructureUtility.buildHatchAdder(Incubator.class)
                         .casingIndex(getCasingTextureID())
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             HatchElement.InputHatch,
                             HatchElement.OutputHatch,
@@ -294,11 +295,12 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET)
-            || !checkHatch()) return false;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
+        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+            checkStructureCondition(errors, false);
         setupParameters();
-        return this.mCountCasing >= 19;
+        checkStructureCondition(errors, this.mCountCasing >= 19);
     }
 
     @Override
@@ -319,9 +321,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                 return false;
             }
         }
-        return super.checkHatch() && checkEnergyHatch()
-            && this.mRadHatches.size() <= 1
-            && this.mOutputHatches.size() == 1;
+        return super.checkHatch() && this.mRadHatches.size() <= 1 && this.mOutputHatches.size() == 1;
     }
 
     public int reCalculateFluidAmount() {

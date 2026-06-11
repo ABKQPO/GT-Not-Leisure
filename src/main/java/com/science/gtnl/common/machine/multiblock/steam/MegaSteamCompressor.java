@@ -4,6 +4,8 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.recipe.RecipeMaps.compressorRecipes;
 
+import java.util.List;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -34,6 +36,7 @@ import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -78,15 +81,15 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(MegaSteamCompressor.class)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     buildSteamInput(MegaSteamCompressor.class)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
-                        .dot(1)
+                        .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(MegaSteamCompressor.class)
                         .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
-                        .dot(1)
+                        .hint(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
                             SteamHatchElement.OutputBus_Steam,
@@ -179,8 +182,8 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET) && checkHatches();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override

@@ -135,7 +135,8 @@ GTNL provides industrial-grade automation for your favorite magic mods.
 
 | GTNH Version | Mod Version |      Status       | Download                                                                                                                         |
 |:------------:|:-----------:|:-----------------:|:---------------------------------------------------------------------------------------------------------------------------------|
-|  **2.8.4**   |  `0.2.2+`   | ✅ **Recommended** | [![Latest](https://img.shields.io/badge/Download-Latest-success)](https://github.com/ABKQPO/GT-Not-Leisure/releases/latest)      |
+|  **2.9.0**   |  `0.2.7+`   | ✅ **Recommended** | [![Latest](https://img.shields.io/badge/Download-Latest-success)](https://github.com/ABKQPO/GT-Not-Leisure/releases/latest)      |
+|  **2.8.4**   |   `0.2.6`   | ✅ **Recommended** | [![0.2.6](https://img.shields.io/badge/Download-0.2.6-orange)](https://github.com/ABKQPO/GT-Not-Leisure/releases/0.2.6)          |
 |  **2.8.0+**  |   `0.2.2`   | ✅ **Recommended** | [![v0.2.1](https://img.shields.io/badge/Download-v0.2.2-orange)](https://github.com/ABKQPO/GT-Not-Leisure/releases/v0.2.2)       |
 |  **2.7.x**   |  `0.1.9.1`  |       ❌ EOL       | [![v0.1.9.1](https://img.shields.io/badge/Download-v0.1.9.1-orange)](https://github.com/ABKQPO/GT-Not-Leisure/releases/v0.1.9.1) |
 
@@ -175,10 +176,10 @@ If you maintain custom builds, keep folder names and encoded line directories un
 
 * **Minecraft**: `1.7.10`
 * **Forge**: `10.13.4.1614`
-* **GTNH**: `2.8.0+` (recommended `2.8.4`)
+* **GTNH**: `2.9.0+`
 * **Required mods for quest loading**:
-  * `BetterQuesting` (`3.7.15-GTNH` or compatible)
-  * `BetterQuestingAPI` (`1.1.0` or compatible)
+  * `BetterQuesting` (`3.8.71-GTNH` or compatible)
+  * `BetterQuestingAPI` (`1.1.2` or compatible)
 
 Without both of the above quest mods, GTNL quests will not be injected.
 

@@ -8,7 +8,9 @@ import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.api.mixinHelper.IFOGModule;
+import com.science.gtnl.common.gui.modularui.FOGModuleGui;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.metadata.SolorMuonCatalystMetadata;
 
@@ -20,15 +22,16 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTRecipe;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 import tectech.thing.metaTileEntity.multi.godforge.MTEForgeOfGods;
 import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
+import tectech.thing.metaTileEntity.multi.godforge.util.ForgeOfGodsData;
 
 public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGModule {
 
@@ -106,12 +109,13 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
 
     public boolean isAllUpgrade() {
         if (master == null) return false;
+        ForgeOfGodsData data = master.getData();
         for (ForgeOfGodsUpgrade upgrade : ForgeOfGodsUpgrade.VALUES) {
-            if (!master.isUpgradeActive(upgrade)) {
+            if (!data.isUpgradeActive(upgrade)) {
                 return false;
             }
         }
-        return master.getRingAmount() >= 3;
+        return data.getRingAmount() >= 3;
     }
 
     @Override
@@ -131,6 +135,11 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
     }
 
     @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
+    }
+
+    @Override
     public int getRecipeCatalystPriority() {
         return -10;
     }
@@ -141,34 +150,35 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
         str.add(
             StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.progress",
-                EnumChatFormatting.GREEN + GTUtility.formatNumbers(mProgresstime / 20) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + GTUtility.formatNumbers(mMaxProgresstime / 20) + EnumChatFormatting.RESET));
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
+                    + EnumChatFormatting.RESET));
         str.add(
             StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.currently_using",
-                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(EUt) : "0")
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
                     + EnumChatFormatting.RESET));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.max_parallel",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getActualParallel())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getActualParallel())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "GT5U.infodata.parallel.current",
                 EnumChatFormatting.RESET
-                    + (getBaseMetaTileEntity().isActive() ? GTUtility.formatNumbers(currentParallel) : "0")));
+                    + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getSpeedBonus())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getSpeedBonus())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.energy",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getEnergyDiscount())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getEnergyDiscount())));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.divisor.recipe_time.non_perfect_oc",
-                EnumChatFormatting.RESET + GTUtility.formatNumbers(getOverclockTimeFactor())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getOverclockTimeFactor())));
         return str.toArray(new String[0]);
     }
 

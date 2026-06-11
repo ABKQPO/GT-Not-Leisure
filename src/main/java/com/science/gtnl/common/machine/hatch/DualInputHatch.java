@@ -14,6 +14,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
@@ -21,6 +26,7 @@ import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import com.science.gtnl.common.gui.modularui.DualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.interfaces.ITexture;
@@ -30,7 +36,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
@@ -101,11 +106,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         this.mCapacityPer = getCapacityPerTank(aTier);
         this.itemSlotAmount = aTier * aTier + 1;
         mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_DualInputHatch_01")
-            + GTUtility.formatNumbers(itemSlotAmount - 1);
+            + NumberFormatUtil.formatNumber(itemSlotAmount - 1);
         mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_DualInputHatch_02_00")
-            + GTUtility.formatNumbers(aTier)
+            + NumberFormatUtil.formatNumber(aTier)
             + StatCollector.translateToLocal("Tooltip_DualInputHatch_02_01")
-            + GTUtility.formatNumbers(mCapacityPer)
+            + NumberFormatUtil.formatNumber(mCapacityPer)
             + "L";
 
         for (int i = 0; i < aTier; i++) {
@@ -130,11 +135,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         this.mCapacityPer = getCapacityPerTank(aTier);
         this.itemSlotAmount = aTier * aTier + 1;
         mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_DualInputHatch_01")
-            + GTUtility.formatNumbers(itemSlotAmount - 1);
+            + NumberFormatUtil.formatNumber(itemSlotAmount - 1);
         mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_DualInputHatch_02_00")
-            + GTUtility.formatNumbers(aTier)
+            + NumberFormatUtil.formatNumber(aTier)
             + StatCollector.translateToLocal("Tooltip_DualInputHatch_02_01")
-            + GTUtility.formatNumbers(mCapacityPer)
+            + NumberFormatUtil.formatNumber(mCapacityPer)
             + "L";
 
         for (int i = 0; i < aTier; i++) {
@@ -456,12 +461,28 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         return mStoredFluid.length;
     }
 
+    public FluidStackTank[] getFluidTanksForGui() {
+        return fluidTanks;
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new DualInputHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
     public static int getCapacityPerTank(int aTier) {
         return (1 << (aTier - 1)) * 8000;
     }
 
     @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after DualInputHatch mui2 rollout is complete.
         final int itemColumns = Math.max(1, mTier);
         final int itemRows = Math.max(1, mTier);
 
@@ -470,11 +491,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         final int centerX = (176 - totalWidth) / 2;
         final int centerY = (166 - totalHeight) / 2;
 
-        // 物品槽布局
+        // Item slot layout.
         for (int row = 0; row < itemRows; row++) {
             for (int col = 0; col < itemColumns; col++) {
                 int slotIndex = row * itemColumns + col;
-                if (slotIndex < itemSlotAmount - 1) { // 减去电路槽位
+                if (slotIndex < itemSlotAmount - 1) {
                     builder.widget(
                         new SlotWidget(inventoryHandler, slotIndex).setBackground(ModularUITextures.ITEM_SLOT)
                             .setPos(centerX + col * 18 + 5, centerY + row * 18));
@@ -482,7 +503,7 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             }
         }
 
-        // 流体槽布局（使用mTier确定数量）
+        // Fluid slot layout.
         for (int i = 0; i < mTier; i++) {
             builder.widget(
                 new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
@@ -493,7 +514,9 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after DualInputHatch mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)

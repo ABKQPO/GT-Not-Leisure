@@ -9,8 +9,10 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 
+@Deprecated
 public class AutoScalingStackSizeText implements IDrawable {
 
+    // TODO: Replace this mui1 drawable with a mui2 text/drawable helper when the dynamic inventory GUI is migrated.
     private static final TextRenderer measuringRenderer = new TextRenderer();
     private static final NumberFormatMUI muiNumberFormat = new NumberFormatMUI();
     private static final TextRenderer renderer = new TextRenderer();

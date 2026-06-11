@@ -8,7 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
+import com.cleanroommc.modularui.factory.PosGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
@@ -16,6 +19,7 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
+import com.science.gtnl.common.gui.modularui.SuperVoidBusGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.widgets.PhantomItemButton;
@@ -31,7 +35,7 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
     public static String LOCKED_ITEMS_NBT_KEY = "lockedItems";
 
     public ItemStack[] lockedItems = new ItemStack[100];
-    public IItemHandlerModifiable lockedInventoryHandler = new ItemStackHandler(lockedItems);
+    public ItemStackHandler lockedInventoryHandler = new ItemStackHandler(lockedItems);
 
     public SuperVoidBus(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -122,7 +126,19 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new SuperVoidBusGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after SuperVoidBus mui2 rollout is complete.
         if (lockedInventoryHandler == null) return;
 
         final Scrollable scrollable = new Scrollable().setVerticalScroll();
@@ -141,7 +157,6 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
         addGregTechLogo(builder);
     }
 
-    @Override
     public ItemStack[] getLockedItems() {
         return lockedItems;
     }
@@ -162,7 +177,9 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
     }
 
     @Override
+    @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after SuperVoidBus mui2 rollout is complete.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)

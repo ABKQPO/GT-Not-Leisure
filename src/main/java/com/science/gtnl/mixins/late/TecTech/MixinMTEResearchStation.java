@@ -18,8 +18,8 @@ import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import gregtech.api.gui.widgets.PhantomItemButton;
-import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
@@ -72,29 +72,13 @@ public abstract class MixinMTEResearchStation extends TTMultiblockBase {
     }
 
     @Redirect(
-        method = "checkProcessing_EM",
+        method = "findResearchStationRecipe",
         at = @At(
             ordinal = 0,
             value = "INVOKE",
             target = "Lgregtech/api/util/GTUtility;areStacksEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;Z)Z"))
-    private boolean redirectCheckProcessingAreStacksEqual0(ItemStack stack1, ItemStack stack2, boolean matchNBT,
-        @Local(name = "assRecipe") GTRecipe.RecipeAssemblyLine assRecipe) {
-        if (gtnl$lockedItems[0] != null
-            && !GTUtility.areStacksEqual(assRecipe.mOutput, gtnl$lockedItems[0], matchNBT)) {
-            return false;
-        }
-
-        return GTUtility.areStacksEqual(stack1, stack2, matchNBT);
-    }
-
-    @Redirect(
-        method = "checkProcessing_EM",
-        at = @At(
-            ordinal = 2,
-            value = "INVOKE",
-            target = "Lgregtech/api/util/GTUtility;areStacksEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;Z)Z"))
-    private boolean redirectCheckProcessingAreStacksEqual2(ItemStack stack1, ItemStack stack2, boolean matchNBT,
-        @Local(name = "assRecipe") GTRecipe.RecipeAssemblyLine assRecipe) {
+    private boolean gtnl$filterLockedResearchRecipe(ItemStack stack1, ItemStack stack2, boolean matchNBT,
+        @Local(name = "assRecipe") TecTechRecipeMaps.TTResearchStationALRecipe assRecipe) {
         if (gtnl$lockedItems[0] != null
             && !GTUtility.areStacksEqual(assRecipe.mOutput, gtnl$lockedItems[0], matchNBT)) {
             return false;
