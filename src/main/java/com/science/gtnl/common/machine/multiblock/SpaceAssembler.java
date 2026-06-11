@@ -13,18 +13,18 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
+import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.RecipeUtil;
 
 import gregtech.api.GregTechAPI;
@@ -34,9 +34,12 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
+import gregtech.api.util.GTRecipe;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -147,12 +150,6 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     }
 
     @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        super.addUIWidgets(builder, buildContext);
-        createUpgradeButton(builder, buildContext);
-    }
-
-    @Override
     public ItemStack[] getUpgradeRequiredItems() {
         return REQUIRED_ITEMS;
     }
@@ -237,6 +234,30 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
             return;
         setupParameters();
         checkStructureCondition(errors, mCountCasing >= 10);
+    }
+
+    @Override
+    public ProcessingLogic createProcessingLogic() {
+        return new GTNLProcessingLogic() {
+
+            @NotNull
+            @Override
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+                int moduleTier = recipe.getMetadataOrDefault(IGRecipeMaps.MODULE_TIER, 0);
+                if (moduleTier >= 3 && !upgradeConsumed) {
+                    return CheckRecipeResultRegistry.NO_RECIPE;
+                }
+                return super.validateRecipe(recipe);
+            }
+
+            @NotNull
+            @Override
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier());
+            }
+        }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
     @Override
