@@ -11,7 +11,6 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.recipes.GTNLAssemblyLineRecipeAdder;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
@@ -70,7 +69,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .definitions()
             .blocks();
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             kubatech.api.enums.ItemList.ExtremeIndustrialGreenhouse.get(1),
             256000,
             1024,
@@ -124,7 +123,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(300 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.MixerUIV.get(1),
             102400000,
             25565,
@@ -282,7 +281,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(50 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GregtechItemList.ChemicalPlant_Controller.get(1),
             51200000,
             25600,
@@ -334,7 +333,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Hatch_CraftingInput_Bus_ME.get(1),
             1920000,
             4000,
@@ -385,7 +384,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Hatch_CraftingInput_Bus_Slave.get(1),
             3840000,
             16000,
@@ -430,7 +429,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemRefer.Field_Restriction_Glass.get(1),
             51200000,
             12800,
@@ -522,7 +521,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(20 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.UVParallelControllerCore.get(1),
             51200000,
             51200,
@@ -545,7 +544,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.UHVParallelControllerCore.get(1),
             204800000,
             204800,
@@ -568,7 +567,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.UEVParallelControllerCore.get(1),
             819200000,
             819200,
@@ -592,7 +591,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.UIVParallelControllerCore.get(1),
             819200000,
             1638400,
@@ -614,7 +613,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             Mods.DraconicEvolution.isModLoaded() ? kubatech.api.enums.ItemList.DraconicEvolutionFusionCrafter.get(1)
                 : GTNLItemList.BlazeCubeBlock.get(1),
             25600000,
@@ -637,7 +636,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             120 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTModHandler.getModItem(Mods.TwilightForest.ID, "item.trophy", 1, 4),
             1024000000,
             51200,
@@ -660,7 +659,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             300 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Machine_Multi_Furnace.get(1),
             512000,
             512,
@@ -718,7 +717,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.AmplifabricatorZPM.get(1L),
             512000,
             256,
@@ -733,7 +732,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             200,
             (int) TierEU.RECIPE_UV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.AcceleratorZPM.get(1L),
             102400,
             32,
@@ -751,7 +750,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             400,
             (int) TierEU.RECIPE_UV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.AlloyBlastSmelter.get(1),
             1024000,
             2048,
@@ -789,7 +788,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.OreDrill3.get(1),
             10240000,
             51200,
@@ -827,7 +826,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(50 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             CustomItemList.Godforge_SingularityShieldingCasing.get(1),
             819200000,
             512000,
@@ -847,7 +846,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1800,
             (int) TierEU.RECIPE_UXV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GGItemList.AdvAssLine.get(1),
             20480000,
             12800,
@@ -932,7 +931,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 .addTo(AL);
         }
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.ChemicalPlant.get(1),
             12000,
             16,
@@ -952,7 +951,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2400,
             (int) TierEU.RECIPE_ZPM);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.SpaceElevatorController.get(1),
             96000,
             256,
@@ -1026,7 +1025,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(60 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeAssembler.get(1),
             5000000,
             48000,
@@ -1127,7 +1126,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(300 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.Laser_Cooling_Casing.get(1),
             2000000,
             48000,
@@ -1148,7 +1147,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             120,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Coolant_Duct_Casing.get(1),
             800000,
             10000,
@@ -1195,7 +1194,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(10 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Hatch_Energy_UXV.get(1),
             768000,
             512,
@@ -1216,7 +1215,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_MAX);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Hatch_Dynamo_UXV.get(1),
             768000,
             512,
@@ -1306,7 +1305,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(15 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.SuperDataAccessHatch.get(1),
             3072000,
             2048,
@@ -1332,7 +1331,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeExtruder.get(1),
             1200000,
             40000,
@@ -1351,7 +1350,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             600,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeMacerationTower.get(1),
             1200000,
             40000,
@@ -1376,7 +1375,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeIndustrialLathe.get(1),
             1000000,
             40000,
@@ -1397,7 +1396,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeForming.get(1),
             1000000,
             40000,
@@ -1418,7 +1417,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeHammer.get(1),
             8000000,
             32000,
@@ -1439,7 +1438,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1100,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeElectromagnet.get(1),
             1000000,
             22000,
@@ -1459,7 +1458,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1200,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeCentrifuge.get(1),
             4000000,
             40000,
@@ -1484,7 +1483,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.PreciseAssembler.get(1),
             8000000,
             48000,
@@ -1507,7 +1506,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2400,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeCircuitAssembler.get(1),
             8000000,
             30000,
@@ -1558,7 +1557,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(50 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.WirelessEnergyHatchUIV65536A.get(1),
             151248000,
             150000,
@@ -1647,7 +1646,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(150 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             CustomItemList.Machine_Multi_EyeOfHarmony.get(1),
             1919810,
             65536,
@@ -1670,7 +1669,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UXV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTModHandler.getModItem(Mods.EnderStorage.ID, "enderChest", 1),
             512000,
             2048,
@@ -1701,7 +1700,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             8000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.FuelRefiningComplex.get(1),
             32768000,
             4096,
@@ -1727,7 +1726,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             4000,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.MassFabricator.get(1),
             100000000,
             65536,
@@ -1770,7 +1769,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(AL);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.OilDrillInfinite.get(1),
             2560000,
             4096,
@@ -1795,7 +1794,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             20000,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemRegistry.megaMachines[3],
             1280000,
             40000,
@@ -1816,7 +1815,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeWiremill.get(1),
             1000000,
             40000,
@@ -1836,7 +1835,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1600,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             LanthItemList.BEAMLINE_PIPE,
             20000,
             16,
@@ -1851,7 +1850,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             200,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.PCBFactory.get(1),
             128000,
             64,
@@ -1868,7 +1867,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeNaquadahReactor.get(1),
             512000,
             1024,
@@ -1890,7 +1889,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             500,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Transdimensional_Alignment_Matrix.get(1),
             2000000,
             40000,
@@ -1910,7 +1909,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             16000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.HyperNaquadahReactor.get(1),
             8192000,
             16384,
@@ -1933,7 +1932,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             32000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             CustomItemList.Machine_Multi_QuarkGluonPlasmaModule.get(1),
             768000000,
             131072,
@@ -1955,7 +1954,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             300 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GregtechItemList.Industrial_TreeFarm.get(1),
             14600000,
             18000,
@@ -1977,7 +1976,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             80 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Machine_Multi_TranscendentPlasmaMixer.get(1),
             819200000,
             32767,
@@ -1999,7 +1998,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             42 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_MAX);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.Digester.get(1),
             1800000,
             32767,
@@ -2020,7 +2019,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UIV);
 
         if (Mods.MobsInfo.isModLoaded()) {
-            GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+            TTRecipeAdder.addResearchableAssemblylineRecipe(
                 kubatech.api.enums.ItemList.ExtremeEntityCrusher.get(1),
                 6660000,
                 666,
@@ -2045,7 +2044,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 (int) TierEU.RECIPE_UIV);
         }
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GregtechItemList.Controller_ElementalDuplicator.get(1),
             22331100,
             32767,
@@ -2083,7 +2082,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .definitions()
             .blocks();
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemRegistry.eic.copy(),
             51200000,
             51200,
@@ -2177,7 +2176,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .duration(30 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeCutter.get(1),
             32768000,
             40000,
@@ -2200,7 +2199,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeMixer.get(1),
             16384000,
             20000,
@@ -2223,7 +2222,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeBender.get(1),
             1000000,
             40000,
@@ -2245,7 +2244,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeEngravingLaser.get(1),
             4000000,
             48000,
@@ -2268,7 +2267,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1800,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeArcSmelter.get(1),
             4000000,
             48000,
@@ -2291,7 +2290,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UHV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeDistillery.get(1),
             1800000,
             40000,
@@ -2314,7 +2313,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeAlloySmelter.get(1),
             1024000,
             4096,
@@ -2336,7 +2335,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             8000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemRegistry.megaMachines[4],
             2048000,
             4000,
@@ -2359,7 +2358,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeChemicalBath.get(1),
             1000000,
             40000,
@@ -2380,7 +2379,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeCanning.get(1),
             2000000,
             40000,
@@ -2400,7 +2399,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1100,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeElectrolyzer.get(1),
             1200000,
             40000,
@@ -2422,7 +2421,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeBrewer.get(1),
             1440000,
             40000,
@@ -2442,7 +2441,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1500,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeIncubator.get(1),
             4194304,
             65536,
@@ -2461,7 +2460,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             4000,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeExtractor.get(1),
             2000000,
             65536,
@@ -2482,7 +2481,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeMaterialPress.get(1),
             1440000,
             65536,
@@ -2502,7 +2501,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1800,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.FluidHeaterUEV.get(1),
             1230000,
             40000,
@@ -2524,7 +2523,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeAutoclave.get(1),
             2560000,
             65536,
@@ -2545,7 +2544,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1800,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.MegaMixer.get(1),
             100000000,
             65536,
@@ -2569,7 +2568,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             4000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargePacker.get(1),
             1000000,
             40000,
@@ -2590,7 +2589,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             500,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.LargeSiftingFunnel.get(1),
             1000000,
             40000,
@@ -2611,7 +2610,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             500,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.VacuumDryingFurnace.get(1),
             10000000,
             65536,
@@ -2633,7 +2632,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1200,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.ElectricImplosionCompressor.get(1),
             10240000,
             65536,
@@ -2655,7 +2654,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000,
             (int) TierEU.RECIPE_UIV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.RareEarthCentrifugal.get(1),
             100000000,
             65536,
@@ -2676,7 +2675,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             3000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             aeItems.cellSingularity()
                 .maybeStack(1)
                 .orNull(),
@@ -2706,7 +2705,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             18000,
             (int) TierEU.RECIPE_UMV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.DecayHastener.get(1),
             204800,
             4000,
@@ -2727,7 +2726,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             1000,
             (int) TierEU.RECIPE_UV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.NanoForge.get(1),
             37545000,
             32767,
@@ -2749,7 +2748,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             2000 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UEV);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             GTNLItemList.FlotationCellRegulator.get(1),
             800000,
             32767,

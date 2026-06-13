@@ -8,7 +8,6 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.recipes.GTNLAssemblyLineRecipeAdder;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.CircuitGeneration.BWMetaItems;
@@ -485,7 +484,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
     }
 
     public void loadCircuitRecipes() {
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Circuit_Chip_Biocell.get(1),
             10000000,
             2500,
@@ -523,7 +522,7 @@ public class CircuitAssemblerConvertRecipes implements IRecipePool {
             .duration(40 * GTRecipeBuilder.SECONDS)
             .addTo(GTRecipeConstants.AssemblyLine);
 
-        GTNLAssemblyLineRecipeAdder.addResearchableAssemblylineRecipe(
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
             ItemList.Circuit_Wetwaresupercomputer.get(1L),
             384000,
             96,
