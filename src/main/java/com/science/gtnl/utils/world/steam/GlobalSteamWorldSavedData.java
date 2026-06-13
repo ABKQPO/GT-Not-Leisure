@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
 
                 Object data = objectInputStream.readObject();
-                Map<Object, BigInteger> hashData = (Map<Object, BigInteger>) data;
+                HashMap<Object, BigInteger> hashData = (HashMap<Object, BigInteger>) data;
 
                 for (Map.Entry<Object, BigInteger> entry : hashData.entrySet()) {
                     try {
@@ -90,7 +91,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
 
                 Object data = objectInputStream.readObject();
-                Map<String, String> oldTeams = (Map<String, String>) data;
+                HashMap<String, String> oldTeams = (HashMap<String, String>) data;
 
                 for (Map.Entry<String, String> entry : oldTeams.entrySet()) {
                     try {
