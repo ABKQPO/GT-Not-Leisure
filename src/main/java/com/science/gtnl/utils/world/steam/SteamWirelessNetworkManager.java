@@ -31,7 +31,7 @@ public class SteamWirelessNetworkManager {
             GlobalSteamWorldSavedData.INSTANCE.markDirty();
         } catch (Exception exception) {
             ScienceNotLeisure.LOG
-                。error("[SteamWirelessNetworkManager] Could not mark GlobalSteam dirty in addSteam", exception);
+                .error("[SteamWirelessNetworkManager] Could not mark GlobalSteam dirty in addSteam", exception);
         }
 
         UUID teamUUID = SpaceProjectManager.getLeader(user_uuid);
