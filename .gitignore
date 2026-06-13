@@ -39,6 +39,7 @@ layout.json
 /ToDo
 /src/main/resources/assets/sciencenotleisure/multiblock/*.py
 /src/main/resources/assets/sciencenotleisure/multiblock/*.txt
+/docs
 
 ### NetBeans ###
 /nbproject/private/

@@ -332,7 +332,10 @@ public class RecipeBuilder {
         }
 
         GTRecipeBuilder builder = GTValues.RA.stdBuilder();
-        if (inputItems != null) {
+        // Preserve ore-dict alternatives only for Assembly Line recipes.
+        if (recipeMap == GTRecipeConstants.AssemblyLine && inputsOreDict != null) {
+            builder = builder.itemInputs(inputsOreDict);
+        } else if (inputItems != null) {
             builder = builder.itemInputs(inputItems);
         }
 
