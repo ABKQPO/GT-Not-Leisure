@@ -9,9 +9,9 @@ import com.science.gtnl.ScienceNotLeisure;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
-公共 class SteamWirelessNetworkManager {
+public class SteamWirelessNetworkManager {
 
-    公共 static HashMap<UUID, BigInteger> GLOBAL_STEAM = new HashMap<>(100, 0.9f);
+    public static HashMap<UUID, BigInteger> GLOBAL_STEAM = new HashMap<>(100, 0.9f);
 
     private SteamWirelessNetworkManager() {}
 
