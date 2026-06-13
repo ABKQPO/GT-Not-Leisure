@@ -332,7 +332,10 @@ public class RecipeBuilder {
         }
 
         GTRecipeBuilder builder = GTValues.RA.stdBuilder();
-        if (inputItems != null) {
+        // Preserve ore-dict assembly line alternatives instead of collapsing them to the first stack.
+        if (inputsOreDict != null) {
+            builder = builder.itemInputs(inputsOreDict);
+        } else if (inputItems != null) {
             builder = builder.itemInputs(inputItems);
         }
 
