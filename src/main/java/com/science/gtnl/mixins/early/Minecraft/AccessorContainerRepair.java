@@ -6,7 +6,7 @@ import net.minecraft.inventory.IInventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(value = ContainerRepair.class)
+@Mixin(value = ContainerRepair.class, remap = true)
 public interface AccessorContainerRepair {
 
     @Accessor("inputSlots")

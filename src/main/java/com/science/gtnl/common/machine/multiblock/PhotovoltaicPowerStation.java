@@ -77,94 +77,6 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     }
 
     @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(getCasingBlock(), getCasingMeta());
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureIndex()),
-                TextureFactory.builder()
-                    .addIcon(aActive ? TexturesGtBlock.oMCDSolarTowerActive : TexturesGtBlock.oMCDSolarTower)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureIndex()) };
-    }
-
-    @Override
-    @NotNull
-    public CheckRecipeResult checkProcessing() {
-        for (FluidStack tFluid : getStoredFluids()) {
-            if (!GTUtility.areFluidsEqual(tFluid, DISTILLED_WATER)) continue;
-            boolean notAirBlocks = false;
-            IGregTechTileEntity base = getBaseMetaTileEntity();
-            int xCoord = base.getXCoord(), yCoord = base.getYCoord(), zCoord = base.getZCoord();
-            ForgeDirection front = base.getFrontFacing();
-            World world = base.getWorld();
-
-            for (int x = xCoord - (front.offsetX * 2) + 4; x >= xCoord - 4; x--) {
-                for (int z = zCoord + 4 - (front.offsetZ * 6); z >= zCoord - 4 + (front.offsetZ * 8); z--) {
-                    if (world.getTopSolidOrLiquidBlock(x, z) > yCoord + 5) {
-                        notAirBlocks = true;
-                        break;
-                    }
-                }
-            }
-
-            long output = getOutputEUt();
-            if (notAirBlocks) output /= 2;
-            if (world.isRaining()) output /= 2;
-
-            this.lEUt = output;
-            this.mEfficiency = 10000;
-            this.mProgresstime = 0;
-            this.mMaxProgresstime = (int) (1024 * mConfigSpeedBoost);
-            return CheckRecipeResultRegistry.GENERATING;
-        }
-
-        this.lEUt = 0;
-        return CheckRecipeResultRegistry.NO_FUEL_FOUND;
-    }
-
-    @Override
-    public boolean onRunningTick(ItemStack stack) {
-        if ((mProgresstime + 1) % 20 == 0) {
-            startRecipeProcessing();
-            if (!depleteInput(GTModHandler.getDistilledWater(lEUt / 4))) {
-                stopMachine(ShutDownReasonRegistry.NONE);
-            }
-            endRecipeProcessing();
-        }
-        return true;
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkStructureCondition(
-            errors,
-            checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-                && mCountCasing >= 4);
-    }
-
-    @Override
-    public String[] getInfoData() {
-        return new String[] {
-            StatCollector.translateToLocal("GT5U.engine.output") + ": "
-                + EnumChatFormatting.RED
-                + NumberFormatUtil.formatNumber(lEUt)
-                + EnumChatFormatting.RESET
-                + " EU/t",
-            StatCollector.translateToLocal("GT5U.engine.consumption") + ": "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(lEUt / 4)
-                + EnumChatFormatting.RESET
-                + " L/t" };
-    }
-
-    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
@@ -205,6 +117,100 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
             .addElement('B', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement('D', StructureUtility.ofBlock(getPhotovoltaicBlock(), getPhotovoltaicMeta()))
             .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 4);
+    }
+
+    @Override
+    @NotNull
+    public CheckRecipeResult checkProcessing() {
+        for (FluidStack tFluid : getStoredFluids()) {
+            if (!GTUtility.areFluidsEqual(tFluid, DISTILLED_WATER)) continue;
+            boolean notAirBlocks = false;
+            IGregTechTileEntity base = getBaseMetaTileEntity();
+            int xCoord = base.getXCoord();
+            int yCoord = base.getYCoord();
+            int zCoord = base.getZCoord();
+            ForgeDirection front = base.getFrontFacing();
+            World world = base.getWorld();
+
+            for (int x = xCoord - (front.offsetX * 2) + 4; x >= xCoord - 4; x--) {
+                for (int z = zCoord + 4 - (front.offsetZ * 6); z >= zCoord - 4 + (front.offsetZ * 8); z--) {
+                    if (world.getTopSolidOrLiquidBlock(x, z) > yCoord + 5) {
+                        notAirBlocks = true;
+                        break;
+                    }
+                }
+            }
+
+            long output = getOutputEUt();
+            if (notAirBlocks) output /= 2;
+            if (world.isRaining()) output /= 2;
+
+            lEUt = output;
+            mEfficiency = 10000;
+            mProgresstime = 0;
+            mMaxProgresstime = (int) (1024 * mConfigSpeedBoost);
+            return CheckRecipeResultRegistry.GENERATING;
+        }
+
+        lEUt = 0;
+        return CheckRecipeResultRegistry.NO_FUEL_FOUND;
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack stack) {
+        if ((mProgresstime + 1) % 20 == 0) {
+            startRecipeProcessing();
+            if (!depleteInput(GTModHandler.getDistilledWater(lEUt / 4))) {
+                stopMachine(ShutDownReasonRegistry.NONE);
+                endRecipeProcessing();
+                return false;
+            }
+            endRecipeProcessing();
+        }
+        return super.onRunningTick(stack);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(getCasingBlock(), getCasingMeta());
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureIndex()),
+                TextureFactory.builder()
+                    .addIcon(aActive ? TexturesGtBlock.oMCDSolarTowerActive : TexturesGtBlock.oMCDSolarTower)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureIndex()) };
+    }
+
+    @Override
+    public String[] getInfoData() {
+        return new String[] {
+            StatCollector.translateToLocal("GT5U.engine.output") + ": "
+                + EnumChatFormatting.RED
+                + NumberFormatUtil.formatNumber(lEUt)
+                + EnumChatFormatting.RESET
+                + " EU/t",
+            StatCollector.translateToLocal("GT5U.engine.consumption") + ": "
+                + EnumChatFormatting.YELLOW
+                + NumberFormatUtil.formatNumber(lEUt / 4)
+                + EnumChatFormatting.RESET
+                + " L/t" };
     }
 
     public static class EnergeticPhotovoltaicPowerStation extends PhotovoltaicPowerStation {

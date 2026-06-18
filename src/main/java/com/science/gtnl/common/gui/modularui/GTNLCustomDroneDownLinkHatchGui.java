@@ -164,7 +164,7 @@ public class GTNLCustomDroneDownLinkHatchGui extends MTEHatchBaseGui<CustomDrone
         IntSyncValue configTimeSyncer = syncManager.findSyncHandler(CONFIG_TIME_SYNC_KEY, IntSyncValue.class);
         return new TextFieldWidget().value(configTimeSyncer)
             .numbersInt(machine.getMinConfigTime(), machine.getMaxConfigTime())
-            .setScrollValues(1, 2, 5)
+            .scrollValues(1, 2, 5, 10)
             .setTextAlignment(Alignment.Center)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
             .size(70, 18);

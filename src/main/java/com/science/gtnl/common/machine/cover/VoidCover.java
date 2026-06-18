@@ -39,19 +39,12 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
     @Getter
     @Setter
     public boolean isInputMode = false;
-
     public ItemStack[] lockedItems = new ItemStack[20];
     public IItemHandlerModifiable lockedInventoryHandler = new ItemStackHandler(lockedItems);
-
     public String[] lockedFluidNames = new String[20];
 
     public VoidCover(CoverContext context) {
         super(context);
-    }
-
-    @Override
-    public boolean isRedstoneSensitive(long aTimer) {
-        return false;
     }
 
     @Override
@@ -61,7 +54,7 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
 
     @Override
     public void doCoverThings(byte aInputRedstone, long aTimer) {
-        if (aTimer % getTickRate() == 0) {
+        if (aInputRedstone == 0 && aTimer % getTickRate() == 0) {
             ICoverable coverable = coveredTile.get();
             if (coverable instanceof IMachineProgress machineProgress) {
                 if (machineProgress.isAllowedToWork() && machineProgress instanceof BaseMetaTileEntity baseTile) {
@@ -108,15 +101,13 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
                         multiInput.setFluid(null, i);
                     }
                 }
-            } else {
-                if (hatch.getDrainableStack() != null && hatch.getDrainableStack()
-                    .getFluid()
-                    .getName()
-                    .equals(locked)) {
+            } else if (hatch.getDrainableStack() != null && hatch.getDrainableStack()
+                .getFluid()
+                .getName()
+                .equals(locked)) {
                     hatch.setDrainableStack(null);
                     break;
                 }
-            }
         }
     }
 
@@ -149,15 +140,13 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
                     basicMachine.setFillableStack(null);
                     break;
                 }
-            } else {
-                if (basicMachine.getDrainableStack() != null && basicMachine.getDrainableStack()
-                    .getFluid()
-                    .getName()
-                    .equals(locked)) {
+            } else if (basicMachine.getDrainableStack() != null && basicMachine.getDrainableStack()
+                .getFluid()
+                .getName()
+                .equals(locked)) {
                     basicMachine.setDrainableStack(null);
                     break;
                 }
-            }
         }
     }
 
@@ -175,97 +164,6 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
             }
         }
         return slots;
-    }
-
-    public String getLockedFluidName() {
-        return lockedFluidNames[0];
-    }
-
-    @Override
-    public void setLockedFluid(Fluid lockedFluid) {
-        setLockedFluidName(lockedFluid == null ? null : lockedFluid.getName());
-    }
-
-    @Override
-    public Fluid getLockedFluid() {
-        return FluidRegistry.getFluid(getLockedFluidName());
-    }
-
-    @Override
-    public String[] getLockedFluidNames() {
-        return lockedFluidNames;
-    }
-
-    @Override
-    public String getLockedFluidNames(int index) {
-        return lockedFluidNames[index];
-    }
-
-    public void setLockedFluidName(String lockedFluidName) {
-        this.lockedFluidNames[0] = lockedFluidName;
-    }
-
-    @Override
-    public void setLockedFluidNames(String[] lockedFluidNames) {
-        if (lockedFluidNames == null) return;
-        this.lockedFluidNames = lockedFluidNames;
-    }
-
-    @Override
-    public void setLockedFluidNames(int index, String lockedFluidName) {
-        if (lockedFluidName == null) return;
-        this.lockedFluidNames[index] = lockedFluidName;
-    }
-
-    @Override
-    public void lockFluid(boolean lock) {
-        if (!lock) {
-            setLockedFluidName(null);
-        }
-    }
-
-    @Override
-    public void lockFluids(boolean lock, int index) {
-        if (!lock && this.lockedFluidNames != null) {
-            this.lockedFluidNames[index] = null;
-        }
-    }
-
-    @Override
-    public boolean isFluidLocked() {
-        if (lockedFluidNames == null) return false;
-        for (String s : lockedFluidNames) {
-            if (s != null && !s.isEmpty()) return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isFluidsLocked() {
-        if (lockedFluidNames == null) return false;
-        for (String s : lockedFluidNames) {
-            if (s != null && !s.isEmpty()) return true;
-        }
-        return false;
-    }
-
-    public boolean acceptsFluidLock(String name) {
-        return true;
-    }
-
-    @Override
-    public boolean acceptsFluidLock(Fluid fluid) {
-        return true;
-    }
-
-    @Override
-    public boolean acceptsFluidsLock(String[] name) {
-        return true;
-    }
-
-    @Override
-    public boolean acceptsFluidsLock(String name, int index) {
-        return true;
     }
 
     @Override
@@ -359,5 +257,96 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
         }
 
         return compound;
+    }
+
+    public String getLockedFluidName() {
+        return lockedFluidNames[0];
+    }
+
+    public void setLockedFluidName(String lockedFluidName) {
+        this.lockedFluidNames[0] = lockedFluidName;
+    }
+
+    @Override
+    public void setLockedFluid(Fluid lockedFluid) {
+        setLockedFluidName(lockedFluid == null ? null : lockedFluid.getName());
+    }
+
+    @Override
+    public Fluid getLockedFluid() {
+        return FluidRegistry.getFluid(getLockedFluidName());
+    }
+
+    @Override
+    public String[] getLockedFluidNames() {
+        return lockedFluidNames;
+    }
+
+    @Override
+    public String getLockedFluidNames(int index) {
+        return lockedFluidNames[index];
+    }
+
+    @Override
+    public void setLockedFluidNames(String[] lockedFluidNames) {
+        if (lockedFluidNames == null) return;
+        this.lockedFluidNames = lockedFluidNames;
+    }
+
+    @Override
+    public void setLockedFluidNames(int index, String lockedFluidName) {
+        if (lockedFluidName == null) return;
+        this.lockedFluidNames[index] = lockedFluidName;
+    }
+
+    @Override
+    public void lockFluid(boolean lock) {
+        if (!lock) {
+            setLockedFluidName(null);
+        }
+    }
+
+    @Override
+    public void lockFluids(boolean lock, int index) {
+        if (!lock && this.lockedFluidNames != null) {
+            this.lockedFluidNames[index] = null;
+        }
+    }
+
+    @Override
+    public boolean isFluidLocked() {
+        if (lockedFluidNames == null) return false;
+        for (String s : lockedFluidNames) {
+            if (s != null && !s.isEmpty()) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isFluidsLocked() {
+        if (lockedFluidNames == null) return false;
+        for (String s : lockedFluidNames) {
+            if (s != null && !s.isEmpty()) return true;
+        }
+        return false;
+    }
+
+    public boolean acceptsFluidLock(String name) {
+        return true;
+    }
+
+    @Override
+    public boolean acceptsFluidLock(Fluid fluid) {
+        return true;
+    }
+
+    @Override
+    public boolean acceptsFluidsLock(String[] name) {
+        return true;
+    }
+
+    @Override
+    public boolean acceptsFluidsLock(String name, int index) {
+        return true;
     }
 }

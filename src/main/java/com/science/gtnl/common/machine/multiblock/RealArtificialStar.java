@@ -54,6 +54,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -78,21 +79,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static long MaxOfAntimatter = 3;
     public static long MaxOfAntimatterFuelRod = 1024;
     public static long MaxOfStrangeAnnihilationFuelRod = 32768;
-    public String ownerName;
-    public UUID ownerUUID;
-    public long storageEU = 0;
-    public int tierDimensionField = -1;
-    public int tierTimeField = -1;
-    public int tierStabilisationField = -1;
-    public double outputMultiplier = 1;
-    public int recoveryChance = 0;
-    public byte rewardContinuous = 0;
-    public BigInteger currentOutputEU = BigInteger.ZERO;
-    public final DecimalFormat decimalFormat = new DecimalFormat("#.0");
-    public boolean isRendering = false;
     public static boolean configEnableDefaultRender = MainConfig.machine.artificial_star.enableRenderDefaultArtificialStar;
-    public boolean enableRender = configEnableDefaultRender;
-
     public static final ItemStack TST_PROTO = GTModHandler
         .getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 17);
     private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
@@ -106,6 +93,20 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     private static final ItemStack TST_STRANGE_ROD = ModList.TwistSpaceTechnology.isModLoaded()
         ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 29)
         : null;
+
+    public String ownerName;
+    public UUID ownerUUID;
+    public long storageEU = 0;
+    public int tierDimensionField = -1;
+    public int tierTimeField = -1;
+    public int tierStabilisationField = -1;
+    public double outputMultiplier = 1;
+    public int recoveryChance = 0;
+    public byte rewardContinuous = 0;
+    public BigInteger currentOutputEU = BigInteger.ZERO;
+    public final DecimalFormat decimalFormat = new DecimalFormat("#.0");
+    public boolean isRendering = false;
+    public boolean enableRender = configEnableDefaultRender;
 
     public RealArtificialStar(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -121,354 +122,16 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
-    public int getCasingTextureID() {
-        return 13;
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.getBoolean("isActive")) {
-            currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
-                    + EnumChatFormatting.GOLD
-                    + tag.getString("currentOutputEU")
-                    + EnumChatFormatting.RED
-                    + " * "
-                    + decimalFormat.format(tag.getDouble("outputMultiplier"))
-                    + EnumChatFormatting.GREEN
-                    + " * 2147483647"
-                    + EnumChatFormatting.RESET
-                    + " EU / "
-                    + MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime
-                    + " s");
-        }
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
-        if (tileEntity != null) {
-            if (tileEntity.isActive()) {
-                tag.setString("currentOutputEU", currentOutputEU.toString());
-                tag.setDouble("outputMultiplier", (outputMultiplier * (rewardContinuous + 100) / 100));
-            }
-        }
-    }
-
-    @Override
-    public String[] getInfoData() {
-        String[] origin = super.getInfoData();
-        String[] ret = new String[origin.length + 6];
-        System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_01")
-            + EnumChatFormatting.RESET
-            + ": "
-            + EnumChatFormatting.GREEN
-            + (rewardContinuous + 100)
-            + "%";
-        ret[origin.length + 1] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_02")
-            + EnumChatFormatting.RESET
-            + ": "
-            + EnumChatFormatting.GREEN
-            + outputMultiplier;
-        ret[origin.length + 2] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_03")
-            + EnumChatFormatting.RESET
-            + ": "
-            + EnumChatFormatting.YELLOW
-            + tierDimensionField;
-        ret[origin.length + 3] = EnumChatFormatting.GOLD + StatCollector.translateToLocal(
-            "Info_RealArtificialStar_04") + EnumChatFormatting.RESET + ": " + EnumChatFormatting.YELLOW + tierTimeField;
-        ret[origin.length + 4] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_05")
-            + EnumChatFormatting.RESET
-            + ": "
-            + EnumChatFormatting.YELLOW
-            + tierStabilisationField;
-        ret[origin.length + 5] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_06")
-            + EnumChatFormatting.RESET
-            + ": "
-            + EnumChatFormatting.AQUA
-            + recoveryChance
-            + EnumChatFormatting.RESET
-            + "/"
-            + EnumChatFormatting.AQUA
-            + "1000";
-        return ret;
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        if (getBaseMetaTileEntity().isServerSide()) {
-            this.enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Info_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
-        }
-        return true;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.RealArtificialStarRecipes;
-    }
-
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        // iterate input bus slot
-        // consume fuel and generate EU
-        boolean flag = false;
-        long recoveryAmount = 0;
-        long recoveryAmountTST = 0;
-
-        currentOutputEU = BigInteger.ZERO;
-
-        for (ItemStack items : getStoredInputs()) {
-            if (items == null || items.stackSize <= 0) continue;
-
-            long size = items.stackSize;
-            boolean matched = false;
-
-            if (GTUtility.areStacksEqual(items, DEPLETED_ROD, true)) {
-                currentOutputEU = currentOutputEU.add(
-                    BigInteger.valueOf(MaxOfDepletedExcitedNaquadahFuelRod)
-                        .multiply(BigInteger.valueOf(size)));
-                matched = true;
-            } else if (GTUtility.areStacksEqual(items, ENHANCEMENT_CORE, true)) {
-                currentOutputEU = currentOutputEU.add(
-                    BigInteger.valueOf(MaxOfEnhancementCore)
-                        .multiply(BigInteger.valueOf(size)));
-                matched = true;
-            } else if (ModList.TwistSpaceTechnology.isModLoaded()) {
-                if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
-                    currentOutputEU = currentOutputEU.add(
-                        BigInteger.valueOf(MaxOfAntimatter)
-                            .multiply(BigInteger.valueOf(size)));
-                    matched = true;
-                } else if (GTUtility.areStacksEqual(items, TST_FUEL_ROD, true)) {
-                    currentOutputEU = currentOutputEU.add(
-                        BigInteger.valueOf(MaxOfAntimatterFuelRod)
-                            .multiply(BigInteger.valueOf(size)));
-                    recoveryAmountTST += size;
-                    matched = true;
-                } else if (GTUtility.areStacksEqual(items, TST_STRANGE_ROD, true)) {
-                    currentOutputEU = currentOutputEU.add(
-                        BigInteger.valueOf(MaxOfStrangeAnnihilationFuelRod)
-                            .multiply(BigInteger.valueOf(size)));
-                    recoveryAmountTST += size;
-                    matched = true;
-                }
-            }
-
-            if (matched) {
-                flag = true;
-                items.stackSize = 0;
-            }
-        }
-
-        // flush input slots
-        updateSlots();
-
-        // if no antimatter or fuel rod input
-        if (!flag) {
-            // set 0 to multiplier of rewarding continuous operation
-            rewardContinuous = 0;
-            // stop render
-            if (isRendering) {
-                destroyRenderBlock();
-                isRendering = false;
-            }
-            return CheckRecipeResultRegistry.NO_RECIPE;
-        }
-
-        // add EU to the wireless EU net
-        BigDecimal eu = new BigDecimal(currentOutputEU).multiply(BigDecimal.valueOf(outputMultiplier))
-            .multiply(BigDecimal.valueOf((rewardContinuous + 100d) / 100d))
-            .multiply(new BigDecimal(Utils.INTEGER_MAX_VALUE));
-
-        BigInteger result = eu.toBigInteger();
-        if (!addEUToGlobalEnergyMap(ownerUUID, result)) {
-            return CheckRecipeResultRegistry.INTERNAL_ERROR;
-        }
-
-        // set progress time with cfg
-        mMaxProgresstime = (int) (20 * MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime);
-        // chance to recover FrameMaterial
-        if (recoveryChance == 1000) {
-            if (recoveryAmount > 0) {
-                // mOutputItems = getRecovers(recoveryAmount);
-            }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
-                mOutputItems = getRecoversTST(recoveryAmountTST);
-            }
-        } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
-            if (recoveryAmount > 0) {
-                // mOutputItems = getRecovers(recoveryAmount);
-            }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
-                mOutputItems = getRecoversTST(recoveryAmountTST);
-            }
-        }
-
-        // increase multiplier of rewarding continuous operation
-        if (rewardContinuous < 50) rewardContinuous++;
-
-        // start render
-        if (enableRender && !isRendering) {
-            createRenderBlock();
-            isRendering = true;
-        }
-        return CheckRecipeResultRegistry.GENERATING;
-    }
-
-    // public ItemStack[] getRecovers(long amount) {
-    // List<ItemStack> list = new ArrayList<>();
-    //
-    // if (amount <= Integer.MAX_VALUE) {
-    // list.add(StellarConstructionFrameMaterial.get((int) amount));
-    // } else {
-    // int stack = (int) (amount / Integer.MAX_VALUE);
-    // int remainder = (int) (amount % Integer.MAX_VALUE);
-    // ItemStack t = StellarConstructionFrameMaterial.get(Integer.MAX_VALUE);
-    //
-    // int i = 0;
-    // while (i < stack) {
-    // list.add(t.copy());
-    // i++;
-    // }
-    //
-    // if (remainder > 0) {
-    // list.add(GTUtility.copyAmountUnsafe(remainder, t));
-    // }
-    // }
-    //
-    // return list.toArray(new ItemStack[0]);
-    // }
-
-    public ItemStack[] getRecoversTST(long amount) {
-        if (amount <= 0 || !ModList.TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
-
-        List<ItemStack> list = new ArrayList<>();
-
-        long fullStacks = amount / Integer.MAX_VALUE;
-        int remainder = (int) (amount % Integer.MAX_VALUE);
-
-        for (long i = 0; i < fullStacks; i++) {
-            list.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, TST_PROTO));
-        }
-
-        if (remainder > 0) {
-            list.add(GTUtility.copyAmountUnsafe(remainder, TST_PROTO));
-        }
-
-        return list.toArray(new ItemStack[0]);
-    }
-
-    // Artificial Star Output multiplier
-    public void calculateOutputMultiplier() {
-        // tTime^0.25 * tDim^0.25 * 1.588186^(tStabilisation-2)
-        // (100^0.25)*(1.588186^(10-2))) = 128.000
-        // 1.588186^(-1) = 0.629
-        this.outputMultiplier = Math.pow(1d * tierTimeField * tierDimensionField, 0.25d)
-            * Math.pow(1.588186d, tierStabilisationField - 2);
-    }
-
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-        if (aBaseMetaTileEntity.isServerSide()) {
-            this.ownerName = aBaseMetaTileEntity.getOwnerName();
-            this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-        }
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (isRendering && mMaxProgresstime == 0 && rewardContinuous == 0) {
-            isRendering = false;
-            destroyRenderBlock();
-        }
-        if (rewardContinuous != 0 && mMaxProgresstime == 0) rewardContinuous = 0;
-    }
-
-    @Override
-    public void onDisableWorking() {
-        if (isRendering) {
-            destroyRenderBlock();
-        }
-        super.onDisableWorking();
-    }
-
-    @Override
-    public void onRemoval() {
-        if (isRendering) {
-            destroyRenderBlock();
-        }
-        super.onRemoval();
-    }
-
-    @Override
-    public void onBlockDestroyed() {
-        if (isRendering) {
-            destroyRenderBlock();
-        }
-        super.onBlockDestroyed();
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setLong("storageEU", storageEU);
-        aNBT.setInteger("tierDimensionField", tierDimensionField);
-        aNBT.setInteger("tierTimeField", tierTimeField);
-        aNBT.setInteger("tierStabilisationField", tierStabilisationField);
-        aNBT.setDouble("outputMultiplier", outputMultiplier);
-        aNBT.setByte("rewardContinuous", rewardContinuous);
-        aNBT.setString("currentOutputEU", currentOutputEU.toString());
-        aNBT.setBoolean("isRendering", isRendering);
-        aNBT.setBoolean("enableRender", enableRender);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        storageEU = aNBT.getLong("storageEU");
-        tierDimensionField = aNBT.getInteger("tierDimensionField");
-        tierTimeField = aNBT.getInteger("tierTimeField");
-        tierStabilisationField = aNBT.getInteger("tierStabilisationField");
-        outputMultiplier = aNBT.getDouble("outputMultiplier");
-        rewardContinuous = aNBT.getByte("rewardContinuous");
-        currentOutputEU = new BigInteger(aNBT.getString("currentOutputEU"));
-        isRendering = aNBT.getBoolean("isRendering");
-        if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
-    }
-
-    @Override
-    public boolean supportsCraftingMEBuffer() {
-        return false;
-    }
-
-    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        if (tierDimensionField <= 0 || tierTimeField <= 0 || tierStabilisationField <= 0) {
+            errors.add(StructureErrorRegistry.UNKNOWN_TIER);
+        }
+        checkHatchExact(errors, HatchElement.InputBus, 1);
         calculateOutputMultiplier();
         recoveryChance = tierDimensionField * tierTimeField * tierStabilisationField;
-        return;
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && tierDimensionField > 0
-            && tierTimeField > 0
-            && tierStabilisationField > 0
-            && mInputBusses.size() == 1;
     }
 
     @Override
@@ -478,26 +141,6 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         tierDimensionField = -1;
         tierTimeField = -1;
         tierStabilisationField = -1;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
     }
 
     @Override
@@ -605,6 +248,215 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.RealArtificialStarRecipes;
+    }
+
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        boolean flag = false;
+        long recoveryAmount = 0;
+        long recoveryAmountTST = 0;
+
+        currentOutputEU = BigInteger.ZERO;
+
+        for (ItemStack items : getStoredInputs()) {
+            if (items == null || items.stackSize <= 0) continue;
+
+            long size = items.stackSize;
+            boolean matched = false;
+
+            if (GTUtility.areStacksEqual(items, DEPLETED_ROD, true)) {
+                currentOutputEU = currentOutputEU.add(
+                    BigInteger.valueOf(MaxOfDepletedExcitedNaquadahFuelRod)
+                        .multiply(BigInteger.valueOf(size)));
+                matched = true;
+            } else if (GTUtility.areStacksEqual(items, ENHANCEMENT_CORE, true)) {
+                currentOutputEU = currentOutputEU.add(
+                    BigInteger.valueOf(MaxOfEnhancementCore)
+                        .multiply(BigInteger.valueOf(size)));
+                matched = true;
+            } else if (ModList.TwistSpaceTechnology.isModLoaded()) {
+                if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfAntimatter)
+                            .multiply(BigInteger.valueOf(size)));
+                    matched = true;
+                } else if (GTUtility.areStacksEqual(items, TST_FUEL_ROD, true)) {
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfAntimatterFuelRod)
+                            .multiply(BigInteger.valueOf(size)));
+                    recoveryAmountTST += size;
+                    matched = true;
+                } else if (GTUtility.areStacksEqual(items, TST_STRANGE_ROD, true)) {
+                    currentOutputEU = currentOutputEU.add(
+                        BigInteger.valueOf(MaxOfStrangeAnnihilationFuelRod)
+                            .multiply(BigInteger.valueOf(size)));
+                    recoveryAmountTST += size;
+                    matched = true;
+                }
+            }
+
+            if (matched) {
+                flag = true;
+                items.stackSize = 0;
+            }
+        }
+
+        updateSlots();
+
+        if (!flag) {
+            rewardContinuous = 0;
+            if (isRendering) {
+                destroyRenderBlock();
+                isRendering = false;
+            }
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
+        BigDecimal eu = new BigDecimal(currentOutputEU).multiply(BigDecimal.valueOf(outputMultiplier))
+            .multiply(BigDecimal.valueOf((rewardContinuous + 100d) / 100d))
+            .multiply(new BigDecimal(Utils.INTEGER_MAX_VALUE));
+
+        BigInteger result = eu.toBigInteger();
+        if (!addEUToGlobalEnergyMap(ownerUUID, result)) {
+            return CheckRecipeResultRegistry.INTERNAL_ERROR;
+        }
+
+        mMaxProgresstime = (int) (20 * MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime);
+        if (recoveryChance == 1000) {
+            if (recoveryAmount > 0) {
+                // mOutputItems = getRecovers(recoveryAmount);
+            }
+            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+                mOutputItems = getRecoversTST(recoveryAmountTST);
+            }
+        } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
+            if (recoveryAmount > 0) {
+                // mOutputItems = getRecovers(recoveryAmount);
+            }
+            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+                mOutputItems = getRecoversTST(recoveryAmountTST);
+            }
+        }
+
+        if (rewardContinuous < 50) rewardContinuous++;
+
+        if (enableRender && !isRendering) {
+            createRenderBlock();
+            isRendering = true;
+        }
+        return CheckRecipeResultRegistry.GENERATING;
+    }
+
+    public ItemStack[] getRecoversTST(long amount) {
+        if (amount <= 0 || !ModList.TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
+
+        List<ItemStack> list = new ArrayList<>();
+
+        long fullStacks = amount / Integer.MAX_VALUE;
+        int remainder = (int) (amount % Integer.MAX_VALUE);
+
+        for (long i = 0; i < fullStacks; i++) {
+            list.add(GTUtility.copyAmountUnsafe(Integer.MAX_VALUE, TST_PROTO));
+        }
+
+        if (remainder > 0) {
+            list.add(GTUtility.copyAmountUnsafe(remainder, TST_PROTO));
+        }
+
+        return list.toArray(new ItemStack[0]);
+    }
+
+    public void calculateOutputMultiplier() {
+        outputMultiplier = Math.pow(1d * tierTimeField * tierDimensionField, 0.25d)
+            * Math.pow(1.588186d, tierStabilisationField - 2);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return 13;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) {
+                return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
+                    .extFacing()
+                    .build() };
+            }
+            return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12] };
+    }
+
+    public void createRenderBlock() {
+        int x = getBaseMetaTileEntity().getXCoord();
+        int y = getBaseMetaTileEntity().getYCoord();
+        int z = getBaseMetaTileEntity().getZCoord();
+
+        double xOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetX
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetX;
+        double zOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetZ
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetZ;
+        double yOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetY
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetY;
+
+        getBaseMetaTileEntity().getWorld()
+            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), Blocks.air);
+        getBaseMetaTileEntity().getWorld()
+            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), BlockLoader.artificialStarRender);
+    }
+
+    public void destroyRenderBlock() {
+        int x = getBaseMetaTileEntity().getXCoord();
+        int y = getBaseMetaTileEntity().getYCoord();
+        int z = getBaseMetaTileEntity().getZCoord();
+
+        double xOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetX
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetX;
+        double zOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetZ
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetZ;
+        double yOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetY
+            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetY;
+
+        getBaseMetaTileEntity().getWorld()
+            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), Blocks.air);
+    }
+
+    public boolean addInputBusOrOutputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return addInputBusToMachineList(aTileEntity, aBaseCasingIndex)
+            || addOutputBusToMachineList(aTileEntity, aBaseCasingIndex);
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("Tooltip_RealArtificialStar_MachineType"))
@@ -647,6 +499,167 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        if (aBaseMetaTileEntity.isServerSide()) {
+            ownerName = aBaseMetaTileEntity.getOwnerName();
+            ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+        }
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (isRendering && mMaxProgresstime == 0 && rewardContinuous == 0) {
+            isRendering = false;
+            destroyRenderBlock();
+        }
+        if (rewardContinuous != 0 && mMaxProgresstime == 0) rewardContinuous = 0;
+    }
+
+    @Override
+    public void onDisableWorking() {
+        if (isRendering) {
+            destroyRenderBlock();
+        }
+        super.onDisableWorking();
+    }
+
+    @Override
+    public void onRemoval() {
+        if (isRendering) {
+            destroyRenderBlock();
+        }
+        super.onRemoval();
+    }
+
+    @Override
+    public void onBlockDestroyed() {
+        if (isRendering) {
+            destroyRenderBlock();
+        }
+        super.onBlockDestroyed();
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("isActive")) {
+            currentTip.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
+                    + EnumChatFormatting.GOLD
+                    + tag.getString("currentOutputEU")
+                    + EnumChatFormatting.RED
+                    + " * "
+                    + decimalFormat.format(tag.getDouble("outputMultiplier"))
+                    + EnumChatFormatting.GREEN
+                    + " * 2147483647"
+                    + EnumChatFormatting.RESET
+                    + " EU / "
+                    + MainConfig.machine.artificial_star.secondsOfArtificialStarProgressCycleTime
+                    + " s");
+        }
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
+        if (tileEntity != null && tileEntity.isActive()) {
+            tag.setString("currentOutputEU", currentOutputEU.toString());
+            tag.setDouble("outputMultiplier", outputMultiplier * (rewardContinuous + 100) / 100);
+        }
+    }
+
+    @Override
+    public String[] getInfoData() {
+        String[] origin = super.getInfoData();
+        String[] ret = new String[origin.length + 6];
+        System.arraycopy(origin, 0, ret, 0, origin.length);
+        ret[origin.length] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_01")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.GREEN
+            + (rewardContinuous + 100)
+            + "%";
+        ret[origin.length + 1] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_02")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.GREEN
+            + outputMultiplier;
+        ret[origin.length + 2] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_03")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.YELLOW
+            + tierDimensionField;
+        ret[origin.length + 3] = EnumChatFormatting.GOLD + StatCollector.translateToLocal(
+            "Info_RealArtificialStar_04") + EnumChatFormatting.RESET + ": " + EnumChatFormatting.YELLOW + tierTimeField;
+        ret[origin.length + 4] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_05")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.YELLOW
+            + tierStabilisationField;
+        ret[origin.length + 5] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_06")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.AQUA
+            + recoveryChance
+            + EnumChatFormatting.RESET
+            + "/"
+            + EnumChatFormatting.AQUA
+            + "1000";
+        return ret;
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            enableRender = !enableRender;
+            GTUtility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
+        }
+        return true;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setLong("storageEU", storageEU);
+        aNBT.setInteger("tierDimensionField", tierDimensionField);
+        aNBT.setInteger("tierTimeField", tierTimeField);
+        aNBT.setInteger("tierStabilisationField", tierStabilisationField);
+        aNBT.setDouble("outputMultiplier", outputMultiplier);
+        aNBT.setByte("rewardContinuous", rewardContinuous);
+        aNBT.setString("currentOutputEU", currentOutputEU.toString());
+        aNBT.setBoolean("isRendering", isRendering);
+        aNBT.setBoolean("enableRender", enableRender);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        storageEU = aNBT.getLong("storageEU");
+        tierDimensionField = aNBT.getInteger("tierDimensionField");
+        tierTimeField = aNBT.getInteger("tierTimeField");
+        tierStabilisationField = aNBT.getInteger("tierStabilisationField");
+        outputMultiplier = aNBT.getDouble("outputMultiplier");
+        rewardContinuous = aNBT.getByte("rewardContinuous");
+        currentOutputEU = new BigInteger(aNBT.getString("currentOutputEU"));
+        isRendering = aNBT.getBoolean("isRendering");
+        if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
+    }
+
+    @Override
+    public boolean supportsCraftingMEBuffer() {
+        return false;
+    }
+
+    @Override
     public boolean supportsVoidProtection() {
         return false;
     }
@@ -664,66 +677,6 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     @Override
     public boolean supportsBatchMode() {
         return false;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) {
-                return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
-                    .extFacing()
-                    .build() };
-            }
-            return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12], TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.casingTexturePages[0][12] };
-    }
-
-    public void createRenderBlock() {
-        int x = getBaseMetaTileEntity().getXCoord();
-        int y = getBaseMetaTileEntity().getYCoord();
-        int z = getBaseMetaTileEntity().getZCoord();
-
-        double xOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetX
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetX;
-        double zOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetZ
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetZ;
-        double yOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetY
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetY;
-
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), Blocks.air);
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), BlockLoader.artificialStarRender);
-    }
-
-    public void destroyRenderBlock() {
-        int x = getBaseMetaTileEntity().getXCoord();
-        int y = getBaseMetaTileEntity().getYCoord();
-        int z = getBaseMetaTileEntity().getZCoord();
-
-        double xOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetX
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetX;
-        double zOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetZ
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetZ;
-        double yOffset = 40 * getExtendedFacing().getRelativeBackInWorld().offsetY
-            + 36 * getExtendedFacing().getRelativeUpInWorld().offsetY;
-
-        this.getBaseMetaTileEntity()
-            .getWorld()
-            .setBlock((int) (x + xOffset), (int) (y + yOffset), (int) (z + zOffset), Blocks.air);
-    }
-
-    public boolean addInputBusOrOutputBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return addInputBusToMachineList(aTileEntity, aBaseCasingIndex)
-            || addOutputBusToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override

@@ -54,6 +54,9 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_SIFTER, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_BATH,
         GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_THERMAL, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_FORGE };
 
+    public static final int MAX_PARA = 8;
+    public static long RECIPE_EUT = 128;
+    public static final int CACHE_MAX = 2048;
     public static IntOpenHashSet isCrushedOre = new IntOpenHashSet();
     public static IntOpenHashSet isCrushedPureOre = new IntOpenHashSet();
     public static IntOpenHashSet isPureDust = new IntOpenHashSet();
@@ -62,16 +65,6 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public static IntOpenHashSet isOre = new IntOpenHashSet();
     public static IntOpenHashSet ALL_PROCESSABLE = new IntOpenHashSet();
     public static boolean isInit = false;
-    public ItemStack[] midProduct;
-    public boolean mVoidStone = false;
-    @Getter
-    @Setter
-    public int currentParallelism = 0;
-    public int currentCircuitMultiplier = 0;
-    public static final int MAX_PARA = 8;
-    public static long RECIPE_EUT = 128;
-
-    public static final int CACHE_MAX = 2048;
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> MAC_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> WASH_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> THERMAL_CACHE = new Int2ObjectLinkedOpenHashMap<>();
@@ -80,12 +73,19 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> CHEMBATH_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> HAMMER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
     public static final Int2ObjectLinkedOpenHashMap<GTRecipe> SIMPLE_WASHER_CACHE = new Int2ObjectLinkedOpenHashMap<>();
-
     public static final ThreadLocal<Random> RAND = ThreadLocal.withInitial(Random::new);
-
     public static final ThreadLocal<GTNLOverclockCalculator> OC_CALC = ThreadLocal
         .withInitial(GTNLOverclockCalculator::new);
+
+    public ItemStack[] midProduct;
+    public boolean mVoidStone = false;
+    @Getter
+    @Setter
+    public int currentParallelism = 0;
+    public int currentCircuitMultiplier = 0;
     public FluidStack[] recipeInputFluids = new FluidStack[0];
+
+    private ItemStack stone;
 
     public SteamOreProcessorModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 8);
@@ -123,7 +123,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         if (tInput.isEmpty() || tInputFluid.isEmpty()) {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
-        recipeInputFluids = tInputFluid.toArray(new FluidStack[tInputFluid.size()]);
+        recipeInputFluids = tInputFluid.toArray(new FluidStack[0]);
 
         currentCircuitMultiplier = 0;
         ItemStack circuit = getControllerSlot();
@@ -279,28 +279,115 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    public static GTRecipe getCachedRecipe(Int2ObjectLinkedOpenHashMap<GTRecipe> cache, int key,
-        Supplier<GTRecipe> supplier) {
-        synchronized (cache) {
-            GTRecipe r = cache.get(key);
-            if (r != null) return r;
-
-            r = supplier.get();
-            if (r != null) {
-                cache.put(key, r);
-                if (cache.size() > CACHE_MAX) cache.removeFirst();
-            }
-            return r;
-        }
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SteamOreProcessorModuleRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_08"))
+            .beginStructureBlock(1, 5, 2, false)
+            .toolTipFinisher();
+        return tt;
     }
 
-    public static boolean checkTypes(int aID, IntOpenHashSet... aTables) {
-        for (IntOpenHashSet set : aTables) {
-            if (set.contains(aID)) {
-                return true;
-            }
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return super.getGui().withMachineModeIcons(MODE_ICONS);
+    }
+
+    @Override
+    @Deprecated
+    public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Steam Ore Processor Module GUI is fully ported to mui2.
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
+    }
+
+    @Override
+    public int nextMachineMode() {
+        return machineMode = getProcessingMode().next()
+            .ordinal();
+    }
+
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
+    }
+
+    @Override
+    public String getMachineModeName() {
+        List<String> des = getDisplayMode(getProcessingMode());
+        return String.join("\n", des);
+    }
+
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+        if (aPlayer.isSneaking()) {
+            mVoidStone = !mVoidStone;
+            GTUtility.sendChatTrans(aPlayer, "GT5U.machines.oreprocessor.void", mVoidStone);
+            return;
         }
-        return false;
+        machineMode = getProcessingMode().next()
+            .ordinal();
+        List<String> des = getDisplayMode(getProcessingMode());
+        GTUtility
+            .sendChatTrans(aPlayer, StatCollector.translateToLocal("GT5U.MULTI_MACHINE_CHANGE"), String.join("", des));
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mVoidStone = aNBT.getBoolean("mVoidStone");
+        currentParallelism = aNBT.getInteger("currentParallelism");
+        machineMode = ProcessingMode.fromOrdinal(aNBT.getInteger("mMode"))
+            .ordinal();
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setBoolean("mVoidStone", mVoidStone);
+        aNBT.setInteger("currentParallelism", currentParallelism);
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currenttip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+
+        currenttip.add(
+            StatCollector.translateToLocal("Info_SteamOreProcessorModule_00") + EnumChatFormatting.BLUE
+                + tag.getInteger("currentParallelism")
+                + EnumChatFormatting.RESET);
+        currenttip.addAll(getDisplayMode(tag.getInteger("mMode")));
+        currenttip.add(
+            StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.void", tag.getBoolean("mVoidStone")));
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        tag.setInteger("mMode", machineMode);
+        tag.setBoolean("mVoidStone", mVoidStone);
+        tag.setInteger("currentParallelism", currentParallelism);
+    }
+
+    @Override
+    public int clampRecipeOcCount(int value) {
+        return Math.min(20, value);
     }
 
     public void doMac(IntOpenHashSet... aTables) {
@@ -561,23 +648,12 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         return filteredOutput;
     }
 
-    private ItemStack stone;
-
-    private ItemStack getStone() {
-        if (stone == null) {
-            stone = Materials.Stone.getDust(1);
-        }
-        return stone;
-    }
-
     public void doCompress(List<ItemStack> aList) {
         TIntIntHashMap rProduct = new TIntIntHashMap();
         for (ItemStack stack : aList) {
             int tID = GTUtility.stackToInt(stack);
-            if (mVoidStone) {
-                if (GTUtility.areStacksEqual(getStone(), stack)) {
-                    continue;
-                }
+            if (mVoidStone && GTUtility.areStacksEqual(getStone(), stack)) {
+                continue;
             }
             if (tID != 0) {
                 rProduct.adjustOrPutValue(tID, stack.stackSize, stack.stackSize);
@@ -596,73 +672,57 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         }
     }
 
-    @Override
-    public int clampRecipeOcCount(int value) {
-        return Math.min(20, value);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        mVoidStone = aNBT.getBoolean("mVoidStone");
-        currentParallelism = aNBT.getInteger("currentParallelism");
-        machineMode = ProcessingMode.fromOrdinal(aNBT.getInteger("mMode"))
-            .ordinal();
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setBoolean("mVoidStone", mVoidStone);
-        aNBT.setInteger("currentParallelism", currentParallelism);
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
-    }
-
-    @Override
-    public String getMachineModeName() {
-        List<String> des = getDisplayMode(getProcessingMode());
-        return String.join("\n", des);
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return super.getGui().withMachineModeIcons(MODE_ICONS);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Steam Ore Processor Module GUI is fully ported to mui2.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_WASHPLANT);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_CHEMBATH);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_SIMPLEWASHER);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-    }
-
-    @Override
-    public int nextMachineMode() {
-        return machineMode = getProcessingMode().next()
-            .ordinal();
-    }
-
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
-        if (aPlayer.isSneaking()) {
-            mVoidStone = !mVoidStone;
-            GTUtility.sendChatTrans(aPlayer, "GT5U.machines.oreprocessor.void", mVoidStone);
-            return;
+    public static void initHash() {
+        for (String name : OreDictionary.getOreNames()) {
+            if (name == null || name.isEmpty()) continue;
+            if (name.startsWith("crushedPurified")) registerOrePrefix(name, isCrushedPureOre);
+            else if (name.startsWith("crushedCentrifuged")) registerOrePrefix(name, isThermal);
+            else if (name.startsWith("crushed")) registerOrePrefix(name, isCrushedOre);
+            else if (name.startsWith("dustImpure")) registerOrePrefix(name, isImpureDust);
+            else if (name.startsWith("dustPure")) registerOrePrefix(name, isPureDust);
+            else if (name.startsWith("ore") || name.startsWith("rawOre")) registerOrePrefix(name, isOre);
         }
-        machineMode = getProcessingMode().next()
-            .ordinal();
-        List<String> des = getDisplayMode(getProcessingMode());
-        GTUtility
-            .sendChatTrans(aPlayer, StatCollector.translateToLocal("GT5U.MULTI_MACHINE_CHANGE"), String.join("", des));
+        ALL_PROCESSABLE.addAll(isPureDust);
+        ALL_PROCESSABLE.addAll(isImpureDust);
+        ALL_PROCESSABLE.addAll(isCrushedPureOre);
+        ALL_PROCESSABLE.addAll(isThermal);
+        ALL_PROCESSABLE.addAll(isCrushedOre);
+        ALL_PROCESSABLE.addAll(isOre);
+    }
+
+    public static GTRecipe getCachedRecipe(Int2ObjectLinkedOpenHashMap<GTRecipe> cache, int key,
+        Supplier<GTRecipe> supplier) {
+        synchronized (cache) {
+            GTRecipe r = cache.get(key);
+            if (r != null) return r;
+
+            r = supplier.get();
+            if (r != null) {
+                cache.put(key, r);
+                if (cache.size() > CACHE_MAX) cache.removeFirst();
+            }
+            return r;
+        }
+    }
+
+    public static boolean checkTypes(int aID, IntOpenHashSet... aTables) {
+        for (IntOpenHashSet set : aTables) {
+            if (set.contains(aID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<String> getDisplayMode(int mode) {
+        return getDisplayMode(ProcessingMode.fromOrdinal(mode));
+    }
+
+    private ItemStack getStone() {
+        if (stone == null) {
+            stone = Materials.Stone.getDust(1);
+        }
+        return stone;
     }
 
     private ProcessingMode getProcessingMode() {
@@ -681,8 +741,10 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         };
     }
 
-    public static List<String> getDisplayMode(int mode) {
-        return getDisplayMode(ProcessingMode.fromOrdinal(mode));
+    private static void registerOrePrefix(String prefix, IntOpenHashSet target) {
+        for (ItemStack stack : OreDictionary.getOres(prefix)) {
+            target.add(GTUtility.stackToInt(stack));
+        }
     }
 
     private static List<String> getDisplayMode(ProcessingMode mode) {
@@ -746,79 +808,7 @@ public class SteamOreProcessorModule extends SteamElevatorModule {
         }
 
         des.add(StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor2", getRecipeTickTime(mode) / 20));
-
         return des;
-
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currenttip, accessor, config);
-        NBTTagCompound tag = accessor.getNBTData();
-
-        currenttip.add(
-            StatCollector.translateToLocal("Info_SteamOreProcessorModule_00") + EnumChatFormatting.BLUE
-                + tag.getInteger("currentParallelism")
-                + EnumChatFormatting.RESET);
-        currenttip.addAll(getDisplayMode(tag.getInteger("mMode")));
-        currenttip.add(
-            StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.void", tag.getBoolean("mVoidStone")));
-
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        tag.setInteger("mMode", machineMode);
-        tag.setBoolean("mVoidStone", mVoidStone);
-        tag.setInteger("currentParallelism", currentParallelism);
-    }
-
-    public static void initHash() {
-        for (String name : OreDictionary.getOreNames()) {
-            if (name == null || name.isEmpty()) continue;
-            List<ItemStack> ores = OreDictionary.getOres(name);
-            if (name.startsWith("crushedPurified")) {
-                for (ItemStack s : ores) isCrushedPureOre.add(GTUtility.stackToInt(s));
-            } else if (name.startsWith("crushedCentrifuged")) {
-                for (ItemStack s : ores) isThermal.add(GTUtility.stackToInt(s));
-            } else if (name.startsWith("crushed")) {
-                for (ItemStack s : ores) isCrushedOre.add(GTUtility.stackToInt(s));
-            } else if (name.startsWith("dustImpure")) {
-                for (ItemStack s : ores) isImpureDust.add(GTUtility.stackToInt(s));
-            } else if (name.startsWith("dustPure")) {
-                for (ItemStack s : ores) isPureDust.add(GTUtility.stackToInt(s));
-            } else if (name.startsWith("ore") || name.startsWith("rawOre")) {
-                for (ItemStack s : ores) isOre.add(GTUtility.stackToInt(s));
-            }
-        }
-        // build combined set
-        ALL_PROCESSABLE.addAll(isPureDust);
-        ALL_PROCESSABLE.addAll(isImpureDust);
-        ALL_PROCESSABLE.addAll(isCrushedPureOre);
-        ALL_PROCESSABLE.addAll(isThermal);
-        ALL_PROCESSABLE.addAll(isCrushedOre);
-        ALL_PROCESSABLE.addAll(isOre);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamOreProcessorModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_08"))
-            .beginStructureBlock(1, 5, 2, false)
-            .toolTipFinisher();
-        return tt;
     }
 
     private enum ProcessingMode {

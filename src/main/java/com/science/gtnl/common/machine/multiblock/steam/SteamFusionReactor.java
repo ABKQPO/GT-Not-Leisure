@@ -58,8 +58,8 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamFusionReactorRecipeType");
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamFusionReactor(this.mName);
     }
 
     @Override
@@ -113,6 +113,14 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -154,21 +162,6 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_02"))
-            .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
         int aColorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
@@ -194,12 +187,22 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamFusionReactorRecipeType");
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamFusionReactor(this.mName);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_02"))
+            .beginStructureBlock(15, 3, 15, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.IntSupplier;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
@@ -34,6 +35,7 @@ import codechicken.nei.recipe.GuiUsageRecipe;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.modularui2.GTGuiTextures;
+import gregtech.common.gui.modularui.synchandler.NBTTagSyncHandler;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
 
 public class GTNLControllerUpgradePanels {
@@ -41,8 +43,9 @@ public class GTNLControllerUpgradePanels {
     public static final String UPGRADE_PANEL_KEY_PREFIX = "gtnl_controller_upgrade_";
     public static final String UPGRADE_CURRENT_PANEL_KEY = UPGRADE_PANEL_KEY_PREFIX + "current";
     private static final String UPGRADE_CONSUMED_SYNC_KEY = "gtnlUpgradeConsumed";
+    private static final String PAID_COSTS_SYNC_KEY_PREFIX = "gtnlUpgradePaidCosts";
     private static final int COST_CELL_WIDTH = 36;
-    private static final int BUTTON_SIZE = 16;
+    private static final int BUTTON_SIZE = 18;
     private static final int PANEL_MARGIN = 5;
 
     private final MTEMultiBlockBase multiblock;
@@ -62,7 +65,8 @@ public class GTNLControllerUpgradePanels {
             syncManager.syncedPanel(
                 UPGRADE_CURRENT_PANEL_KEY,
                 true,
-                (panelSyncManager, panelHandler) -> createUpgradePanel(parent, panelSyncManager, panelHandler, 0)));
+                (panelSyncManager,
+                    panelHandler) -> createUpgradePanel(parent, syncManager, panelSyncManager, panelHandler, 0)));
 
         int maxPreviewLevel = controllerUpgrade.getMaxPreviewUpgradeLevel();
         for (int level = 1; level <= maxPreviewLevel; level++) {
@@ -73,8 +77,12 @@ public class GTNLControllerUpgradePanels {
                 syncManager.syncedPanel(
                     panelKey,
                     true,
-                    (panelSyncManager,
-                        panelHandler) -> createUpgradePanel(parent, panelSyncManager, panelHandler, previewLevel)));
+                    (panelSyncManager, panelHandler) -> createUpgradePanel(
+                        parent,
+                        syncManager,
+                        panelSyncManager,
+                        panelHandler,
+                        previewLevel)));
         }
     }
 
@@ -83,6 +91,12 @@ public class GTNLControllerUpgradePanels {
             UPGRADE_CONSUMED_SYNC_KEY,
             new BooleanSyncValue(controllerUpgrade::isUpgradeConsumed, controllerUpgrade::setUpgradeConsumed)
                 .allowC2S());
+        for (int level = 0; level <= controllerUpgrade.getMaxPreviewUpgradeLevel(); level++) {
+            int previewLevel = level;
+            syncManager.syncValue(
+                getPaidCostsSyncKey(previewLevel),
+                new NBTTagSyncHandler(() -> createPaidCostsTag(previewLevel), ignored -> {}));
+        }
     }
 
     public IWidget createUpgradeButton(PanelSyncManager syncManager) {
@@ -107,11 +121,10 @@ public class GTNLControllerUpgradePanels {
             .setEnabledIf(widget -> controllerUpgrade.isUpgradeButtonEnabled());
     }
 
-    protected ModularPanel createUpgradePanel(ModularPanel parent, PanelSyncManager syncManager,
-        IPanelHandler panelHandler, int previewLevel) {
+    protected ModularPanel createUpgradePanel(ModularPanel parent, PanelSyncManager rootSyncManager,
+        PanelSyncManager panelSyncManager, IPanelHandler panelHandler, int previewLevel) {
         boolean previewMode = previewLevel > 0;
         ItemStack[] upgradeItems = getUpgradeItems(previewLevel);
-        int[] upgradePaidCosts = getUpgradePaidCosts(previewLevel);
         int costColumns = Math.max(1, Math.min(upgradeItems.length, controllerUpgrade.getUpgradeCostItemsPerRow()));
         int inputColumns = Math.max(1, controllerUpgrade.getUpgradeInputSlotsPerRow());
         int costRows = Math.max(1, (int) Math.ceil(upgradeItems.length / (double) costColumns));
@@ -135,34 +148,36 @@ public class GTNLControllerUpgradePanels {
             .setDraggable(true);
 
         panel.child(ButtonWidget.panelCloseButton());
-        panel.child(createCostGrid(upgradeItems, upgradePaidCosts, costColumns).pos(PANEL_MARGIN, 6));
+        panel.child(createCostGrid(rootSyncManager, upgradeItems, previewLevel, costColumns).pos(PANEL_MARGIN, 6));
 
         if (!previewMode) {
             transferStoredItemsToInputHandler();
             panel.child(
-                createInputGrid(syncManager, inputColumns, inputRows)
+                createInputGrid(panelSyncManager, inputColumns, inputRows)
                     .pos(PANEL_MARGIN + costColumns * COST_CELL_WIDTH, 6));
-            panel.child(createConsumeButton(panelHandler, syncManager, width).pos(10, height - 26));
+            panel.child(createConsumeButton(panelHandler, rootSyncManager, width).pos(10, height - 26));
         }
 
-        panel.child(createPreviousButton(previewLevel).pos(PANEL_MARGIN, height - 20));
-        panel.child(createNextButton(previewLevel).pos(width - PANEL_MARGIN - BUTTON_SIZE, height - 20));
+        int costGridWidth = costColumns * COST_CELL_WIDTH;
+        int costGridHeight = costRows * ItemSlot.SIZE;
+
+        panel.child(createPreviousButton(previewLevel).pos(PANEL_MARGIN, 6 + costGridHeight));
+
+        panel.child(createNextButton(previewLevel).pos(PANEL_MARGIN + costGridWidth - BUTTON_SIZE, 6 + costGridHeight));
 
         return panel;
     }
 
-    private Grid createCostGrid(ItemStack[] upgradeItems, int[] upgradePaidCosts, int columns) {
+    private Grid createCostGrid(PanelSyncManager syncManager, ItemStack[] upgradeItems, int previewLevel, int columns) {
         int rows = Math.max(1, (int) Math.ceil(upgradeItems.length / (double) columns));
+        NBTTagSyncHandler paidCostsSyncer = getPaidCostsSyncer(syncManager, previewLevel);
         return new Grid().coverChildren()
             .gridOfWidthHeight(columns, rows, (x, y, index) -> {
                 if (index >= upgradeItems.length || upgradeItems[index] == null) {
                     return new Widget<>().size(COST_CELL_WIDTH, ItemSlot.SIZE);
                 }
-                int costIndex = index;
-                return createCostWidget(
-                    upgradeItems[index],
-                    () -> costIndex < upgradePaidCosts.length ? upgradePaidCosts[costIndex] : 0)
-                        .size(COST_CELL_WIDTH, ItemSlot.SIZE);
+                return createCostWidget(upgradeItems[index], () -> getPaidCost(paidCostsSyncer, index))
+                    .size(COST_CELL_WIDTH, ItemSlot.SIZE);
             });
     }
 
@@ -186,14 +201,7 @@ public class GTNLControllerUpgradePanels {
                     .asWidget()
                     .size(ItemSlot.SIZE)
                     .scale(0.8f)
-                    .textAlign(Alignment.Center)
-                    .setEnabledIf(widget -> !isCostPaid(stack, paidCostSupplier)))
-            .child(
-                GTGuiTextures.GREEN_CHECKMARK_11x9.asWidget()
-                    .size(11, 9)
-                    .marginRight(4)
-                    .marginTop(5)
-                    .setEnabledIf(widget -> isCostPaid(stack, paidCostSupplier)));
+                    .textAlign(Alignment.Center));
     }
 
     private String getRemainingCostText(ItemStack stack, IntSupplier paidCostSupplier) {
@@ -208,8 +216,9 @@ public class GTNLControllerUpgradePanels {
         return color + "x" + remaining;
     }
 
-    private boolean isCostPaid(ItemStack stack, IntSupplier paidCostSupplier) {
-        return paidCostSupplier.getAsInt() >= stack.stackSize;
+    private int getPaidCost(NBTTagSyncHandler paidCostsSyncer, int costIndex) {
+        NBTTagCompound paidCosts = paidCostsSyncer.getValue();
+        return paidCosts == null ? 0 : paidCosts.getInteger("cost" + costIndex);
     }
 
     private Grid createInputGrid(PanelSyncManager syncManager, int columns, int rows) {
@@ -226,8 +235,11 @@ public class GTNLControllerUpgradePanels {
             });
     }
 
-    private ButtonWidget<?> createConsumeButton(IPanelHandler panelHandler, PanelSyncManager syncManager,
+    private ButtonWidget<?> createConsumeButton(IPanelHandler panelHandler, PanelSyncManager rootSyncManager,
         int panelWidth) {
+        BooleanSyncValue upgradeConsumedSyncer = rootSyncManager
+            .findSyncHandler(UPGRADE_CONSUMED_SYNC_KEY, BooleanSyncValue.class);
+        NBTTagSyncHandler paidCostsSyncer = getPaidCostsSyncer(rootSyncManager, 0);
         return new ButtonWidget<>().size(panelWidth - 20, 20)
             .background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(
@@ -240,8 +252,7 @@ public class GTNLControllerUpgradePanels {
                     controllerUpgrade.setUpgradeConsumed(true);
                     panelHandler.closePanel();
                 }
-                BooleanSyncValue upgradeConsumedSyncer = syncManager
-                    .findSyncHandler(UPGRADE_CONSUMED_SYNC_KEY, BooleanSyncValue.class);
+                paidCostsSyncer.notifyUpdate();
                 upgradeConsumedSyncer.setBoolValue(controllerUpgrade.isUpgradeConsumed(), false, true);
             }))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
@@ -294,6 +305,23 @@ public class GTNLControllerUpgradePanels {
         int[] paidCosts = previewLevel > 0 ? controllerUpgrade.getPreviewUpgradePaidCosts(previewLevel)
             : controllerUpgrade.getUpgradePaidCosts();
         return paidCosts == null ? new int[0] : paidCosts;
+    }
+
+    private NBTTagCompound createPaidCostsTag(int previewLevel) {
+        NBTTagCompound tag = new NBTTagCompound();
+        int[] paidCosts = getUpgradePaidCosts(previewLevel);
+        for (int index = 0; index < paidCosts.length; index++) {
+            tag.setInteger("cost" + index, paidCosts[index]);
+        }
+        return tag;
+    }
+
+    private NBTTagSyncHandler getPaidCostsSyncer(PanelSyncManager syncManager, int previewLevel) {
+        return syncManager.findSyncHandler(getPaidCostsSyncKey(previewLevel), NBTTagSyncHandler.class);
+    }
+
+    private String getPaidCostsSyncKey(int previewLevel) {
+        return PAID_COSTS_SYNC_KEY_PREFIX + previewLevel;
     }
 
     private void transferStoredItemsToInputHandler() {

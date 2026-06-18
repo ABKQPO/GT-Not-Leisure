@@ -40,6 +40,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -59,6 +60,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String WNG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/white_night_generator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(WNG_STRUCTURE_FILE_PATH);
+
     public boolean wirelessMode = false;
     public int multiTier = 0;
     public String ownerName;
@@ -79,40 +81,6 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.getBoolean("isActive")) {
-            currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
-                    + EnumChatFormatting.GOLD
-                    + tag.getLong("currentOutputEU")
-                    + EnumChatFormatting.RED
-                    + " * "
-                    + "1"
-                    + EnumChatFormatting.GREEN
-                    + " * 2147483647"
-                    + EnumChatFormatting.RESET
-                    + " EU / "
-                    + "300"
-                    + " s");
-        }
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
-        if (tileEntity != null) {
-            if (tileEntity.isActive()) {
-                tag.setLong("currentOutputEU", currentOutputEU);
-            }
-        }
-    }
-
-    @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
         if (aBaseMetaTileEntity.isServerSide()) {
@@ -121,103 +89,12 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
         }
     }
 
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        mMaxProgresstime = 6000;
-        if (wirelessMode) {
-            BigInteger eu = BigInteger.valueOf(this.currentOutputEU)
-                .multiply(Utils.INTEGER_MAX_VALUE);
-            if (!addEUToGlobalEnergyMap(ownerUUID, eu)) {
-                return CheckRecipeResultRegistry.INTERNAL_ERROR;
-            }
-        } else {
-            addEnergyOutput(this.currentOutputEU * Integer.MAX_VALUE);
-        }
-        return CheckRecipeResultRegistry.GENERATING;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setLong("currentOutputEU", currentOutputEU);
-        aNBT.setBoolean("wirelessMode", wirelessMode);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        currentOutputEU = aNBT.getLong("currentOutputEU");
-        wirelessMode = aNBT.getBoolean("wirelessMode");
-    }
-
-    public int getMultiTier() {
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            GTModHandler.getModItem(Mods.UniversalSingularities.ID, "universal.general.singularity", 1, 31))) {
-            return 2;
-        }
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 1, 0))) {
-            return 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing > 25);
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-        wirelessMode = mDynamoHatches.isEmpty();
-        currentOutputEU = 300L * multiTier;
-    }
-
     @Override
     public void clearHatches() {
         super.clearHatches();
         wirelessMode = false;
         multiTier = 0;
         currentOutputEU = 0;
-    }
-
-    @Override
-    public boolean checkHatch() {
-        this.multiTier = getMultiTier();
-        return super.checkHatch() && multiTier > 0;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
     }
 
     @Override
@@ -251,6 +128,88 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
             .addElement('P', StructureUtility.ofBlock(sBlockCasings9, 5))
             .addElement('Q', GTStructureUtility.ofFrame(Materials.Kevlar))
             .build();
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        this.buildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        this.multiTier = getMultiTier();
+        setupParameters();
+        checkHatch(errors);
+        if (multiTier <= 0) {
+            errors.add(StructureErrorRegistry.UNKNOWN_TIER);
+            return;
+        }
+        checkCasingMin(errors, mCountCasing, 26);
+    }
+
+    @Override
+    public void setupParameters() {
+        super.setupParameters();
+        wirelessMode = mDynamoHatches.isEmpty();
+        currentOutputEU = 300L * multiTier;
+    }
+
+    @Override
+    public void checkHatch(List<StructureError> errors) {
+        this.multiTier = getMultiTier();
+        super.checkHatch(errors);
+    }
+
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        mMaxProgresstime = 6000;
+        if (wirelessMode) {
+            BigInteger eu = BigInteger.valueOf(this.currentOutputEU)
+                .multiply(Utils.INTEGER_MAX_VALUE);
+            if (!addEUToGlobalEnergyMap(ownerUUID, eu)) {
+                return CheckRecipeResultRegistry.INTERNAL_ERROR;
+            }
+        } else {
+            addEnergyOutput(this.currentOutputEU * Integer.MAX_VALUE);
+        }
+        return CheckRecipeResultRegistry.GENERATING;
+    }
+
+    public int getMultiTier() {
+        if (GTUtility.areStacksEqual(
+            getControllerSlot(),
+            GTModHandler.getModItem(Mods.UniversalSingularities.ID, "universal.general.singularity", 1, 31))) {
+            return 2;
+        }
+        if (GTUtility.areStacksEqual(
+            getControllerSlot(),
+            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 1, 0))) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -326,6 +285,52 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        final NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("isActive")) {
+            currentTip.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
+                    + EnumChatFormatting.GOLD
+                    + tag.getLong("currentOutputEU")
+                    + EnumChatFormatting.RED
+                    + " * "
+                    + "1"
+                    + EnumChatFormatting.GREEN
+                    + " * 2147483647"
+                    + EnumChatFormatting.RESET
+                    + " EU / "
+                    + "300"
+                    + " s");
+        }
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
+        if (tileEntity != null && tileEntity.isActive()) {
+            tag.setLong("currentOutputEU", currentOutputEU);
+        }
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setLong("currentOutputEU", currentOutputEU);
+        aNBT.setBoolean("wirelessMode", wirelessMode);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        currentOutputEU = aNBT.getLong("currentOutputEU");
+        wirelessMode = aNBT.getBoolean("wirelessMode");
+    }
+
+    @Override
     public boolean supportsVoidProtection() {
         return false;
     }
@@ -346,6 +351,11 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(sBlockCasings9, 5);
+    }
+
+    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
@@ -363,10 +373,5 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
                     .build() };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 5);
     }
 }

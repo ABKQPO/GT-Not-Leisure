@@ -21,7 +21,7 @@ public abstract class MixinWerkstoff {
     @Inject(method = "initPrefixLogic", at = @At("TAIL"), remap = false)
     private static void injectAdditionalPrefixLogic(CallbackInfo ci) {
         Object2IntOpenHashMap<OrePrefixes> prefixLogic = getPrefixLogic();
-        prefixLogic.put(OrePrefixes.plateSuperdense, 0x200);
+        prefixLogic.put(OrePrefixes.plateSuperdense, 0x200); // TODO: Remove this in 2.9.0-beta2
         prefixLogic.put(OrePrefixes.nanite, 0x200);
     }
 }

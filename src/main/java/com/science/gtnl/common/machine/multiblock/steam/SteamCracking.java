@@ -36,19 +36,12 @@ import gregtech.common.misc.GTStructureChannels;
 
 public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implements ISurvivalConstructable {
 
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamCracking(this.mName);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCrackingRecipeType");
-    }
-
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSCr_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_cracking";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSCr_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 2;
+    private static final int DEPTH_OFF_SET = 0;
 
     public SteamCracking(String aName) {
         super(aName);
@@ -58,26 +51,9 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
         super(aID, aName, aNameRegional);
     }
 
-    private static final int HORIZONTAL_OFF_SET = 3;
-    private static final int VERTICAL_OFF_SET = 2;
-    private static final int DEPTH_OFF_SET = 0;
-
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
-                .extFacing()
-                .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamCracking(this.mName);
     }
 
     @Override
@@ -168,23 +144,15 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierFireboxCasing == 1 && tierMachineCasing == 1 && tierPlatedCasing == 1 && mCountCasing >= 10) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
             return;
         }
-        if (tierFireboxCasing == 2 && tierMachineCasing == 2 && tierPlatedCasing == 2 && mCountCasing >= 10) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        getCasingTextureID();
-        updateHatchTexture();
-        checkStructureCondition(errors, false);
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            10,
+            tierFireboxCasing == 1 && tierMachineCasing == 1 && tierPlatedCasing == 1,
+            tierFireboxCasing == 2 && tierMachineCasing == 2 && tierPlatedCasing == 2);
     }
 
     @Override
@@ -215,6 +183,29 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
     @Override
     public int getTierRecipes() {
         return 14;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
+                .extFacing()
+                .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamCrackingRecipeType");
     }
 
     @Override

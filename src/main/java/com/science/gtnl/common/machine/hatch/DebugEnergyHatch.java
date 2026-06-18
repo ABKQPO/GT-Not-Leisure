@@ -49,11 +49,12 @@ import tectech.util.CommonValues;
 
 public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, IAddGregtechLogo {
 
+    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
+
     @Setter
     @Getter
     public long mEUT = 0, mAMP = 0;
     public boolean producing = true;
-    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
     public DebugEnergyHatch(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 14);
@@ -63,13 +64,13 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         super(aName, 14, aDescription, aTextures);
     }
 
+    public static String formatPowerSum(long eut, long amp) {
+        return numberFormat.format(amp * eut);
+    }
+
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DebugEnergyHatch(mName, mDescriptionArray, mTextures);
-    }
-
-    public static String formatPowerSum(long eut, long amp) {
-        return numberFormat.format(amp * eut);
     }
 
     public void setMEUTFromGui(long eut) {
@@ -82,10 +83,6 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         updateProducingState();
     }
 
-    private void updateProducingState() {
-        producing = mAMP * mEUT >= 0;
-    }
-
     @Override
     public long getInputTier() {
         return GTUtility.getTier(Math.abs(mEUT));
@@ -94,85 +91,6 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     @Override
     public long getOutputTier() {
         return GTUtility.getTier(Math.abs(mEUT));
-    }
-
-    @Override
-    public String[] getDescription() {
-
-        ArrayList<String> desc = new ArrayList<>();
-
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_02"));
-
-        return desc.toArray(new String[] {});
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        openGui(aPlayer);
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister aBlockIconRegister) {
-        super.registerIcons(aBlockIconRegister);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean aActive, boolean aRedstone) {
-        return new ITexture[] { super.getTexture(aBaseMetaTileEntity, side, facing, colorIndex, aActive, aRedstone)[0],
-            side != facing
-                ? (aActive ? Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI_64A[mTier]
-                    : Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI_64A[mTier])
-                : Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_64A[mTier] };
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setLong("mEUT", mEUT);
-        aNBT.setLong("mAMP", mAMP);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        mEUT = aNBT.getLong("mEUT");
-        mAMP = aNBT.getLong("mAMP");
-        updateProducingState();
-        getBaseMetaTileEntity().setActive(producing);
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        if (aBaseMetaTileEntity.isServerSide()) {
-            aBaseMetaTileEntity.setActive(producing);
-            if (aBaseMetaTileEntity.isActive()) {
-                byte tick = (byte) (aTick % 20);
-                if (CommonValues.TRANSFER_AT == tick) {
-                    setEUVar(maxEUStore());
-                    moveAround(aBaseMetaTileEntity);
-                } else {
-                    setEUVar(maxEUStore());
-                }
-                ((AccessorMTETieredMachineBlock) this).setMachineTier(GTUtility.getTier(Math.abs(mEUT)));
-            } else {
-                setEUVar(0);
-            }
-        }
-    }
-
-    @Override
-    public boolean isInputFacing(ForgeDirection side) {
-        return !producing && side != getBaseMetaTileEntity().getFrontFacing();
-    }
-
-    @Override
-    public boolean isOutputFacing(ForgeDirection side) {
-        return producing && side != getBaseMetaTileEntity().getFrontFacing();
     }
 
     @Override
@@ -215,58 +133,64 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         return (int) getBaseMetaTileEntity().getUniversalEnergyCapacity();
     }
 
-    private void moveAround(IGregTechTileEntity aBaseMetaTileEntity) {
-        for (final ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
-            if (face == aBaseMetaTileEntity.getFrontFacing()) continue;
-            ForgeDirection opposite = face.getOpposite();
-            for (short dist = 1; dist < 1000; dist++) {
-                IGregTechTileEntity tGTTileEntity = aBaseMetaTileEntity
-                    .getIGregTechTileEntityAtSideAndDistance(face, dist);
-                if (tGTTileEntity == null) {
-                    break;
-                }
-                IMetaTileEntity aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
-                if (aMetaTileEntity == null) {
-                    break;
-                }
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        openGui(aPlayer);
+        return true;
+    }
 
-                // If we hit a mirror, use the mirror's view instead
-                if (aMetaTileEntity instanceof MTEPipeLaserMirror tMirror) {
-                    tGTTileEntity = tMirror.bendAround(opposite);
-                    if (tGTTileEntity == null) {
-                        break;
-                    } else {
-                        aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
-                        opposite = tMirror.getChainedFrontFacing();
-                    }
-                }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister aBlockIconRegister) {
+        super.registerIcons(aBlockIconRegister);
+    }
 
-                if (aMetaTileEntity instanceof MTEHatchEnergyTunnel && opposite == tGTTileEntity.getFrontFacing()) {
-                    if (maxEUOutput() > ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUInput()) {
-                        aMetaTileEntity.doExplosion(maxEUOutput());
-                    } else {
-                        long diff = Math.min(
-                            mAMP * 20L * maxEUOutput(),
-                            Math.min(
-                                ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUStore()
-                                    - aMetaTileEntity.getBaseMetaTileEntity()
-                                        .getStoredEU(),
-                                aBaseMetaTileEntity.getStoredEU()));
-                        ((MTEHatchEnergyTunnel) aMetaTileEntity).setEUVar(
-                            aMetaTileEntity.getBaseMetaTileEntity()
-                                .getStoredEU() + diff);
-                    }
-                } else if (aMetaTileEntity instanceof MTEPipeLaser) {
-                    if (((MTEPipeLaser) aMetaTileEntity).connectionCount < 2) {
-                        break;
-                    } else {
-                        ((MTEPipeLaser) aMetaTileEntity).markUsed();
-                    }
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        if (aBaseMetaTileEntity.isServerSide()) {
+            aBaseMetaTileEntity.setActive(producing);
+            if (aBaseMetaTileEntity.isActive()) {
+                byte tick = (byte) (aTick % 20);
+                if (CommonValues.TRANSFER_AT == tick) {
+                    setEUVar(maxEUStore());
+                    moveAround(aBaseMetaTileEntity);
                 } else {
-                    break;
+                    setEUVar(maxEUStore());
                 }
+                ((AccessorMTETieredMachineBlock) this).setMachineTier(GTUtility.getTier(Math.abs(mEUT)));
+            } else {
+                setEUVar(0);
             }
         }
+    }
+
+    @Override
+    public String[] getDescription() {
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_00"));
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_01"));
+        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_02"));
+        return desc.toArray(new String[] {});
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean aActive, boolean aRedstone) {
+        return new ITexture[] { super.getTexture(aBaseMetaTileEntity, side, facing, colorIndex, aActive, aRedstone)[0],
+            side != facing
+                ? (aActive ? Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI_64A[mTier]
+                    : Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI_64A[mTier])
+                : Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_64A[mTier] };
+    }
+
+    @Override
+    public boolean isInputFacing(ForgeDirection side) {
+        return !producing && side != getBaseMetaTileEntity().getFrontFacing();
+    }
+
+    @Override
+    public boolean isOutputFacing(ForgeDirection side) {
+        return producing && side != getBaseMetaTileEntity().getFrontFacing();
     }
 
     @Override
@@ -328,6 +252,79 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mEUT *= val, 512, 64, 151, 22);
         addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mAMP += val, 512, 64, 151, 40);
         addChangeNumberButton(builder, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE, val -> mAMP *= val, 512, 64, 151, 58);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setLong("mEUT", mEUT);
+        aNBT.setLong("mAMP", mAMP);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mEUT = aNBT.getLong("mEUT");
+        mAMP = aNBT.getLong("mAMP");
+        updateProducingState();
+        getBaseMetaTileEntity().setActive(producing);
+    }
+
+    private void updateProducingState() {
+        producing = mAMP * mEUT >= 0;
+    }
+
+    private void moveAround(IGregTechTileEntity aBaseMetaTileEntity) {
+        for (final ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
+            if (face == aBaseMetaTileEntity.getFrontFacing()) continue;
+            ForgeDirection opposite = face.getOpposite();
+            for (short dist = 1; dist < 1000; dist++) {
+                IGregTechTileEntity tGTTileEntity = aBaseMetaTileEntity
+                    .getIGregTechTileEntityAtSideAndDistance(face, dist);
+                if (tGTTileEntity == null) {
+                    break;
+                }
+                IMetaTileEntity aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+                if (aMetaTileEntity == null) {
+                    break;
+                }
+
+                if (aMetaTileEntity instanceof MTEPipeLaserMirror tMirror) {
+                    tGTTileEntity = tMirror.bendAround(opposite);
+                    if (tGTTileEntity == null) {
+                        break;
+                    } else {
+                        aMetaTileEntity = tGTTileEntity.getMetaTileEntity();
+                        opposite = tMirror.getChainedFrontFacing();
+                    }
+                }
+
+                if (aMetaTileEntity instanceof MTEHatchEnergyTunnel && opposite == tGTTileEntity.getFrontFacing()) {
+                    if (maxEUOutput() > ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUInput()) {
+                        aMetaTileEntity.doExplosion(maxEUOutput());
+                    } else {
+                        long diff = Math.min(
+                            mAMP * 20L * maxEUOutput(),
+                            Math.min(
+                                ((MTEHatchEnergyTunnel) aMetaTileEntity).maxEUStore()
+                                    - aMetaTileEntity.getBaseMetaTileEntity()
+                                        .getStoredEU(),
+                                aBaseMetaTileEntity.getStoredEU()));
+                        ((MTEHatchEnergyTunnel) aMetaTileEntity).setEUVar(
+                            aMetaTileEntity.getBaseMetaTileEntity()
+                                .getStoredEU() + diff);
+                    }
+                } else if (aMetaTileEntity instanceof MTEPipeLaser) {
+                    if (((MTEPipeLaser) aMetaTileEntity).connectionCount < 2) {
+                        break;
+                    } else {
+                        ((MTEPipeLaser) aMetaTileEntity).markUsed();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
     private void addLabelledIntegerTextField(ModularWindow.Builder builder, String label, LongSupplier getter,

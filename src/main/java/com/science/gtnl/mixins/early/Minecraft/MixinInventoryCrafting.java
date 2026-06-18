@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 import com.science.gtnl.utils.LargeInventoryCrafting;
 
-@Mixin(InventoryCrafting.class)
+@Mixin(value = InventoryCrafting.class, remap = true)
 public class MixinInventoryCrafting implements LargeInventoryCrafting {
 
     @Unique

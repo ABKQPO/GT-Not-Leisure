@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -47,6 +46,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 3;
     private static final int DEPTH_OFF_SET = 0;
+
     public double speedup = 1;
     public int runningTickCounter = 0;
 
@@ -59,13 +59,18 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity arg0) {
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamInfernalCokeOven(this.mName);
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamInfernalCokeOvenRecipeType");
+    public boolean onRunningTick(ItemStack aStack) {
+        runningTickCounter++;
+        if (runningTickCounter % 100 == 0 && speedup < 7) {
+            runningTickCounter = 0;
+            speedup += 0.1F;
+        }
+        return super.onRunningTick(aStack);
     }
 
     @Override
@@ -95,6 +100,51 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.InfernalCockRecipes;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 4;
+    }
+
+    @Override
+    public int getMaxParallelRecipes() {
+        // Max call to prevent seeing -16 parallels in waila for unformed multi
+        return 16;
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return super.getDurationModifier() / speedup;
     }
 
     @Override
@@ -129,70 +179,8 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
-    }
-
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
-
-    @Override
-    public int clampRecipeOcCount(int value) {
-        return Math.min(1, value);
-    }
-
-    @Override
-    public boolean supportsSteamCapacityUI() {
-        return false;
-    }
-
-    @Override
-    public boolean onRunningTick(ItemStack aStack) {
-        runningTickCounter++;
-        if (runningTickCounter % 100 == 0 && speedup < 7) {
-            runningTickCounter = 0;
-            speedup += 0.1F;
-        }
-        return super.onRunningTick(aStack);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return super.getDurationModifier() / speedup;
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 4;
-    }
-
-    @Override
-    public int getMaxParallelRecipes() {
-        // Max call to prevent seeing -16 parallels in waila for unformed multi
-        return 16;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.InfernalCockRecipes;
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamInfernalCokeOvenRecipeType");
     }
 
     @Override
@@ -219,10 +207,19 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
         speedup = aNBT.getDouble("speedup");
     }
 
+    @Override
+    public int clampRecipeOcCount(int value) {
+        return Math.min(1, value);
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_MACERATOR_OP;
     }
-
 }

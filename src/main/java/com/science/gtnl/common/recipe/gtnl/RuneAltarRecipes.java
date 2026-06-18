@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
@@ -13,10 +12,9 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeRuneAltar;
 import vazkii.botania.common.item.material.ItemRune;
@@ -30,11 +28,11 @@ public class RuneAltarRecipes implements IRecipePool {
         for (RecipeRuneAltar recipe : BotaniaAPI.runeAltarRecipes) {
 
             List<Object> inputs = recipe.getInputs();
+            boolean hasOreDict = false;
+
             List<Object> finalInputs = new ArrayList<>();
 
             List<AbstractMap.SimpleEntry<ItemStack, Integer>> stackCounts = new ArrayList<>();
-
-            Object2IntMap<String> oredictCount = new Object2IntOpenHashMap<>();
 
             for (Object obj : inputs) {
                 if (obj instanceof ItemStack stack) {
@@ -56,7 +54,8 @@ public class RuneAltarRecipes implements IRecipePool {
                         }
                     }
                 } else if (obj instanceof String string) {
-                    oredictCount.put(string, oredictCount.getOrDefault(string, 0) + 1);
+                    hasOreDict = true;
+                    finalInputs.add(new OreDictItemStack(string, 1));
                 }
             }
 
@@ -67,27 +66,18 @@ public class RuneAltarRecipes implements IRecipePool {
                 finalInputs.add(stack);
             }
 
-            oredictCount.forEach((name, count) -> {
-                List<ItemStack> oredict = OreDictionary.getOres(name);
-                if (oredict.isEmpty()) return;
-
-                ItemStack first = oredict.get(0)
-                    .copy();
-                if (first.getItem() instanceof ItemRune) {
-                    first.stackSize = 0;
-                } else {
-                    first.stackSize = count;
-                }
-                finalInputs.add(first);
-            });
-
-            RecipeBuilder.builder()
-                .itemInputs(finalInputs.toArray(new Object[0]))
+            RecipeBuilder builder = RecipeBuilder.builder()
                 .itemOutputs(recipe.getOutput())
                 .fluidInputs(GTNLMaterials.FluidMana.getFluidOrGas(recipe.getManaUsage()))
                 .duration(40)
-                .eut(TierEU.RECIPE_EV)
-                .addTo(RAR);
+                .eut(TierEU.RECIPE_EV);
+
+            if (hasOreDict) {
+                builder.itemInputs(finalInputs.toArray(new Object[0]));
+            } else {
+                builder.itemInputs(finalInputs.toArray(new ItemStack[0]));
+            }
+            builder.addTo(RAR);
         }
     }
 

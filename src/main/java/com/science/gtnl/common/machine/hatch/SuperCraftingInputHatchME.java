@@ -133,363 +133,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     IAddGregtechLogo, IAddUIWidgets, IPowerChannelState, ICraftingProvider, IGridProxyable, IDualInputHatchWithPattern,
     ICustomNameObject, IInterfaceViewable, IMEConnectable, IMultiblockRecipeMap {
 
-    // Each pattern slot in the crafting input hatch has its own internal inventory
-    public static class PatternSlot<P extends IMetaTileEntity & IDualInputHatch>
-        implements IDualInputInventoryWithPattern {
-
-        public final P parentMTE;
-        public final ItemStack pattern;
-        @Getter
-        public final ICraftingPatternDetails patternDetails;
-        public final GTUtility.ItemId patternItemId;
-
-        public final int slotIndex;
-
-        public final List<ItemStack> itemInventory;
-        public final List<FluidStack> fluidInventory;
-
-        public PatternSlot(ItemStack pattern, P parent, int index) {
-            this(pattern, null, parent, index);
-        }
-
-        public PatternSlot(ItemStack pattern, NBTTagCompound nbt, P parent, int index) {
-            this.pattern = pattern;
-            this.parentMTE = parent;
-            this.patternDetails = ((ICraftingPatternItem) Objects.requireNonNull(pattern.getItem())).getPatternForItem(
-                pattern,
-                parent.getBaseMetaTileEntity()
-                    .getWorld());
-            this.slotIndex = index;
-            this.itemInventory = new ArrayList<>();
-            this.fluidInventory = new ArrayList<>();
-            this.patternItemId = GTUtility.ItemId.create(pattern);
-
-            if (nbt == null) return;
-            NBTTagList inv = nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < inv.tagCount(); i++) {
-                NBTTagCompound tagItemStack = inv.getCompoundTagAt(i);
-                ItemStack item = GTUtility.loadItem(tagItemStack);
-                if (item != null) {
-                    if (item.stackSize > 0) {
-                        itemInventory.add(item);
-                    }
-                } else {
-                    ScienceNotLeisure.LOG.warn(
-                        "An error occurred while loading contents of ME Super Crafting Input Bus. This item has been voided: {}",
-                        tagItemStack);
-                }
-            }
-            NBTTagList fluidInv = nbt.getTagList("fluidInventory", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < fluidInv.tagCount(); i++) {
-                NBTTagCompound tagFluidStack = fluidInv.getCompoundTagAt(i);
-                FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagFluidStack);
-                if (fluid != null) {
-                    if (fluid.amount > 0) {
-                        fluidInventory.add(fluid);
-                    }
-                } else {
-                    ScienceNotLeisure.LOG.warn(
-                        "An error occurred while loading contents of ME Super Crafting Input Bus. This fluid has been voided: {}",
-                        tagFluidStack);
-                }
-            }
-        }
-
-        public ItemStack[] getNonNullManualInventory() {
-            int base = MAX_INV_COUNT + this.slotIndex * 9;
-
-            int nonNullCount = 0;
-            for (int i = 0; i < 9; i++) {
-                ItemStack stack = parentMTE.getRealInventory()[base + i];
-                if (stack != null && stack.stackSize > 0) {
-                    nonNullCount++;
-                }
-            }
-
-            if (nonNullCount == 0) return GTValues.emptyItemStackArray;
-
-            ItemStack[] res = new ItemStack[nonNullCount];
-            int current = 0;
-            for (int i = 0; i < 9; i++) {
-                ItemStack stack = parentMTE.getRealInventory()[base + i];
-                if (stack != null && stack.stackSize > 0) {
-                    res[current++] = stack;
-                }
-            }
-            return res;
-        }
-
-        public boolean hasChanged(ItemStack newPattern, World world) {
-            return newPattern == null || patternDetails == null
-                || (!ItemStack.areItemStacksEqual(pattern, newPattern) && !this.patternDetails.equals(
-                    ((ICraftingPatternItem) Objects.requireNonNull(pattern.getItem()))
-                        .getPatternForItem(newPattern, world)));
-        }
-
-        public void updateSlotItems() {
-            for (int i = itemInventory.size() - 1; i >= 0; i--) {
-                ItemStack itemStack = itemInventory.get(i);
-                if (itemStack == null || itemStack.stackSize <= 0) {
-                    itemInventory.remove(i);
-                }
-            }
-        }
-
-        public void updateSlotFluids() {
-            for (int i = fluidInventory.size() - 1; i >= 0; i--) {
-                FluidStack fluidStack = fluidInventory.get(i);
-                if (fluidStack == null || fluidStack.amount <= 0) {
-                    fluidInventory.remove(i);
-                }
-            }
-        }
-
-        public boolean isManualItemEmpty() {
-            int base = MAX_INV_COUNT + this.slotIndex * 9;
-
-            for (int i = 0; i < 9; i++) {
-                if (parentMTE.getRealInventory()[base + i] != null) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public boolean isItemEmpty() {
-            updateSlotItems();
-            return itemInventory.isEmpty() && isManualItemEmpty();
-        }
-
-        public boolean isFluidEmpty() {
-            updateSlotFluids();
-            return fluidInventory.isEmpty();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return isItemEmpty() && isFluidEmpty();
-        }
-
-        @Override
-        public ItemStack[] getItemInputs() {
-            if (isItemEmpty()) return GTValues.emptyItemStackArray;
-            ItemStack[] manualInventory = getNonNullManualInventory();
-            ItemStack[] itemInputs = new ItemStack[itemInventory.size() + manualInventory.length];
-            int current = 0;
-            for (ItemStack itemStack : itemInventory) {
-                itemInputs[current++] = itemStack;
-            }
-            for (ItemStack itemStack : manualInventory) {
-                itemInputs[current++] = itemStack;
-            }
-            return itemInputs;
-        }
-
-        @Override
-        public FluidStack[] getFluidInputs() {
-            if (isEmpty()) return GTValues.emptyFluidStackArray;
-            return fluidInventory.toArray(new FluidStack[0]);
-        }
-
-        @Override
-        public GTDualInputPattern getPatternInputs() {
-            GTDualInputPattern dualInputs = new GTDualInputPattern();
-
-            ItemStack[] sharedItems = this.parentMTE.getSharedItems();
-            ItemStack[] manualInventory = getNonNullManualInventory();
-            IAEItemStack[] patternInputs = this.patternDetails.getInputs();
-            ObjectArrayList<ItemStack> inputItems = new ObjectArrayList<>(
-                sharedItems.length + manualInventory.length + patternInputs.length);
-            ObjectArrayList<FluidStack> inputFluids = new ObjectArrayList<>(patternInputs.length);
-
-            Collections.addAll(inputItems, sharedItems);
-
-            for (IAEItemStack singleInput : patternInputs) {
-                if (singleInput == null) continue;
-                ItemStack singleInputItemStack = singleInput.getItemStack();
-                if (singleInputItemStack.getItem() instanceof ItemFluidDrop) {
-                    FluidStack fluidStack = ItemFluidDrop.getFluidStack(singleInputItemStack);
-                    if (fluidStack != null) {
-                        inputFluids.add(fluidStack);
-                    }
-                } else {
-                    inputItems.add(singleInputItemStack);
-                }
-            }
-
-            Collections.addAll(inputItems, manualInventory);
-
-            dualInputs.inputItems = inputItems.toArray(new ItemStack[inputItems.size()]);
-            dualInputs.inputFluid = inputFluids.isEmpty() ? GTValues.emptyFluidStackArray
-                : inputFluids.toArray(new FluidStack[inputFluids.size()]);
-            return dualInputs;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PatternSlot<?> that = (PatternSlot<?>) o;
-            return Objects.equals(pattern, that.pattern);
-        }
-
-        @Override
-        public int hashCode() {
-            return patternItemId.hashCode();
-        }
-
-        /**
-         * Try to refund the items and fluids back.
-         * <p>
-         * Push all the items and fluids back to the AE network first.
-         * If shouldDrop is true, the remaining are dropped to the world (the fluids are dropped as AE2FC fluid drop).
-         * Otherwise, they are still left in the inventory.
-         */
-        public void refund(AENetworkProxy proxy, BaseActionSource src, boolean shouldDrop) throws GridAccessException {
-            IMEMonitor<IAEItemStack> sg = proxy.getStorage()
-                .getItemInventory();
-            for (ItemStack itemStack : itemInventory) {
-                if (itemStack == null || itemStack.stackSize == 0) continue;
-                IAEItemStack rest = Platform.poweredInsert(
-                    proxy.getEnergy(),
-                    sg,
-                    AEApi.instance()
-                        .storage()
-                        .createItemStack(itemStack),
-                    src);
-                itemStack.stackSize = rest != null && rest.getStackSize() > 0 ? (int) rest.getStackSize() : 0;
-
-                if (Gregtech.machines.allowCribDropItems && shouldDrop && itemStack.stackSize > 0) {
-                    World world = parentMTE.getBaseMetaTileEntity()
-                        .getWorld();
-                    EntityItem entityItem = new EntityItem(
-                        world,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        GTUtility.copy(itemStack));
-                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
-                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
-                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
-                    world.spawnEntityInWorld(entityItem);
-
-                    itemStack.stackSize = 0;
-                }
-            }
-            IMEMonitor<IAEFluidStack> fsg = proxy.getStorage()
-                .getFluidInventory();
-            for (FluidStack fluidStack : fluidInventory) {
-                if (fluidStack == null || fluidStack.amount == 0) continue;
-                IAEFluidStack rest = Platform.poweredInsert(
-                    proxy.getEnergy(),
-                    fsg,
-                    AEApi.instance()
-                        .storage()
-                        .createFluidStack(fluidStack),
-                    src);
-                fluidStack.amount = rest != null && rest.getStackSize() > 0 ? (int) rest.getStackSize() : 0;
-
-                if (Gregtech.machines.allowCribDropItems && shouldDrop && fluidStack.amount > 0) {
-                    World world = parentMTE.getBaseMetaTileEntity()
-                        .getWorld();
-
-                    ItemStack fluidPacketItemStack = ItemFluidPacket.newStack(fluidStack);
-                    if (fluidPacketItemStack == null) continue;
-
-                    EntityItem entityItem = new EntityItem(
-                        world,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        parentMTE.getBaseMetaTileEntity()
-                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
-                            + 0.1F,
-                        fluidPacketItemStack);
-                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
-                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
-                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
-                    world.spawnEntityInWorld(entityItem);
-                }
-            }
-        }
-
-        public void insertItem(ItemStack inserted) {
-            for (ItemStack itemStack : itemInventory) {
-                if (GTUtility.areStacksEqual(inserted, itemStack)) {
-                    if (itemStack.stackSize > Integer.MAX_VALUE - inserted.stackSize) {
-                        inserted.stackSize -= Integer.MAX_VALUE - itemStack.stackSize;
-                        itemStack.stackSize = Integer.MAX_VALUE;
-                    } else {
-                        itemStack.stackSize += inserted.stackSize;
-                        return;
-                    }
-                }
-            }
-            if (inserted.stackSize > 0) {
-                itemInventory.add(inserted);
-            }
-        }
-
-        public void insertFluid(FluidStack inserted) {
-            for (FluidStack fluidStack : fluidInventory) {
-                if (GTUtility.areFluidsEqual(inserted, fluidStack)) {
-                    if (fluidStack.amount > Integer.MAX_VALUE - inserted.amount) {
-                        inserted.amount -= Integer.MAX_VALUE - fluidStack.amount;
-                        fluidStack.amount = Integer.MAX_VALUE;
-                    } else {
-                        fluidStack.amount += inserted.amount;
-                        return;
-                    }
-                }
-            }
-            if (inserted.amount > 0) {
-                fluidInventory.add(inserted);
-            }
-        }
-
-        public boolean insertItemsAndFluids(InventoryCrafting inventoryCrafting) {
-            for (int i = 0; i < inventoryCrafting.getSizeInventory(); ++i) {
-                ItemStack itemStack = inventoryCrafting.getStackInSlot(i);
-                if (itemStack == null) continue;
-
-                if (itemStack.getItem() instanceof ItemFluidPacket) { // insert fluid
-                    FluidStack fluidStack = ItemFluidPacket.getFluidStack(itemStack);
-                    if (fluidStack != null) insertFluid(fluidStack);
-                } else { // insert item
-                    insertItem(itemStack);
-                }
-            }
-            return true;
-        }
-
-        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-            nbt.setTag("pattern", pattern.writeToNBT(new NBTTagCompound()));
-
-            NBTTagList itemInventoryNbt = new NBTTagList();
-            for (ItemStack itemStack : this.itemInventory) {
-                itemInventoryNbt.appendTag(GTUtility.saveItem(itemStack));
-            }
-            nbt.setTag("inventory", itemInventoryNbt);
-
-            NBTTagList fluidInventoryNbt = new NBTTagList();
-            for (FluidStack fluidStack : fluidInventory) {
-                fluidInventoryNbt.appendTag(fluidStack.writeToNBT(new NBTTagCompound()));
-            }
-            nbt.setTag("fluidInventory", fluidInventoryNbt);
-
-            return nbt;
-        }
-    }
-
     public static UITexture OVERLAY_BUTTON_X2 = UITexture
         .fullImage(ScienceNotLeisure.RESOURCE_ROOT_ID, "gui/overlay_button/x2");
     public static int MAX_PATTERN_COUNT = 40 * 9;
@@ -964,12 +607,12 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
 
     @Override
     public int getGUIWidth() {
-        return super.getGUIWidth() + 16;
+        return 176 + 16;
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
+    public int getGUIHeight() {
+        return 184;
     }
 
     @Override
@@ -1552,5 +1195,361 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             }
         } catch (Throwable ignored) {}
         CraftingGridCache.unpauseRebuilds();
+    }
+
+    // Each pattern slot in the crafting input hatch has its own internal inventory
+    public static class PatternSlot<P extends IMetaTileEntity & IDualInputHatch>
+        implements IDualInputInventoryWithPattern {
+
+        public final P parentMTE;
+        public final ItemStack pattern;
+        @Getter
+        public final ICraftingPatternDetails patternDetails;
+        public final GTUtility.ItemId patternItemId;
+        public final int slotIndex;
+        public final List<ItemStack> itemInventory;
+        public final List<FluidStack> fluidInventory;
+
+        public PatternSlot(ItemStack pattern, P parent, int index) {
+            this(pattern, null, parent, index);
+        }
+
+        public PatternSlot(ItemStack pattern, NBTTagCompound nbt, P parent, int index) {
+            this.pattern = pattern;
+            this.parentMTE = parent;
+            this.patternDetails = ((ICraftingPatternItem) Objects.requireNonNull(pattern.getItem())).getPatternForItem(
+                pattern,
+                parent.getBaseMetaTileEntity()
+                    .getWorld());
+            this.slotIndex = index;
+            this.itemInventory = new ArrayList<>();
+            this.fluidInventory = new ArrayList<>();
+            this.patternItemId = GTUtility.ItemId.create(pattern);
+
+            if (nbt == null) return;
+            NBTTagList inv = nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < inv.tagCount(); i++) {
+                NBTTagCompound tagItemStack = inv.getCompoundTagAt(i);
+                ItemStack item = GTUtility.loadItem(tagItemStack);
+                if (item != null) {
+                    if (item.stackSize > 0) {
+                        itemInventory.add(item);
+                    }
+                } else {
+                    ScienceNotLeisure.LOG.warn(
+                        "An error occurred while loading contents of ME Super Crafting Input Bus. This item has been voided: {}",
+                        tagItemStack);
+                }
+            }
+            NBTTagList fluidInv = nbt.getTagList("fluidInventory", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < fluidInv.tagCount(); i++) {
+                NBTTagCompound tagFluidStack = fluidInv.getCompoundTagAt(i);
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(tagFluidStack);
+                if (fluid != null) {
+                    if (fluid.amount > 0) {
+                        fluidInventory.add(fluid);
+                    }
+                } else {
+                    ScienceNotLeisure.LOG.warn(
+                        "An error occurred while loading contents of ME Super Crafting Input Bus. This fluid has been voided: {}",
+                        tagFluidStack);
+                }
+            }
+        }
+
+        public ItemStack[] getNonNullManualInventory() {
+            int base = MAX_INV_COUNT + this.slotIndex * 9;
+
+            int nonNullCount = 0;
+            for (int i = 0; i < 9; i++) {
+                ItemStack stack = parentMTE.getRealInventory()[base + i];
+                if (stack != null && stack.stackSize > 0) {
+                    nonNullCount++;
+                }
+            }
+
+            if (nonNullCount == 0) return GTValues.emptyItemStackArray;
+
+            ItemStack[] res = new ItemStack[nonNullCount];
+            int current = 0;
+            for (int i = 0; i < 9; i++) {
+                ItemStack stack = parentMTE.getRealInventory()[base + i];
+                if (stack != null && stack.stackSize > 0) {
+                    res[current++] = stack;
+                }
+            }
+            return res;
+        }
+
+        public boolean hasChanged(ItemStack newPattern, World world) {
+            return newPattern == null || patternDetails == null
+                || (!ItemStack.areItemStacksEqual(pattern, newPattern) && !this.patternDetails.equals(
+                    ((ICraftingPatternItem) Objects.requireNonNull(pattern.getItem()))
+                        .getPatternForItem(newPattern, world)));
+        }
+
+        public void updateSlotItems() {
+            for (int i = itemInventory.size() - 1; i >= 0; i--) {
+                ItemStack itemStack = itemInventory.get(i);
+                if (itemStack == null || itemStack.stackSize <= 0) {
+                    itemInventory.remove(i);
+                }
+            }
+        }
+
+        public void updateSlotFluids() {
+            for (int i = fluidInventory.size() - 1; i >= 0; i--) {
+                FluidStack fluidStack = fluidInventory.get(i);
+                if (fluidStack == null || fluidStack.amount <= 0) {
+                    fluidInventory.remove(i);
+                }
+            }
+        }
+
+        public boolean isManualItemEmpty() {
+            int base = MAX_INV_COUNT + this.slotIndex * 9;
+
+            for (int i = 0; i < 9; i++) {
+                if (parentMTE.getRealInventory()[base + i] != null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean isItemEmpty() {
+            updateSlotItems();
+            return itemInventory.isEmpty() && isManualItemEmpty();
+        }
+
+        public boolean isFluidEmpty() {
+            updateSlotFluids();
+            return fluidInventory.isEmpty();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return isItemEmpty() && isFluidEmpty();
+        }
+
+        @Override
+        public ItemStack[] getItemInputs() {
+            if (isItemEmpty()) return GTValues.emptyItemStackArray;
+            ItemStack[] manualInventory = getNonNullManualInventory();
+            ItemStack[] itemInputs = new ItemStack[itemInventory.size() + manualInventory.length];
+            int current = 0;
+            for (ItemStack itemStack : itemInventory) {
+                itemInputs[current++] = itemStack;
+            }
+            for (ItemStack itemStack : manualInventory) {
+                itemInputs[current++] = itemStack;
+            }
+            return itemInputs;
+        }
+
+        @Override
+        public FluidStack[] getFluidInputs() {
+            if (isEmpty()) return GTValues.emptyFluidStackArray;
+            return fluidInventory.toArray(new FluidStack[0]);
+        }
+
+        @Override
+        public GTDualInputPattern getPatternInputs() {
+            GTDualInputPattern dualInputs = new GTDualInputPattern();
+
+            ItemStack[] sharedItems = this.parentMTE.getSharedItems();
+            ItemStack[] manualInventory = getNonNullManualInventory();
+            IAEItemStack[] patternInputs = this.patternDetails.getInputs();
+            ObjectArrayList<ItemStack> inputItems = new ObjectArrayList<>(
+                sharedItems.length + manualInventory.length + patternInputs.length);
+            ObjectArrayList<FluidStack> inputFluids = new ObjectArrayList<>(patternInputs.length);
+
+            Collections.addAll(inputItems, sharedItems);
+
+            for (IAEItemStack singleInput : patternInputs) {
+                if (singleInput == null) continue;
+                ItemStack singleInputItemStack = singleInput.getItemStack();
+                if (singleInputItemStack.getItem() instanceof ItemFluidDrop) {
+                    FluidStack fluidStack = ItemFluidDrop.getFluidStack(singleInputItemStack);
+                    if (fluidStack != null) {
+                        inputFluids.add(fluidStack);
+                    }
+                } else {
+                    inputItems.add(singleInputItemStack);
+                }
+            }
+
+            Collections.addAll(inputItems, manualInventory);
+
+            dualInputs.inputItems = inputItems.toArray(new ItemStack[inputItems.size()]);
+            dualInputs.inputFluid = inputFluids.isEmpty() ? GTValues.emptyFluidStackArray
+                : inputFluids.toArray(new FluidStack[inputFluids.size()]);
+            return dualInputs;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PatternSlot<?> that = (PatternSlot<?>) o;
+            return Objects.equals(pattern, that.pattern);
+        }
+
+        @Override
+        public int hashCode() {
+            return patternItemId.hashCode();
+        }
+
+        /**
+         * Try to refund the items and fluids back.
+         *
+         * <p>
+         * Push all the items and fluids back to the AE network first. If shouldDrop is true, the remaining are
+         * dropped to the world (the fluids are dropped as AE2FC fluid drop). Otherwise, they are still left in the
+         * inventory.
+         */
+        public void refund(AENetworkProxy proxy, BaseActionSource src, boolean shouldDrop) throws GridAccessException {
+            IMEMonitor<IAEItemStack> sg = proxy.getStorage()
+                .getItemInventory();
+            for (ItemStack itemStack : itemInventory) {
+                if (itemStack == null || itemStack.stackSize == 0) continue;
+                IAEItemStack rest = Platform.poweredInsert(
+                    proxy.getEnergy(),
+                    sg,
+                    AEApi.instance()
+                        .storage()
+                        .createItemStack(itemStack),
+                    src);
+                itemStack.stackSize = rest != null && rest.getStackSize() > 0 ? (int) rest.getStackSize() : 0;
+
+                if (Gregtech.machines.allowCribDropItems && shouldDrop && itemStack.stackSize > 0) {
+                    World world = parentMTE.getBaseMetaTileEntity()
+                        .getWorld();
+                    EntityItem entityItem = new EntityItem(
+                        world,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        GTUtility.copy(itemStack));
+                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
+                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    world.spawnEntityInWorld(entityItem);
+
+                    itemStack.stackSize = 0;
+                }
+            }
+            IMEMonitor<IAEFluidStack> fsg = proxy.getStorage()
+                .getFluidInventory();
+            for (FluidStack fluidStack : fluidInventory) {
+                if (fluidStack == null || fluidStack.amount == 0) continue;
+                IAEFluidStack rest = Platform.poweredInsert(
+                    proxy.getEnergy(),
+                    fsg,
+                    AEApi.instance()
+                        .storage()
+                        .createFluidStack(fluidStack),
+                    src);
+                fluidStack.amount = rest != null && rest.getStackSize() > 0 ? (int) rest.getStackSize() : 0;
+
+                if (Gregtech.machines.allowCribDropItems && shouldDrop && fluidStack.amount > 0) {
+                    World world = parentMTE.getBaseMetaTileEntity()
+                        .getWorld();
+
+                    ItemStack fluidPacketItemStack = ItemFluidPacket.newStack(fluidStack);
+                    if (fluidPacketItemStack == null) continue;
+
+                    EntityItem entityItem = new EntityItem(
+                        world,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getXCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getYCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        parentMTE.getBaseMetaTileEntity()
+                            .getZCoord() + XSTR.XSTR_INSTANCE.nextFloat() * 0.8F
+                            + 0.1F,
+                        fluidPacketItemStack);
+                    entityItem.motionX = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    entityItem.motionY = XSTR.XSTR_INSTANCE.nextGaussian() * 0.25;
+                    entityItem.motionZ = XSTR.XSTR_INSTANCE.nextGaussian() * 0.05;
+                    world.spawnEntityInWorld(entityItem);
+                }
+            }
+        }
+
+        public void insertItem(ItemStack inserted) {
+            for (ItemStack itemStack : itemInventory) {
+                if (GTUtility.areStacksEqual(inserted, itemStack)) {
+                    if (itemStack.stackSize > Integer.MAX_VALUE - inserted.stackSize) {
+                        inserted.stackSize -= Integer.MAX_VALUE - itemStack.stackSize;
+                        itemStack.stackSize = Integer.MAX_VALUE;
+                    } else {
+                        itemStack.stackSize += inserted.stackSize;
+                        return;
+                    }
+                }
+            }
+            if (inserted.stackSize > 0) {
+                itemInventory.add(inserted);
+            }
+        }
+
+        public void insertFluid(FluidStack inserted) {
+            for (FluidStack fluidStack : fluidInventory) {
+                if (GTUtility.areFluidsEqual(inserted, fluidStack)) {
+                    if (fluidStack.amount > Integer.MAX_VALUE - inserted.amount) {
+                        inserted.amount -= Integer.MAX_VALUE - fluidStack.amount;
+                        fluidStack.amount = Integer.MAX_VALUE;
+                    } else {
+                        fluidStack.amount += inserted.amount;
+                        return;
+                    }
+                }
+            }
+            if (inserted.amount > 0) {
+                fluidInventory.add(inserted);
+            }
+        }
+
+        public boolean insertItemsAndFluids(InventoryCrafting inventoryCrafting) {
+            for (int i = 0; i < inventoryCrafting.getSizeInventory(); ++i) {
+                ItemStack itemStack = inventoryCrafting.getStackInSlot(i);
+                if (itemStack == null) continue;
+
+                if (itemStack.getItem() instanceof ItemFluidPacket) {
+                    FluidStack fluidStack = ItemFluidPacket.getFluidStack(itemStack);
+                    if (fluidStack != null) insertFluid(fluidStack);
+                } else {
+                    insertItem(itemStack);
+                }
+            }
+            return true;
+        }
+
+        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+            nbt.setTag("pattern", pattern.writeToNBT(new NBTTagCompound()));
+
+            NBTTagList itemInventoryNbt = new NBTTagList();
+            for (ItemStack itemStack : this.itemInventory) {
+                itemInventoryNbt.appendTag(GTUtility.saveItem(itemStack));
+            }
+            nbt.setTag("inventory", itemInventoryNbt);
+
+            NBTTagList fluidInventoryNbt = new NBTTagList();
+            for (FluidStack fluidStack : fluidInventory) {
+                fluidInventoryNbt.appendTag(fluidStack.writeToNBT(new NBTTagCompound()));
+            }
+            nbt.setTag("fluidInventory", fluidInventoryNbt);
+
+            return nbt;
+        }
     }
 }

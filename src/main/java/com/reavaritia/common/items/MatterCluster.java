@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -28,13 +27,12 @@ import codechicken.lib.math.MathHelper;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import fox.spiteful.avaritia.render.ICosmicRenderItem;
+import fox.spiteful.avaritia.items.ItemMatterCluster;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-@Optional.Interface(iface = "fox.spiteful.avaritia.render.ICosmicRenderItem", modid = "Avaritia")
-public class MatterCluster extends Item implements ICosmicRenderItem {
+public class MatterCluster extends ItemMatterCluster {
 
     public static final String MAINTAG = "clusteritems";
     public static final String LISTTAG = "items";
@@ -42,7 +40,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
     public static final String COUNTTAG = "count";
     public static final String MAINCOUNTTAG = "total";
 
-    public static int capacity = 64 * 1024;
+    public static int CAPACITY = 64 * 1024;
 
     public IIcon iconFull;
     public IIcon cosmicIcon;
@@ -80,7 +78,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
 
         tooltip.add(
             clustertag.getInteger(MAINCOUNTTAG) + "/"
-                + capacity
+                + CAPACITY
                 + " "
                 + StatCollector.translateToLocal("Tooltip_MatterCluster_Counter"));
         tooltip.add("");
@@ -107,8 +105,12 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
         }
     }
 
-    public static ObjectArrayList<ItemStack> makeClusters(List<ItemStack> input) {
+    public static ObjectArrayList<ItemStack> makeReAvaritiaClusters(List<ItemStack> input) {
         Object2IntOpenHashMap<ItemStackWrapper> items = ToolHelper.collateMatterCluster(input);
+        return makeReAvaritiaClusters(items);
+    }
+
+    public static ObjectArrayList<ItemStack> makeReAvaritiaClusters(Object2IntOpenHashMap<ItemStackWrapper> items) {
         ObjectArrayList<ItemStack> clusters = new ObjectArrayList<>();
         ObjectArrayList<Entry<ItemStackWrapper, Integer>> itemlist = new ObjectArrayList<>(items.object2IntEntrySet());
 
@@ -120,7 +122,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
             ItemStackWrapper wrap = e.getKey();
             int wrapcount = e.getValue();
 
-            int count = Math.min(capacity - currentTotal, wrapcount);
+            int count = Math.min(CAPACITY - currentTotal, wrapcount);
 
             currentItems.put(wrap, currentItems.getInt(wrap) + count);
             currentTotal += count;
@@ -131,8 +133,8 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
                 itemlist.remove(0);
             }
 
-            if (currentTotal == capacity) {
-                ItemStack cluster = makeCluster(currentItems);
+            if (currentTotal == CAPACITY) {
+                ItemStack cluster = makeReAvaritiaCluster(currentItems);
                 clusters.add(cluster);
 
                 currentTotal = 0;
@@ -141,24 +143,24 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
         }
 
         if (currentTotal > 0) {
-            ItemStack cluster = makeCluster(currentItems);
+            ItemStack cluster = makeReAvaritiaCluster(currentItems);
             clusters.add(cluster);
         }
 
         return clusters;
     }
 
-    public static ItemStack makeCluster(Object2IntOpenHashMap<ItemStackWrapper> input) {
+    public static ItemStack makeReAvaritiaCluster(Object2IntOpenHashMap<ItemStackWrapper> input) {
         ItemStack cluster = new ItemStack(ItemLoader.MatterCluster);
         int total = 0;
         for (int num : input.values()) {
             total += num;
         }
-        setClusterData(cluster, input, total);
+        setReAvaritiaClusterData(cluster, input, total);
         return cluster;
     }
 
-    public static Object2IntOpenHashMap<ItemStackWrapper> getClusterData(ItemStack cluster) {
+    public static Object2IntOpenHashMap<ItemStackWrapper> getReAvaritiaClusterData(ItemStack cluster) {
         if (!cluster.hasTagCompound() || !cluster.getTagCompound()
             .hasKey(MAINTAG)) {
             return new Object2IntOpenHashMap<>();
@@ -181,7 +183,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
         return data;
     }
 
-    public static int getClusterSize(ItemStack cluster) {
+    public static int getReAvaritiaClusterSize(ItemStack cluster) {
         if (!cluster.hasTagCompound() || !cluster.getTagCompound()
             .hasKey(MAINTAG)) {
             return 0;
@@ -191,7 +193,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
             .getInteger(MAINCOUNTTAG);
     }
 
-    public static void setClusterData(ItemStack stack, Object2IntMap<ItemStackWrapper> data, int count) {
+    public static void setReAvaritiaClusterData(ItemStack stack, Object2IntMap<ItemStackWrapper> data, int count) {
         if (stack == null || data == null) return;
 
         if (!stack.hasTagCompound()) {
@@ -230,16 +232,16 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
             .setTag(MAINTAG, clustertag);
     }
 
-    public static void mergeClusters(ItemStack donor, ItemStack recipient) {
-        int donorcount = getClusterSize(donor);
-        int recipientcount = getClusterSize(recipient);
+    public static void mergeReAvaritiaClusters(ItemStack donor, ItemStack recipient) {
+        int donorcount = getReAvaritiaClusterSize(donor);
+        int recipientcount = getReAvaritiaClusterSize(recipient);
 
-        if (donorcount == 0 || donorcount == capacity || recipientcount == capacity) {
+        if (donorcount == 0 || donorcount == CAPACITY || recipientcount == CAPACITY) {
             return;
         }
 
-        Object2IntOpenHashMap<ItemStackWrapper> donordata = getClusterData(donor);
-        Object2IntOpenHashMap<ItemStackWrapper> recipientdata = getClusterData(recipient);
+        Object2IntOpenHashMap<ItemStackWrapper> donordata = getReAvaritiaClusterData(donor);
+        Object2IntOpenHashMap<ItemStackWrapper> recipientdata = getReAvaritiaClusterData(recipient);
 
         donordata.object2IntEntrySet()
             .removeIf(
@@ -253,7 +255,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
         var it = donordata.object2IntEntrySet()
             .iterator();
 
-        while (recipientcount < capacity && donorcount > 0 && it.hasNext()) {
+        while (recipientcount < CAPACITY && donorcount > 0 && it.hasNext()) {
             Entry<ItemStackWrapper, Integer> e = it.next();
             ItemStackWrapper wrap = e.getKey();
             int wrapcount = e.getValue();
@@ -263,7 +265,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
                 continue;
             }
 
-            int move = Math.min(capacity - recipientcount, wrapcount);
+            int move = Math.min(CAPACITY - recipientcount, wrapcount);
 
             recipientdata.put(wrap, recipientdata.getOrDefault(wrap, 0) + move);
 
@@ -278,10 +280,10 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
             }
         }
 
-        setClusterData(recipient, recipientdata, recipientcount);
+        setReAvaritiaClusterData(recipient, recipientdata, recipientcount);
 
         if (donorcount > 0 && !donordata.isEmpty()) {
-            setClusterData(donor, donordata, donorcount);
+            setReAvaritiaClusterData(donor, donordata, donorcount);
         } else {
             donor.setTagCompound(null);
             donor.stackSize = 0;
@@ -291,7 +293,7 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
-            List<ItemStack> drops = ToolHelper.collateMatterClusterContents(MatterCluster.getClusterData(stack));
+            List<ItemStack> drops = ToolHelper.collateMatterClusterContents(getReAvaritiaClusterData(stack));
 
             for (ItemStack drop : drops) {
                 ToolHelper.dropItem(
@@ -310,8 +312,8 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
     @Override
     @Optional.Method(modid = "Avaritia")
     public IIcon getMaskTexture(ItemStack stack, EntityPlayer player) {
-        int count = getClusterSize(stack);
-        if (count == capacity) {
+        int count = getReAvaritiaClusterSize(stack);
+        if (count == CAPACITY) {
             return cosmicIconFull;
         }
         return cosmicIcon;
@@ -320,14 +322,14 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
     @Override
     @Optional.Method(modid = "Avaritia")
     public float getMaskMultiplier(ItemStack stack, EntityPlayer player) {
-        int count = getClusterSize(stack);
-        return count / (float) capacity;
+        int count = getReAvaritiaClusterSize(stack);
+        return count / (float) CAPACITY;
     }
 
     @Override
     public IIcon getIcon(ItemStack stack, int pass) {
-        int count = getClusterSize(stack);
-        if (count == capacity) {
+        int count = getReAvaritiaClusterSize(stack);
+        if (count == CAPACITY) {
             return iconFull;
         }
         return super.getIcon(stack, pass);
@@ -340,8 +342,8 @@ public class MatterCluster extends Item implements ICosmicRenderItem {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int count = getClusterSize(stack);
-        if (count == capacity) {
+        int count = getReAvaritiaClusterSize(stack);
+        if (count == CAPACITY) {
             return super.getUnlocalizedName(stack) + ".full";
         }
         return super.getUnlocalizedName(stack);

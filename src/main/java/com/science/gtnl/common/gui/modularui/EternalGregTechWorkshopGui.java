@@ -388,7 +388,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
     private IWidget createGeneralInfoButton() {
         IPanelHandler generalInfoPanel = panelMap.get(GENERAL_INFO_PANEL_KEY);
         return new ButtonWidget<>().overlay(IDrawable.EMPTY)
-            .background(GTNLMui2Textures.PICTURE_GODFORGE_LOGO)
+            .background(GTGuiTextures.PICTURE_GODFORGE_LOGO)
             .disableHoverBackground()
             .onMousePressed(mouseButton -> {
                 togglePanel(generalInfoPanel);
@@ -643,7 +643,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                         raw -> MathHelper.clamp_int(raw, 1, EternalGregTechWorkshop.calculateMaxFuelFactor(multiblock)))
                     .setTextAlignment(Alignment.CENTER)
                     .value(fuelFactorSyncer)
-                    .setScrollValues(1, 4, 64)
+                    .scrollValues(1, 4, 64, 256)
                     .size(70, 18)
                     .marginLeft(4)
                     .marginTop(3))
@@ -1062,7 +1062,8 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
 
         VerticalScrollData scrollData = new VerticalScrollData();
         scrollData.setScrollSize(UPGRADE_TREE_SCROLL_SIZE);
-        ScrollWidget<?> tree = new ScrollWidget<>(scrollData).size(292);
+        ScrollWidget<?> tree = new ScrollWidget<>(scrollData).showScrollShadows(false)
+            .size(292);
         addUpgradeConnectors(tree, syncManager);
         for (EternalGregTechWorkshopUpgrade upgrade : EternalGregTechWorkshopUpgrade.VALUES) {
             tree.child(createUpgradeButton(upgrade, syncManager));
@@ -1387,7 +1388,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                     .numbersInt(0, 112)
                     .setTextAlignment(Alignment.CENTER)
                     .value(shardSyncer)
-                    .setScrollValues(1, 4, 64)
+                    .scrollValues(1, 4, 64, 256)
                     .size(25, 18)
                     .tooltip(tooltip -> tooltip.addLine(translateToLocal("fog.debug.gravitonshardsetter.tooltip")))
                     .tooltipShowUpTimer(TOOLTIP_DELAY))

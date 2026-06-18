@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -56,23 +55,13 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
     }
 
     @Override
-    public boolean isOutputFacing(ForgeDirection side) {
-        return side == getBaseMetaTileEntity().getFrontFacing();
-    }
-
-    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DieselGenerator(this.mName, this.mTier, this.mDescriptionArray, this.mTextures);
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after DieselGenerator mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
+    public boolean isOutputFacing(ForgeDirection side) {
+        return side == getBaseMetaTileEntity().getFrontFacing();
     }
 
     @Override
@@ -83,6 +72,16 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
     @Override
     protected boolean useMui2() {
         return true;
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after DieselGenerator mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 
     @Override
@@ -118,16 +117,10 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
         return (int) rValue;
     }
 
-    /**
-     * Draws random smoke particles on top when active
-     *
-     * @param aBaseMetaTileEntity The entity that will handle the {@link Block#randomDisplayTick}
-     */
     @SideOnly(Side.CLIENT)
     @Override
     public void onRandomDisplayTick(IGregTechTileEntity aBaseMetaTileEntity) {
         if (aBaseMetaTileEntity.isActive()) {
-
             if (!aBaseMetaTileEntity.hasCoverAtSide(ForgeDirection.UP)
                 && !aBaseMetaTileEntity.getOpacityAtSide(ForgeDirection.UP)) {
 

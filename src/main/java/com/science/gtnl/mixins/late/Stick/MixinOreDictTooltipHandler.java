@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.enderio.core.client.handlers.OreDictTooltipHandler;
 import com.science.gtnl.common.item.items.Stick;
 
-@Mixin(OreDictTooltipHandler.class)
+@Mixin(value = OreDictTooltipHandler.class, priority = 900)
 public class MixinOreDictTooltipHandler {
 
     @Redirect(

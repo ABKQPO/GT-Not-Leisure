@@ -243,7 +243,7 @@ public class SubscribeEventUtils {
                 }
                 ItemStack slot = player.inventory.mainInventory[i];
                 if (slot != null && slot.getItem() != null && slot.getItem() instanceof MatterCluster) {
-                    MatterCluster.mergeClusters(stack, slot);
+                    MatterCluster.mergeReAvaritiaClusters(stack, slot);
                 }
             }
         }

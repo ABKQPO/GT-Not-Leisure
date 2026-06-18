@@ -36,7 +36,6 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     public int mMinConfigTime;
     public int mMaxConfigTime;
     public int mConfigTime = 100;
-
     @Getter
     @Setter
     public int mCleanroomTier;
@@ -112,16 +111,6 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(125, 62));
-    }
-
-    @Override
     public String[] getDescription() {
         return mDescription;
     }
@@ -144,6 +133,55 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     @Override
     public int getMaxConfigTime() {
         return this.mMaxConfigTime;
+    }
+
+    @Override
+    public int getGUIHeight() {
+        return isConfiguration() ? 85 : 40;
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLCustomDroneDownLinkHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(125, 62));
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
+        super.addUIWidgets(builder, buildContext);
+        if (isConfiguration()) {
+            builder.widget(
+                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
+                    .setTextAlignment(Alignment.Center)
+                    .setPos(0, 38)
+                    .setSize(150, 14))
+                .widget(
+                    new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
+                        .setGetterInt(() -> mConfigTime)
+                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
+                        .setOnScrollNumbers(1, 2, 5)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.normal)
+                        .setSize(70, 18)
+                        .setPos(40, 56)
+                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
+        }
     }
 
     @Override
@@ -183,44 +221,5 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
 
     public void setConfigTimeFromGui(int configTime) {
         mConfigTime = Math.min(getMaxConfigTime(), Math.max(getMinConfigTime(), configTime));
-    }
-
-    @Override
-    public int getGUIHeight() {
-        return isConfiguration() ? 85 : 40;
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLCustomDroneDownLinkHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after CustomDroneDownLinkHatch mui2 rollout is complete.
-        super.addUIWidgets(builder, buildContext);
-        if (isConfiguration()) {
-            builder.widget(
-                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
-                    .setTextAlignment(Alignment.Center)
-                    .setPos(0, 38)
-                    .setSize(150, 14))
-                .widget(
-                    new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
-                        .setGetterInt(() -> mConfigTime)
-                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
-                        .setOnScrollNumbers(1, 2, 5)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.normal)
-                        .setSize(70, 18)
-                        .setPos(40, 56)
-                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        }
     }
 }

@@ -14,53 +14,55 @@ import com.science.gtnl.common.machine.hatch.CustomMaintenanceHatch;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
+import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 
-public class CustomMaintenanceHatchGui {
+public class CustomMaintenanceHatchGui extends MTEHatchBaseGui<CustomMaintenanceHatch> {
 
-    private static final String CONFIG_TIME_SYNC_KEY = "configTime";
-
-    private final CustomMaintenanceHatch hatch;
+    public static final String CONFIG_TIME_SYNC_KEY = "configTime";
 
     public CustomMaintenanceHatchGui(CustomMaintenanceHatch hatch) {
-        this.hatch = hatch;
+        super(hatch);
     }
 
+    @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
         registerSyncValues(syncManager);
-        ModularPanel panel = GTGuis.mteTemplatePanelBuilder(hatch, guiData, syncManager, uiSettings)
+        ModularPanel panel = GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
             .setWidth(176)
-            .setHeight(hatch.isConfiguration() ? 85 : 40)
+            .setHeight(machine.isConfiguration() ? 85 : 40)
             .doesAddGregTechLogo(false)
             .doesBindPlayerInventory(false)
             .build();
-        if (hatch.isConfiguration()) {
+        if (machine.isConfiguration()) {
             panel.child(createConfigurationLabel())
                 .child(createConfigurationField(syncManager));
         }
         return panel.child(
             GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
                 .size(18)
-                .pos(151, hatch.isConfiguration() ? 62 : 17));
+                .pos(151, machine.isConfiguration() ? 62 : 17));
     }
 
-    private void registerSyncValues(PanelSyncManager syncManager) {
+    @Override
+    public void registerSyncValues(PanelSyncManager syncManager) {
+        super.registerSyncValues(syncManager);
         syncManager.syncValue(
             CONFIG_TIME_SYNC_KEY,
-            new IntSyncValue(hatch::getConfigTime, hatch::setConfigTimeFromGui).allowC2S());
+            new IntSyncValue(machine::getConfigTime, machine::setConfigTimeFromGui).allowC2S());
     }
 
-    private IWidget createConfigurationLabel() {
+    public IWidget createConfigurationLabel() {
         return IKey.lang("Info_ConfigurationMaintenanceHatch_00")
             .asWidget()
             .pos(49, 18)
             .size(81, 14);
     }
 
-    private TextFieldWidget createConfigurationField(PanelSyncManager syncManager) {
+    public TextFieldWidget createConfigurationField(PanelSyncManager syncManager) {
         IntSyncValue configTimeSyncer = syncManager.findSyncHandler(CONFIG_TIME_SYNC_KEY, IntSyncValue.class);
         return new TextFieldWidget().value(configTimeSyncer)
-            .numbersInt(hatch.getMinConfigTime(), hatch.getMaxConfigTime())
-            .setScrollValues(1, 2, 5)
+            .numbersInt(machine.getMinConfigTime(), machine.getMaxConfigTime())
+            .scrollValues(1, 2, 5, 10)
             .setTextAlignment(Alignment.Center)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
             .pos(54, 36)

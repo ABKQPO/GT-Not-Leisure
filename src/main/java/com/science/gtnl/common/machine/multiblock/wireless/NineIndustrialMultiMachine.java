@@ -73,6 +73,12 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     private static final int DEPTH_OFF_SET = 0;
     private static final int MACHINE_MODE_ICON_COUNT = 37;
 
+    private static UITexture[] createDefaultMachineModeIcons() {
+        UITexture[] icons = new UITexture[MACHINE_MODE_ICON_COUNT];
+        Arrays.fill(icons, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
+        return icons;
+    }
+
     static {
         for (int id = 0; id < 108; id++) {
             RecipeMap<?> recipeMap = getRecipeMap(id);
@@ -94,50 +100,6 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public IMetaTileEntity newMetaEntity(final IGregTechTileEntity aTileEntity) {
         return new NineIndustrialMultiMachine(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        String[] aBuiltStrings = new String[36];
-        for (int i = 0; i < 36; i++) {
-            int baseIndex = i * 3;
-            if (baseIndex + 2 < aToolTipNames.length) {
-                aBuiltStrings[i] = String
-                    .join(", ", aToolTipNames[baseIndex], aToolTipNames[baseIndex + 1], aToolTipNames[baseIndex + 2]);
-            } else if (baseIndex + 1 < aToolTipNames.length) {
-                aBuiltStrings[i] = String.join(", ", aToolTipNames[baseIndex], aToolTipNames[baseIndex + 1]);
-            } else if (baseIndex < aToolTipNames.length) {
-                aBuiltStrings[i] = aToolTipNames[baseIndex];
-            } else {
-                aBuiltStrings[i] = "";
-            }
-        }
-
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("NineIndustrialMultiMachineRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_07"));
-        for (int i = 0; i < 36; i++) {
-            tt.addInfo(
-                StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Mode_" + i) + " - "
-                    + EnumChatFormatting.YELLOW
-                    + aBuiltStrings[i]
-                    + EnumChatFormatting.RESET);
-        }
-        tt.beginStructureBlock(29, 29, 29, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -200,10 +162,10 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, this.mCountCasing > 256);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 257);
     }
 
     @Override
@@ -354,12 +316,6 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(createDefaultMachineModeIcons());
     }
 
-    private static UITexture[] createDefaultMachineModeIcons() {
-        UITexture[] icons = new UITexture[MACHINE_MODE_ICON_COUNT];
-        Arrays.fill(icons, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
-        return icons;
-    }
-
     @Override
     @Deprecated
     public void setMachineModeIcons() {
@@ -496,5 +452,49 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         }
         mOutputFluids = outputFluids;
         return result;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        String[] aBuiltStrings = new String[36];
+        for (int i = 0; i < 36; i++) {
+            int baseIndex = i * 3;
+            if (baseIndex + 2 < aToolTipNames.length) {
+                aBuiltStrings[i] = String
+                    .join(", ", aToolTipNames[baseIndex], aToolTipNames[baseIndex + 1], aToolTipNames[baseIndex + 2]);
+            } else if (baseIndex + 1 < aToolTipNames.length) {
+                aBuiltStrings[i] = String.join(", ", aToolTipNames[baseIndex], aToolTipNames[baseIndex + 1]);
+            } else if (baseIndex < aToolTipNames.length) {
+                aBuiltStrings[i] = aToolTipNames[baseIndex];
+            } else {
+                aBuiltStrings[i] = "";
+            }
+        }
+
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("NineIndustrialMultiMachineRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_07"));
+        for (int i = 0; i < 36; i++) {
+            tt.addInfo(
+                StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Mode_" + i) + " - "
+                    + EnumChatFormatting.YELLOW
+                    + aBuiltStrings[i]
+                    + EnumChatFormatting.RESET);
+        }
+        tt.beginStructureBlock(29, 29, 29, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

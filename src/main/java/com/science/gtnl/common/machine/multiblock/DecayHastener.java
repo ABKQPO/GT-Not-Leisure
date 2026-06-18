@@ -55,52 +55,6 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.DecayHastenerRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DecayHastenerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 13, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<DecayHastener> getStructureDefinition() {
         return StructureDefinition.<DecayHastener>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -131,10 +85,10 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 80);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 80);
     }
 
     @Override
@@ -155,5 +109,51 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
             env,
             false,
             true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.DecayHastenerRecipes;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_DECAY_HASTENER)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("DecayHastenerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 13, 5, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

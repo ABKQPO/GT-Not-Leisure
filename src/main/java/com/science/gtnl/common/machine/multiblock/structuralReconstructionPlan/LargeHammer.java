@@ -52,59 +52,6 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeHammer(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialForgeHammerActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialForgeHammer)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(33);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.hammerRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeHammerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeHammer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeHammer> getStructureDefinition() {
         return StructureDefinition.<LargeHammer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -134,10 +81,10 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 25);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 25);
     }
 
     @Override
@@ -161,6 +108,54 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.hammerRecipes;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialForgeHammerActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialForgeHammer)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(33);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeHammerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeHammer_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 8, 5, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return 0.8 - (mParallelTier / 50.0);
     }
@@ -168,5 +163,10 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
     @Override
     public double getDurationModifier() {
         return 1.0 / 2.5 - (Math.max(0, mParallelTier - 1) / 50.0);
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeHammer(this.mName);
     }
 }

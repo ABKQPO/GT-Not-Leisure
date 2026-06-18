@@ -96,15 +96,14 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     private static final int DEPTH_OFF_SET = 1;
 
     public static FluidStack cryotheum = new FluidStack(GTPPFluids.Cryotheum, 1);
-
     public static INameFunction<SupercomputingCenter> OC_NAME = (base, p) -> StatCollector
-        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgi.0"); // Overclock ratio
+        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgi.0");
     public static INameFunction<SupercomputingCenter> OV_NAME = (base, p) -> StatCollector
-        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgi.1"); // Overvoltage ratio
+        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgi.1");
     public static INameFunction<SupercomputingCenter> MAX_TEMP_NAME = (base, p) -> StatCollector
-        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgo.0"); // Current max. heat
+        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgo.0");
     public static INameFunction<SupercomputingCenter> COMPUTE_NAME = (base, p) -> StatCollector
-        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgo.1"); // Produced computation
+        .translateToLocal("gt.blockmachines.multimachine.em.computer.cfgo.1");
     public static IStatusFunction<SupercomputingCenter> OC_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, 1, 3, 5);
     public static IStatusFunction<SupercomputingCenter> OV_STATUS = (base, p) -> LedStatus
@@ -149,24 +148,129 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
         return new SupercomputingCenter(mName);
     }
 
-    public ArrayList<MTEHatchRack> getValidRackHatches() {
-        ArrayList<MTEHatchRack> rackHatches = new ArrayList<>(mRackHatchs.size());
-        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
-            rackHatches.add(rack);
-        }
-        return rackHatches;
+    @Override
+    public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick_EM(aBaseMetaTileEntity);
+        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
-    public void setRackActiveState(boolean active) {
-        for (MTEHatchRack rack : getValidRackHatches()) {
-            rack.getBaseMetaTileEntity()
-                .setActive(active);
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (aBaseMetaTileEntity.isServerSide() && mMachine
+            && !aBaseMetaTileEntity.isActive()
+            && aTick % 20 == CommonValues.MULTI_CHECK_AT) {
+            double maxTemp = 0;
+            for (MTEHatchRack rack : getValidRackHatches()) {
+                if (rack.getHeat() > maxTemp) {
+                    maxTemp = rack.getHeat();
+                }
+            }
+            maxCurrentTemp.set(maxTemp);
         }
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.quantumComputerFakeRecipes;
+    public void onRemoval() {
+        super.onRemoval();
+        setRackActiveState(false);
+    }
+
+    @Override
+    public void stopMachine(@NotNull ShutDownReason reason) {
+        super.stopMachine(reason);
+        eAvailableData = 0;
+        setRackActiveState(false);
+    }
+
+    @Override
+    public void afterRecipeCheckFailed() {
+        super.afterRecipeCheckFailed();
+        setRackActiveState(false);
+    }
+
+    @Override
+    public void extraExplosions_EM() {
+        for (MetaTileEntity tTileEntity : mRackHatchs) {
+            tTileEntity.getBaseMetaTileEntity()
+                .doExplosion(GTValues.V[8]);
+        }
+    }
+
+    @Override
+    public IStructureDefinition<SupercomputingCenter> getStructure_EM() {
+        return StructureDefinition.<SupercomputingCenter>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addElement('A', ofBlock(sBlockCasings10, 3))
+            .addElement('B', ofBlock(sBlockCasings8, 10))
+            .addElement(
+                'C',
+                buildHatchAdder(SupercomputingCenter.class).atLeast(CustomHatchElement.RackHatch)
+                    .casingIndex(BlockGTCasingsTT.textureOffset + 1)
+                    .shouldReject(t -> !t.mRackHatchs.isEmpty())
+                    .hint(1)
+                    .buildAndChain(sBlockCasingsTT, 1))
+            .addElement('D', ofBlock(sBlockCasingsTT, 3))
+            .addElement('E', ofBlock(sBlockCasingsTT, 1))
+            .addElement('F', ofBlock(sBlockCasingsTT, 2))
+            .addElement(
+                'G',
+                ofChain(
+                    buildHatchAdder(SupercomputingCenter.class)
+                        .atLeast(
+                            InputHatch,
+                            OutputHatch,
+                            Maintenance,
+                            Energy.or(ExoticEnergy),
+                            HatchElement.Uncertainty,
+                            HatchElement.InputData,
+                            HatchElement.OutputData)
+                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
+                        .hint(1)
+                        .buildAndChain(sBlockCasings9, 7),
+                    buildHatchAdder(SupercomputingCenter.class)
+                        .adder(SupercomputingCenter::addWirelessDataOutputToMachineList)
+                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
+                        .hint(1)
+                        .buildAndChain(sBlockCasings9, 7)))
+            .addElement('H', ofBlock(sBlockCasings8, 7))
+            .addElement('I', ofBlock(sBlockCasingsTT, 0))
+            .addElement('J', ofBlock(sBlockCasings8, 5))
+            .addElement('K', ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('L', ofBlock(blockCasingsMisc, 5))
+            .addElement('M', ofBlock(sBlockCasings9, 15))
+            .addElement('N', ofBlock(sBlockCasings2, 7))
+            .addElement('O', ofBlock(sBlockCasings10, 8))
+            .addElement('P', ofBlock(blockCasings5Misc, 15))
+            .addElement(
+                'Q',
+                ofBlockAnyMeta(
+                    Block.getBlockFromItem(
+                        MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
+                            .getItem())))
+            .addElement('R', ofFrame(Materials.PulsatingIron))
+            .addElement('S', ofBlock(sBlockCasings1, 9))
+            .build();
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
     @Override
@@ -194,56 +298,15 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                 .setActive(iGregTechTileEntity.isActive());
         }
 
-        if (mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) energyWirelessMode = true;
+        if (mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
+            energyWirelessMode = true;
+        }
         checkOneUncertaintyHatch(structureErrors);
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setDouble("computation", availableData.get());
-        aNBT.setBoolean("wirelessMode", wirelessMode);
-        aNBT.setBoolean("energyWirelessMode", energyWirelessMode);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        energyWirelessMode = aNBT.getBoolean("energyWirelessMode");
-        if (availableData != null) {
-            availableData.set(aNBT.getDouble("computation"));
-            eAvailableData = (long) availableData.get();
-        }
-        if (aNBT.hasKey("wirelessMode")) {
-            wirelessMode = aNBT.getBoolean("wirelessMode");
-            if (wirelessMode) {
-                WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
-            }
-        } else {
-            wirelessMode = false;
-        }
-    }
-
-    @Override
-    public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick_EM(aBaseMetaTileEntity);
-        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide() && mMachine
-            && !aBaseMetaTileEntity.isActive()
-            && aTick % 20 == CommonValues.MULTI_CHECK_AT) {
-            double maxTemp = 0;
-            for (MTEHatchRack rack : getValidRackHatches()) {
-                if (rack.getHeat() > maxTemp) {
-                    maxTemp = rack.getHeat();
-                }
-            }
-            maxCurrentTemp.set(maxTemp);
-        }
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.quantumComputerFakeRecipes;
     }
 
     @Override
@@ -295,8 +358,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             }
 
             for (MTEHatchDataInput di : eInputData) {
-                if (di.q != null) // ok for power losses
-                {
+                if (di.q != null) {
                     thingsActive++;
                 }
             }
@@ -317,15 +379,15 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
                 maxCurrentTemp.set(maxTemp);
                 availableData.set(eAvailableData);
                 return SimpleCheckRecipeResult.ofSuccess("computing");
-            } else {
-                eAvailableData = 0;
-                eAmpereFlow = 1;
-                mMaxProgresstime = 20;
-                mEfficiencyIncrease = 10000;
-                maxCurrentTemp.set(maxTemp);
-                availableData.set(eAvailableData);
-                return SimpleCheckRecipeResult.ofSuccess("no_computing");
             }
+
+            eAvailableData = 0;
+            eAmpereFlow = 1;
+            mMaxProgresstime = 20;
+            mEfficiencyIncrease = 10000;
+            maxCurrentTemp.set(maxTemp);
+            availableData.set(eAvailableData);
+            return SimpleCheckRecipeResult.ofSuccess("no_computing");
         }
         return SimpleCheckRecipeResult.ofFailure("no_computing");
     }
@@ -360,38 +422,8 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SupercomputingCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_06"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(28, 59, 21, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        if (getBaseMetaTileEntity().isServerSide()) {
-            wirelessMode = !wirelessMode;
-            if (wirelessMode) {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode enabled");
-                WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
-            } else {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode disabled");
-                WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
-            }
-        }
+    public long getAvailableData_EM() {
+        return eAvailableData;
     }
 
     @Override
@@ -414,35 +446,96 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     }
 
     @Override
-    public void onRemoval() {
-        super.onRemoval();
-        setRackActiveState(false);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SupercomputingCenterRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_06"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(28, 59, 21, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
-    public void extraExplosions_EM() {
-        for (MetaTileEntity tTileEntity : mRackHatchs) {
-            tTileEntity.getBaseMetaTileEntity()
-                .doExplosion(GTValues.V[8]);
+    public String[] getInfoData() {
+        ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        if (wirelessMode) {
+            WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
+                .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());
+            data.add(StatCollector.translateToLocal("tt.infodata.qc.wireless_mode.enabled"));
+            data.add(
+                StatCollector.translateToLocalFormatted(
+                    "tt.infodata.qc.total_wireless_computation",
+                    "" + EnumChatFormatting.YELLOW + wirelessComputationPacket.getAvailableComputationStored()));
+        } else {
+            data.add(StatCollector.translateToLocal("tt.infodata.qc.wireless_mode.disabled"));
+        }
+        return data.toArray(new String[] {});
+    }
+
+    @Override
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            wirelessMode = !wirelessMode;
+            if (wirelessMode) {
+                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode enabled");
+                WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
+            } else {
+                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode disabled");
+                WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
+            }
         }
     }
 
     @Override
-    public long getAvailableData_EM() {
-        return eAvailableData;
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setDouble("computation", availableData.get());
+        aNBT.setBoolean("wirelessMode", wirelessMode);
+        aNBT.setBoolean("energyWirelessMode", energyWirelessMode);
     }
 
     @Override
-    public void stopMachine(@NotNull ShutDownReason reason) {
-        super.stopMachine(reason);
-        eAvailableData = 0;
-        setRackActiveState(false);
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        energyWirelessMode = aNBT.getBoolean("energyWirelessMode");
+        if (availableData != null) {
+            availableData.set(aNBT.getDouble("computation"));
+            eAvailableData = (long) availableData.get();
+        }
+        if (aNBT.hasKey("wirelessMode")) {
+            wirelessMode = aNBT.getBoolean("wirelessMode");
+            if (wirelessMode) {
+                WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
+            }
+        } else {
+            wirelessMode = false;
+        }
     }
 
-    @Override
-    public void afterRecipeCheckFailed() {
-        super.afterRecipeCheckFailed();
-        setRackActiveState(false);
+    public ArrayList<MTEHatchRack> getValidRackHatches() {
+        ArrayList<MTEHatchRack> rackHatches = new ArrayList<>(mRackHatchs.size());
+        for (MTEHatchRack rack : GTUtility.validMTEList(mRackHatchs)) {
+            rackHatches.add(rack);
+        }
+        return rackHatches;
+    }
+
+    public void setRackActiveState(boolean active) {
+        for (MTEHatchRack rack : getValidRackHatches()) {
+            rack.getBaseMetaTileEntity()
+                .setActive(active);
+        }
     }
 
     public boolean addRackToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
@@ -475,99 +568,6 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             return mWirelessComputationOutputHatchs.add(output) && eOutputData.add(output);
         }
         return false;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public IStructureDefinition<SupercomputingCenter> getStructure_EM() {
-        return StructureDefinition.<SupercomputingCenter>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasings10, 3))
-            .addElement('B', ofBlock(sBlockCasings8, 10))
-            .addElement(
-                'C',
-                buildHatchAdder(SupercomputingCenter.class).atLeast(CustomHatchElement.RackHatch)
-                    .casingIndex(BlockGTCasingsTT.textureOffset + 1)
-                    .shouldReject(t -> !t.mRackHatchs.isEmpty())
-                    .buildAndChain(sBlockCasingsTT, 1))
-            .addElement('D', ofBlock(sBlockCasingsTT, 3))
-            .addElement('E', ofBlock(sBlockCasingsTT, 1))
-            .addElement('F', ofBlock(sBlockCasingsTT, 2))
-            .addElement(
-                'G',
-                ofChain(
-                    buildHatchAdder(SupercomputingCenter.class)
-                        .atLeast(
-                            InputHatch,
-                            OutputHatch,
-                            Maintenance,
-                            Energy.or(ExoticEnergy),
-                            HatchElement.Uncertainty,
-                            HatchElement.InputData,
-                            HatchElement.OutputData)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
-                        .buildAndChain(sBlockCasings9, 7),
-                    buildHatchAdder(SupercomputingCenter.class)
-                        .adder(SupercomputingCenter::addWirelessDataOutputToMachineList)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings9, 7))
-                        .hint(1)
-                        .hint(1)
-                        .hint(1)
-                        .buildAndChain(sBlockCasings9, 7)))
-            .addElement('H', ofBlock(sBlockCasings8, 7))
-            .addElement('I', ofBlock(sBlockCasingsTT, 0))
-            .addElement('J', ofBlock(sBlockCasings8, 5))
-            .addElement('K', ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('L', ofBlock(blockCasingsMisc, 5))
-            .addElement('M', ofBlock(sBlockCasings9, 15))
-            .addElement('N', ofBlock(sBlockCasings2, 7))
-            .addElement('O', ofBlock(sBlockCasings10, 8))
-            .addElement('P', ofBlock(blockCasings5Misc, 15))
-            .addElement(
-                'Q',
-                ofBlockAnyMeta(
-                    Block.getBlockFromItem(
-                        MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
-                            .getItem())))
-            .addElement('R', ofFrame(Materials.PulsatingIron))
-            .addElement('S', ofBlock(sBlockCasings1, 9))
-            .build();
-    }
-
-    @Override
-    public String[] getInfoData() {
-        ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        if (wirelessMode) {
-            WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
-                .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());
-            data.add(StatCollector.translateToLocal("tt.infodata.qc.wireless_mode.enabled"));
-            data.add(
-                StatCollector.translateToLocalFormatted(
-                    "tt.infodata.qc.total_wireless_computation",
-                    "" + EnumChatFormatting.YELLOW + wirelessComputationPacket.getAvailableComputationStored()));
-        } else {
-            data.add(StatCollector.translateToLocal("tt.infodata.qc.wireless_mode.disabled"));
-        }
-        return data.toArray(new String[] {});
     }
 
     public enum CustomHatchElement implements IHatchElement<SupercomputingCenter> {

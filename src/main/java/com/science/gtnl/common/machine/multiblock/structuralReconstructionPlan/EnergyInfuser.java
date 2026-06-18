@@ -81,21 +81,23 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
 public class EnergyInfuser extends TTMultiblockBase implements IConstructable, ISurvivalConstructable {
 
-    public List<ItemStack> mStoredItems = new ArrayList<>();
-    public boolean outputAllItems = false;
     public static final int maxRepairedDamagePerOperation = 10000;
     public static final long usedEuPerDurability = 1000;
     public static final int usedUumPerDurability = 1;
     public static final FluidStack UUM_TEMPLATE = Materials.UUMatter.getFluid(1);
-    public int mCountCasing;
-    public UUID ownerUUID;
-    public boolean wirelessMode;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String EI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/energy_infuser";
     private static final String[][] shape = StructureUtils.readStructureFromFile(EI_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 7;
     private static final int DEPTH_OFF_SET = 0;
+
+    public List<ItemStack> mStoredItems = new ArrayList<>();
+
+    public boolean outputAllItems = false;
+    public int mCountCasing;
+    public UUID ownerUUID;
+    public boolean wirelessMode;
 
     public EnergyInfuser(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -113,13 +115,9 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 logo hook after Energy Infuser only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
+    public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick_EM(aBaseMetaTileEntity);
+        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
     @Override
@@ -169,12 +167,6 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, structureErrors))
             return;
         wirelessMode = mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty() && eEnergyMulti.isEmpty();
-    }
-
-    @Override
-    public void onFirstTick_EM(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick_EM(aBaseMetaTileEntity);
-        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
     @Override
@@ -261,7 +253,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
 
                 if ((isItemStackFullyCharged(individualStack) && isItemStackFullyRepaired(individualStack))
                     || outputAllItems) {
-                    if (addItemOutputs(new ItemStack[] { individualStack })) {
+                    if (addOutputAtomic(individualStack)) {
                         continue;
                     }
                 }
@@ -390,51 +382,6 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     @Override
-    public void setItemNBT(NBTTagCompound aNBT) {
-        super.setItemNBT(aNBT);
-
-        NBTTagList storedItemsList = new NBTTagList();
-        for (ItemStack stack : mStoredItems) {
-            if (stack != null) {
-                NBTTagCompound itemTag = new NBTTagCompound();
-                stack.writeToNBT(itemTag);
-                storedItemsList.appendTag(itemTag);
-            }
-        }
-        aNBT.setTag("mStoredItems", storedItemsList);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-
-        NBTTagList storedItemsList = new NBTTagList();
-        for (ItemStack stack : mStoredItems) {
-            if (stack != null) {
-                NBTTagCompound itemTag = new NBTTagCompound();
-                stack.writeToNBT(itemTag);
-                storedItemsList.appendTag(itemTag);
-            }
-        }
-        aNBT.setTag("mStoredItems", storedItemsList);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-
-        NBTTagList storedItemsList = aNBT.getTagList("mStoredItems", 10);
-        mStoredItems.clear();
-        for (int i = 0; i < storedItemsList.tagCount(); i++) {
-            NBTTagCompound itemTag = storedItemsList.getCompoundTagAt(i);
-            ItemStack stack = ItemStack.loadItemStackFromNBT(itemTag);
-            if (stack != null) {
-                mStoredItems.add(stack);
-            }
-        }
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("EnergyInfuserRecipeType"))
@@ -462,6 +409,16 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new EnergyInfuserGui(this);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this MUI1 logo hook after Energy Infuser only uses the MUI2 GUI.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(172, 67));
     }
 
     public List<ItemStack> getStoredItemsForGui() {
@@ -577,6 +534,51 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
         }
 
         return processingDetails;
+    }
+
+    @Override
+    public void setItemNBT(NBTTagCompound aNBT) {
+        super.setItemNBT(aNBT);
+
+        NBTTagList storedItemsList = new NBTTagList();
+        for (ItemStack stack : mStoredItems) {
+            if (stack != null) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                stack.writeToNBT(itemTag);
+                storedItemsList.appendTag(itemTag);
+            }
+        }
+        aNBT.setTag("mStoredItems", storedItemsList);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+
+        NBTTagList storedItemsList = new NBTTagList();
+        for (ItemStack stack : mStoredItems) {
+            if (stack != null) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                stack.writeToNBT(itemTag);
+                storedItemsList.appendTag(itemTag);
+            }
+        }
+        aNBT.setTag("mStoredItems", storedItemsList);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+
+        NBTTagList storedItemsList = aNBT.getTagList("mStoredItems", 10);
+        mStoredItems.clear();
+        for (int i = 0; i < storedItemsList.tagCount(); i++) {
+            NBTTagCompound itemTag = storedItemsList.getCompoundTagAt(i);
+            ItemStack stack = ItemStack.loadItemStackFromNBT(itemTag);
+            if (stack != null) {
+                mStoredItems.add(stack);
+            }
+        }
     }
 
     @Override

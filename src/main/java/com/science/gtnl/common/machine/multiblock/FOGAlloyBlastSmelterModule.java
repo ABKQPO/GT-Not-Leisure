@@ -29,6 +29,7 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
 
     private long EUt = 0;
     private int currentParallel = 0;
+    private long wirelessEUt = 0;
 
     public FOGAlloyBlastSmelterModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -42,8 +43,6 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new FOGAlloyBlastSmelterModule(mName);
     }
-
-    long wirelessEUt = 0;
 
     @Override
     public ProcessingLogic createProcessingLogic() {
@@ -107,26 +106,6 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
         logic.setSpeedBonus(getSpeedBonus());
         logic.setEuModifier(getEnergyDiscount());
         logic.enablePerfectOverclock();
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new FOGModuleGui(this);
-    }
-
-    @Override
-    public double getSpeedBonus() {
-        return processingSpeedBonus / 15;
-    }
-
-    @Override
-    public double getEnergyDiscount() {
-        return energyDiscount / 5;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.alloyBlastSmelterRecipes;
     }
 
     @Override
@@ -202,6 +181,26 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
                     + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_04"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTPPRecipeMaps.alloyBlastSmelterRecipes;
+    }
+
+    @Override
+    public double getSpeedBonus() {
+        return processingSpeedBonus / 15;
+    }
+
+    @Override
+    public double getEnergyDiscount() {
+        return energyDiscount / 5;
     }
 
 }

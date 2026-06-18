@@ -87,7 +87,7 @@ public class GrandAssemblyLineGui extends GTNLMultiBlockBaseGui<GrandAssemblyLin
         panel.child(
             new TextFieldWidget().formatAsInteger(true)
                 .numbersInt(1, Integer.MAX_VALUE)
-                .setScrollValues(1, 4, 64)
+                .scrollValues(1, 4, 64, 256)
                 .setTextAlignment(Alignment.Center)
                 .setTextColor(Color.WHITE.main)
                 .defaultNumber(1)

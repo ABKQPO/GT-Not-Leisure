@@ -303,14 +303,6 @@ public class CraftingTableRecipes implements IRecipePool {
                 ToolDictNames.craftingToolWrench });
 
         GTModHandler.addCraftingRecipe(
-            GTNLItemList.RecordNewHorizons.get(1),
-            new Object[] { "ABA", "CDC", "AEA", 'A', GTModHandler.getModItem(Mods.SGCraft.ID, "stargateRing", 1, 0),
-                'B', GTModHandler.getModItem(Mods.SGCraft.ID, "rfPowerUnit", 1, 0), 'C',
-                GTModHandler.getModItem(Mods.SGCraft.ID, "stargateRing", 1, 1), 'D',
-                GTModHandler.getModItem(Mods.SGCraft.ID, "stargateController", 1, 0), 'E',
-                GTModHandler.getModItem(Mods.SGCraft.ID, "stargateBase", 1, 0) });
-
-        GTModHandler.addCraftingRecipe(
             GTNLItemList.SatietyRing.get(1),
             new Object[] { "AAA", "ABA", "AAA", 'A', new ItemStack(Items.golden_apple, 1, 1), 'B',
                 GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 1) });

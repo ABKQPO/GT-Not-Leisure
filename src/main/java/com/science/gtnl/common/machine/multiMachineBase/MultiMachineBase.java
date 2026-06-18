@@ -65,6 +65,9 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.structure.error.ErrorType;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
+import gregtech.api.structure.error.StructureErrors;
+import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
@@ -87,12 +90,16 @@ import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MTEExtendedPowerMultiBlockBase<T>
     implements IConstructable, ISurvivalConstructable, IControllerInfo {
 
-    public MultiMachineBase(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional);
-    }
+    public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
+    public static final int CHECK_INTERVAL = 100; // 空闲机器的配方轮询间隔 / Recipe polling interval for idle machines
 
-    public MultiMachineBase(String aName) {
-        super(aName);
+    @SuppressWarnings("unchecked")
+    public static Optional<Byte>[] createHatchColorOptions() {
+        Optional<Byte>[] colorOptions = new Optional[16];
+        for (byte color = 0; color < colorOptions.length; color++) {
+            colorOptions[color] = Optional.of(color);
+        }
+        return colorOptions;
     }
 
     public ArrayList<MTEHatch> mExoticDynamoHatches = new ArrayList<>();
@@ -101,9 +108,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public GTCoilTracker.MultiCoilLease coilLease = null;
     public final ArrayList<ItemStack> recipeSearchItemInputs = new ArrayList<>();
     public final ArrayList<FluidStack> recipeSearchFluidInputs = new ArrayList<>();
-    public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
-
-    public static final int CHECK_INTERVAL = 100; // 空闲机器的配方轮询间隔 / Recipe polling interval for idle machines
+    public List<SlotWidget> slotWidgets = new ArrayList<>(1);
     public int randomTickOffset = (int) (Math.random() * CHECK_INTERVAL + 1);
 
     public int mCountCasing = -1;
@@ -117,13 +122,12 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public HeatingCoilLevel mCoilLevel = HeatingCoilLevel.None;
     public int mHeatingCapacity = 0;
 
-    @SuppressWarnings("unchecked")
-    public static Optional<Byte>[] createHatchColorOptions() {
-        Optional<Byte>[] colorOptions = new Optional[16];
-        for (byte color = 0; color < colorOptions.length; color++) {
-            colorOptions[color] = Optional.of(color);
-        }
-        return colorOptions;
+    public MultiMachineBase(int aID, String aName, String aNameRegional) {
+        super(aID, aName, aNameRegional);
+    }
+
+    public MultiMachineBase(String aName) {
+        super(aName);
     }
 
     @Override
@@ -375,6 +379,147 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return checkRecipe();
     }
 
+    public void checkHatch(List<StructureError> errors) {
+        checkHatchMax(errors, HatchElement.Maintenance, 1);
+        if (getPollutionPerSecond(null) > 0) {
+            checkHasMufflerHatch(errors);
+        }
+        checkParallelControllerHatchMax(errors, 1);
+        checkCoilStructureRequirement(errors);
+        checkGlassEnergyHatchRequirement(errors);
+    }
+
+    protected void checkEnergyHatch(List<StructureError> errors) {
+        if (MainConfig.machine.enableLaserHatch) {
+            return;
+        }
+        boolean hasEnergyTunnel = false;
+        for (MTEHatch hatch : getExoticEnergyHatches()) {
+            if (hatch instanceof MTEHatchEnergyTunnel) {
+                hasEnergyTunnel = true;
+                break;
+            }
+        }
+        if (hasEnergyTunnel) {
+            errors.add(GTNLStructureErrors.laserEnergyTunnelDisabled());
+            return;
+        }
+        if (getRealMaxInputAmps() > 64) {
+            errors.add(GTNLStructureErrors.energyInputAmperageTooHigh());
+        }
+    }
+
+    protected void checkCoilStructureRequirement(List<StructureError> errors) {
+        if (requiresCoilStructureCheck() && getMCoilLevel() == HeatingCoilLevel.None) {
+            errors.add(StructureErrorRegistry.COIL_LEVEL_NOT_ENOUGH);
+        }
+    }
+
+    protected boolean requiresCoilStructureCheck() {
+        return false;
+    }
+
+    protected void checkGlassEnergyHatchRequirement(List<StructureError> errors) {
+        int requiredGlassTier = getGlassEnergyTierLimit();
+        if (requiredGlassTier < 0 || mGlassTier >= requiredGlassTier) {
+            return;
+        }
+        for (MTEHatch hatch : this.mExoticEnergyHatches) {
+            if (hatch.getConnectionType() == MTEHatch.ConnectionType.LASER) {
+                errors.add(StructureErrors.glassTierNotEnough(requiredGlassTier));
+                return;
+            }
+            if (this.mGlassTier < hatch.mTier) {
+                errors.add(StructureErrorRegistry.ENERGY_TIER_EXCEED_GLASS);
+                return;
+            }
+        }
+        for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
+            if (this.mGlassTier < mEnergyHatch.mTier) {
+                errors.add(StructureErrorRegistry.ENERGY_TIER_EXCEED_GLASS);
+                return;
+            }
+        }
+    }
+
+    protected int getGlassEnergyTierLimit() {
+        return -1;
+    }
+
+    protected void checkParallelControllerHatchMax(List<StructureError> errors, int max) {
+        int count = mParallelControllerHatches.size();
+        if (count > max) {
+            errors.add(GTNLStructureErrors.parallelControllerHatchCount(ErrorType.TOO_MANY, count, max));
+        }
+    }
+
+    protected void checkHatchMin(List<StructureError> errors, IHatchElement<? super T> element, int min) {
+        int count = (int) element.count(self());
+        if (count < min) {
+            errors.add(StructureErrors.hatchCount(ErrorType.TOO_FEW, getHatchElementName(element), count, min));
+        }
+    }
+
+    protected void checkHatchExact(List<StructureError> errors, IHatchElement<? super T> element, int target) {
+        int count = (int) element.count(self());
+        if (count != target) {
+            errors.add(StructureErrors.hatchCount(ErrorType.NOT_MATCH, getHatchElementName(element), count, target));
+        }
+    }
+
+    protected void checkHatchMax(List<StructureError> errors, IHatchElement<? super T> element, int max) {
+        int count = (int) element.count(self());
+        if (count > max) {
+            errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, getHatchElementName(element), count, max));
+        }
+    }
+
+    protected void checkHatchMin(List<StructureError> errors, TranslatableText name, int current, int min) {
+        if (current < min) {
+            errors.add(StructureErrors.hatchCount(ErrorType.TOO_FEW, name, current, min));
+        }
+    }
+
+    protected void checkHatchExact(List<StructureError> errors, TranslatableText name, int current, int target) {
+        if (current != target) {
+            errors.add(StructureErrors.hatchCount(ErrorType.NOT_MATCH, name, current, target));
+        }
+    }
+
+    protected void checkHatchMax(List<StructureError> errors, TranslatableText name, int current, int max) {
+        if (current > max) {
+            errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, name, current, max));
+        }
+    }
+
+    protected TranslatableText getHatchElementName(IHatchElement<? super T> element) {
+        element.getDisplayName();
+        return TranslatableText.lang(element.getDescriptionLangKey());
+    }
+
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        this.mExoticEnergyHatches.clear();
+        this.mExoticDynamoHatches.clear();
+        this.mParallelControllerHatches.clear();
+        resetRecipeSearchBuffers();
+        mCountCasing = 0;
+        mParallelTier = 0;
+        mEnergyHatchTier = 0;
+        mHeatingCapacity = 0;
+        mGlassTier = -1;
+        this.setMCoilLevel(HeatingCoilLevel.None);
+    }
+
+    public void setupParameters() {
+        mEnergyHatchTier = checkEnergyHatchTier();
+    }
+
+    public void resetParallelTier() {
+        mParallelTier = 0;
+    }
+
     /**
      * 基于配方映射创建默认处理逻辑，只在机器实例化时构建一次。
      * Creates the default processing logic from the recipe map and builds it once per machine instance.
@@ -492,8 +637,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
         return tier;
     }
-
-    public List<SlotWidget> slotWidgets = new ArrayList<>(1);
 
     public void createInventorySlots() {
         final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
@@ -1004,135 +1147,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return ret;
     }
 
-    @Override
-    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
-    }
-
-    public boolean checkHatch() {
-        return mMaintenanceHatches.size() <= 1 && (this.getPollutionPerSecond(null) <= 0 || !mMufflerHatches.isEmpty())
-            && mParallelControllerHatches.size() <= 1;
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        failStructureCheck(errors);
-    }
-
-    protected void validateStructureErrors(List<StructureError> errors) {
-        int existingErrors = errors.size();
-        checkHatch(errors);
-        if (errors.size() == existingErrors) {
-            failStructureCheck(errors);
-        }
-    }
-
-    protected void checkHatch(List<StructureError> errors) {
-        int existingErrors = errors.size();
-        checkHatchMax(errors, HatchElement.Maintenance, 1);
-        if (getPollutionPerSecond(null) > 0) {
-            checkHasMufflerHatch(errors);
-        }
-        checkParallelControllerHatchMax(errors, 1);
-        checkEnergyHatch(errors);
-        if (!checkHatch() && errors.size() == existingErrors) {
-            errors.add(GTNLStructureErrors.invalidHatchConfiguration());
-        }
-    }
-
-    protected void checkEnergyHatch(List<StructureError> errors) {
-        if (checkEnergyHatch()) {
-            return;
-        }
-        if (MainConfig.machine.enableLaserHatch) {
-            boolean hasEnergyTunnel = false;
-            for (MTEHatch hatch : getExoticEnergyHatches()) {
-                if (hatch instanceof MTEHatchEnergyTunnel) {
-                    hasEnergyTunnel = true;
-                    break;
-                }
-            }
-            if (hasEnergyTunnel) {
-                errors.add(GTNLStructureErrors.laserEnergyTunnelDisabled());
-            }
-            if (getRealMaxInputAmps() > 64) {
-                errors.add(GTNLStructureErrors.energyInputAmperageTooHigh());
-            }
-            return;
-        }
-        errors.add(GTNLStructureErrors.invalidEnergyHatchConfiguration());
-    }
-
-    protected boolean checkPieceAndHatch(String piece, int horizontalOffset, int verticalOffset, int depthOffset,
-        List<StructureError> errors) {
-        int existingErrors = errors.size();
-        if (!checkPiece(piece, horizontalOffset, verticalOffset, depthOffset, errors)) {
-            return false;
-        }
-        checkHatch(errors);
-        return errors.size() == existingErrors;
-    }
-
-    protected void checkStructureCondition(List<StructureError> errors, boolean condition) {
-        if (!condition) {
-            failStructureCheck(errors);
-        }
-    }
-
-    protected void failStructureCheck(List<StructureError> errors) {
-        errors.add(GTNLStructureErrors.unknownLegacyCheckFailure());
-    }
-
-    protected void checkParallelControllerHatchMax(List<StructureError> errors, int max) {
-        int count = mParallelControllerHatches.size();
-        if (count > max) {
-            errors.add(GTNLStructureErrors.parallelControllerHatchCount(ErrorType.TOO_MANY, count, max));
-        }
-    }
-
-    protected void checkOneParallelControllerHatch(List<StructureError> errors) {
-        int count = mParallelControllerHatches.size();
-        if (count != 1) {
-            errors.add(GTNLStructureErrors.parallelControllerHatchCount(ErrorType.NOT_MATCH, count, 1));
-        }
-    }
-
-    public boolean checkEnergyHatch() {
-        if (MainConfig.machine.enableLaserHatch) {
-            for (MTEHatch hatch : getExoticEnergyHatches()) {
-                if (hatch instanceof MTEHatchEnergyTunnel) {
-                    return false;
-                }
-            }
-            return getRealMaxInputAmps() <= 64;
-        }
-        return true;
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        this.mExoticEnergyHatches.clear();
-        this.mExoticDynamoHatches.clear();
-        this.mParallelControllerHatches.clear();
-        resetRecipeSearchBuffers();
-        mCountCasing = 0;
-        mParallelTier = 0;
-        mEnergyHatchTier = 0;
-        mHeatingCapacity = 0;
-        mGlassTier = -1;
-        this.setMCoilLevel(HeatingCoilLevel.None);
-    }
-
-    public void setupParameters() {
-        mEnergyHatchTier = checkEnergyHatchTier();
-    }
-
-    public void resetParallelTier() {
-        mParallelTier = 0;
-    }
-
     public IMetaTileEntity getMetaTileEntity(final IGregTechTileEntity aTileEntity) {
         if (aTileEntity == null) {
             return null;
@@ -1173,6 +1187,12 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
+            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     /**

@@ -25,15 +25,6 @@ public class OriginalOutputHatch extends MTEHatchOutput {
     }
 
     @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_00"), StatCollector
-            .translateToLocalFormatted("Tooltip_OriginalOutputHatch_01", NumberFormatUtil.formatNumber(getCapacity())),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_02"),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_03"),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_04") };
-    }
-
-    @Override
     public boolean doesFillContainers() {
         return false;
     }
@@ -41,5 +32,14 @@ public class OriginalOutputHatch extends MTEHatchOutput {
     @Override
     public int getCapacity() {
         return 4096000;
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_00"), StatCollector
+            .translateToLocalFormatted("Tooltip_OriginalOutputHatch_01", NumberFormatUtil.formatNumber(getCapacity())),
+            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_02"),
+            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_03"),
+            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_04") };
     }
 }

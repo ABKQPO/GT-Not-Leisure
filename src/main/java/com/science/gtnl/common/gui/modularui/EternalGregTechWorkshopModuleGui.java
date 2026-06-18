@@ -200,7 +200,7 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
     private IWidget createGeneralInfoButton() {
         IPanelHandler panel = panelMap.get(GENERAL_INFO_PANEL_KEY);
         return new ButtonWidget<>().overlay(IDrawable.EMPTY)
-            .background(GTNLMui2Textures.PICTURE_GODFORGE_LOGO)
+            .background(GTGuiTextures.PICTURE_GODFORGE_LOGO)
             .disableHoverBackground()
             .onMousePressed(mouseButton -> {
                 if (panel == null) return false;

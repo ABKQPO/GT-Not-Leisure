@@ -45,6 +45,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gtneioreplugin.plugin.block.ModBlocks;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
+import gtneioreplugin.util.DimensionHelper;
 
 @Mixin(value = MTEVoidMinerBase.class, remap = false)
 public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<MixinMTEVoidMinerBase> {
@@ -102,12 +103,12 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         String dimensionKey = vmTweak$resolveDimensionKey();
         if ("None".equals(dimensionKey)) return Optional.empty();
 
-        int displayIndex = VMTweakHelper.dimNameShort.indexOf(dimensionKey);
+        int displayIndex = DimensionHelper.ALL_DISPLAYED_NAMES.indexOf(dimensionKey);
         if (displayIndex >= 0) {
-            return Optional.ofNullable(VMTweakHelper.dimName.get(displayIndex));
+            return Optional.ofNullable(DimensionHelper.ALL_DIM_NAMES.get(displayIndex));
         }
 
-        Integer dimensionId = VMTweakHelper.dimMapping.inverse()
+        Integer dimensionId = VMTweakHelper.DIM_MAPPING.inverse()
             .get(dimensionKey);
         if (dimensionId != null) {
             return Optional.ofNullable(VMTweakHelper.getNameForID(dimensionId));
@@ -387,7 +388,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
                 .noneMatch(is -> GTUtility.areStacksEqual(is, output)))
                 || (!this.blacklist && inputOres.stream()
                     .anyMatch(is -> GTUtility.areStacksEqual(is, output)))) {
-                this.addItemOutputs(new ItemStack[] { stackPart });
+                this.addOutputPartial(stackPart);
             }
 
             totalCount -= stackSize;

@@ -14,11 +14,11 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.config.MainConfig;
 
 import goodgenerator.loader.Loaders;
+import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
 import tectech.Reference;
 import tectech.thing.casing.TTCasingsContainer;
 import tectech.util.StructureVBO;
-import tectech.util.TextureUpdateRequester;
 
 public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
 
@@ -28,7 +28,6 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
     private IVertexArrayObject ring;
 
     private static ShaderProgram fadeBypassProgram;
-    private static TextureUpdateRequester textureUpdater;
 
     private void initRings() {
         StructureVBO ringStructure = (new StructureVBO()).addMapping('C', GregTechAPI.sBlockCasings1, 13)
@@ -48,63 +47,27 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
             Reference.MODID,
             "shaders/fadebypass.vert.glsl",
             "shaders/fadebypass.frag.glsl");
-
-        textureUpdater = ringStructure.getTextureUpdateRequestor();
+        ringStructure.getTextureUpdateRequestor()
+            .requestUpdate();
     }
 
-    private void RenderRings(TileEntityEternalGregTechWorkshop tile, double x, double y, double z, float timer) {
-        bindTexture(TextureMap.locationBlocksTexture);
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+    private void renderRings(TileEntityEternalGregTechWorkshop tile, double x, double y, double z, float timer) {
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        textureUpdater.requestUpdate();
+        bindTexture(TextureMap.locationBlocksTexture);
         fadeBypassProgram.use();
-
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5f, y + 0.5f, z + 0.5f);
+        applyBaseOrientation(tile);
 
         int renderCount = tile.getRenderCount();
         boolean spiralEnabled = MainConfig.machine.eternal_gregtech_workshop.spiralRender;
-
-        float rotAngle = tile.getRotAngle();
-        float rotAxisX = tile.getRotAxisX();
-        float rotAxisY = tile.getRotAxisY();
-        float rotAxisZ = tile.getRotAxisZ();
-        float offsetX = tile.getOffsetX();
-        float offsetY = tile.getOffsetY();
-        float offsetZ = tile.getOffsetZ();
-        int rotation = tile.getRotation();
-
-        float angle = (rotation * 90f + 90f) % 360f;
-        if (offsetY == 0) {
-            GL11.glRotatef(90.0f, offsetX, 0, offsetZ);
-            GL11.glRotatef(angle, 0, 1, 0);
-        } else {
-            GL11.glRotatef(90.0f, 0, 0, 1);
-            GL11.glRotatef(angle, 1, 0, 0);
-        }
-
         for (int i = 0; i < renderCount; i++) {
-            int layerOffset = i * 22;
-            float baseRotation = ((i % 2) == 0 || spiralEnabled ? 1 : -1) * (timer / 6 * 7);
-            float spiralRotation = spiralEnabled ? (i * 5.0f) % 360.0f : 0.0f;
-            double offsetMagnitude = 11 + layerOffset;
-
-            GL11.glPushMatrix();
-            GL11.glTranslated(offsetX * offsetMagnitude, offsetY * offsetMagnitude, offsetZ * offsetMagnitude);
-            GL11.glRotatef(rotAngle, rotAxisX, rotAxisY, rotAxisZ);
-            GL11.glRotatef((spiralEnabled ? spiralRotation + baseRotation : baseRotation), 1, 0, 0);
-            GL11.glTranslated(0, -1, 0);
-            ring.render();
-            GL11.glPopMatrix();
-
-            GL11.glPushMatrix();
-            GL11.glTranslated(offsetX * (-offsetMagnitude), offsetY * (-offsetMagnitude), offsetZ * (-offsetMagnitude));
-            GL11.glRotatef(rotAngle, rotAxisX, rotAxisY, rotAxisZ);
-            GL11.glRotatef((spiralEnabled ? -5f - spiralRotation + baseRotation : -baseRotation), 1, 0, 0);
-            GL11.glTranslated(0, -1, 0);
-            ring.render();
-            GL11.glPopMatrix();
+            renderRingPair(tile, timer, i, spiralEnabled);
         }
 
         GL11.glPopMatrix();
@@ -112,12 +75,49 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
         GL11.glPopAttrib();
     }
 
+    private void applyBaseOrientation(TileEntityEternalGregTechWorkshop tile) {
+        float angle = (tile.getRotation() * 90f + 90f) % 360f;
+        if (tile.getOffsetY() == 0) {
+            GL11.glRotatef(90.0f, tile.getOffsetX(), 0, tile.getOffsetZ());
+            GL11.glRotatef(angle, 0, 1, 0);
+            return;
+        }
+        GL11.glRotatef(90.0f, 0, 0, 1);
+        GL11.glRotatef(angle, 1, 0, 0);
+    }
+
+    private void renderRingPair(TileEntityEternalGregTechWorkshop tile, float timer, int layerIndex,
+        boolean spiralEnabled) {
+        int layerOffset = layerIndex * 22;
+        float baseRotation = ((layerIndex % 2) == 0 || spiralEnabled ? 1 : -1) * (timer / 6 * 7);
+        float spiralRotation = spiralEnabled ? (layerIndex * 5.0f) % 360.0f : 0.0f;
+        double offsetMagnitude = 11 + layerOffset;
+
+        renderRing(tile, offsetMagnitude, spiralEnabled ? spiralRotation + baseRotation : baseRotation);
+        renderRing(tile, -offsetMagnitude, spiralEnabled ? -5f - spiralRotation + baseRotation : -baseRotation);
+    }
+
+    /**
+     * This is a dumb renderer. The caller is responsible for configuring GL state beforehand.
+     */
+    private void renderRing(TileEntityEternalGregTechWorkshop tile, double offsetMagnitude, float axialRotation) {
+        GL11.glPushMatrix();
+        GL11.glTranslated(
+            tile.getOffsetX() * offsetMagnitude,
+            tile.getOffsetY() * offsetMagnitude,
+            tile.getOffsetZ() * offsetMagnitude);
+        GL11.glRotatef(tile.getRotAngle(), tile.getRotAxisX(), tile.getRotAxisY(), tile.getRotAxisZ());
+        GL11.glRotatef(axialRotation, 1, 0, 0);
+        GL11.glTranslated(0, -1, 0);
+        ring.render();
+        GL11.glPopMatrix();
+    }
+
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
         if (failedInit) return;
         if (!(tile instanceof TileEntityEternalGregTechWorkshop egtwRender)) return;
 
-        // If something ever fails, just early return and never try again this session
         if (!initialized) {
             try {
                 initRings();
@@ -130,12 +130,8 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
             }
         }
 
-        // Based on system time to prevent tps issues from causing stutters
-        // Need to look into different timing system to prevent stutters based on tps issues
-        // But prevent bypassing the pause menu
-        long millis = System.currentTimeMillis() % (1000 * 36000);
-        float timer = millis / (50f); // to ticks
-        RenderRings(egtwRender, x, y, z, timer);
-
+        float timer = GTMod.clientProxy()
+            .getAnimationRenderTicks();
+        renderRings(egtwRender, x, y, z, timer);
     }
 }

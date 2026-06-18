@@ -69,7 +69,6 @@ public class EGTWUpgradeStorage {
             }
         }
 
-        // Check if all costs are paid
         for (int i = 0; i < extraCost.length; i++) {
             ItemStack costStack = extraCost[i];
             if (costStack == null) continue;
@@ -124,11 +123,8 @@ public class EGTWUpgradeStorage {
         for (EternalGregTechWorkshopUpgrade dependent : upgrade.getDependents()) {
             if (!isUpgradeActive(dependent)) continue;
 
-            // Check failed, this dependent strictly requires the passed upgrade
             if (dependent.requiresAllPrerequisites()) return false;
 
-            // Check for some other prerequisite upgrade of the dependent to make sure that
-            // if the passed upgrade is removed, that upgrade is still valid
             if (Arrays.stream(dependent.getPrerequisites())
                 .map(unlockedUpgrades::get)
                 .filter(UpgradeData::isActive)
@@ -146,7 +142,6 @@ public class EGTWUpgradeStorage {
     public boolean hasAnyProgress() {
         if (isUpgradeActive(EternalGregTechWorkshopUpgrade.START)) return true;
 
-        // Check if any costs have been paid in any upgrades
         for (var entry : unlockedUpgrades.entrySet()) {
             EternalGregTechWorkshopUpgrade upgrade = entry.getKey();
             if (upgrade.hasExtraCost()) {
@@ -172,20 +167,7 @@ public class EGTWUpgradeStorage {
         return unlockedUpgrades.keySet();
     }
 
-    public void resetAll() {
-        for (UpgradeData data : unlockedUpgrades.values()) {
-            data.active = false;
-            data.costPaid = false;
-        }
-    }
-
-    public void unlockAll() {
-        for (UpgradeData data : unlockedUpgrades.values()) {
-            data.active = true;
-        }
-    }
-
-    public void serializeToNBT(NBTTagCompound NBT, boolean force) {
+    public void serializeToNBT(NBTTagCompound nbt, boolean force) {
         if (!force && !hasAnyProgress()) return;
 
         NBTTagCompound upgradeTag = new NBTTagCompound();
@@ -201,13 +183,13 @@ public class EGTWUpgradeStorage {
                 upgradeTag.setTag("extraCost" + upgrade.ordinal(), costTag);
             }
         }
-        NBT.setTag("upgrades", upgradeTag);
+        nbt.setTag("upgrades", upgradeTag);
     }
 
-    public void rebuildFromNBT(NBTTagCompound NBT) {
-        if (!NBT.hasKey("upgrades")) return;
+    public void rebuildFromNBT(NBTTagCompound nbt) {
+        if (!nbt.hasKey("upgrades")) return;
 
-        NBTTagCompound upgradeTag = NBT.getCompoundTag("upgrades");
+        NBTTagCompound upgradeTag = nbt.getCompoundTag("upgrades");
         for (int i = 0; i < EternalGregTechWorkshopUpgrade.VALUES.length; i++) {
             EternalGregTechWorkshopUpgrade upgrade = EternalGregTechWorkshopUpgrade.VALUES[i];
             UpgradeData data = unlockedUpgrades.get(upgrade);
@@ -238,6 +220,19 @@ public class EGTWUpgradeStorage {
                 unlockedUpgrades.put(EternalGregTechWorkshopUpgrade.VALUES[i], val.get(i));
             }
         }, UpgradeData::writeToBuffer, UpgradeData::readFromBuffer);
+    }
+
+    public void resetAll() {
+        for (UpgradeData data : unlockedUpgrades.values()) {
+            data.active = false;
+            data.costPaid = false;
+        }
+    }
+
+    public void unlockAll() {
+        for (UpgradeData data : unlockedUpgrades.values()) {
+            data.active = true;
+        }
     }
 
     public static class UpgradeData {

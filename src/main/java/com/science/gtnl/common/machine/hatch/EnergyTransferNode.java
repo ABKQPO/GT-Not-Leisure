@@ -65,129 +65,6 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        aNBT.setLong("mVoltage", mVoltage);
-        aNBT.setLong("mAmperes", mAmperes);
-        aNBT.setInteger(
-            "mFrontFacing",
-            getBaseMetaTileEntity().getFrontFacing()
-                .ordinal());
-        aNBT.setBoolean("mode", getBaseMetaTileEntity().isAllowedToWork());
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        mVoltage = aNBT.getLong("mVoltage");
-        mAmperes = aNBT.getLong("mAmperes");
-    }
-
-    @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_EnergyTransferNode_00"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_01"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_02"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_03"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_04"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_05"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_06"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_07") };
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
-                TextureFactory.of(
-                    getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
-                        : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER),
-                TextureFactory.of(
-                    BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE,
-                    Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
-        } else {
-            return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
-                TextureFactory.of(
-                    getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
-                        : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER,
-                    Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
-        }
-    }
-
-    @Override
-    public ITexture[][][] getTextureSet(ITexture[] aTextures) {
-        return new ITexture[0][0][0];
-    }
-
-    @Override
-    public boolean shouldJoinIc2Enet() {
-        return true;
-    }
-
-    @Override
-    public long maxEUInput() {
-        return mVoltage;
-    }
-
-    @Override
-    public long maxEUOutput() {
-        return mVoltage;
-    }
-
-    @Override
-    public long maxEUStore() {
-        return mVoltage * mAmperes * mAmperes * 16;
-    }
-
-    @Override
-    public long maxAmperesOut() {
-        return mAmperes;
-    }
-
-    @Override
-    public long maxAmperesIn() {
-        return mAmperes;
-    }
-
-    @Override
-    public long getMinimumStoredEU() {
-        return mVoltage;
-    }
-
-    @Override
-    public boolean isAccessAllowed(EntityPlayer aPlayer) {
-        return true;
-    }
-
-    @Override
-    public boolean isFacingValid(ForgeDirection facing) {
-        return true;
-    }
-
-    @Override
-    public boolean isEnetInput() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnetOutput() {
-        return true;
-    }
-
-    @Override
-    public boolean isInputFacing(ForgeDirection side) {
-        boolean front = side == getBaseMetaTileEntity().getFrontFacing();
-        return getBaseMetaTileEntity().isAllowedToWork() ? front : !front;
-    }
-
-    @Override
-    public boolean isOutputFacing(ForgeDirection side) {
-        return !isInputFacing(side);
-    }
-
-    @Override
-    public void doExplosion(long aExplosionPower) {}
-
-    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (aBaseMetaTileEntity.isServerSide() && aTick % 20 == 0) {
             byte color = getBaseMetaTileEntity().getColorization();
@@ -379,6 +256,108 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
     }
 
     @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_EnergyTransferNode_00"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_01"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_02"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_03"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_04"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_05"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_06"),
+            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_07") };
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
+                TextureFactory.of(
+                    getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
+                        : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER),
+                TextureFactory.of(
+                    BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE_ACTIVE,
+                    Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
+        }
+        return new ITexture[] { TextureFactory.of(BlockIcons.OVERLAY_ENERGY_TRANSFER_NODE),
+            TextureFactory.of(
+                getBaseMetaTileEntity().isAllowedToWork() ? Textures.BlockIcons.OVERLAY_ENERGY_OUT_MULTI_LASER
+                    : Textures.BlockIcons.OVERLAY_ENERGY_IN_MULTI_LASER,
+                Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
+    }
+
+    @Override
+    public ITexture[][][] getTextureSet(ITexture[] aTextures) {
+        return new ITexture[0][0][0];
+    }
+
+    @Override
+    public long maxEUInput() {
+        return mVoltage;
+    }
+
+    @Override
+    public long maxEUOutput() {
+        return mVoltage;
+    }
+
+    @Override
+    public long maxEUStore() {
+        return mVoltage * mAmperes * mAmperes * 16;
+    }
+
+    @Override
+    public long maxAmperesOut() {
+        return mAmperes;
+    }
+
+    @Override
+    public long maxAmperesIn() {
+        return mAmperes;
+    }
+
+    @Override
+    public long getMinimumStoredEU() {
+        return mVoltage;
+    }
+
+    @Override
+    public boolean shouldJoinIc2Enet() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccessAllowed(EntityPlayer aPlayer) {
+        return true;
+    }
+
+    @Override
+    public boolean isFacingValid(ForgeDirection facing) {
+        return true;
+    }
+
+    @Override
+    public boolean isEnetInput() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnetOutput() {
+        return true;
+    }
+
+    @Override
+    public boolean isInputFacing(ForgeDirection side) {
+        boolean front = side == getBaseMetaTileEntity().getFrontFacing();
+        return getBaseMetaTileEntity().isAllowedToWork() ? front : !front;
+    }
+
+    @Override
+    public boolean isOutputFacing(ForgeDirection side) {
+        return !isInputFacing(side);
+    }
+
+    @Override
     public boolean canConnect(ForgeDirection side) {
         return true;
     }
@@ -393,6 +372,23 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
     public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
         ItemStack aStack) {
         return false;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        aNBT.setLong("mVoltage", mVoltage);
+        aNBT.setLong("mAmperes", mAmperes);
+        aNBT.setInteger(
+            "mFrontFacing",
+            getBaseMetaTileEntity().getFrontFacing()
+                .ordinal());
+        aNBT.setBoolean("mode", getBaseMetaTileEntity().isAllowedToWork());
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        mVoltage = aNBT.getLong("mVoltage");
+        mAmperes = aNBT.getLong("mAmperes");
     }
 
     @Override
@@ -440,4 +436,7 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
             tag.setBoolean("mode", getBaseMetaTileEntity().isAllowedToWork());
         }
     }
+
+    @Override
+    public void doExplosion(long aExplosionPower) {}
 }

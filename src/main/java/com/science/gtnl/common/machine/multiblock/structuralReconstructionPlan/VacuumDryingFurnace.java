@@ -71,74 +71,6 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialDehydratorActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialDehydrator)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.getIndexFromPage(3, 10);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return switch (machineMode) {
-            case MACHINEMODE_DEHYDRATOR -> GTPPRecipeMaps.chemicalDehydratorNonCellRecipes;
-            case MACHINEMODE_COLD_TRAP -> GTPPRecipeMaps.coldTrapRecipes;
-            case MACHINEMODE_NUCLEAR_SALT -> GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes;
-            default -> GTPPRecipeMaps.vacuumFurnaceRecipes;
-        };
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(
-            GTPPRecipeMaps.chemicalDehydratorNonCellRecipes,
-            GTPPRecipeMaps.vacuumFurnaceRecipes,
-            GTPPRecipeMaps.coldTrapRecipes,
-            GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("VacuumDryingFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_05"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(3, 5, 3, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<VacuumDryingFurnace> getStructureDefinition() {
         return StructureDefinition.<VacuumDryingFurnace>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -167,6 +99,134 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
                             StructureUtility.ofBlock(ModBlocks.blockCasings4Misc, 10))))
             .addElement('C', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 5);
+    }
+
+    @Override
+    public void setupParameters() {
+        super.setupParameters();
+        this.mHeatingCapacity = (int) this.getMCoilLevel()
+            .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
+    }
+
+    @Override
+    public boolean getHeatOC() {
+        return true;
+    }
+
+    @Override
+    public int getMachineHeat() {
+        return mHeatingCapacity;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.6 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1 / 2.5 - (Math.max(0, mParallelTier - 1) / 50.0) * ((machineMode >= 2) ? 1 : 0.1);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return switch (machineMode) {
+            case MACHINEMODE_DEHYDRATOR -> GTPPRecipeMaps.chemicalDehydratorNonCellRecipes;
+            case MACHINEMODE_COLD_TRAP -> GTPPRecipeMaps.coldTrapRecipes;
+            case MACHINEMODE_NUCLEAR_SALT -> GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes;
+            default -> GTPPRecipeMaps.vacuumFurnaceRecipes;
+        };
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(
+            GTPPRecipeMaps.chemicalDehydratorNonCellRecipes,
+            GTPPRecipeMaps.vacuumFurnaceRecipes,
+            GTPPRecipeMaps.coldTrapRecipes,
+            GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.getIndexFromPage(3, 10);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialDehydratorActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialDehydrator)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public String getMachineModeName() {
+        return StatCollector.translateToLocal("VacuumDryingFurnace_Mode_" + machineMode);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("VacuumDryingFurnaceRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_05"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(3, 5, 3, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -205,67 +265,7 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("VacuumDryingFurnace_Mode_" + machineMode);
-    }
-
-    @Override
-    public boolean getHeatOC() {
-        return true;
-    }
-
-    @Override
-    public int getMachineHeat() {
-        return mHeatingCapacity;
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.6 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1 / 2.5 - (Math.max(0, mParallelTier - 1) / 50.0) * ((machineMode >= 2) ? 1 : 0.1);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 5);
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-        this.mHeatingCapacity = (int) this.getMCoilLevel()
-            .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
-    }
-
-    @Override
     public boolean supportsMachineModeSwitch() {
         return true;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
     }
 }

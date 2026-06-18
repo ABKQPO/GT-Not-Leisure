@@ -55,6 +55,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     private static final int VERTICAL_OFF_SET = 2;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LGC_STRUCTURE_FILE_PATH);
+
     public final ArrayList<ItemStack> dimensionRecipeInputs = new ArrayList<>(2);
 
     public LargeGasCollector(int aID, String aName, String aNameRegional) {
@@ -66,31 +67,41 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeGasCollector(this.mName);
+    public IAlignmentLimits getInitialAlignmentLimits() {
+        return (d, r, f) -> d == ForgeDirection.UP;
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    public IStructureDefinition<LargeGasCollector> getStructureDefinition() {
+        return StructureDefinition.<LargeGasCollector>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement(
+                'A',
+                buildHatchAdder(LargeGasCollector.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 5))
+            .build();
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        return 1000000;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 20);
     }
 
     @Override
@@ -105,18 +116,14 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
 
         CheckRecipeResult result = CheckRecipeResultRegistry.NO_RECIPE;
 
-        // 优先复用双输入仓缓存并补充维度输入 / Reuse dual-input buffers first and append dimension-specific inputs
         for (IDualInputHatch dualInputHatch : mDualInputHatches) {
             ItemStack[] sharedItems = dualInputHatch.getSharedItems();
             for (var it = dualInputHatch.inventories(); it.hasNext();) {
                 IDualInputInventory slot = it.next();
 
                 if (!slot.isEmpty()) {
-                    // try to cache the possible recipes from pattern
                     if (slot instanceof IDualInputInventoryWithPattern withPattern) {
                         if (!processingLogic.tryCachePossibleRecipesFromPattern(withPattern)) {
-                            // move on to next slots if it returns false, which means there is no possible recipes with
-                            // given pattern.
                             continue;
                         }
                     }
@@ -127,7 +134,6 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
                         return foundResult;
                     }
                     if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
-                        // Recipe failed in interesting way, so remember that and continue searching
                         result = foundResult;
                     }
                 }
@@ -139,7 +145,6 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
             return result;
         }
 
-        // Use hatch colors if any; fallback to color 1 otherwise.
         short hatchColors = getHatchColors();
         boolean doColorChecking = hatchColors != 0;
         if (!doColorChecking) hatchColors = 0b1;
@@ -190,6 +195,77 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
         return result;
     }
 
+    @Override
+    public int getMaxParallelRecipes() {
+        return 1000000;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_GAS_COLLECTOR)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.GasCollectorRecipes;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeGasCollectorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_02"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(5, 5, 5, true)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
     public boolean hasIntegratedCircuitInStoredInputs() {
         for (ItemStack item : getAllStoredInputs()) {
             if (item != null && Objects.equals(item.getItem(), ItemList.Circuit_Integrated.getItem())) {
@@ -232,88 +308,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     }
 
     @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.GasCollectorRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeGasCollectorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_02"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(5, 5, 5, true)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public IStructureDefinition<LargeGasCollector> getStructureDefinition() {
-        return StructureDefinition.<LargeGasCollector>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement(
-                'A',
-                buildHatchAdder(LargeGasCollector.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.Maintenance,
-                        HatchElement.OutputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                    .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 5))
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 20);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public IAlignmentLimits getInitialAlignmentLimits() {
-        return (d, r, f) -> d == ForgeDirection.UP;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeGasCollector(this.mName);
     }
 }

@@ -1,19 +1,17 @@
 package com.science.gtnl.utils.world.steam;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.science.gtnl.ScienceNotLeisure;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class SteamWirelessNetworkManager {
 
-    public static final Object2ObjectOpenHashMap<UUID, BigInteger> GLOBAL_STEAM = new Object2ObjectOpenHashMap<>(
-        100,
-        0.9f);
+    public static HashMap<UUID, BigInteger> GLOBAL_STEAM = new HashMap<>(100, 0.9f);
 
     private SteamWirelessNetworkManager() {}
 

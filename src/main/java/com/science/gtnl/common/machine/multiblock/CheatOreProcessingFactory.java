@@ -7,12 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,8 +42,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory> {
 
@@ -69,31 +63,91 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
         super(aName);
     }
 
+    public Object2ObjectOpenHashMap<ItemId, ArrayList<GTRecipe>> getRecipeIndex() {
+        if (!recipeIndexInitialized) {
+            indexRecipes();
+        }
+        return RECIPE_INDEX;
+    }
+
+    public void indexRecipes() {
+        RECIPE_INDEX.clear();
+        RecipeMap<?> recipeMap = getRecipeMap();
+        for (GTRecipe recipe : recipeMap.getAllRecipes()) {
+            if (recipe.mInputs == null || recipe.mInputs.length < 1 || recipe.mInputs[0] == null) {
+                continue;
+            }
+            ItemId itemId = ItemId.createNoCopy(recipe.mInputs[0]);
+            ArrayList<GTRecipe> indexedRecipes = RECIPE_INDEX.computeIfAbsent(itemId, key -> new ArrayList<>());
+            indexedRecipes.add(recipe);
+        }
+        recipeIndexInitialized = true;
+    }
+
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new CheatOreProcessingFactory(this.mName);
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
+    public boolean onRunningTick(ItemStack aStack) {
+        return true;
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
     }
 
     @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    // TODO: Use GTNLMaterials
     @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+    public IStructureDefinition<CheatOreProcessingFactory> getStructureDefinition() {
+        return StructureDefinition.<CheatOreProcessingFactory>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 300))
+            .addElement('B', GTStructureUtility.ofFrame(Materials.Bronze))
+            .addElement('C', StructureUtility.ofBlock(blockCasingsMisc, 2))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
+            .addElement(
+                'G',
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(CheatOreProcessingFactory.class)
+                        .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                        .hint(1)
+                        .build(),
+                    StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 300)))
+            .addElement('H', GTStructureUtility.chainAllGlasses())
+            .build();
+    }
+
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        return checkProcessing_wirelessMode();
     }
 
     public CheckRecipeResult OP_Process_Wireless() {
@@ -149,37 +203,10 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    public Object2ObjectOpenHashMap<ItemId, ArrayList<GTRecipe>> getRecipeIndex() {
-        if (!recipeIndexInitialized) {
-            indexRecipes();
-        }
-        return RECIPE_INDEX;
-    }
-
-    public void indexRecipes() {
-        RECIPE_INDEX.clear();
-        RecipeMap<?> recipeMap = getRecipeMap();
-        for (GTRecipe recipe : recipeMap.getAllRecipes()) {
-            if (recipe.mInputs == null || recipe.mInputs.length < 1 || recipe.mInputs[0] == null) {
-                continue;
-            }
-            ItemId itemId = ItemId.createNoCopy(recipe.mInputs[0]);
-            ArrayList<GTRecipe> indexedRecipes = RECIPE_INDEX.computeIfAbsent(itemId, key -> new ArrayList<>());
-            indexedRecipes.add(recipe);
-        }
-        recipeIndexInitialized = true;
-    }
-
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        return checkProcessing_wirelessMode();
-    }
-
     public CheckRecipeResult checkProcessing_wirelessMode() {
-
         CheckRecipeResult result = OP_Process_Wireless();
         if (!result.wasSuccessful()) return result;
+
         boolean noRecipe = mOutputItems == null || mOutputItems.length < 1;
         updateSlots();
         if (noRecipe) return CheckRecipeResultRegistry.NO_RECIPE;
@@ -187,7 +214,6 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = 1;
-
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
@@ -197,85 +223,13 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     }
 
     @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-    }
-
-    @Override
-    public boolean onRunningTick(ItemStack aStack) {
-        return true;
-    }
-
-    @Override
     public int getMaxParallelRecipes() {
         return Integer.MAX_VALUE;
     }
 
     @Override
-    public boolean supportsVoidProtection() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsCraftingMEBuffer() {
-        return false;
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public IStructureDefinition<CheatOreProcessingFactory> getStructureDefinition() {
-        return StructureDefinition.<CheatOreProcessingFactory>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 32066))
-            .addElement('B', GTStructureUtility.ofFrame(Materials.Bronze))
-            .addElement('C', StructureUtility.ofBlock(blockCasingsMisc, 2))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
-            .addElement(
-                'G',
-                StructureUtility.ofChain(
-                    GTStructureUtility.buildHatchAdder(CheatOreProcessingFactory.class)
-                        .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
-                        .hint(1)
-                        .build(),
-                    StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 32066)))
-            .addElement('H', GTStructureUtility.chainAllGlasses())
-            .build();
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("CheatOreProcessingFactoryRecipeType"))
-            .beginStructureBlock(41, 26, 18, false)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
     }
 
     @Override
@@ -307,7 +261,22 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     }
 
     @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("CheatOreProcessingFactoryRecipeType"))
+            .beginStructureBlock(41, 26, 18, false)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsCraftingMEBuffer() {
+        return false;
     }
 }

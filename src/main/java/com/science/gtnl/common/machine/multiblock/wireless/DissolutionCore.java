@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
+import static kubatech.loaders.BlockLoader.defcCasingBlock;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsBA0;
 
 import java.util.Arrays;
@@ -27,7 +28,6 @@ import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -48,14 +48,14 @@ import gtnhlanth.common.register.LanthItemList;
 
 public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionCore> {
 
+    public static final int MACHINEMODE_DISSOLUTION = 0;
+    public static final int MACHINEMODE_DIGESTER = 1;
     private static final int HORIZONTAL_OFF_SET = 15;
     private static final int VERTICAL_OFF_SET = 13;
     private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String DC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/dissolution_core";
     private static final String[][] shape = StructureUtils.readStructureFromFile(DC_STRUCTURE_FILE_PATH);
-    public static final int MACHINEMODE_DISSOLUTION = 0;
-    public static final int MACHINEMODE_DIGESTER = 1;
 
     public DissolutionCore(String aName) {
         super(aName);
@@ -68,68 +68,6 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DissolutionCore(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DissolutionCoreRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DissolutionCore_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DissolutionCore_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(31, 16, 31, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity te, ForgeDirection side, ForgeDirection facing, int colorIndex,
-        boolean active, boolean redstone) {
-        if (side == facing) {
-            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
@@ -164,7 +102,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
             .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 2))
             .addElement('H', StructureUtility.ofBlock(sBlockCasingsBA0, 6))
-            .addElement('I', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 7))
+            .addElement('I', StructureUtility.ofBlock(defcCasingBlock, 7))
             .addElement('J', StructureUtility.ofBlock(blockCasings2Misc, 0))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
             .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
@@ -205,15 +143,15 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing > 100);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 101);
     }
 
     @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None;
+    protected boolean requiresCoilStructureCheck() {
+        return true;
     }
 
     @Override
@@ -226,6 +164,73 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(LanthanidesRecipeMaps.dissolutionTankRecipes, LanthanidesRecipeMaps.digesterRecipes);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return super.getDurationModifier() * Math.pow(0.85, getMCoilLevel().getTier());
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity te, ForgeDirection side, ForgeDirection facing, int colorIndex,
+        boolean active, boolean redstone) {
+        if (side == facing) {
+            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("DissolutionCoreRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DissolutionCore_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DissolutionCore_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(31, 16, 31, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DissolutionCore_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -259,15 +264,4 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     public boolean supportsMachineModeSwitch() {
         return true;
     }
-
-    @Override
-    public double getEUtDiscount() {
-        return super.getEUtDiscount();
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return super.getDurationModifier() * Math.pow(0.85, getMCoilLevel().getTier());
-    }
-
 }

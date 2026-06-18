@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 
-@Mixin(WorldServer.class)
+@Mixin(value = WorldServer.class, remap = true)
 public abstract class MixinWorldServer {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)

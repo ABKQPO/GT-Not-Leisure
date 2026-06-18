@@ -6,7 +6,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -21,24 +23,23 @@ import com.science.gtnl.common.machine.hatch.SuperVoidHatch;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
+import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 
-public class SuperVoidHatchGui {
+public class SuperVoidHatchGui extends MTEHatchBaseGui<SuperVoidHatch> {
 
     private static final int SLOT_COLUMNS = 10;
     private static final int SLOT_ROWS = 10;
 
-    private final SuperVoidHatch hatch;
-
     public SuperVoidHatchGui(SuperVoidHatch hatch) {
-        this.hatch = hatch;
+        super(hatch);
     }
 
+    @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return GTGuis.mteTemplatePanelBuilder(hatch, guiData, syncManager, uiSettings)
-            .setWidth(hatch.getGUIWidth())
-            .setHeight(hatch.getGUIHeight())
+        return GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
+            .setWidth(machine.getGUIWidth())
+            .setHeight(machine.getGUIHeight())
             .doesAddGregTechLogo(false)
-            .doesBindPlayerInventory(false)
             .build()
             .child(createFilterScroll())
             .child(createLogo());
@@ -46,6 +47,7 @@ public class SuperVoidHatchGui {
 
     private IWidget createFilterScroll() {
         return new ListWidget<>().scrollDirection(new VerticalScrollData())
+            .showScrollShadows(false)
             .size(18 * SLOT_COLUMNS + 4, 72)
             .pos(20, 9)
             .child(createFilterGrid());
@@ -71,14 +73,18 @@ public class SuperVoidHatchGui {
             });
     }
 
-    private IWidget createLogo() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
-            .size(18)
-            .pos(195, 83);
+    @Override
+    protected IDrawable.DrawableWidget createLogo() {
+        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
+    }
+
+    @Override
+    protected UITexture getLogoTexture() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     private FluidStack getFluidStack(int index) {
-        String fluidName = hatch.getLockedFluidNames(index);
+        String fluidName = machine.getLockedFluidNames(index);
         if (fluidName == null || fluidName.isEmpty()) return null;
         return FluidRegistry.getFluidStack(fluidName, 1);
     }
@@ -117,10 +123,10 @@ public class SuperVoidHatchGui {
             if (resource == null || resource.getFluid() == null) return 0;
             String fluidName = resource.getFluid()
                 .getName();
-            if (!hatch.acceptsFluidsLock(fluidName, index)) return 0;
+            if (!machine.acceptsFluidsLock(fluidName, index)) return 0;
             if (doFill) {
-                hatch.setLockedFluidNames(index, fluidName);
-                hatch.lockFluids(true, index);
+                machine.setLockedFluidNames(index, fluidName);
+                machine.lockFluids(true, index);
             }
             return 1;
         }
@@ -130,7 +136,7 @@ public class SuperVoidHatchGui {
             FluidStack fluidStack = getFluid();
             if (fluidStack == null) return null;
             if (doDrain) {
-                hatch.lockFluids(false, index);
+                machine.lockFluids(false, index);
             }
             return fluidStack;
         }

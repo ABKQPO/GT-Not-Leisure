@@ -7,7 +7,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -15,6 +14,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Mods;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
@@ -45,53 +45,40 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             ItemStack output = recipe.getOutput()
                 .copy();
 
-            List<List<ItemStack>> combinations = new ArrayList<>();
-            combinations.add(new ArrayList<>());
+            boolean hasOreDict = false;
+
+            List<Object> inputs = new ArrayList<>();
 
             for (Object input : originInputs) {
 
-                List<List<ItemStack>> nextCombinations = new ArrayList<>();
-
                 if (input instanceof String oreName) {
-                    List<ItemStack> ores = OreDictionary.getOres(oreName);
 
-                    for (ItemStack oreStack : ores) {
-                        ItemStack stack = oreStack.copy();
-                        if (stack.getItemDamage() == Short.MAX_VALUE) {
-                            stack.setItemDamage(0);
-                        }
+                    hasOreDict = true;
+                    inputs.add(new OreDictItemStack(oreName, 1));
 
-                        for (List<ItemStack> prev : combinations) {
-                            List<ItemStack> next = new ArrayList<>(prev);
-                            next.add(stack);
-                            nextCombinations.add(next);
-                        }
+                } else if (input instanceof ItemStack stack) {
+
+                    ItemStack copy = stack.copy();
+
+                    if (copy.getItemDamage() == Short.MAX_VALUE) {
+                        copy.setItemDamage(0);
                     }
 
-                } else if (input instanceof ItemStack itemStack) {
-                    ItemStack stack = itemStack.copy();
-                    if (stack.getItemDamage() == Short.MAX_VALUE) {
-                        stack.setItemDamage(0);
-                    }
-
-                    for (List<ItemStack> prev : combinations) {
-                        List<ItemStack> next = new ArrayList<>(prev);
-                        next.add(stack);
-                        nextCombinations.add(next);
-                    }
+                    inputs.add(copy);
                 }
-
-                combinations = nextCombinations;
             }
 
-            for (List<ItemStack> inputs : combinations) {
-                RecipeBuilder.builder()
-                    .itemInputs(inputs)
-                    .itemOutputs(output)
-                    .duration(20)
-                    .eut(2048)
-                    .addTo(PTAR);
+            RecipeBuilder builder = RecipeBuilder.builder()
+                .itemOutputs(output)
+                .duration(20)
+                .eut(2048);
+
+            if (hasOreDict) {
+                builder.itemInputs(inputs.toArray(new Object[0]));
+            } else {
+                builder.itemInputs(inputs.toArray(new ItemStack[0]));
             }
+            builder.addTo(PTAR);
         }
 
         RecipeBuilder.builder()

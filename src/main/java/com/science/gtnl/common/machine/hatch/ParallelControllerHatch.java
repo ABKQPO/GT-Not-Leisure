@@ -79,41 +79,6 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after ParallelControllerHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 80));
-    }
-
-    @Override
-    public boolean willExplodeInRain() {
-        return false;
-    }
-
-    @Override
-    public boolean isFacingValid(ForgeDirection facing) {
-        return true;
-    }
-
-    @Override
-    public boolean isValidSlot(int aIndex) {
-        return false;
-    }
-
-    @Override
-    public boolean isLiquidInput(ForgeDirection side) {
-        return false;
-    }
-
-    @Override
-    public boolean isFluidInputAllowed(FluidStack aFluid) {
-        return false;
-    }
-
-    @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         return new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_FRONT_PARALLEL_CONTROLLER) };
     }
@@ -133,30 +98,6 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
         setParallelFromGui(aNBT.getInteger("parallel"));
-    }
-
-    public void setParallelFromGui(int parallel) {
-        this.parallel = Math.min(maxParallel, Math.max(1, parallel));
-    }
-
-    public int setMaxParallel(int mTier) {
-        if (mTier <= 1) {
-            return 1;
-        } else {
-            return 1 << (2 * (mTier - 2));
-        }
-    }
-
-    public int setDurationModifier(int mTier) {
-        if (mTier <= 1) {
-            return 1;
-        } else {
-            return 2 * (mTier - 1);
-        }
-    }
-
-    public int setEUtDiscount(int mTier) {
-        return 2 * mTier;
     }
 
     @Override
@@ -200,4 +141,60 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         addGregTechLogo(builder);
     }
 
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after ParallelControllerHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 80));
+    }
+
+    @Override
+    public boolean willExplodeInRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isFacingValid(ForgeDirection facing) {
+        return true;
+    }
+
+    @Override
+    public boolean isValidSlot(int aIndex) {
+        return false;
+    }
+
+    @Override
+    public boolean isLiquidInput(ForgeDirection side) {
+        return false;
+    }
+
+    @Override
+    public boolean isFluidInputAllowed(FluidStack aFluid) {
+        return false;
+    }
+
+    public void setParallelFromGui(int parallel) {
+        this.parallel = Math.min(maxParallel, Math.max(1, parallel));
+    }
+
+    public int setMaxParallel(int mTier) {
+        if (mTier <= 1) {
+            return 1;
+        }
+        return 1 << (2 * (mTier - 2));
+    }
+
+    public int setDurationModifier(int mTier) {
+        if (mTier <= 1) {
+            return 1;
+        }
+        return 2 * (mTier - 1);
+    }
+
+    public int setEUtDiscount(int mTier) {
+        return 2 * mTier;
+    }
 }

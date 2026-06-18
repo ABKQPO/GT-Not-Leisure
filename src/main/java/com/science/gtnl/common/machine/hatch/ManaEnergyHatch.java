@@ -47,16 +47,6 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
     }
 
     @Override
-    public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_02", EU_TO_MANA_RATE));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_03", getCapacity()));
-        return desc.toArray(new String[] {});
-    }
-
-    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isClientSide()) return;
@@ -69,50 +59,6 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
                 transferFluidToPools(pools);
             }
 
-        }
-    }
-
-    private void convertEUToMana(IGregTechTileEntity aBaseMetaTileEntity) {
-        long storedEU = aBaseMetaTileEntity.getStoredEU();
-        if (storedEU <= 0) return;
-
-        int currentMana = getFluidAmount();
-        int capacity = getCapacity();
-        int availableSpace = capacity - currentMana;
-
-        if (availableSpace <= 0) return;
-
-        long manaToAdd = Math.min(storedEU / EU_TO_MANA_RATE, availableSpace);
-        if (manaToAdd <= 0) return;
-
-        long euToConvert = manaToAdd * EU_TO_MANA_RATE;
-
-        aBaseMetaTileEntity.increaseStoredEnergyUnits(-euToConvert, true);
-        fill(createFluidStack((int) manaToAdd), true);
-    }
-
-    private FluidStack createFluidStack(int amount) {
-        FluidStack stack = fluidMana.copy();
-        stack.amount = amount;
-        return stack;
-    }
-
-    private void transferFluidToPools(List<TilePool> pools) {
-        int fluidAmount = getFluidAmount();
-
-        for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
-
-            int availableSpace = pool.getAvailableSpaceForMana();
-            if (availableSpace <= 0) continue;
-
-            int fluidToTransfer = Math.min(fluidAmount, availableSpace);
-            if (fluidToTransfer <= 0) continue;
-
-            FluidStack drainedStack = drain(fluidToTransfer, true);
-            if (drainedStack != null && drainedStack.amount > 0) {
-                pool.recieveMana(drainedStack.amount);
-            }
         }
     }
 
@@ -131,30 +77,36 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         return 2000000 * this.mTier;
     }
 
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
+    @Override
+    public long maxAmperesIn() {
+        return mAmp;
     }
 
-    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
+    @Override
+    public String[] getDescription() {
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_00"));
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_01"));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_02", EU_TO_MANA_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_03", getCapacity()));
+        return desc.toArray(new String[] {});
+    }
 
-        List<TilePool> pools = new ArrayList<>();
+    @Override
+    public String[] getInfoData() {
+        FluidStack currentManaStack = getFillableStack();
+        int currentMana = currentManaStack != null ? currentManaStack.amount : 0;
+        int capacity = getCapacity();
 
-        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
-            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
-                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TilePool pool) {
-                        pools.add(pool);
-                    }
-                }
-            }
-        }
-        return pools;
+        if (currentMana == 0) return new String[] {};
+        return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
+            + EnumChatFormatting.RESET
+            + EnumChatFormatting.GREEN
+            + NumberFormatUtil.formatNumber(currentMana)
+            + EnumChatFormatting.RESET
+            + " / "
+            + EnumChatFormatting.YELLOW
+            + NumberFormatUtil.formatNumber(capacity) };
     }
 
     @Override
@@ -188,25 +140,73 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         }
     }
 
-    @Override
-    public String[] getInfoData() {
-        FluidStack currentManaStack = getFillableStack();
-        int currentMana = currentManaStack != null ? currentManaStack.amount : 0;
-        int capacity = getCapacity();
+    private void convertEUToMana(IGregTechTileEntity aBaseMetaTileEntity) {
+        long storedEU = aBaseMetaTileEntity.getStoredEU();
+        if (storedEU <= 0) return;
 
-        if (currentMana == 0) return new String[] {};
-        return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
-            + EnumChatFormatting.RESET
-            + EnumChatFormatting.GREEN
-            + NumberFormatUtil.formatNumber(currentMana)
-            + EnumChatFormatting.RESET
-            + " / "
-            + EnumChatFormatting.YELLOW
-            + NumberFormatUtil.formatNumber(capacity) };
+        int currentMana = getFluidAmount();
+        int capacity = getCapacity();
+        int availableSpace = capacity - currentMana;
+
+        if (availableSpace <= 0) return;
+
+        long manaToAdd = Math.min(storedEU / EU_TO_MANA_RATE, availableSpace);
+        if (manaToAdd <= 0) return;
+
+        long euToConvert = manaToAdd * EU_TO_MANA_RATE;
+
+        aBaseMetaTileEntity.increaseStoredEnergyUnits(-euToConvert, true);
+        fill(createFluidStack((int) manaToAdd), true);
     }
 
-    @Override
-    public long maxAmperesIn() {
-        return mAmp;
+    private void transferFluidToPools(List<TilePool> pools) {
+        int fluidAmount = getFluidAmount();
+
+        for (TilePool pool : pools) {
+            if (isDropMetaValid(pool)) continue;
+
+            int availableSpace = pool.getAvailableSpaceForMana();
+            if (availableSpace <= 0) continue;
+
+            int fluidToTransfer = Math.min(fluidAmount, availableSpace);
+            if (fluidToTransfer <= 0) continue;
+
+            FluidStack drainedStack = drain(fluidToTransfer, true);
+            if (drainedStack != null && drainedStack.amount > 0) {
+                pool.recieveMana(drainedStack.amount);
+            }
+        }
+    }
+
+    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
+        World world = aBaseMetaTileEntity.getWorld();
+        int x = aBaseMetaTileEntity.getXCoord();
+        int y = aBaseMetaTileEntity.getYCoord();
+        int z = aBaseMetaTileEntity.getZCoord();
+
+        List<TilePool> pools = new ArrayList<>();
+
+        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
+            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
+                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
+                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
+                    if (te instanceof TilePool pool) {
+                        pools.add(pool);
+                    }
+                }
+            }
+        }
+        return pools;
+    }
+
+    private boolean isDropMetaValid(TilePool pool) {
+        int meta = pool.getBlockMetadata();
+        return meta == 1;
+    }
+
+    private FluidStack createFluidStack(int amount) {
+        FluidStack stack = fluidMana.copy();
+        stack.amount = amount;
+        return stack;
     }
 }

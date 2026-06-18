@@ -15,7 +15,7 @@ import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 
-@Mixin(Explosion.class)
+@Mixin(value = Explosion.class, remap = true)
 public abstract class MixinExplosion {
 
     @Shadow

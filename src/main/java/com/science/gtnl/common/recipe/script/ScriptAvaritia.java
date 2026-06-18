@@ -1574,7 +1574,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'n',
                 GregtechItemList.Industrial_CuttingFactoryController.get(1),
                 'o',
-                ItemList.Wireless_Dynamo_Energy_UXV.get(1),
+                GTNLItemList.HumongousWirelessDynamoHatch.get(1),
                 'p',
                 CustomItemList.eM_energyWirelessTunnel7_UXV.get(1),
                 'q',

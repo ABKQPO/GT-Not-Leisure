@@ -57,73 +57,6 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 14;
-    }
-
-    @Override
-    public boolean supportsSteamOC() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsSteamCapacityUI() {
-        return false;
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("BrickBlastFurnaceRecipeType");
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_INACTIVE)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BrickBlastFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_04"))
-            .beginStructureBlock(15, 14, 15, true)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_00"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_01"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_02"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_03"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_04"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<BrickedBlastFurnace> getStructureDefinition() {
         return StructureDefinition.<BrickedBlastFurnace>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -176,12 +109,8 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-            || mSteamInputFluids.isEmpty()
-            || mSteamInputs.isEmpty()) {
-            checkStructureCondition(errors, false);
-        }
-        checkStructureCondition(errors, mCountCasing >= 350);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkCasingMin(errors, mCountCasing, 330);
     }
 
     @Override
@@ -194,6 +123,16 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
         return RecipeMaps.primitiveBlastRecipes;
     }
 
+    @Override
+    public boolean getPerfectOC() {
+        return false;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 14;
+    }
+
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
@@ -201,6 +140,53 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
         if (!result.wasSuccessful()) return result;
         mMaxProgresstime = 128;
         return result;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.MACHINE_CASING_BRICKEDBLASTFURNACE_INACTIVE)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("BrickBlastFurnaceRecipeType");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("BrickBlastFurnaceRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_04"))
+            .beginStructureBlock(15, 14, 15, true)
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_00"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_01"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_02"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_03"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_04"))
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -213,6 +199,16 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
 
     @Override
     public boolean shouldCheckMaintenance() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamOC() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
         return false;
     }
 }

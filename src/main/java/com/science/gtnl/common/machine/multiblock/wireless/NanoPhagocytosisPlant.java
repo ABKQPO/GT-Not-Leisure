@@ -111,32 +111,6 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("NanoPhagocytosisPlantRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(21, 24, 38, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
     }
@@ -463,37 +437,43 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
                     STRUCTURE_PIECE_MAIN_RING_ONE_AIR,
                     HORIZONTAL_OFF_SET_RING_ONE,
                     VERTICAL_OFF_SET_RING_ONE,
-                    DEPTH_OFF_SET_RING_ONE)
+                    DEPTH_OFF_SET_RING_ONE,
+                    errors)
                 || !checkPiece(
                     STRUCTURE_PIECE_MAIN_RING_TWO_AIR,
                     HORIZONTAL_OFF_SET_RING_TWO,
                     VERTICAL_OFF_SET_RING_TWO,
-                    DEPTH_OFF_SET_RING_TWO)
+                    DEPTH_OFF_SET_RING_TWO,
+                    errors)
                 || !checkPiece(
                     STRUCTURE_PIECE_MAIN_RING_THREE_AIR,
                     HORIZONTAL_OFF_SET_RING_THREE,
                     VERTICAL_OFF_SET_RING_THREE,
-                    DEPTH_OFF_SET_RING_THREE)) {
+                    DEPTH_OFF_SET_RING_THREE,
+                    errors)) {
                 destroyRenderer();
-                checkStructureCondition(errors, false);
+                return;
             }
         } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
             || !checkPiece(
                 STRUCTURE_PIECE_MAIN_RING_ONE,
                 HORIZONTAL_OFF_SET_RING_ONE,
                 VERTICAL_OFF_SET_RING_ONE,
-                DEPTH_OFF_SET_RING_ONE)
+                DEPTH_OFF_SET_RING_ONE,
+                errors)
             || !checkPiece(
                 STRUCTURE_PIECE_MAIN_RING_TWO,
                 HORIZONTAL_OFF_SET_RING_TWO,
                 VERTICAL_OFF_SET_RING_TWO,
-                DEPTH_OFF_SET_RING_TWO)
+                DEPTH_OFF_SET_RING_TWO,
+                errors)
             || !checkPiece(
                 STRUCTURE_PIECE_MAIN_RING_THREE,
                 HORIZONTAL_OFF_SET_RING_THREE,
                 VERTICAL_OFF_SET_RING_THREE,
-                DEPTH_OFF_SET_RING_THREE)) {
-                    checkStructureCondition(errors, false);
+                DEPTH_OFF_SET_RING_THREE,
+                errors)) {
+                    return;
                 }
 
         if (!isRenderActive && enableRender && mTotalRunTime > 0) {
@@ -502,7 +482,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
         setupParameters();
         checkHatch(errors);
-        checkStructureCondition(errors, mCountCasing > 1);
+        checkCasingMin(errors, mCountCasing, 2);
     }
 
     @Override
@@ -598,5 +578,31 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         super.loadNBTData(aNBT);
         isRenderActive = aNBT.getBoolean("isRenderActive");
         if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("NanoPhagocytosisPlantRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(21, 24, 38, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
     }
 }

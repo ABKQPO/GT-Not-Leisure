@@ -54,7 +54,7 @@ import com.science.gtnl.utils.ClientUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-@Mixin(value = Minecraft.class)
+@Mixin(value = Minecraft.class, remap = true)
 public abstract class MixinMinecraft {
 
     @Shadow

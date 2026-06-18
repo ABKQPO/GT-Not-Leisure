@@ -41,27 +41,8 @@ public class SteamFlightModule extends SteamElevatorModule {
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamFlightModuleRecipeType");
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return null;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamFlightModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_04"))
-            .beginStructureBlock(1, 5, 2, false)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -102,6 +83,25 @@ public class SteamFlightModule extends SteamElevatorModule {
             }
         }
         return super.onRunningTick(stack);
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamFlightModuleRecipeType");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SteamFlightModuleRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_04"))
+            .beginStructureBlock(1, 5, 2, false)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

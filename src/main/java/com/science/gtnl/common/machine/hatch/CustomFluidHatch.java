@@ -109,33 +109,8 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
-        builder.widget(
-            new DrawableWidget().setDrawable(uiTexture)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new CustomFluidHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    public boolean usesSteamLogoForMui2() {
-        return uiTexture == ItemUtils.PICTURE_GTNL_STEAM_LOGO;
-    }
-
-    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-
         int mTexturePage = ((AccessorMTEHatch) this).getTexturePage();
 
         if (mTexturePage < 0 || mTexturePage >= Textures.BlockIcons.casingTexturePages.length) {
@@ -172,22 +147,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, final ForgeDirection side,
-        final ItemStack aStack) {
-        if (side == aBaseMetaTileEntity.getFrontFacing() && aIndex == 0) {
-            FluidStack fs = GTUtility.getFluidForFilledItem(aStack, true);
-            return fs != null && mLockedFluids.contains(fs.getFluid());
-        }
-        return false;
-    }
-
-    @Override
-    public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
-        ItemStack aStack) {
-        return side == aBaseMetaTileEntity.getFrontFacing() && aIndex == 1;
-    }
-
-    @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         return GTMod.gregtechproxy.mRenderIndicatorsOnHatch
             ? new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
@@ -204,6 +163,22 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
+    public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, final ForgeDirection side,
+        final ItemStack aStack) {
+        if (side == aBaseMetaTileEntity.getFrontFacing() && aIndex == 0) {
+            FluidStack fs = GTUtility.getFluidForFilledItem(aStack, true);
+            return fs != null && mLockedFluids.contains(fs.getFluid());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return side == aBaseMetaTileEntity.getFrontFacing() && aIndex == 1;
+    }
+
+    @Override
     public boolean isFacingValid(ForgeDirection facing) {
         return true;
     }
@@ -216,7 +191,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
     @Override
     public boolean doesFillContainers() {
-        // return true;
         return false;
     }
 
@@ -250,7 +224,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         if (mLockedFluids == null) return new String[] { "INVALID HATCH. ASSIGN LOCKED FLUIDS" };
 
         ArrayList<String> desc = new ArrayList<>();
-
         desc.add(StatCollector.translateToLocal("HatchCustomFluid_00"));
         desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + getCapacity() + "L");
         desc.add(StatCollector.translateToLocal("HatchCustomFluid_02"));
@@ -272,6 +245,30 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new CustomFluidHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    public boolean usesSteamLogoForMui2() {
+        return uiTexture == ItemUtils.PICTURE_GTNL_STEAM_LOGO;
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
+        builder.widget(
+            new DrawableWidget().setDrawable(uiTexture)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 
     @Override

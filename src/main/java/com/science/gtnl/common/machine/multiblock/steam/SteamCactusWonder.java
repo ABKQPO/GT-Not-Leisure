@@ -5,7 +5,6 @@ import static gregtech.api.GregTechAPI.sBlockCasings1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -64,6 +63,22 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     private static final int VERTICAL_OFF_SET = 8;
     private static final int DEPTH_OFF_SET = 2;
 
+    public static final ItemStack[] POSSIBLE_INPUTS = { GregtechItemList.CactusCharcoal.get(1),
+        GregtechItemList.BlockCactusCharcoal.get(1), GregtechItemList.CompressedCactusCharcoal.get(1),
+        GregtechItemList.DoubleCompressedCactusCharcoal.get(1), GregtechItemList.TripleCompressedCactusCharcoal.get(1),
+        GregtechItemList.QuadrupleCompressedCactusCharcoal.get(1),
+        GregtechItemList.QuintupleCompressedCactusCharcoal.get(1), GregtechItemList.CactusCoke.get(1),
+        GregtechItemList.BlockCactusCoke.get(1), GregtechItemList.CompressedCactusCoke.get(1),
+        GregtechItemList.DoubleCompressedCactusCoke.get(1), GregtechItemList.TripleCompressedCactusCoke.get(1),
+        GregtechItemList.QuadrupleCompressedCactusCoke.get(1), GregtechItemList.QuintupleCompressedCactusCoke.get(1) };
+    public static final long[] TOTAL_VALUE = { 8_000L, 90_000L, 1_012_500L, 11_390_625L, 128_144_531L, 1_441_625_977L,
+        16_218_292_236L, 16_000L, 180_000L, 2_025_000L, 22_781_250L, 256_289_063L, 2_883_251_953L, 32_436_584_473L };
+    public static final int[] STEAM_TYPE = { 1, 1, 1, 2, 2, 3, 3, 1, 1, 1, 2, 2, 3, 3 };
+
+    public int currentSteam;
+    public ItemStack currentOffer;
+    public long fueledAmount = 0;
+
     public SteamCactusWonder(String aName) {
         super(aName);
     }
@@ -73,47 +88,24 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new SteamCactusWonderGui(this);
-    }
-
-    public long getFueledAmountForGui() {
-        return fueledAmount;
-    }
-
-    public void setFueledAmountFromGui(long fueledAmount) {
-        this.fueledAmount = fueledAmount;
-    }
-
-    public String formatFueledAmountForGui(long fueledAmount) {
-        return numberFormat.format(fueledAmount);
-    }
-
-    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity arg0) {
         return new SteamCactusWonder(this.mName);
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCactusWonderRecipeType");
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        startRecipeProcessing();
+        if (aBaseMetaTileEntity.isAllowedToWork()) {
+            if (aTick % 20 == 0) {
+                addFuel();
+            }
+            outputSteam();
+        }
+        endRecipeProcessing();
     }
 
-    public int currentSteam;
-    public ItemStack currentOffer;
-    public long fueledAmount = 0;
-    public static final ItemStack[] possibleInputs = { GregtechItemList.CactusCharcoal.get(1),
-        GregtechItemList.BlockCactusCharcoal.get(1), GregtechItemList.CompressedCactusCharcoal.get(1),
-        GregtechItemList.DoubleCompressedCactusCharcoal.get(1), GregtechItemList.TripleCompressedCactusCharcoal.get(1),
-        GregtechItemList.QuadrupleCompressedCactusCharcoal.get(1),
-        GregtechItemList.QuintupleCompressedCactusCharcoal.get(1), GregtechItemList.CactusCoke.get(1),
-        GregtechItemList.BlockCactusCoke.get(1), GregtechItemList.CompressedCactusCoke.get(1),
-        GregtechItemList.DoubleCompressedCactusCoke.get(1), GregtechItemList.TripleCompressedCactusCoke.get(1),
-        GregtechItemList.QuadrupleCompressedCactusCoke.get(1), GregtechItemList.QuintupleCompressedCactusCoke.get(1) };
-    public static final long[] totalValue = { 8_000L, 90_000L, 1_012_500L, 11_390_625L, 128_144_531L, 1_441_625_977L,
-        16_218_292_236L, 16_000L, 180_000L, 2_025_000L, 22_781_250L, 256_289_063L, 2_883_251_953L, 32_436_584_473L };
-    public static final int[] steamType = { 1, 1, 1, 2, 2, 3, 3, 1, 1, 1, 2, 2, 3, 3 };
-
+    @Override
     public IStructureDefinition<SteamCactusWonder> getStructureDefinition() {
         return StructureDefinition.<SteamCactusWonder>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -143,6 +135,80 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN_SURVIVAL,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatchMin(errors, HatchElement.OutputHatch, 1);
+    }
+
+    public void addFuel() {
+        ArrayList<ItemStack> storedInputs = getStoredInputs();
+        for (ItemStack stack : storedInputs) {
+            for (int i = 0; i < 14; i++) {
+                if (stack.isItemEqual(POSSIBLE_INPUTS[i])) {
+                    if (currentOffer == null) {
+                        currentOffer = stack;
+                        fueledAmount += TOTAL_VALUE[i] * stack.stackSize;
+                        currentSteam = STEAM_TYPE[i];
+                        this.depleteInput(stack);
+                    } else if (stack.isItemEqual(currentOffer)) {
+                        fueledAmount += TOTAL_VALUE[i] * stack.stackSize;
+                        this.depleteInput(stack);
+                    }
+                }
+            }
+        }
+    }
+
+    public void outputSteam() {
+        if (fueledAmount > 0) {
+            if (currentSteam == 1) {
+                addOutput(Materials.Steam.getGas((int) Math.min(32000000, fueledAmount)));
+                fueledAmount -= (int) Math.min(32000000, fueledAmount);
+            } else if (currentSteam == 2) {
+                addOutput(GTModHandler.getSuperHeatedSteam((int) Math.min(64000000, fueledAmount)));
+                fueledAmount -= (int) Math.min(64000000, fueledAmount);
+            } else if (currentSteam == 3) {
+                addOutput(Materials.DenseSupercriticalSteam.getGas((int) Math.min(256000000, fueledAmount)));
+                fueledAmount -= (int) Math.min(256000000, fueledAmount);
+            }
+
+            if (fueledAmount <= 0) {
+                fueledAmount = 0;
+                currentOffer = null;
+            }
+        }
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.CactusWonderFakeRecipes;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 14;
+    }
+
+    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(sBlockCasings1, 10);
     }
@@ -168,92 +234,41 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamCactusWonderRecipeType");
     }
 
     @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN_SURVIVAL,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_05"))
+            .beginStructureBlock(9, 11, 9, true)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SteamCactusWonderGui(this);
     }
 
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        startRecipeProcessing();
-        if (aBaseMetaTileEntity.isAllowedToWork()) {
-            if (aTick % 20 == 0) {
-                addFuel();
-            }
-            outputSteam();
-        }
-        endRecipeProcessing();
+    public long getFueledAmountForGui() {
+        return fueledAmount;
     }
 
-    public void addFuel() {
-        ArrayList<ItemStack> storedInputs = getStoredInputs();
-        for (ItemStack stack : storedInputs) {
-            for (int i = 0; i < 14; i++) {
-                if (stack.isItemEqual(possibleInputs[i])) {
-                    if (currentOffer == null) {
-                        currentOffer = stack;
-                        fueledAmount += totalValue[i] * stack.stackSize;
-                        currentSteam = steamType[i];
-                        this.depleteInput(stack);
-                    } else if (stack.isItemEqual(currentOffer)) {
-                        fueledAmount += totalValue[i] * stack.stackSize;
-                        this.depleteInput(stack);
-                    }
-                }
-            }
-
-        }
+    public void setFueledAmountFromGui(long fueledAmount) {
+        this.fueledAmount = fueledAmount;
     }
 
-    public void outputSteam() {
-        if (fueledAmount > 0) {
-            if (currentSteam == 1) {
-                addOutput(Materials.Steam.getGas((int) Math.min(32000000, fueledAmount)));
-                fueledAmount -= (int) Math.min(32000000, fueledAmount);
-            } else if (currentSteam == 2) {
-                addOutput(GTModHandler.getSuperHeatedSteam((int) Math.min(64000000, fueledAmount)));
-                fueledAmount -= (int) Math.min(64000000, fueledAmount);
-            } else if (currentSteam == 3) {
-                addOutput(Materials.DenseSupercriticalSteam.getGas((int) Math.min(256000000, fueledAmount)));
-                fueledAmount -= (int) Math.min(256000000, fueledAmount);
-            }
-
-            if (fueledAmount <= 0) {
-                fueledAmount = 0;
-                currentOffer = null;
-            }
-        }
-    }
-
-    @Override
-    public boolean supportsSteamOC() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsSteamCapacityUI() {
-        return false;
+    public String formatFueledAmountForGui(long fueledAmount) {
+        return numberFormat.format(fueledAmount);
     }
 
     @Override
@@ -274,32 +289,6 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.CactusWonderFakeRecipes;
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 14;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_05"))
-            .beginStructureBlock(9, 11, 9, true)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setLong("fuel", fueledAmount);
@@ -313,10 +302,19 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
         currentSteam = aNBT.getInteger("steam");
     }
 
+    @Override
+    public boolean supportsSteamOC() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSteamCapacityUI() {
+        return false;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_MACERATOR_OP;
     }
-
 }

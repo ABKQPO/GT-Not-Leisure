@@ -107,16 +107,6 @@ public class DebugResearchStation extends MTEBasicMachine {
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
     public long maxEUStore() {
         return 0;
     }
@@ -203,13 +193,19 @@ public class DebugResearchStation extends MTEBasicMachine {
 
         this.mMaxProgresstime = 1;
         this.mEUt = 0;
-
         return 2;
     }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
         return TecTechRecipeMaps.researchStationFakeRecipes;
+    }
+
+    @Override
+    public boolean allowPutStackValidated(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return super.allowPutStackValidated(aBaseMetaTileEntity, aIndex, side, aStack)
+            && getRecipeMap().containsInput(aStack);
     }
 
     @Override
@@ -224,6 +220,16 @@ public class DebugResearchStation extends MTEBasicMachine {
 
     @Override
     @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    @Override
+    @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
         BasicUIProperties uiProperties = getUIProperties();
@@ -232,13 +238,6 @@ public class DebugResearchStation extends MTEBasicMachine {
         builder.widget(createChargerSlot(79, 62));
         builder.widget(createFluidAutoOutputButton());
         builder.widget(createItemAutoOutputButton());
-    }
-
-    @Override
-    public boolean allowPutStackValidated(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
-        ItemStack aStack) {
-        return super.allowPutStackValidated(aBaseMetaTileEntity, aIndex, side, aStack)
-            && getRecipeMap().containsInput(aStack);
     }
 
     @Override

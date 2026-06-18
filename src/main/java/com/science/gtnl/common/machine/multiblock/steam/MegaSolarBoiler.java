@@ -4,16 +4,11 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_MEGA_SOLAR_BOILER;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 
-import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -52,8 +47,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> implements ISurvivalConstructable {
 
@@ -64,25 +57,14 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 1;
 
+    public String state;
+
     public MegaSolarBoiler(String aName) {
         super(aName);
     }
 
     public MegaSolarBoiler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new MegaSolarBoilerGui(this);
-    }
-
-    public String getStateForGui() {
-        return state;
-    }
-
-    public void setStateFromGui(String state) {
-        this.state = state;
     }
 
     @Override
@@ -122,6 +104,31 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatchMin(errors, HatchElement.OutputHatch, 1);
+    }
+
+    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(sBlockCasings1, 10);
     }
@@ -147,34 +154,6 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
-    }
-
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
-
-    public String state;
-
-    @Override
     public void runMachine(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.runMachine(aBaseMetaTileEntity, aTick);
 
@@ -190,38 +169,6 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
 
         }
 
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the Mega Solar Boiler terminal text is fully ported to mui2.
-        super.drawTexts(screenElements, inventorySlot);
-
-        screenElements.widget(
-            new TextWidget().setStringSupplier(() -> EnumChatFormatting.GREEN + state)
-                .setTextAlignment((Alignment.CenterLeft)))
-            .widget(new FakeSyncWidget.StringSyncer(() -> state, val -> state = val));
-    }
-
-    public void depleteInputReal(FluidStack aLiquid) {
-        depleteInputReal(aLiquid, false);
-    }
-
-    public boolean depleteInputReal(FluidStack aLiquid, boolean simulate) {
-        if (aLiquid == null) return false;
-        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
-            setHatchRecipeMap(tHatch);
-            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
-            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                if (simulate) {
-                    return true;
-                }
-                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
-                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -253,32 +200,54 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new MegaSolarBoilerGui(this);
+    }
+
+    public String getStateForGui() {
+        return state;
+    }
+
+    public void setStateFromGui(String state) {
+        this.state = state;
     }
 
     @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-    }
+    @Deprecated
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the Mega Solar Boiler terminal text is fully ported to mui2.
+        super.drawTexts(screenElements, inventorySlot);
 
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-    }
-
-    @Override
-    public void loadNBTData(final NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
+        screenElements.widget(
+            new TextWidget().setStringSupplier(() -> EnumChatFormatting.GREEN + state)
+                .setTextAlignment((Alignment.CenterLeft)))
+            .widget(new FakeSyncWidget.StringSyncer(() -> state, val -> state = val));
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public SoundResource getActivitySoundLoop() {
         return SoundResource.IC2_MACHINES_MACERATOR_OP;
+    }
+
+    public void depleteInputReal(FluidStack aLiquid) {
+        depleteInputReal(aLiquid, false);
+    }
+
+    public boolean depleteInputReal(FluidStack aLiquid, boolean simulate) {
+        if (aLiquid == null) return false;
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
+            setHatchRecipeMap(tHatch);
+            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
+            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
+                if (simulate) {
+                    return true;
+                }
+                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
+                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
+            }
+        }
+        return false;
     }
 
 }

@@ -50,6 +50,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -61,6 +62,8 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> implements ISurvivalConstructable {
+
+    private static final TranslatableText BLAZE_INPUT_HATCH_NAME = TranslatableText.lang("FluidBlazeInputHatch");
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String BBF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/blaze_blast_furnace";
@@ -84,34 +87,6 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     @Override
     public IMetaTileEntity newMetaEntity(final IGregTechTileEntity aTileEntity) {
         return new BlazeBlastFurnace(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BlazeBlastFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_05"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(7, 6, 7, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addMufflerHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_01"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("FluidBlazeInputHatch"),
-                StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"),
-                1)
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -139,6 +114,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                             HatchElement.Maintenance,
                             ParallelCon)
                         .casingIndex(getCasingTextureID())
+                        .hint(1)
                         .build(),
                     StructureUtility
                         .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15)),
@@ -147,7 +123,6 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                         .hatchId(21503)
                         .shouldReject(x -> !x.mFluidBlazeInputHatch.isEmpty())
                         .casingIndex(getCasingTextureID())
-                        .hint(1)
                         .hint(1)
                         .build()))
             .addElement('F', HatchElement.Muffler.newAny(TAE.getIndexFromPage(2, 11), 1))
@@ -183,10 +158,12 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 50);
+        checkHatch(errors);
+        checkEnergyHatch(errors);
+        checkHatchMin(errors, BLAZE_INPUT_HATCH_NAME, mFluidBlazeInputHatch.size(), 1);
+        checkCasingMin(errors, mCountCasing, 50);
     }
 
     @Override
@@ -204,45 +181,14 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     }
 
     @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && !mFluidBlazeInputHatch.isEmpty()
-            && getMCoilLevel() != HeatingCoilLevel.None
-            && checkEnergyHatch();
+    protected boolean requiresCoilStructureCheck() {
+        return true;
     }
 
     @Override
     public void updateSlots() {
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidBlazeInputHatch)) tHatch.updateSlots();
         super.updateSlots();
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(15);
-    }
-
-    @Override
-    public void updateHatchTexture() {
-        super.updateHatchTexture();
-        for (MTEHatch h : mMufflerHatches) h.updateTexture(TAE.getIndexFromPage(2, 11));
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAAdvancedEBFActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAAdvancedEBF)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)) };
     }
 
     @Override
@@ -299,11 +245,6 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        return 64 * mMultiTier;
-    }
-
-    @Override
     public int getMaxTierSkip() {
         return 0;
     }
@@ -340,6 +281,35 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             useSingleAmp ? 1
                 : ExoticEnergyInputHelper.getMaxWorkingInputAmpsMulti(getExoticAndNormalEnergyHatchList()));
         logic.setAmperageOC(!useSingleAmp);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(15);
+    }
+
+    @Override
+    public void updateHatchTexture() {
+        super.updateHatchTexture();
+        for (MTEHatch h : mMufflerHatches) h.updateTexture(TAE.getIndexFromPage(2, 11));
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAAdvancedEBFActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAAdvancedEBF)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(TAE.getIndexFromPage(2, 11)) };
     }
 
     @Override
@@ -408,6 +378,39 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                 + getAveragePollutionPercentage()
                 + EnumChatFormatting.RESET
                 + " %" };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("BlazeBlastFurnaceRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_05"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(7, 6, 7, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addMufflerHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_01"), 1)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("FluidBlazeInputHatch"),
+                StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"),
+                1)
+            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public int getMaxParallelRecipes() {
+        return 64 * mMultiTier;
     }
 
     public boolean addFluidBlazeInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {

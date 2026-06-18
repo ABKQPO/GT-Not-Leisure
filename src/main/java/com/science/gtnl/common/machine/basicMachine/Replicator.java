@@ -94,26 +94,6 @@ public class Replicator extends MTEBasicMachine {
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after Replicator mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public int getCapacity() {
         return 256000;
     }
@@ -167,5 +147,25 @@ public class Replicator extends MTEBasicMachine {
     @Override
     public void startProcess() {
         sendLoopStart((byte) 1);
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after Replicator mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
     }
 }

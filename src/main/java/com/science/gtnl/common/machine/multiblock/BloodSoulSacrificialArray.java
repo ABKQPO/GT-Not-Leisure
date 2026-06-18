@@ -74,9 +74,6 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacrificialArray> {
 
-    public boolean isCreativeOrb = false;
-    public boolean enableRender = true;
-    public int currentEssence = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String BSSA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/blood_soul_sacrificial_array";
@@ -97,6 +94,10 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public static final Block BLOOD_LAMP = Mods.BloodArsenal.isModLoaded() ? getBloodLamp() : Blocks.glowstone;
     public static final Block LP_MATERIALIZER = Mods.BloodArsenal.isModLoaded() ? getLpMaterializer() : Blocks.hopper;
 
+    public boolean isCreativeOrb = false;
+    public boolean enableRender = true;
+    public int currentEssence = 0;
+
     public BloodSoulSacrificialArray(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -106,112 +107,69 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        resetParallelTier();
-
-        for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
-            mParallelTier = module.mTier;
-
-            int baseParallel = module.getParallel();
-            return getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes ? baseParallel / 4 : baseParallel * 4;
-        }
-
-        if (mParallelTier <= 1) {
-            return 8;
-        }
-
-        int base = 1 << (2 * (mParallelTier - 2));
-        return getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes ? base / 4 : base * 4;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new BloodSoulSacrificialArray(this.mName);
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return switch (machineMode) {
-            case MACHINEMODE_FALLING_TOWER -> GTNLRecipeMaps.FallingTowerRecipes;
-            case MACHINEMODE_ALCHEMIC -> GTNLRecipeMaps.AlchemicChemistrySetRecipes;
-            default -> GTNLRecipeMaps.BloodDemonInjectionRecipes;
-        };
+    public boolean onRunningTick(ItemStack stack) {
+        if ((this.mProgresstime + 1) % 20 == 0 && this.mProgresstime > 0
+            && this.getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes
+            && enableRender) {
+
+            if (this.mMaxProgresstime - this.mProgresstime < 250) {
+                IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
+                World world = aBaseMetaTileEntity.getWorld();
+                int baseX = aBaseMetaTileEntity.getXCoord();
+                int baseZ = aBaseMetaTileEntity.getZCoord();
+
+                ForgeDirection frontFacing = aBaseMetaTileEntity.getFrontFacing();
+                ForgeDirection backFacing = frontFacing.getOpposite();
+
+                int offsetX = backFacing.offsetX * 4;
+                int offsetZ = backFacing.offsetZ * 4;
+
+                int spawnX = baseX + offsetX;
+                int spawnY = 257;
+                int spawnZ = baseZ + offsetZ;
+
+                if (!world.isRemote) {
+                    EntityMeteor meteor = new EntityMeteor(world, spawnX + 0.5, spawnY, spawnZ + 0.5, 114514);
+                    meteor.motionY = -1.0f;
+
+                    world.spawnEntityInWorld(meteor);
+                }
+            }
+        }
+
+        return super.onRunningTick(stack);
     }
 
     @NotNull
     @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(
-            GTNLRecipeMaps.FallingTowerRecipes,
-            GTNLRecipeMaps.AlchemicChemistrySetRecipes,
-            GTNLRecipeMaps.BloodDemonInjectionRecipes);
-    }
+    public CheckRecipeResult checkProcessing() {
+        isCreativeOrb = false;
 
-    @Override
-    public int nextMachineMode() {
-        if (machineMode == MACHINEMODE_BLOOD_DEMON) return MACHINEMODE_FALLING_TOWER;
-        else if (machineMode == MACHINEMODE_FALLING_TOWER) return MACHINEMODE_ALCHEMIC;
-        else return MACHINEMODE_BLOOD_DEMON;
-    }
+        ItemStack requiredItem = GTModHandler.getModItem(Mods.Avaritia.ID, "Orb_Armok", 1);
 
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Blood Soul Sacrificial Array GUI no longer supports mui1 startup
-        // paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
-    }
-
-    @Override
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + this.machineMode));
-
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        if (getBaseMetaTileEntity().isServerSide()) {
-            enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal(
-                    "BloodSoulSacrificialArray_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
+        for (ItemStack item : getAllStoredInputs()) {
+            if (item != null && item.isItemEqual(requiredItem)) {
+                isCreativeOrb = true;
+                break;
+            }
         }
-        return true;
-    }
-
-    @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + machineMode);
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
+        return super.checkProcessing();
     }
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        return;
+        checkHatch(errors);
     }
 
     @Override
-    public boolean checkEnergyHatch() {
-        return true;
-    }
+    public void checkEnergyHatch(List<StructureError> errors) {}
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
@@ -289,85 +247,40 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setInteger("lp", currentEssence);
-    }
+    public int getMaxParallelRecipes() {
+        resetParallelTier();
 
-    @Override
-    public void loadNBTData(final NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        currentEssence = aNBT.getInteger("lp");
-    }
+        for (ParallelControllerHatch module : GTUtility.filterValidMTEs(mParallelControllerHatches)) {
+            mParallelTier = module.mTier;
 
-    @Override
-    public boolean onRunningTick(ItemStack stack) {
-
-        if ((this.mProgresstime + 1) % 20 == 0 && this.mProgresstime > 0
-            && this.getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes
-            && enableRender) {
-
-            if (this.mMaxProgresstime - this.mProgresstime < 250) {
-                IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
-                World world = aBaseMetaTileEntity.getWorld();
-                int baseX = aBaseMetaTileEntity.getXCoord();
-                int baseZ = aBaseMetaTileEntity.getZCoord();
-
-                ForgeDirection frontFacing = aBaseMetaTileEntity.getFrontFacing();
-                ForgeDirection backFacing = frontFacing.getOpposite();
-
-                int offsetX = backFacing.offsetX * 4;
-                int offsetZ = backFacing.offsetZ * 4;
-
-                int spawnX = baseX + offsetX;
-                int spawnY = 257;
-                int spawnZ = baseZ + offsetZ;
-
-                if (!world.isRemote) {
-                    EntityMeteor meteor = new EntityMeteor(world, spawnX + 0.5, spawnY, spawnZ + 0.5, 114514);
-                    meteor.motionY = -1.0f;
-
-                    world.spawnEntityInWorld(meteor);
-                }
-            }
+            int baseParallel = module.getParallel();
+            return getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes ? baseParallel / 4 : baseParallel * 4;
         }
 
-        return super.onRunningTick(stack);
+        if (mParallelTier <= 1) {
+            return 8;
+        }
+
+        int base = 1 << (2 * (mParallelTier - 2));
+        return getRecipeMap() == GTNLRecipeMaps.FallingTowerRecipes ? base / 4 : base * 4;
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BloodSoulSacrificialArrayRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_05"))
-            .beginStructureBlock(33, 14, 30, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
+    public RecipeMap<?> getRecipeMap() {
+        return switch (machineMode) {
+            case MACHINEMODE_FALLING_TOWER -> GTNLRecipeMaps.FallingTowerRecipes;
+            case MACHINEMODE_ALCHEMIC -> GTNLRecipeMaps.AlchemicChemistrySetRecipes;
+            default -> GTNLRecipeMaps.BloodDemonInjectionRecipes;
+        };
     }
 
     @NotNull
     @Override
-    public CheckRecipeResult checkProcessing() {
-        isCreativeOrb = false;
-
-        ItemStack requiredItem = GTModHandler.getModItem(Mods.Avaritia.ID, "Orb_Armok", 1);
-
-        for (ItemStack item : getAllStoredInputs()) {
-            if (item != null && item.isItemEqual(requiredItem)) {
-                isCreativeOrb = true;
-                break;
-            }
-        }
-        return super.checkProcessing();
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(
+            GTNLRecipeMaps.FallingTowerRecipes,
+            GTNLRecipeMaps.AlchemicChemistrySetRecipes,
+            GTNLRecipeMaps.BloodDemonInjectionRecipes);
     }
 
     @Override
@@ -503,24 +416,6 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
         return 1 - (mParallelTier / 50.0);
     }
 
-    public String getOwner() {
-        ItemStack stack = getControllerSlot();
-        if (stack != null) {
-            Item item = stack.getItem();
-            if (item instanceof IBindable && !IBindable.getOwnerName(stack)
-                .isEmpty()) {
-                return IBindable.getOwnerName(stack);
-            }
-        }
-        return this.getBaseMetaTileEntity()
-            .getOwnerName();
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new BloodSoulSacrificialArray(this.mName);
-    }
-
     @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(sBlockCasings8, 10);
@@ -545,6 +440,16 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     }
 
     @Override
+    public String[] getInfoData() {
+        String[] info = super.getInfoData();
+        info[4] = StatCollector.translateToLocal("BloodSoulSacrificialArray.LPNetwork") + EnumChatFormatting.RED
+            + NumberFormatUtil.formatNumber(Math.abs(currentEssence))
+            + EnumChatFormatting.RESET
+            + " LP";
+        return info;
+    }
+
+    @Override
     public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currentTip, accessor, config);
@@ -553,17 +458,94 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
                 + currentEssence
                 + EnumChatFormatting.RESET
                 + " LP");
-
     }
 
     @Override
-    public String[] getInfoData() {
-        String[] info = super.getInfoData();
-        info[4] = StatCollector.translateToLocal("BloodSoulSacrificialArray.LPNetwork") + EnumChatFormatting.RED
-            + NumberFormatUtil.formatNumber(Math.abs(currentEssence))
-            + EnumChatFormatting.RESET
-            + " LP";
-        return info;
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("BloodSoulSacrificialArrayRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_05"))
+            .beginStructureBlock(33, 14, 30, false)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
+    }
+
+    @Override
+    @Deprecated
+    public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Blood Soul Sacrificial Array GUI no longer supports mui1 startup
+        // paths.
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_PACKAGER);
+    }
+
+    @Override
+    public int nextMachineMode() {
+        if (machineMode == MACHINEMODE_BLOOD_DEMON) return MACHINEMODE_FALLING_TOWER;
+        else if (machineMode == MACHINEMODE_FALLING_TOWER) return MACHINEMODE_ALCHEMIC;
+        else return MACHINEMODE_BLOOD_DEMON;
+    }
+
+    @Override
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        this.machineMode = (this.machineMode + 1) % 3;
+        GTUtility.sendChatToPlayer(
+            aPlayer,
+            StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + this.machineMode));
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            enableRender = !enableRender;
+            GTUtility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal(
+                    "BloodSoulSacrificialArray_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
+        }
+        return true;
+    }
+
+    @Override
+    public String getMachineModeName() {
+        return StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + machineMode);
+    }
+
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("lp", currentEssence);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        currentEssence = aNBT.getInteger("lp");
     }
 
     @Override
@@ -577,6 +559,19 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public boolean shouldCheckMaintenance() {
         return false;
+    }
+
+    public String getOwner() {
+        ItemStack stack = getControllerSlot();
+        if (stack != null) {
+            Item item = stack.getItem();
+            if (item instanceof IBindable && !IBindable.getOwnerName(stack)
+                .isEmpty()) {
+                return IBindable.getOwnerName(stack);
+            }
+        }
+        return this.getBaseMetaTileEntity()
+            .getOwnerName();
     }
 
     @Optional.Method(modid = "dreamcraft")

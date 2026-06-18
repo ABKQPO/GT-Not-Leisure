@@ -51,8 +51,62 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeIndustrialLathe(this.mName);
+    public IStructureDefinition<LargeIndustrialLathe> getStructureDefinition() {
+        return StructureDefinition.<LargeIndustrialLathe>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('D', GTStructureUtility.ofFrame(Materials.Tungsten))
+            .addElement(
+                'E',
+                GTStructureUtility.buildHatchAdder(LargeIndustrialLathe.class)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 1))))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 50);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.latheRecipes;
     }
 
     @Override
@@ -89,11 +143,6 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.latheRecipes;
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeIndustrialLatheRecipeType"))
@@ -112,60 +161,6 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     }
 
     @Override
-    public IStructureDefinition<LargeIndustrialLathe> getStructureDefinition() {
-        return StructureDefinition.<LargeIndustrialLathe>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('D', GTStructureUtility.ofFrame(Materials.Tungsten))
-            .addElement(
-                'E',
-                GTStructureUtility.buildHatchAdder(LargeIndustrialLathe.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.Maintenance,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 1))))
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 50);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
     public double getEUtDiscount() {
         return 0.8 - (mParallelTier / 50.0);
     }
@@ -173,5 +168,10 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     @Override
     public double getDurationModifier() {
         return 1.0 / 2.25 - (Math.max(0, mParallelTier - 1) / 50.0);
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeIndustrialLathe(this.mName);
     }
 }

@@ -68,30 +68,28 @@ import lombok.Setter;
 public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     implements ISurvivalConstructable, IItemVault {
 
-    public static long MAX_DISTINCT_ITEMS = 1024;
-
-    public static BigInteger MAX_CAPACITY_ITEM = BigInteger.valueOf(640000)
+    public static final long MAX_DISTINCT_ITEMS = 1024;
+    public static final BigInteger MAX_CAPACITY_ITEM = BigInteger.valueOf(640000)
         .multiply(BigInteger.valueOf(MAX_DISTINCT_ITEMS));
-
-    public BigInteger capacityItem = MAX_CAPACITY_ITEM;
-    public long capacityPerItem = capacityItem.divide(BigInteger.valueOf(MAX_DISTINCT_ITEMS))
-        .longValue();
-
-    public boolean locked = true;
-    @Setter
-    @Getter
-    public boolean doVoidExcess = false;
-    public VaultPortHatch portHatch = null;
+    public static final NumberFormat NF = NumberFormat.getNumberInstance();
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SIV_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_item_vault";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(SIV_STRUCTURE_FILE_PATH);
+    private static final String[][] SHAPE = StructureUtils.readStructureFromFile(SIV_STRUCTURE_FILE_PATH);
     private static final int HORIZONTAL_OFF_SET = 3;
     private static final int VERTICAL_OFF_SET = 8;
     private static final int DEPTH_OFF_SET = 0;
 
-    public static NumberFormat nf = NumberFormat.getNumberInstance();
+    public BigInteger capacityItem = MAX_CAPACITY_ITEM;
+    public long capacityPerItem = capacityItem.divide(BigInteger.valueOf(MAX_DISTINCT_ITEMS))
+        .longValue();
+    public boolean locked = true;
 
+    @Setter
+    @Getter
+    public boolean doVoidExcess = false;
+
+    public VaultPortHatch portHatch = null;
     public IItemList<IAEItemStack> STORE_ITEM = AEApi.instance()
         .storage()
         .createItemList();
@@ -106,22 +104,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamItemVault(super.mName);
-    }
-
-    @Override
-    public long maxItemCount() {
-        return MAX_DISTINCT_ITEMS;
-    }
-
-    @Override
-    public boolean hasItem() {
-        return true;
-    }
-
-    @Override
-    public boolean hasFluid() {
-        return false;
+        return new SteamItemVault(this.mName);
     }
 
     @Override
@@ -142,87 +125,6 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public @NotNull CheckRecipeResult checkProcessing() {
-        mEfficiency = 10000;
-        mEfficiencyIncrease = 10000;
-        lEUt = 128;
-        mMaxProgresstime = 20;
-
-        ArrayList<ItemStack> inputItems = getStoredInputs();
-
-        if (!inputItems.isEmpty()) {
-            for (ItemStack aItem : inputItems) {
-                ItemStack toDeplete = aItem.copy();
-                toDeplete.stackSize = this.injectItems(aItem, true);
-                depleteInput(toDeplete);
-            }
-        }
-
-        if (!this.mOutputBusses.isEmpty() || !this.mSteamOutputs.isEmpty()) {
-            if (STORE_ITEM.getFirstItem() != null) {
-                IAEItemStack stack = STORE_ITEM.getFirstItem()
-                    .copy();
-                stack.setStackSize(stack.getStackSize() - this.tryAddOutput(stack.getItemStack()).stackSize);
-                if (stack.getStackSize() > 0) {
-                    this.extractItems(stack, true);
-                }
-            }
-        }
-
-        if (this.lEUt > 0) this.lEUt = -this.lEUt;
-
-        return CheckRecipeResultRegistry.SUCCESSFUL;
-    }
-
-    @Override
-    public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
-        ArrayList<ItemStack> rList = new ArrayList<>();
-        Map<ItemId, ItemStack> inputsFromME = new Object2ObjectOpenHashMap<>();
-        for (MTEHatchInputBus tHatch : GTUtility.validMTEList(mInputBusses)) {
-            if (tHatch instanceof MTEHatchCraftingInputME) {
-                continue;
-            }
-            byte busColor = tHatch.getColor();
-            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
-            assert tileEntity != null;
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    if (isMEBus) {
-                        // Prevent the same item from different ME buses from being recognized
-                        inputsFromME.put(ItemId.createNoCopy(itemStack), itemStack);
-                    } else {
-                        rList.add(itemStack);
-                    }
-                }
-            }
-        }
-
-        for (MTEHatchSteamBusInput tHatch : GTUtility.validMTEList(mSteamInputs)) {
-            byte busColor = tHatch.getColor();
-            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            assert tileEntity != null;
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    rList.add(itemStack);
-                }
-            }
-        }
-
-        if (!inputsFromME.isEmpty()) {
-            rList.addAll(inputsFromME.values());
-        }
-        return rList;
-
-    }
-
-    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide()) {
@@ -230,17 +132,18 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         }
     }
 
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
-        this.setDoVoidExcess(!doVoidExcess);
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("Info_SteamItemVault_AutoVoiding") + doVoidExcess);
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        if (portHatch != null) {
+            portHatch = null;
+        }
     }
 
     @Override
     public IStructureDefinition<SteamItemVault> getStructureDefinition() {
         return StructureDefinition.<SteamItemVault>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(SHAPE))
             .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 29))
             .addElement('B', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement(
@@ -279,32 +182,6 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (portHatch != null && portHatch.controller == null) portHatch.bind(this);
-        checkStructureCondition(errors, mCountCasing >= 30);
-    }
-
-    @Override
-    protected boolean supportsCraftingMEBuffer() {
-        return false;
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        if (portHatch != null) {
-            portHatch = null;
-        }
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return GTUtility.getTextureId((byte) 116, (byte) 32);
-    }
-
-    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         this.buildPiece(
             STRUCTURE_PIECE_MAIN,
@@ -331,6 +208,126 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
+        if (portHatch != null && portHatch.controller == null) {
+            portHatch.bind(this);
+        }
+        checkCasingMin(errors, mCountCasing, 30);
+    }
+
+    @Override
+    public @NotNull CheckRecipeResult checkProcessing() {
+        mEfficiency = 10000;
+        mEfficiencyIncrease = 10000;
+        lEUt = 128;
+        mMaxProgresstime = 20;
+
+        ArrayList<ItemStack> inputItems = getStoredInputs();
+        if (!inputItems.isEmpty()) {
+            for (ItemStack aItem : inputItems) {
+                ItemStack toDeplete = aItem.copy();
+                toDeplete.stackSize = this.injectItems(aItem, true);
+                depleteInput(toDeplete);
+            }
+        }
+
+        if ((!this.mOutputBusses.isEmpty() || !this.mSteamOutputs.isEmpty()) && STORE_ITEM.getFirstItem() != null) {
+            IAEItemStack stack = STORE_ITEM.getFirstItem()
+                .copy();
+            stack.setStackSize(stack.getStackSize() - this.tryAddOutput(stack.getItemStack()).stackSize);
+            if (stack.getStackSize() > 0) {
+                this.extractItems(stack, true);
+            }
+        }
+
+        if (this.lEUt > 0) {
+            this.lEUt = -this.lEUt;
+        }
+
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    @Override
+    public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
+        ArrayList<ItemStack> rList = new ArrayList<>();
+        Map<ItemId, ItemStack> inputsFromME = new Object2ObjectOpenHashMap<>();
+        for (MTEHatchInputBus tHatch : GTUtility.validMTEList(mInputBusses)) {
+            if (tHatch instanceof MTEHatchCraftingInputME) {
+                continue;
+            }
+            byte busColor = tHatch.getColor();
+            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
+            tHatch.mRecipeMap = getRecipeMap();
+            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
+            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
+            assert tileEntity != null;
+            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
+                ItemStack itemStack = tileEntity.getStackInSlot(i);
+                if (itemStack != null) {
+                    if (isMEBus) {
+                        inputsFromME.put(ItemId.createNoCopy(itemStack), itemStack);
+                    } else {
+                        rList.add(itemStack);
+                    }
+                }
+            }
+        }
+
+        for (MTEHatchSteamBusInput tHatch : GTUtility.validMTEList(mSteamInputs)) {
+            byte busColor = tHatch.getColor();
+            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
+            tHatch.mRecipeMap = getRecipeMap();
+            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
+            assert tileEntity != null;
+            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
+                ItemStack itemStack = tileEntity.getStackInSlot(i);
+                if (itemStack != null) {
+                    rList.add(itemStack);
+                }
+            }
+        }
+
+        if (!inputsFromME.isEmpty()) {
+            rList.addAll(inputsFromME.values());
+        }
+        return rList;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return GTUtility.getTextureId((byte) 116, (byte) 32);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) {
+                return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE)
+                        .extFacing()
+                        .build(),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE_GLOW)
+                        .extFacing()
+                        .glow()
+                        .build() };
+            }
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
     public String getMachineType() {
         return StatCollector.translateToLocal("SteamItemVaultRecipeType");
     }
@@ -344,7 +341,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamItemVault_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamItemVault_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamItemVault_04"))
-            .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamItemVault_05", nf.format(MAX_CAPACITY_ITEM)))
+            .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamItemVault_05", NF.format(MAX_CAPACITY_ITEM)))
             .beginStructureBlock(7, 11, 7, false)
             .addInputBus(StatCollector.translateToLocal("Tooltip_SteamItemVault_Casing"), 1)
             .addOutputBus(StatCollector.translateToLocal("Tooltip_SteamItemVault_Casing"), 1)
@@ -353,85 +350,47 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_ITEM_VAULT)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public boolean supportsPowerPanel() {
-        return false;
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 0;
-    }
-
-    @Override
     public String[] getInfoData() {
-        ArrayList<String> ll = new ArrayList<>();
-        ll.add(
+        ArrayList<String> info = new ArrayList<>();
+        info.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SteamItemVault_StoredItems")
                 + EnumChatFormatting.RESET);
 
-        int i = 0;
+        int index = 0;
         for (IAEItemStack tank : STORE_ITEM) {
             String localizedName = Objects.requireNonNull(
                 tank.getItem()
                     .getItemStackDisplayName(tank.getItemStack()));
-            String amount = nf.format(tank.getStackSize());
+            String amount = NF.format(tank.getStackSize());
             String percentage = capacityPerItem > 0 ? String.valueOf(tank.getStackSize() * 100 / capacityPerItem) : "";
-            ll.add(MessageFormat.format("{0} - {1}: {2} ({3}%)", i++, localizedName, amount, percentage));
-            if (i >= 32) break;
+            info.add(MessageFormat.format("{0} - {1}: {2} ({3}%)", index++, localizedName, amount, percentage));
+            if (index >= 32) {
+                break;
+            }
         }
 
-        ll.add(
+        info.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SteamItemVault_OperationalData")
                 + EnumChatFormatting.RESET);
-
-        ll.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsed", nf.format(getItemStoredAmount())));
-        ll.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotal", nf.format(capacityItem)));
-        ll.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_PerItemCapacity", nf.format(capacityPerItem)));
-        ll.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsedTypes", nf.format(itemsCount())));
-        ll.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotalTypes", nf.format(maxItemCount())));
-
-        ll.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_RunningCost", getActualEnergyUsage()));
-        ll.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_AutoVoiding", doVoidExcess));
-        ll.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
-
-        return ll.toArray(new String[0]);
+        info.add(
+            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsed", NF.format(getItemStoredAmount())));
+        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotal", NF.format(capacityItem)));
+        info.add(
+            StatCollector.translateToLocalFormatted("Info_SteamItemVault_PerItemCapacity", NF.format(capacityPerItem)));
+        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsedTypes", NF.format(itemsCount())));
+        info.add(
+            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotalTypes", NF.format(maxItemCount())));
+        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_RunningCost", getActualEnergyUsage()));
+        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_AutoVoiding", doVoidExcess));
+        info.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
+        return info.toArray(new String[0]);
     }
 
-    private String ensureUUID(NBTTagCompound aNBT) {
-        if (aNBT.hasKey("storeUUID")) {
-            return aNBT.getString("storeUUID");
-        } else {
-            String uuid = UUID.randomUUID()
-                .toString();
-            aNBT.setString("storeUUID", uuid);
-            return uuid;
-        }
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+        this.setDoVoidExcess(!doVoidExcess);
+        GTUtility.sendChatToPlayer(
+            aPlayer,
+            StatCollector.translateToLocal("Info_SteamItemVault_AutoVoiding") + doVoidExcess);
     }
 
     @Override
@@ -441,7 +400,6 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         aNBT.setBoolean("locked", locked);
 
         String uuid = ensureUUID(aNBT);
-
         NBTTagCompound storeRoot = new NBTTagCompound();
         NBTTagList itemNbt = new NBTTagList();
         for (IAEItemStack aeItem : STORE_ITEM) {
@@ -453,7 +411,9 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
         File worldDir = DimensionManager.getCurrentSaveRootDirectory();
         File dataDir = new File(worldDir, "data");
-        if (!dataDir.exists()) dataDir.mkdirs();
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
 
         File storeFile = new File(dataDir, "ItemVault_" + uuid + ".dat");
         try {
@@ -472,7 +432,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         NBTTagList itemNbt = new NBTTagList();
         aNBT.setTag("STORE_ITEM", itemNbt);
         for (IAEItemStack aeItem : STORE_ITEM) {
-            var nbt = new NBTTagCompound();
+            NBTTagCompound nbt = new NBTTagCompound();
             aeItem.writeToNBT(nbt);
             itemNbt.appendTag(nbt);
         }
@@ -494,11 +454,9 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 if (vaultFile.exists()) {
                     NBTTagCompound fileNBT = CompressedStreamTools.read(vaultFile);
                     NBTTagList itemNbt = fileNBT.getTagList("STORE_ITEM", 10);
-
                     for (int i = 0; i < itemNbt.tagCount(); i++) {
                         STORE_ITEM.add(AEItemStack.loadItemStackFromNBT(itemNbt.getCompoundTagAt(i)));
                     }
-
                     if (!vaultFile.delete()) {
                         System.err.println("Warning: Failed to delete vault file " + vaultFile);
                     }
@@ -507,6 +465,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 e.printStackTrace();
             }
         }
+
         NBTTagList itemNbt = aNBT.getTagList("STORE_ITEM", 10);
         if (itemNbt != null) {
             for (int i = 0; i < itemNbt.tagCount(); i++) {
@@ -517,10 +476,40 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
+    public long maxItemCount() {
+        return MAX_DISTINCT_ITEMS;
+    }
+
+    @Override
+    public boolean hasItem() {
+        return true;
+    }
+
+    @Override
+    public boolean hasFluid() {
+        return false;
+    }
+
+    @Override
+    protected boolean supportsCraftingMEBuffer() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsPowerPanel() {
+        return false;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 0;
+    }
+
+    @Override
     public int injectItems(ItemStack aItem, boolean doInput) {
         if (locked) return 0;
         if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        var aeItem = getStoredItem(aItem);
+        IAEItemStack aeItem = getStoredItem(aItem);
         long size = aeItem == null ? 0 : aeItem.getStackSize();
         if (size >= capacityPerItem) return doVoidExcess ? aItem.stackSize : 0;
         if (capacityPerItem - size < aItem.stackSize) {
@@ -532,27 +521,31 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 } else {
                     aeItem.setStackSize(capacityPerItem);
                 }
-                if (portHatch != null) portHatch.postUpdateItem(aItem, capacityPerItem - size);
+                if (portHatch != null) {
+                    portHatch.postUpdateItem(aItem, capacityPerItem - size);
+                }
             }
             return doVoidExcess ? aItem.stackSize : (int) (capacityPerItem - size);
-        } else {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(AEItemStack.create(aItem));
-                } else {
-                    aeItem.setStackSize(size + aItem.stackSize);
-                }
-                if (portHatch != null) portHatch.postUpdateItem(aItem, aItem.stackSize);
-            }
-            return aItem.stackSize;
         }
+
+        if (doInput) {
+            if (aeItem == null) {
+                STORE_ITEM.addStorage(AEItemStack.create(aItem));
+            } else {
+                aeItem.setStackSize(size + aItem.stackSize);
+            }
+            if (portHatch != null) {
+                portHatch.postUpdateItem(aItem, aItem.stackSize);
+            }
+        }
+        return aItem.stackSize;
     }
 
     @Override
     public long injectItems(IAEItemStack aItem, boolean doInput) {
         if (locked) return 0;
         if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        var aeItem = getStoredItem(aItem.getItemStack());
+        IAEItemStack aeItem = getStoredItem(aItem.getItemStack());
         long size = aeItem == null ? 0 : aeItem.getStackSize();
         if (size >= capacityPerItem) return doVoidExcess ? aItem.getStackSize() : 0;
         if (capacityPerItem - size < aItem.getStackSize()) {
@@ -564,53 +557,50 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 } else {
                     aeItem.setStackSize(capacityPerItem);
                 }
-                if (portHatch != null) portHatch.postUpdateItem(aItem.getItemStack(), capacityPerItem - size);
+                if (portHatch != null) {
+                    portHatch.postUpdateItem(aItem.getItemStack(), capacityPerItem - size);
+                }
             }
             return doVoidExcess ? aItem.getStackSize() : (int) (capacityPerItem - size);
-        } else {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(aItem);
-                } else {
-                    aeItem.setStackSize(size + aItem.getStackSize());
-                }
-                if (portHatch != null) portHatch.postUpdateItem(aItem.getItemStack(), aItem.getStackSize());
-            }
-            return aItem.getStackSize();
         }
+
+        if (doInput) {
+            if (aeItem == null) {
+                STORE_ITEM.addStorage(aItem);
+            } else {
+                aeItem.setStackSize(size + aItem.getStackSize());
+            }
+            if (portHatch != null) {
+                portHatch.postUpdateItem(aItem.getItemStack(), aItem.getStackSize());
+            }
+        }
+        return aItem.getStackSize();
     }
 
     @Override
     public long extractItems(IAEItemStack aItem, boolean doOutput) {
         if (locked) return 0;
-        var aeItem = getStoredItem(aItem.getItemStack());
+        IAEItemStack aeItem = getStoredItem(aItem.getItemStack());
         if (aeItem == null) return 0;
         long storedSize = aeItem.getStackSize();
         long requestSize = aItem.getStackSize();
         if (storedSize > requestSize) {
             if (doOutput) {
                 aeItem.setStackSize(storedSize - requestSize);
-                if (portHatch != null) portHatch.postUpdateItem(aItem.getItemStack(), -requestSize);
+                if (portHatch != null) {
+                    portHatch.postUpdateItem(aItem.getItemStack(), -requestSize);
+                }
             }
             return requestSize;
-        } else {
-            if (doOutput) {
-                aeItem.setStackSize(0);
-                if (portHatch != null) portHatch.postUpdateItem(aItem.getItemStack(), -storedSize);
-            }
-            return storedSize;
         }
-    }
 
-    public void setCapacityItem(BigInteger capacityItem) {
-        if (capacityItem.compareTo(MAX_CAPACITY_ITEM) > 0) {
-            this.capacityItem = MAX_CAPACITY_ITEM;
-            this.capacityPerItem = Long.MAX_VALUE;
-        } else {
-            this.capacityItem = capacityItem;
-            this.capacityPerItem = capacityItem.divide(BigInteger.valueOf(MAX_DISTINCT_ITEMS))
-                .longValue();
+        if (doOutput) {
+            aeItem.setStackSize(0);
+            if (portHatch != null) {
+                portHatch.postUpdateItem(aItem.getItemStack(), -storedSize);
+            }
         }
+        return storedSize;
     }
 
     @Override
@@ -629,6 +619,22 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         return getStoredItem(aItem) != null;
     }
 
+    @Override
+    public IItemList<IAEItemStack> getStoreItems() {
+        return STORE_ITEM;
+    }
+
+    public void setCapacityItem(BigInteger capacityItem) {
+        if (capacityItem.compareTo(MAX_CAPACITY_ITEM) > 0) {
+            this.capacityItem = MAX_CAPACITY_ITEM;
+            this.capacityPerItem = Long.MAX_VALUE;
+        } else {
+            this.capacityItem = capacityItem;
+            this.capacityPerItem = capacityItem.divide(BigInteger.valueOf(MAX_DISTINCT_ITEMS))
+                .longValue();
+        }
+    }
+
     public BigInteger getItemStoredAmount() {
         BigInteger amount = BigInteger.ZERO;
         for (IAEItemStack item : STORE_ITEM) {
@@ -637,14 +643,19 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         return amount;
     }
 
-    @Override
-    public IItemList<IAEItemStack> getStoreItems() {
-        return STORE_ITEM;
+    private String ensureUUID(NBTTagCompound aNBT) {
+        if (aNBT.hasKey("storeUUID")) {
+            return aNBT.getString("storeUUID");
+        }
+        String uuid = UUID.randomUUID()
+            .toString();
+        aNBT.setString("storeUUID", uuid);
+        return uuid;
     }
 
     public boolean addPortBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         if (aTileEntity != null) {
-            final IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
             if (aMetaTileEntity instanceof VaultPortHatch vaultPortHatch) {
                 if (this.portHatch != null) return false;
                 this.portHatch = vaultPortHatch;

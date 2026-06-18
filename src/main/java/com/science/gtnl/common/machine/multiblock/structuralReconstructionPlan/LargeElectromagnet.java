@@ -62,8 +62,64 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeElectromagnet(this.mName);
+    public IStructureDefinition<LargeElectromagnet> getStructureDefinition() {
+        return StructureDefinition.<LargeElectromagnet>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement(
+                'B',
+                buildHatchAdder(LargeElectromagnet.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 5))))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 30);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return (machineMode == MACHINEMODE_ELECTROMAGNETIC) ? RecipeMaps.electroMagneticSeparatorRecipes
+            : RecipeMaps.polarizerRecipes;
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(RecipeMaps.electroMagneticSeparatorRecipes, RecipeMaps.polarizerRecipes);
     }
 
     @Override
@@ -100,18 +156,6 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_ELECTROMAGNETIC) ? RecipeMaps.electroMagneticSeparatorRecipes
-            : RecipeMaps.polarizerRecipes;
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.electroMagneticSeparatorRecipes, RecipeMaps.polarizerRecipes);
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeElectromagnetRecipeType"))
@@ -127,60 +171,6 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
             .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
             .toolTipFinisher();
         return tt;
-    }
-
-    @Override
-    public IStructureDefinition<LargeElectromagnet> getStructureDefinition() {
-        return StructureDefinition.<LargeElectromagnet>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement(
-                'B',
-                buildHatchAdder(LargeElectromagnet.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 5))))
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 30);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
     }
 
     @Override
@@ -211,4 +201,13 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
         return StatCollector.translateToLocal("LargeElectromagnet_Mode_" + machineMode);
     }
 
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeElectromagnet(this.mName);
+    }
 }

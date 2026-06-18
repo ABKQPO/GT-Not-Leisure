@@ -51,57 +51,6 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeWiremill(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMillActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMill)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(33);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.wiremillRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeWiremillRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeWiremill> getStructureDefinition() {
         return StructureDefinition.<LargeWiremill>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -124,21 +73,8 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 10);
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.6 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1.0 / 3.25 - (Math.max(0, mParallelTier - 1) / 50.0);
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeWiremill(this.mName);
     }
 
     @Override
@@ -159,5 +95,69 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
             env,
             false,
             true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 10);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.wiremillRecipes;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.6 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1.0 / 3.25 - (Math.max(0, mParallelTier - 1) / 50.0);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(33);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMillActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWireMill)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeWiremillRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 3, 3, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

@@ -46,8 +46,8 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     private long EUt = 0;
     private int currentParallel = 0;
-
     private boolean fluidMode = false;
+    private long wirelessEUt = 0;
 
     public FOGExtractorModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -61,8 +61,6 @@ public class FOGExtractorModule extends MTEBaseModule {
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new FOGExtractorModule(mName);
     }
-
-    long wirelessEUt = 0;
 
     @Override
     public ProcessingLogic createProcessingLogic() {
@@ -128,21 +126,6 @@ public class FOGExtractorModule extends MTEBaseModule {
     }
 
     @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new FOGModuleGui(this);
-    }
-
-    @Override
-    public double getSpeedBonus() {
-        return processingSpeedBonus / 2;
-    }
-
-    @Override
-    public double getEnergyDiscount() {
-        return processingSpeedBonus / 2;
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return fluidMode ? RecipeMaps.fluidExtractionRecipes : RecipeMaps.extractorRecipes;
     }
@@ -156,64 +139,6 @@ public class FOGExtractorModule extends MTEBaseModule {
     @Override
     public int getRecipeCatalystPriority() {
         return -10;
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
-        super.addUIWidgets(builder, buildContext);
-        builder.widget(createFluidModeButton(builder));
-    }
-
-    @Deprecated
-    public ButtonWidget createFluidModeButton(IWidgetBuilder<?> builder) {
-        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
-        Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
-            TecTech.proxy.playSound(getBaseMetaTileEntity(), "fx_click");
-            fluidMode = !fluidMode;
-            widget.notifyTooltipChange();
-        })
-            .setPlayClickSound(false)
-            .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
-                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
-                if (isFluidModeOn()) {
-                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE);
-                } else {
-                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE_OFF);
-                }
-                return ret.toArray(new IDrawable[0]);
-            })
-            .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isFluidModeOn, this::setFluidMode), builder)
-            .dynamicTooltip(
-                () -> Collections.singletonList(
-                    StatCollector.translateToLocal(
-                        fluidMode ? "fog.button.fluidmode.tooltip.02" : "fog.button.fluidmode.tooltip.01")))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(174, 91)
-            .setSize(16, 16);
-        return (ButtonWidget) button;
-    }
-
-    public boolean isFluidModeOn() {
-        return fluidMode;
-    }
-
-    public void setFluidMode(boolean enabled) {
-        fluidMode = enabled;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound NBT) {
-        NBT.setBoolean("fluidMode", fluidMode);
-        super.saveNBTData(NBT);
-    }
-
-    @Override
-    public void loadNBTData(final NBTTagCompound NBT) {
-        fluidMode = NBT.getBoolean("fluidMode");
-        super.loadNBTData(NBT);
     }
 
     @Override
@@ -289,6 +214,79 @@ public class FOGExtractorModule extends MTEBaseModule {
                     + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_04"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
+        super.addUIWidgets(builder, buildContext);
+        builder.widget(createFluidModeButton(builder));
+    }
+
+    @Deprecated
+    public ButtonWidget createFluidModeButton(IWidgetBuilder<?> builder) {
+        // TODO: Remove this mui1 fallback after every FOG module GUI action is covered by mui2.
+        Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
+            TecTech.proxy.playSound(getBaseMetaTileEntity(), "fx_click");
+            fluidMode = !fluidMode;
+            widget.notifyTooltipChange();
+        })
+            .setPlayClickSound(false)
+            .setBackground(() -> {
+                List<UITexture> ret = new ArrayList<>();
+                ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
+                if (isFluidModeOn()) {
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE);
+                } else {
+                    ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE_OFF);
+                }
+                return ret.toArray(new IDrawable[0]);
+            })
+            .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isFluidModeOn, this::setFluidMode), builder)
+            .dynamicTooltip(
+                () -> Collections.singletonList(
+                    StatCollector.translateToLocal(
+                        fluidMode ? "fog.button.fluidmode.tooltip.02" : "fog.button.fluidmode.tooltip.01")))
+            .setTooltipShowUpDelay(TOOLTIP_DELAY)
+            .setPos(174, 91)
+            .setSize(16, 16);
+        return (ButtonWidget) button;
+    }
+
+    public boolean isFluidModeOn() {
+        return fluidMode;
+    }
+
+    public void setFluidMode(boolean enabled) {
+        fluidMode = enabled;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound NBT) {
+        NBT.setBoolean("fluidMode", fluidMode);
+        super.saveNBTData(NBT);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound NBT) {
+        fluidMode = NBT.getBoolean("fluidMode");
+        super.loadNBTData(NBT);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
+    }
+
+    @Override
+    public double getSpeedBonus() {
+        return processingSpeedBonus / 2;
+    }
+
+    @Override
+    public double getEnergyDiscount() {
+        return processingSpeedBonus / 2;
     }
 
 }

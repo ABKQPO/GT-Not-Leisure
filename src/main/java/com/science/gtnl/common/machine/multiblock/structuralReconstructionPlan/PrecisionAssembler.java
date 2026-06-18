@@ -30,6 +30,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
@@ -53,6 +54,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -72,6 +74,22 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
+
+    @Nullable
+    public static Integer getMachineTier(Block block, int meta) {
+        if (block == null) return null;
+        if (block == sBlockCasings1) return meta;
+        return null;
+    }
+
+    @Nullable
+    public static Integer getCasingTier(Block block, int meta) {
+        if (block == null) return null;
+        if (block == Loaders.impreciseUnitCasing) return 0;
+        if (block == Loaders.preciseUnitCasing) return meta + 1;
+        return null;
+    }
+
     public int mCasingTier = -1;
     public int mMachineTier = -1;
 
@@ -86,23 +104,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new PrecisionAssembler(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.of(TexturesGtBlock.oMCDIndustrialCuttingMachineActive), TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialCuttingMachineActive)
-                    .glow()
-                    .build() };
-            else return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.of(TexturesGtBlock.oMCDIndustrialCuttingMachine), TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialCuttingMachine)
-                    .glow()
-                    .build() };
-        } else return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
@@ -123,41 +124,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         if (mCasingTier >= 0) {
             return 1540 + mCasingTier;
         } else return 1540;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_ASSEMBLER) ? RecipeMaps.assemblerRecipes
-            : GoodGeneratorRecipeMaps.preciseAssemblerRecipes;
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.assemblerRecipes, GoodGeneratorRecipeMaps.preciseAssemblerRecipes);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PreciseAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_03"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(9, 5, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.PRASS_UNIT_CASING)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -217,79 +183,16 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return mCasingTier >= 4;
-    }
-
-    @Nullable
-    public static Integer getMachineTier(Block block, int meta) {
-        if (block == null) return null;
-        if (block == sBlockCasings1) return meta;
-        return null;
-    }
-
-    @Nullable
-    public static Integer getCasingTier(Block block, int meta) {
-        if (block == null) return null;
-        if (block == Loaders.impreciseUnitCasing) return 0;
-        if (block == Loaders.preciseUnitCasing) return meta + 1;
-        return null;
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_COMPRESSING);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Precision Assembler GUI no longer supports mui1 startup paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_COMPRESSING);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        mCasingTier = aNBT.getInteger("casingTier");
-        mMachineTier = aNBT.getInteger("machineTier");
-        super.loadNBTData(aNBT);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        aNBT.setInteger("casingTier", mCasingTier);
-        aNBT.setInteger("machineTier", mMachineTier);
-        super.saveNBTData(aNBT);
-    }
-
-    @Override
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("PreciseAssembler_Mode_" + this.machineMode));
-    }
-
-    @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("PreciseAssembler_Mode_" + machineMode);
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
-    }
-
-    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
+        checkHatch(errors);
+        if (mCasingTier < 0) {
+            errors.add(StructureErrorRegistry.UNKNOWN_TIER);
+            return;
+        }
+        checkCasingMin(errors, mCountCasing, 30);
         getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-        checkStructureCondition(errors, mCountCasing >= 30);
     }
 
     @Override
@@ -300,46 +203,51 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     }
 
     @Override
-    public boolean checkHatch() {
+    public void checkHatch(List<StructureError> errors) {
         for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
             if (mMachineTier < VoltageIndex.UHV && mEnergyHatch.mTier > mMachineTier) {
-                return false;
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
             }
         }
 
         for (MTEHatch mExoEnergyHatch : this.mExoticEnergyHatches) {
             if (mMachineTier < VoltageIndex.UHV && mExoEnergyHatch.mTier > mMachineTier) {
-                return false;
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
             }
         }
-        return super.checkHatch() && mCasingTier >= 0;
+        super.checkHatch(errors);
     }
 
     @Override
-    public void setProcessingLogicPower(ProcessingLogic logic) {
-        boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
-        logic.setAvailableVoltage(getMachineVoltageLimit());
-        logic.setAvailableAmperage(
-            useSingleAmp ? 1
-                : ExoticEnergyInputHelper.getMaxWorkingInputAmpsMulti(getExoticAndNormalEnergyHatchList()));
-        logic.setAmperageOC(true);
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
-    public long getMachineVoltageLimit() {
-        if (mMachineTier < 0) return 0;
-        if (mMachineTier >= 9) return GTValues.V[mEnergyHatchTier];
-        else return GTValues.V[Math.min(mMachineTier, mEnergyHatchTier)];
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
-    public int checkEnergyHatchTier() {
-        int tier = 0;
-        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
-            tier = Math.max(tHatch.mTier, tier);
-        }
-        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
-            tier = Math.max(tHatch.mTier, tier);
-        }
-        return tier;
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return machineMode == MACHINEMODE_ASSEMBLER ? RecipeMaps.assemblerRecipes
+            : GoodGeneratorRecipeMaps.preciseAssemblerRecipes;
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(RecipeMaps.assemblerRecipes, GoodGeneratorRecipeMaps.preciseAssemblerRecipes);
     }
 
     @Override
@@ -395,22 +303,121 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    public boolean getPerfectOC() {
+        return mCasingTier >= 4;
     }
 
     @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public void setProcessingLogicPower(ProcessingLogic logic) {
+        boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
+        logic.setAvailableVoltage(getMachineVoltageLimit());
+        logic.setAvailableAmperage(
+            useSingleAmp ? 1
+                : ExoticEnergyInputHelper.getMaxWorkingInputAmpsMulti(getExoticAndNormalEnergyHatchList()));
+        logic.setAmperageOC(true);
+    }
+
+    public long getMachineVoltageLimit() {
+        if (mMachineTier < 0) return 0;
+        if (mMachineTier >= 9) return GTValues.V[mEnergyHatchTier];
+        return GTValues.V[Math.min(mMachineTier, mEnergyHatchTier)];
+    }
+
+    public int checkEnergyHatchTier() {
+        int tier = 0;
+        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
+            tier = Math.max(tHatch.mTier, tier);
+        }
+        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
+            tier = Math.max(tHatch.mTier, tier);
+        }
+        return tier;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.of(TexturesGtBlock.oMCDIndustrialCuttingMachineActive), TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialCuttingMachineActive)
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.of(TexturesGtBlock.oMCDIndustrialCuttingMachine), TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialCuttingMachine)
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("PreciseAssemblerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_03"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(9, 5, 5, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .addSubChannelUsage(GTStructureChannels.PRASS_UNIT_CASING)
+            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_COMPRESSING);
+    }
+
+    @Override
+    @Deprecated
+    public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Precision Assembler GUI no longer supports mui1 startup paths.
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_COMPRESSING);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        mCasingTier = aNBT.getInteger("casingTier");
+        mMachineTier = aNBT.getInteger("machineTier");
+        super.loadNBTData(aNBT);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        aNBT.setInteger("casingTier", mCasingTier);
+        aNBT.setInteger("machineTier", mMachineTier);
+        super.saveNBTData(aNBT);
+    }
+
+    @Override
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        machineMode = (machineMode + 1) % 2;
+        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("PreciseAssembler_Mode_" + machineMode));
+    }
+
+    @Override
+    public String getMachineModeName() {
+        return StatCollector.translateToLocal("PreciseAssembler_Mode_" + machineMode);
+    }
+
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
     }
 }

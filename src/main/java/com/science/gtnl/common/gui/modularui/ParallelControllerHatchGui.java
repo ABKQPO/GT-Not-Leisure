@@ -36,12 +36,13 @@ public class ParallelControllerHatchGui extends MTEHatchBaseGui<ParallelControll
         return super.createContentSection(panel, syncManager).child(
             IKey.lang("Info_ParallelControllerHatch_00")
                 .asWidget()
+                .textAlign(Alignment.Center)
                 .pos(49, 18)
                 .size(81, 14))
             .child(
                 new TextFieldWidget().value(parallelSyncer)
                     .numbersInt(1, machine.getMaxParallel())
-                    .setScrollValues(1, 4, 64)
+                    .scrollValues(1, 4, 64, 256)
                     .setTextAlignment(Alignment.Center)
                     .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
                     .pos(54, 36)

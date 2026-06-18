@@ -4,8 +4,11 @@
   "package": "com.science.gtnl.mixins.late",
   "refmap": "mixins.sciencenotleisure.refmap.json",
   "target": "@env(DEFAULT)",
+  "injectors":{
+    "maxShiftBy": 5
+  },
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
-  "client": [],
-  "server": []
+  "overwrites": {
+    "conformVisibility": true
+  }
 }

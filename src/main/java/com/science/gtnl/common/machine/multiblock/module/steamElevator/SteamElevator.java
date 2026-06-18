@@ -6,7 +6,6 @@ import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,23 +91,16 @@ import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTe
 
 public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implements ISurvivalConstructable {
 
+    private static final int HORIZONTAL_OFF_SET = 17;
+    private static final int VERTICAL_OFF_SET = 39;
+    private static final int DEPTH_OFF_SET = 14;
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String SE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_elevator";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(SE_STRUCTURE_FILE_PATH);
     public ArrayList<SteamElevatorModule> mModuleHatches = new ArrayList<>();
     public boolean isLoadedChunk;
     public boolean wirelessMode = false;
     public String costingEUText = Utils.ZERO_STRING;
-
-    private static final int HORIZONTAL_OFF_SET = 17;
-    private static final int VERTICAL_OFF_SET = 39;
-    private static final int DEPTH_OFF_SET = 14;
-
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String SE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_elevator";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(SE_STRUCTURE_FILE_PATH);
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamElevatorRecipeType");
-    }
 
     public SteamElevator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -121,124 +113,6 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamElevator(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_04"))
-            .beginStructureBlock(35, 43, 35, false)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SteamElevator_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public IStructureDefinition<SteamElevator> getStructureDefinition() {
-        return StructureDefinition.<SteamElevator>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement(
-                'A',
-                StructureUtility.ofChain(
-                    buildSteamWirelessInput(SteamElevator.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
-                        .hint(1)
-                        .build(),
-                    buildSteamBigInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
-                        .hint(1)
-                        .build(),
-                    buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
-                        .hint(1)
-                        .buildAndChain(BlockLoader.metaCasing, 25)))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
-            .addElement('F', GTStructureUtility.ofFrame(Materials.Steel))
-            .addElement('G', StructureUtility.ofBlock(Blocks.brick_block, 0))
-            .addElement(
-                'H',
-                GTStructureUtility.buildHatchAdder(SteamElevator.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        SteamHatchElement.InputBus_Steam,
-                        SteamHatchElement.OutputBus_Steam,
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus)
-                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
-            .addElement(
-                'I',
-                HatchElementBuilder.<SteamElevator>builder()
-                    .atLeast(SteamModuleElement.SteamModule)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
-            .addElement('J', StructureUtility.ofBlock(Blocks.stonebrick, 0))
-            .build();
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        wirelessMode = false;
-        mModuleHatches.clear();
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (mSteamInputFluids.isEmpty() && mSteamBigInputFluids.isEmpty() && mSteamWirelessInputFluids.isEmpty()) {
-            wirelessMode = true;
-        }
-        getCasingTextureID();
-        updateHatchTexture();
-        return;
-    }
-
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {}
-
-    public boolean addModuleToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) {
-            return false;
-        }
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (aMetaTileEntity == null) {
-            return false;
-        }
-        if (aMetaTileEntity instanceof SteamElevatorModule moduleBase) {
-            return mModuleHatches.add(moduleBase);
-        }
-        return false;
     }
 
     @Override
@@ -323,6 +197,91 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public boolean onRunningTick(ItemStack aStack) {
         consumeBestAvailableSteam();
         return true;
+    }
+
+    @Override
+    public IStructureDefinition<SteamElevator> getStructureDefinition() {
+        return StructureDefinition.<SteamElevator>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement(
+                'A',
+                StructureUtility.ofChain(
+                    buildSteamWirelessInput(SteamElevator.class)
+                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .build(),
+                    buildSteamBigInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .build(),
+                    buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .buildAndChain(BlockLoader.metaCasing, 25)))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+            .addElement('F', GTStructureUtility.ofFrame(Materials.Steel))
+            .addElement('G', StructureUtility.ofBlock(Blocks.brick_block, 0))
+            .addElement(
+                'H',
+                GTStructureUtility.buildHatchAdder(SteamElevator.class)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        SteamHatchElement.InputBus_Steam,
+                        SteamHatchElement.OutputBus_Steam,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus)
+                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
+            .addElement(
+                'I',
+                HatchElementBuilder.<SteamElevator>builder()
+                    .atLeast(SteamModuleElement.SteamModule)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
+            .addElement('J', StructureUtility.ofBlock(Blocks.stonebrick, 0))
+            .build();
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        this.buildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        wirelessMode = false;
+        mModuleHatches.clear();
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        if (mSteamInputFluids.isEmpty() && mSteamBigInputFluids.isEmpty() && mSteamWirelessInputFluids.isEmpty()) {
+            wirelessMode = true;
+        }
+        updateHatchTexture();
     }
 
     public void consumeBestAvailableSteam() {
@@ -427,6 +386,20 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     public int getChunkZ() {
         return getBaseMetaTileEntity().getZCoord() >> 4;
+    }
+
+    public boolean addModuleToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity == null) {
+            return false;
+        }
+        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+        if (aMetaTileEntity == null) {
+            return false;
+        }
+        if (aMetaTileEntity instanceof SteamElevatorModule moduleBase) {
+            return mModuleHatches.add(moduleBase);
+        }
+        return false;
     }
 
     @Override
@@ -682,6 +655,26 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     public int getNumberOfModules() {
         return mModuleHatches != null ? mModuleHatches.size() : 0;
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamElevatorRecipeType");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_04"))
+            .beginStructureBlock(35, 43, 35, false)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SteamElevator_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

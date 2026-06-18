@@ -31,9 +31,9 @@ Info_ShowPattern_Disabled=§cHide on Interface Terminal
 commands.kill.success.single=Killed %s
 commands.kill.success.multiple=Killed %s entities
 
-GT5U.gui.text.parallel_overflow=§4Parallel overflow
-GT5U.gui.text.parallel_zero=§4Insufficient parallel, check whether your inputs meet the recipe or machine requirements
-GT5U.gui.text.crash=§4Machine turned off due to crash. Refer to the log for more info.
+GT5U.gui.text.recipe_result.parallel_overflow=§4Parallel overflow
+GT5U.gui.text.recipe_result.parallel_zero=§4Insufficient parallel, check whether your inputs meet the recipe or machine requirements
+GT5U.gui.text.recipe_result.crash=§4Machine turned off due to crash. Refer to the log for more info.
 
 gtnl.gui.config.general=GTNL General Config
 gtnl.gui.config.general.debug=Debug Settings
@@ -160,6 +160,8 @@ gtnl.gui.config.general.recipe.enableshowdelrecipetitle=Show Recipe Deletion Tit
 gtnl.gui.config.general.recipe.enableshowdelrecipetitle.tooltip=Display a large on-screen title notification regarding deleted recipes when the player joins.
 gtnl.gui.config.general.recipe.enablesomethingrecipe=Add Extra Recipes
 gtnl.gui.config.general.recipe.enablesomethingrecipe.tooltip=Enable various "cheap" convenience recipes.
+gtnl.gui.config.general.recipe.enableshimmerfakerecipeinnei=Register Shimmer Fake Recipes in NEI
+gtnl.gui.config.general.recipe.enableshimmerfakerecipeinnei.tooltip=Register generated Shimmer fake recipes in NEI while keeping actual Shimmer conversions active.
 
 gtnl.gui.config.general.super_creeper.movespeed=Movement Speed
 gtnl.gui.config.general.super_creeper.movespeed.tooltip=Movement speed multiplier for the Super Creeper.
@@ -333,7 +335,7 @@ Tooltip_PurificationPlant_00=Enters Wireless Mode when linked to an Absolute Bar
 Tooltip_PurificationPlant_01=In Wireless Mode, all linked units gain Long parallel capacity.
 Tooltip_PurificationPlant_02=Allows item and fluid access from the assembly hatch.
 
-BeamlinePipeMirror=Beamline Pipe Mirror
+gt.blockmachines.beamlinepipemirror.name=Beamline Pipe Mirror
 Tooltip_BeamlinePipeMirror_00=Deflection for particles
 Tooltip_BeamlinePipeMirror_01=§bAllows Bending
 
@@ -785,6 +787,7 @@ Tooltip_SuperCraftingInputHatchME_03_01=Does not support patterns containing flu
 Tooltip_SuperCraftingInputHatchME_04=Right-click with wire cutter to change the connection mode between the hatch and ME network
 Tooltip_SuperCraftingInputHatchME_05=Connection data saved to flash memory
 Tooltip_SuperCraftingInputHatchME_06=Middle-click a pattern slot to configure its exclusive "Do Not Consume Items".
+Info_Tooltip_SuperCraftingInputHatchME_00=Slot %s
 Button_Tooltip_SuperCraftingInputHatchME_00=Place "Do Not Consume Items"
 Button_Tooltip_SuperCraftingInputHatchME_01=Return all stored items to the AE network
 Button_Tooltip_SuperCraftingInputHatchME_02_00=Pattern Optimization: Allow
@@ -833,6 +836,7 @@ GTNL.gui.text.structure_error.invalid_hatch_configuration=Invalid hatch configur
 GTNL.gui.text.structure_error.invalid_energy_hatch_configuration=Invalid energy hatch configuration
 GTNL.gui.text.structure_error.laser_energy_tunnel_disabled=Laser energy tunnels are disabled for this machine
 GTNL.gui.text.structure_error.energy_input_amperage_too_high=Energy input amperage is too high
+GTNL.gui.text.structure_error.missing_distillation_layer_output_hatch=Each distillation layer requires an output hatch
 GTNL.gui.text.structure_error.legacy_check_failed=Structure validation failed
 Tooltip_ParallelControllerHatch_00=Provides maximum parallel for multiblock machines
 Tooltip_ParallelControllerHatch_01=Allows up to %s recipes to be processed simultaneously
@@ -1967,7 +1971,7 @@ SteamApiaryModuleRecipeType=Pneumatic Beehive
 Tooltip_SteamApiaryModule_00=§a§lHigh pressure makes the bees work §0§mharder§a§l and more efficiently.
 Tooltip_SteamApiaryModule_01=Adds apiary module to the Steam Stairway
 Tooltip_SteamApiaryModule_02=The bees' (ideal?) home
-Tooltip_SteamApiaryModule_03=Fixed operating time: 30 seconds
+Tooltip_SteamApiaryModule_03=Fixed operating time: 300 seconds
 Tooltip_SteamApiaryModule_04=Each overclock doubles the capacity, power ×4
 Tooltip_SteamApiaryModule_05=Base amount: 8
 

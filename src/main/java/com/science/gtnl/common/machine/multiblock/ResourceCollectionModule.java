@@ -71,18 +71,16 @@ import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTe
 
 public class ResourceCollectionModule extends TileEntityModuleBase {
 
-    private long processingLogicEU;
-    Parameters.Group.ParameterIn parallelSetting;
     private static final INameFunction<ResourceCollectionModule> PARALLEL_SETTING_NAME = (base, p) -> GCCoreUtil
         .translate("gt.blockmachines.multimachine.project.ig.assembler.cfgi.0");
     private static final IStatusFunction<ResourceCollectionModule> PARALLEL_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, 1, 100, base.getMaxParallelRecipes());
-    private int mParallelTier;
     private static final int MACHINEMODE_MINER = 0;
     private static final int MACHINEMODE_DRILL = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/space_module";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SM_STRUCTURE_FILE_PATH);
+
     public static final ItemStack MiningDroneMkVIII = ItemList.MiningDroneUV.get(16);
     public static final ItemStack MiningDroneMkIX = ItemList.MiningDroneUHV.get(16);
     public static final ItemStack MiningDroneMkX = ItemList.MiningDroneUEV.get(16);
@@ -90,6 +88,10 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     public static final ItemStack MiningDroneMkXII = ItemList.MiningDroneUMV.get(16);
     public static final ItemStack MiningDroneMkXIII = ItemList.MiningDroneUXV.get(16);
 
+    private long processingLogicEU;
+    private int mParallelTier;
+
+    Parameters.Group.ParameterIn parallelSetting;
     public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
 
     public ResourceCollectionModule(int aID, String aName, String aNameRegional) {
@@ -101,67 +103,13 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
+        return new ResourceCollectionModule(mName);
+    }
+
+    @Override
     public long getMaxInputVoltage() {
         return GTValues.V[GTUtility.getTier(tTier)];
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 logo hook after Resource Collection Module only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_MINER) ? GTNLRecipeMaps.SpaceMinerRecipes : GTNLRecipeMaps.SpaceDrillRecipes;
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(GTNLRecipeMaps.SpaceMinerRecipes, GTNLRecipeMaps.SpaceDrillRecipes);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new ResourceCollectionModuleGui(this).withMachineModeIcons(
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
-        super.addUIWidgets(builder, buildContext);
-        machineModeIcons = new ArrayList<>(4);
-        setMachineModeIcons();
-        builder.widget(
-            new DynamicTextWidget(
-                () -> new Text(
-                    StatCollector.translateToLocalFormatted(
-                        "gt.interact.desc.mb.mode",
-                        StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + this.machineMode)))
-                            .color(Color.WHITE.normal)).setPos(10, 77));
-
-        builder.widget(createModeSwitchButton(builder));
-    }
-
-    @Override
-    public Pos2d getMachineModeSwitchButtonPos() {
-        return new Pos2d(174, 97);
     }
 
     @Override
@@ -206,16 +154,15 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     @Override
     public void clearHatches() {
         super.clearHatches();
-        this.mParallelControllerHatches.clear();
+        mParallelControllerHatches.clear();
     }
 
     @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + this.machineMode));
+        machineMode = (machineMode + 1) % 2;
+        GTUtility
+            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + machineMode));
     }
 
     @Override
@@ -229,15 +176,19 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return machineMode == MACHINEMODE_MINER ? GTNLRecipeMaps.SpaceMinerRecipes : GTNLRecipeMaps.SpaceDrillRecipes;
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(GTNLRecipeMaps.SpaceMinerRecipes, GTNLRecipeMaps.SpaceDrillRecipes);
+    }
+
+    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
-        long recipePower;
-
-        if (processingLogicEU <= 0) {
-            recipePower = Integer.MAX_VALUE;
-        } else {
-            recipePower = processingLogicEU;
-        }
-
+        long recipePower = processingLogicEU <= 0 ? Integer.MAX_VALUE : processingLogicEU;
         logic.setAvailableVoltage(recipePower);
         logic.setAvailableAmperage((long) parallelSetting.get());
         logic.setAmperageOC(false);
@@ -272,9 +223,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                 }
 
                 int recipeReq = recipe.getMetadataOrDefault(ResourceCollectionModuleMetadata.INSTANCE, 0);
-
                 ItemStack miningDrone = findMiningDrone();
-
                 if (miningDrone == null) {
                     return SimpleCheckRecipeResult.ofFailure("no_mining_drone");
                 }
@@ -299,9 +248,9 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                         processingLogicEU = recipe.mEUt;
                         setProcessingLogicPower(processingLogic);
                         return CheckRecipeResultRegistry.SUCCESSFUL;
-                    } else {
-                        return SimpleCheckRecipeResult.ofFailure("no_mining_drone");
                     }
+
+                    return SimpleCheckRecipeResult.ofFailure("no_mining_drone");
                 }
 
                 return super.validateRecipe(recipe);
@@ -320,21 +269,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         }.setMaxParallelSupplier(() -> Math.min((int) parallelSetting.get(), getMaxParallelRecipes()));
     }
 
-    private ItemStack findMiningDrone() {
-        for (ItemStack item : getAllStoredInputs()) {
-            if (item != null) {
-                if (item.isItemEqual(MiningDroneMkVIII) || item.isItemEqual(MiningDroneMkIX)
-                    || item.isItemEqual(MiningDroneMkX)
-                    || item.isItemEqual(MiningDroneMkXI)
-                    || item.isItemEqual(MiningDroneMkXII)
-                    || item.isItemEqual(MiningDroneMkXIII)) {
-                    return item;
-                }
-            }
-        }
-        return null;
-    }
-
     @Override
     public void parametersInstantiation_EM() {
         super.parametersInstantiation_EM();
@@ -349,7 +283,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
             return new ITexture[] {
                 Textures.BlockIcons.getCasingTextureForId(TileEntitySpaceElevator.CASING_INDEX_BASE),
                 new TTRenderedExtendedFacingTexture(aActive ? TTMultiblockBase.ScreenON : TTMultiblockBase.ScreenOFF) };
-        } else if (facing.getRotation(ForgeDirection.UP) == side || facing.getRotation(ForgeDirection.DOWN) == side) {
+        }
+        if (facing.getRotation(ForgeDirection.UP) == side || facing.getRotation(ForgeDirection.DOWN) == side) {
             return new ITexture[] {
                 Textures.BlockIcons.getCasingTextureForId(TileEntitySpaceElevator.CASING_INDEX_BASE) };
         }
@@ -364,11 +299,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     @Override
     public boolean protectsExcessFluid() {
         return !eSafeVoid;
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
-        return new ResourceCollectionModule(mName);
     }
 
     @Override
@@ -388,6 +318,53 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         return tt;
     }
 
+    @Override
+    @Deprecated
+    public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new ResourceCollectionModuleGui(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
+        super.addUIWidgets(builder, buildContext);
+        machineModeIcons = new ArrayList<>(4);
+        setMachineModeIcons();
+        builder.widget(
+            new DynamicTextWidget(
+                () -> new Text(
+                    StatCollector.translateToLocalFormatted(
+                        "gt.interact.desc.mb.mode",
+                        StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + machineMode)))
+                            .color(Color.WHITE.normal)).setPos(10, 77));
+        builder.widget(createModeSwitchButton(builder));
+    }
+
+    @Override
+    public Pos2d getMachineModeSwitchButtonPos() {
+        return new Pos2d(174, 97);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this MUI1 logo hook after Resource Collection Module only uses the MUI2 GUI.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(172, 67));
+    }
+
     public boolean addAllHatchToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         return addParallelControllerToMachineList(aTileEntity, aBaseCasingIndex)
             || addClassicToMachineList(aTileEntity, aBaseCasingIndex);
@@ -403,10 +380,25 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
         }
         if (aMetaTileEntity instanceof ParallelControllerHatch hatch) {
             hatch.updateTexture(aBaseCasingIndex);
-            hatch.updateCraftingIcon(this.getMachineCraftingIcon());
+            hatch.updateCraftingIcon(getMachineCraftingIcon());
             return mParallelControllerHatches.add(hatch);
         }
         return false;
+    }
+
+    private ItemStack findMiningDrone() {
+        for (ItemStack item : getAllStoredInputs()) {
+            if (item != null) {
+                if (item.isItemEqual(MiningDroneMkVIII) || item.isItemEqual(MiningDroneMkIX)
+                    || item.isItemEqual(MiningDroneMkX)
+                    || item.isItemEqual(MiningDroneMkXI)
+                    || item.isItemEqual(MiningDroneMkXII)
+                    || item.isItemEqual(MiningDroneMkXIII)) {
+                    return item;
+                }
+            }
+        }
+        return null;
     }
 
     public enum CustomHatchElement implements IHatchElement<ResourceCollectionModule> {

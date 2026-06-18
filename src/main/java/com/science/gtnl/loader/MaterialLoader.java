@@ -11,16 +11,12 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.cleanroommc.bogosorter.BogoSortAPI;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.item.steamRocket.SchematicSteamRocket;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
-import com.science.gtnl.common.recipe.oreDictionary.LaserEngraverOreRecipes;
-import com.science.gtnl.common.recipe.oreDictionary.SteamCarpenterOreRecipe;
-import com.science.gtnl.common.recipe.oreDictionary.WoodDistillationRecipes;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
@@ -53,8 +49,6 @@ public class MaterialLoader {
 
         ItemLoader.registry();
         WerkstoffAdderRegistry.addWerkstoffAdder(new GTNLMaterials());
-
-        loadOreDictionaryRecipes();
     }
 
     public static void loadInit() {
@@ -119,13 +113,6 @@ public class MaterialLoader {
         provider.setAlignToGrid(EnumFacing.WEST);
         BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableChest.class);
         BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableAvaritiaddonsChest.class);
-    }
-
-    public static void loadOreDictionaryRecipes() {
-        ScienceNotLeisure.LOG.info("GTNL: Register Ore Dictionary Recipe.");
-        new WoodDistillationRecipes();
-        new LaserEngraverOreRecipes();
-        new SteamCarpenterOreRecipe();
     }
 
     public static void loadCardBoardBoxBlackList() {

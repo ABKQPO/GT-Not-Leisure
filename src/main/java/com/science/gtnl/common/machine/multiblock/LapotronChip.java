@@ -44,17 +44,16 @@ import gregtech.common.misc.GTStructureChannels;
 public class LapotronChip extends MultiMachineBase<LapotronChip>
     implements ISurvivalConstructable, INEIPreviewModifier {
 
-    public int tierLapisCaelestis = -1;
-    public int tierGlass1 = -1;
-    public int tierGlass2 = -1;
-
     private static final int HORIZONTAL_OFF_SET = 88;
     private static final int VERTICAL_OFF_SET = 97;
     private static final int DEPTH_OFF_SET = 11;
-
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/lapotron_chip";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LC_STRUCTURE_FILE_PATH);
+
+    public int tierLapisCaelestis = -1;
+    public int tierGlass1 = -1;
+    public int tierGlass2 = -1;
 
     public LapotronChip(String aName) {
         super(aName);
@@ -65,52 +64,9 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LapotronChip(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LapotronChipRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_01"))
-            .beginStructureBlock(177, 121, 177, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_LENGTH)
-            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    public void onPreviewConstruct(@NotNull ItemStack trigger) {
+        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(trigger)) return;
+        buildPiece(STRUCTURE_PIECE_MAIN, trigger, false, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
@@ -170,25 +126,109 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
             .build();
     }
 
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(stackSize)) return;
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(stackSize)) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 10000);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.LapotronChipRecipes;
+    }
+
+    @Override
+    public int getMaxParallelRecipes() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LapotronChipRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_01"))
+            .beginStructureBlock(177, 121, 177, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
+            .addSubChannelUsage(GTStructureChannels.STRUCTURE_LENGTH)
+            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LapotronChip(mName);
+    }
+
     public static ImmutableList<Pair<Block, Integer>> getGreenScreenVariants() {
         ImmutableList.Builder<Pair<Block, Integer>> builder = ImmutableList.builder();
         Block greenScreen = Block.getBlockFromName("ExtraUtilities:greenscreen");
-
         for (int i = 0; i < 16; i++) {
             builder.add(Pair.of(greenScreen, i));
         }
-
         return builder.build();
     }
 
     public static ImmutableList<Pair<Block, Integer>> getGlass() {
         ImmutableList.Builder<Pair<Block, Integer>> builder = ImmutableList.builder();
         Block greenScreen = Blocks.stained_glass;
-
         for (int i = 0; i < 16; i++) {
             builder.add(Pair.of(greenScreen, i));
         }
-
         return builder.build();
     }
 
@@ -212,56 +252,4 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
         if (block == Blocks.stained_glass) return meta + 1;
         return -1;
     }
-
-    @Override
-    public void onPreviewConstruct(@NotNull ItemStack trigger) {
-        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(trigger)) return;
-        buildPiece(STRUCTURE_PIECE_MAIN, trigger, false, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(stackSize)) return;
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(stackSize)) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 10000);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.LapotronChipRecipes;
-    }
-
-    @Override
-    public int getMaxParallelRecipes() {
-        return Integer.MAX_VALUE;
-    }
-
 }

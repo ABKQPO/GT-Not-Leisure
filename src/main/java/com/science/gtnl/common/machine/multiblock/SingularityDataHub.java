@@ -66,6 +66,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -82,6 +83,8 @@ import tectech.thing.casing.BlockGTCasingsTT;
 
 public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     implements ISurvivalConstructable, IItemVault {
+
+    private static final TranslatableText VAULT_PORT_HATCH_NAME = TranslatableText.lang("VaultPortHatch");
 
     public static long MAX_DISTINCT_ITEMS = Long.MAX_VALUE - 1;
     public static long MAX_DISTINCT_FLUIDS = Long.MAX_VALUE - 1;
@@ -128,6 +131,40 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
+    public IStructureDefinition<SingularityDataHub> getStructureDefinition() {
+        return StructureDefinition.<SingularityDataHub>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement(
+                'B',
+                StructureUtility.ofChain(
+                    buildHatchAdder(SingularityDataHub.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                        .casingIndex(getCasingTextureID())
+                        .hint(1)
+                        .build(),
+                    buildHatchAdder(SingularityDataHub.class).hatchClass(VaultPortHatch.class)
+                        .shouldReject(t -> t.portHatch != null)
+                        .adder(SingularityDataHub::addPortBusToMachineList)
+                        .casingIndex(getCasingTextureID())
+                        .hint(1)
+                        .build(),
+                    StructureUtility
+                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasings10, 7))
+            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
+            .build();
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SingularityDataHub(super.mName);
     }
@@ -155,10 +192,10 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         if (checkStructure(true, getBaseMetaTileEntity())) {
-            this.mStartUpCheck = -1;
-            this.mUpdate = 200;
+            mStartUpCheck = -1;
+            mUpdate = 200;
         }
-        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+        ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
         super.onFirstTick(aBaseMetaTileEntity);
     }
 
@@ -171,140 +208,36 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
-    public @NotNull CheckRecipeResult checkProcessing() {
-        mEfficiency = 10000;
-        mEfficiencyIncrease = 10000;
-        lEUt = GTValues.VP[9] / 20L;
-        mMaxProgresstime = 20;
-
-        ArrayList<ItemStack> inputItems = getStoredInputs();
-        ArrayList<FluidStack> inputFluids = getStoredFluids();
-
-        if (!inputItems.isEmpty()) {
-            for (ItemStack aItem : inputItems) {
-                ItemStack toDeplete = aItem.copy();
-                toDeplete.stackSize = this.injectItems(aItem, true);
-                depleteInput(toDeplete);
-            }
-        }
-
-        if (!inputFluids.isEmpty()) {
-            for (FluidStack aFluid : inputFluids) {
-                FluidStack toDeplete = aFluid.copy();
-                toDeplete.amount = this.injectFluids(aFluid, true);
-                depleteInput(toDeplete, false);
-            }
-        }
-
-        if (wirelessMode && addEUToGlobalEnergyMap(ownerUUID, -TierEU.RECIPE_MAX)) {
-            lEUt = 0;
-        } else if (this.lEUt > 0) this.lEUt = -this.lEUt;
-
-        return CheckRecipeResultRegistry.SUCCESSFUL;
-    }
-
-    @Override
-    public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
-        ArrayList<ItemStack> rList = new ArrayList<>();
-        Map<ItemId, ItemStack> inputsFromME = new Object2ObjectOpenHashMap<>();
-        for (MTEHatchInputBus tHatch : GTUtility.validMTEList(mInputBusses)) {
-            if (tHatch instanceof MTEHatchCraftingInputME) {
-                continue;
-            }
-            byte busColor = tHatch.getColor();
-            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
-            tHatch.mRecipeMap = getRecipeMap();
-            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
-            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
-            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
-                ItemStack itemStack = tileEntity.getStackInSlot(i);
-                if (itemStack != null) {
-                    if (isMEBus) {
-                        // Prevent the same item from different ME buses from being recognized
-                        inputsFromME.put(ItemId.createNoCopy(itemStack), itemStack);
-                    } else {
-                        rList.add(itemStack);
-                    }
-                }
-            }
-        }
-
-        if (!inputsFromME.isEmpty()) {
-            rList.addAll(inputsFromME.values());
-        }
-        return rList;
-
-    }
-
-    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide()) {
-            this.locked = !aBaseMetaTileEntity.isActive();
+            locked = !aBaseMetaTileEntity.isActive();
         }
     }
 
     @Override
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.setDoVoidExcess(!doVoidExcess);
+        setDoVoidExcess(!doVoidExcess);
         GTUtility.sendChatToPlayer(
             aPlayer,
             StatCollector.translateToLocal("Info_SingularityDataHub_AutoVoiding") + doVoidExcess);
     }
 
     @Override
-    public IStructureDefinition<SingularityDataHub> getStructureDefinition() {
-        return StructureDefinition.<SingularityDataHub>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement(
-                'B',
-                StructureUtility.ofChain(
-                    buildHatchAdder(SingularityDataHub.class)
-                        .atLeast(
-                            HatchElement.InputBus,
-                            HatchElement.InputHatch,
-                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                        .casingIndex(getCasingTextureID())
-                        .build(),
-                    buildHatchAdder(SingularityDataHub.class).hatchClass(VaultPortHatch.class)
-                        .shouldReject(t -> t.portHatch != null)
-                        .adder(SingularityDataHub::addPortBusToMachineList)
-                        .casingIndex(getCasingTextureID())
-                        .hint(1)
-                        .hint(1)
-                        .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasings10, 7))
-            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .build();
-    }
-
-    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 100);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 100);
+        checkHatchMin(errors, VAULT_PORT_HATCH_NAME, portHatch == null ? 0 : 1, 1);
     }
 
     @Override
     public void setupParameters() {
         super.setupParameters();
         wirelessMode = mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty();
-        if (portHatch.controller == null) portHatch.bind(this);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && portHatch != null;
+        if (portHatch != null && portHatch.controller == null) portHatch.bind(this);
     }
 
     @Override
@@ -345,6 +278,73 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
             env,
             false,
             true);
+    }
+
+    @Override
+    public @NotNull CheckRecipeResult checkProcessing() {
+        mEfficiency = 10000;
+        mEfficiencyIncrease = 10000;
+        lEUt = GTValues.VP[9] / 20L;
+        mMaxProgresstime = 20;
+
+        ArrayList<ItemStack> inputItems = getStoredInputs();
+        ArrayList<FluidStack> inputFluids = getStoredFluids();
+
+        if (!inputItems.isEmpty()) {
+            for (ItemStack aItem : inputItems) {
+                ItemStack toDeplete = aItem.copy();
+                toDeplete.stackSize = injectItems(aItem, true);
+                depleteInput(toDeplete);
+            }
+        }
+
+        if (!inputFluids.isEmpty()) {
+            for (FluidStack aFluid : inputFluids) {
+                FluidStack toDeplete = aFluid.copy();
+                toDeplete.amount = injectFluids(aFluid, true);
+                depleteInput(toDeplete, false);
+            }
+        }
+
+        if (wirelessMode && addEUToGlobalEnergyMap(ownerUUID, -TierEU.RECIPE_MAX)) {
+            lEUt = 0;
+        } else if (lEUt > 0) {
+            lEUt = -lEUt;
+        }
+
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    @Override
+    public ArrayList<ItemStack> getStoredInputsForColor(Optional<Byte> color) {
+        ArrayList<ItemStack> rList = new ArrayList<>();
+        Map<ItemId, ItemStack> inputsFromME = new Object2ObjectOpenHashMap<>();
+        for (MTEHatchInputBus tHatch : GTUtility.validMTEList(mInputBusses)) {
+            if (tHatch instanceof MTEHatchCraftingInputME) {
+                continue;
+            }
+            byte busColor = tHatch.getColor();
+            if (color.isPresent() && busColor != -1 && busColor != color.get()) continue;
+            tHatch.mRecipeMap = getRecipeMap();
+            IGregTechTileEntity tileEntity = tHatch.getBaseMetaTileEntity();
+            boolean isMEBus = tHatch instanceof MTEHatchInputBusME;
+            for (int i = tileEntity.getSizeInventory() - 1; i >= 0; i--) {
+                ItemStack itemStack = tileEntity.getStackInSlot(i);
+                if (itemStack != null) {
+                    if (isMEBus) {
+                        // Prevent the same item from different ME buses from being recognized
+                        inputsFromME.put(ItemId.createNoCopy(itemStack), itemStack);
+                    } else {
+                        rList.add(itemStack);
+                    }
+                }
+            }
+        }
+
+        if (!inputsFromME.isEmpty()) {
+            rList.addAll(inputsFromME.values());
+        }
+        return rList;
     }
 
     @Override
@@ -786,6 +786,16 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return getStoredFluid(aFluid) != null;
     }
 
+    @Override
+    public IItemList<IAEItemStack> getStoreItems() {
+        return STORE_ITEM;
+    }
+
+    @Override
+    public IItemList<IAEFluidStack> getStoreFluids() {
+        return STORE_FLUID;
+    }
+
     public BigInteger getItemStoredAmount() {
         BigInteger amount = BigInteger.ZERO;
         for (IAEItemStack item : STORE_ITEM) {
@@ -800,16 +810,6 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
             amount = amount.add(BigInteger.valueOf(fluid.getStackSize()));
         }
         return amount;
-    }
-
-    @Override
-    public IItemList<IAEItemStack> getStoreItems() {
-        return STORE_ITEM;
-    }
-
-    @Override
-    public IItemList<IAEFluidStack> getStoreFluids() {
-        return STORE_FLUID;
     }
 
     @Override
@@ -835,7 +835,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     public boolean addPortBusToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         if (aTileEntity != null) {
-            final IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
             if (aMetaTileEntity instanceof VaultPortHatch vaultPortHatch) {
                 if (portHatch != null) return false;
                 portHatch = vaultPortHatch;

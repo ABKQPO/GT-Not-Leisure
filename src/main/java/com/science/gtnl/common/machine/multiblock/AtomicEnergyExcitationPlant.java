@@ -37,7 +37,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -100,6 +99,14 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
         return new AtomicEnergyExcitationPlant(this.mName);
     }
 
+    public void setCoilTier(int tier) {
+        this.machineTier = tier;
+    }
+
+    public int getCoilTier() {
+        return this.machineTier;
+    }
+
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
@@ -131,6 +138,26 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         rotation += 0.5F;
+    }
+
+    @Override
+    public boolean isFlipChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isFlipChangeAllowed();
+    }
+
+    @Override
+    public boolean isRotationChangeAllowed() {
+        if (mMachine || isRenderActive) return false;
+        return super.isRotationChangeAllowed();
+    }
+
+    @Override
+    public void onBlockDestroyed() {
+        super.onBlockDestroyed();
+        if (isRenderActive) {
+            buildSphere();
+        }
     }
 
     @Override
@@ -197,12 +224,193 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
         return tiers;
     }
 
-    public void setCoilTier(int tier) {
-        this.machineTier = tier;
+    // TODO: Use GTNLMaterials
+    @Override
+    public IStructureDefinition<AtomicEnergyExcitationPlant> getStructureDefinition() {
+        return StructureDefinition.<AtomicEnergyExcitationPlant>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addShape(STRUCTURE_PIECE_SPHERE, StructureUtility.transpose(shapeSphere))
+            .addShape(STRUCTURE_PIECE_SPHERE_AIR, StructureUtility.transpose(shapeSphereAir))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
+            .addElement(
+                'B',
+                GTStructureChannels.TIER_MACHINE_CASING.use(
+                    StructureUtility.ofBlocksTiered(
+                        fieldCoilTierConverter(),
+                        getAllFieldCoilTiers(),
+                        -1,
+                        AtomicEnergyExcitationPlant::setCoilTier,
+                        AtomicEnergyExcitationPlant::getCoilTier)))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 7))
+            .addElement(
+                'D',
+                GTStructureChannels.HEATING_COIL.use(
+                    GTStructureUtility.activeCoils(
+                        GTStructureUtility.ofCoil(
+                            AtomicEnergyExcitationPlant::setMCoilLevel,
+                            AtomicEnergyExcitationPlant::getMCoilLevel))))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement(
+                'F',
+                GTStructureUtility.buildHatchAdder(AtomicEnergyExcitationPlant.class)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))))
+            .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('H', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129))
+            .addElement('I', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 129))
+            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 13))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 14))
+            .addElement('L', StructureUtility.isAir())
+            .build();
     }
 
-    public int getCoilTier() {
-        return this.machineTier;
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        machineTier = -1;
+        if (isRenderActive) {
+            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+                || !checkPiece(
+                    STRUCTURE_PIECE_SPHERE_AIR,
+                    HORIZONTAL_OFF_SET_SPHERE,
+                    VERTICAL_OFF_SET_SPHERE,
+                    DEPTH_OFF_SET_SPHERE,
+                    errors)) {
+                buildSphere();
+                return;
+            }
+        } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
+            || !checkPiece(
+                STRUCTURE_PIECE_SPHERE,
+                HORIZONTAL_OFF_SET_SPHERE,
+                VERTICAL_OFF_SET_SPHERE,
+                DEPTH_OFF_SET_SPHERE,
+                errors)) {
+                    return;
+                }
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 350);
+
+        if (!isRenderActive && enableRender && mTotalRunTime > 0) {
+            destroySphere();
+        } else if (isRenderActive && !enableRender) {
+            buildSphere();
+        }
+
+        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
+    }
+
+    @Override
+    public void checkEnergyHatch(List<StructureError> errors) {}
+
+    @Override
+    protected boolean requiresCoilStructureCheck() {
+        return true;
+    }
+
+    @Override
+    public void setupParameters() {
+        super.setupParameters();
+        this.mHeatingCapacity = (int) getMCoilLevel().getHeat();
+    }
+
+    @Override
+    public void setProcessingLogicPower(ProcessingLogic logic) {
+        logic.setAvailableVoltage(getMaxInputEu());
+        logic.setAvailableAmperage(1);
+        logic.setAmperageOC(true);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+        buildPiece(
+            STRUCTURE_PIECE_SPHERE,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET_SPHERE,
+            VERTICAL_OFF_SET_SPHERE,
+            DEPTH_OFF_SET_SPHERE);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
+
+        int built;
+        built = survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            realBudget,
+            env,
+            false,
+            true);
+
+        if (built >= 0) return built;
+
+        built += survivalBuildPiece(
+            STRUCTURE_PIECE_SPHERE,
+            stackSize,
+            HORIZONTAL_OFF_SET_SPHERE,
+            VERTICAL_OFF_SET_SPHERE,
+            DEPTH_OFF_SET_SPHERE,
+            realBudget,
+            env,
+            false,
+            true);
+        return built;
+    }
+
+    @Override
+    public ProcessingLogic createProcessingLogic() {
+        return new GTNLProcessingLogic() {
+
+            @NotNull
+            @Override
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
+                if (recipeReq > machineTier) {
+                    return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
+                }
+                return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
+                    : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
+            }
+
+            @NotNull
+            @Override
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setRecipeHeat(recipe.mSpecialValue)
+                    .setMachineHeat(mHeatingCapacity)
+                    .setHeatOC(getHeatOC())
+                    .setPerfectOC(getPerfectOC())
+                    .setHeatDiscount(getHeatDiscount())
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier());
+            }
+
+        }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return super.getEUtDiscount() * Math.pow(0.95, getMCoilLevel().getTier());
     }
 
     @Override
@@ -271,114 +479,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     @Override
-    public IStructureDefinition<AtomicEnergyExcitationPlant> getStructureDefinition() {
-        return StructureDefinition.<AtomicEnergyExcitationPlant>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addShape(STRUCTURE_PIECE_SPHERE, StructureUtility.transpose(shapeSphere))
-            .addShape(STRUCTURE_PIECE_SPHERE_AIR, StructureUtility.transpose(shapeSphereAir))
-            .addElement('A', GTStructureUtility.chainAllGlasses())
-            .addElement(
-                'B',
-                GTStructureChannels.TIER_MACHINE_CASING.use(
-                    StructureUtility.ofBlocksTiered(
-                        fieldCoilTierConverter(),
-                        getAllFieldCoilTiers(),
-                        -1,
-                        AtomicEnergyExcitationPlant::setCoilTier,
-                        AtomicEnergyExcitationPlant::getCoilTier)))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 7))
-            .addElement(
-                'D',
-                GTStructureChannels.HEATING_COIL.use(
-                    GTStructureUtility.activeCoils(
-                        GTStructureUtility.ofCoil(
-                            AtomicEnergyExcitationPlant::setMCoilLevel,
-                            AtomicEnergyExcitationPlant::getMCoilLevel))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement(
-                'F',
-                GTStructureUtility.buildHatchAdder(AtomicEnergyExcitationPlant.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.Maintenance,
-                        HatchElement.InputBus,
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon)
-                    .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))))
-            .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('H', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31895))
-            .addElement('I', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31895))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 13))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 14))
-            .addElement('L', StructureUtility.isAir())
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        machineTier = -1;
-        if (isRenderActive) {
-            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-                || !checkPiece(
-                    STRUCTURE_PIECE_SPHERE_AIR,
-                    HORIZONTAL_OFF_SET_SPHERE,
-                    VERTICAL_OFF_SET_SPHERE,
-                    DEPTH_OFF_SET_SPHERE)) {
-                buildSphere();
-                checkStructureCondition(errors, false);
-            }
-        } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-            || !checkPiece(
-                STRUCTURE_PIECE_SPHERE,
-                HORIZONTAL_OFF_SET_SPHERE,
-                VERTICAL_OFF_SET_SPHERE,
-                DEPTH_OFF_SET_SPHERE)) {
-                    checkStructureCondition(errors, false);
-                }
-
-        if (mCountCasing < 350) checkStructureCondition(errors, false);
-
-        setupParameters();
-
-        if (!isRenderActive && enableRender && mTotalRunTime > 0) {
-            destroySphere();
-        } else if (isRenderActive && !enableRender) {
-            buildSphere();
-        }
-
-        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-
-        return;
-    }
-
-    @Override
-    public boolean isFlipChangeAllowed() {
-        if (mMachine || isRenderActive) return false;
-        return super.isFlipChangeAllowed();
-    }
-
-    @Override
-    public boolean isRotationChangeAllowed() {
-        if (mMachine || isRenderActive) return false;
-        return super.isRotationChangeAllowed();
-    }
-
-    @Override
-    public void onBlockDestroyed() {
-        super.onBlockDestroyed();
-        if (isRenderActive) {
-            buildSphere();
-        }
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setBoolean("isRenderActive", isRenderActive);
@@ -395,73 +495,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     @Override
-    public boolean checkEnergyHatch() {
-        return true;
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None;
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-        this.mHeatingCapacity = (int) getMCoilLevel().getHeat();
-    }
-
-    @Override
-    public void setProcessingLogicPower(ProcessingLogic logic) {
-        logic.setAvailableVoltage(getMaxInputEu());
-        logic.setAvailableAmperage(1);
-        logic.setAmperageOC(true);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-        buildPiece(
-            STRUCTURE_PIECE_SPHERE,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET_SPHERE,
-            VERTICAL_OFF_SET_SPHERE,
-            DEPTH_OFF_SET_SPHERE);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        int realBudget = elementBudget >= 500 ? elementBudget : Math.min(500, elementBudget * 5);
-
-        int built;
-        built = survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            realBudget,
-            env,
-            false,
-            true);
-
-        if (built >= 0) return built;
-
-        built += survivalBuildPiece(
-            STRUCTURE_PIECE_SPHERE,
-            stackSize,
-            HORIZONTAL_OFF_SET_SPHERE,
-            VERTICAL_OFF_SET_SPHERE,
-            DEPTH_OFF_SET_SPHERE,
-            realBudget,
-            env,
-            false,
-            true);
-        return built;
-    }
-
-    @Override
     public boolean getHeatOC() {
         return true;
     }
@@ -474,41 +507,5 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     @Override
     public boolean getPerfectOC() {
         return true;
-    }
-
-    @Override
-    public ProcessingLogic createProcessingLogic() {
-        return new GTNLProcessingLogic() {
-
-            @NotNull
-            @Override
-            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                int recipeReq = recipe.getMetadataOrDefault(FuelRefiningMetadata.INSTANCE, 0);
-                if (recipeReq > machineTier) {
-                    return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
-                }
-                return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
-                    : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
-            }
-
-            @NotNull
-            @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
-                    .setRecipeHeat(recipe.mSpecialValue)
-                    .setMachineHeat(mHeatingCapacity)
-                    .setHeatOC(getHeatOC())
-                    .setPerfectOC(getPerfectOC())
-                    .setHeatDiscount(getHeatDiscount())
-                    .setEUtDiscount(getEUtDiscount())
-                    .setDurationModifier(getDurationModifier());
-            }
-
-        }.setMaxParallelSupplier(this::getTrueParallel);
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return super.getEUtDiscount() * Math.pow(0.95, getMCoilLevel().getTier());
     }
 }

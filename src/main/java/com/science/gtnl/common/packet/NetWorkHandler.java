@@ -12,7 +12,6 @@ public class NetWorkHandler {
     public static void registerAllMessage() {
         int i = 0;
         registerMessage(SoundPacket.class, i++, Side.CLIENT);
-        registerMessage(TitlePacket.class, i++, Side.CLIENT);
         registerMessage(TickratePacket.class, i++, Side.CLIENT);
         registerMessage(ProspectingPacket.class, i++, Side.CLIENT);
         registerMessage(TileEntityNBTPacket.class, i++, Side.CLIENT);

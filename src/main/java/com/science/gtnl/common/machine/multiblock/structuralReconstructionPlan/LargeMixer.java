@@ -53,59 +53,6 @@ public class LargeMixer extends GTMMultiMachineBase<LargeMixer> implements ISurv
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeMixer(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialMixerActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialMixer)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(11);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.mixerNonCellRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeMixerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMixer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMixer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 6, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeMixer> getStructureDefinition() {
         return StructureDefinition.<LargeMixer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -134,20 +81,10 @@ public class LargeMixer extends GTMMultiMachineBase<LargeMixer> implements ISurv
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 40);
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return Math.max(0.005, 1.0 / 3.75 - (Math.max(0, mParallelTier - 1) / 50.0));
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 40);
     }
 
     @Override
@@ -168,5 +105,68 @@ public class LargeMixer extends GTMMultiMachineBase<LargeMixer> implements ISurv
             env,
             false,
             true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTPPRecipeMaps.mixerNonCellRecipes;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixerActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialMixer)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(11);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeMixerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMixer_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMixer_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 6, 5, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.8 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return Math.max(0.005, 1.0 / 3.75 - (Math.max(0, mParallelTier - 1) / 50.0));
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeMixer(this.mName);
     }
 }

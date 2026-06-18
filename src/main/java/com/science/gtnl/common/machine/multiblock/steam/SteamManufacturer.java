@@ -53,8 +53,8 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamManufacturerRecipeType");
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamManufacturer(this.mName);
     }
 
     @Override
@@ -114,6 +114,14 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
+    }
+
+    @Override
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.SteamManufacturerRecipes;
     }
@@ -126,18 +134,6 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     @Override
     public int getMaxParallelRecipes() {
         return 4;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_02"))
-            .beginStructureBlock(9, 7, 7, true)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -172,16 +168,22 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
         }
         return new ITexture[] {
             Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)) };
-
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamManufacturerRecipeType");
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamManufacturer(this.mName);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_02"))
+            .beginStructureBlock(9, 7, 7, true)
+            .toolTipFinisher();
+        return tt;
     }
 }

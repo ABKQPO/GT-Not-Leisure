@@ -14,7 +14,7 @@ import com.science.gtnl.api.IItemStackExtra;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mixin(ItemStack.class)
+@Mixin(value = ItemStack.class, remap = true)
 public abstract class MixinItemStack {
 
     @Shadow

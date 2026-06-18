@@ -31,25 +31,8 @@ public class SteamWeatherModule extends SteamElevatorModule {
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamWeatherModuleRecipeType");
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return null;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamWeatherModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_02"))
-            .beginStructureBlock(1, 5, 2, false)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -121,5 +104,22 @@ public class SteamWeatherModule extends SteamElevatorModule {
         }
 
         return result;
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamWeatherModuleRecipeType");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SteamWeatherModuleRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_02"))
+            .beginStructureBlock(1, 5, 2, false)
+            .toolTipFinisher();
+        return tt;
     }
 }

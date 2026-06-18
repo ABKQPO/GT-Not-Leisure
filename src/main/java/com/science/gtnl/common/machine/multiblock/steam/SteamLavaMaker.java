@@ -51,18 +51,8 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_02"))
-            .beginStructureBlock(3, 5, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamLavaMaker(this.mName);
     }
 
     @Override
@@ -88,31 +78,6 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
             env,
             false,
             true);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
-                        .extFacing()
-                        .build() };
-            } else {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER)
-                        .extFacing()
-                        .build() };
-            }
-        }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(BlockLoader.metaCasing, 27)) };
-
     }
 
     @Override
@@ -158,7 +123,10 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
     }
 
     @Override
@@ -173,7 +141,42 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamLavaMaker(this.mName);
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) {
+                return new ITexture[] {
+                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
+                        .extFacing()
+                        .build() };
+            } else {
+                return new ITexture[] {
+                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER)
+                        .extFacing()
+                        .build() };
+            }
+        }
+        return new ITexture[] {
+            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(BlockLoader.metaCasing, 27)) };
+
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_02"))
+            .beginStructureBlock(3, 5, 3, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
     }
 }

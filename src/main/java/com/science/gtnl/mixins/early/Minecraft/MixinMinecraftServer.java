@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import com.science.gtnl.api.TickrateAPI;
 
-@Mixin(value = MinecraftServer.class)
+@Mixin(value = MinecraftServer.class, remap = true)
 public abstract class MixinMinecraftServer {
 
     @ModifyConstant(method = "run", constant = @Constant(longValue = 50L))

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import com.science.gtnl.utils.event.LivingSneakEvent;
 
-@Mixin(value = EntityLivingBase.class)
+@Mixin(value = EntityLivingBase.class, remap = true)
 public abstract class MixinEntityLivingBase extends Entity {
 
     public MixinEntityLivingBase(World worldIn) {

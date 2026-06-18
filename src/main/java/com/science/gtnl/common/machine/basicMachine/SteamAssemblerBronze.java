@@ -4,21 +4,18 @@ import net.minecraft.util.StatCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.cleanroommc.modularui.factory.PosGuiData;
-import com.cleanroommc.modularui.screen.ModularPanel;
-import com.cleanroommc.modularui.screen.UISettings;
-import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.ProgressBar;
-import com.science.gtnl.common.gui.modularui.GTNLSteamAssemblerGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.SteamVariant;
 import gregtech.api.enums.Textures;
+import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -45,28 +42,13 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLSteamAssemblerGui<>(this, getUIProperties(), false, false).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after SteamAssemblerBronze mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.assemblerRecipes;
+    }
+
+    @Override
+    public void startProcess() {
+        sendLoopStart((byte) 1);
     }
 
     @Override
@@ -75,11 +57,6 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
         if (aIndex == 1) {
             GTUtility.doSoundAtClient(SoundResource.GT_MACHINES_MULTI_PRECISE_LOOP, 10, 1.0F, aX, aY, aZ);
         }
-    }
-
-    @Override
-    public void startProcess() {
-        sendLoopStart((byte) 1);
     }
 
     @Override
@@ -152,6 +129,26 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
                 .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
+    }
+
+    @Override
+    public SteamVariant getSteamVariant() {
+        return SteamVariant.BRONZE;
+    }
+
+    @Override
+    public GUITextureSet getGUITextureSet() {
+        return GUITextureSet.STEAM.apply(getSteamVariant());
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after SteamAssemblerBronze mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 
     @Override

@@ -59,52 +59,6 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDAlgaePondBaseActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDAlgaePondBase)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(18);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.FishingGroundRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FishingGroundRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FishingGround_00"))
-            .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(13, 4, 13, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<FishingGround> getStructureDefinition() {
         return StructureDefinition.<FishingGround>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -137,8 +91,8 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
         boolean isFlipped = this.getFlip()
             .isHorizontallyFlipped();
         StructureUtils.setStringBlockXZ(
@@ -150,8 +104,8 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
             isFlipped,
             "D",
             Blocks.water);
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 25);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 25);
     }
 
     @Override
@@ -192,5 +146,51 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
             env,
             false,
             true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.FishingGroundRecipes;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(18);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDAlgaePondBaseActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDAlgaePondBase)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("FishingGroundRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_FishingGround_00"))
+            .addPerfectOCInfo()
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(13, 4, 13, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

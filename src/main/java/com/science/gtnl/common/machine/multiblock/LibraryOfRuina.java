@@ -29,6 +29,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -68,86 +69,8 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LibraryOfRuina(this.mName);
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 1662;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.TheTwilightForestRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LibraryOfRuinaRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_07"))
-            .addPerfectOCInfo()
-            .addTecTechHatchInfo()
-            .beginStructureBlock(69, 51, 73, true)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_09"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_10"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_11"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_12"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_13"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_14"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_15"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_16"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
-            .toolTipFinisher();
-        return tt;
+    public IAlignmentLimits getInitialAlignmentLimits() {
+        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
 
     @Override
@@ -198,6 +121,11 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LibraryOfRuina(this.mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         if (!GTNLStructureChannels.STRUCTURE_RENDER.hasValue(stackSize)) return;
         buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
@@ -223,29 +151,104 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     }
 
     @Override
-    public IAlignmentLimits getInitialAlignmentLimits() {
-        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
-    }
-
-    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
             replacePortalWithWater();
-            checkStructureCondition(errors, false);
+            return;
         }
         replaceWaterWithPortal();
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 850);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 850);
     }
 
     @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && GTUtility.areStacksEqual(getControllerSlot(), CRYSTAL);
+    public void checkHatch(List<StructureError> errors) {
+        super.checkHatch(errors);
+        if (!GTUtility.areStacksEqual(getControllerSlot(), CRYSTAL)) {
+            errors.add(GTNLStructureErrors.invalidHatchConfiguration());
+        }
     }
 
     @Override
-    public boolean checkEnergyHatch() {
+    public void checkEnergyHatch(List<StructureError> errors) {}
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.TheTwilightForestRecipes;
+    }
+
+    @Override
+    public boolean getPerfectOC() {
         return true;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return 1662;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LibraryOfRuinaRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_07"))
+            .addPerfectOCInfo()
+            .addTecTechHatchInfo()
+            .beginStructureBlock(69, 51, 73, true)
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_09"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_10"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_11"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_12"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_13"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_14"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_15"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_16"))
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
+            .toolTipFinisher();
+        return tt;
     }
 
     public void replaceWaterWithPortal() {

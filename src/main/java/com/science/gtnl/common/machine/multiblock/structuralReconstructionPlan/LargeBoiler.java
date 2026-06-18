@@ -49,6 +49,8 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler> implements ISurvivalConstructable {
 
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+
     public boolean firstRun = true;
     public int integratedCircuitConfig = 0;
     public long excessWater = 0;
@@ -56,7 +58,6 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     public int excessProjectedEU = 0;
     public int mCountCasing;
     public int mFireboxCasing;
-    private static final String STRUCTURE_PIECE_MAIN = "main";
 
     public LargeBoiler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -84,188 +85,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
 
     public abstract int getEUt();
 
-    abstract int runtimeBoost(int mTime);
-
-    @Override
-    public boolean supportsVoidProtection() {
-        return true;
-    }
-
-    @Override
-    public boolean getDefaultHasMaintenanceChecks() {
-        return false;
-    }
-
-    @Override
-    public boolean shouldCheckMaintenance() {
-        return false;
-    }
-
-    public void onCasingAdded() {
-        mCountCasing++;
-    }
-
-    public void onFireboxAdded() {
-        mFireboxCasing++;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()), TextureFactory.builder()
-                .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER)
-                .extFacing()
-                .build(),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()) };
-    }
-
-    @Override
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
-    }
-
-    @Override
-    public boolean isCorrectMachinePart(ItemStack aStack) {
-        return true;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.largeBoilerFakeFuels;
-    }
-
-    @Override
-    public boolean filtersFluid() {
-        return false;
-    }
-
-    @Override
-    @NotNull
-    public CheckRecipeResult checkProcessing() {
-
-        if (ItemList.Circuit_Integrated.isStackEqual(mInventory[1], true, true)) {
-            int circuit_config = mInventory[1].getItemDamage();
-            if (circuit_config >= 1 && circuit_config <= 25) {
-                this.integratedCircuitConfig = circuit_config;
-            }
-        } else {
-            this.integratedCircuitConfig = 0;
-        }
-
-        for (GTRecipe tRecipe : RecipeMaps.dieselFuels.getAllRecipes()) {
-            FluidStack tFluid = GTUtility.getFluidForFilledItem(tRecipe.getRepresentativeInput(0), true);
-            if (tFluid != null && tRecipe.mSpecialValue > 1) {
-                tFluid.amount = 1000;
-                if (depleteInput(tFluid)) {
-                    this.mEfficiencyIncrease = 10000;
-                    this.mMaxProgresstime = adjustBurnTimeForConfig(runtimeBoost(tRecipe.mSpecialValue / 2));
-                    this.mEUt = adjustEUtForConfig(getEUt());
-                    return CheckRecipeResultRegistry.SUCCESSFUL;
-                }
-            }
-        }
-        for (GTRecipe tRecipe : RecipeMaps.denseLiquidFuels.getAllRecipes()) {
-            FluidStack tFluid = GTUtility.getFluidForFilledItem(tRecipe.getRepresentativeInput(0), true);
-            if (tFluid != null) {
-                tFluid.amount = 1000;
-                if (depleteInput(tFluid)) {
-                    this.mEfficiencyIncrease = 10000;
-                    this.mMaxProgresstime = adjustBurnTimeForConfig(
-                        Math.max(1, runtimeBoost(tRecipe.mSpecialValue * 2)));
-                    this.mEUt = adjustEUtForConfig(getEUt());
-                    return CheckRecipeResultRegistry.SUCCESSFUL;
-                }
-            }
-        }
-
-        ArrayList<ItemStack> tInputList = getStoredInputs();
-        if (!tInputList.isEmpty()) {
-            for (ItemStack tInput : tInputList) {
-                if (tInput != GTOreDictUnificator.get(OrePrefixes.bucket, Materials.Lava, 1)) {
-                    if (GTUtility.getFluidForFilledItem(tInput, true) == null
-                        && (this.mMaxProgresstime = GTModHandler.getFuelValue(tInput) / 80) > 0) {
-                        this.excessFuel += GTModHandler.getFuelValue(tInput) % 80;
-                        this.mMaxProgresstime += this.excessFuel / 80;
-                        this.excessFuel %= 80;
-                        this.mEfficiencyIncrease = 10000;
-                        this.mMaxProgresstime = adjustBurnTimeForConfig(runtimeBoost(this.mMaxProgresstime));
-                        this.mEUt = adjustEUtForConfig(getEUt());
-                        this.mOutputItems = new ItemStack[] { GTUtility.getContainerItem(tInput, true) };
-                        tInput.stackSize -= 1;
-                        updateSlots();
-                        return CheckRecipeResultRegistry.SUCCESSFUL;
-                    }
-                }
-            }
-        }
-        this.mMaxProgresstime = 0;
-        this.mEUt = 0;
-        return CheckRecipeResultRegistry.NO_FUEL_FOUND;
-    }
-
-    @Override
-    public boolean onRunningTick(ItemStack aStack) {
-        if (this.mEUt > 0) {
-            this.mEfficiency = 10000;
-
-            int tGeneratedEU = (int) (this.mEUt * 2L * this.mEfficiency / 10000L);
-            if (tGeneratedEU > 0) {
-
-                long amount = (tGeneratedEU + GTValues.STEAM_PER_WATER) / GTValues.STEAM_PER_WATER;
-                excessWater += amount * GTValues.STEAM_PER_WATER - tGeneratedEU;
-                amount -= excessWater / GTValues.STEAM_PER_WATER;
-                excessWater %= GTValues.STEAM_PER_WATER;
-                startRecipeProcessing();
-
-                if (depleteInput(Materials.Water.getFluid(amount))
-                    || depleteInput(GTModHandler.getDistilledWater(amount))) {
-                    addOutput(Materials.Steam.getGas(tGeneratedEU));
-                } else {
-                    explodeMultiblock();
-                }
-
-                endRecipeProcessing();
-            }
-            return true;
-        }
-        return true;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setInteger("excessFuel", excessFuel);
-        aNBT.setLong("excessWater", excessWater);
-        aNBT.setInteger("excessProjectedEU", excessProjectedEU);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        excessFuel = aNBT.getInteger("excessFuel");
-        excessWater = aNBT.getLong("excessWater");
-        excessProjectedEU = aNBT.getInteger("excessProjectedEU");
-    }
+    public abstract int runtimeBoost(int mTime);
 
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
@@ -323,6 +143,189 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, 1, 4, 0);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(STRUCTURE_PIECE_MAIN, stackSize, 1, 4, 0, elementBudget, env, false, true);
+    }
+
+    @Override
+    @NotNull
+    public CheckRecipeResult checkProcessing() {
+
+        if (ItemList.Circuit_Integrated.isStackEqual(mInventory[1], true, true)) {
+            int circuitConfig = mInventory[1].getItemDamage();
+            if (circuitConfig >= 1 && circuitConfig <= 25) {
+                integratedCircuitConfig = circuitConfig;
+            }
+        } else {
+            integratedCircuitConfig = 0;
+        }
+
+        for (GTRecipe tRecipe : RecipeMaps.dieselFuels.getAllRecipes()) {
+            FluidStack tFluid = GTUtility.getFluidForFilledItem(tRecipe.getRepresentativeInput(0), true);
+            if (tFluid != null && tRecipe.mSpecialValue > 1) {
+                tFluid.amount = 1000;
+                if (depleteInput(tFluid)) {
+                    mEfficiencyIncrease = 10000;
+                    mMaxProgresstime = adjustBurnTimeForConfig(runtimeBoost(tRecipe.mSpecialValue / 2));
+                    mEUt = adjustEUtForConfig(getEUt());
+                    return CheckRecipeResultRegistry.SUCCESSFUL;
+                }
+            }
+        }
+        for (GTRecipe tRecipe : RecipeMaps.denseLiquidFuels.getAllRecipes()) {
+            FluidStack tFluid = GTUtility.getFluidForFilledItem(tRecipe.getRepresentativeInput(0), true);
+            if (tFluid != null) {
+                tFluid.amount = 1000;
+                if (depleteInput(tFluid)) {
+                    mEfficiencyIncrease = 10000;
+                    mMaxProgresstime = adjustBurnTimeForConfig(Math.max(1, runtimeBoost(tRecipe.mSpecialValue * 2)));
+                    mEUt = adjustEUtForConfig(getEUt());
+                    return CheckRecipeResultRegistry.SUCCESSFUL;
+                }
+            }
+        }
+
+        ArrayList<ItemStack> tInputList = getStoredInputs();
+        if (!tInputList.isEmpty()) {
+            for (ItemStack tInput : tInputList) {
+                if (tInput != GTOreDictUnificator.get(OrePrefixes.bucket, Materials.Lava, 1)) {
+                    if (GTUtility.getFluidForFilledItem(tInput, true) == null
+                        && (mMaxProgresstime = GTModHandler.getFuelValue(tInput) / 80) > 0) {
+                        excessFuel += GTModHandler.getFuelValue(tInput) % 80;
+                        mMaxProgresstime += excessFuel / 80;
+                        excessFuel %= 80;
+                        mEfficiencyIncrease = 10000;
+                        mMaxProgresstime = adjustBurnTimeForConfig(runtimeBoost(mMaxProgresstime));
+                        mEUt = adjustEUtForConfig(getEUt());
+                        mOutputItems = new ItemStack[] { GTUtility.getContainerItem(tInput, true) };
+                        tInput.stackSize -= 1;
+                        updateSlots();
+                        return CheckRecipeResultRegistry.SUCCESSFUL;
+                    }
+                }
+            }
+        }
+        mMaxProgresstime = 0;
+        mEUt = 0;
+        return CheckRecipeResultRegistry.NO_FUEL_FOUND;
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack aStack) {
+        if (mEUt > 0) {
+            mEfficiency = 10000;
+
+            int tGeneratedEU = (int) (mEUt * 2L * mEfficiency / 10000L);
+            if (tGeneratedEU > 0) {
+
+                long amount = (tGeneratedEU + GTValues.STEAM_PER_WATER) / GTValues.STEAM_PER_WATER;
+                excessWater += amount * GTValues.STEAM_PER_WATER - tGeneratedEU;
+                amount -= excessWater / GTValues.STEAM_PER_WATER;
+                excessWater %= GTValues.STEAM_PER_WATER;
+                startRecipeProcessing();
+
+                if (depleteInput(Materials.Water.getFluid(amount))
+                    || depleteInput(GTModHandler.getDistilledWater(amount))) {
+                    addOutput(Materials.Steam.getGas(tGeneratedEU));
+                } else {
+                    explodeMultiblock();
+                }
+
+                endRecipeProcessing();
+            }
+            return true;
+        }
+        return true;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()), TextureFactory.builder()
+                .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER)
+                .extFacing()
+                .build(),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_LARGE_BOILER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()) };
+    }
+
+    @Override
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(172, 67));
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.largeBoilerFakeFuels;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("excessFuel", excessFuel);
+        aNBT.setLong("excessWater", excessWater);
+        aNBT.setInteger("excessProjectedEU", excessProjectedEU);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        excessFuel = aNBT.getInteger("excessFuel");
+        excessWater = aNBT.getLong("excessWater");
+        excessProjectedEU = aNBT.getInteger("excessProjectedEU");
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return true;
+    }
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
+    }
+
+    @Override
+    public boolean filtersFluid() {
+        return false;
+    }
+
+    @Override
+    public boolean isCorrectMachinePart(ItemStack aStack) {
+        return true;
+    }
+
+    @Override
     public int getMaxEfficiency(ItemStack aStack) {
         return 10000;
     }
@@ -330,6 +333,14 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     @Override
     public int getDamageToComponent(ItemStack aStack) {
         return 0;
+    }
+
+    public void onCasingAdded() {
+        mCountCasing++;
+    }
+
+    public void onFireboxAdded() {
+        mFireboxCasing++;
     }
 
     private int adjustEUtForConfig(int rawEUt) {
@@ -342,29 +353,15 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     private int adjustBurnTimeForConfig(int rawBurnTime) {
-        // Checks if the fuel is eligible for a super efficiency increase and if so, we want to immediately apply the
-        // adjustment!
-        // We also want to check that the fuel
         if (mEfficiencyIncrease <= 5000 && mEfficiency < getCorrectedMaxEfficiency(mInventory[1])) {
             return rawBurnTime;
         }
         int adjustedEUt = Math.max(25, getEUt() - 25 * integratedCircuitConfig);
         int adjustedBurnTime = (int) (rawBurnTime * (long) getEUt() / adjustedEUt);
-        this.excessProjectedEU += getEUt() * rawBurnTime - adjustedEUt * adjustedBurnTime;
-        adjustedBurnTime += this.excessProjectedEU / adjustedEUt;
-        this.excessProjectedEU %= adjustedEUt;
+        excessProjectedEU += getEUt() * rawBurnTime - adjustedEUt * adjustedBurnTime;
+        adjustedBurnTime += excessProjectedEU / adjustedEUt;
+        excessProjectedEU %= adjustedEUt;
         return adjustedBurnTime;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, 1, 4, 0);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(STRUCTURE_PIECE_MAIN, stackSize, 1, 4, 0, elementBudget, env, false, true);
     }
 
     public static class LargeBoilerBronze extends LargeBoiler {
@@ -442,10 +439,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        int runtimeBoost(int mTime) {
+        public int runtimeBoost(int mTime) {
             return mTime * 2;
         }
-
     }
 
     public static class LargeBoilerSteel extends LargeBoiler {
@@ -523,10 +519,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        int runtimeBoost(int mTime) {
+        public int runtimeBoost(int mTime) {
             return mTime;
         }
-
     }
 
     public static class LargeBoilerTitanium extends LargeBoiler {
@@ -604,10 +599,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        int runtimeBoost(int mTime) {
+        public int runtimeBoost(int mTime) {
             return mTime * 4;
         }
-
     }
 
     public static class LargeBoilerTungstenSteel extends LargeBoiler {
@@ -685,9 +679,8 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
-        int runtimeBoost(int mTime) {
+        public int runtimeBoost(int mTime) {
             return mTime * 4;
         }
     }
-
 }

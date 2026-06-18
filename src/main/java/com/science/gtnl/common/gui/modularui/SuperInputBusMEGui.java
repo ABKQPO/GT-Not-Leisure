@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.UpOrDown;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -40,44 +42,43 @@ import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
+import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 import gregtech.common.gui.modularui.util.StockingSlot;
 import gregtech.common.modularui2.widget.builder.ItemSlotGridBuilder;
 
-public class SuperInputBusMEGui {
+public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
 
-    private static final String FILTER_INV_NAME = "gtnl_super_input_bus_filter_inv";
-    private static final String STOCK_INV_NAME = "gtnl_super_input_bus_stock_inv";
-    private static final String MANUAL_INV_NAME = "gtnl_super_input_bus_manual_inv";
-    private static final String CONFIG_PANEL_KEY = "gtnl_super_input_bus_config_panel";
-    private static final String MANUAL_PANEL_KEY = "gtnl_super_input_bus_manual_panel";
-    private static final String SLOT_SIZE_PANEL_KEY_PREFIX = "gtnl_super_input_bus_slot_size_panel_";
-    private static final String AUTO_PULL_SYNC_KEY = "autoPullItemList";
-    private static final String MIN_AUTO_PULL_SYNC_KEY = "minAutoPullStackSize";
-    private static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
-    private static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
-    private static final String ACTIVE_SYNC_KEY = "isActive";
-    private static final String POWERED_SYNC_KEY = "isPowered";
-    private static final String BOOTING_SYNC_KEY = "isBooting";
-    private static final int SLOT_SIZE = 18;
-    private static final int SLOT_COLUMNS = 10;
-    private static final int VISIBLE_SLOT_ROWS = 4;
-    private static final int FILTER_GRID_X = 7;
-    private static final int FILTER_GRID_Y = 9;
-    private static final int STOCK_GRID_X = 205;
-
-    private final SuperInputBusME hatch;
+    public static final String FILTER_INV_NAME = "gtnl_super_input_bus_filter_inv";
+    public static final String STOCK_INV_NAME = "gtnl_super_input_bus_stock_inv";
+    public static final String MANUAL_INV_NAME = "gtnl_super_input_bus_manual_inv";
+    public static final String CONFIG_PANEL_KEY = "gtnl_super_input_bus_config_panel";
+    public static final String MANUAL_PANEL_KEY = "gtnl_super_input_bus_manual_panel";
+    public static final String SLOT_SIZE_PANEL_KEY_PREFIX = "gtnl_super_input_bus_slot_size_panel_";
+    public static final String AUTO_PULL_SYNC_KEY = "autoPullItemList";
+    public static final String MIN_AUTO_PULL_SYNC_KEY = "minAutoPullStackSize";
+    public static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
+    public static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
+    public static final String ACTIVE_SYNC_KEY = "isActive";
+    public static final String POWERED_SYNC_KEY = "isPowered";
+    public static final String BOOTING_SYNC_KEY = "isBooting";
+    public static final int SLOT_SIZE = 18;
+    public static final int SLOT_COLUMNS = 10;
+    public static final int VISIBLE_SLOT_ROWS = 4;
+    public static final int FILTER_GRID_X = 7;
+    public static final int FILTER_GRID_Y = 9;
+    public static final int STOCK_GRID_X = 205;
 
     public SuperInputBusMEGui(SuperInputBusME hatch) {
-        this.hatch = hatch;
+        super(hatch);
     }
 
+    @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
         registerSyncValues(syncManager);
 
-        ModularPanel panel = GTGuis.mteTemplatePanelBuilder(hatch, guiData, syncManager, uiSettings)
-            .setWidth(hatch.getGUIWidth())
-            .setHeight(hatch.getGUIHeight())
-            .doesBindPlayerInventory(false)
+        ModularPanel panel = GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
+            .setWidth(machine.getGUIWidth())
+            .setHeight(machine.getGUIHeight())
             .doesAddGregTechLogo(false)
             .build();
 
@@ -94,25 +95,26 @@ public class SuperInputBusMEGui {
         return panel;
     }
 
-    private void registerSyncValues(PanelSyncManager syncManager) {
+    @Override
+    public void registerSyncValues(PanelSyncManager syncManager) {
         syncManager.syncValue(
             AUTO_PULL_SYNC_KEY,
-            new BooleanSyncValue(hatch::isAutoPullItemList, hatch::setAutoPullItemList).allowC2S());
+            new BooleanSyncValue(machine::isAutoPullItemList, machine::setAutoPullItemList).allowC2S());
         syncManager.syncValue(
             MIN_AUTO_PULL_SYNC_KEY,
-            new IntSyncValue(hatch::getMinAutoPullStackSize, hatch::setMinAutoPullStackSize).allowC2S());
+            new IntSyncValue(machine::getMinAutoPullStackSize, machine::setMinAutoPullStackSize).allowC2S());
         syncManager.syncValue(
             AUTO_PULL_REFRESH_SYNC_KEY,
-            new IntSyncValue(hatch::getAutoPullRefreshTime, hatch::setAutoPullRefreshTime).allowC2S());
+            new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime).allowC2S());
         syncManager.syncValue(
             EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(hatch::doFastRecipeCheck, hatch::setRecipeCheck).allowC2S());
-        syncManager.syncValue(ACTIVE_SYNC_KEY, new BooleanSyncValue(hatch::isActive));
-        syncManager.syncValue(POWERED_SYNC_KEY, new BooleanSyncValue(hatch::isPowered));
-        syncManager.syncValue(BOOTING_SYNC_KEY, new BooleanSyncValue(hatch::isBooting));
+            new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck).allowC2S());
+        syncManager.syncValue(ACTIVE_SYNC_KEY, new BooleanSyncValue(machine::isActive));
+        syncManager.syncValue(POWERED_SYNC_KEY, new BooleanSyncValue(machine::isPowered));
+        syncManager.syncValue(BOOTING_SYNC_KEY, new BooleanSyncValue(machine::isBooting));
     }
 
-    private Grid createFilterGrid(ModularPanel parent, PanelSyncManager syncManager) {
+    public Grid createFilterGrid(ModularPanel parent, PanelSyncManager syncManager) {
         BooleanSyncValue autoPullSyncer = syncManager.findSyncHandler(AUTO_PULL_SYNC_KEY, BooleanSyncValue.class);
         syncManager.registerSlotGroup(FILTER_INV_NAME, getSlotRows());
 
@@ -124,48 +126,49 @@ public class SuperInputBusMEGui {
                     (x, y, index) -> createFilterSlot(parent, syncManager, autoPullSyncer, index)));
     }
 
-    private ItemSlot createFilterSlot(ModularPanel parent, PanelSyncManager syncManager,
-        BooleanSyncValue autoPullSyncer, int index) {
+    public ItemSlot createFilterSlot(ModularPanel parent, PanelSyncManager syncManager, BooleanSyncValue autoPullSyncer,
+        int index) {
         IPanelHandler slotSizePanel = syncManager.syncedPanel(
             SLOT_SIZE_PANEL_KEY_PREFIX + index,
             true,
             (manager, handler) -> createStoredStackSizePanel(parent, manager, index));
 
-        ModularSlot slot = new ModularSlot(hatch.inventoryHandler, index).slotGroup(FILTER_INV_NAME)
-            .filter(stack -> !autoPullSyncer.getBoolValue() && !hatch.containsFilterStackForGui(stack))
+        ModularSlot slot = new ModularSlot(machine.inventoryHandler, index).slotGroup(FILTER_INV_NAME)
+            .filter(stack -> !autoPullSyncer.getBoolValue() && !machine.containsFilterStackForGui(stack))
             .changeListener((newStack, onlyAmountChanged, client, init) -> {
                 if (!client && !init) {
                     ItemStack stack = newStack == null ? null : GTUtility.copyAmount(1, newStack);
-                    hatch.updateInformationSlotForGui(index, stack);
+                    machine.updateInformationSlotForGui(index, stack);
                 }
             });
 
         return new StoredStackSizeSlot(autoPullSyncer, slotSizePanel).slot(slot);
     }
 
-    private Grid createStockGrid(PanelSyncManager syncManager) {
+    public Grid createStockGrid(PanelSyncManager syncManager) {
         return createGridShell(STOCK_GRID_X).child(
-            new ItemSlotGridBuilder(hatch.inventoryHandler, syncManager).size(SLOT_COLUMNS, getSlotRows())
+            new ItemSlotGridBuilder(machine.inventoryHandler, syncManager).size(SLOT_COLUMNS, getSlotRows())
                 .slotGroupKey(STOCK_INV_NAME)
-                .indexOffset(hatch.getStockSlotOffsetForGui())
+                .indexOffset(machine.getStockSlotOffsetForGui())
                 .accessibility(false, false)
                 .itemSlotSupplier(() -> new ItemSlot().background(GTGuiTextures.SLOT_ITEM_DARK))
                 .build());
     }
 
-    private Grid createGridShell(int x) {
+    public Grid createGridShell(int x) {
         return new Grid().scrollable(new VerticalScrollData())
+            .showScrollShadows(false)
             .minColWidth(SLOT_SIZE)
             .minRowHeight(SLOT_SIZE)
             .size(SLOT_SIZE * SLOT_COLUMNS + 4, SLOT_SIZE * VISIBLE_SLOT_ROWS)
             .pos(x, FILTER_GRID_Y);
     }
 
-    private int getSlotRows() {
-        return hatch.getFilterSlotCountForGui() / SLOT_COLUMNS;
+    public int getSlotRows() {
+        return machine.getFilterSlotCountForGui() / SLOT_COLUMNS;
     }
 
-    private Widget<?> createAutoPullButton(ModularPanel parent, PanelSyncManager syncManager) {
+    public Widget<?> createAutoPullButton(ModularPanel parent, PanelSyncManager syncManager) {
         BooleanSyncValue autoPullSyncer = syncManager.findSyncHandler(AUTO_PULL_SYNC_KEY, BooleanSyncValue.class);
         IPanelHandler configPanel = syncManager.syncedPanel(
             CONFIG_PANEL_KEY,
@@ -195,12 +198,12 @@ public class SuperInputBusMEGui {
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
-            .setEnabledIf(button -> hatch.autoPullAvailable)
+            .setEnabledIf(button -> machine.autoPullAvailable)
             .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
             .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.2"));
     }
 
-    private Widget<?> createManualSlotButton(ModularPanel parent, PanelSyncManager syncManager) {
+    public Widget<?> createManualSlotButton(ModularPanel parent, PanelSyncManager syncManager) {
         IPanelHandler manualPanel = syncManager
             .syncedPanel(MANUAL_PANEL_KEY, true, (manager, handler) -> createManualSlotPanel(parent, manager));
 
@@ -214,7 +217,7 @@ public class SuperInputBusMEGui {
             });
     }
 
-    private ModularPanel createManualSlotPanel(ModularPanel parent, PanelSyncManager syncManager) {
+    public ModularPanel createManualSlotPanel(ModularPanel parent, PanelSyncManager syncManager) {
         Dialog<?> panel = createDialog(MANUAL_PANEL_KEY, parent);
         panel.size(176, 86)
             .leftRel(1)
@@ -222,22 +225,23 @@ public class SuperInputBusMEGui {
         panel.child(ButtonWidget.panelCloseButton());
         panel.child(
             new Grid().scrollable(new VerticalScrollData())
+                .showScrollShadows(false)
                 .minColWidth(SLOT_SIZE)
                 .minRowHeight(SLOT_SIZE)
                 .size(SLOT_SIZE * 9 + 4, SLOT_SIZE * 4)
                 .pos(7, 7)
                 .child(
-                    new ItemSlotGridBuilder(hatch.inventoryHandler, syncManager).size(9, 9)
+                    new ItemSlotGridBuilder(machine.inventoryHandler, syncManager).size(9, 9)
                         .slotGroupKey(MANUAL_INV_NAME)
-                        .indexOffset(hatch.getManualSlotStartForGui())
+                        .indexOffset(machine.getManualSlotStartForGui())
                         .build()));
         return panel;
     }
 
-    private ModularPanel createStoredStackSizePanel(ModularPanel parent, PanelSyncManager syncManager, int slot) {
+    public ModularPanel createStoredStackSizePanel(ModularPanel parent, PanelSyncManager syncManager, int slot) {
         IntSyncValue stackSizeSyncer = new IntSyncValue(
-            () -> hatch.getStoredStackSizeForGui(slot),
-            value -> hatch.setStoredStackSizeForGui(slot, value)).allowC2S();
+            () -> machine.getStoredStackSizeForGui(slot),
+            value -> machine.setStoredStackSizeForGui(slot, value)).allowC2S();
         syncManager.syncValue("storedStackSize" + slot, stackSizeSyncer);
 
         Flow mainColumn = Flow.column()
@@ -263,11 +267,14 @@ public class SuperInputBusMEGui {
         return panel;
     }
 
-    private ModularPanel createStackSizeConfigurationPanel(ModularPanel parent, PanelSyncManager syncManager) {
-        IntSyncValue minStackSyncer = syncManager.findSyncHandler(MIN_AUTO_PULL_SYNC_KEY, IntSyncValue.class);
-        IntSyncValue refreshSyncer = syncManager.findSyncHandler(AUTO_PULL_REFRESH_SYNC_KEY, IntSyncValue.class);
-        BooleanSyncValue recipeCheckSyncer = syncManager
-            .findSyncHandler(EXPEDITE_RECIPE_SYNC_KEY, BooleanSyncValue.class);
+    public ModularPanel createStackSizeConfigurationPanel(ModularPanel parent, PanelSyncManager syncManager) {
+        IntSyncValue minStackSyncer = new IntSyncValue(
+            machine::getMinAutoPullStackSize,
+            machine::setMinAutoPullStackSize).allowC2S();
+        IntSyncValue refreshSyncer = new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime)
+            .allowC2S();
+        BooleanSyncValue recipeCheckSyncer = new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck)
+            .allowC2S();
 
         Flow mainColumn = Flow.column()
             .coverChildren()
@@ -295,7 +302,7 @@ public class SuperInputBusMEGui {
         return panel;
     }
 
-    private Dialog<?> createDialog(String key, ModularPanel parent) {
+    public Dialog<?> createDialog(String key, ModularPanel parent) {
         Dialog<?> panel = new Dialog<>(key, null);
         panel.relative(parent)
             .background(GTGuiTextures.BACKGROUND_POPUP_STANDARD);
@@ -305,18 +312,18 @@ public class SuperInputBusMEGui {
         return panel;
     }
 
-    private TextFieldWidget createIntegerField(IntSyncValue syncer) {
+    public TextFieldWidget createIntegerField(IntSyncValue syncer) {
         return new TextFieldWidget().value(syncer)
             .numbersInt(1, Integer.MAX_VALUE)
             .formatAsInteger(true)
-            .setScrollValues(1, 4, 64)
+            .scrollValues(1, 4, 64, 256)
             .setTextAlignment(Alignment.Center)
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
             .size(72, 18);
     }
 
-    private Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
+    public Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
         return Flow.row()
             .coverChildren()
             .childPadding(4)
@@ -334,7 +341,7 @@ public class SuperInputBusMEGui {
                     .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
-    private TextWidget<?> createStatusText(PanelSyncManager syncManager) {
+    public TextWidget<?> createStatusText(PanelSyncManager syncManager) {
         BooleanSyncValue activeSyncer = syncManager.findSyncHandler(ACTIVE_SYNC_KEY, BooleanSyncValue.class);
         BooleanSyncValue poweredSyncer = syncManager.findSyncHandler(POWERED_SYNC_KEY, BooleanSyncValue.class);
         BooleanSyncValue bootingSyncer = syncManager.findSyncHandler(BOOTING_SYNC_KEY, BooleanSyncValue.class);
@@ -355,15 +362,20 @@ public class SuperInputBusMEGui {
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
     }
 
-    private Widget<?> createLogo() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
-            .size(18)
+    @Override
+    protected IDrawable.DrawableWidget createLogo() {
+        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
             .pos(367, 81);
+    }
+
+    @Override
+    protected UITexture getLogoTexture() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     public static class StoredStackSizeSlot extends StockingSlot {
 
-        private final IPanelHandler stackSizePanel;
+        public final IPanelHandler stackSizePanel;
 
         public StoredStackSizeSlot(BooleanSyncValue isLocked, IPanelHandler stackSizePanel) {
             super(isLocked);

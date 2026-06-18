@@ -68,61 +68,6 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new MegaBathTank(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaBathTankRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(31, 13, 31, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 5);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlantActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlant)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
     public IStructureDefinition<MegaBathTank> getStructureDefinition() {
         return StructureDefinition.<MegaBathTank>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -158,6 +103,11 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new MegaBathTank(this.mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         this.buildPiece(
             STRUCTURE_PIECE_MAIN,
@@ -185,10 +135,82 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing > 100);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 101);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        switch (machineMode) {
+            case MACHINEMODE_SIMPLEWASH -> {
+                return GTPPRecipeMaps.simpleWasherRecipes;
+            }
+            case MACHINEMODE_CHEMBATH -> {
+                return RecipeMaps.chemicalBathRecipes;
+            }
+            default -> {
+                return RecipeMaps.oreWasherRecipes;
+            }
+        }
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays
+            .asList(RecipeMaps.oreWasherRecipes, GTPPRecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 5);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlantActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlant)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("MegaBathTankRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(31, 13, 31, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -213,12 +235,6 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public SoundResource getActivitySoundLoop() {
-        return SoundResource.GT_MACHINES_MULTI_ORE_WASHER_PLANT_LOOP;
-    }
-
     @Override
     public int nextMachineMode() {
         if (machineMode == MACHINEMODE_OREWASH) return MACHINEMODE_SIMPLEWASH;
@@ -238,26 +254,10 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
         return StatCollector.translateToLocal("MegaBathTank_Mode_" + machineMode);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        switch (machineMode) {
-            case MACHINEMODE_SIMPLEWASH -> {
-                return GTPPRecipeMaps.simpleWasherRecipes;
-            }
-            case MACHINEMODE_CHEMBATH -> {
-                return RecipeMaps.chemicalBathRecipes;
-            }
-            default -> {
-                return RecipeMaps.oreWasherRecipes;
-            }
-        }
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays
-            .asList(RecipeMaps.oreWasherRecipes, GTPPRecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
+    public SoundResource getActivitySoundLoop() {
+        return SoundResource.GT_MACHINES_MULTI_ORE_WASHER_PLANT_LOOP;
     }
 
 }

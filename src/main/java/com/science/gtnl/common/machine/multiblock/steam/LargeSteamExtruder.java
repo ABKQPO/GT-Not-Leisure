@@ -38,18 +38,11 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder> implements ISurvivalConstructable {
 
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeSteamExtruder(this.mName);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamExtruderRecipeType");
-    }
-
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_extruder";
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 7;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSE_STRUCTURE_FILE_PATH);
 
     public LargeSteamExtruder(String aName) {
@@ -58,28 +51,6 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
 
     public LargeSteamExtruder(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-    }
-
-    private static final int HORIZONTAL_OFF_SET = 2;
-    private static final int VERTICAL_OFF_SET = 7;
-    private static final int DEPTH_OFF_SET = 0;
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(TexturesGtBlock.oMCDIndustrialExtruderActive)
-                .extFacing()
-                .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(TexturesGtBlock.oMCDIndustrialExtruder)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
     }
 
     @Override
@@ -173,20 +144,19 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeSteamExtruder(mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
+        if (mMachine) return -1;
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -200,31 +170,26 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierGearCasing == 1 && tierMachineCasing == 1
-            && tierFrameCasing == 1
-            && tierMaterialBlock == 1
-            && tierBrickCasing == 1
-            && tierPipeCasing == 1
-            && mCountCasing >= 20) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        if (tierGearCasing == 2 && tierMachineCasing == 2
-            && tierFrameCasing == 2
-            && tierMaterialBlock == 2
-            && tierBrickCasing == 2
-            && tierPipeCasing == 2
-            && mCountCasing >= 20) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        checkStructureCondition(errors, false);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            20,
+            tierGearCasing == 1 && tierMachineCasing == 1
+                && tierFrameCasing == 1
+                && tierMaterialBlock == 1
+                && tierBrickCasing == 1
+                && tierPipeCasing == 1,
+            tierGearCasing == 2 && tierMachineCasing == 2
+                && tierFrameCasing == 2
+                && tierMaterialBlock == 2
+                && tierBrickCasing == 2
+                && tierPipeCasing == 2);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.extruderRecipes;
     }
 
     @Override
@@ -235,11 +200,6 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
             return 16;
         }
         return 8;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.extruderRecipes;
     }
 
     @Override
@@ -255,6 +215,29 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
     @Override
     public int getTierRecipes() {
         return 2;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(TexturesGtBlock.oMCDIndustrialExtruderActive)
+                .extFacing()
+                .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(TexturesGtBlock.oMCDIndustrialExtruder)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("LargeSteamExtruderRecipeType");
     }
 
     @Override

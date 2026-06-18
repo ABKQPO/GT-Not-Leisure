@@ -32,6 +32,10 @@ public class GTNLStructureErrors {
         return StructureErrors.of("GTNL.gui.text.structure_error.energy_input_amperage_too_high");
     }
 
+    public static StructureError missingDistillationLayerOutputHatch() {
+        return StructureErrors.of("GTNL.gui.text.structure_error.missing_distillation_layer_output_hatch");
+    }
+
     public static StructureError unknownLegacyCheckFailure() {
         return StructureErrors.of("GTNL.gui.text.structure_error.legacy_check_failed");
     }

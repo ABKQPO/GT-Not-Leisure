@@ -26,9 +26,9 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class OutputBusMEProxy extends MTEHatchOutputBusME {
 
-    public MTEHatchOutputBusME master;
     public int masterX, masterY, masterZ, masterDim;
     public boolean masterSet = false; // indicate if values of masterX, masterY, masterZ are valid
+    public MTEHatchOutputBusME master;
     private long lastProxyFlushTick;
 
     public OutputBusMEProxy(int aID, String aName, String aNameRegional) {
@@ -42,17 +42,6 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new OutputBusMEProxy(mName, mTier, mDescriptionArray, mTextures);
-    }
-
-    @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_00"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_01"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_02"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_03"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_04"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_05"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_06") };
     }
 
     @Override
@@ -72,110 +61,15 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
         return GTNLItemList.OutputBusMEProxy.get(1);
     }
 
-    public void flushCachedStack() {
-        if (getMaster() == null) {
-            return;
-        }
-        if (getMaster().canAcceptAnyItem()) {
-            for (IAEItemStack stack : getProvider().getCacheList()) {
-                if (stack != null && stack.getStackSize() > 0) {
-                    getMaster().getProvider()
-                        .storeToCache(stack.copy());
-                }
-            }
-            getProvider().getCacheList()
-                .forEach(cachedStack -> cachedStack.setStackSize(0));
-        }
-    }
-
     @Override
-    public void onLeftclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {}
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        ((IOutputME) this).setLastClickedPlayer(aPlayer);
-
-        openGui(aPlayer);
-
-        return true;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        if (!masterSet) return;
-        NBTTagCompound masterNBT = new NBTTagCompound();
-        masterNBT.setInteger("masterDim", masterDim);
-        masterNBT.setInteger("masterX", masterX);
-        masterNBT.setInteger("masterY", masterY);
-        masterNBT.setInteger("masterZ", masterZ);
-        aNBT.setTag("master", masterNBT);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        if (!aNBT.hasKey("master")) return;
-        NBTTagCompound masterNBT = aNBT.getCompoundTag("master");
-        masterX = masterNBT.getInteger("masterX");
-        masterY = masterNBT.getInteger("masterY");
-        masterZ = masterNBT.getInteger("masterZ");
-        masterDim = masterNBT.getInteger("masterDim");
-        masterSet = true;
-    }
-
-    public MTEHatchOutputBusME getMaster() {
-        if (master == null) return null;
-        if (master.getBaseMetaTileEntity() == null) { // master disappeared
-            master = null;
-        }
-        return master;
-    }
-
-    public MTEHatchOutputBusME trySetMasterFromCoord(int x, int y, int z, int dim) {
-        World world = DimensionManager.getWorld(dim);
-        if (world == null) return null;
-
-        TileEntity tileEntity = GTUtil.getTileEntity(world, x, y, z, false);
-
-        if (tileEntity == null) return null;
-        if (!(tileEntity instanceof IGregTechTileEntity GTTE)) return null;
-        if (!(GTTE.getMetaTileEntity() instanceof MTEHatchOutputBusME newMaster)) return null;
-        if (newMaster instanceof OutputBusMEProxy) return null;
-        if (master != newMaster) master = newMaster;
-        masterX = x;
-        masterY = y;
-        masterZ = z;
-        masterDim = dim;
-        masterSet = true;
-        return master;
-    }
-
-    @Override
-    public NBTTagCompound getCopiedData(EntityPlayer player) {
-        NBTTagCompound tag = super.getCopiedData(player);
-        if (!masterSet) return tag;
-        NBTTagCompound masterNBT = new NBTTagCompound();
-        masterNBT.setInteger("masterDim", masterDim);
-        masterNBT.setInteger("masterX", masterX);
-        masterNBT.setInteger("masterY", masterY);
-        masterNBT.setInteger("masterZ", masterZ);
-        tag.setTag("master", masterNBT);
-        return tag;
-    }
-
-    @Override
-    public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound aNBT) {
-        boolean result = super.pasteCopiedData(player, aNBT);
-        if (aNBT == null) return result;
-
-        if (!aNBT.hasKey("master")) return result;
-        NBTTagCompound masterNBT = aNBT.getCompoundTag("master");
-        int x = masterNBT.getInteger("masterX");
-        int y = masterNBT.getInteger("masterY");
-        int z = masterNBT.getInteger("masterZ");
-        int dim = masterNBT.getInteger("masterDim");
-        return trySetMasterFromCoord(x, y, z, dim) != null;
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_00"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_01"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_02"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_03"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_04"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_05"),
+            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_06") };
     }
 
     @Override
@@ -204,9 +98,67 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
     }
 
     @Override
+    public void onLeftclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {}
+
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        ((IOutputME) this).setLastClickedPlayer(aPlayer);
+        openGui(aPlayer);
+        return true;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        if (!masterSet) return;
+        NBTTagCompound masterNBT = new NBTTagCompound();
+        masterNBT.setInteger("masterDim", masterDim);
+        masterNBT.setInteger("masterX", masterX);
+        masterNBT.setInteger("masterY", masterY);
+        masterNBT.setInteger("masterZ", masterZ);
+        aNBT.setTag("master", masterNBT);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        if (!aNBT.hasKey("master")) return;
+        NBTTagCompound masterNBT = aNBT.getCompoundTag("master");
+        masterX = masterNBT.getInteger("masterX");
+        masterY = masterNBT.getInteger("masterY");
+        masterZ = masterNBT.getInteger("masterZ");
+        masterDim = masterNBT.getInteger("masterDim");
+        masterSet = true;
+    }
+
+    @Override
+    public NBTTagCompound getCopiedData(EntityPlayer player) {
+        NBTTagCompound tag = super.getCopiedData(player);
+        if (!masterSet) return tag;
+        NBTTagCompound masterNBT = new NBTTagCompound();
+        masterNBT.setInteger("masterDim", masterDim);
+        masterNBT.setInteger("masterX", masterX);
+        masterNBT.setInteger("masterY", masterY);
+        masterNBT.setInteger("masterZ", masterZ);
+        tag.setTag("master", masterNBT);
+        return tag;
+    }
+
+    @Override
+    public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound aNBT) {
+        boolean result = super.pasteCopiedData(player, aNBT);
+        if (aNBT == null || !aNBT.hasKey("master")) return result;
+        NBTTagCompound masterNBT = aNBT.getCompoundTag("master");
+        int x = masterNBT.getInteger("masterX");
+        int y = masterNBT.getInteger("masterY");
+        int z = masterNBT.getInteger("masterZ");
+        int dim = masterNBT.getInteger("masterDim");
+        return trySetMasterFromCoord(x, y, z, dim) != null;
+    }
+
+    @Override
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
-
         if (masterSet) {
             NBTTagCompound masterNBT = new NBTTagCompound();
             masterNBT.setInteger("masterDim", masterDim);
@@ -215,7 +167,50 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
             masterNBT.setInteger("masterZ", masterZ);
             tag.setTag("master", masterNBT);
         }
-
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
+    }
+
+    public void flushCachedStack() {
+        MTEHatchOutputBusME outputBus = getMaster();
+        if (outputBus == null || !outputBus.canAcceptAnyItem()) {
+            return;
+        }
+        for (IAEItemStack stack : getProvider().getCacheList()) {
+            if (stack != null && stack.getStackSize() > 0) {
+                outputBus.getProvider()
+                    .storeToCache(stack.copy());
+            }
+        }
+        getProvider().getCacheList()
+            .forEach(cachedStack -> cachedStack.setStackSize(0));
+    }
+
+    public MTEHatchOutputBusME getMaster() {
+        if (master == null) return null;
+        if (master.getBaseMetaTileEntity() == null) {
+            master = null;
+        }
+        return master;
+    }
+
+    public MTEHatchOutputBusME trySetMasterFromCoord(int x, int y, int z, int dim) {
+        World world = DimensionManager.getWorld(dim);
+        if (world == null) return null;
+
+        TileEntity tileEntity = GTUtil.getTileEntity(world, x, y, z, false);
+        if (tileEntity == null) return null;
+        if (!(tileEntity instanceof IGregTechTileEntity gregTechTileEntity)) return null;
+        if (!(gregTechTileEntity.getMetaTileEntity() instanceof MTEHatchOutputBusME newMaster)) return null;
+        if (newMaster instanceof OutputBusMEProxy) return null;
+
+        if (master != newMaster) {
+            master = newMaster;
+        }
+        masterX = x;
+        masterY = y;
+        masterZ = z;
+        masterDim = dim;
+        masterSet = true;
+        return master;
     }
 }

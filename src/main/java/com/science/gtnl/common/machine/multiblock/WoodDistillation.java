@@ -62,62 +62,6 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.WoodDistillationRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("WoodDistillationRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WoodDistillation_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(23, 20, 15, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<WoodDistillation> getStructureDefinition() {
         return StructureDefinition.<WoodDistillation>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -173,20 +117,19 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 220);
+        checkHatch(errors);
+        checkHatchExact(errors, HatchElement.Muffler, 2);
+        checkCasingMin(errors, mCountCasing, 220);
     }
 
     @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && mMufflerHatches.size() == 2;
-    }
+    public void checkEnergyHatch(List<StructureError> errors) {}
 
     @Override
-    public boolean checkEnergyHatch() {
-        return true;
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.WoodDistillationRecipes;
     }
 
     @Override
@@ -231,7 +174,6 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
         mOutputItems = outputItems;
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
-
         mOutputFluids = outputFluids;
         if (outputFluids != null) {
             List<FluidStack> expandedFluids = new ArrayList<>();
@@ -250,5 +192,56 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
         }
 
         return result;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("WoodDistillationRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WoodDistillation_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(23, 20, 15, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

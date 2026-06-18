@@ -53,75 +53,6 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeCanning(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(11);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.cannerRecipes;
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.5 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1 / 3.33 - (Math.max(0, mParallelTier - 1) / 50.0);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeCanningRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .addPerfectOCInfo()
-            .beginStructureBlock(5, 5, 7, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeCanning> getStructureDefinition() {
         return StructureDefinition.<LargeCanning>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -151,10 +82,10 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 80);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 80);
     }
 
     @Override
@@ -175,5 +106,74 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
             env,
             false,
             true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.cannerRecipes;
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.5 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1 / 3.33 - (Math.max(0, mParallelTier - 1) / 50.0);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_CANNER)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(11);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeCanningRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .addPerfectOCInfo()
+            .beginStructureBlock(5, 5, 7, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeCanning(this.mName);
     }
 }

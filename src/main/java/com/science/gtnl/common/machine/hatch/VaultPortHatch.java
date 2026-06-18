@@ -55,7 +55,6 @@ public class VaultPortHatch extends MTEHatch
     public IItemVault controller;
     public AENetworkProxy gridProxy = null;
     public BaseActionSource machineSource = new MachineSource(this);
-
     public IMEInventoryHandler<IAEItemStack> itemHandler;
     public IMEInventoryHandler<IAEFluidStack> fluidHandler;
 
@@ -86,12 +85,6 @@ public class VaultPortHatch extends MTEHatch
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean aActive, boolean aRedstone) {
-        return super.getTexture(aBaseMetaTileEntity, side, facing, colorIndex, aActive, aRedstone);
-    }
-
-    @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         return new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
             TextureFactory.builder()
@@ -118,30 +111,15 @@ public class VaultPortHatch extends MTEHatch
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide()) {
-            if (controller != null && !controller.isValid()) {
-                unbind();
-            }
+        if (aBaseMetaTileEntity.isServerSide() && controller != null && !controller.isValid()) {
+            unbind();
         }
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-
-        if (this.gridProxy != null) {
-            NBTTagCompound proxyTag = new NBTTagCompound();
-            this.gridProxy.writeToNBT(proxyTag);
-            aNBT.setTag("gridProxy", proxyTag);
-        }
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        NBTTagCompound proxyTag = aNBT.getCompoundTag("gridProxy");
-        this.getProxy()
-            .readFromNBT(proxyTag);
+    public void onFacingChange() {
+        super.onFacingChange();
+        updateValidGridProxySides();
     }
 
     public void bind(IItemVault controller) {
@@ -176,6 +154,25 @@ public class VaultPortHatch extends MTEHatch
     }
 
     @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+
+        if (this.gridProxy != null) {
+            NBTTagCompound proxyTag = new NBTTagCompound();
+            this.gridProxy.writeToNBT(proxyTag);
+            aNBT.setTag("gridProxy", proxyTag);
+        }
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        NBTTagCompound proxyTag = aNBT.getCompoundTag("gridProxy");
+        this.getProxy()
+            .readFromNBT(proxyTag);
+    }
+
+    @Override
     public int getPriority() {
         return 0;
     }
@@ -206,12 +203,6 @@ public class VaultPortHatch extends MTEHatch
 
     public void updateValidGridProxySides() {
         getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN)));
-    }
-
-    @Override
-    public void onFacingChange() {
-        super.onFacingChange();
-        updateValidGridProxySides();
     }
 
     @Override
@@ -251,7 +242,7 @@ public class VaultPortHatch extends MTEHatch
 
     @Override
     public void saveChanges(IMEInventory cellInventory) {
-        // This is handled by host itself.
+        // This is handled by the host itself.
     }
 
     @Override
@@ -280,7 +271,7 @@ public class VaultPortHatch extends MTEHatch
                             .setStackSize(amt)),
                     this.machineSource);
         } catch (GridAccessException e) {
-            // :P
+            // Ignore grid access failures during passive cache updates.
         }
     }
 
@@ -294,7 +285,33 @@ public class VaultPortHatch extends MTEHatch
                             .setStackSize(amt)),
                     this.machineSource);
         } catch (GridAccessException e) {
-            // :P
+            // Ignore grid access failures during passive cache updates.
+        }
+    }
+
+    @MENetworkEventSubscribe
+    public void powerRender(final MENetworkPowerStatusChange c) {
+        try {
+            AENetworkProxy proxy = getProxy();
+            if (proxy != null && proxy.isActive()) {
+                proxy.getGrid()
+                    .postEvent(new MENetworkCellArrayUpdate());
+            }
+        } catch (GridAccessException e) {
+            // Ignore grid refresh failures when the network becomes unavailable.
+        }
+    }
+
+    @MENetworkEventSubscribe
+    public void channelRender(final MENetworkChannelsChanged c) {
+        try {
+            AENetworkProxy proxy = getProxy();
+            if (proxy != null && proxy.isActive()) {
+                proxy.getGrid()
+                    .postEvent(new MENetworkCellArrayUpdate());
+            }
+        } catch (GridAccessException e) {
+            // Ignore grid refresh failures when the network becomes unavailable.
         }
     }
 
@@ -455,32 +472,4 @@ public class VaultPortHatch extends MTEHatch
             return out;
         }
     }
-
-    // not sure if needed
-    @MENetworkEventSubscribe
-    public void powerRender(final MENetworkPowerStatusChange c) {
-        try {
-            AENetworkProxy proxy = getProxy();
-            if (proxy != null && proxy.isActive()) {
-                proxy.getGrid()
-                    .postEvent(new MENetworkCellArrayUpdate());
-            }
-        } catch (GridAccessException e) {
-            // :P
-        }
-    }
-
-    @MENetworkEventSubscribe
-    public void channelRender(final MENetworkChannelsChanged c) {
-        try {
-            AENetworkProxy proxy = getProxy();
-            if (proxy != null && proxy.isActive()) {
-                proxy.getGrid()
-                    .postEvent(new MENetworkCellArrayUpdate());
-            }
-        } catch (GridAccessException e) {
-            // :P
-        }
-    }
-
 }

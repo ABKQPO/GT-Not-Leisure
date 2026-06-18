@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.TeleporterUtils;
 
-@Mixin(CommandTeleport.class)
+@Mixin(value = CommandTeleport.class, remap = true)
 public abstract class MixinCommandTeleport {
 
     @Inject(method = "processCommand", at = @At("HEAD"), cancellable = true)

@@ -78,6 +78,11 @@ public class HumongousDualInputHatch extends DualInputHatch
         initializeHumongousStorage(aTier);
     }
 
+    @Override
+    public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new HumongousDualInputHatch(mName, mTier, mDescriptionArray, mTextures);
+    }
+
     private void initializeHumongousStorage(int tier) {
         this.mStoredFluid = new FluidStack[tier];
         this.fluidTanks = new FluidStackTank[tier];
@@ -125,11 +130,6 @@ public class HumongousDualInputHatch extends DualInputHatch
                 super.setStackInSlot(slot, stack);
             }
         };
-    }
-
-    @Override
-    public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new HumongousDualInputHatch(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
@@ -282,28 +282,6 @@ public class HumongousDualInputHatch extends DualInputHatch
 
     @Override
     public void trunONME() {}
-
-    private void clearRecipeSnapshots() {
-        originalStacks = null;
-        containedStacks = null;
-    }
-
-    private ItemStack[] createRecipeSnapshot() {
-        ItemStack[] snapshot = new ItemStack[getItemStorageSlotCount()];
-        for (int i = 0; i < snapshot.length; i++) {
-            snapshot[i] = toItemStack(itemInventory.getAEStackInSlot(i));
-        }
-        return snapshot;
-    }
-
-    private ItemStack[] copySnapshot(ItemStack[] source) {
-        if (source == null) return null;
-        ItemStack[] copy = new ItemStack[source.length];
-        for (int i = 0; i < source.length; i++) {
-            copy[i] = GTUtility.copy(source[i]);
-        }
-        return copy;
-    }
 
     @Override
     public void setItemNBT(NBTTagCompound aNBT) {
@@ -630,6 +608,28 @@ public class HumongousDualInputHatch extends DualInputHatch
     protected ItemSink getItemSink(ForgeDirection side) {
         IGregTechTileEntity base = getBaseMetaTileEntity();
         return base != null && side == base.getFrontFacing() ? itemInventory.getItemIO() : null;
+    }
+
+    private void clearRecipeSnapshots() {
+        originalStacks = null;
+        containedStacks = null;
+    }
+
+    private ItemStack[] createRecipeSnapshot() {
+        ItemStack[] snapshot = new ItemStack[getItemStorageSlotCount()];
+        for (int i = 0; i < snapshot.length; i++) {
+            snapshot[i] = toItemStack(itemInventory.getAEStackInSlot(i));
+        }
+        return snapshot;
+    }
+
+    private ItemStack[] copySnapshot(ItemStack[] source) {
+        if (source == null) return null;
+        ItemStack[] copy = new ItemStack[source.length];
+        for (int i = 0; i < source.length; i++) {
+            copy[i] = GTUtility.copy(source[i]);
+        }
+        return copy;
     }
 
     private boolean isItemStorageSlot(int slot) {

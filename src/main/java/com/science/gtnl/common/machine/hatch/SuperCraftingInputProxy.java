@@ -71,27 +71,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     }
 
     @Override
-    public ItemStack[] getSharedItems() {
-        if (getMasterSuper() != null) {
-            return getMasterSuper().getSharedItems();
-        } else if (getCraftingMaster() != null) {
-            return getCraftingMaster().getSharedItems();
-        } else {
-            return new ItemStack[0];
-        }
-    }
-
-    @Override
-    public ITexture[] getTexturesActive(ITexture aBaseTexture) {
-        return getTexturesInactive(aBaseTexture);
-    }
-
-    @Override
-    public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
-        return new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_SLAVE) };
-    }
-
-    @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTimer) {
         super.onPostTick(aBaseMetaTileEntity, aTimer);
         if (aTimer % 100 == 0) {
@@ -108,15 +87,12 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
 
-        // 优先加载Super类型数据
         if (aNBT.hasKey("masterSuper")) {
             loadSuperMasterData(aNBT.getCompoundTag("masterSuper"));
-            aNBT.removeTag("craftingMaster"); // 清除可能存在的Crafting数据
-        }
-        // 其次加载Crafting类型数据
-        else if (aNBT.hasKey("craftingMaster")) {
+            aNBT.removeTag("craftingMaster");
+        } else if (aNBT.hasKey("craftingMaster")) {
             loadCraftingMasterData(aNBT.getCompoundTag("craftingMaster"));
-            aNBT.removeTag("masterSuper"); // 清除可能存在的Super数据
+            aNBT.removeTag("masterSuper");
         }
     }
 
@@ -125,7 +101,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         masterSuperY = masterNBT.getInteger("ySuper");
         masterSuperZ = masterNBT.getInteger("zSuper");
         masterSuperSet = true;
-        clearCraftingMaster(); // 清除Crafting数据
+        clearCraftingMaster();
     }
 
     private void loadCraftingMasterData(NBTTagCompound masterNBT) {
@@ -133,14 +109,13 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         craftingMasterY = masterNBT.getInteger("y");
         craftingMasterZ = masterNBT.getInteger("z");
         craftingMasterSet = true;
-        clearSuperMaster(); // 清除Super数据
+        clearSuperMaster();
     }
 
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
 
-        // 只保存当前有效的主仓室数据
         if (masterSuperSet) {
             saveSuperMasterData(aNBT);
         } else if (craftingMasterSet) {
@@ -154,7 +129,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         masterNBT.setInteger("ySuper", masterSuperY);
         masterNBT.setInteger("zSuper", masterSuperZ);
         aNBT.setTag("masterSuper", masterNBT);
-        aNBT.removeTag("craftingMaster"); // 清除残留数据
+        aNBT.removeTag("craftingMaster");
     }
 
     private void saveCraftingMasterData(NBTTagCompound aNBT) {
@@ -163,7 +138,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         masterNBT.setInteger("y", craftingMasterY);
         masterNBT.setInteger("z", craftingMasterZ);
         aNBT.setTag("craftingMaster", masterNBT);
-        aNBT.removeTag("masterSuper"); // 清除残留数据
+        aNBT.removeTag("masterSuper");
     }
 
     @Override
@@ -196,37 +171,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
             ret.add(StatCollector.translateToLocal("Chat_SuperCraftingInputProxy_01"));
         }
         return ret.toArray(new String[0]);
-    }
-
-    // 清除主仓室方法
-    private void clearSuperMaster() {
-        masterSuper = null;
-        masterSuperSet = false;
-        masterSuperX = masterSuperY = masterSuperZ = 0;
-    }
-
-    private void clearCraftingMaster() {
-        craftingMaster = null;
-        craftingMasterSet = false;
-        craftingMasterX = craftingMasterY = craftingMasterZ = 0;
-    }
-
-    // 原有Super类型方法
-    public SuperCraftingInputHatchME getMasterSuper() {
-        if (masterSuper == null) return null;
-        if (masterSuper.getBaseMetaTileEntity() == null) {
-            masterSuper = null;
-        }
-        return masterSuper;
-    }
-
-    // 新增Crafting类型方法
-    public MTEHatchCraftingInputME getCraftingMaster() {
-        if (craftingMaster == null) return null;
-        if (craftingMaster.getBaseMetaTileEntity() == null) {
-            craftingMaster = null;
-        }
-        return craftingMaster;
     }
 
     @Override
@@ -276,9 +220,29 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         return false;
     }
 
-    // 链接方法（新增互斥逻辑）
+    @Override
+    public ItemStack[] getSharedItems() {
+        if (getMasterSuper() != null) {
+            return getMasterSuper().getSharedItems();
+        } else if (getCraftingMaster() != null) {
+            return getCraftingMaster().getSharedItems();
+        } else {
+            return new ItemStack[0];
+        }
+    }
+
+    @Override
+    public ITexture[] getTexturesActive(ITexture aBaseTexture) {
+        return getTexturesInactive(aBaseTexture);
+    }
+
+    @Override
+    public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
+        return new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_ME_CRAFTING_INPUT_SLAVE) };
+    }
+
     public SuperCraftingInputHatchME trySetSuperMasterFromCoord(int x, int y, int z) {
-        clearCraftingMaster(); // 清除现有Crafting链接
+        clearCraftingMaster();
         TileEntity te = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
         if (te instanceof IGregTechTileEntity gtTe
@@ -294,7 +258,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     }
 
     public MTEHatchCraftingInputME trySetCraftingMasterFromCoord(int x, int y, int z) {
-        clearSuperMaster(); // 清除现有Super链接
+        clearSuperMaster();
         TileEntity te = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
         if (te instanceof IGregTechTileEntity gtTe && gtTe.getMetaTileEntity() instanceof MTEHatchCraftingInputME mte) {
@@ -313,7 +277,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         if (!ItemList.Tool_DataStick.isStackEqual(dataStick, false, true)) return false;
 
         if (dataStick.stackTagCompound != null) {
-            // 处理Super类型链接
             if ("SuperCraftingInputBuffer".equals(dataStick.stackTagCompound.getString("typeSuper"))) {
                 NBTTagCompound nbt = dataStick.stackTagCompound;
                 boolean success = trySetSuperMasterFromCoord(
@@ -325,7 +288,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
                         success ? "Chat_SuperCraftingInputProxy_02" : "Chat_SuperCraftingInputProxy_03"));
                 return true;
             }
-            // 处理Crafting类型链接
             if ("CraftingInputBuffer".equals(dataStick.stackTagCompound.getString("type"))) {
                 NBTTagCompound nbt = dataStick.stackTagCompound;
                 boolean success = trySetCraftingMasterFromCoord(
@@ -346,7 +308,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         if (!(aPlayer instanceof EntityPlayerMP)) return false;
         if (tryLinkDataStick(aPlayer)) return true;
 
-        // 优先响应当前有效的主仓室
         if (getMasterSuper() != null) {
             return getMasterSuper().onRightclick(getMasterSuper().getBaseMetaTileEntity(), aPlayer);
         }
@@ -476,5 +437,33 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         if (getMasterSuper() != null) return getMasterSuper().getItemsForHoloGlasses();
         if (getCraftingMaster() != null) return getCraftingMaster().getItemsForHoloGlasses();
         return null;
+    }
+
+    public SuperCraftingInputHatchME getMasterSuper() {
+        if (masterSuper == null) return null;
+        if (masterSuper.getBaseMetaTileEntity() == null) {
+            masterSuper = null;
+        }
+        return masterSuper;
+    }
+
+    public MTEHatchCraftingInputME getCraftingMaster() {
+        if (craftingMaster == null) return null;
+        if (craftingMaster.getBaseMetaTileEntity() == null) {
+            craftingMaster = null;
+        }
+        return craftingMaster;
+    }
+
+    private void clearSuperMaster() {
+        masterSuper = null;
+        masterSuperSet = false;
+        masterSuperX = masterSuperY = masterSuperZ = 0;
+    }
+
+    private void clearCraftingMaster() {
+        craftingMaster = null;
+        craftingMasterSet = false;
+        craftingMasterX = craftingMasterY = craftingMasterZ = 0;
     }
 }

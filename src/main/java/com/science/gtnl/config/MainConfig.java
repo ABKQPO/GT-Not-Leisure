@@ -367,6 +367,11 @@ public class MainConfig {
         @DefaultBoolean(true)
         @RequiresMcRestart
         public boolean enableSomethingRecipe = true;
+
+        @Comment("Register generated Shimmer fake recipes in NEI")
+        @DefaultBoolean(true)
+        @RequiresMcRestart
+        public boolean enableShimmerFakeRecipeInNEI = true;
     }
 
     public static final SuperCreeper super_creeper = new SuperCreeper();

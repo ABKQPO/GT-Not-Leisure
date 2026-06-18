@@ -63,65 +63,6 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeExtractor(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.Overlay_Machine_Controller_Advanced_Active)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.Overlay_Machine_Controller_Advanced)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return (byte) TAE.GTPP_INDEX(11);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_EXTRA) ? RecipeMaps.extractorRecipes : RecipeMaps.fluidExtractionRecipes;
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.extractorRecipes, RecipeMaps.fluidExtractionRecipes);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeExtractorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 3, 3, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeExtractor> getStructureDefinition() {
         return StructureDefinition.<LargeExtractor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -155,6 +96,88 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 10);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return (machineMode == MACHINEMODE_EXTRA) ? RecipeMaps.extractorRecipes : RecipeMaps.fluidExtractionRecipes;
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(RecipeMaps.extractorRecipes, RecipeMaps.fluidExtractionRecipes);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.Overlay_Machine_Controller_Advanced_Active)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.Overlay_Machine_Controller_Advanced)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return (byte) TAE.GTPP_INDEX(11);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeExtractorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 3, 3, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
@@ -182,35 +205,12 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 10);
-    }
-
-    @Override
     public boolean supportsMachineModeSwitch() {
         return true;
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeExtractor(this.mName);
     }
 }

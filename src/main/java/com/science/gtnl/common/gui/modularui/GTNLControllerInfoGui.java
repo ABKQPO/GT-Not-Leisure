@@ -26,7 +26,7 @@ public class GTNLControllerInfoGui {
 
     private static final int WIDTH = 300;
     private static final int HEIGHT = 300;
-    private static final int BUTTON_SIZE = 16;
+    private static final int BUTTON_SIZE = 18;
 
     private final IControllerInfo controllerInfo;
 

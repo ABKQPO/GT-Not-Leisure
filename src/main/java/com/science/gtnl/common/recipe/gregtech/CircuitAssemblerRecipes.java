@@ -15,6 +15,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.SubstituteFluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
@@ -43,7 +44,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gem, 1),
                 ItemList.Circuit_Primitive.get(1L))
-            .fluidInputs(Materials.Tin.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(72))
             .itemOutputs(GTNLItemList.CircuitResonaticULV.get(4))
             .duration(50)
             .eut(30)
@@ -59,7 +60,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gem, 1),
                 GTNLItemList.CircuitResonaticULV.get(1))
-            .fluidInputs(Materials.Tin.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(72))
             .itemOutputs(GTNLItemList.CircuitResonaticLV.get(4))
             .duration(90)
             .eut(120)
@@ -75,7 +76,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gem, 1),
                 GTNLItemList.CircuitResonaticLV.get(1))
-            .fluidInputs(Materials.Tin.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(72))
             .itemOutputs(GTNLItemList.CircuitResonaticMV.get(4))
             .duration(150)
             .eut(480)
@@ -91,7 +92,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3, 2),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gemFlawless, 1),
                 GTNLItemList.CircuitResonaticMV.get(1))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(GTNLItemList.CircuitResonaticHV.get(4))
             .duration(230)
             .eut(1920)
@@ -107,7 +108,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3, 4),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gemFlawless, 1),
                 GTNLItemList.CircuitResonaticHV.get(1))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(GTNLItemList.CircuitResonaticEV.get(4))
             .duration(330)
             .eut(7680)
@@ -123,7 +124,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3, 4),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gemFlawless, 1),
                 GTNLItemList.CircuitResonaticEV.get(1))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(GTNLItemList.CircuitResonaticIV.get(4))
             .duration(450)
             .eut(30720)
@@ -139,7 +140,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                     .getStack(3, 4),
                 WerkstoffLoader.MagnetoResonaticDust.get(OrePrefixes.gemFlawless, 1),
                 GTNLItemList.CircuitResonaticIV.get(1))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(GTNLItemList.CircuitResonaticLuV.get(4))
             .duration(570)
             .eut(122880)
@@ -281,7 +282,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Board_Phenolic_Good.get(1L),
                 GTNLItemList.AdvancedCircuit.get(1),
                 GTOreDictUnificator.get(OrePrefixes.foil, Materials.RedAlloy, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(GTNLItemList.EliteCircuit.get(1))
             .duration(200)
             .eut(480)
@@ -293,7 +294,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 GTNLItemList.HighlyAdvancedSoc.get(1),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8),
                 GTOreDictUnificator.get(OrePrefixes.bolt, Materials.Naquadah, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(ItemList.Circuit_Neuroprocessor.get(2))
             .requiresCleanRoom()
             .duration(100)
@@ -361,7 +362,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(6),
                 ItemList.Circuit_Parts_TransistorASMD.get(6),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(ItemList.Circuit_Crystalprocessor.get(1))
             .requiresCleanRoom()
             .duration(200)
@@ -375,7 +376,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Chip_CrystalSoC.get(1),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 8),
                 GTOreDictUnificator.get(OrePrefixes.bolt, Materials.YttriumBariumCuprate, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(ItemList.Circuit_Crystalprocessor.get(2))
             .requiresCleanRoom()
             .duration(100)
@@ -391,7 +392,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(8),
                 ItemList.Circuit_Chip_Ram.get(24),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 16))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Crystalcomputer.get(2))
             .requiresCleanRoom()
             .duration(400)
@@ -407,7 +408,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Chip_NOR.get(32),
                 ItemList.Circuit_Chip_NAND.get(64),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NiobiumTitanium, 32))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Ultimatecrystalcomputer.get(1))
             .requiresCleanRoom()
             .duration(400)
@@ -438,7 +439,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(8),
                 ItemList.Circuit_Parts_TransistorASMD.get(8),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(ItemList.Circuit_Neuroprocessor.get(1))
             .requiresCleanRoom()
             .duration(200)
@@ -454,7 +455,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_CapacitorASMD.get(12),
                 ItemList.Circuit_Chip_Ram.get(24),
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 16))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(2))
             .requiresCleanRoom()
             .duration(400)
@@ -470,7 +471,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 ItemList.Circuit_Parts_InductorASMD.get(8),
                 ItemList.Circuit_Parts_CapacitorASMD.get(16),
                 ItemList.Circuit_Parts_DiodeASMD.get(8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(144))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
             .itemOutputs(ItemList.Circuit_Crystalmainframe.get(1))
             .eut(TierEU.RECIPE_LuV)
             .duration(20 * GTRecipeBuilder.SECONDS)
@@ -513,7 +514,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.YttriumBariumCuprate, 24),
                 GTOreDictUnificator.get(OrePrefixes.foil, Materials.Polybenzimidazole, 32),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Europium, 4))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(1152))
+            .fluidInputs(SubstituteFluidStack.soldering(1152))
             .itemOutputs(ItemList.Circuit_Wetwaresupercomputer.get(1))
             .eut(TierEU.RECIPE_ZPM)
             .duration(40 * GTRecipeBuilder.SECONDS)

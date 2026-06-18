@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.api.mixinHelper.ILeashedToEntity;
 
-@Mixin(EntityPlayer.class)
+@Mixin(value = EntityPlayer.class, remap = true)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements ILeashedToEntity, IAnchorRespawn {
 
     @Unique

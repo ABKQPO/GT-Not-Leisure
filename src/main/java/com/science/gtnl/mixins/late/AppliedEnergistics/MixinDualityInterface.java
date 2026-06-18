@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.glodblock.github.inventory.IDualHost;
@@ -143,11 +143,11 @@ public abstract class MixinDualityInterface implements IDualityInterface {
 
     // Fuck you
     @Deprecated
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void gtnl$markDualHostAsFluidInterface(AENetworkProxy networkProxy, IInterfaceHost ih, CallbackInfo ci) {
-        if (ih instanceof IDualHost) {
-            isFluidInterface = true;
-        }
+    @Redirect(
+        method = "<init>",
+        at = @At(value = "CONSTANT", args = "classValue=com/glodblock/github/common/tile/TileFluidInterface"))
+    public boolean isFluidInterface(Object instance, Class<?> type) {
+        return instance instanceof IDualHost;
     }
 
     @Inject(

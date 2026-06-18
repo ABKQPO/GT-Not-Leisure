@@ -171,7 +171,7 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
                         : GTGuiTextures.OVERLAY_BUTTON_BLACKLIST))
             .syncHandler(
                 new InteractionSyncHandler().setOnMousePressed(
-                    mouseData -> { showPatternSyncer.setBoolValue(!showPatternSyncer.getBoolValue(), true, true); }))
+                    mouseData -> showPatternSyncer.setBoolValue(!showPatternSyncer.getBoolValue(), true, true)))
             .tooltipDynamic(
                 tooltip -> tooltip.addLine(
                     IKey.dynamic(
@@ -219,8 +219,8 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
                 .textAlign(Alignment.Center));
         panel.child(
             new TextFieldWidget().value(patternMultiplySyncer)
-                .setNumbers(1, Integer.MAX_VALUE)
-                .setScrollValues(1, 4, 64)
+                .numbersInt(1, Integer.MAX_VALUE)
+                .scrollValues(1, 4, 64, 256)
                 .setTextAlignment(Alignment.Center)
                 .setTextColor(Color.WHITE.main)
                 .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)

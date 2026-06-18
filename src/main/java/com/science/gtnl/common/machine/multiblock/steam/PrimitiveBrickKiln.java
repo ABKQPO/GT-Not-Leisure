@@ -35,6 +35,13 @@ import gregtech.common.misc.GTStructureChannels;
 
 public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln> implements ISurvivalConstructable {
 
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String PBK_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/primitive_brick_kiln";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(PBK_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 5;
+    private static final int DEPTH_OFF_SET = 0;
+
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new PrimitiveBrickKiln(this.mName);
@@ -45,10 +52,6 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
         return StatCollector.translateToLocal("PrimitiveBrickKilnRecipeType");
     }
 
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String PBK_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/primitive_brick_kiln";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(PBK_STRUCTURE_FILE_PATH);
-
     public PrimitiveBrickKiln(String aName) {
         super(aName);
     }
@@ -56,10 +59,6 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
     public PrimitiveBrickKiln(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
-
-    private static final int HORIZONTAL_OFF_SET = 2;
-    private static final int VERTICAL_OFF_SET = 5;
-    private static final int DEPTH_OFF_SET = 0;
 
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
@@ -148,19 +147,13 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
+        if (mMachine) return -1;
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -174,28 +167,21 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierMachineCasing == 1 && tierFireboxCasing == 1 && tierPipeCasing == 1 && mCountCasing >= 40) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        if (tierMachineCasing == 2 && tierFireboxCasing == 2 && tierPipeCasing == 2 && mCountCasing >= 40) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        checkStructureCondition(errors, false);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            40,
+            tierMachineCasing == 1 && tierFireboxCasing == 1 && tierPipeCasing == 1,
+            tierMachineCasing == 2 && tierFireboxCasing == 2 && tierPipeCasing == 2);
     }
 
     @Override
     public int getMaxParallelRecipes() {
         if (tierMachine == 1) {
             return 8;
-        } else if (tierMachine == 2) {
+        }
+        if (tierMachine == 2) {
             return 16;
         }
         return 8;

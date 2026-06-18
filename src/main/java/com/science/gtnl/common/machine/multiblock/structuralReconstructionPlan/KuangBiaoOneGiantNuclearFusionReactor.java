@@ -82,12 +82,6 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     extends GTMMultiMachineBase<KuangBiaoOneGiantNuclearFusionReactor>
     implements ISurvivalConstructable, IMTERenderer, IWirelessEnergy {
 
-    @Getter
-    public boolean wirelessMode = false;
-    public boolean wirelessUpgrade = false;
-
-    public GTRecipe mLastRecipe;
-    public long mEUStore;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     public static final String KBFR_STRUCTURE_FILE_PATH = ScienceNotLeisure.RESOURCE_ROOT_ID + ":"
         + "multiblock/kuang_biao_giant_nuclear_fusion_reactor";
@@ -95,10 +89,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     private static final int VERTICAL_OFF_SET = 14;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(KBFR_STRUCTURE_FILE_PATH);
+    public static float ROTATION_SPEED = 1.2f;
 
+    @Getter
+    public boolean wirelessMode = false;
+    public boolean wirelessUpgrade = false;
+
+    public GTRecipe mLastRecipe;
+    public long mEUStore;
     public float rotation = 0;
     public float prevRotation = 0;
-    public static float ROTATION_SPEED = 1.2f;
     public boolean enableRender = true;
 
     public KuangBiaoOneGiantNuclearFusionReactor(int aID, String aName, String aNameRegional) {
@@ -110,17 +110,48 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 1500);
+    public IStructureDefinition<KuangBiaoOneGiantNuclearFusionReactor> getStructureDefinition() {
+        return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement(
+                'C',
+                GTStructureUtility.buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        CustomHatchElement.ParallelCon)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(getCasing(), getCasingMeta()))))
+            .addElement('D', StructureUtility.ofBlock(getConcrete(), getConcreteMeta()))
+            .addElement('E', GTStructureUtility.ofFrame(Materials.Tungsten))
+            .addElement('F', GTStructureUtility.ofFrame(getFrame()))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
+            .addElement('I', StructureUtility.ofBlock(Loaders.compactFusionCoil, getCoilMeta()))
+            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))
+            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .build();
     }
 
     @Override
-    public boolean checkEnergyHatch() {
-        return true;
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 1500);
     }
+
+    @Override
+    public void checkEnergyHatch(List<StructureError> errors) {}
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -498,39 +529,6 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     @Override
     public Set<VoidingMode> getAllowedVoidingModes() {
         return VoidingMode.FLUID_ONLY_MODES;
-    }
-
-    @Override
-    public IStructureDefinition<KuangBiaoOneGiantNuclearFusionReactor> getStructureDefinition() {
-        return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement(
-                'C',
-                GTStructureUtility.buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.Maintenance,
-                        HatchElement.InputBus,
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        CustomHatchElement.ParallelCon)
-                    .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(getCasing(), getCasingMeta()))))
-            .addElement('D', StructureUtility.ofBlock(getConcrete(), getConcreteMeta()))
-            .addElement('E', GTStructureUtility.ofFrame(Materials.Tungsten))
-            .addElement('F', GTStructureUtility.ofFrame(getFrame()))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
-            .addElement('I', StructureUtility.ofBlock(Loaders.compactFusionCoil, getCoilMeta()))
-            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .build();
     }
 
     @Override

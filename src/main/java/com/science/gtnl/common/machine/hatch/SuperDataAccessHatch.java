@@ -44,6 +44,11 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     }
 
     @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
     public int getGUIWidth() {
         return super.getGUIWidth() + 72;
     }
@@ -53,12 +58,6 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
         return super.getGUIHeight() + 112;
     }
 
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new SuperDataAccessHatchGui(this).build(data, syncManager, uiSettings);
     }

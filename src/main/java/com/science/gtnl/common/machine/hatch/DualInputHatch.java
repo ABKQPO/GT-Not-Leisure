@@ -41,57 +41,15 @@ import gregtech.common.tileentities.machines.IDualInputInventory;
 
 public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
 
+    public static int getCapacityPerTank(int aTier) {
+        return (1 << (aTier - 1)) * 8000;
+    }
+
     public FluidStack[] mStoredFluid;
     public FluidStackTank[] fluidTanks;
     public int mCapacityPer;
     public int itemSlotAmount;
-
     public Inventory inventory;
-
-    public static class Inventory implements IDualInputInventory {
-
-        private final ItemStack[] itemInventory;
-        private final FluidStack[] fluidInventory;
-
-        public Inventory(ItemStack[] items, FluidStack[] fluid) {
-            itemInventory = items;
-            fluidInventory = fluid;
-        }
-
-        @Override
-        public ItemStack[] getItemInputs() {
-            if (isEmpty()) return new ItemStack[0];
-            return Arrays.stream(itemInventory)
-                .filter(Objects::nonNull)
-                .toArray(ItemStack[]::new);
-        }
-
-        @Override
-        public FluidStack[] getFluidInputs() {
-            if (isEmpty()) return new FluidStack[0];
-            return Arrays.stream(fluidInventory)
-                .filter(Objects::nonNull)
-                .toArray(FluidStack[]::new);
-        }
-
-        public boolean isEmpty() {
-            if (itemInventory != null) {
-                for (int i = 0; i < itemInventory.length - 1; i++) {
-                    if (itemInventory[i] != null && itemInventory[i].stackSize > 0) {
-                        return false;
-                    }
-                }
-            }
-            if (fluidInventory != null) {
-                for (FluidStack fluid : fluidInventory) {
-                    if (fluid != null && fluid.amount > 0) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-    }
 
     public DualInputHatch(int aID, String aName, String aNameRegional, int aTier) {
         super(
@@ -159,6 +117,35 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
+    public void onPreTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        if (aBaseMetaTileEntity.isServerSide()) {
+            mFluid = getFluid();
+        }
+        super.onPreTick(aBaseMetaTileEntity, aTick);
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTimer) {
+        if (aBaseMetaTileEntity.isServerSide()) {
+            updateSlots();
+        }
+        super.onPostTick(aBaseMetaTileEntity, aTimer);
+    }
+
+    public void updateSlots() {
+        super.updateSlots();
+        if (mInventory != null) {
+            for (int i = 0; i < mInventory.length - 1; i++)
+                if (mInventory[i] != null && mInventory[i].stackSize <= 0) mInventory[i] = null;
+        }
+        if (mStoredFluid != null) {
+            for (int i = 0; i < getMaxType(); i++) {
+                if (mStoredFluid[i] != null && mStoredFluid[i].amount <= 0) mStoredFluid[i] = null;
+            }
+        }
+    }
+
+    @Override
     public ItemStack[] getSharedItems() {
         return new ItemStack[] {};
     }
@@ -167,26 +154,51 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     public void fillStacksIntoFirstSlots() {}
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        if (mStoredFluid != null) {
-            for (int i = 0; i < getMaxType(); i++) {
-                if (mStoredFluid[i] != null)
-                    aNBT.setTag("mFluid" + i, mStoredFluid[i].writeToNBT(new NBTTagCompound()));
-            }
-        }
+    public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return aIndex != getCircuitSlot();
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        if (mStoredFluid != null) {
-            for (int i = 0; i < getMaxType(); i++) {
-                if (aNBT.hasKey("mFluid" + i)) {
-                    mStoredFluid[i] = FluidStack.loadFluidStackFromNBT(aNBT.getCompoundTag("mFluid" + i));
-                }
-            }
+    public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return aIndex != getCircuitSlot() && (mRecipeMap == null || disableFilter || mRecipeMap.containsInput(aStack))
+            && (disableLimited || limitedAllowPutStack(aIndex, aStack));
+    }
+
+    @Override
+    public boolean justUpdated() {
+        return false;
+    }
+
+    @Override
+    public Iterator<? extends IDualInputInventory> inventories() {
+        return Arrays.stream(new Inventory[] { inventory })
+            .filter(Objects::nonNull)
+            .iterator();
+    }
+
+    @Override
+    public Optional<IDualInputInventory> getFirstNonEmptyInventory() {
+        if (!inventory.isEmpty()) {
+            return Optional.of(inventory);
         }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean supportsFluids() {
+        return true;
+    }
+
+    @Override
+    public boolean canTankBeFilled() {
+        return true;
+    }
+
+    @Override
+    public int getCircuitSlot() {
+        return itemSlotAmount - 1;
     }
 
     @Override
@@ -205,19 +217,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             if (tFluid != null && tFluid.amount > 0) return tFluid;
         }
         return null;
-    }
-
-    @Override
-    public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
-        ItemStack aStack) {
-        return aIndex != getCircuitSlot();
-    }
-
-    @Override
-    public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
-        ItemStack aStack) {
-        return aIndex != getCircuitSlot() && (mRecipeMap == null || disableFilter || mRecipeMap.containsInput(aStack))
-            && (disableLimited || limitedAllowPutStack(aIndex, aStack));
     }
 
     public FluidStack getFluid(int aSlot) {
@@ -278,49 +277,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         if (aSlot < 0 || aSlot >= getMaxType()) return;
         if (aFluid.equals(mStoredFluid[aSlot])) mStoredFluid[aSlot].amount += aFluid.amount;
         if (mStoredFluid[aSlot] == null) mStoredFluid[aSlot] = aFluid.copy();
-    }
-
-    @Override
-    public void onPreTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        if (aBaseMetaTileEntity.isServerSide()) {
-            mFluid = getFluid();
-        }
-        super.onPreTick(aBaseMetaTileEntity, aTick);
-    }
-
-    @Override
-    public boolean justUpdated() {
-        return false;
-    }
-
-    @Override
-    public Iterator<? extends IDualInputInventory> inventories() {
-        return Arrays.stream(new Inventory[] { inventory })
-            .filter(Objects::nonNull)
-            .iterator();
-    }
-
-    @Override
-    public Optional<IDualInputInventory> getFirstNonEmptyInventory() {
-        if (!inventory.isEmpty()) {
-            return Optional.of(inventory);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean supportsFluids() {
-        return true;
-    }
-
-    @Override
-    public boolean canTankBeFilled() {
-        return true;
-    }
-
-    @Override
-    public int getCircuitSlot() {
-        return itemSlotAmount - 1;
     }
 
     @Override
@@ -428,27 +384,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTimer) {
-        if (aBaseMetaTileEntity.isServerSide()) {
-            updateSlots();
-        }
-        super.onPostTick(aBaseMetaTileEntity, aTimer);
-    }
-
-    public void updateSlots() {
-        super.updateSlots();
-        if (mInventory != null) {
-            for (int i = 0; i < mInventory.length - 1; i++)
-                if (mInventory[i] != null && mInventory[i].stackSize <= 0) mInventory[i] = null;
-        }
-        if (mStoredFluid != null) {
-            for (int i = 0; i < getMaxType(); i++) {
-                if (mStoredFluid[i] != null && mStoredFluid[i].amount <= 0) mStoredFluid[i] = null;
-            }
-        }
-    }
-
-    @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         FluidTankInfo[] FTI = new FluidTankInfo[getMaxType()];
         for (int i = 0; i < getMaxType(); i++) {
@@ -475,10 +410,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         return new DualInputHatchGui(this).build(data, syncManager, uiSettings);
     }
 
-    public static int getCapacityPerTank(int aTier) {
-        return (1 << (aTier - 1)) * 8000;
-    }
-
     @Override
     @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
@@ -491,7 +422,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         final int centerX = (176 - totalWidth) / 2;
         final int centerY = (166 - totalHeight) / 2;
 
-        // Item slot layout.
         for (int row = 0; row < itemRows; row++) {
             for (int col = 0; col < itemColumns; col++) {
                 int slotIndex = row * itemColumns + col;
@@ -503,7 +433,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             }
         }
 
-        // Fluid slot layout.
         for (int i = 0; i < mTier; i++) {
             builder.widget(
                 new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
@@ -541,5 +470,74 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     @Override
     public int getGUIHeight() {
         return super.getGUIHeight() + 14 * (mTier - 1);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        if (mStoredFluid != null) {
+            for (int i = 0; i < getMaxType(); i++) {
+                if (mStoredFluid[i] != null) {
+                    aNBT.setTag("mFluid" + i, mStoredFluid[i].writeToNBT(new NBTTagCompound()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        if (mStoredFluid != null) {
+            for (int i = 0; i < getMaxType(); i++) {
+                if (aNBT.hasKey("mFluid" + i)) {
+                    mStoredFluid[i] = FluidStack.loadFluidStackFromNBT(aNBT.getCompoundTag("mFluid" + i));
+                }
+            }
+        }
+    }
+
+    public static class Inventory implements IDualInputInventory {
+
+        private final ItemStack[] itemInventory;
+        private final FluidStack[] fluidInventory;
+
+        public Inventory(ItemStack[] items, FluidStack[] fluid) {
+            itemInventory = items;
+            fluidInventory = fluid;
+        }
+
+        @Override
+        public ItemStack[] getItemInputs() {
+            if (isEmpty()) return new ItemStack[0];
+            return Arrays.stream(itemInventory)
+                .filter(Objects::nonNull)
+                .toArray(ItemStack[]::new);
+        }
+
+        @Override
+        public FluidStack[] getFluidInputs() {
+            if (isEmpty()) return new FluidStack[0];
+            return Arrays.stream(fluidInventory)
+                .filter(Objects::nonNull)
+                .toArray(FluidStack[]::new);
+        }
+
+        public boolean isEmpty() {
+            if (itemInventory != null) {
+                for (int i = 0; i < itemInventory.length - 1; i++) {
+                    if (itemInventory[i] != null && itemInventory[i].stackSize > 0) {
+                        return false;
+                    }
+                }
+            }
+            if (fluidInventory != null) {
+                for (FluidStack fluid : fluidInventory) {
+                    if (fluid != null && fluid.amount > 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }

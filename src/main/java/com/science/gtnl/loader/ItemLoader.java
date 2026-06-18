@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -17,6 +18,7 @@ import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;
+import com.science.gtnl.common.item.ItemRecord;
 import com.science.gtnl.common.item.MetaItemAdder;
 import com.science.gtnl.common.item.items.CircuitIntegratedPlus;
 import com.science.gtnl.common.item.items.DebugItem;
@@ -78,6 +80,7 @@ public class ItemLoader {
     public static TwilightSword twilightSword = new TwilightSword();
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
+    public static Item recordSus = new ItemRecord("sus");
 
     public static ItemInfinityItem infinityTorch = new ItemInfinityItem(
         "InfinityTorch",
@@ -234,12 +237,9 @@ public class ItemLoader {
         ItemLoader.infinityStoneCell = ItemInfinityCell
             .getSubItem(StorageChannel.ITEMS, "InfinityCell.stone.name", "InfinityStoneCell", infinityStoneCell);
 
-        GameRegistry.registerItem(RecordLoader.recordSus, "record_sus");
-        GameRegistry.registerItem(RecordLoader.recordNewHorizons, "record_new_horizons");
+        GameRegistry.registerItem(recordSus, "record_sus");
 
-        GTNLItemList.RecordSus.set(RecordLoader.recordSus);
-        GTNLItemList.RecordNewHorizons.set(RecordLoader.recordNewHorizons);
-        GTNLItemList.RecordLavaChicken.set(RecordLoader.recordLavaChicken);
+        GTNLItemList.RecordSus.set(recordSus);
         GTNLItemList.InfinityFuelRodDepleted.set(infinityFuelRodDepleted);
         GTNLItemList.InfinityFuelRod.set(infinityFuelRod);
         GTNLItemList.HoneyBucket.set(honeyBucket);
@@ -581,8 +581,6 @@ public class ItemLoader {
         GTOreDictUnificator.registerOre(OrePrefixes.circuit.get(Materials.EV), GTNLItemList.EliteCircuit.get(1));
 
         GTOreDictUnificator.registerOre("record", GTNLItemList.RecordSus.get(1));
-        GTOreDictUnificator.registerOre("record", GTNLItemList.RecordLavaChicken.get(1));
-        GTOreDictUnificator.registerOre("record", GTNLItemList.RecordNewHorizons.get(1));
     }
 
     public static void registryOreBlackList() {

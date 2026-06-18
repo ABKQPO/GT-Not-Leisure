@@ -67,7 +67,7 @@ public class CommonProxy implements IGuiHandler {
     public static final VMTweakHelper VM_TWEAK_HELPER = new VMTweakHelper();
     public static final WorldListener WORLD_LISTENER = new WorldListener();
 
-    // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
+    // preInit "Run before anything else. Read your config, create blocks, items, etc., and register them with the
     // GameRegistry." (Remove if not needed)
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_UTILS);

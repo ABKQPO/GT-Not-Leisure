@@ -12,8 +12,9 @@ public enum MilestoneFormatter {
     COMMA,
     EXPONENT;
 
-    public static final MilestoneFormatter[] VALUES = values();
     private static final NumberFormat COMMA_FORMAT = NumberFormat.getIntegerInstance(Locale.US);
+
+    public static final MilestoneFormatter[] VALUES = values();
 
     public MilestoneFormatter cycle() {
         return switch (this) {

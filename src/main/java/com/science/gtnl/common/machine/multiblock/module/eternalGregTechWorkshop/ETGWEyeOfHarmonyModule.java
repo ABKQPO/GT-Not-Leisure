@@ -1,5 +1,8 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop;
 
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +37,10 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
+import gregtech.api.structure.error.ErrorType;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
+import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
@@ -55,44 +61,6 @@ import tectech.util.ItemStackLong;
 
 public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
 
-    public BigInteger outputEU_BigInt = BigInteger.ZERO;
-    public long startEU = 0;
-    public long currentCircuitMultiplier = 0;
-    public boolean enableRawStarMatter;
-
-    public List<ItemStackLong> outputItems = new ArrayList<>();
-    public List<FluidStackLong> outputFluids = new ArrayList<>();
-
-    public Object2LongMap<Fluid> validFluidMap = new Object2LongOpenHashMap<>() {
-
-        private static final long serialVersionUID = -8452610443191188130L;
-
-        {
-            put(Materials.Hydrogen.mGas, 0L);
-            put(Materials.Helium.mGas, 0L);
-            put(Materials.RawStarMatter.mFluid, 0L);
-        }
-    };
-
-    private EyeOfHarmonyRecipe currentRecipe;
-
-    // Counter for lag prevention.
-    private long lagPreventer = 0;
-
-    // Check for recipe every recipeCheckInterval ticks.
-    private boolean recipeRunning = false;
-    private long astralArrayAmount = 50000;
-    private long parallelAmount = 65536;
-    private long successfulParallelAmount = 0;
-    private double hydrogenOverflowProbabilityAdjustment;
-    private double heliumOverflowProbabilityAdjustment;
-    private double stellarPlasmaOverflowProbabilityAdjustment;
-    private double yield = 0;
-    private BigInteger usedEU = BigInteger.ZERO;
-    private FluidStackLong stellarPlasma;
-    private FluidStackLong starMatter;
-
-    // NBT save/load strings.
     private static final String EYE_OF_HARMONY = "eyeOfHarmonyOutput";
     private static final String NUMBER_OF_ITEMS_NBT_TAG = EYE_OF_HARMONY + "numberOfItems";
     private static final String NUMBER_OF_FLUIDS_NBT_TAG = EYE_OF_HARMONY + "numberOfFluids";
@@ -120,8 +88,44 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     private static final String FLUID_AMOUNT = "fluidAmount";
     private static final String FLUID_STACK_NBT_TAG = "fluidStack";
 
-    // Tags for pre-setting
     public static final String PLANET_BLOCK = "planetBlock";
+
+    public BigInteger outputEU_BigInt = BigInteger.ZERO;
+    public long startEU = 0;
+    public long currentCircuitMultiplier = 0;
+    public boolean enableRawStarMatter;
+
+    public List<ItemStackLong> outputItems = new ArrayList<>();
+    public List<FluidStackLong> outputFluids = new ArrayList<>();
+
+    public Object2LongMap<Fluid> validFluidMap = new Object2LongOpenHashMap<>() {
+
+        private static final long serialVersionUID = -8452610443191188130L;
+
+        {
+            put(Materials.Hydrogen.mGas, 0L);
+            put(Materials.Helium.mGas, 0L);
+            put(Materials.RawStarMatter.mFluid, 0L);
+        }
+    };
+
+    private EyeOfHarmonyRecipe currentRecipe;
+    private long lagPreventer = 0;
+    private boolean recipeRunning = false;
+    private long astralArrayAmount = 50000;
+    private long parallelAmount = 65536;
+    private long successfulParallelAmount = 0;
+    private double hydrogenOverflowProbabilityAdjustment;
+    private double heliumOverflowProbabilityAdjustment;
+    private double stellarPlasmaOverflowProbabilityAdjustment;
+    private double yield = 0;
+    private BigInteger usedEU = BigInteger.ZERO;
+    private double pityChance;
+    private double successChance;
+    private double previousRecipeChance;
+    private long currentRecipeRocketTier;
+    private FluidStackLong stellarPlasma;
+    private FluidStackLong starMatter;
 
     public ETGWEyeOfHarmonyModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -334,11 +338,6 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         return validFluidMap.get(Materials.RawStarMatter.mFluid);
     }
 
-    private double pityChance;
-    private double successChance;
-    private double previousRecipeChance;
-    private long currentRecipeRocketTier;
-
     private void outputFailedChance() {
         long failedParallelAmount = parallelAmount - successfulParallelAmount;
         if (failedParallelAmount > 0) {
@@ -450,7 +449,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         if (mOutputItems != null) {
             for (ItemStack tStack : mOutputItems) {
                 if (tStack != null) {
-                    addItemOutputs(new ItemStack[] { tStack });
+                    addOutputPartial(tStack);
                 }
             }
         }
@@ -712,42 +711,28 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         super.checkMachine(aBaseMetaTileEntity, aStack, errors);
         if (errors.size() > existingErrors) return;
         if (!mDualInputHatches.isEmpty()) {
-            checkStructureCondition(errors, false);
+            errors.add(StructureErrors.of("GT5U.gui.text.structure_error.crib_not_allowed"));
         }
 
-        if (mOutputBusses.size() != 1) {
-            checkStructureCondition(errors, false);
-        }
+        // Check if there are output buses
+        checkHasOutputBus(errors);
 
-        if (getPrimaryOutputBusME() == null) {
-            checkStructureCondition(errors, false);
-        }
-
-        if (mOutputHatches.size() != 1) {
-            checkStructureCondition(errors, false);
-        }
-
-        if (getPrimaryOutputHatchME() == null) {
-            checkStructureCondition(errors, false);
-        }
+        // Check if there is 1 output hatch
+        checkOneOutputHatch(errors);
 
         if (mInputBusses.size() != 1) {
-            checkStructureCondition(errors, false);
+            errors.add(StructureErrors.hatchCount(ErrorType.NOT_MATCH, InputBus, mInputBusses.size(), 1));
+        } else if (mInputBusses.get(0) instanceof MTEHatchInputBusME) {
+            errors.add(StructureErrors.of("GT5U.gui.text.structure_error.stocking_input_bus_not_allowed"));
         }
 
-        if (getPrimaryInputBus() instanceof MTEHatchInputBusME) {
-            checkStructureCondition(errors, false);
+        // Make sure there are no energy hatches.
+        if (!mEnergyHatches.isEmpty() || !mExoticEnergyHatches.isEmpty()) {
+            errors.add(StructureErrorRegistry.NO_ENERGY_HATCH_NEEDED);
         }
 
-        if (!mEnergyHatches.isEmpty()) {
-            checkStructureCondition(errors, false);
-        }
-
-        if (!mExoticEnergyHatches.isEmpty()) {
-            checkStructureCondition(errors, false);
-        }
-
-        checkStructureCondition(errors, mInputHatches.size() == 2);
+        // Make sure there are 2 input hatches.
+        checkHatchExact(errors, InputHatch, 2);
     }
 
     public MTEHatchInputBus getPrimaryInputBus() {

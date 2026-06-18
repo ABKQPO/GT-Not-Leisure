@@ -10,7 +10,6 @@ import com.science.gtnl.common.command.CommandSteamNetwork;
 import com.science.gtnl.common.command.CommandSudo;
 import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
-import com.science.gtnl.common.command.CommandTitle;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
@@ -100,7 +99,6 @@ public class ScienceNotLeisure {
     // register server commands in this event handler (Remove if not needed)
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandTitle());
         event.registerServerCommand(new CommandTickrate());
         event.registerServerCommand(new CommandSteamNetwork());
         event.registerServerCommand(new CommandEnergyNetwork());

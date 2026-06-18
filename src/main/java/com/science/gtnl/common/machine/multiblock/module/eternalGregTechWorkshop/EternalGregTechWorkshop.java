@@ -192,6 +192,13 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public static final double POWER_LOG_CONSTANT = Math.log(9);
     public static final double RECIPE_LOG_CONSTANT = Math.log(4);
     public static final double FUEL_LOG_CONSTANT = Math.log(3);
+    public static final int FUEL_CONFIG_WINDOW_ID = 9;
+    public static final int UPGRADE_TREE_WINDOW_ID = 10;
+    public static final int INDIVIDUAL_UPGRADE_WINDOW_ID = 11;
+    public static final int MILESTONE_WINDOW_ID = 12;
+    public static final int INDIVIDUAL_MILESTONE_WINDOW_ID = 13;
+    public static final int MANUAL_INSERTION_WINDOW_ID = 14;
+    public static final int GENERAL_INFO_WINDOW_ID = 15;
 
     public ItemStack[] storedUpgradeWindowItems = new ItemStack[16];
     public ItemStackHandler inputSlotHandler = new ItemStackHandler(16);
@@ -214,6 +221,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public float recipeMilestonePercentage;
     public float fuelMilestonePercentage;
     public float structureMilestonePercentage;
+    public int currentMilestoneID = 0;
+    public final int[] milestoneProgress = new int[] { 0, 0, 0, 0 };
 
     public MilestoneFormatter formattingMode = DEFAULT_FORMATTING_MODE;
 
@@ -221,6 +230,15 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public EternalGregTechWorkshopUpgrade currentUpgradeWindow;
 
     public ArrayList<EternalGregTechWorkshopModule> moduleHatches = new ArrayList<>();
+    public long ticker = 0;
+    public final ArrayList<FluidStack> validFuelList = new ArrayList<>() {
+
+        {
+            add(FluidStackLookup.getFluidStack(DIMENSIONALLY_TRANSCENDENT_RESIDUE, 1));
+            add(Materials.RawStarMatter.getFluid(1));
+            add(Materials.MHDCSM.getMolten(1));
+        }
+    };
 
     public EternalGregTechWorkshop(String aName) {
         super(aName);
@@ -233,112 +251,6 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new EternalGregTechWorkshop(this.mName);
-    }
-
-    @Override
-    public void setItemNBT(NBTTagCompound aNBT) {
-        saveGeneralNBT(aNBT, false);
-
-        super.saveNBTData(aNBT);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        // Upgrade window stored items
-        NBTTagCompound upgradeWindowStorageNBTTag = new NBTTagCompound();
-        int storageIndex = 0;
-        for (ItemStack itemStack : inputSlotHandler.getStacks()) {
-            if (itemStack != null) {
-                upgradeWindowStorageNBTTag
-                    .setInteger(storageIndex + "stacksizeOfStoredUpgradeItems", itemStack.stackSize);
-                aNBT.setTag(storageIndex + "storedUpgradeItem", itemStack.writeToNBT(new NBTTagCompound()));
-            }
-            storageIndex++;
-        }
-        aNBT.setTag("upgradeWindowStorage", upgradeWindowStorageNBTTag);
-
-        saveGeneralNBT(aNBT, true);
-        aNBT.setInteger("mMachineTier", mMachineTier);
-        aNBT.setBoolean("enableExtraModule", enableExtraModule);
-        aNBT.setBoolean("mExtraModule", mExtraModule);
-        aNBT.setBoolean("isRenderActive", isRenderActive);
-        aNBT.setBoolean("enableRender", enableRender);
-    }
-
-    @Override
-    public void loadNBTData(final NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        mMachineTier = aNBT.getInteger("mMachineTier");
-        mModuleTier = aNBT.getInteger("mModuleTier");
-        enableExtraModule = aNBT.getBoolean("enableExtraModule");
-        mExtraModule = aNBT.getBoolean("mExtraModule");
-        gravitonShardsSpent = aNBT.getInteger("gravitonShardsSpent");
-        isRenderActive = aNBT.getBoolean("isRenderActive");
-        if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
-
-        if (aNBT.hasKey("totalPowerConsumed")) {
-            totalPowerConsumed = new BigInteger(aNBT.getByteArray("totalPowerConsumed"));
-        }
-        if (aNBT.hasKey("formattingMode")) {
-            int index = MathHelper.clamp_int(aNBT.getInteger("formattingMode"), 0, MilestoneFormatter.VALUES.length);
-            formattingMode = MilestoneFormatter.VALUES[index];
-        }
-
-        // Stored items
-        NBTTagCompound tempItemTag = aNBT.getCompoundTag("upgradeWindowStorage");
-        for (int index = 0; index < 16; index++) {
-            int stackSize = tempItemTag.getInteger(index + "stacksizeOfStoredUpgradeItems");
-            ItemStack itemStack = ItemStack.loadItemStackFromNBT(aNBT.getCompoundTag(index + "storedUpgradeItem"));
-            if (itemStack != null) {
-                storedUpgradeWindowItems[index] = itemStack.splitStack(stackSize);
-            }
-        }
-
-        upgrades.rebuildFromNBT(aNBT);
-    }
-
-    public void saveGeneralNBT(NBTTagCompound NBT, boolean force) {
-        if (force || mModuleTier != 0) NBT.setInteger("mModuleTier", mModuleTier);
-        if (force || gravitonShardsSpent != 0) NBT.setInteger("gravitonShardsSpent", gravitonShardsSpent);
-        if (force || gravitonShardsAvailable != 0) NBT.setInteger("gravitonShardsAvailable", gravitonShardsAvailable);
-        if (force || secretUpgrade) NBT.setBoolean("secretUpgrade", secretUpgrade);
-
-        if (force || gravitonShardsAvailable != 0) NBT.setInteger("gravitonShardsAvailable", gravitonShardsAvailable);
-        if (force || gravitonShardsSpent != 0) NBT.setInteger("gravitonShardsSpent", gravitonShardsSpent);
-        if (force || totalRecipesProcessed != 0) NBT.setLong("totalRecipesProcessed", totalRecipesProcessed);
-        if (force || totalFuelConsumed != 0) NBT.setLong("totalFuelConsumed", totalFuelConsumed);
-        if (force || gravitonShardEjection) NBT.setBoolean("gravitonShardEjection", gravitonShardEjection);
-        if (force || secretUpgrade) NBT.setBoolean("secretUpgrade", secretUpgrade);
-
-        if (force || !DEFAULT_TOTAL_POWER.equals(totalPowerConsumed)) {
-            NBT.setByteArray("totalPowerConsumed", totalPowerConsumed.toByteArray());
-        }
-        if (force || formattingMode != DEFAULT_FORMATTING_MODE) {
-            NBT.setInteger("formattingMode", formattingMode.ordinal());
-        }
-        upgrades.serializeToNBT(NBT, force);
-    }
-
-    public void addTotalPowerConsumed(BigInteger amount) {
-        totalPowerConsumed = totalPowerConsumed.add(amount);
-    }
-
-    public void addTotalRecipesProcessed(long amount) {
-        totalRecipesProcessed += amount;
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        if (getBaseMetaTileEntity().isServerSide()) {
-            enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
-            if (!enableRender && isRenderActive) destroyRenderer();
-        }
-        return true;
     }
 
     @Override
@@ -468,7 +380,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            checkStructureCondition(errors, false);
+            return;
         }
 
         while (checkTier < Integer.MAX_VALUE - 1) {
@@ -476,14 +388,16 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 STRUCTURE_PIECE_MAIN_UP,
                 HORIZONTAL_OFF_SET_UP,
                 VERTICAL_OFF_SET_UP + checkTier * 22,
-                DEPTH_OFF_SET_UP)) {
+                DEPTH_OFF_SET_UP,
+                null)) {
                 break;
             }
             if (!checkPiece(
                 STRUCTURE_PIECE_MAIN_DOWN,
                 HORIZONTAL_OFF_SET_DOWN,
                 VERTICAL_OFF_SET_DOWN - checkTier * 22,
-                DEPTH_OFF_SET_DOWN)) {
+                DEPTH_OFF_SET_DOWN,
+                null)) {
                 break;
             }
             checkTier++;
@@ -493,22 +407,24 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             STRUCTURE_PIECE_MAIN_TOP,
             HORIZONTAL_OFF_SET_TOP,
             VERTICAL_OFF_SET_TOP + (checkTier - 1) * 22,
-            DEPTH_OFF_SET_TOP)) {
+            DEPTH_OFF_SET_TOP,
+            errors)) {
             if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            checkStructureCondition(errors, false);
+            return;
         }
 
         if (!checkPiece(
             STRUCTURE_PIECE_MAIN_BOTTOM,
             HORIZONTAL_OFF_SET_BOTTOM,
             VERTICAL_OFF_SET_BOTTOM - (checkTier - 1) * 22,
-            DEPTH_OFF_SET_BOTTOM)) {
+            DEPTH_OFF_SET_BOTTOM,
+            errors)) {
             if (isRenderActive) destroyRenderer();
             mMachineTier = 0;
             mExtraModule = false;
-            checkStructureCondition(errors, false);
+            return;
         }
 
         if (enableExtraModule && checkTier > 0) {
@@ -518,7 +434,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         STRUCTURE_PIECE_MAIN_EXTRA_AIR,
                         HORIZONTAL_OFF_SET_EXTRA,
                         VERTICAL_OFF_SET_EXTRA_UP + i * 22,
-                        DEPTH_OFF_SET_EXTRA)) {
+                        DEPTH_OFF_SET_EXTRA,
+                        null)) {
                         destroyRenderer();
                         mExtraModule = false;
                         break;
@@ -527,7 +444,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         STRUCTURE_PIECE_MAIN_EXTRA_AIR,
                         HORIZONTAL_OFF_SET_EXTRA,
                         VERTICAL_OFF_SET_EXTRA_DOWN - i * 22,
-                        DEPTH_OFF_SET_EXTRA)) {
+                        DEPTH_OFF_SET_EXTRA,
+                        null)) {
                         mExtraModule = false;
                         break;
                     }
@@ -536,7 +454,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         STRUCTURE_PIECE_MAIN_EXTRA,
                         HORIZONTAL_OFF_SET_EXTRA,
                         VERTICAL_OFF_SET_EXTRA_UP + i * 22,
-                        DEPTH_OFF_SET_EXTRA)) {
+                        DEPTH_OFF_SET_EXTRA,
+                        null)) {
                         mExtraModule = false;
                         break;
                     }
@@ -544,7 +463,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                         STRUCTURE_PIECE_MAIN_EXTRA,
                         HORIZONTAL_OFF_SET_EXTRA,
                         VERTICAL_OFF_SET_EXTRA_DOWN - i * 22,
-                        DEPTH_OFF_SET_EXTRA)) {
+                        DEPTH_OFF_SET_EXTRA,
+                        null)) {
                         mExtraModule = false;
                         break;
                     }
@@ -560,7 +480,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             destroyRenderer();
             mExtraModule = false;
         }
-        checkStructureCondition(errors, mCountCasing > 1);
+        checkCasingMin(errors, mCountCasing, 2);
     }
 
     @Override
@@ -796,8 +716,6 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
-    long ticker = 0;
-
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (aBaseMetaTileEntity.isServerSide() && getBaseMetaTileEntity().isAllowedToWork()) {
@@ -839,14 +757,18 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 
-    public final ArrayList<FluidStack> validFuelList = new ArrayList<>() {
-
-        {
-            add(FluidStackLookup.getFluidStack(DIMENSIONALLY_TRANSCENDENT_RESIDUE, 1));
-            add(Materials.RawStarMatter.getFluid(1));
-            add(Materials.MHDCSM.getMolten(1));
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            enableRender = !enableRender;
+            GTUtility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
+            if (!enableRender && isRenderActive) destroyRenderer();
         }
-    };
+        return true;
+    }
 
     public void drainFuel() {
         fuelConsumption = (long) Math.max(calculateFuelConsumption(this) * 5, 1);
@@ -953,35 +875,6 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             return moduleHatches.add(module);
         }
         return false;
-    }
-
-    public enum moduleElement implements IHatchElement<EternalGregTechWorkshop> {
-
-        Module(EternalGregTechWorkshop::addModuleToMachineList, EternalGregTechWorkshopModule.class) {
-
-            @Override
-            public long count(EternalGregTechWorkshop tileEntity) {
-                return tileEntity.moduleHatches.size();
-            }
-        };
-
-        public final List<Class<? extends IMetaTileEntity>> mteClasses;
-        public final IGTHatchAdder<EternalGregTechWorkshop> adder;
-
-        @SafeVarargs
-        moduleElement(IGTHatchAdder<EternalGregTechWorkshop> adder, Class<? extends IMetaTileEntity>... mteClasses) {
-            this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
-            this.adder = adder;
-        }
-
-        @Override
-        public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
-            return mteClasses;
-        }
-
-        public IGTHatchAdder<? super EternalGregTechWorkshop> adder() {
-            return adder;
-        }
     }
 
     public int getFuelType() {
@@ -1289,16 +1182,6 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             structureMilestonePercentage = totalExtensionsBuilt / 7f;
         }
     }
-
-    public static final int FUEL_CONFIG_WINDOW_ID = 9;
-    public static final int UPGRADE_TREE_WINDOW_ID = 10;
-    public static final int INDIVIDUAL_UPGRADE_WINDOW_ID = 11;
-    public static final int MILESTONE_WINDOW_ID = 12;
-    public static final int INDIVIDUAL_MILESTONE_WINDOW_ID = 13;
-    public static final int MANUAL_INSERTION_WINDOW_ID = 14;
-    public static final int GENERAL_INFO_WINDOW_ID = 15;
-
-    public int currentMilestoneID = 0;
 
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
@@ -1847,8 +1730,6 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
-    public final int[] milestoneProgress = new int[] { 0, 0, 0, 0 };
-
     public Text gravitonShardAmountText(int milestoneID) {
         int sum;
         int progress = milestoneProgress[milestoneID];
@@ -2296,6 +2177,88 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         return builder.build();
     }
 
+    @Override
+    public void setItemNBT(NBTTagCompound aNBT) {
+        saveGeneralNBT(aNBT, false);
+        super.saveNBTData(aNBT);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        NBTTagCompound upgradeWindowStorageNBTTag = new NBTTagCompound();
+        int storageIndex = 0;
+        for (ItemStack itemStack : inputSlotHandler.getStacks()) {
+            if (itemStack != null) {
+                upgradeWindowStorageNBTTag
+                    .setInteger(storageIndex + "stacksizeOfStoredUpgradeItems", itemStack.stackSize);
+                aNBT.setTag(storageIndex + "storedUpgradeItem", itemStack.writeToNBT(new NBTTagCompound()));
+            }
+            storageIndex++;
+        }
+        aNBT.setTag("upgradeWindowStorage", upgradeWindowStorageNBTTag);
+
+        saveGeneralNBT(aNBT, true);
+        aNBT.setInteger("mMachineTier", mMachineTier);
+        aNBT.setBoolean("enableExtraModule", enableExtraModule);
+        aNBT.setBoolean("mExtraModule", mExtraModule);
+        aNBT.setBoolean("isRenderActive", isRenderActive);
+        aNBT.setBoolean("enableRender", enableRender);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mMachineTier = aNBT.getInteger("mMachineTier");
+        mModuleTier = aNBT.getInteger("mModuleTier");
+        enableExtraModule = aNBT.getBoolean("enableExtraModule");
+        mExtraModule = aNBT.getBoolean("mExtraModule");
+        gravitonShardsSpent = aNBT.getInteger("gravitonShardsSpent");
+        isRenderActive = aNBT.getBoolean("isRenderActive");
+        if (aNBT.hasKey("enableRender")) enableRender = aNBT.getBoolean("enableRender");
+
+        if (aNBT.hasKey("totalPowerConsumed")) {
+            totalPowerConsumed = new BigInteger(aNBT.getByteArray("totalPowerConsumed"));
+        }
+        if (aNBT.hasKey("formattingMode")) {
+            int index = MathHelper.clamp_int(aNBT.getInteger("formattingMode"), 0, MilestoneFormatter.VALUES.length);
+            formattingMode = MilestoneFormatter.VALUES[index];
+        }
+
+        NBTTagCompound tempItemTag = aNBT.getCompoundTag("upgradeWindowStorage");
+        for (int index = 0; index < 16; index++) {
+            int stackSize = tempItemTag.getInteger(index + "stacksizeOfStoredUpgradeItems");
+            ItemStack itemStack = ItemStack.loadItemStackFromNBT(aNBT.getCompoundTag(index + "storedUpgradeItem"));
+            if (itemStack != null) {
+                storedUpgradeWindowItems[index] = itemStack.splitStack(stackSize);
+            }
+        }
+
+        upgrades.rebuildFromNBT(aNBT);
+    }
+
+    public void saveGeneralNBT(NBTTagCompound NBT, boolean force) {
+        if (force || mModuleTier != 0) NBT.setInteger("mModuleTier", mModuleTier);
+        if (force || gravitonShardsSpent != 0) NBT.setInteger("gravitonShardsSpent", gravitonShardsSpent);
+        if (force || gravitonShardsAvailable != 0) NBT.setInteger("gravitonShardsAvailable", gravitonShardsAvailable);
+        if (force || secretUpgrade) NBT.setBoolean("secretUpgrade", secretUpgrade);
+
+        if (force || gravitonShardsAvailable != 0) NBT.setInteger("gravitonShardsAvailable", gravitonShardsAvailable);
+        if (force || gravitonShardsSpent != 0) NBT.setInteger("gravitonShardsSpent", gravitonShardsSpent);
+        if (force || totalRecipesProcessed != 0) NBT.setLong("totalRecipesProcessed", totalRecipesProcessed);
+        if (force || totalFuelConsumed != 0) NBT.setLong("totalFuelConsumed", totalFuelConsumed);
+        if (force || gravitonShardEjection) NBT.setBoolean("gravitonShardEjection", gravitonShardEjection);
+        if (force || secretUpgrade) NBT.setBoolean("secretUpgrade", secretUpgrade);
+
+        if (force || !DEFAULT_TOTAL_POWER.equals(totalPowerConsumed)) {
+            NBT.setByteArray("totalPowerConsumed", totalPowerConsumed.toByteArray());
+        }
+        if (force || formattingMode != DEFAULT_FORMATTING_MODE) {
+            NBT.setInteger("formattingMode", formattingMode.ordinal());
+        }
+        upgrades.serializeToNBT(NBT, force);
+    }
+
     public void destroyExtraModule() {
         for (int i = 0; i < mMachineTier; i++) {
             buildPiece(
@@ -2406,5 +2369,42 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         if (tile == null) return;
         tile.setRenderCount(mMachineTier);
         tile.updateToClient();
+    }
+
+    public void addTotalPowerConsumed(BigInteger amount) {
+        totalPowerConsumed = totalPowerConsumed.add(amount);
+    }
+
+    public void addTotalRecipesProcessed(long amount) {
+        totalRecipesProcessed += amount;
+    }
+
+    public enum moduleElement implements IHatchElement<EternalGregTechWorkshop> {
+
+        Module(EternalGregTechWorkshop::addModuleToMachineList, EternalGregTechWorkshopModule.class) {
+
+            @Override
+            public long count(EternalGregTechWorkshop tileEntity) {
+                return tileEntity.moduleHatches.size();
+            }
+        };
+
+        public final List<Class<? extends IMetaTileEntity>> mteClasses;
+        public final IGTHatchAdder<EternalGregTechWorkshop> adder;
+
+        @SafeVarargs
+        moduleElement(IGTHatchAdder<EternalGregTechWorkshop> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+            this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
+            this.adder = adder;
+        }
+
+        @Override
+        public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
+            return mteClasses;
+        }
+
+        public IGTHatchAdder<? super EternalGregTechWorkshop> adder() {
+            return adder;
+        }
     }
 }

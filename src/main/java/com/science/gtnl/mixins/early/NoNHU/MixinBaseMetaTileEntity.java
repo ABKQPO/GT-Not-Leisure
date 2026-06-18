@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.NoNHU;
+package com.science.gtnl.mixins.early.NoNHU;
 
 import static com.science.gtnl.ScienceNotLeisure.LOG;
 
@@ -35,12 +35,10 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
     @SuppressWarnings("AddedMixinMembersNamePattern")
     public boolean tickAcceleration(int tickAcceleratedRate) {
         if (this.isActive()) {
-            // safely calling
             int currentProgress = this.getProgress();
             int maxProgress = this.getMaxProgress();
             IMetaTileEntity metaTileEntity = this.getMetaTileEntity();
 
-            // for accelerating Research Station
             if (metaTileEntity instanceof MTEResearchStation researchStation) {
                 if (researchStation instanceof ITileEntityTickAcceleration resAte) {
                     resAte.tickAcceleration(tickAcceleratedRate);
@@ -48,17 +46,13 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
                 return true;
             }
 
-            // for accelerating Adv Ass Line
             if (metaTileEntity instanceof MTEAdvAssLine advAssLine) {
                 if (advAssLine instanceof IAccelerationState accelerationState) {
                     accelerationState.gtnl$setIsAccelerationState(true);
                     try {
-
-                        // Referenced GTNH to control the performance in 1ms
                         long tMaxTime = System.nanoTime() + 1000000;
 
                         for (int i = 0; i < tickAcceleratedRate; i++) {
-                            // skip if assLine stuck
                             if (accelerationState.gtnl$getMachineAccelerationState()) break;
                             this.updateEntity();
                             if (System.nanoTime() > tMaxTime) {
@@ -79,26 +73,22 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
                 }
             }
 
-            if (maxProgress >= 2) { // obviously
-                // discount for accelerating gregtech machines
-                int GTNL$modify = Math.min(maxProgress, currentProgress + tickAcceleratedRate);
+            if (maxProgress >= 2) {
+                int gtnl$modify = Math.min(maxProgress, currentProgress + tickAcceleratedRate);
 
-                // for accelerating basic machine
                 if (metaTileEntity instanceof MTEBasicMachine basicMachine) {
-                    basicMachine.mProgresstime = GTNL$modify;
+                    basicMachine.mProgresstime = gtnl$modify;
                     return true;
                 }
 
-                // for accelerating multi machine
                 if (metaTileEntity instanceof MTEMultiBlockBase multiBlockBase) {
-                    multiBlockBase.mProgresstime = GTNL$modify;
+                    multiBlockBase.mProgresstime = gtnl$modify;
                     return true;
                 }
 
-                return false; // this for accelerating gt machine by executing TE update method
-
+                return false;
             }
         }
-        return true; // this for not acceleration while machine is shutdown
+        return true;
     }
 }

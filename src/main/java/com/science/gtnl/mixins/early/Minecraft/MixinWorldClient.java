@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 
-@Mixin(value = WorldClient.class)
+@Mixin(value = WorldClient.class, remap = true)
 public class MixinWorldClient {
 
     @Shadow

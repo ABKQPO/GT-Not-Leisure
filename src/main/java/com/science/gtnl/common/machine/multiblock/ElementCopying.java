@@ -110,6 +110,138 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     @Override
+    public IStructureDefinition<ElementCopying> getStructureDefinition() {
+        return StructureDefinition.<ElementCopying>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
+            .addElement(
+                'C',
+                buildHatchAdder(ElementCopying.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        HatchElement.Maintenance,
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
+            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 7))
+            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 5);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.replicatorRecipes;
+    }
+
+    @Override
+    public @NotNull CheckRecipeResult checkProcessing() {
+        maxParallelStored = -1;
+        resetParallelTier();
+        maxParallelStored = getTrueParallel();
+        costingEU = BigInteger.ZERO;
+        costingEUText = Utils.ZERO_STRING;
+
+        long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
+            : getMaxInputEu();
+
+        long needUUMPerUnit = getNeedUUM();
+        long needEUtPerUnit = Math.max(getNeedEU() / 20, 1);
+
+        if (needUUMPerUnit <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
+
+        ArrayList<FluidStack> storedFluids = getStoredFluids();
+        long totalUUMAvailable = getTotalFluidAmount(storedFluids, UUMatter);
+
+        int parallelByUUM = (int) Math.min(Integer.MAX_VALUE, totalUUMAvailable / needUUMPerUnit);
+        int parallelByEU = (int) Math.min(Integer.MAX_VALUE, maxInputEU / needEUtPerUnit);
+        if (parallelByEU <= 0) return CheckRecipeResultRegistry.insufficientPower(parallelByEU);
+
+        maxParallelStored = Math.min(maxParallelStored, Math.min(parallelByUUM, parallelByEU));
+        if (maxParallelStored <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
+
+        long totalUUMNeeded = needUUMPerUnit * maxParallelStored;
+
+        List<FluidStack> matter = new ArrayList<>();
+        while (totalUUMNeeded > 0) {
+            int amount = (int) Math.min(Integer.MAX_VALUE, totalUUMNeeded);
+            matter.add(Materials.UUMatter.getFluid(amount));
+            totalUUMNeeded -= amount;
+        }
+        depleteInputList(matter, false);
+
+        mOutputItems = itemEntry.stream()
+            .map(
+                entry -> entry.itemId()
+                    .toStack(maxParallelStored))
+            .toArray(ItemStack[]::new);
+
+        List<FluidStack> outputFluidList = new ArrayList<>();
+        for (FluidCopyingEntry entry : fluidEntry) {
+            long totalAmount = (long) maxParallelStored * 1000L;
+            while (totalAmount > 0) {
+                int amount = (int) Math.min(Integer.MAX_VALUE, totalAmount);
+                outputFluidList.add(
+                    entry.fluidId()
+                        .getFluidStack(amount));
+                totalAmount -= amount;
+            }
+        }
+
+        mOutputFluids = outputFluidList.toArray(new FluidStack[0]);
+        mMaxProgresstime = 20;
+
+        if (wirelessMode) {
+            addEUToGlobalEnergyMap(ownerUUID, -needEUtPerUnit);
+            lEUt = 0;
+        } else {
+            lEUt = -needEUtPerUnit;
+        }
+
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return 1028;
+    }
+
+    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
@@ -125,6 +257,94 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                     .build() };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public ArrayList<FluidStack> getStoredFluidsForColor(Optional<Byte> color) {
+        ArrayList<FluidStack> rList = new ArrayList<>();
+        Map<Fluid, FluidStack> inputsFromME = new Object2ObjectOpenHashMap<>();
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
+            byte hatchColor = tHatch.getColor();
+            if (color.isPresent() && hatchColor != -1 && hatchColor != color.get()) continue;
+            setHatchRecipeMap(tHatch);
+            if (tHatch instanceof MTEHatchMultiInput multiInputHatch) {
+                for (FluidStack tFluid : multiInputHatch.getStoredFluid()) {
+                    if (tFluid != null) {
+                        rList.add(tFluid);
+                    }
+                }
+            } else if (tHatch instanceof MTEHatchInputME meHatch) {
+                for (FluidStack fluidStack : meHatch.getStoredFluids()) {
+                    if (fluidStack != null) {
+                        inputsFromME.put(fluidStack.getFluid(), fluidStack);
+                    }
+                }
+            } else {
+                FluidStack fillableStack = tHatch.getFillableStack();
+                if (fillableStack != null) {
+                    rList.add(fillableStack);
+                }
+            }
+        }
+
+        if (supportsCraftingMEBuffer()) {
+            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
+                appendNonNullFluids(rList, dualInputHatch.getAllFluids());
+            }
+        }
+
+        if (!inputsFromME.isEmpty()) {
+            rList.addAll(inputsFromME.values());
+        }
+        return rList;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("ElementCopyingRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(15, 3, 15, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new ElementCopyingGui(this);
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
+        super.addUIWidgets(builder, buildContext);
+        buildContext.addSyncedWindow(11, this::createCopyingWindow);
+        addSyncers(builder);
+        builder.widget(new ButtonWidget().setOnClick((click, widget) -> {
+            if (!widget.isClient()) {
+                widget.getContext()
+                    .openSyncedWindow(11);
+            }
+        })
+            .setBackground(
+                () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
+            .setTooltipShowUpDelay(5)
+            .setPos(174, 110)
+            .setSize(16, 16));
     }
 
     @Override
@@ -169,84 +389,23 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         }
     }
 
-    @Override
-    public int getCasingTextureID() {
-        return 1028;
+    public long getTotal(ToLongFunction<ElementCopyingEntry> costGetter) {
+        long total = 0;
+        for (ElementCopyingEntry entry : itemEntry) {
+            total += costGetter.applyAsLong(entry);
+        }
+        for (ElementCopyingEntry entry : fluidEntry) {
+            total += costGetter.applyAsLong(entry);
+        }
+        return total;
     }
 
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.replicatorRecipes;
+    public long getNeedUUM() {
+        return getTotal(ElementCopyingEntry::costUUM);
     }
 
-    @Override
-    public @NotNull CheckRecipeResult checkProcessing() {
-        // Clear cached wireless parallel cap from previous recipe checks.
-        maxParallelStored = -1;
-        resetParallelTier();
-        maxParallelStored = getTrueParallel();
-        costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
-
-        long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
-            : getMaxInputEu();
-
-        long needUUMPerUnit = getNeedUUM();
-        long needEUtPerUnit = Math.max(getNeedEU() / 20, 1);
-
-        if (needUUMPerUnit <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
-
-        ArrayList<FluidStack> storedFluids = getStoredFluids();
-        long totalUUMAvailable = getTotalFluidAmount(storedFluids, UUMatter);
-
-        int parallelByUUM = (int) Math.min(Integer.MAX_VALUE, totalUUMAvailable / needUUMPerUnit);
-        int parallelByEU = (int) Math.min(Integer.MAX_VALUE, maxInputEU / needEUtPerUnit);
-        if (parallelByEU <= 0) return CheckRecipeResultRegistry.insufficientPower(parallelByEU);
-
-        maxParallelStored = Math.min(maxParallelStored, Math.min(parallelByUUM, parallelByEU));
-        if (maxParallelStored <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
-
-        long totalUUMNeeded = needUUMPerUnit * maxParallelStored;
-
-        List<FluidStack> matter = new ArrayList<>();
-        while (totalUUMNeeded > 0) {
-            int amount = (int) Math.min(Integer.MAX_VALUE, totalUUMNeeded);
-            matter.add(Materials.UUMatter.getFluid(amount));
-            totalUUMNeeded -= amount;
-        }
-        depleteInputList(matter, false);
-
-        mOutputItems = itemEntry.stream()
-            .map(
-                entry -> entry.itemId()
-                    .toStack(maxParallelStored))
-            .toArray(ItemStack[]::new);
-
-        List<FluidStack> outputFluidList = new ArrayList<>();
-
-        for (FluidCopyingEntry entry : fluidEntry) {
-            long totalAmount = (long) maxParallelStored * 1000L;
-            while (totalAmount > 0) {
-                int amount = (int) Math.min(Integer.MAX_VALUE, totalAmount);
-                outputFluidList.add(
-                    entry.fluidId()
-                        .getFluidStack(amount));
-                totalAmount -= amount;
-            }
-        }
-
-        mOutputFluids = outputFluidList.toArray(new FluidStack[0]);
-
-        mMaxProgresstime = 20;
-
-        if (wirelessMode) {
-            addEUToGlobalEnergyMap(ownerUUID, -needEUtPerUnit);
-            lEUt = 0;
-        } else {
-            lEUt = -needEUtPerUnit;
-        }
-
-        return CheckRecipeResultRegistry.SUCCESSFUL;
+    public long getNeedEU() {
+        return getTotal(ElementCopyingEntry::costEU);
     }
 
     public long getTotalFluidAmount(List<FluidStack> storedFluids, FluidStack targetFluid) {
@@ -286,19 +445,15 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         if (simulate) return true;
         for (FluidStack needed : fluids) {
             int remaining = needed.amount;
-
             while (remaining > 0) {
                 int drainedThisRound = 0;
-
                 for (MTEHatch hatch : allInputHatches) {
                     int drained = drainFluid(hatch, new FluidStack(needed.getFluid(), remaining), true);
                     drainedThisRound += drained;
                 }
-
                 if (drainedThisRound <= 0) {
                     break;
                 }
-
                 remaining -= drainedThisRound;
             }
         }
@@ -351,47 +506,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         return allHatches;
     }
 
-    @Override
-    public ArrayList<FluidStack> getStoredFluidsForColor(Optional<Byte> color) {
-        ArrayList<FluidStack> rList = new ArrayList<>();
-        Map<Fluid, FluidStack> inputsFromME = new Object2ObjectOpenHashMap<>();
-        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
-            byte hatchColor = tHatch.getColor();
-            if (color.isPresent() && hatchColor != -1 && hatchColor != color.get()) continue;
-            setHatchRecipeMap(tHatch);
-            if (tHatch instanceof MTEHatchMultiInput multiInputHatch) {
-                for (FluidStack tFluid : multiInputHatch.getStoredFluid()) {
-                    if (tFluid != null) {
-                        rList.add(tFluid);
-                    }
-                }
-            } else if (tHatch instanceof MTEHatchInputME meHatch) {
-                for (FluidStack fluidStack : meHatch.getStoredFluids()) {
-                    if (fluidStack != null) {
-                        // Prevent the same fluid from different ME hatches from being recognized
-                        inputsFromME.put(fluidStack.getFluid(), fluidStack);
-                    }
-                }
-            } else {
-                FluidStack fillableStack = tHatch.getFillableStack();
-                if (fillableStack != null) {
-                    rList.add(fillableStack);
-                }
-            }
-        }
-
-        if (supportsCraftingMEBuffer()) {
-            for (IDualInputHatch dualInputHatch : mDualInputHatches) {
-                appendNonNullFluids(rList, dualInputHatch.getAllFluids());
-            }
-        }
-
-        if (!inputsFromME.isEmpty()) {
-            rList.addAll(inputsFromME.values());
-        }
-        return rList;
-    }
-
     public void appendNonNullFluids(List<FluidStack> target, FluidStack[] fluidStacks) {
         if (fluidStacks == null || fluidStacks.length == 0) {
             return;
@@ -401,108 +515,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                 target.add(fluidStack);
             }
         }
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ElementCopyingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public IStructureDefinition<ElementCopying> getStructureDefinition() {
-        return StructureDefinition.<ElementCopying>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement(
-                'C',
-                buildHatchAdder(ElementCopying.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.InputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.OutputHatch,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        HatchElement.Maintenance,
-                        ParallelCon)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 7))
-            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .build();
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 5);
-    }
-
-    public long getTotal(ToLongFunction<ElementCopyingEntry> costGetter) {
-        long total = 0;
-        for (ElementCopyingEntry entry : itemEntry) {
-            total += costGetter.applyAsLong(entry);
-        }
-        for (ElementCopyingEntry entry : fluidEntry) {
-            total += costGetter.applyAsLong(entry);
-        }
-        return total;
-    }
-
-    public long getNeedUUM() {
-        return getTotal(ElementCopyingEntry::costUUM);
-    }
-
-    public long getNeedEU() {
-        return getTotal(ElementCopyingEntry::costEU);
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new ElementCopyingGui(this);
     }
 
     public List<ItemCopyingEntry> getSelectedItemEntriesForGui() {
@@ -527,47 +539,26 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         }
     }
 
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        super.addUIWidgets(builder, buildContext);
-        buildContext.addSyncedWindow(11, this::createCopyingWindow);
-        addSyncers(builder);
-        builder.widget(new ButtonWidget().setOnClick((click, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(11);
-            }
-        })
-            .setBackground(
-                () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
-            .setTooltipShowUpDelay(5)
-            .setPos(174, 110)
-            .setSize(16, 16));
-    }
-
     @Deprecated
     public ModularWindow createCopyingWindow(EntityPlayer player) {
         // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        final int WIDTH = 198;
-        final int HEIGHT = 42 + (ElementCopyingRecipes.ENTRIES.size() + 8) / 10 * 18;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
+        final int width = 198;
+        final int height = 42 + (ElementCopyingRecipes.ENTRIES.size() + 8) / 10 * 18;
+        final int parentWidth = getGUIWidth();
+        final int parentHeight = getGUIHeight();
 
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
+        ModularWindow.Builder builder = ModularWindow.builder(width, height);
         builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
         builder.setGuiTint(getGUIColorization());
         builder.setDraggable(true);
         builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(Alignment.TopRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT)))
+            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(parentWidth, parentHeight))
+                .add(Alignment.TopRight.getAlignedPos(new Size(parentWidth, parentHeight), new Size(width, height)))
                 .subtract(5, 0)
                 .add(0, 4));
 
         for (int i = 0; i < ElementCopyingRecipes.ENTRIES.size(); i++) {
             ElementCopyingEntry entry = ElementCopyingRecipes.ENTRIES.get(i);
-
             int col = i % 10;
             int row = i / 10;
             int x = col * 18 + 9;
@@ -618,7 +609,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                         NumberFormatUtil.formatNumber(getNeedEU()))).color(Color.WHITE.normal))
                             .setTextAlignment(Alignment.Center)
                             .setSize(180, 12)
-                            .setPos(9, HEIGHT - 28));
+                            .setPos(9, height - 28));
 
         return builder.build();
     }
@@ -702,6 +693,5 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                 tag.getLong("uum"),
                 tag.getLong("eu"));
         }
-
     }
 }

@@ -51,11 +51,6 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamWoodcutterRecipeType");
-    }
-
-    @Override
     public IStructureDefinition<SteamWoodcutter> getStructureDefinition() {
         return StructureDefinition.<SteamWoodcutter>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -105,6 +100,34 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     }
 
     @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) {
+                return new ITexture[] {
+                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
+                    TextureFactory.builder()
+                        .addIcon(TexturesGtBlock.oMCATreeFarmActive)
+                        .extFacing()
+                        .build() };
+            }
+            return new ITexture[] {
+                Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCATreeFarm)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] {
+            Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return GTUtility.getTextureId((byte) 116, (byte) 24);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
@@ -137,42 +160,20 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
-                    TextureFactory.builder()
-                        .addIcon(TexturesGtBlock.oMCATreeFarmActive)
-                        .extFacing()
-                        .build() };
-            } else {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
-                    TextureFactory.builder()
-                        .addIcon(TexturesGtBlock.oMCATreeFarm)
-                        .extFacing()
-                        .build() };
-            }
-        }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)) };
-
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return GTUtility.getTextureId((byte) 116, (byte) 24);
-    }
-
-    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
     }
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamWoodcutter(this.mName);
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamWoodcutterRecipeType");
     }
 }

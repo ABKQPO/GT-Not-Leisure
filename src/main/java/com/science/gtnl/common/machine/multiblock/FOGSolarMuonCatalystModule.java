@@ -37,6 +37,7 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
 
     private long EUt = 0;
     private int currentParallel = 0;
+    private long wirelessEUt = 0;
     @Getter
     @Setter
     public MTEForgeOfGods master;
@@ -53,8 +54,6 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new FOGSolarMuonCatalystModule(mName);
     }
-
-    long wirelessEUt = 0;
 
     @Override
     protected ProcessingLogic createProcessingLogic() {
@@ -127,16 +126,6 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
         logic.setMaxParallel(getActualParallel());
         logic.setSpeedBonus(getSpeedBonus());
         logic.setEuModifier(getEnergyDiscount());
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.SolarMuonCatalystRecipes;
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new FOGModuleGui(this);
     }
 
     @Override
@@ -217,6 +206,16 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
                     + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_04"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.SolarMuonCatalystRecipes;
     }
 
 }

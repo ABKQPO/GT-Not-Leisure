@@ -26,7 +26,7 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 
 import cpw.mods.fml.common.FMLLog;
 
-@Mixin(value = World.class)
+@Mixin(value = World.class, remap = true)
 public abstract class MixinWorld {
 
     @Final

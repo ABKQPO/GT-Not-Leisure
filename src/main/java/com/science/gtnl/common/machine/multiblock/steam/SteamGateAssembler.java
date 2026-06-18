@@ -49,16 +49,8 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_03"))
-            .beginStructureBlock(21, 20, 21, true)
-            .toolTipFinisher();
-        return tt;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamGateAssembler(this.mName);
     }
 
     @Override
@@ -90,32 +82,6 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
             env,
             false,
             true);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            return new ITexture[] {
-                Textures.BlockIcons
-                    .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_STEAM_GATE_ASSEMBLER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_STEAM_GATE_ASSEMBLER)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)) };
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.SteamGateAssemblerRecipes;
     }
 
     @Override
@@ -189,11 +155,48 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamGateAssembler(this.mName);
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.SteamGateAssemblerRecipes;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            return new ITexture[] {
+                Textures.BlockIcons
+                    .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_STEAM_GATE_ASSEMBLER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_STEAM_GATE_ASSEMBLER)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] {
+            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings2, 0)) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_03"))
+            .beginStructureBlock(21, 20, 21, true)
+            .toolTipFinisher();
+        return tt;
     }
 }

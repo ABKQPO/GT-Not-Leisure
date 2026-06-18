@@ -51,7 +51,6 @@ import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
-import com.science.gtnl.common.packet.client.TitleDisplayHandler;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
@@ -105,7 +104,6 @@ import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
 public class ClientProxy extends CommonProxy {
 
     public static final SubscribeEventClientUtils SUBSCRIBE_EVENT_CLIENT_UTILS = new SubscribeEventClientUtils();
-    public static final TitleDisplayHandler TITLE_DISPLAY_HANDLER = new TitleDisplayHandler();
     public static final SpoceRenderHandler SPOCE_RENDER_HANDLER = new SpoceRenderHandler();
     public static int WATER_CANDLE_RENDER_ID;
     public static int ENDER_ELEVATOR_RENDER_ID;
@@ -217,11 +215,6 @@ public class ClientProxy extends CommonProxy {
             .bus()
             .register(GTNLInputHandler.INSTANCE);
         GuiContainerManager.addTooltipHandler(new GTNLTooltipManager());
-
-        MinecraftForge.EVENT_BUS.register(TITLE_DISPLAY_HANDLER);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(TITLE_DISPLAY_HANDLER);
 
         MinecraftForge.EVENT_BUS.register(SPOCE_RENDER_HANDLER);
         FMLCommonHandler.instance()

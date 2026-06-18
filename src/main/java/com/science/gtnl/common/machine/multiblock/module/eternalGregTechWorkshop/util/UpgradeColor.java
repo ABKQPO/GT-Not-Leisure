@@ -118,5 +118,4 @@ public enum UpgradeColor {
             case RED -> GTGuiTextures.PICTURE_UPGRADE_CONNECTOR_RED;
         };
     }
-
 }

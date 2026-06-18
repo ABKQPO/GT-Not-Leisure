@@ -19,6 +19,7 @@ import com.glodblock.github.common.item.ItemFluidPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
+import com.science.gtnl.config.MainConfig;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
@@ -440,20 +441,23 @@ public class DisassemblerHelper {
             ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>(recipe.mInputs);
             if (recipe.mFluidInputs != null) {
                 for (FluidStack fluid : recipe.mFluidInputs) {
-                    outputs.add(ItemFluidPacket.newStack(fluid));
+                    addFluidPacketOutput(outputs, fluid, "Hard-Override Recipe");
                 }
             }
 
             outputs.removeIf(stack -> stack == null || stack.stackSize <= 0);
+            if (outputs.isEmpty()) continue;
 
-            RecipeBuilder.builder()
-                .itemInputs(input)
-                .itemOutputs(outputs.toArray(new ItemStack[0]))
-                .duration(100)
-                .eut(0)
-                .fake()
-                .setNEIDesc("Generated from Hard-Override Recipe")
-                .addTo(GTNLRecipeMaps.ShimmerRecipes);
+            if (shouldBuildShimmerFakeRecipe()) {
+                RecipeBuilder builder = RecipeBuilder.builder()
+                    .itemInputs(input)
+                    .itemOutputs(outputs.toArray(new ItemStack[0]))
+                    .duration(100)
+                    .eut(0)
+                    .fake()
+                    .setNEIDesc("Generated from Hard-Override Recipe");
+                addShimmerFakeRecipe(builder);
+            }
             ShimmerRecipes.registerConversion(input, outputs);
         }
         GTNLRecipeMaps.HardOverrideRecipes.getBackend()
@@ -502,20 +506,23 @@ public class DisassemblerHelper {
                 ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>();
                 if (reversedFirst.mFluidInputs != null) {
                     for (FluidStack fluid : reversedFirst.mFluidInputs) {
-                        outputs.add(ItemFluidPacket.newStack(fluid));
+                        addFluidPacketOutput(outputs, fluid, "Assembler Recipe");
                     }
                 }
                 outputs.addAll(transformedOutputs);
+                if (outputs.isEmpty()) continue;
 
-                RecipeBuilder builder = RecipeBuilder.builder()
-                    .itemInputs(revInput)
-                    .itemOutputs(outputs.toArray(new ItemStack[0]))
-                    .duration(100)
-                    .eut(0)
-                    .fake()
-                    .setNEIDesc("Generated from Assembler Recipe");
-                applyDebugAssembler(builder, recipes, false);
-                builder.addTo(GTNLRecipeMaps.ShimmerRecipes);
+                if (shouldBuildShimmerFakeRecipe()) {
+                    RecipeBuilder builder = RecipeBuilder.builder()
+                        .itemInputs(revInput)
+                        .itemOutputs(outputs.toArray(new ItemStack[0]))
+                        .duration(100)
+                        .eut(0)
+                        .fake()
+                        .setNEIDesc("Generated from Assembler Recipe");
+                    applyDebugAssembler(builder, recipes, false);
+                    addShimmerFakeRecipe(builder);
+                }
                 ShimmerRecipes.registerConversion(revInput, outputs);
 
             } catch (Exception e) {
@@ -545,19 +552,21 @@ public class DisassemblerHelper {
             }
             if (recipe.mFluidInputs != null) {
                 for (FluidStack fluid : recipe.mFluidInputs) {
-                    outputs.add(ItemFluidPacket.newStack(fluid));
+                    addFluidPacketOutput(outputs, fluid, "Assembly Line");
                 }
             }
             if (outputs.isEmpty()) continue;
 
-            RecipeBuilder.builder()
-                .itemInputs(input)
-                .itemOutputs(outputs.toArray(new ItemStack[0]))
-                .duration(100)
-                .eut(0)
-                .fake()
-                .setNEIDesc("Generated from Assembly Line")
-                .addTo(GTNLRecipeMaps.ShimmerRecipes);
+            if (shouldBuildShimmerFakeRecipe()) {
+                RecipeBuilder builder = RecipeBuilder.builder()
+                    .itemInputs(input)
+                    .itemOutputs(outputs.toArray(new ItemStack[0]))
+                    .duration(100)
+                    .eut(0)
+                    .fake()
+                    .setNEIDesc("Generated from Assembly Line");
+                addShimmerFakeRecipe(builder);
+            }
             ShimmerRecipes.registerConversion(input, outputs);
         }
 
@@ -570,18 +579,22 @@ public class DisassemblerHelper {
             ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>(recipe.mInputs);
             if (recipe.mFluidInputs != null) {
                 for (FluidStack fluid : recipe.mFluidInputs) {
-                    outputs.add(ItemFluidPacket.newStack(fluid));
+                    addFluidPacketOutput(outputs, fluid, "Space Assembler");
                 }
             }
+            outputs.removeIf(stack -> stack == null || stack.stackSize <= 0);
+            if (outputs.isEmpty()) continue;
 
-            RecipeBuilder.builder()
-                .itemInputs(input)
-                .itemOutputs(outputs.toArray(new ItemStack[0]))
-                .duration(100)
-                .eut(0)
-                .fake()
-                .setNEIDesc("Generated from Space Assembler")
-                .addTo(GTNLRecipeMaps.ShimmerRecipes);
+            if (shouldBuildShimmerFakeRecipe()) {
+                RecipeBuilder builder = RecipeBuilder.builder()
+                    .itemInputs(input)
+                    .itemOutputs(outputs.toArray(new ItemStack[0]))
+                    .duration(100)
+                    .eut(0)
+                    .fake()
+                    .setNEIDesc("Generated from Space Assembler");
+                addShimmerFakeRecipe(builder);
+            }
             ShimmerRecipes.registerConversion(input, outputs);
         }
     }
@@ -600,15 +613,17 @@ public class DisassemblerHelper {
 
         try {
             ObjectList<ItemStack> outputs = handleRecipeTransformation(revRecipe.mOutputs, null);
-            RecipeBuilder builder = RecipeBuilder.builder()
-                .itemInputs(input)
-                .itemOutputs(outputs.toArray(new ItemStack[0]))
-                .duration(100)
-                .eut(0)
-                .fake()
-                .setNEIDesc("Generated from GT Crafting Recipe");
-            applyDebugCrafting(builder, recipe);
-            builder.addTo(GTNLRecipeMaps.ShimmerRecipes);
+            if (shouldBuildShimmerFakeRecipe()) {
+                RecipeBuilder builder = RecipeBuilder.builder()
+                    .itemInputs(input)
+                    .itemOutputs(outputs.toArray(new ItemStack[0]))
+                    .duration(100)
+                    .eut(0)
+                    .fake()
+                    .setNEIDesc("Generated from GT Crafting Recipe");
+                applyDebugCrafting(builder, recipe);
+                addShimmerFakeRecipe(builder);
+            }
             if (input != null) {
                 ShimmerRecipes.registerConversion(input, outputs);
             }
@@ -638,6 +653,73 @@ public class DisassemblerHelper {
 
         builder.setNEIDesc("Debug Index: " + index);
         return builder;
+    }
+
+    private static void addShimmerFakeRecipe(RecipeBuilder builder) {
+        if (MainConfig.recipe.enableShimmerFakeRecipeInNEI) {
+            builder.addTo(GTNLRecipeMaps.ShimmerRecipes);
+        }
+    }
+
+    private static boolean shouldBuildShimmerFakeRecipe() {
+        return MainConfig.recipe.enableShimmerFakeRecipeInNEI || debugRecipeToRecipe != null;
+    }
+
+    private static void addFluidPacketOutput(ObjectArrayList<ItemStack> outputs, FluidStack fluid, String source) {
+        ItemStack packet = createFluidPacket(fluid, source);
+        if (GTUtility.isStackValid(packet) && packet.stackSize > 0) {
+            outputs.add(packet);
+        }
+    }
+
+    private static ItemStack createFluidPacket(FluidStack fluid, String source) {
+        if (fluid == null) {
+            ScienceNotLeisure.LOG.warn("Skipping null fluid while generating Shimmer recipe from {}.", source);
+            return null;
+        }
+        if (fluid.amount <= 0) {
+            ScienceNotLeisure.LOG.warn(
+                "Skipping fluid packet with non-positive amount while generating Shimmer recipe from {}: {}",
+                source,
+                describeFluidStack(fluid));
+            return null;
+        }
+        if (fluid.getFluid() == null) {
+            ScienceNotLeisure.LOG.warn(
+                "Skipping fluid packet with missing fluid type while generating Shimmer recipe from {}: {}",
+                source,
+                describeFluidStack(fluid));
+            return null;
+        }
+        String fluidName = fluid.getFluid()
+            .getName();
+        if (fluidName == null || fluidName.isEmpty()) {
+            ScienceNotLeisure.LOG.warn(
+                "Skipping fluid packet with empty fluid name while generating Shimmer recipe from {}: {}",
+                source,
+                describeFluidStack(fluid));
+            return null;
+        }
+        try {
+            return ItemFluidPacket.newStack(fluid);
+        } catch (IllegalArgumentException e) {
+            ScienceNotLeisure.LOG.warn(
+                "Skipping invalid fluid packet while generating Shimmer recipe from {}: {}",
+                source,
+                describeFluidStack(fluid),
+                e);
+            return null;
+        }
+    }
+
+    private static String describeFluidStack(FluidStack fluid) {
+        if (fluid == null) {
+            return "null";
+        }
+        String fluidName = fluid.getFluid() == null ? "null"
+            : fluid.getFluid()
+                .getName();
+        return "FluidStack{name=" + fluidName + ", amount=" + fluid.amount + "}";
     }
 
     public static void applyDebugCrafting(RecipeBuilder builder, ReversedRecipeRegistry.GTCraftingRecipe original) {

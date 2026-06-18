@@ -29,6 +29,7 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
 
     private long EUt = 0;
     private int currentParallel = 0;
+    private long wirelessEUt = 0;
 
     public FOGAlloySmelterModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -42,8 +43,6 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new FOGAlloySmelterModule(mName);
     }
-
-    long wirelessEUt = 0;
 
     @Override
     public ProcessingLogic createProcessingLogic() {
@@ -106,16 +105,6 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
         logic.setMaxParallel(getActualParallel());
         logic.setSpeedBonus(getSpeedBonus());
         logic.setEuModifier(getEnergyDiscount());
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new FOGModuleGui(this);
-    }
-
-    @Override
-    public double getSpeedBonus() {
-        return processingSpeedBonus / 2;
     }
 
     @Override
@@ -196,6 +185,16 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
                     + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_04"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new FOGModuleGui(this);
+    }
+
+    @Override
+    public double getSpeedBonus() {
+        return processingSpeedBonus / 2;
     }
 
 }

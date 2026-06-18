@@ -365,11 +365,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
             List<StructureError> errors) {
-            checkStructureCondition(
-                errors,
-                checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-                    && mMaintenanceHatches.size() <= 1
-                    && mCountCasing >= 50);
+            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+                return;
+            }
+            checkHatchMax(errors, HatchElement.Maintenance, 1);
+            checkCasingMin(errors, mCountCasing, 50);
         }
 
         @Override
@@ -502,11 +502,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack,
             List<StructureError> errors) {
-            checkStructureCondition(
-                errors,
-                checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-                    && mMaintenanceHatches.size() <= 1
-                    && mCountCasing >= 50);
+            if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+                return;
+            }
+            checkHatchMax(errors, HatchElement.Maintenance, 1);
+            checkCasingMin(errors, mCountCasing, 50);
         }
 
         @Override
@@ -804,20 +804,23 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                         STRUCTURE_PIECE_SPHERE_AIR,
                         HORIZONTAL_OFF_SET_SPHERE,
                         VERTICAL_OFF_SET_SPHERE,
-                        DEPTH_OFF_SET_SPHERE)) {
+                        DEPTH_OFF_SET_SPHERE,
+                        errors)) {
                     buildSphere();
-                    checkStructureCondition(errors, false);
+                    return;
                 }
             } else if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
                 || !checkPiece(
                     STRUCTURE_PIECE_SPHERE,
                     HORIZONTAL_OFF_SET_SPHERE,
                     VERTICAL_OFF_SET_SPHERE,
-                    DEPTH_OFF_SET_SPHERE)) {
-                        checkStructureCondition(errors, false);
+                    DEPTH_OFF_SET_SPHERE,
+                    errors)) {
+                        return;
                     }
 
-            if (mCountCasing < 50 || mMaintenanceHatches.size() > 1) checkStructureCondition(errors, false);
+            checkCasingMin(errors, mCountCasing, 50);
+            checkHatchMax(errors, HatchElement.Maintenance, 1);
 
             if (!isRenderActive && enableRender && mTotalRunTime > 0) {
                 destroySphere();
@@ -828,7 +831,6 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
 
             if (mDynamoHatches.isEmpty() && mExoticDynamoHatches.isEmpty()) wirelessMode = true;
-            return;
         }
 
         @Override

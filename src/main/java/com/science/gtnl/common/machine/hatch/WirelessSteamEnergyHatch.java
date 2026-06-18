@@ -143,24 +143,20 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     @Override
     public void onPreTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPreTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide()) {
-            if (aTick % number_of_energy_additions == 0L) {
-                tryFetchingSteam();
-            }
+        if (aBaseMetaTileEntity.isServerSide() && aTick % number_of_energy_additions == 0L) {
+            tryFetchingSteam();
         }
     }
 
     @Override
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
         super.onPostTick(baseMetaTileEntity, tick);
-        if (baseMetaTileEntity.isServerSide()) {
-            if (tick % 200 == 0L) {
-                isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
+        if (baseMetaTileEntity.isServerSide() && tick % 200 == 0L) {
+            isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
 
-                if (isInTeam) {
-                    teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-                    steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-                }
+            if (isInTeam) {
+                teamUUID = SpaceProjectManager.getLeader(ownerUUID);
+                steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
             }
         }
     }
@@ -182,10 +178,8 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         }
 
         if (currentSteamStack.amount < mFluidCapacity) {
-
             int currentSteam = currentSteamStack.amount;
             int maxSteam = mFluidCapacity;
-
             int steamToTransfer = Math.min(maxSteam - currentSteam, steamForUse);
 
             if (steamToTransfer <= 0) return;

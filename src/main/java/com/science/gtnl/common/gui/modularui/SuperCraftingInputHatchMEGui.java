@@ -5,6 +5,7 @@ import static gregtech.api.util.GTUtility.translate;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
+import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -15,6 +16,7 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
+import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
@@ -36,8 +38,8 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
     private static final String PATTERN_MANUAL_PANEL_KEY_PREFIX = "gtnl_super_crafting_pattern_manual_panel_";
     private static final String OPTIMIZER_SYNC_KEY = "gtnl_super_crafting_pattern_optimizer";
     private static final String SHOW_PATTERN_SYNC_KEY = "gtnl_super_crafting_show_pattern";
-    private static final int PATTERN_SLOT_PER_ROW = 9;
-    private static final int VISIBLE_PATTERN_ROWS = 3;
+    private static final int PATTERN_SLOT_PER_ROW = 10;
+    private static final int VISIBLE_PATTERN_ROWS = 4;
     private static final int VISIBLE_MANUAL_ROWS = 4;
     private static final int MANUAL_SLOT_ROW = 9;
     private static final int MANUAL_SLOT_PER_ROW = 9;
@@ -51,6 +53,11 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
     @Override
     protected int getBasePanelWidth() {
         return machine.getGUIWidth();
+    }
+
+    @Override
+    protected int getBasePanelHeight() {
+        return machine.getGUIHeight();
     }
 
     @Override
@@ -94,6 +101,7 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
         syncManager.registerSlotGroup(PATTERN_INV_NAME, machine.getPatternRowsForGui());
 
         return new Grid().scrollable(new VerticalScrollData())
+            .showScrollShadows(false)
             .minColWidth(SLOT_SIZE)
             .minRowHeight(SLOT_SIZE)
             .size(SLOT_SIZE * PATTERN_SLOT_PER_ROW + 4, SLOT_SIZE * VISIBLE_PATTERN_ROWS)
@@ -200,16 +208,16 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
     }
 
     private ModularPanel createManualSlotPanel(ModularPanel parent, PanelSyncManager syncManager) {
-        ModularPanel panel = createDialog(MANUAL_PANEL_KEY, parent).size(176, 86)
+        ModularPanel panel = createDialog(MANUAL_PANEL_KEY, parent).size(176, 96)
             .leftRel(1)
             .topRel(0);
-        panel.child(ButtonWidget.panelCloseButton());
         panel.child(
             new Grid().scrollable(new VerticalScrollData())
+                .showScrollShadows(false)
                 .minColWidth(SLOT_SIZE)
                 .minRowHeight(SLOT_SIZE)
                 .size(SLOT_SIZE * MANUAL_SLOT_PER_ROW + 4, SLOT_SIZE * VISIBLE_MANUAL_ROWS)
-                .pos(7, 7)
+                .pos(7, 17)
                 .child(
                     new ItemSlotGridBuilder(machine.inventoryHandler, syncManager)
                         .size(MANUAL_SLOT_PER_ROW, MANUAL_SLOT_ROW)
@@ -223,22 +231,24 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
                                     }
                                 }))
                         .build()));
+        panel.child(ButtonWidget.panelCloseButton());
         return panel;
     }
 
     private ModularPanel createPatternManualPanel(ModularPanel parent, PanelSyncManager syncManager, int patternSlot) {
         String key = PATTERN_MANUAL_PANEL_KEY_PREFIX + patternSlot;
-        ModularPanel panel = createDialog(key, parent).size(68, 68)
+        ModularPanel panel = createDialog(key, parent).size(68, 78)
             .leftRel(1)
             .topRel(0);
-        panel.child(ButtonWidget.panelCloseButton());
         panel.child(
             new ItemSlotGridBuilder(machine.inventoryHandler, syncManager)
                 .size(PATTERN_MANUAL_SLOT_PER_ROW, PATTERN_MANUAL_SLOT_ROW)
                 .slotGroupKey(key + "_inv")
                 .indexOffset(machine.getPatternManualSlotStartForGui(patternSlot))
                 .build()
-                .pos(7, 7));
+                .pos(7, 17));
+        panel.child(ButtonWidget.panelCloseButton());
+        panel.child(new TextWidget<>(IKey.lang("Info_Tooltip_SuperCraftingInputHatchME_00", patternSlot)).pos(7, 5));
         return panel;
     }
 

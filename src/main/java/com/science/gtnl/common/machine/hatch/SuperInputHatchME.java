@@ -59,6 +59,7 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.util.item.AEFluidStack;
 import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
+import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -71,9 +72,11 @@ import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class SuperInputHatchME extends MTEHatchInputME {
+public class SuperInputHatchME extends MTEHatchInputME implements IConfigurationCircuitSupport {
 
     public static int SLOT_COUNT = 100;
+    public static final FluidStack[] EMPTY_FLUID_STACK = new FluidStack[0];
+    public static final int CONFIG_WINDOW_ID = 10;
 
     public FluidStack[] storedFluids = new FluidStack[SLOT_COUNT];
     public FluidStack[] storedInformationFluids = new FluidStack[SLOT_COUNT];
@@ -94,9 +97,6 @@ public class SuperInputHatchME extends MTEHatchInputME {
     public int autoPullRefreshTime = 100;
     public boolean justHadNewFluids = false;
     public boolean expediteRecipeCheck = false;
-
-    public static final FluidStack[] EMPTY_FLUID_STACK = new FluidStack[0];
-    public static final int CONFIG_WINDOW_ID = 10;
 
     public SuperInputHatchME(int aID, boolean autoPullAvailable, String aName, String aNameRegional) {
         super(aID, autoPullAvailable, aName, aNameRegional);
@@ -704,6 +704,31 @@ public class SuperInputHatchME extends MTEHatchInputME {
     @Override
     public int getGUIWidth() {
         return 392;
+    }
+
+    @Override
+    public int getGUIHeight() {
+        return 179;
+    }
+
+    @Override
+    public int getCircuitSlot() {
+        return 0;
+    }
+
+    @Override
+    public boolean allowSelectCircuit() {
+        return true;
+    }
+
+    @Override
+    public int getCircuitSlotX() {
+        return 188;
+    }
+
+    @Override
+    public int getCircuitSlotY() {
+        return 64;
     }
 
     @Override

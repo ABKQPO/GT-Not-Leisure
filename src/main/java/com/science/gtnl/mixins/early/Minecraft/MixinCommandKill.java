@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import com.science.gtnl.utils.selector.EntitySelector;
 
-@Mixin(CommandKill.class)
+@Mixin(value = CommandKill.class, remap = true)
 public abstract class MixinCommandKill extends CommandBase {
 
     @Override

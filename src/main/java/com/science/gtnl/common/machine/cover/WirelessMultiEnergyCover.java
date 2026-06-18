@@ -2,7 +2,7 @@ package com.science.gtnl.common.machine.cover;
 
 import static java.lang.Long.min;
 
-import java.util.UUID;
+import com.science.gtnl.utils.Utils;
 
 import gregtech.api.covers.CoverContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
@@ -19,11 +19,6 @@ public class WirelessMultiEnergyCover extends CoverLegacyData {
         super(context);
         this.maxAmp = amp;
         this.transferredEnergyPerOperation = voltage * amp * WirelessNetworkManager.ticks_between_energy_addition;
-    }
-
-    @Override
-    public boolean isRedstoneSensitive(long aTimer) {
-        return false;
     }
 
     @Override
@@ -44,20 +39,12 @@ public class WirelessMultiEnergyCover extends CoverLegacyData {
         coverData = 1;
     }
 
-    public static UUID getOwner(Object te) {
-        if (te instanceof BaseMetaTileEntity igte) {
-            return igte.getOwnerUuid();
-        } else {
-            return null;
-        }
-    }
-
     public void tryFetchingEnergy(ICoverable tileEntity) {
         if (tileEntity instanceof BaseMetaTileEntity bmte) {
             long currentEU = bmte.getStoredEUuncapped();
             long euToTransfer = min(transferredEnergyPerOperation - currentEU, transferredEnergyPerOperation);
-            if (euToTransfer <= 0) return; // nothing to transfer
-            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(getOwner(tileEntity), -euToTransfer)) return;
+            if (euToTransfer <= 0) return;
+            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(Utils.getOwner(tileEntity), -euToTransfer)) return;
             bmte.increaseStoredEnergyUnits(euToTransfer, true);
         }
     }

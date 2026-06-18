@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static com.science.gtnl.loader.BlockLoader.metaCasing02;
 
-import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,19 +75,6 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
         return new RocketAssembler(this.mName);
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
-        if (!mMachine || !enableRender) return;
-        RocketAssemblerRenderer.renderTileEntityAt(this, x, y, z, timeSinceLastTick);
-    }
-
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-    }
-
     @Override
     public void onValueUpdate(byte aValue) {
         mMachine = (aValue & 0x01) != 0;
@@ -104,59 +90,8 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.RocketAssemblerRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("RocketAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_01"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(17, 24, 16, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -205,18 +140,6 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 1);
-    }
-
-    public void validateStructure(Collection<StructureError> errors, NBTTagCompound context) {
-        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-    }
-
-    @Override
     public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated();
     }
@@ -239,6 +162,20 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
             env,
             false,
             true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 1);
+        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.RocketAssemblerRecipes;
     }
 
     @Override
@@ -268,6 +205,65 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
             }
 
         }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISASSEMBLER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("RocketAssemblerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_01"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(17, 24, 16, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderTESR(double x, double y, double z, float timeSinceLastTick) {
+        if (!mMachine || !enableRender) return;
+        RocketAssemblerRenderer.renderTileEntityAt(this, x, y, z, timeSinceLastTick);
+    }
+
+    @Override
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        getBaseMetaTileEntity().sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
     }
 
     @Override

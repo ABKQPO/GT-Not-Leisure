@@ -65,8 +65,82 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeBrewer(this.mName);
+    public IStructureDefinition<LargeBrewer> getStructureDefinition() {
+        return StructureDefinition.<LargeBrewer>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 8))
+            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 13))
+            .addElement(
+                'C',
+                buildHatchAdder(LargeBrewer.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 1))))
+            .addElement('D', HatchElement.Muffler.newAny(TAE.GTPP_INDEX(1), 1))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 45);
+        checkHatchExact(errors, HatchElement.Muffler, 1);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return switch (machineMode) {
+            case MACHINEMODE_FERMENTER -> RecipeMaps.fermentingRecipes;
+            case MACHINEMODE_FLUID_HEATER -> RecipeMaps.fluidHeaterRecipes;
+            default -> RecipeMaps.brewingRecipes;
+        };
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays.asList(RecipeMaps.brewingRecipes, RecipeMaps.fermentingRecipes, RecipeMaps.fluidHeaterRecipes);
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.8 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1.0 / 2.25 - (Math.max(0, mParallelTier - 1) / 50.0);
     }
 
     @Override
@@ -93,21 +167,6 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return switch (machineMode) {
-            case MACHINEMODE_FERMENTER -> RecipeMaps.fermentingRecipes;
-            case MACHINEMODE_FLUID_HEATER -> RecipeMaps.fluidHeaterRecipes;
-            default -> RecipeMaps.brewingRecipes;
-        };
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(RecipeMaps.brewingRecipes, RecipeMaps.fermentingRecipes, RecipeMaps.fluidHeaterRecipes);
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeBrewerRecipeType"))
@@ -128,28 +187,8 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     }
 
     @Override
-    public IStructureDefinition<LargeBrewer> getStructureDefinition() {
-        return StructureDefinition.<LargeBrewer>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 8))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 13))
-            .addElement(
-                'C',
-                buildHatchAdder(LargeBrewer.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 1))))
-            .addElement('D', HatchElement.Muffler.newAny(TAE.GTPP_INDEX(1), 1))
-            .build();
+    public String getMachineModeName() {
+        return StatCollector.translateToLocal("LargeBrewer_Mode_" + machineMode);
     }
 
     @Override
@@ -177,31 +216,8 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeBrewer_Mode_" + machineMode);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 45);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && mMufflerHatches.size() == 1;
-    }
-
-    @Override
     public boolean supportsMachineModeSwitch() {
         return true;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
@@ -213,27 +229,7 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     }
 
     @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1.0 / 2.25 - (Math.max(0, mParallelTier - 1) / 50.0);
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeBrewer(this.mName);
     }
 }

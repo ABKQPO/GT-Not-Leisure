@@ -153,10 +153,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public static int SLOT_COUNT = 100;
     public static final String COPIED_DATA_IDENTIFIER = "superStockingDualHatch";
 
-    public boolean expediteRecipeCheck = false;
-    public boolean justHadNewItems = false;
-    public boolean allowAuto;
-
     public static Utils.VargsFunction<Object[], FluidStack[]> asFluidStack = (s) -> Arrays.stream(s)
         .flatMap(Arrays::stream)
         .map(f -> {
@@ -172,6 +168,54 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         })
         .filter(a -> a != null && a.amount > 0)
         .toArray(FluidStack[]::new);
+
+    public boolean allowAuto;
+    public boolean autoPullItemList;
+    public boolean expediteRecipeCheck = false;
+    public boolean justHadNewItems = false;
+    public boolean recipe;
+    public boolean off;
+    boolean additionalConnection;
+
+    public long minAutoPullItemAmount = 1;
+    public long minAutoPullFluidAmount = 1;
+    public int autoPullRefreshTime = 100;
+    public int intmaxs = 3;
+
+    public MachineSource requestSource;
+    public AENetworkProxy gridProxy;
+
+    public ItemStack[] i_mark = new ItemStack[SLOT_COUNT];
+    public ItemStackG[] i_shadow = new ItemStackG[SLOT_COUNT];
+    public ItemStack[] i_display = new ItemStack[SLOT_COUNT];
+    public long[] i_saved = new long[SLOT_COUNT];
+    public long[] i_stored = new long[SLOT_COUNT];
+
+    public FluidStack[] f_mark = new FluidStack[SLOT_COUNT];
+    public FluidTankG[] f_shadow = new FluidTankG[SLOT_COUNT];
+    public FluidStack[] f_display = new FluidStack[SLOT_COUNT];
+    public long[] f_saved = new long[SLOT_COUNT];
+    public long[] f_stored = new long[SLOT_COUNT];
+
+    public long[] i_client = new long[SLOT_COUNT];
+    public long[] f_client = new long[SLOT_COUNT];
+
+    public DecimalFormat df2 = new DecimalFormat("#,###.00");
+    public DecimalFormat df = new DecimalFormat("#,###");
+
+    public ItemStackHandler inventoryHandlerMark = new ItemStackHandler(i_mark);
+    public ItemStackHandler inventoryHandlerDisplay = new ItemStackHandler(i_display);
+    private final Mui2ArrayItemHandler mui2FilterItemHandler = new Mui2ArrayItemHandler(i_mark);
+    private final Mui2ArrayItemHandler mui2InformationItemHandler = new Mui2ArrayItemHandler(i_display);
+
+    {
+        Arrays.fill(i_stored, Long.MAX_VALUE);
+        Arrays.fill(f_stored, Long.MAX_VALUE);
+
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            f_shadow[i] = new FluidTankG();
+        }
+    }
 
     public SuperDualInputHatchME(int id, String name, String nameRegional, int tier, boolean autoPullAvailable) {
         super(id, name, nameRegional, tier, 1, new String[] { "" });
@@ -210,11 +254,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperDualInputHatchME(mName, mTier, mDescriptionArray, mTextures, allowAuto);
     }
-
-    public boolean autoPullItemList;
-    public long minAutoPullItemAmount = 1;
-    public long minAutoPullFluidAmount = 1;
-    public int autoPullRefreshTime = 100;
 
     public ItemStack updateInformationSlot(int aIndex, ItemStack aStack) {
 
@@ -1046,12 +1085,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                 .setPos(367, 81));
     }
 
-    public long[] i_client = new long[SLOT_COUNT];
-    public long[] f_client = new long[SLOT_COUNT];
-
-    public DecimalFormat df2 = new DecimalFormat("#,###.00");
-    public DecimalFormat df = new DecimalFormat("#,###");
-
     public List<String> rewriteItem(BaseSlot slot, List<String> s) {
 
         int i = slot.getSlotIndex();
@@ -1319,10 +1352,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         return requestSource;
     }
 
-    public MachineSource requestSource;// = new MachineSource(((IActionHost) getBaseMetaTileEntity()));
-    public boolean recipe;
-    public int intmaxs = 3;
-
     @Override
     public void startRecipeProcessing() {
         recipe = true;
@@ -1469,28 +1498,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     }
 
-    public ItemStack[] i_mark = new ItemStack[SLOT_COUNT];
-    public ItemStackG[] i_shadow = new ItemStackG[SLOT_COUNT];
-    public ItemStack[] i_display = new ItemStack[SLOT_COUNT];
-    public long[] i_saved = new long[SLOT_COUNT];
-    public long[] i_stored = new long[SLOT_COUNT];
-
-    public FluidStack[] f_mark = new FluidStack[SLOT_COUNT];
-    public FluidTankG[] f_shadow = new FluidTankG[SLOT_COUNT];
-    public FluidStack[] f_display = new FluidStack[SLOT_COUNT];
-    public long[] f_saved = new long[SLOT_COUNT];
-    public long[] f_stored = new long[SLOT_COUNT];
-
-    {
-        Arrays.fill(i_stored, Long.MAX_VALUE);
-        Arrays.fill(f_stored, Long.MAX_VALUE);
-
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            f_shadow[i] = new FluidTankG();
-
-        }
-    }
-
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
@@ -1586,8 +1593,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public void setProcessingLogic(ProcessingLogic pl) {}
 
-    public AENetworkProxy gridProxy;
-
     @Override
     public AENetworkProxy getProxy() {
 
@@ -1618,8 +1623,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public boolean isActive() {
         return getProxy().isActive();
     }
-
-    boolean additionalConnection;
 
     public void updateValidGridProxySides() {
 
@@ -1819,11 +1822,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         intmaxs = aNBT.getInteger("intmaxs");
         autoPullItemList = aNBT.getBoolean("autoPull");
     }
-
-    public ItemStackHandler inventoryHandlerMark = new ItemStackHandler(i_mark);
-    public ItemStackHandler inventoryHandlerDisplay = new ItemStackHandler(i_display);
-    private final Mui2ArrayItemHandler mui2FilterItemHandler = new Mui2ArrayItemHandler(i_mark);
-    private final Mui2ArrayItemHandler mui2InformationItemHandler = new Mui2ArrayItemHandler(i_display);
 
     public static class Mui2ArrayItemHandler implements IItemHandlerModifiable {
 
@@ -2187,8 +2185,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         tag.setLong("fluidMinAmount", minAutoPullFluidAmount);
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
     }
-
-    public boolean off;
 
     @Override
     public void trunOffME() {

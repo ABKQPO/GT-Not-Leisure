@@ -76,26 +76,6 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.gasTurbineFuels;
-    }
-
-    @Override
-    public int getCapacity() {
-        return 640000 * this.mTier;
-    }
-
-    @Override
-    public int getEfficiency() {
-        return 115 - 15 * this.mTier;
-    }
-
-    @Override
-    public String[] getDescription() {
-        return mDescriptionArray;
-    }
-
-    @Override
     public ITexture[] getFront(byte aColor) {
         return new ITexture[] { super.getFront(aColor)[0],
             TextureFactory.of(
@@ -205,6 +185,26 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
                     .addIcon(Textures.BlockIcons.GAS_TURBINE_SIDE_ACTIVE_GLOW)
                     .glow()
                     .build()) };
+    }
+
+    @Override
+    public String[] getDescription() {
+        return mDescriptionArray;
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.gasTurbineFuels;
+    }
+
+    @Override
+    public int getCapacity() {
+        return 640000 * this.mTier;
+    }
+
+    @Override
+    public int getEfficiency() {
+        return 115 - 15 * this.mTier;
     }
 
     @Override

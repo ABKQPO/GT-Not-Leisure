@@ -16,9 +16,21 @@ public enum Mixins implements IMixins {
     FORGE_CORE(Side.COMMON, "Forge.MixinFMLProxyPacket", "Forge.MixinForgeHook"),
 
     GREGTECH_EARLY(Side.COMMON, "Gregtech.AccessorMTETieredMachineBlock", "Gregtech.AccessorEyeOfHarmonyRecipe",
-        "Gregtech.AccessorGTRecipe", "Gregtech.AccessorGTRecipeBuilder", "Gregtech.AccessorGTLanguageManager",
-        "Gregtech.AccessorCommonMetaTileEntity", "Gregtech.AccessorMetaTileEntity", "Gregtech.AccessorMTEHatch",
-        "Gregtech.AccessorProcessingLogic", "Gregtech.AccessorRecipeDisplayInfo", "Gregtech.MixinMTEBasicMachine"),
+        "Gregtech.AccessorGTRecipe", "Gregtech.AccessorGTRecipeBuilder", "Gregtech.AccessorGTRecipeWithAlt",
+        "Gregtech.AccessorGTLanguageManager", "Gregtech.AccessorCommonMetaTileEntity",
+        "Gregtech.AccessorMetaTileEntity", "Gregtech.AccessorMTEHatch", "Gregtech.AccessorProcessingLogic",
+        "Gregtech.AccessorRecipeDisplayInfo", "Gregtech.MixinMTEBasicMachine", "Gregtech.MixinBaseMetaTileEntity",
+        "Gregtech.AssLineRemover.MixinGTMod", "Gregtech.AssLineRemover.MixinGTRecipeBuilder",
+        "Gregtech.AssLineRemover.MixinTTRecipeAdder"),
+
+    GREGTECH_CLIENT_EARLY(
+        new MixinBuilder("Gregtech early client safety mixins").addClientMixins("Gregtech.MixinGTLanguageManager")
+            .setPhase(Phase.EARLY)),
+
+    NO_NHU_EARLY(
+        new MixinBuilder("Early Mixins when NHUtilities is absent").addCommonMixins("NoNHU.MixinBaseMetaTileEntity")
+            .setPhase(Phase.EARLY)
+            .addExcludedMod(ModList.NHUtilities)),
 
     NH_CORE_MOD_EARLY(new MixinBuilder().addCommonMixins("NHCoreMod.AccessorBacteriaRegistry")
         .setPhase(Phase.EARLY)
@@ -29,9 +41,9 @@ public enum Mixins implements IMixins {
         "Minecraft.AccessorMinecraft", "Minecraft.MixinCommandTeleport", "Minecraft.MixinEntity",
         "Minecraft.MixinEntityItem", "Minecraft.MixinEntityLivingBase", "Minecraft.MixinEntityLiving",
         "Minecraft.MixinEntityPlayer", "Minecraft.MixinExplosion", "Minecraft.MixinInventoryCrafting",
-        "Minecraft.MixinItem", "Minecraft.MixinItemStack", "Minecraft.MixinMinecraftServer",
-        "Minecraft.MixinNBTTagList", "Minecraft.MixinPotionEffect", "Minecraft.MixinServerConfigurationManager",
-        "Minecraft.MixinWorld", "Minecraft.MixinWorldServer"),
+        "Minecraft.MixinItemStack", "Minecraft.MixinMinecraftServer", "Minecraft.MixinNBTTagList",
+        "Minecraft.MixinPotionEffect", "Minecraft.MixinServerConfigurationManager", "Minecraft.MixinWorld",
+        "Minecraft.MixinWorldServer"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "AprilFool.MixinBaseMetaTileEntityRenderer", "AprilFool.MixinCommonMetaTileEntity")
@@ -91,7 +103,7 @@ public enum Mixins implements IMixins {
             "AppliedEnergistics.assembler.AccessorInvTracker",
             "AppliedEnergistics.assembler.MixinContainerInterfaceTerminal",
             "AppliedEnergistics.MixinCraftingCPUCluster",
-            "AppliedEnergistics.MixinCraftingCPUCluster$AccessorTaskProgress",
+            "AppliedEnergistics.AccessorTaskProgress",
             "AppliedEnergistics.QuamtumComputer.MixinCraftingCPUCluster",
             "AppliedEnergistics.QuamtumComputer.MixinCraftingGridCache",
             "Bartwork.MixinItemRegistry",
@@ -104,7 +116,6 @@ public enum Mixins implements IMixins {
             "DraconicEvolution.AccessorCustomArmorHandler",
             "DraconicEvolution.MixinCustomArmorHandler",
             "DraconicEvolution.MixinReactorExplosion",
-            "Gregtech.MixinBaseMetaTileEntity",
             "Gregtech.MixinEyeOfHarmonyRecipeStorage",
             "Gregtech.MixinGodForgeMath",
             "Gregtech.MixinGTOreDictUnificator",
@@ -114,6 +125,7 @@ public enum Mixins implements IMixins {
             "Gregtech.MixinGTShapelessRecipe",
             "Gregtech.MixinGTUtility",
             "Gregtech.MixinGTUtil",
+            "Gregtech.MixinAssemblyLineUtils",
             "Gregtech.MixinMTEBetterJukebox",
             "Gregtech.MixinMTEForgeOfGods",
             "Gregtech.MixinMTEHatch",
@@ -138,9 +150,6 @@ public enum Mixins implements IMixins {
             "Gregtech.MixinRecipeGenFluids",
             "Gregtech.MixinProcessingDust",
             "Gregtech.MixinTTMultiblockBase",
-            "Gregtech.AssLineRemover.MixinGTMod",
-            "Gregtech.AssLineRemover.MixinGTRecipeBuilder",
-            "Gregtech.AssLineRemover.MixinTTRecipeAdder",
             "InventoryBogoSorter.MixinShortcutHandler",
             "InventoryBogoSorter.MixinSortHandler",
             "ModularUI.MixinFluidSlotWidget",
@@ -177,6 +186,11 @@ public enum Mixins implements IMixins {
         .addCommonMixins("NotEnoughEnergistics.MixinNEEPatternTerminalHandler")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.NotEnoughEnergistics)),
+
+    NOT_ENOUGH_ITEMS(new MixinBuilder("Not Enough Items stability mixins")
+        .addClientMixins("NotEnoughItems.AccessorItemList", "NotEnoughItems.MixinItemListUpdateFilter")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.NotEnoughItems)),
 
     NEI_CUSTOM_DIAGRAM(new MixinBuilder("NEI Custom Diagram Mixin")
         .addCommonMixins("NEICustomDiagram.AccessorNeiCustomDiagram", "NEICustomDiagram.MixinNeiCustomDiagram")
@@ -221,10 +235,9 @@ public enum Mixins implements IMixins {
             .addRequiredMod(ModList.TwistSpaceTechnology)
             .addExcludedMod(ModList.Overpowered)),
 
-    NO_NHU_MIXINS(new MixinBuilder("Mixins when NHUtilities is absent")
+    NO_NHU(new MixinBuilder("Mixins when NHUtilities is absent")
         .addCommonMixins(
             "NoNHU.MixinAbstractPoweredMachineEntity",
-            "NoNHU.MixinBaseMetaTileEntity",
             "NoNHU.MixinBlockItemCapBank",
             "NoNHU.MixinMTEAdvAssLineAcceleration",
             "NoNHU.MixinResearchStationAcceleration",
@@ -232,7 +245,7 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addExcludedMod(ModList.NHUtilities)),
 
-    TST_MIXINS(new MixinBuilder("Twist Space Technology Mixins")
+    TST(new MixinBuilder("Twist Space Technology Mixins")
         .addCommonMixins(
             "TwistSpaceTechnology.MixinRecipeLoader",
             "TwistSpaceTechnology.MixinTST_OreProcessingFactory",

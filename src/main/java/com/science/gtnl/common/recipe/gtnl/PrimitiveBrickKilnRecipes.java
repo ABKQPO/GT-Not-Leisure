@@ -78,13 +78,13 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                ItemList.Firebrick.get(4),
+                ItemList.Firebrick.get(8),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gypsum, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Calcite, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Clay, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.QuartzSand, 1))
-            .itemOutputs(ItemList.Casing_Firebricks.get(1))
+            .itemOutputs(ItemList.Casing_Firebricks.get(2))
             .fluidInputs(Materials.Water.getFluid(1000))
             .duration(300)
             .eut(16)
@@ -142,7 +142,7 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
     public void loadNHRecipe() {
         RecipeBuilder.builder()
             .itemInputs(NHItemList.CokeOvenBrick.get(4))
-            .itemOutputs(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.alpha", 1, 7))
+            .itemOutputs(ItemList.CokeOvenCasing.get(1))
             .duration(200)
             .eut(16)
             .addTo(PBKR);

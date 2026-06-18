@@ -62,11 +62,6 @@ import gtnhlanth.common.register.LanthItemList;
 
 public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements ISurvivalConstructable {
 
-    public int itemQuantity;
-    public ArrayList<MTERadioHatch> mRadHatches = new ArrayList<>();
-    public int mSievert;
-    public int mNeededSievert;
-    public static Sievert defaultSievertData = new Sievert(0, false);
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String L_INCUBATOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_incubator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(L_INCUBATOR_STRUCTURE_FILE_PATH);
@@ -74,44 +69,19 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     private static final int VERTICAL_OFF_SET = 7;
     private static final int DEPTH_OFF_SET = 0;
 
+    public static Sievert defaultSievertData = new Sievert(0, false);
+
+    public int itemQuantity;
+    public ArrayList<MTERadioHatch> mRadHatches = new ArrayList<>();
+    public int mSievert;
+    public int mNeededSievert;
+
     public LargeIncubator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
     public LargeIncubator(String aName) {
         super(aName);
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 210;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeIncubatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_04"))
-            .addPerfectOCInfo()
-            .addTecTechHatchInfo()
-            .beginStructureBlock(13, 9, 13, false)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_LargeIncubator_RadioHatch"),
-                StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"),
-                1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -155,22 +125,70 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             .build();
     }
 
-    public int getInputCapacity() {
-        int totalCapacity = 0;
-        for (MTEHatchInput inputHatch : mInputHatches) {
-            totalCapacity += inputHatch.getCapacity();
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
+        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
         }
-        return totalCapacity;
+        checkHatch(errors);
+        boolean isFlipped = this.getFlip()
+            .isHorizontallyFlipped();
+        StructureUtils.setStringBlockXZ(
+            aBaseMetaTileEntity,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            shape,
+            isFlipped,
+            "G",
+            Blocks.water);
+        setupParameters();
+        checkCasingMin(errors, mCountCasing, 20);
+        checkHatchMin(errors, HatchElement.OutputHatch, 1);
+        checkHatchMax(errors, RadioHatchElement.RadioHatch, 1);
     }
 
     @Override
-    public int getCapacity() {
-        return getInputCapacity();
+    public void clearHatches() {
+        super.clearHatches();
+        this.mRadHatches.clear();
     }
 
     @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        return super.fill(resource, doFill);
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        this.reCalculateHeight();
+        MTERadioHatch radioHatch = getPrimaryRadiationHatch();
+        if (this.getBaseMetaTileEntity()
+            .isServerSide() && radioHatch != null) {
+            this.mSievert = radioHatch.getSievert();
+            if (this.getBaseMetaTileEntity()
+                .isActive() && this.mNeededSievert > this.mSievert) this.mOutputFluids = null;
+        }
+        if (aBaseMetaTileEntity.isServerSide() && this.mMaxProgresstime <= 0) {
+            this.mMaxProgresstime = 0;
+        }
+    }
+
+    @Override
+    public void construct(ItemStack itemStack, boolean b) {
+        this.buildPiece(STRUCTURE_PIECE_MAIN, itemStack, b, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
     @Override
@@ -240,6 +258,119 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         return 4 * itemQuantity + 2 * GTUtility.getTier(this.getMaxInputVoltage()) * mGlassTier;
     }
 
+    @Override
+    public int getCasingTextureID() {
+        return 210;
+    }
+
+    @Override
+    public int getCapacity() {
+        return getInputCapacity();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        return super.fill(resource, doFill);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeIncubatorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_04"))
+            .addPerfectOCInfo()
+            .addTecTechHatchInfo()
+            .beginStructureBlock(13, 9, 13, false)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("Tooltip_LargeIncubator_RadioHatch"),
+                StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"),
+                1)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public void setupProcessingLogic(ProcessingLogic logic) {
+        super.setupProcessingLogic(logic);
+        logic.setSpecialSlotItem(this.getControllerSlot());
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        aNBT.setInteger("mSievert", this.mSievert);
+        aNBT.setInteger("mNeededSievert", this.mNeededSievert);
+        super.saveNBTData(aNBT);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        this.mSievert = aNBT.getInteger("mSievert");
+        this.mNeededSievert = aNBT.getInteger("mNeededSievert");
+        super.loadNBTData(aNBT);
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (aPlayer.isSneaking()) {
+            batchMode = !batchMode;
+            if (batchMode) {
+                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOn"));
+            } else {
+                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOff"));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public int getInputCapacity() {
+        int totalCapacity = 0;
+        for (MTEHatchInput inputHatch : mInputHatches) {
+            totalCapacity += inputHatch.getCapacity();
+        }
+        return totalCapacity;
+    }
+
     public static GTRecipe recipeWithMultiplier(GTRecipe recipe, FluidStack[] fluidInputs, MTEHatchOutput output,
         int parallel) {
         if (recipe == null || fluidInputs == null) {
@@ -291,12 +422,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         return 1;
     }
 
-    @Override
-    public void setupProcessingLogic(ProcessingLogic logic) {
-        super.setupProcessingLogic(logic);
-        logic.setSpecialSlotItem(this.getControllerSlot());
-    }
-
     public boolean addRadiationInputToMachineList(IGregTechTileEntity aTileEntity, int CasingIndex) {
         if (aTileEntity == null) {
             return false;
@@ -308,38 +433,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             radioHatch.updateTexture(CasingIndex);
             return this.mRadHatches.add(radioHatch);
         }
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
-        List<StructureError> errors) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
-            checkStructureCondition(errors, false);
-        }
-        boolean isFlipped = this.getFlip()
-            .isHorizontallyFlipped();
-        StructureUtils.setStringBlockXZ(
-            aBaseMetaTileEntity,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            shape,
-            isFlipped,
-            "G",
-            Blocks.water);
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing > 19);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && this.mRadHatches.size() <= 1 && !this.mOutputHatches.isEmpty();
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        this.mRadHatches.clear();
     }
 
     public int reCalculateFluidAmmount() {
@@ -356,22 +449,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         if (fluidAmount > capacity / 4 - 1) return;
     }
 
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        this.reCalculateHeight();
-        MTERadioHatch radioHatch = getPrimaryRadiationHatch();
-        if (this.getBaseMetaTileEntity()
-            .isServerSide() && radioHatch != null) {
-            this.mSievert = radioHatch.getSievert();
-            if (this.getBaseMetaTileEntity()
-                .isActive() && this.mNeededSievert > this.mSievert) this.mOutputFluids = null;
-        }
-        if (aBaseMetaTileEntity.isServerSide() && this.mMaxProgresstime <= 0) {
-            this.mMaxProgresstime = 0;
-        }
-    }
-
     public MTERadioHatch getPrimaryRadiationHatch() {
         if (mRadHatches.isEmpty()) {
             return null;
@@ -384,85 +461,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        aNBT.setInteger("mSievert", this.mSievert);
-        aNBT.setInteger("mNeededSievert", this.mNeededSievert);
-        super.saveNBTData(aNBT);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        this.mSievert = aNBT.getInteger("mSievert");
-        this.mNeededSievert = aNBT.getInteger("mNeededSievert");
-        super.loadNBTData(aNBT);
-    }
-
-    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
         return new LargeIncubator(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public void construct(ItemStack itemStack, boolean b) {
-        this.buildPiece(STRUCTURE_PIECE_MAIN, itemStack, b, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        if (aPlayer.isSneaking()) {
-            batchMode = !batchMode;
-            if (batchMode) {
-                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOn"));
-            } else {
-                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOff"));
-            }
-            return true;
-        }
-        return false;
     }
 
     public enum RadioHatchElement implements IHatchElement<LargeIncubator> {

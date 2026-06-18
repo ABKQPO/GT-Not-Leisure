@@ -99,10 +99,50 @@ public class SteamApiaryModule extends SteamElevatorModule {
     public static final int MODE_PRIMARY_INPUT = 0;
     public static final int MODE_PRIMARY_OUTPUT = 1;
     public static final int MODE_PRIMARY_OPERATING = 2;
-    public int mPrimaryMode = MODE_PRIMARY_INPUT;
+    public static final int INVENTORY_WIDTH = 128;
+    public static final int INVENTORY_HEIGHT = 60;
+    public static final int INVENTORY_X = 10;
+    public static final int INVENTORY_Y = 16;
+    public static final int INVENTORY_BORDER_WIDTH = 3;
 
+    // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
+    @Deprecated
+    public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
+
+    public int mPrimaryMode = MODE_PRIMARY_INPUT;
     public HashMap<ItemId, Double> dropProgress = new HashMap<>();
     private static final double BASE_DROP_ACCELERATION = 32_00d;
+    private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
+
+    public DynamicInventory<SteamApiaryModule.BeeSimulator> dynamicInventory = new DynamicInventory<>(
+        INVENTORY_WIDTH,
+        INVENTORY_HEIGHT,
+        () -> mMaxSlots,
+        mStorage,
+        s -> s.queenStack).allowInventoryInjection(input -> {
+            World w = getBaseMetaTileEntity().getWorld();
+            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6 + recipeOcCount);
+            if (bs.isValid) {
+                mStorage.add(bs);
+                return input;
+            }
+            return null;
+        })
+            .allowInventoryExtraction(mStorage::remove)
+            .allowInventoryReplace((i, stack) -> {
+                if (stack.stackSize != 1) return null;
+                World w = getBaseMetaTileEntity().getWorld();
+                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6 + recipeOcCount);
+                if (bs.isValid) {
+                    SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
+                    mStorage.add(i, bs);
+                    return removed.queenStack;
+                }
+                return null;
+            })
+            .setEnabled(() -> this.mMaxProgresstime == 0);
+
+    public boolean isInInventory = true;
 
     public SteamApiaryModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 6);
@@ -303,167 +343,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
         return CheckRecipeResultRegistry.NO_RECIPE;
     }
 
-    public static class BeeSimulator {
-
-        public ItemStack queenStack;
-        public List<BeeDrop> drops = new ArrayList<>();
-        public List<BeeDrop> specialDrops = new ArrayList<>();
-        public boolean isValid;
-        public float beeSpeed;
-        public float maxBeeCycles;
-        public String speciesKey;
-        public static IBeekeepingMode mode;
-        public static Map<ItemId, ItemStack> dropstacks = new HashMap<>();
-
-        public BeeSimulator(ItemStack queenStack, World world, float t) {
-            isValid = false;
-            this.queenStack = queenStack.copy();
-            this.queenStack.stackSize = 1;
-            generate(world, t);
-            isValid = true;
-            queenStack.stackSize--;
-        }
-
-        public BeeSimulator(NBTTagCompound tag) {
-            queenStack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("queenStack"));
-            isValid = tag.getBoolean("isValid");
-            drops = new ArrayList<>();
-            specialDrops = new ArrayList<>();
-            for (int i = 0, isize = tag.getInteger("dropssize"); i < isize; i++)
-                drops.add(new BeeDrop(tag.getCompoundTag("drops" + i)));
-            for (int i = 0, isize = tag.getInteger("specialDropssize"); i < isize; i++)
-                specialDrops.add(new BeeDrop(tag.getCompoundTag("specialDrops" + i)));
-            beeSpeed = tag.getFloat("beeSpeed");
-            maxBeeCycles = tag.getFloat("maxBeeCycles");
-            var queen = BeeManager.beeRoot.getMember(this.queenStack);
-            if (queen != null) {
-                var genome = queen.getGenome();
-                speciesKey = genome.getPrimary()
-                    .getUID() + "\0"
-                    + genome.getSecondary()
-                        .getUID()
-                    + "\0"
-                    + beeSpeed;
-            }
-        }
-
-        public NBTTagCompound toNBTTagCompound() {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setTag("queenStack", ItemUtils.writeItemStackToNBT(queenStack));
-            tag.setBoolean("isValid", isValid);
-            tag.setInteger("dropssize", drops.size());
-            for (int i = 0; i < drops.size(); i++) tag.setTag(
-                "drops" + i,
-                drops.get(i)
-                    .toNBTTagCompound());
-            tag.setInteger("specialDropssize", specialDrops.size());
-            for (int i = 0; i < specialDrops.size(); i++) tag.setTag(
-                "specialDrops" + i,
-                specialDrops.get(i)
-                    .toNBTTagCompound());
-            tag.setFloat("beeSpeed", beeSpeed);
-            tag.setFloat("maxBeeCycles", maxBeeCycles);
-            return tag;
-        }
-
-        public void generate(World world, float t) {
-            if (mode == null) mode = BeeManager.beeRoot.getBeekeepingMode(world);
-            drops.clear();
-            specialDrops.clear();
-            if (BeeManager.beeRoot.getType(this.queenStack) != EnumBeeType.QUEEN) return;
-
-            var queen = BeeManager.beeRoot.getMember(this.queenStack);
-            var genome = queen.getGenome();
-
-            beeSpeed = genome.getSpeed();
-
-            IAlleleBeeSpecies primary = genome.getPrimary();
-
-            genome.getPrimary()
-                .getProductChances()
-                .forEach((key, value) -> drops.add(new BeeDrop(key, value, beeSpeed, t)));
-            genome.getSecondary()
-                .getProductChances()
-                .forEach((key, value) -> drops.add(new BeeDrop(key, value / 2f, beeSpeed, t)));
-            primary.getSpecialtyChances()
-                .forEach((key, value) -> specialDrops.add(new BeeDrop(key, value, beeSpeed, t)));
-            speciesKey = primary.getUID() + "\0"
-                + genome.getSecondary()
-                    .getUID()
-                + "\0"
-                + beeSpeed;
-        }
-
-        public List<ItemStack> getDrops(final SteamApiaryModule machine, final double timePassed) {
-            drops.forEach(d -> {
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
-                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
-            });
-            specialDrops.forEach(d -> {
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
-                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
-            });
-
-            List<ItemStack> currentDrops = new ArrayList<>();
-            machine.dropProgress.entrySet()
-                .forEach(e -> {
-                    double v = e.getValue();
-                    while (v > 1.0) {
-                        int size = Math.min((int) v, 64);
-                        ItemStack stack = dropstacks.get(e.getKey())
-                            .copy();
-                        stack.stackSize = size;
-                        currentDrops.add(stack);
-                        v -= size;
-                        e.setValue(v);
-                    }
-                });
-            return currentDrops;
-        }
-
-        public static class BeeDrop {
-
-            public ItemStack stack;
-            public double chance;
-            public float beeSpeed;
-            public float t;
-            public ItemId id;
-
-            public BeeDrop(ItemStack stack, double chance, float beeSpeed, float t) {
-                this.stack = stack;
-                this.chance = chance;
-                this.beeSpeed = beeSpeed;
-                this.t = t;
-                this.id = ItemId.createNoCopy(stack);
-            }
-
-            public double getAmount(double speedModifier) {
-                return chance * speedModifier;
-            }
-
-            public BeeDrop(NBTTagCompound tag) {
-                stack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("stack"));
-                chance = tag.getDouble("chance");
-                beeSpeed = tag.getFloat("beeSpeed");
-                t = tag.getFloat("t");
-                id = ItemId.createNoCopy(stack);
-            }
-
-            public NBTTagCompound toNBTTagCompound() {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setTag("stack", ItemUtils.writeItemStackToNBT(stack));
-                tag.setDouble("chance", chance);
-                tag.setFloat("beeSpeed", beeSpeed);
-                tag.setFloat("t", t);
-                return tag;
-            }
-        }
-    }
-
-    // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
-    @Deprecated
-    public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
-
     @Deprecated
     public static UIInfo<?, ?> createMetaTileEntityUI() {
         // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
@@ -497,102 +376,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
             })
             .build();
     }
-
-    @Deprecated
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 configuration button after Steam Apiary Module only uses MUI2.
-        buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
-        configurationElements.setSynced(false);
-        configurationElements.widget(
-            new ButtonWidget().setOnClick(
-                (clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(CONFIGURATION_WINDOW_ID);
-                })
-                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("kubatech.gui.text.configuration"))
-                .setSize(16, 16));
-    }
-
-    // TODO: Remove this MUI1 container after Steam Apiary Module only uses MUI2.
-    @Deprecated
-    public static class MUIContainer extends ModularUIContainer {
-
-        final WeakReference<SteamApiaryModule> parent;
-
-        public MUIContainer(ModularUIContext context, ModularWindow mainWindow, SteamApiaryModule mte) {
-            super(context, mainWindow);
-            parent = new WeakReference<>(mte);
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer aPlayer, int aSlotIndex) {
-            if (!(aPlayer instanceof EntityPlayerMP)) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final Slot s = getSlot(aSlotIndex);
-            if (s == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (aSlotIndex >= 36) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final ItemStack aStack = s.getStack();
-            if (aStack == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            SteamApiaryModule mte = parent.get();
-            if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
-                if (mte.mMaxProgresstime > 0) {
-                    GTUtility.sendChatToPlayer(aPlayer, EnumChatFormatting.RED + "Can't insert while running !");
-                    return super.transferStackInSlot(aPlayer, aSlotIndex);
-                }
-                World w = mte.getBaseMetaTileEntity()
-                    .getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
-                    aStack,
-                    w,
-                    6 + mte.recipeOcCount);
-                if (bs.isValid) {
-                    mte.mStorage.add(bs);
-                    s.putStack(null);
-                    detectAndSendChanges();
-                    return null;
-                }
-            }
-            return super.transferStackInSlot(aPlayer, aSlotIndex);
-        }
-    }
-
-    public static final int INVENTORY_WIDTH = 128;
-    public static final int INVENTORY_HEIGHT = 60;
-    public static final int INVENTORY_X = 10;
-    public static final int INVENTORY_Y = 16;
-    public static final int INVENTORY_BORDER_WIDTH = 3;
-
-    public DynamicInventory<SteamApiaryModule.BeeSimulator> dynamicInventory = new DynamicInventory<>(
-        INVENTORY_WIDTH,
-        INVENTORY_HEIGHT,
-        () -> mMaxSlots,
-        mStorage,
-        s -> s.queenStack).allowInventoryInjection(input -> {
-            World w = getBaseMetaTileEntity().getWorld();
-            SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(input, w, 6 + recipeOcCount);
-            if (bs.isValid) {
-                mStorage.add(bs);
-                return input;
-            }
-            return null;
-        })
-            .allowInventoryExtraction(mStorage::remove)
-            .allowInventoryReplace((i, stack) -> {
-                if (stack.stackSize != 1) return null;
-                World w = getBaseMetaTileEntity().getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(stack, w, 6 + recipeOcCount);
-                if (bs.isValid) {
-                    SteamApiaryModule.BeeSimulator removed = mStorage.remove(i);
-                    mStorage.add(i, bs);
-                    return removed.queenStack;
-                }
-                return null;
-            })
-            .setEnabled(() -> this.mMaxProgresstime == 0);
-
-    public boolean isInInventory = true;
 
     @Override
     @Deprecated
@@ -705,6 +488,22 @@ public class SteamApiaryModule extends SteamElevatorModule {
                 .setEnabled(w -> uiSteamStored == 0));
     }
 
+    @Deprecated
+    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+        // TODO: Remove this MUI1 configuration button after Steam Apiary Module only uses MUI2.
+        buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
+        configurationElements.setSynced(false);
+        configurationElements.widget(
+            new ButtonWidget().setOnClick(
+                (clickData, widget) -> {
+                    if (!widget.isClient()) widget.getContext()
+                        .openSyncedWindow(CONFIGURATION_WINDOW_ID);
+                })
+                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
+                .addTooltip(StatCollector.translateToLocal("kubatech.gui.text.configuration"))
+                .setSize(16, 16));
+    }
+
     @Override
     @Deprecated
     public ModularWindow createRecipeOcCountWindow(EntityPlayer player) {
@@ -755,8 +554,6 @@ public class SteamApiaryModule extends SteamElevatorModule {
         openGui(aPlayer);
         return true;
     }
-
-    private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
 
     public void setGuiDropProgressFromMui2(HashMap<ItemStack, Double> progress) {
         GUIDropProgress = progress;
@@ -981,5 +778,204 @@ public class SteamApiaryModule extends SteamElevatorModule {
     @Override
     public SoundResource getActivitySoundLoop() {
         return SoundResource.GT_MACHINES_MEGA_INDUSTRIAL_APIARY_LOOP;
+    }
+
+    public static class BeeSimulator {
+
+        public ItemStack queenStack;
+        public List<BeeDrop> drops = new ArrayList<>();
+        public List<BeeDrop> specialDrops = new ArrayList<>();
+        public boolean isValid;
+        public float beeSpeed;
+        public float maxBeeCycles;
+        public String speciesKey;
+        public static IBeekeepingMode mode;
+        public static Map<ItemId, ItemStack> dropstacks = new HashMap<>();
+
+        public BeeSimulator(ItemStack queenStack, World world, float t) {
+            isValid = false;
+            this.queenStack = queenStack.copy();
+            this.queenStack.stackSize = 1;
+            generate(world, t);
+            isValid = true;
+            queenStack.stackSize--;
+        }
+
+        public BeeSimulator(NBTTagCompound tag) {
+            queenStack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("queenStack"));
+            isValid = tag.getBoolean("isValid");
+            drops = new ArrayList<>();
+            specialDrops = new ArrayList<>();
+            for (int i = 0, isize = tag.getInteger("dropssize"); i < isize; i++)
+                drops.add(new BeeDrop(tag.getCompoundTag("drops" + i)));
+            for (int i = 0, isize = tag.getInteger("specialDropssize"); i < isize; i++)
+                specialDrops.add(new BeeDrop(tag.getCompoundTag("specialDrops" + i)));
+            beeSpeed = tag.getFloat("beeSpeed");
+            maxBeeCycles = tag.getFloat("maxBeeCycles");
+            var queen = BeeManager.beeRoot.getMember(this.queenStack);
+            if (queen != null) {
+                var genome = queen.getGenome();
+                speciesKey = genome.getPrimary()
+                    .getUID() + "\0"
+                    + genome.getSecondary()
+                        .getUID()
+                    + "\0"
+                    + beeSpeed;
+            }
+        }
+
+        public NBTTagCompound toNBTTagCompound() {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setTag("queenStack", ItemUtils.writeItemStackToNBT(queenStack));
+            tag.setBoolean("isValid", isValid);
+            tag.setInteger("dropssize", drops.size());
+            for (int i = 0; i < drops.size(); i++) tag.setTag(
+                "drops" + i,
+                drops.get(i)
+                    .toNBTTagCompound());
+            tag.setInteger("specialDropssize", specialDrops.size());
+            for (int i = 0; i < specialDrops.size(); i++) tag.setTag(
+                "specialDrops" + i,
+                specialDrops.get(i)
+                    .toNBTTagCompound());
+            tag.setFloat("beeSpeed", beeSpeed);
+            tag.setFloat("maxBeeCycles", maxBeeCycles);
+            return tag;
+        }
+
+        public void generate(World world, float t) {
+            if (mode == null) mode = BeeManager.beeRoot.getBeekeepingMode(world);
+            drops.clear();
+            specialDrops.clear();
+            if (BeeManager.beeRoot.getType(this.queenStack) != EnumBeeType.QUEEN) return;
+
+            var queen = BeeManager.beeRoot.getMember(this.queenStack);
+            var genome = queen.getGenome();
+            beeSpeed = genome.getSpeed();
+
+            IAlleleBeeSpecies primary = genome.getPrimary();
+            genome.getPrimary()
+                .getProductChances()
+                .forEach((key, value) -> drops.add(new BeeDrop(key, value, beeSpeed, t)));
+            genome.getSecondary()
+                .getProductChances()
+                .forEach((key, value) -> drops.add(new BeeDrop(key, value / 2f, beeSpeed, t)));
+            primary.getSpecialtyChances()
+                .forEach((key, value) -> specialDrops.add(new BeeDrop(key, value, beeSpeed, t)));
+            speciesKey = primary.getUID() + "\0"
+                + genome.getSecondary()
+                    .getUID()
+                + "\0"
+                + beeSpeed;
+        }
+
+        public List<ItemStack> getDrops(final SteamApiaryModule machine, final double timePassed) {
+            drops.forEach(d -> {
+                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
+                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
+            });
+            specialDrops.forEach(d -> {
+                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
+                if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
+            });
+
+            List<ItemStack> currentDrops = new ArrayList<>();
+            machine.dropProgress.entrySet()
+                .forEach(e -> {
+                    double v = e.getValue();
+                    while (v > 1.0) {
+                        int size = Math.min((int) v, 64);
+                        ItemStack stack = dropstacks.get(e.getKey())
+                            .copy();
+                        stack.stackSize = size;
+                        currentDrops.add(stack);
+                        v -= size;
+                        e.setValue(v);
+                    }
+                });
+            return currentDrops;
+        }
+
+        public static class BeeDrop {
+
+            public ItemStack stack;
+            public double chance;
+            public float beeSpeed;
+            public float t;
+            public ItemId id;
+
+            public BeeDrop(ItemStack stack, double chance, float beeSpeed, float t) {
+                this.stack = stack;
+                this.chance = chance;
+                this.beeSpeed = beeSpeed;
+                this.t = t;
+                this.id = ItemId.createNoCopy(stack);
+            }
+
+            public double getAmount(double speedModifier) {
+                return chance * speedModifier;
+            }
+
+            public BeeDrop(NBTTagCompound tag) {
+                stack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("stack"));
+                chance = tag.getDouble("chance");
+                beeSpeed = tag.getFloat("beeSpeed");
+                t = tag.getFloat("t");
+                id = ItemId.createNoCopy(stack);
+            }
+
+            public NBTTagCompound toNBTTagCompound() {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setTag("stack", ItemUtils.writeItemStackToNBT(stack));
+                tag.setDouble("chance", chance);
+                tag.setFloat("beeSpeed", beeSpeed);
+                tag.setFloat("t", t);
+                return tag;
+            }
+        }
+    }
+
+    // TODO: Remove this MUI1 container after Steam Apiary Module only uses MUI2.
+    @Deprecated
+    public static class MUIContainer extends ModularUIContainer {
+
+        final WeakReference<SteamApiaryModule> parent;
+
+        public MUIContainer(ModularUIContext context, ModularWindow mainWindow, SteamApiaryModule mte) {
+            super(context, mainWindow);
+            parent = new WeakReference<>(mte);
+        }
+
+        @Override
+        public ItemStack transferStackInSlot(EntityPlayer aPlayer, int aSlotIndex) {
+            if (!(aPlayer instanceof EntityPlayerMP)) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            final Slot s = getSlot(aSlotIndex);
+            if (s == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            if (aSlotIndex >= 36) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            final ItemStack aStack = s.getStack();
+            if (aStack == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            SteamApiaryModule mte = parent.get();
+            if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
+            if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
+                if (mte.mMaxProgresstime > 0) {
+                    GTUtility.sendChatToPlayer(aPlayer, EnumChatFormatting.RED + "Can't insert while running !");
+                    return super.transferStackInSlot(aPlayer, aSlotIndex);
+                }
+                World w = mte.getBaseMetaTileEntity()
+                    .getWorld();
+                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
+                    aStack,
+                    w,
+                    6 + mte.recipeOcCount);
+                if (bs.isValid) {
+                    mte.mStorage.add(bs);
+                    s.putStack(null);
+                    detectAndSendChanges();
+                    return null;
+                }
+            }
+            return super.transferStackInSlot(aPlayer, aSlotIndex);
+        }
     }
 }

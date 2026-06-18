@@ -15,7 +15,7 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import Forge.NullPointerException;
 import gregtech.api.objects.XSTR;
 
-@Mixin(value = Entity.class)
+@Mixin(value = Entity.class, remap = true)
 public class MixinEntity {
 
     @Inject(method = "moveEntity", at = @At("HEAD"), cancellable = true)

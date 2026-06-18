@@ -130,6 +130,21 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     public static FluidStack hydrogenStack = Materials.Hydrogen.getGas(1);
     public static FluidStack rawStarMatterStack = Materials.RawStarMatter.getFluid(1);
     public static double maxFluidAmount = Long.MAX_VALUE;
+    private static final int HORIZONTAL_OFF_SET = 26;
+    private static final int VERTICAL_OFF_SET = 6;
+    private static final int DEPTH_OFF_SET = 1;
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String EOHI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+        + "multiblock/eye_of_harmony_injector";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(EOHI_STRUCTURE_FILE_PATH);
+    public static INameFunction<EyeOfHarmonyInjector> MAX_HELIUM_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HeliumParametrization");
+    public static INameFunction<EyeOfHarmonyInjector> MAX_HYDROGEN_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization");
+    public static INameFunction<EyeOfHarmonyInjector> MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
+        .translateToLocal("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization");
+    public static IStatusFunction<EyeOfHarmonyInjector> MAX_FLUID_AMOUNT_STATUS = (base, p) -> LedStatus
+        .fromLimitsInclusiveOuterBoundary(p.get(), 0, maxFluidAmount / 2, maxFluidAmount, maxFluidAmount);
 
     public Parameters.Group.ParameterIn maxHeliumAmountSetting;
     public Parameters.Group.ParameterIn maxHydrogenAmountSetting;
@@ -148,6 +163,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
     public EyeOfHarmonyInjector(String aName) {
         super(aName);
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new EyeOfHarmonyInjector(mName);
     }
 
     @SideOnly(Side.CLIENT)
@@ -250,6 +270,77 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     }
 
     @Override
+    public IStructureDefinition<? extends EyeOfHarmonyInjector> getStructure_EM() {
+        return StructureDefinition.<EyeOfHarmonyInjector>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+            .addElement('A', ofBlock(sBlockCasingsTT, 6))
+            .addElement('B', ofBlock(sBlockCasingsTT, 7))
+            .addElement('C', ofBlock(sBlockCasings1, 13))
+            .addElement('D', ofBlock(sBlockCasings9, 14))
+            .addElement('E', ofBlock(sBlockCasingsTT, 8))
+            .addElement('F', ofBlock(sBlockCasings10, 12))
+            .addElement('G', ofBlock(sBlockCasingsTT, 4))
+            .addElement('H', ofBlock(sBlockCasings10, 8))
+            .addElement('I', ofBlock(sBlockCasings1, 12))
+            .addElement('J', ofFrame(Materials.CosmicNeutronium))
+            .addElement('K', ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('L', ofBlock(sBlockCasings1, 14))
+            .addElement('M', ofBlock(sBlockCasings10, 7))
+            .addElement('N', ofBlock(sBlockCasings3, 12))
+            .addElement('O', ofBlock(sBlockCasings9, 11))
+            .addElement(
+                'P',
+                ofChain(
+                    buildHatchAdder(EyeOfHarmonyInjector.class).casingIndex(BlockGTCasingsTT.textureOffset)
+                        .hint(1)
+                        .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
+                        .buildAndChain(),
+                    onElementPass(e -> e.mCountCasing++, ofBlock(sBlockCasingsTT, 0))))
+            .build();
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) {
+            return -1;
+        } else {
+            return survivalBuildPiece(
+                STRUCTURE_PIECE_MAIN,
+                stackSize,
+                HORIZONTAL_OFF_SET,
+                VERTICAL_OFF_SET,
+                DEPTH_OFF_SET,
+                elementBudget,
+                env,
+                false,
+                true);
+        }
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    }
+
+    @Override
+    public void parametersInstantiation_EM() {
+        super.parametersInstantiation_EM();
+        Parameters.Group hatch_0 = parametrization.getGroup(0, false);
+        Parameters.Group hatch_1 = parametrization.getGroup(1, false);
+        maxHeliumAmountSetting = hatch_0
+            .makeInParameter(0, maxFluidAmount, MAX_HELIUM_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+        maxHydrogenAmountSetting = hatch_0
+            .makeInParameter(1, maxFluidAmount, MAX_HYDROGEN_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+        maxRawStarMatterAmountSetting = hatch_1
+            .makeInParameter(0, maxFluidAmount, MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
+    }
+
+    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setBoolean("enableRender", enableRender);
@@ -325,6 +416,25 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             ret.add(text);
         }
         return ret.toArray(new String[0]);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("EyeOfHarmonyInjectorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_05"))
+            .beginStructureBlock(53, 13, 62, false)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
     }
 
     public List<LinkedUnitGuiData> getLinkedUnitGuiData() {
@@ -1183,116 +1293,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
         return Math.min(Math.min(maxFluidAmount, maxSetting), computed);
     }
 
-    private static final int HORIZONTAL_OFF_SET = 26;
-    private static final int VERTICAL_OFF_SET = 6;
-    private static final int DEPTH_OFF_SET = 1;
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String EOHI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
-        + "multiblock/eye_of_harmony_injector";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(EOHI_STRUCTURE_FILE_PATH);
-
-    @Override
-    public IStructureDefinition<? extends EyeOfHarmonyInjector> getStructure_EM() {
-        return StructureDefinition.<EyeOfHarmonyInjector>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 6))
-            .addElement('B', ofBlock(sBlockCasingsTT, 7))
-            .addElement('C', ofBlock(sBlockCasings1, 13))
-            .addElement('D', ofBlock(sBlockCasings9, 14))
-            .addElement('E', ofBlock(sBlockCasingsTT, 8))
-            .addElement('F', ofBlock(sBlockCasings10, 12))
-            .addElement('G', ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', ofBlock(sBlockCasings10, 8))
-            .addElement('I', ofBlock(sBlockCasings1, 12))
-            .addElement('J', ofFrame(Materials.CosmicNeutronium))
-            .addElement('K', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('L', ofBlock(sBlockCasings1, 14))
-            .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofBlock(sBlockCasings3, 12))
-            .addElement('O', ofBlock(sBlockCasings9, 11))
-            .addElement(
-                'P',
-                ofChain(
-                    buildHatchAdder(EyeOfHarmonyInjector.class).casingIndex(BlockGTCasingsTT.textureOffset)
-                        .hint(1)
-                        .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
-                        .buildAndChain(),
-                    onElementPass(e -> e.mCountCasing++, ofBlock(sBlockCasingsTT, 0))))
-            .build();
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) {
-            return -1;
-        } else {
-            return survivalBuildPiece(
-                STRUCTURE_PIECE_MAIN,
-                stackSize,
-                HORIZONTAL_OFF_SET,
-                VERTICAL_OFF_SET,
-                DEPTH_OFF_SET,
-                elementBudget,
-                env,
-                false,
-                true);
-        }
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
-    }
-
-    public static INameFunction<EyeOfHarmonyInjector> MAX_HELIUM_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HeliumParametrization");
-
-    public static INameFunction<EyeOfHarmonyInjector> MAX_HYDROGEN_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization");
-
-    public static INameFunction<EyeOfHarmonyInjector> MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization");
-
-    public static IStatusFunction<EyeOfHarmonyInjector> MAX_FLUID_AMOUNT_STATUS = (base, p) -> LedStatus
-        .fromLimitsInclusiveOuterBoundary(p.get(), 0, maxFluidAmount / 2, maxFluidAmount, maxFluidAmount);
-
-    @Override
-    public void parametersInstantiation_EM() {
-        super.parametersInstantiation_EM();
-        Parameters.Group hatch_0 = parametrization.getGroup(0, false);
-        Parameters.Group hatch_1 = parametrization.getGroup(1, false);
-        maxHeliumAmountSetting = hatch_0
-            .makeInParameter(0, maxFluidAmount, MAX_HELIUM_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
-        maxHydrogenAmountSetting = hatch_0
-            .makeInParameter(1, maxFluidAmount, MAX_HYDROGEN_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
-        maxRawStarMatterAmountSetting = hatch_1
-            .makeInParameter(0, maxFluidAmount, MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME, MAX_FLUID_AMOUNT_STATUS);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EyeOfHarmonyInjectorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_05"))
-            .beginStructureBlock(53, 13, 62, false)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
-    }
-
     @Override
     public void checkMaintenance() {}
 
@@ -1304,11 +1304,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     @Override
     public boolean shouldCheckMaintenance() {
         return false;
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new EyeOfHarmonyInjector(mName);
     }
 
     public void generateImportantInfo() {

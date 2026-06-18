@@ -159,28 +159,6 @@ public class SuperSpaceElevator extends TTMultiblockBase
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SuperSpaceElevatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_07"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(65, 53, 65, true)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
-            .addDynamoHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         motorTier = aNBT.getInteger("motorTier");
         wirelessMode = aNBT.getBoolean("wirelessMode");
@@ -238,6 +216,28 @@ public class SuperSpaceElevator extends TTMultiblockBase
                     + " EU");
         }
         return ret.toArray(new String[0]);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SuperSpaceElevatorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_07"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(65, 53, 65, true)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
+            .addDynamoHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
+            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

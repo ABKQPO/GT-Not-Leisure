@@ -139,19 +139,6 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     }
 
     @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new SwarmCoreGui(this);
-    }
-
-    public int getMachineTierForGui() {
-        return machineTier;
-    }
-
-    public void setMachineTierFromGui(int machineTier) {
-        this.machineTier = machineTier;
-    }
-
-    @Override
     public int[] getUpgradePaidCosts() {
         return upgradePaidCosts[Math.min(machineTier - 1, 2)];
     }
@@ -196,29 +183,6 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     public void onBlockDestroyed() {
         super.onBlockDestroyed();
         dropStoredUpgradeItems(getBaseMetaTileEntity());
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Swarm Core upgrade GUI is fully ported to mui2.
-        super.addUIWidgets(builder, buildContext);
-        createUpgradeButton(builder, buildContext);
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the Swarm Core terminal text is fully ported to mui2.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(() -> StatCollector.translateToLocalFormatted("Info_SwarmCore_01", machineTier))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(true))
-            .widget(
-                new FakeSyncWidget.IntegerSyncer(() -> machineTier, tier -> machineTier = tier).setSynced(true, false));
     }
 
     @Override
@@ -391,10 +355,10 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing > 200);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 201);
     }
 
     @Override
@@ -439,6 +403,42 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.nanoForgeRecipes;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SwarmCoreGui(this);
+    }
+
+    public int getMachineTierForGui() {
+        return machineTier;
+    }
+
+    public void setMachineTierFromGui(int machineTier) {
+        this.machineTier = machineTier;
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Swarm Core upgrade GUI is fully ported to mui2.
+        super.addUIWidgets(builder, buildContext);
+        createUpgradeButton(builder, buildContext);
+    }
+
+    @Override
+    @Deprecated
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        // TODO: Remove this mui1 fallback after the Swarm Core terminal text is fully ported to mui2.
+        super.drawTexts(screenElements, inventorySlot);
+        screenElements
+            .widget(
+                new TextWidget()
+                    .setStringSupplier(() -> StatCollector.translateToLocalFormatted("Info_SwarmCore_01", machineTier))
+                    .setDefaultColor(COLOR_TEXT_WHITE.get())
+                    .setEnabled(true))
+            .widget(
+                new FakeSyncWidget.IntegerSyncer(() -> machineTier, tier -> machineTier = tier).setSynced(true, false));
     }
 
 }

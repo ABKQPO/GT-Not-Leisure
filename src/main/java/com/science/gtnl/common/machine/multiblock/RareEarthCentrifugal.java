@@ -51,11 +51,6 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new RareEarthCentrifugal(this.mName);
     }
@@ -150,20 +145,20 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 75);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 75);
     }
 
     @Override
     public int getMaxParallelRecipes() {
         int tier = Math.max(0, GTUtility.getTier(this.getMaxInputVoltage() - 6));
         return 4 + 4 * tier;
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return false;
     }
 }

@@ -10,6 +10,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.SubstituteFluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialMisc;
@@ -33,7 +34,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_OpticalSMDCapacitors.get(16),
                 ItemList.Wrap_OpticalSMDDiodes.get(16),
                 CustomItemList.DATApipe.get(64),
-                GTOreDictUnificator.get(OrePrefixes.rod, Materials.EnrichedHolmium, 32))
+                GTOreDictUnificator.get(OrePrefixes.bolt, Materials.EnrichedHolmium, 64))
             .fluidInputs(MaterialMisc.MUTATED_LIVING_SOLDER.getFluidStack(288))
             .itemOutputs(ItemList.Circuit_OpticalProcessor.get(16))
             .special(ItemList.CircuitImprint_OpticalProcessor.get(0))
@@ -85,7 +86,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_AdvancedSMDCapacitors.get(6),
                 ItemList.Wrap_AdvancedSMDTransistors.get(6),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Crystalprocessor.get(16))
             .special(ItemList.CircuitImprint_CrystalProcessor.get(0))
             .requiresCleanRoom()
@@ -100,7 +101,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_CrystalSoCs.get(1),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 8),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Crystalprocessor.get(32))
             .special(ItemList.CircuitImprint_CrystalProcessor.get(0))
             .requiresCleanRoom()
@@ -117,7 +118,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_AdvancedSMDCapacitors.get(8),
                 ItemList.Wrap_RandomAccessMemoryChips.get(24),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 16))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
             .itemOutputs(ItemList.Circuit_Crystalcomputer.get(32))
             .special(ItemList.CircuitImprint_CrystalAssembly.get(0))
             .requiresCleanRoom()
@@ -134,7 +135,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_NORMemoryChips.get(32),
                 ItemList.Wrap_NANDMemoryChips.get(64),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.NiobiumTitanium, 32))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
             .itemOutputs(ItemList.Circuit_Ultimatecrystalcomputer.get(16))
             .special(ItemList.CircuitImprint_CrystalSupercomputer.get(0))
             .requiresCleanRoom()
@@ -151,7 +152,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_AdvancedSMDCapacitors.get(8),
                 ItemList.Wrap_AdvancedSMDTransistors.get(8),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Neuroprocessor.get(16))
             .special(ItemList.CircuitImprint_WetwareProcessor.get(0))
             .requiresCleanRoom()
@@ -168,7 +169,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_AdvancedSMDCapacitors.get(12),
                 ItemList.Wrap_RandomAccessMemoryChips.get(24),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.YttriumBariumCuprate, 16))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
             .itemOutputs(ItemList.Circuit_Wetwarecomputer.get(32))
             .special(ItemList.CircuitImprint_WetwareAssembly.get(0))
             .requiresCleanRoom()
@@ -185,7 +186,7 @@ public class CircuitAssemblyLineRecipes implements IRecipePool {
                 ItemList.Wrap_AdvancedSMDInductors.get(8),
                 ItemList.Wrap_AdvancedSMDCapacitors.get(16),
                 ItemList.Wrap_AdvancedSMDDiodes.get(8))
-            .fluidInputs(Materials.SolderingAlloy.getMolten(288))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
             .itemOutputs(ItemList.Circuit_Crystalmainframe.get(16))
             .special(ItemList.CircuitImprint_CrystalMainframe.get(0))
             .eut(TierEU.RECIPE_LuV)

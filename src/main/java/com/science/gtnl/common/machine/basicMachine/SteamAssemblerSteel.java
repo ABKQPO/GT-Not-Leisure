@@ -5,10 +5,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.cleanroommc.modularui.factory.PosGuiData;
-import com.cleanroommc.modularui.screen.ModularPanel;
-import com.cleanroommc.modularui.screen.UISettings;
-import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
@@ -16,12 +12,13 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.ProgressBar;
-import com.science.gtnl.common.gui.modularui.GTNLSteamAssemblerGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
+import gregtech.api.enums.SteamVariant;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
+import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -49,28 +46,13 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLSteamAssemblerGui<>(this, getUIProperties(), true, true).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after SteamAssemblerSteel mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.assemblerRecipes;
+    }
+
+    @Override
+    public void startProcess() {
+        sendLoopStart((byte) 1);
     }
 
     @Override
@@ -82,8 +64,24 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
     }
 
     @Override
-    public void startProcess() {
-        sendLoopStart((byte) 1);
+    public int getCapacity() {
+        return 16000;
+    }
+
+    @Override
+    public int checkRecipe() {
+        GTRecipe tRecipe = getRecipeMap().findRecipeQuery()
+            .items(getAllInputs())
+            .fluids(getFillableStack())
+            .voltage(TierEU.MV)
+            .find();
+        if ((tRecipe != null) && (canOutput(tRecipe.mOutputs))
+            && (tRecipe.isRecipeInputEqual(true, new FluidStack[] { getFillableStack() }, getAllInputs()))) {
+            this.mOutputItems[0] = tRecipe.getOutput(0);
+            calculateCustomOverclock(tRecipe);
+            return FOUND_AND_SUCCESSFULLY_USED_RECIPE;
+        }
+        return DID_NOT_FIND_RECIPE;
     }
 
     @Override
@@ -159,11 +157,31 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
     }
 
     @Override
+    public SteamVariant getSteamVariant() {
+        return SteamVariant.STEEL;
+    }
+
+    @Override
+    public GUITextureSet getGUITextureSet() {
+        return GUITextureSet.STEAM.apply(getSteamVariant());
+    }
+
+    @Override
     @Deprecated
     public FluidSlotWidget createFluidInputSlot(IDrawable[] backgrounds, Pos2d pos) {
         // TODO: Remove this mui1 fallback after SteamAssemblerSteel mui2 rollout is complete.
         return (FluidSlotWidget) new FluidSlotWidget(fluidTank).setBackground(backgrounds)
             .setPos(pos);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after SteamAssemblerSteel mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 
     @Override
@@ -198,26 +216,5 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
                             .getRight()));
         }
 
-    }
-
-    @Override
-    public int getCapacity() {
-        return 16000;
-    }
-
-    @Override
-    public int checkRecipe() {
-        GTRecipe tRecipe = getRecipeMap().findRecipeQuery()
-            .items(getAllInputs())
-            .fluids(getFillableStack())
-            .voltage(TierEU.MV)
-            .find();
-        if ((tRecipe != null) && (canOutput(tRecipe.mOutputs))
-            && (tRecipe.isRecipeInputEqual(true, new FluidStack[] { getFillableStack() }, getAllInputs()))) {
-            this.mOutputItems[0] = tRecipe.getOutput(0);
-            calculateCustomOverclock(tRecipe);
-            return FOUND_AND_SUCCESSFULLY_USED_RECIPE;
-        }
-        return DID_NOT_FIND_RECIPE;
     }
 }

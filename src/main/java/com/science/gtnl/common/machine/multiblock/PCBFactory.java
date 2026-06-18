@@ -66,6 +66,7 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.recipe.metadata.PCBFactoryTierKey;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
@@ -431,22 +432,29 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         machineTier = getMachineTier();
-        if (machineTier == 0) checkStructureCondition(errors, false);
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
+        if (machineTier == 0) {
+            errors.add(StructureErrorRegistry.UNKNOWN_TIER);
             return;
-        if (machineTier >= 2
-            && !checkPiece(STRUCTURE_PIECE_MAIN_T2, HORIZONTAL_OFF_SET_T2, VERTICAL_OFF_SET_T2, DEPTH_OFF_SET_T2)) {
+        }
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        if (machineTier >= 2 && !checkPiece(
+            STRUCTURE_PIECE_MAIN_T2,
+            HORIZONTAL_OFF_SET_T2,
+            VERTICAL_OFF_SET_T2,
+            DEPTH_OFF_SET_T2,
+            null)) {
             machineTier = 1;
         }
-        if (machineTier >= 3
-            && !checkPiece(STRUCTURE_PIECE_MAIN_T3, HORIZONTAL_OFF_SET_T3, VERTICAL_OFF_SET_T3, DEPTH_OFF_SET_T3)) {
+        if (machineTier >= 3 && !checkPiece(
+            STRUCTURE_PIECE_MAIN_T3,
+            HORIZONTAL_OFF_SET_T3,
+            VERTICAL_OFF_SET_T3,
+            DEPTH_OFF_SET_T3,
+            null)) {
             machineTier = 2;
         }
-        if (!checkHatch()) {
-            checkStructureCondition(errors, false);
-        }
         setupParameters();
-        return;
+        checkHatch(errors);
     }
 
     @Override
@@ -538,13 +546,13 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
         for (FluidStack fluidStack : getStoredWater()) {
             if (parallel <= 0) break;
-            // 先扣“高级净化水”（tier + 3）
+            // Consume the higher-grade purified water first.
             if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier + 3])) {
                 int deductAmount = 50 / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 
                 int timesToDeduct = fluidStack.amount / deductAmount;
-                timesToDeduct = Math.min(parallel, timesToDeduct); // 严格按本次并行
+                timesToDeduct = Math.min(parallel, timesToDeduct);
 
                 if (timesToDeduct > 0) {
                     fluidStack.amount -= deductAmount * timesToDeduct;
@@ -554,13 +562,13 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
             if (parallel <= 0) break;
 
-            // 再扣“低级净化水”（tier - 1）
+            // Consume the lower-grade purified water only if more parallels remain.
             if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier - 1])) {
                 int deductAmount = 100 / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 
                 int timesToDeduct = fluidStack.amount / deductAmount;
-                timesToDeduct = Math.min(parallel, timesToDeduct); // 严格按本次并行
+                timesToDeduct = Math.min(parallel, timesToDeduct);
 
                 if (timesToDeduct > 0) {
                     fluidStack.amount -= deductAmount * timesToDeduct;

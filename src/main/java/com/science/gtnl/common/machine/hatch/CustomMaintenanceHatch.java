@@ -41,7 +41,6 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     public int mMinConfigTime;
     public int mMaxConfigTime;
     public int mConfigTime = 100;
-
     @Getter
     @Setter
     public int mCleanroomTier;
@@ -117,21 +116,6 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    public String[] getDescription() {
-        return mDescription;
-    }
-
-    @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
         return new ITexture[] { aBaseTexture, TextureFactory.of(OVERLAY_FRONT_FULLAUTOMAINTENANCE) };
     }
@@ -159,6 +143,26 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     }
 
     @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer, ForgeDirection side,
+        float aX, float aY, float aZ) {
+        return onRightclick(aBaseMetaTileEntity, aPlayer);
+    }
+
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        if (aBaseMetaTileEntity.isClientSide()) {
+            return true;
+        }
+        if (isConfiguration()) openGui(aPlayer);
+        return true;
+    }
+
+    @Override
+    public String[] getDescription() {
+        return mDescription;
+    }
+
+    @Override
     public int getConfigTime() {
         return this.mConfigTime;
     }
@@ -176,6 +180,48 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     @Override
     public int getMaxConfigTime() {
         return this.mMaxConfigTime;
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new CustomMaintenanceHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
+        if (isConfiguration()) {
+            builder.widget(
+                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
+                    .setPos(49, 18)
+                    .setSize(81, 14))
+                .widget(
+                    new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
+                        .setGetterInt(() -> mConfigTime)
+                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
+                        .setOnScrollNumbers(1, 2, 5)
+                        .setTextAlignment(Alignment.Center)
+                        .setTextColor(Color.WHITE.normal)
+                        .setSize(70, 18)
+                        .setPos(54, 36)
+                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
+        }
     }
 
     @Override
@@ -215,52 +261,5 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
 
     public void setConfigTimeFromGui(int configTime) {
         mConfigTime = Math.min(getMaxConfigTime(), Math.max(getMinConfigTime(), configTime));
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer, ForgeDirection side,
-        float aX, float aY, float aZ) {
-        return onRightclick(aBaseMetaTileEntity, aPlayer);
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        if (aBaseMetaTileEntity.isClientSide()) {
-            return true;
-        }
-        if (isConfiguration()) openGui(aPlayer);
-        return true;
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new CustomMaintenanceHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
-        if (isConfiguration()) {
-            builder.widget(
-                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
-                    .setPos(49, 18)
-                    .setSize(81, 14))
-                .widget(
-                    new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
-                        .setGetterInt(() -> mConfigTime)
-                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
-                        .setOnScrollNumbers(1, 2, 5)
-                        .setTextAlignment(Alignment.Center)
-                        .setTextColor(Color.WHITE.normal)
-                        .setSize(70, 18)
-                        .setPos(54, 36)
-                        .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        }
     }
 }

@@ -74,62 +74,6 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity te, ForgeDirection side, ForgeDirection facing, int colorIndex,
-        boolean active, boolean redstone) {
-        if (side == facing) {
-            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return LanthanidesRecipeMaps.digesterRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DigesterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(7, 4, 7, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<Digester> getStructureDefinition() {
         return StructureDefinition.<Digester>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -162,10 +106,10 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 45);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 45);
     }
 
     @Override
@@ -227,6 +171,11 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return LanthanidesRecipeMaps.digesterRecipes;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return 0.8 - ((mParallelTier + mHeatingCapacity / 1800.0) / 50.0);
     }
@@ -259,6 +208,57 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity te, ForgeDirection side, ForgeDirection facing, int colorIndex,
+        boolean active, boolean redstone) {
+        if (side == facing) {
+            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_OIL_CRACKER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("DigesterRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(7, 4, 7, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Optional.Method(modid = "dreamcraft")
@@ -326,8 +326,6 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     }
 
     public Block getNitricAcidBlock() {
-        // 按名称延迟解析可避免可选模组缺失时的类加载崩溃 / Resolve by registry name lazily to avoid classloading crashes when the optional mod
-        // is absent.
         Fluid nitricAcid = FluidRegistry.getFluid("nitricacid");
         return nitricAcid == null ? null : nitricAcid.getBlock();
     }

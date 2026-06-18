@@ -81,14 +81,15 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
 
     public static int SIDE_SLOT_COUNT = 100;
     public static int ALL_SLOT_COUNT = SIDE_SLOT_COUNT * 2 + 1 + 9 * 9;
+    public static final int CONFIG_WINDOW_ID = 10;
+    public static final int MANUAL_SLOT_WINDOW = 11;
+
     public ItemStack[] shadowInventory = new ItemStack[SIDE_SLOT_COUNT];
     public int[] storedStackSizes = new int[SIDE_SLOT_COUNT];
     {
         Arrays.fill(storedStackSizes, Integer.MAX_VALUE);
     }
     public int[] savedStackSizes = new int[SIDE_SLOT_COUNT];
-    public static final int CONFIG_WINDOW_ID = 10;
-    public static final int MANUAL_SLOT_WINDOW = 11;
 
     public SuperInputBusME(int aID, boolean autoPullAvailable, String aName, String aNameRegional) {
         super(aID, autoPullAvailable, aName, aNameRegional);
@@ -143,11 +144,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperInputBusME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures);
-    }
-
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
     }
 
     @Override
@@ -545,6 +541,11 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     @Override
     public int getGUIWidth() {
         return 392;
+    }
+
+    @Override
+    public int getGUIHeight() {
+        return 179;
     }
 
     @Override

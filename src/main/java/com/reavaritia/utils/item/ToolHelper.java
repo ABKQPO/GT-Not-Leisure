@@ -16,15 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
-import com.reavaritia.common.ItemLoader;
 import com.reavaritia.common.items.InfinityAxe;
 import com.reavaritia.common.items.MatterCluster;
 
@@ -44,43 +41,23 @@ public class ToolHelper {
     public static Map<EntityPlayer, List<ItemStack>> hammerdrops = new WeakHashMap<>();
 
     public static void generateMatterCluster(World world, EntityPlayer player, Map<ItemStackWrapper, Integer> items) {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagCompound clusterItems = new NBTTagCompound();
+        if (items == null || items.isEmpty()) {
+            return;
+        }
 
-        int total = items.values()
-            .stream()
-            .mapToInt(Integer::intValue)
-            .sum();
-        clusterItems.setInteger("total", total);
-
-        NBTTagList itemsList = new NBTTagList();
+        Object2IntOpenHashMap<ItemStackWrapper> clusterContents = new Object2IntOpenHashMap<>();
         items.forEach((key, count) -> {
-            NBTTagCompound entry = new NBTTagCompound();
-
-            NBTTagCompound itemTag = new NBTTagCompound();
-            itemTag.setInteger(
-                "id",
-                Item.getIdFromItem(
-                    key.stack()
-                        .getItem()));
-            itemTag.setInteger("Count", 1);
-            itemTag.setInteger("Damage", key.stack().stackSize);
-
-            entry.setTag("item", itemTag);
-            entry.setInteger("count", count);
-
-            itemsList.appendTag(entry);
+            if (key == null || key.stack() == null || count == null || count <= 0) {
+                return;
+            }
+            clusterContents.put(key, clusterContents.getInt(key) + count);
         });
 
-        clusterItems.setTag("items", itemsList);
-        tag.setTag("clusteritems", clusterItems);
-
-        ItemStack cluster = new ItemStack(ItemLoader.MatterCluster, 1);
-        cluster.setTagCompound(tag);
-
-        EntityItem entity = new EntityItem(world, player.posX, player.posY + 0.5, player.posZ, cluster);
-        entity.delayBeforeCanPickup = 0;
-        world.spawnEntityInWorld(entity);
+        for (ItemStack cluster : MatterCluster.makeReAvaritiaClusters(clusterContents)) {
+            EntityItem entity = new EntityItem(world, player.posX, player.posY + 0.5, player.posZ, cluster);
+            entity.delayBeforeCanPickup = 0;
+            world.spawnEntityInWorld(entity);
+        }
     }
 
     public static void removeBlocksInIteration(EntityPlayer player, ItemStack stack, World world, int x, int y, int z,
@@ -119,7 +96,7 @@ public class ToolHelper {
         }
 
         if (!world.isRemote) {
-            List<ItemStack> clusters = MatterCluster.makeClusters(hammerdrops.get(player));
+            List<ItemStack> clusters = MatterCluster.makeReAvaritiaClusters(hammerdrops.get(player));
 
             for (ItemStack cluster : clusters) {
                 EntityItem ent = new EntityItem(world, x, y, z, cluster);

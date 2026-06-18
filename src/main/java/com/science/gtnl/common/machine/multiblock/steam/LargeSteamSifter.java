@@ -36,18 +36,11 @@ import gregtech.common.misc.GTStructureChannels;
 
 public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> implements ISurvivalConstructable {
 
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeSteamSifter(this.mName);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamSifterRecipeType");
-    }
-
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_sifter";
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 5;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
 
     public LargeSteamSifter(String aName) {
@@ -56,28 +49,6 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
 
     public LargeSteamSifter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-    }
-
-    private static final int HORIZONTAL_OFF_SET = 2;
-    private static final int VERTICAL_OFF_SET = 5;
-    private static final int DEPTH_OFF_SET = 0;
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_CENTRIFUGE_ACTIVE)
-                .extFacing()
-                .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_CENTRIFUGE)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
     }
 
     @Override
@@ -153,20 +124,19 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeSteamSifter(mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
+        if (mMachine) return -1;
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -180,27 +150,18 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierMaterialBlock == 1 && tierMachineCasing == 1
-            && tierFrameCasing == 1
-            && tierGearCasing == 1
-            && mCountCasing >= 20) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        if (tierMaterialBlock == 2 && tierMachineCasing == 2
-            && tierFrameCasing == 2
-            && tierGearCasing == 2
-            && mCountCasing >= 20) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        checkStructureCondition(errors, false);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            20,
+            tierMaterialBlock == 1 && tierMachineCasing == 1 && tierFrameCasing == 1 && tierGearCasing == 1,
+            tierMaterialBlock == 2 && tierMachineCasing == 2 && tierFrameCasing == 2 && tierGearCasing == 2);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.sifterRecipes;
     }
 
     @Override
@@ -211,11 +172,6 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
             return 32;
         }
         return 16;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.sifterRecipes;
     }
 
     @Override
@@ -231,6 +187,29 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
     @Override
     public int getTierRecipes() {
         return 3;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_CENTRIFUGE_ACTIVE)
+                .extFacing()
+                .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_CENTRIFUGE)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("LargeSteamSifterRecipeType");
     }
 
     @Override

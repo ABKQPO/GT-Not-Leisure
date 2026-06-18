@@ -59,8 +59,6 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.metatileentity.implementations.MTEHatch;
-import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -81,8 +79,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalConstructable {
 
     public static Object2IntMap<Coords> staticColorMap = new Object2IntOpenHashMap<>();
-
     public static long TIMERDIVIDER = 20;
+
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String INCUBATOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/incubator";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(INCUBATOR_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 0;
 
     public Sievert defaultSievertData = new Sievert(0, false);
     public HashSet<EntityPlayerMP> playerMPHashSet = new HashSet<>();
@@ -95,12 +99,6 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     public int mSievert;
     public int mNeededSievert;
     public boolean isVisibleFluid = false;
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String INCUBATOR_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/incubator";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(INCUBATOR_STRUCTURE_FILE_PATH);
-    private static final int HORIZONTAL_OFF_SET = 2;
-    private static final int VERTICAL_OFF_SET = 4;
-    private static final int DEPTH_OFF_SET = 0;
 
     public Incubator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -111,44 +109,41 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     }
 
     @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (this.height != this.reCalculateHeight()) this.needsVisualUpdate = true;
+        this.doAllVisualThings();
+        MTERadioHatch radioHatch = getPrimaryRadiationHatch();
+        if (this.getBaseMetaTileEntity()
+            .isServerSide() && radioHatch != null) {
+            this.mSievert = radioHatch.getSievert();
+            if (this.getBaseMetaTileEntity()
+                .isActive() && this.mNeededSievert > this.mSievert) this.mOutputFluids = null;
+        }
+        if (aBaseMetaTileEntity.isServerSide() && this.mMaxProgresstime <= 0) {
+            this.mMaxProgresstime = 0;
+        }
+    }
+
+    @Override
+    public void onRemoval() {
+        if (this.isVisibleFluid) {
+            int xDir = this.getXDir();
+            int zDir = this.getZDir();
+            this.removeFluid(xDir, zDir);
+            this.sendRenderPackets(xDir, zDir);
+        } else if (this.getBaseMetaTileEntity()
+            .getWorld()
+            .getTotalWorldTime() % 20 == 7) {
+                this.sendRenderPackets();
+            }
+
+        super.onRemoval();
+    }
+
+    @Override
     public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated();
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 210;
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("IncubatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_02"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 5, 5, false)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_Incubator_RadioHatch"),
-                StatCollector.translateToLocal("Tooltip_Incubator_Casing"),
-                1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -188,22 +183,46 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
             .build();
     }
 
-    public int getInputCapacity() {
-        int totalCapacity = 0;
-        for (MTEHatchInput inputHatch : mInputHatches) {
-            totalCapacity += inputHatch.getCapacity();
-        }
-        return totalCapacity;
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
+        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkHatchExact(errors, HatchElement.OutputHatch, 1);
+        checkHatchMax(errors, RadioHatchElement.RadioHatch, 1);
+        checkCasingMin(errors, mCountCasing, 19);
+    }
+
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        this.mRadHatches.clear();
+    }
+
+    @Override
+    public void construct(ItemStack itemStack, boolean b) {
+        this.buildPiece(STRUCTURE_PIECE_MAIN, itemStack, b, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
     @Override
     public int getCapacity() {
         return getInputCapacity();
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        return super.fill(resource, doFill);
     }
 
     @Override
@@ -281,47 +300,12 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         logic.setSpecialSlotItem(this.getControllerSlot());
     }
 
-    public boolean addRadiationInputToMachineList(IGregTechTileEntity aTileEntity, int CasingIndex) {
-        if (aTileEntity == null) {
-            return false;
+    public int getInputCapacity() {
+        int totalCapacity = 0;
+        for (MTEHatchInput inputHatch : mInputHatches) {
+            totalCapacity += inputHatch.getCapacity();
         }
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (!(aMetaTileEntity instanceof MTERadioHatch radioHatch)) {
-            return false;
-        } else {
-            radioHatch.updateTexture(CasingIndex);
-            return this.mRadHatches.add(radioHatch);
-        }
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
-        List<StructureError> errors) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            checkStructureCondition(errors, false);
-        setupParameters();
-        checkStructureCondition(errors, this.mCountCasing >= 19);
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        this.mRadHatches.clear();
-    }
-
-    @Override
-    public boolean checkHatch() {
-        for (MTEHatchEnergy mEnergyHatch : this.mEnergyHatches) {
-            if (mGlassTier < VoltageIndex.UHV && mEnergyHatch.mTier > mGlassTier) {
-                return false;
-            }
-        }
-        for (MTEHatch mExoticEnergyHatch : this.mExoticEnergyHatches) {
-            if (mGlassTier < VoltageIndex.UHV && mExoticEnergyHatch.mTier > mGlassTier) {
-                return false;
-            }
-        }
-        return super.checkHatch() && this.mRadHatches.size() <= 1 && this.mOutputHatches.size() == 1;
+        return totalCapacity;
     }
 
     public int reCalculateFluidAmount() {
@@ -341,20 +325,16 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         return fluidAmount >= capacity / 2 ? 3 : 2;
     }
 
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (this.height != this.reCalculateHeight()) this.needsVisualUpdate = true;
-        this.doAllVisualThings();
-        MTERadioHatch radioHatch = getPrimaryRadiationHatch();
-        if (this.getBaseMetaTileEntity()
-            .isServerSide() && radioHatch != null) {
-            this.mSievert = radioHatch.getSievert();
-            if (this.getBaseMetaTileEntity()
-                .isActive() && this.mNeededSievert > this.mSievert) this.mOutputFluids = null;
+    public boolean addRadiationInputToMachineList(IGregTechTileEntity aTileEntity, int CasingIndex) {
+        if (aTileEntity == null) {
+            return false;
         }
-        if (aBaseMetaTileEntity.isServerSide() && this.mMaxProgresstime <= 0) {
-            this.mMaxProgresstime = 0;
+        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+        if (!(aMetaTileEntity instanceof MTERadioHatch radioHatch)) {
+            return false;
+        } else {
+            radioHatch.updateTexture(CasingIndex);
+            return this.mRadHatches.add(radioHatch);
         }
     }
 
@@ -367,6 +347,85 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
             return null;
         }
         return radioHatch;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return 210;
+    }
+
+    @Override
+    protected int getGlassEnergyTierLimit() {
+        return VoltageIndex.UHV;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("IncubatorRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_02"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 5, 5, false)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("Tooltip_Incubator_RadioHatch"),
+                StatCollector.translateToLocal("Tooltip_Incubator_Casing"),
+                1)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        if (aPlayer.isSneaking()) {
+            batchMode = !batchMode;
+            if (batchMode) {
+                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOn"));
+            } else {
+                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOff"));
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -403,74 +462,16 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         return new Incubator(this.mName);
     }
 
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public void construct(ItemStack itemStack, boolean b) {
-        this.buildPiece(STRUCTURE_PIECE_MAIN, itemStack, b, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        if (aPlayer.isSneaking()) {
-            batchMode = !batchMode;
-            if (batchMode) {
-                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOn"));
-            } else {
-                GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("misc.BatchModeTextOff"));
-            }
-            return true;
-        }
-        return false;
-    }
-
     public void sendAllRequiredRendererPackets() {
         int height = this.reCalculateHeight();
         if (this.mFluid != null && height > 1 && this.reCalculateFluidAmount() > 0) {
-            for (int x = -1; x < 2; x++) for (int y = 2; y < height + 1; y++) // Y轴提高1格
-                for (int z = -1; z < 2; z++) this.sendPackagesOrRenewRenderer(x, y, z, this.mCulture);
+            for (int x = -1; x < 2; x++) {
+                for (int y = 2; y < height + 1; y++) {
+                    for (int z = -1; z < 2; z++) {
+                        this.sendPackagesOrRenewRenderer(x, y, z, this.mCulture);
+                    }
+                }
+            }
         }
     }
 
@@ -485,7 +486,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         .getXCoord(),
                 y + 1
                     + this.getBaseMetaTileEntity()
-                        .getYCoord(), // Y轴提高1格
+                        .getYCoord(),
                 zDir + z
                     + this.getBaseMetaTileEntity()
                         .getZCoord(),
@@ -499,7 +500,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         .getXCoord(),
                 y + 1
                     + this.getBaseMetaTileEntity()
-                        .getYCoord(), // Y轴提高1格
+                        .getYCoord(),
                 zDir + z
                     + this.getBaseMetaTileEntity()
                         .getZCoord(),
@@ -518,7 +519,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getXCoord(),
                         y + 1
                             + this.getBaseMetaTileEntity()
-                                .getYCoord(), // Y轴提高1格
+                                .getYCoord(),
                         zDir + z
                             + this.getBaseMetaTileEntity()
                                 .getZCoord(),
@@ -541,7 +542,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getXCoord(),
                         y + 1
                             + this.getBaseMetaTileEntity()
-                                .getYCoord(), // Y轴提高1格
+                                .getYCoord(),
                         zDir + z
                             + this.getBaseMetaTileEntity()
                                 .getZCoord(),
@@ -591,7 +592,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         this.height = this.reCalculateHeight();
         if (this.mFluid != null && this.height > 1 && this.reCalculateFluidAmount() > 0) {
             for (int x = -1; x < 2; x++) {
-                for (int y = 1; y < this.height + 1; y++) { // Y轴提高1格
+                for (int y = 1; y < this.height + 1; y++) {
                     for (int z = -1; z < 2; z++) {
                         if (this.getBaseMetaTileEntity()
                             .getWorld()
@@ -628,7 +629,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         this.isVisibleFluid = false;
 
         for (int x = -1; x < 2; x++) {
-            for (int y = 2; y < 4; y++) { // Y轴提高1格
+            for (int y = 2; y < 4; y++) {
                 for (int z = -1; z < 2; z++) {
                     if (this.getBaseMetaTileEntity()
                         .getWorld()
@@ -671,22 +672,6 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         }
     }
 
-    @Override
-    public void onRemoval() {
-        if (this.isVisibleFluid) {
-            int xDir = this.getXDir();
-            int zDir = this.getZDir();
-            this.removeFluid(xDir, zDir);
-            this.sendRenderPackets(xDir, zDir);
-        } else if (this.getBaseMetaTileEntity()
-            .getWorld()
-            .getTotalWorldTime() % 20 == 7) {
-                this.sendRenderPackets();
-            }
-
-        super.onRemoval();
-    }
-
     public void sendRenderPackets() {
         int xDir = this.getXDir();
         int zDir = this.getZDir();
@@ -696,7 +681,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     public void sendRenderPackets(int xDir, int zDir) {
         if (SideReference.Side.Server) {
             for (int x = -1; x < 2; x++) {
-                for (int y = 2; y < 4; y++) { // Y轴提高1格
+                for (int y = 2; y < 4; y++) {
                     for (int z = -1; z < 2; z++) {
                         GTValues.NW.sendPacketToAllPlayersInRange(
                             this.getBaseMetaTileEntity()
@@ -753,7 +738,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                 if (this.needsVisualUpdate && this.getBaseMetaTileEntity()
                     .getTimer() % Incubator.TIMERDIVIDER == 0) {
                     for (int x = -1; x < 2; x++) {
-                        for (int y = 2; y < 4; y++) { // Y轴提高1格
+                        for (int y = 2; y < 4; y++) {
                             for (int z = -1; z < 2; z++) {
                                 this.getBaseMetaTileEntity()
                                     .getWorld()
@@ -777,7 +762,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         || this.needsVisualUpdate && this.getBaseMetaTileEntity()
                             .getTimer() % Incubator.TIMERDIVIDER == 1) {
                         for (int x = -1; x < 2; x++) {
-                            for (int y = 2; y < this.height + 1; y++) { // Y轴提高1格
+                            for (int y = 2; y < this.height + 1; y++) {
                                 for (int z = -1; z < 2; z++) {
                                     if (aStack == null
                                         || aStack.getItem() instanceof ItemLabParts && aStack.getItemDamage() == 0) {
@@ -843,5 +828,4 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
             return adder;
         }
     }
-
 }

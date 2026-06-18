@@ -37,6 +37,7 @@ public class GTNLParallelHelper extends ParallelHelper {
     public static final CheckRecipeResult PARALLEL_ZERO = SimpleCheckRecipeResult.ofFailure("parallel_zero");
 
     public static final double MAX_BATCH_MODE_TICK_TIME = 128;
+
     /**
      * Machine used for calculation
      */
@@ -497,11 +498,104 @@ public class GTNLParallelHelper extends ParallelHelper {
             if (machine == null) {
                 throw new IllegalStateException("Tried to calculate void protection, but machine is not set");
             }
+            ItemStack[] voidProtectionItemOutputs = truncatedItemOutputs;
+            FluidStack[] voidProtectionFluidOutputs = truncatedFluidOutputs;
+            int[] itemOutputIndexes = null;
+            int[] fluidOutputIndexes = null;
+
+            if (truncatedItemOutputs.length > 0) {
+                int firstNullIndex = -1;
+                for (int i = 0; i < truncatedItemOutputs.length; i++) {
+                    if (truncatedItemOutputs[i] == null) {
+                        firstNullIndex = i;
+                        break;
+                    }
+                }
+                if (firstNullIndex >= 0) {
+                    int compactedCount = firstNullIndex;
+                    for (int i = firstNullIndex + 1; i < truncatedItemOutputs.length; i++) {
+                        if (truncatedItemOutputs[i] != null) {
+                            compactedCount++;
+                        }
+                    }
+                    if (compactedCount == 0) {
+                        voidProtectionItemOutputs = GTValues.emptyItemStackArray;
+                        itemOutputIndexes = new int[0];
+                    } else {
+                        ItemStack[] compactedOutputs = new ItemStack[compactedCount];
+                        int[] compactedIndexes = new int[compactedCount];
+                        for (int i = 0; i < firstNullIndex; i++) {
+                            compactedOutputs[i] = truncatedItemOutputs[i];
+                            compactedIndexes[i] = i;
+                        }
+                        int compactedIndex = firstNullIndex;
+                        for (int i = firstNullIndex + 1; i < truncatedItemOutputs.length; i++) {
+                            ItemStack output = truncatedItemOutputs[i];
+                            if (output == null) {
+                                continue;
+                            }
+                            compactedOutputs[compactedIndex] = output;
+                            compactedIndexes[compactedIndex] = i;
+                            compactedIndex++;
+                        }
+                        voidProtectionItemOutputs = compactedOutputs;
+                        itemOutputIndexes = compactedIndexes;
+                    }
+                }
+            }
+
+            if (truncatedFluidOutputs.length > 0) {
+                int firstNullIndex = -1;
+                for (int i = 0; i < truncatedFluidOutputs.length; i++) {
+                    if (truncatedFluidOutputs[i] == null) {
+                        firstNullIndex = i;
+                        break;
+                    }
+                }
+                if (firstNullIndex >= 0) {
+                    int compactedCount = firstNullIndex;
+                    for (int i = firstNullIndex + 1; i < truncatedFluidOutputs.length; i++) {
+                        if (truncatedFluidOutputs[i] != null) {
+                            compactedCount++;
+                        }
+                    }
+                    if (compactedCount == 0) {
+                        voidProtectionFluidOutputs = GTValues.emptyFluidStackArray;
+                        fluidOutputIndexes = new int[0];
+                    } else {
+                        FluidStack[] compactedOutputs = new FluidStack[compactedCount];
+                        int[] compactedIndexes = new int[compactedCount];
+                        for (int i = 0; i < firstNullIndex; i++) {
+                            compactedOutputs[i] = truncatedFluidOutputs[i];
+                            compactedIndexes[i] = i;
+                        }
+                        int compactedIndex = firstNullIndex;
+                        for (int i = firstNullIndex + 1; i < truncatedFluidOutputs.length; i++) {
+                            FluidStack output = truncatedFluidOutputs[i];
+                            if (output == null) {
+                                continue;
+                            }
+                            compactedOutputs[compactedIndex] = output;
+                            compactedIndexes[compactedIndex] = i;
+                            compactedIndex++;
+                        }
+                        voidProtectionFluidOutputs = compactedOutputs;
+                        fluidOutputIndexes = compactedIndexes;
+                    }
+                }
+            }
+
+            final int[] finalItemOutputIndexes = itemOutputIndexes;
+            final int[] finalFluidOutputIndexes = fluidOutputIndexes;
             VoidProtectionHelper voidProtectionHelper = new VoidProtectionHelper().setMachine(machine)
-                .setItemOutputs(truncatedItemOutputs)
-                .setFluidOutputs(truncatedFluidOutputs)
-                .setOutputChanceGetter(recipe::getOutputChance)
-                .setFluidOutputChanceGetter(recipe::getFluidOutputChance)
+                .setItemOutputs(voidProtectionItemOutputs)
+                .setFluidOutputs(voidProtectionFluidOutputs)
+                .setOutputChanceGetter(
+                    finalItemOutputIndexes == null ? recipe::getOutputChance
+                        : index -> recipe.getOutputChance(finalItemOutputIndexes[index]))
+                .setFluidOutputChanceGetter(
+                    finalFluidOutputIndexes == null ? recipe::getFluidOutputChance
+                        : index -> recipe.getFluidOutputChance(finalFluidOutputIndexes[index]))
                 .setOutputChanceMultiplier(chanceMultiplier)
                 .setMaxParallel(maxParallel)
                 .build();
@@ -697,4 +791,5 @@ public class GTNLParallelHelper extends ParallelHelper {
             fluidList.add(GTUtility.copyAmount((int) amount, origin));
         }
     }
+
 }

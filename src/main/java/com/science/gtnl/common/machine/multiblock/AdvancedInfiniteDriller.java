@@ -86,6 +86,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     public static final FluidStack CRYOTHEUM_TEMPLATE = new FluidStack(GTPPFluids.Cryotheum, 1);
 
     public double excessFuel = 0;
+
     public int drillTier = 0;
     public ArrayList<MTEHeatSensor> sensorHatches = new ArrayList<>();
 
@@ -98,210 +99,8 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new AdvancedInfiniteDrillerGui(this);
-    }
-
-    public double getExcessFuelForGui() {
-        return excessFuel;
-    }
-
-    public void setExcessFuelFromGui(double excessFuel) {
-        this.excessFuel = excessFuel;
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("AdvancedInfiniteDrillerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_11"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_12"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(25, 41, 25, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public IStructureDefinition<AdvancedInfiniteDriller> getStructureDefinition() {
-        return StructureDefinition.<AdvancedInfiniteDriller>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(Loaders.MAR_Casing, 0))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 16))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sSolenoidCoilCasings, 5))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement(
-                'J',
-                GTStructureUtility.buildHatchAdder(AdvancedInfiniteDriller.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.Maintenance,
-                        HatchElement.InputBus,
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        SpecialHatchElement.HeatSensor)
-                    .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
-            .addElement('K', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockMetal8, 0))
-            .build();
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ORE_DRILL_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ORE_DRILL)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public IAlignmentLimits getInitialAlignmentLimits() {
-        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
-    }
-
-    @Override
-    @NotNull
-    public CheckRecipeResult checkProcessing() {
-        drillTier = checkDrillTier();
-        if (drillTier == 0) {
-            excessFuel = Math.max(300, excessFuel - 4);
-            return CheckRecipeResultRegistry.NO_RECIPE;
-        }
-
-        if (excessFuel < 300) {
-            excessFuel = 300;
-        }
-
-        if (excessFuel > 10000) {
-            excessFuel = 10000;
-        }
-
-        ArrayList<FluidStack> storedFluids = getStoredFluids();
-        if (storedFluids.isEmpty()) {
-            return CheckRecipeResultRegistry.NO_RECIPE;
-        }
-
-        if (excessFuel < 2000) {
-            int consumptionCount = 0;
-            int pyrotheumConsumption = getPyrotheumConsumption();
-
-            for (FluidStack tFluid : storedFluids) {
-                if (GTUtility.areFluidsEqual(tFluid, PYROTHEUM_TEMPLATE)) {
-                    if (tFluid.amount >= pyrotheumConsumption) {
-                        tFluid.amount -= pyrotheumConsumption;
-                        consumptionCount++;
-                    }
-                }
-            }
-
-            if (consumptionCount > 0) {
-                excessFuel += consumptionCount;
-                this.mMaxProgresstime = 32;
-                this.lEUt = (int) -TierEU.RECIPE_ZPM;
-                return CheckRecipeResultRegistry.SUCCESSFUL;
-            } else {
-                excessFuel = Math.max(300, excessFuel - 4);
-                return CheckRecipeResultRegistry.NO_RECIPE;
-            }
-        } else {
-            int needEu = 0;
-            List<FluidStack> outputFluids = new ArrayList<>();
-            for (ItemStack item : getAllStoredInputs()) {
-                if (item.getItem() instanceof ItemDimensionDisplay) {
-                    int dimID = VMTweakHelper.dimMapping.inverse()
-                        .getOrDefault(ItemDimensionDisplay.getDimension(item), 0);
-                    GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimID);
-                    if (dimension == null) continue;
-
-                    XSTR tVeinRNG = new XSTR(System.nanoTime());
-                    int count = 0;
-                    int attempts = 0;
-
-                    while (count < 5 && attempts < 100) {
-                        attempts++;
-                        GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
-
-                        if (uoFluid == null || uoFluid.getFluid() == null) {
-                            continue;
-                        }
-
-                        int amount = (int) (2_000_000 + tVeinRNG.nextInt(100) * 2000 * excessFuel * drillTier);
-                        outputFluids.add(new FluidStack(uoFluid.getFluid(), amount));
-
-                        needEu += amount / 200;
-                        count++;
-                    }
-                }
-            }
-            mOutputFluids = outputFluids.toArray(new FluidStack[outputFluids.size()]);
-            this.mMaxProgresstime = (int) ((((double) 5750000 / excessFuel) - 475) * mConfigSpeedBoost);
-            this.lEUt = -needEu;
-            return CheckRecipeResultRegistry.SUCCESSFUL;
-        }
-    }
-
-    public int getPyrotheumConsumption() {
-        return (int) Math.pow(excessFuel, 1.3);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setDouble("excessFuel", excessFuel);
-    }
-
-    @Override
-    public void loadNBTData(final NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        if (aNBT.hasKey("excessFuel")) {
-            excessFuel = aNBT.getDouble("excessFuel");
-        }
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new AdvancedInfiniteDriller(this.mName);
     }
 
     @Override
@@ -378,23 +177,154 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
+    public IStructureDefinition<AdvancedInfiniteDriller> getStructureDefinition() {
+        return StructureDefinition.<AdvancedInfiniteDriller>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(Loaders.MAR_Casing, 0))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 16))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
+            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sSolenoidCoilCasings, 5))
+            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement(
+                'J',
+                GTStructureUtility.buildHatchAdder(AdvancedInfiniteDriller.class)
+                    .casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.Maintenance,
+                        HatchElement.InputBus,
+                        HatchElement.InputHatch,
+                        HatchElement.OutputHatch,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        SpecialHatchElement.HeatSensor)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+            .addElement('K', GTStructureUtility.ofFrame(Materials.Neutronium))
+            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockMetal8, 0))
+            .build();
+    }
+
+    @Override
+    public IAlignmentLimits getInitialAlignmentLimits() {
+        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
+    }
+
+    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)
-            || mOutputHatches.isEmpty()) {
-            checkStructureCondition(errors, false);
-        }
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 500);
+        checkHatch(errors);
+        checkHasOutputHatch(errors);
+        checkCasingMin(errors, mCountCasing, 500);
     }
 
     @Override
-    public void clearHatches() {
-        super.clearHatches();
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
-    public void setupParameters() {
-        super.setupParameters();
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    @NotNull
+    public CheckRecipeResult checkProcessing() {
+        drillTier = checkDrillTier();
+        if (drillTier == 0) {
+            excessFuel = Math.max(300, excessFuel - 4);
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
+        if (excessFuel < 300) {
+            excessFuel = 300;
+        }
+
+        if (excessFuel > 10000) {
+            excessFuel = 10000;
+        }
+
+        ArrayList<FluidStack> storedFluids = getStoredFluids();
+        if (storedFluids.isEmpty()) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
+        if (excessFuel < 2000) {
+            int consumptionCount = 0;
+            int pyrotheumConsumption = getPyrotheumConsumption();
+
+            for (FluidStack tFluid : storedFluids) {
+                if (GTUtility.areFluidsEqual(tFluid, PYROTHEUM_TEMPLATE) && tFluid.amount >= pyrotheumConsumption) {
+                    tFluid.amount -= pyrotheumConsumption;
+                    consumptionCount++;
+                }
+            }
+
+            if (consumptionCount > 0) {
+                excessFuel += consumptionCount;
+                this.mMaxProgresstime = 32;
+                this.lEUt = (int) -TierEU.RECIPE_ZPM;
+                return CheckRecipeResultRegistry.SUCCESSFUL;
+            }
+
+            excessFuel = Math.max(300, excessFuel - 4);
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
+        int needEu = 0;
+        List<FluidStack> outputFluids = new ArrayList<>();
+        for (ItemStack item : getAllStoredInputs()) {
+            if (item.getItem() instanceof ItemDimensionDisplay) {
+                int dimID = VMTweakHelper.DIM_MAPPING.inverse()
+                    .getOrDefault(ItemDimensionDisplay.getDimension(item), 0);
+                GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimID);
+                if (dimension == null) continue;
+
+                XSTR tVeinRNG = new XSTR(System.nanoTime());
+                int count = 0;
+                int attempts = 0;
+
+                while (count < 5 && attempts < 100) {
+                    attempts++;
+                    GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
+
+                    if (uoFluid == null || uoFluid.getFluid() == null) {
+                        continue;
+                    }
+
+                    int amount = (int) (2_000_000 + tVeinRNG.nextInt(100) * 2000 * excessFuel * drillTier);
+                    outputFluids.add(new FluidStack(uoFluid.getFluid(), amount));
+
+                    needEu += amount / 200;
+                    count++;
+                }
+            }
+        }
+        mOutputFluids = outputFluids.toArray(new FluidStack[outputFluids.size()]);
+        this.mMaxProgresstime = (int) ((((double) 5750000 / excessFuel) - 475) * mConfigSpeedBoost);
+        this.lEUt = -needEu;
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    public int getPyrotheumConsumption() {
+        return (int) Math.pow(excessFuel, 1.3);
     }
 
     public int checkDrillTier() {
@@ -423,35 +353,83 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         return 0;
     }
 
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new AdvancedInfiniteDriller(this.mName);
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        tag.setDouble("excessFuel", excessFuel);
-
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.hasKey("excessFuel")) {
-            currentTip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", tag.getDouble("excessFuel")));
+    public boolean addSensorHatchToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        if (aTileEntity == null) return false;
+        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+        if (aMetaTileEntity instanceof MTEHeatSensor sensor) {
+            sensor.updateTexture(aBaseCasingIndex);
+            return this.sensorHatches.add(sensor);
         }
+        return false;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ORE_DRILL_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ORE_DRILL)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+    }
+
+    @Override
+    public String[] getInfoData() {
+        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ret.add(StatCollector.translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", excessFuel));
+        return ret.toArray(new String[0]);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("AdvancedInfiniteDrillerRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_10"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_11"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_12"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(25, 41, 25, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new AdvancedInfiniteDrillerGui(this);
     }
 
     @Override
     @Deprecated
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the Advanced Infinite Driller terminal text is fully ported to mui2.
+        // TODO: Remove this MUI1 fallback after the Advanced Infinite Driller terminal text is fully ported to MUI2.
         super.drawTexts(screenElements, inventorySlot);
         screenElements
             .widget(
@@ -464,11 +442,50 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                 new FakeSyncWidget.DoubleSyncer(() -> excessFuel, fuel -> excessFuel = fuel).setSynced(true, false));
     }
 
+    public double getExcessFuelForGui() {
+        return excessFuel;
+    }
+
+    public void setExcessFuelFromGui(double excessFuel) {
+        this.excessFuel = excessFuel;
+    }
+
     @Override
-    public String[] getInfoData() {
-        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        ret.add(StatCollector.translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", excessFuel));
-        return ret.toArray(new String[0]);
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        tag.setDouble("excessFuel", excessFuel);
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+        if (tag.hasKey("excessFuel")) {
+            currentTip.add(
+                StatCollector
+                    .translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", tag.getDouble("excessFuel")));
+        }
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setDouble("excessFuel", excessFuel);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        if (aNBT.hasKey("excessFuel")) {
+            excessFuel = aNBT.getDouble("excessFuel");
+        }
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return false;
     }
 
     @Override
@@ -493,36 +510,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public boolean supportsSingleRecipeLocking() {
-        return false;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    public boolean addSensorHatchToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity == null) return false;
-        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-        if (aMetaTileEntity instanceof MTEHeatSensor sensor) {
-            sensor.updateTexture(aBaseCasingIndex);
-            return this.sensorHatches.add(sensor);
-        }
         return false;
     }
 

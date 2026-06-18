@@ -55,25 +55,6 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
         return new SuperVoidHatch(mName, mTier, mDescriptionArray, mTextures);
     }
 
-    @Override
-    public boolean canStoreFluid(@NotNull FluidStack fluidStack) {
-        if (isFluidsLocked()) {
-            if (lockedFluidNames == null || lockedFluidNames.length == 0) {
-                return false;
-            }
-            String fluidName = fluidStack.getFluid()
-                .getName();
-            for (String locked : lockedFluidNames) {
-                if (fluidName.equals(locked)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
         aNBT.setByte("mMode", mMode);
@@ -103,6 +84,24 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
         } else {
             lockedFluidNames = new String[100];
         }
+    }
+
+    @Override
+    public boolean canStoreFluid(@NotNull FluidStack fluidStack) {
+        if (isFluidsLocked()) {
+            if (lockedFluidNames == null || lockedFluidNames.length == 0) {
+                return false;
+            }
+            String fluidName = fluidStack.getFluid()
+                .getName();
+            for (String locked : lockedFluidNames) {
+                if (fluidName.equals(locked)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
     public String getLockedFluidName() {
@@ -178,6 +177,44 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
     }
 
     @Override
+    public String[] getInfoData() {
+        List<String> info = new ArrayList<>();
+
+        info.add(
+            EnumChatFormatting.BLUE + StatCollector.translateToLocal("GT5U.infodata.hatch.output")
+                + EnumChatFormatting.RESET);
+
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "GT5U.infodata.hatch.output.fluid",
+                EnumChatFormatting.GOLD
+                    + (mFluid == null ? StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.none")
+                        : mFluid.getLocalizedName())
+                    + EnumChatFormatting.RESET));
+
+        info.add(
+            EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mFluid == null ? 0 : mFluid.amount)
+                + " L"
+                + EnumChatFormatting.RESET
+                + " "
+                + EnumChatFormatting.YELLOW
+                + NumberFormatUtil.formatNumber(getCapacity())
+                + " L"
+                + EnumChatFormatting.RESET);
+
+        if (!isFluidsLocked() || lockedFluidNames == null || lockedFluidNames.length == 0) {
+            info.add(StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.locked_to.none"));
+        } else {
+            info.add(
+                StatCollector.translateToLocalFormatted(
+                    "GT5U.infodata.hatch.output.fluid.locked_to",
+                    getLockedFluidsLocalized()));
+        }
+
+        return info.toArray(new String[0]);
+    }
+
+    @Override
     protected boolean useMui2() {
         return true;
     }
@@ -221,54 +258,6 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
         return 220;
     }
 
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after SuperVoidHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(195, 83));
-    }
-
-    @Override
-    public String[] getInfoData() {
-        List<String> info = new ArrayList<>();
-
-        info.add(
-            EnumChatFormatting.BLUE + StatCollector.translateToLocal("GT5U.infodata.hatch.output")
-                + EnumChatFormatting.RESET);
-
-        info.add(
-            StatCollector.translateToLocalFormatted(
-                "GT5U.infodata.hatch.output.fluid",
-                EnumChatFormatting.GOLD
-                    + (mFluid == null ? StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.none")
-                        : mFluid.getLocalizedName())
-                    + EnumChatFormatting.RESET));
-
-        info.add(
-            EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mFluid == null ? 0 : mFluid.amount)
-                + " L"
-                + EnumChatFormatting.RESET
-                + " "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(getCapacity())
-                + " L"
-                + EnumChatFormatting.RESET);
-
-        if (!isFluidsLocked() || lockedFluidNames == null || lockedFluidNames.length == 0) {
-            info.add(StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.locked_to.none"));
-        } else {
-            info.add(
-                StatCollector.translateToLocalFormatted(
-                    "GT5U.infodata.hatch.output.fluid.locked_to",
-                    getLockedFluidsLocalized()));
-        }
-
-        return info.toArray(new String[0]);
-    }
-
     public String getLockedFluidsLocalized() {
         StringBuilder sb = new StringBuilder();
         for (String name : lockedFluidNames) {
@@ -281,5 +270,15 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after SuperVoidHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(195, 83));
     }
 }

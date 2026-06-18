@@ -37,18 +37,11 @@ import gregtech.common.misc.GTStructureChannels;
 
 public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> implements ISurvivalConstructable {
 
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeSteamCrusher(this.mName);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamCrusherRecipeType");
-    }
-
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_crusher";
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 6;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
 
     public LargeSteamCrusher(String aName) {
@@ -57,28 +50,6 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     public LargeSteamCrusher(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-    }
-
-    private static final int HORIZONTAL_OFF_SET = 3;
-    private static final int VERTICAL_OFF_SET = 6;
-    private static final int DEPTH_OFF_SET = 0;
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
-                .extFacing()
-                .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
     }
 
     @Override
@@ -160,20 +131,19 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeSteamCrusher(mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
+        if (mMachine) return -1;
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -187,29 +157,24 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierGearCasing == 1 && tierMachineCasing == 1
-            && tierFrameCasing == 1
-            && tierPlatedCasing == 1
-            && tierBrickCasing == 1
-            && mCountCasing >= 100) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        if (tierGearCasing == 2 && tierMachineCasing == 2
-            && tierFrameCasing == 2
-            && tierPlatedCasing == 2
-            && tierBrickCasing == 2
-            && mCountCasing >= 100) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        checkStructureCondition(errors, false);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            100,
+            tierGearCasing == 1 && tierMachineCasing == 1
+                && tierFrameCasing == 1
+                && tierPlatedCasing == 1
+                && tierBrickCasing == 1,
+            tierGearCasing == 2 && tierMachineCasing == 2
+                && tierFrameCasing == 2
+                && tierPlatedCasing == 2
+                && tierBrickCasing == 2);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.maceratorRecipes;
     }
 
     @Override
@@ -220,11 +185,6 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
             return 256;
         }
         return 128;
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.maceratorRecipes;
     }
 
     @Override
@@ -239,7 +199,30 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     @Override
     public int getTierRecipes() {
-        return (tierMachine == 2) ? 3 : 2;
+        return tierMachine == 2 ? 3 : 2;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
+                .extFacing()
+                .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("LargeSteamCrusherRecipeType");
     }
 
     @Override

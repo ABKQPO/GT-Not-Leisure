@@ -72,36 +72,6 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MicroorganismMasterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(29, 25, 30, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public int getCasingTextureID() {
         return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 0);
     }
@@ -197,10 +167,10 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing > 50);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 51);
     }
 
     @Override
@@ -248,6 +218,36 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
     @Override
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.MicroorganismMasterRecipes;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("MicroorganismMasterRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(29, 25, 30, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MicroorganismMaster_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

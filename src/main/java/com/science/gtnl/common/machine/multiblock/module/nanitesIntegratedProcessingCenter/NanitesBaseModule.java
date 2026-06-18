@@ -23,6 +23,9 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends WirelessEnergyMultiMachineBase<T> {
 
+    public static final int HORIZONTAL_OFF_SET = 7;
+    public static final int VERTICAL_OFF_SET = 17;
+    public static final int DEPTH_OFF_SET = 0;
     public boolean isConnected = false;
     public boolean isOreModule = false;
     public boolean isBioModule = false;
@@ -30,9 +33,6 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     public double setEUtDiscount = 0;
     public double setDurationModifier = 0;
     public int setMaxParallel = 0;
-    public static final int HORIZONTAL_OFF_SET = 7;
-    public static final int VERTICAL_OFF_SET = 17;
-    public static final int DEPTH_OFF_SET = 0;
     public int mHeatingCapacity = 0;
 
     public NanitesBaseModule(int aID, String aName, String aNameRegional) {
@@ -76,11 +76,6 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.NanitesIntegratedProcessingRecipes;
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -120,6 +115,11 @@ public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends 
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.NanitesIntegratedProcessingRecipes;
     }
 
     public void connect() {

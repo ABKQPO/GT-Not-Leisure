@@ -1,6 +1,8 @@
 package com.science.gtnl.common.gui.modularui;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -15,26 +17,26 @@ import com.science.gtnl.common.machine.hatch.SuperVoidBus;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
+import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 
-public class SuperVoidBusGui {
+public class SuperVoidBusGui extends MTEHatchBaseGui<SuperVoidBus> {
 
     private static final int SLOT_COLUMNS = 10;
     private static final int SLOT_ROWS = 10;
 
-    private final SuperVoidBus hatch;
     private final GTNLMui2ItemHandlerAdapter lockedInventoryHandler;
 
     public SuperVoidBusGui(SuperVoidBus hatch) {
-        this.hatch = hatch;
+        super(hatch);
         this.lockedInventoryHandler = new GTNLMui2ItemHandlerAdapter(hatch.lockedInventoryHandler);
     }
 
+    @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return GTGuis.mteTemplatePanelBuilder(hatch, guiData, syncManager, uiSettings)
-            .setWidth(hatch.getGUIWidth())
-            .setHeight(hatch.getGUIHeight())
+        return GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
+            .setWidth(machine.getGUIWidth())
+            .setHeight(machine.getGUIHeight())
             .doesAddGregTechLogo(false)
-            .doesBindPlayerInventory(false)
             .build()
             .child(createFilterScroll())
             .child(createLogo());
@@ -42,6 +44,7 @@ public class SuperVoidBusGui {
 
     private IWidget createFilterScroll() {
         return new ListWidget<>().scrollDirection(new VerticalScrollData())
+            .showScrollShadows(false)
             .size(18 * SLOT_COLUMNS + 4, 72)
             .pos(20, 9)
             .child(createFilterGrid());
@@ -57,9 +60,13 @@ public class SuperVoidBusGui {
                     .backgroundOverlay(GTGuiTextures.OVERLAY_SLOT_FILTER));
     }
 
-    private IWidget createLogo() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
-            .size(18)
-            .pos(195, 83);
+    @Override
+    protected IDrawable.DrawableWidget createLogo() {
+        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
+    }
+
+    @Override
+    protected UITexture getLogoTexture() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 }

@@ -316,8 +316,6 @@ public enum GTNLItemList implements IItemContainer {
     TestItem,
     KFCFamily,
     RecordSus,
-    RecordNewHorizons,
-    RecordLavaChicken,
     FakeItemSiren,
     TimeStopPocketWatch,
     InfinityTorch,

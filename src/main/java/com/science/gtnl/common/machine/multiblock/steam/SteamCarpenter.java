@@ -50,8 +50,8 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCarpenterRecipeType");
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamCarpenter(this.mName);
     }
 
     @Override
@@ -107,6 +107,14 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
+    }
+
+    @Override
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.SteamCarpenterRecipes;
     }
@@ -114,17 +122,6 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
     @Override
     public int getTierRecipes() {
         return 14;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_01"))
-            .beginStructureBlock(3, 3, 3, true)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override
@@ -139,27 +136,32 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                         .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER_ACTIVE)
                         .extFacing()
                         .build() };
-            } else {
-                return new ITexture[] {
-                    Textures.BlockIcons
-                        .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER)
-                        .extFacing()
-                        .build() };
             }
+            return new ITexture[] {
+                Textures.BlockIcons
+                    .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_CARPENTER)
+                    .extFacing()
+                    .build() };
         }
         return new ITexture[] { Textures.BlockIcons
             .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)) };
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamCarpenterRecipeType");
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamCarpenter(this.mName);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_01"))
+            .beginStructureBlock(3, 3, 3, true)
+            .toolTipFinisher();
+        return tt;
     }
 }

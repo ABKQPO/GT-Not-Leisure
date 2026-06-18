@@ -36,6 +36,70 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 5;
+    }
+
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        if (processingLogic == null) {
+            return checkRecipe(mInventory[1]) ? CheckRecipeResultRegistry.SUCCESSFUL
+                : CheckRecipeResultRegistry.NO_RECIPE;
+        }
+
+        setupProcessingLogic(processingLogic);
+
+        CheckRecipeResult result = doCheckRecipe();
+        result = postCheckRecipe(result, processingLogic);
+        updateSlots();
+        if (!result.wasSuccessful()) return result;
+
+        mEfficiency = 10000;
+        mEfficiencyIncrease = 10000;
+        mMaxProgresstime = processingLogic.getDuration();
+        setEnergyUsage(processingLogic);
+
+        ItemStack[] outputItems = processingLogic.getOutputItems();
+        ItemStack inputItem = ((GTNLProcessingLogic) processingLogic).getInputItems()[0];
+
+        double multiplier = 2.0;
+        for (ItemStack itemStack : getAllStoredInputs()) {
+            if (GTUtility.areStacksEqual(inputItem, itemStack)) {
+                multiplier += 0.5 * itemStack.stackSize;
+                if (multiplier >= 34.0) {
+                    multiplier = 34.0;
+                    break;
+                }
+            }
+        }
+
+        if (GTUtility.areStacksEqual(inputItem, getControllerSlot())) {
+            multiplier += 0.5 * getControllerSlot().stackSize;
+            if (multiplier >= 34.0) {
+                multiplier = 34.0;
+            }
+        }
+
+        if (outputItems != null) {
+            for (ItemStack itemStack : outputItems) {
+                if (itemStack != null && random.nextDouble() * 100 < multiplier) {
+                    itemStack.stackSize *= 2;
+                }
+            }
+        }
+
+        mOutputItems = outputItems;
+        mOutputFluids = processingLogic.getOutputFluids();
+        return result;
+    }
+
+    @Override
     public String getMachineType() {
         return StatCollector.translateToLocal("SteamEntityCrusherModuleRecipeType");
     }
@@ -80,73 +144,4 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
     public boolean supportsSteamOC() {
         return false;
     }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 5;
-    }
-
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        if (processingLogic == null) {
-            return checkRecipe(mInventory[1]) ? CheckRecipeResultRegistry.SUCCESSFUL
-                : CheckRecipeResultRegistry.NO_RECIPE;
-        }
-
-        setupProcessingLogic(processingLogic);
-
-        CheckRecipeResult result = doCheckRecipe();
-        result = postCheckRecipe(result, processingLogic);
-        updateSlots();
-        if (!result.wasSuccessful()) return result;
-
-        mEfficiency = 10000;
-        mEfficiencyIncrease = 10000;
-        mMaxProgresstime = processingLogic.getDuration();
-        setEnergyUsage(processingLogic);
-
-        ItemStack[] outputItems = processingLogic.getOutputItems();
-        ItemStack inputItem = ((GTNLProcessingLogic) processingLogic).getInputItems()[0];
-
-        double multiplier = 2.0;
-
-        for (ItemStack itemStack : getAllStoredInputs()) {
-            if (GTUtility.areStacksEqual(inputItem, itemStack)) {
-                multiplier += 0.5 * itemStack.stackSize;
-                if (multiplier >= 34.0) {
-                    multiplier = 34.0;
-                    break;
-                }
-            }
-        }
-
-        if (GTUtility.areStacksEqual(inputItem, getControllerSlot())) {
-            multiplier += 0.5 * getControllerSlot().stackSize;
-            if (multiplier >= 34.0) {
-                multiplier = 34.0;
-            }
-        }
-
-        if (outputItems != null) {
-            for (ItemStack itemStack : outputItems) {
-                if (itemStack != null) {
-                    if (random.nextDouble() * 100 < multiplier) {
-                        itemStack.stackSize *= 2;
-                    }
-                }
-            }
-        }
-
-        mOutputItems = outputItems;
-        mOutputFluids = processingLogic.getOutputFluids();
-
-        return result;
-    }
-
 }

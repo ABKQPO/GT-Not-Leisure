@@ -42,9 +42,71 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LootBagRedemption extends MTEBasicMachine {
 
+    private static final int BONUS_MUL_PER_LEVEL = 3;
     public static final Random random = new Random();
     public static final ItemStack coin = Mods.NewHorizonsCoreMod.isModLoaded() ? getCoinTechnician()
         : new ItemStack(Items.paper);
+
+    /**
+     * Find the target loot drop in the bag.
+     *
+     * <p>
+     * The result can be {@code null} if the target wasn't found in the loot bag and its chain. And the amount of the
+     * result can be more than 64 because of level bonus.
+     *
+     * @param lootBagItemStack the loot bag item
+     * @param targetItemStack  the target item to get
+     * @return the reward item
+     */
+    public static ItemStack getTargetLootDrop(ItemStack lootBagItemStack, ItemStack targetItemStack) {
+        Item lootBagItem = lootBagItemStack.getItem();
+        assert lootBagItem instanceof ItemLootBag;
+
+        LootGroupsHandler lgHandler = ((AccessorItemLootBag) lootBagItem).getLGHandler();
+        int bagId = lootBagItemStack.getItemDamage();
+
+        int depth = 0;
+        LootGroups.LootGroup group = lgHandler.getGroupByID(bagId);
+        // visited groups will be added to this set, so we can ensure that we won't drop into a dead loop.
+        HashSet<LootGroups.LootGroup> visited = Sets.newHashSet();
+        do {
+            if (!visited.add(group)) {
+                // oops, the group has already been searched, there's a circle in the reference chain!
+                log.warn("Unexpected state, LootGroup {} has a loop reference chain.", group.getGroupID());
+                return null;
+            }
+            for (LootGroups.LootGroup.Drop drop : group.getDrops()) {
+                ItemStack rewardItemStack = drop.getItemStack();
+                if (GTUtility.areStacksEqual(targetItemStack, rewardItemStack, true)) {
+                    // grant bonus rewards for using a higher level loot bag.
+                    // for example, if we will give 2x FOO in LV bag,
+                    // we're expected to reward 6x (2 x 3¹) FOO in MV bag, and 18x (2 x 3²) in HV bag.
+                    rewardItemStack.stackSize = (int) (drop.getAmount() * Math.pow(BONUS_MUL_PER_LEVEL, depth));
+                    return rewardItemStack;
+                }
+            }
+            // we've iterated all drops, but not found the target, so we try to find it in the lower level group.
+            if (group.getCombineWithTrash()) { // the group has a trash (lower level) group
+                LootGroups.LootGroup trash = lgHandler.getGroupByID(group.getTrashGroup());
+                if (trash == null) { // a trash group is expected, but it's not valid
+                    log.warn(
+                        "Unexpected state, LootGroup {} has an invalid trash group reference {}",
+                        group.getGroupID(),
+                        group.getTrashGroup());
+                    return null;
+                }
+                group = trash;
+                depth++;
+            } else { // nope, we've iterated all but still not got what we wanted. :(
+                return null;
+            }
+        } while (true);
+    }
+
+    @Optional.Method(modid = "dreamcraft")
+    private static ItemStack getCoinTechnician() {
+        return NHItemList.CoinTechnician.get(1);
+    }
 
     public LootBagRedemption(int aID, String aName, String aNameRegional, int aTier) {
         super(
@@ -118,26 +180,6 @@ public class LootBagRedemption extends MTEBasicMachine {
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new LootBagRedemption(this.mName, this.mTier, this.mDescriptionArray, this.mTextures);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after LootBagRedemption mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
     }
 
     @Override
@@ -257,6 +299,16 @@ public class LootBagRedemption extends MTEBasicMachine {
     }
 
     @Override
+    public long maxEUStore() {
+        return Math.max(getEUVar(), GTValues.V[6]);
+    }
+
+    @Override
+    public boolean hasEnoughEnergyToCheckRecipe() {
+        return getBaseMetaTileEntity().getStoredEU() > TierEU.RECIPE_LV;
+    }
+
+    @Override
     public void startSoundLoop(byte aIndex, double aX, double aY, double aZ) {
         super.startSoundLoop(aIndex, aX, aY, aZ);
         if (aIndex == 1) {
@@ -270,74 +322,22 @@ public class LootBagRedemption extends MTEBasicMachine {
     }
 
     @Override
-    public long maxEUStore() {
-        return Math.max(getEUVar(), GTValues.V[6]);
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after LootBagRedemption mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 
     @Override
-    public boolean hasEnoughEnergyToCheckRecipe() {
-        return getBaseMetaTileEntity().getStoredEU() > TierEU.RECIPE_LV;
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
     }
 
-    private static final int BONUS_MUL_PER_LEVEL = 3;
-
-    /**
-     * Find the target loot drop in the bag.
-     * <p>
-     * The result can be {@code null} if the target wasn't found in the loot bag and its chain. And the amount of the
-     * result can be more than 64 because of level bonus.
-     *
-     * @param lootBagItemStack the loot bag item
-     * @param targetItemStack  the target item to get
-     * @return the reward item
-     */
-    public static ItemStack getTargetLootDrop(ItemStack lootBagItemStack, ItemStack targetItemStack) {
-        Item lootBagItem = lootBagItemStack.getItem();
-        assert lootBagItem instanceof ItemLootBag;
-
-        LootGroupsHandler lgHandler = ((AccessorItemLootBag) lootBagItem).getLGHandler();
-        int bagId = lootBagItemStack.getItemDamage();
-
-        int depth = 0;
-        LootGroups.LootGroup group = lgHandler.getGroupByID(bagId);
-        // visited groups will be added to this set, so we can ensure that we won't drop into a dead loop.
-        HashSet<LootGroups.LootGroup> visited = Sets.newHashSet();
-        do {
-            if (!visited.add(group)) {
-                // oops, the group has already been searched, there's a circle in the reference chain!
-                log.warn("Unexpected state, LootGroup {} has a loop reference chain.", group.getGroupID());
-                return null;
-            }
-            for (LootGroups.LootGroup.Drop drop : group.getDrops()) {
-                ItemStack rewardItemStack = drop.getItemStack();
-                if (GTUtility.areStacksEqual(targetItemStack, rewardItemStack, true)) {
-                    // grant bonus rewards for using a higher level loot bag.
-                    // for example, if we will give 2x FOO in LV bag,
-                    // we're expected to reward 6x (2 x 3¹) FOO in MV bag, and 18x (2 x 3²) in HV bag.
-                    rewardItemStack.stackSize = (int) (drop.getAmount() * Math.pow(BONUS_MUL_PER_LEVEL, depth));
-                    return rewardItemStack;
-                }
-            }
-            // we've iterated all drops, but not found the target, so we try to find it in the lower level group.
-            if (group.getCombineWithTrash()) { // the group has a trash (lower level) group
-                LootGroups.LootGroup trash = lgHandler.getGroupByID(group.getTrashGroup());
-                if (trash == null) { // a trash group is expected, but it's not valid
-                    log.warn(
-                        "Unexpected state, LootGroup {} has an invalid trash group reference {}",
-                        group.getGroupID(),
-                        group.getTrashGroup());
-                    return null;
-                }
-                group = trash;
-                depth++;
-            } else { // nope, we've iterated all but still not got what we wanted. :(
-                return null;
-            }
-        } while (true);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    private static ItemStack getCoinTechnician() {
-        return NHItemList.CoinTechnician.get(1);
+    @Override
+    protected boolean useMui2() {
+        return true;
     }
 }

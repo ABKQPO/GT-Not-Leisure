@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.cover;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.science.gtnl.common.gui.WirelessSteamCoverGui;
 import com.science.gtnl.common.gui.WirelessSteamCoverUIFactory;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
@@ -31,11 +30,6 @@ public class WirelessSteamCover extends CoverLegacyData {
     }
 
     @Override
-    public boolean isRedstoneSensitive(long aTimer) {
-        return false;
-    }
-
-    @Override
     public boolean allowsCopyPasteTool() {
         return false;
     }
@@ -45,22 +39,12 @@ public class WirelessSteamCover extends CoverLegacyData {
         return false;
     }
 
-    public static UUID getOwner(Object te) {
-        if (te instanceof BaseMetaTileEntity igte) {
-            return igte.getOwnerUuid();
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void doCoverThings(byte aInputRedstone, long aTimer) {
-        if (aTimer % 100 == 0) {
+        if (aInputRedstone == 0 && aTimer % 100 == 0) {
             ICoverable coverable = coveredTile.get();
-            if (coverable instanceof IMachineProgress machineProgress) {
-                if (machineProgress.isAllowedToWork()) {
-                    tryFetchingSteam(machineProgress);
-                }
+            if (coverable instanceof IMachineProgress machineProgress && machineProgress.isAllowedToWork()) {
+                tryFetchingSteam(machineProgress);
             }
         }
     }
@@ -69,20 +53,17 @@ public class WirelessSteamCover extends CoverLegacyData {
         if (tileEntity instanceof BaseMetaTileEntity baseTile
             && baseTile.getMetaTileEntity() instanceof CommonMetaTileEntity commonMetaTile) {
             FluidStack fluid = commonMetaTile.getFluid();
-            if (fluid != null) {
-                if (!GTUtility.areFluidsEqual(fluid, new FluidStack(SteamTypes.values()[coverData].fluid, 1))) return;
+            if (fluid != null
+                && !GTUtility.areFluidsEqual(fluid, new FluidStack(SteamTypes.values()[coverData].fluid, 1))) {
+                return;
             }
             int capacity = commonMetaTile.getCapacity();
             int fluidAmount = fluid != null ? commonMetaTile.getFluidAmount() : 0;
-
-            int availableSteam = SteamWirelessNetworkManager.getUserSteamInt(getOwner(tileEntity));
-
+            int availableSteam = SteamWirelessNetworkManager.getUserSteamInt(Utils.getOwner(tileEntity));
             int current = Math.max(0, Math.min(availableSteam, capacity - fluidAmount));
 
-            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(getOwner(tileEntity), -current)) return;
-
+            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(Utils.getOwner(tileEntity), -current)) return;
             commonMetaTile.fill(new FluidStack(getSteamMode().fluid, current), true);
-
         }
     }
 
@@ -114,13 +95,8 @@ public class WirelessSteamCover extends CoverLegacyData {
     }
 
     @Override
-    public boolean alwaysLookConnected() {
+    public boolean hasCoverGUI() {
         return true;
-    }
-
-    @Override
-    public int getMinimumTickRate() {
-        return 20;
     }
 
     @Override
@@ -129,14 +105,19 @@ public class WirelessSteamCover extends CoverLegacyData {
     }
 
     @Override
-    public boolean hasCoverGUI() {
-        return true;
-    }
-
-    @Override
     @Deprecated
     public ModularWindow createWindow(CoverUIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after the mui2 WirelessSteamCoverGui is validated in all cover opening paths.
         return new WirelessSteamCoverUIFactory(buildContext).createWindow();
+    }
+
+    @Override
+    public boolean alwaysLookConnected() {
+        return true;
+    }
+
+    @Override
+    public int getMinimumTickRate() {
+        return 20;
     }
 }

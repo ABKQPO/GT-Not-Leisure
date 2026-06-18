@@ -34,21 +34,8 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity arg0) {
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new BeamlinePipeMirror(mName);
-    }
-
-    @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_00"),
-            StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_01") };
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, int aConnections,
-        int colorIndex, boolean aConnected, boolean aRedstone) {
-        return new ITexture[] { TextureFactory
-            .of(BlockIcons.BEAMLINE_PIPE_MIRROR, Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
     }
 
     @Override
@@ -87,6 +74,24 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
             .changeDetected() == 4) {
                 aBaseMetaTileEntity.issueTextureUpdate();
             }
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, int aConnections,
+        int colorIndex, boolean aConnected, boolean aRedstone) {
+        return new ITexture[] { TextureFactory
+            .of(BlockIcons.BEAMLINE_PIPE_MIRROR, Dyes.getModulation(colorIndex, MACHINE_METAL.getRGBA())) };
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_00"),
+            StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_01") };
+    }
+
+    @Override
+    public float getCollisionThickness() {
+        return 0.6f;
     }
 
     public ForgeDirection getBendDirection(ForgeDirection dir) {
@@ -129,9 +134,7 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
                     if (aMetaTileEntity instanceof MTEHatchInputBeamline
                         && opposite == tGTTileEntity.getFrontFacing()) {
                         return tGTTileEntity;
-                    }
-
-                    else if (aMetaTileEntity instanceof MTEBeamlinePipe beamlinePipe) {
+                    } else if (aMetaTileEntity instanceof MTEBeamlinePipe beamlinePipe) {
                         beamlinePipe.markUsed();
                     } else {
                         return null;
@@ -144,10 +147,5 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
             }
         }
         return null;
-    }
-
-    @Override
-    public float getCollisionThickness() {
-        return 0.6f;
     }
 }

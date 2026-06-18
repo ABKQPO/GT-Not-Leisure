@@ -35,6 +35,33 @@ public class SteamOilDrillModule extends SteamElevatorModule {
         return new SteamOilDrillModule(this.mName, this.mTier);
     }
 
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        int dimensionId = getBaseMetaTileEntity().getWorld().provider.dimensionId;
+        GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimensionId);
+        if (dimension == null) return CheckRecipeResultRegistry.NO_RECIPE;
+        ArrayList<FluidStack> fluidStack = new ArrayList<>();
+
+        for (int i = 0; i < mTier - 1; i++) {
+            GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
+
+            if (uoFluid == null || uoFluid.getFluid() == null) {
+                continue;
+            }
+
+            int base = 250 * (1 << Math.max(0, mTier - 2));
+            int amount = base * (1 + tVeinRNG.nextInt(4));
+            fluidStack.add(new FluidStack(uoFluid.getFluid(), amount));
+        }
+
+        this.mOutputFluids = fluidStack.toArray(new FluidStack[0]);
+        this.lEUt = GTValues.VP[mTier];
+        this.mMaxProgresstime = 1200 / (mTier - 1);
+
+        return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
     @Override
     public String getMachineType() {
         return StatCollector.translateToLocal("SteamOilDrillModuleRecipeType");
@@ -61,32 +88,5 @@ public class SteamOilDrillModule extends SteamElevatorModule {
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
-    }
-
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        int dimensionId = getBaseMetaTileEntity().getWorld().provider.dimensionId;
-        GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimensionId);
-        if (dimension == null) return CheckRecipeResultRegistry.NO_RECIPE;
-        ArrayList<FluidStack> fluidStack = new ArrayList<>();
-
-        for (int i = 0; i < mTier - 1; i++) {
-            GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);
-
-            if (uoFluid == null || uoFluid.getFluid() == null) {
-                continue;
-            }
-
-            int base = 250 * (1 << Math.max(0, mTier - 2));
-            int amount = base * (1 + tVeinRNG.nextInt(4));
-            fluidStack.add(new FluidStack(uoFluid.getFluid(), amount));
-        }
-
-        this.mOutputFluids = fluidStack.toArray(new FluidStack[0]);
-        this.lEUt = GTValues.VP[mTier];
-        this.mMaxProgresstime = 1200 / (mTier - 1);
-
-        return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 }

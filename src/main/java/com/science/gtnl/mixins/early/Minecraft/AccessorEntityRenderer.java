@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(EntityRenderer.class)
+@Mixin(value = EntityRenderer.class, remap = true)
 public interface AccessorEntityRenderer {
 
     // Instance fields

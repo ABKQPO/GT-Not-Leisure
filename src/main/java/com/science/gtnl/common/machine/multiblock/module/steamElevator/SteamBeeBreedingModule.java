@@ -28,13 +28,13 @@ public class SteamBeeBreedingModule extends SteamElevatorModule {
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamBeeBreedingModule(this.mName);
+    public int getTierRecipes() {
+        return 8;
     }
 
     @Override
-    public int getTierRecipes() {
-        return 8;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamBeeBreedingModule(this.mName);
     }
 
     @Override
@@ -77,14 +77,14 @@ public class SteamBeeBreedingModule extends SteamElevatorModule {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
+    @Override
+    public int getMachineEffectRange() {
+        return 0;
+    }
+
     public ItemStack createIgnobleCopy(ItemStack queenStack) {
         IBee princess = beeRoot.getMember(queenStack);
         princess.setIsNatural(false);
         return beeRoot.getMemberStack(princess, EnumBeeType.PRINCESS.ordinal());
-    }
-
-    @Override
-    public int getMachineEffectRange() {
-        return 0;
     }
 }

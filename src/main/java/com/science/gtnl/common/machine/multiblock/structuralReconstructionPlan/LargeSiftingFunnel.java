@@ -50,59 +50,6 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeSiftingFunnel(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialSifterActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialSifter)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(0);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return RecipeMaps.sifterRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSiftingFunnelRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 5, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeSiftingFunnel> getStructureDefinition() {
         return StructureDefinition.<LargeSiftingFunnel>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -127,11 +74,16 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeSiftingFunnel(mName);
+    }
+
+    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 40);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 40);
     }
 
     @Override
@@ -155,6 +107,11 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return RecipeMaps.sifterRecipes;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return 0.6 - (mParallelTier / 50.0);
     }
@@ -162,5 +119,48 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     @Override
     public double getDurationModifier() {
         return Math.max(0.005, 1.0 / 5.0 - (Math.max(0, mParallelTier - 1) / 50.0));
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(0);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialSifterActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialSifter)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeSiftingFunnelRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 5, 5, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 }

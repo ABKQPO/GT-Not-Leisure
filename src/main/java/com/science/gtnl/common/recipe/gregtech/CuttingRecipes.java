@@ -12,6 +12,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.SubstituteFluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
@@ -52,15 +53,10 @@ public class CuttingRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(input)
             .itemOutputs(outputItem)
-            .fluidInputs(GTModHandler.getDistilledWater(distilledWaterAmount))
-            .duration(duration)
-            .eut(eut)
-            .addTo(CR);
-
-        RecipeBuilder.builder()
-            .itemInputs(input)
-            .itemOutputs(outputItem)
-            .fluidInputs(Materials.Water.getFluid(waterAmount))
+            .fluidInputs(
+                new SubstituteFluidStack(
+                    GTModHandler.getDistilledWater(distilledWaterAmount),
+                    Materials.Water.getFluid(waterAmount)))
             .duration(duration)
             .eut(eut)
             .addTo(CR);

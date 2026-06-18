@@ -58,6 +58,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.HatchElement;
@@ -130,49 +131,126 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("GrandAssemblyLineRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(48, 5, 5, true)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection sideDirection,
-        ForgeDirection facingDirection, int colorIndex, boolean active, boolean redstoneLevel) {
-        if (sideDirection == facingDirection) {
-            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK)
-                    .extFacing()
-                    .build() };
+    public boolean onRunningTick(ItemStack aStack) {
+        for (MTEHatchDataAccess hatchDataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
+            hatchDataAccess.setActive(true);
         }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+        return super.onRunningTick(aStack);
+    }
+
+    @Override
+    public IStructureDefinition<GrandAssemblyLine> getStructureDefinition() {
+        return StructureDefinition.<GrandAssemblyLine>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 5))
+            .addElement(
+                'B',
+                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(HatchElement.InputBus)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 2))
+            .addElement(
+                'D',
+                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(HatchElement.OutputBus)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+            .addElement(
+                'E',
+                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon,
+                        DataHatchElement.DataAccess)
+                    .buildAndChain(
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            StructureUtility
+                                .ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))))
+            .addElement(
+                'F',
+                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
+                    .hint(1)
+                    .atLeast(
+                        HatchElement.InputHatch,
+                        HatchElement.InputBus,
+                        HatchElement.OutputBus,
+                        HatchElement.Maintenance,
+                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                        ParallelCon,
+                        DataHatchElement.DataAccess)
+                    .buildAndChain(
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+            .addElement('G', StructureUtility.ofBlock(sBlockCasings2, 9))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 590);
+    }
+
+    @Override
+    public void checkHatch(List<StructureError> errors) {
+        if (mParallelTier < 9) {
+            checkEnergyHatch(errors);
+        }
+        if (mParallelTier >= 12 && mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
+            wirelessMode = true;
+            mEnergyHatchTier = 14;
+            checkHatchMax(errors, HatchElement.Maintenance, 1);
+            return;
+        }
+        if (mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
+            errors.add(GTNLStructureErrors.invalidEnergyHatchConfiguration());
+        }
+        checkHatchMax(errors, HatchElement.Maintenance, 1);
+    }
+
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        mDataAccessHatches.clear();
+        wirelessMode = false;
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
     @Override
@@ -216,8 +294,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             }
         }
 
-        // 将常规输入仓/总线包装成总成
-        // 将常规输入仓与总线包装为统一库存视图 / Wrap regular hatches and buses into one inventory view
+        // Wrap regular hatches and buses into one inventory view.
         short hatchColors = getHatchColors();
         boolean doColorChecking = hatchColors != 0;
         if (!doColorChecking) hatchColors = 0b1;
@@ -798,138 +875,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    public boolean onRunningTick(ItemStack aStack) {
-        for (MTEHatchDataAccess hatch_dataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
-            hatch_dataAccess.setActive(true);
-        }
-        return super.onRunningTick(aStack);
+    public double getEUtDiscount() {
+        return 0.8 - (mParallelTier / 50.0) * ((mParallelTier >= 12) ? 0.2 : 1);
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setBoolean("wirelessMode", wirelessMode);
-        aNBT.setInteger("parallelTier", mParallelTier);
-        aNBT.setInteger("minRecipeTime", minRecipeTime);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        wirelessMode = aNBT.getBoolean("wirelessMode");
-        mParallelTier = aNBT.getInteger("parallelTier");
-        minRecipeTime = aNBT.getInteger("minRecipeTime");
-    }
-
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-    }
-
-    @Override
-    public IStructureDefinition<GrandAssemblyLine> getStructureDefinition() {
-        return StructureDefinition.<GrandAssemblyLine>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 5))
-            .addElement(
-                'B',
-                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(HatchElement.InputBus)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 2))
-            .addElement(
-                'D',
-                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(HatchElement.OutputBus)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
-            .addElement(
-                'E',
-                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.InputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon,
-                        DataHatchElement.DataAccess)
-                    .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility
-                                .ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))))
-            .addElement(
-                'F',
-                buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        HatchElement.InputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Maintenance,
-                        HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                        ParallelCon,
-                        DataHatchElement.DataAccess)
-                    .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasings2, 9))
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!this.checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            checkStructureCondition(errors, false);
-        checkStructureCondition(errors, mCountCasing >= 590);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        setupParameters();
-        if (mParallelTier < 9 && !checkEnergyHatch()) return false;
-
-        if (mParallelTier >= 12 && mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
-            wirelessMode = true;
-            mEnergyHatchTier = 14;
-            return mMaintenanceHatches.size() <= 1;
-        }
-
-        return !(mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) && mMaintenanceHatches.size() <= 1;
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        mDataAccessHatches.clear();
-        wirelessMode = false;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public double getDurationModifier() {
+        return (1 / 1.67 - (Math.max(0, mParallelTier - 1) / 50.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1);
     }
 
     @Override
@@ -938,23 +890,84 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    public Set<VoidingMode> getAllowedVoidingModes() {
-        return VoidingMode.ITEM_ONLY_MODES;
+    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection sideDirection,
+        ForgeDirection facingDirection, int colorIndex, boolean active, boolean redstoneLevel) {
+        if (sideDirection == facingDirection) {
+            if (active) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_TECTECH_MULTIBLOCK)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
-    public boolean supportsSingleRecipeLocking() {
-        return false;
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("GrandAssemblyLineRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(48, 5, 5, true)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0) * ((mParallelTier >= 12) ? 0.2 : 1);
+    public String[] getInfoData() {
+        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
+        if (wirelessMode) {
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + costingEUText
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
+        return ret.toArray(new String[0]);
     }
 
     @Override
-    public double getDurationModifier() {
-        return (1 / 1.67 - (Math.max(0, mParallelTier - 1) / 50.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1);
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        final NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("wirelessMode")) {
+            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + tag.getString("costingEUText")
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
     }
 
     public int getMinRecipeTimeForGui() {
@@ -1034,6 +1047,22 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setBoolean("wirelessMode", wirelessMode);
+        aNBT.setInteger("parallelTier", mParallelTier);
+        aNBT.setInteger("minRecipeTime", minRecipeTime);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        wirelessMode = aNBT.getBoolean("wirelessMode");
+        mParallelTier = aNBT.getInteger("parallelTier");
+        minRecipeTime = aNBT.getInteger("minRecipeTime");
+    }
+
+    @Override
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
@@ -1045,38 +1074,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
-            currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + tag.getString("costingEUText")
-                    + EnumChatFormatting.RESET
-                    + " EU");
-        }
+    public Set<VoidingMode> getAllowedVoidingModes() {
+        return VoidingMode.ITEM_ONLY_MODES;
     }
 
     @Override
-    public String[] getInfoData() {
-        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
-        if (wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
-            ret.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + costingEUText
-                    + EnumChatFormatting.RESET
-                    + " EU");
-        }
-        return ret.toArray(new String[0]);
+    public boolean supportsSingleRecipeLocking() {
+        return false;
     }
 
     public boolean addDataAccessToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {

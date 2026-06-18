@@ -61,6 +61,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.OutputBusType;
 import gregtech.api.interfaces.IOutputBus;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
@@ -119,6 +120,14 @@ public class Utils {
         return type == OutputBusType.MECacheFiltered || type == OutputBusType.MEFiltered
             || type == OutputBusType.MECacheUnfiltered
             || type == OutputBusType.MEUnfiltered;
+    }
+
+    public static UUID getOwner(Object te) {
+        if (te instanceof BaseMetaTileEntity igte) {
+            return igte.getOwnerUuid();
+        } else {
+            return null;
+        }
     }
 
     public static <C extends Collection<E>, E extends MetaTileEntity, T extends E> List<T> filterValidMTEs(
@@ -656,15 +665,19 @@ public class Utils {
         String translation = writeToLangFile(trimmedKey, text);
         AccessorGTLanguageManager.getLangMap()
             .put(trimmedKey, translation);
+        AccessorGTLanguageManager.getStringTranslateLanguageListFallBack()
+            .put(trimmedKey, translation);
         Map<String, String> langList = ((AccessorStringTranslate) AccessorStringTranslate.getInstance())
             .getLanguageList();
         if (langList != null) langList.put(trimmedKey, translation);
         AccessorGTLanguageManager.getTempMap()
             .put(trimmedKey, translation);
-        LanguageRegistry.instance()
-            // If we use the actual user configured locale here, switching lang to others while running game
-            // turns everything into unlocalized string. So we make it "default" and call it a day.
-            .injectLanguage(language, AccessorGTLanguageManager.getTempMap());
+        if (FMLCommonHandler.instance()
+            .getCurrentLanguage() != null) {
+            LanguageRegistry.instance()
+                // Inject only after the client language is selected.
+                .injectLanguage(language, AccessorGTLanguageManager.getTempMap());
+        }
         AccessorGTLanguageManager.getTempMap()
             .clear();
         return translation;

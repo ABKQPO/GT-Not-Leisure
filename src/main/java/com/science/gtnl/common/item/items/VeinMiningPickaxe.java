@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -31,6 +30,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.github.bsideup.jabel.Desugar;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
+import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.config.MainConfig;
@@ -47,7 +47,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.items.MetaGeneratedTool;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
@@ -230,7 +229,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         int cleared = 0;
         int blocksSinceHunger = 0;
         int toolMaxDamage = Math.toIntExact(MetaGeneratedTool.getToolMaxDamage(stack));
-        List<ItemStack> allDrops = new ArrayList<>();
+        Object2IntOpenHashMap<ItemStackWrapper> mergedDrops = new Object2IntOpenHashMap<>();
 
         queue.add(new Node(x, y, z, 0));
 
@@ -296,7 +295,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
                     block,
                     EnchantmentHelper.getSilkTouchModifier(player),
                     EnchantmentHelper.getFortuneModifier(player));
-                if (!player.capabilities.isCreativeMode) allDrops.addAll(drops);
+                if (!player.capabilities.isCreativeMode) {
+                    for (ItemStack drop : drops) {
+                        if (drop == null) continue;
+                        ItemStackWrapper dropKey = new ItemStackWrapper(drop);
+                        mergedDrops.put(dropKey, mergedDrops.getInt(dropKey) + drop.stackSize);
+                    }
+                }
 
                 cleared++;
                 blocksSinceHunger++;
@@ -342,24 +347,8 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
                 .addExhaustion(1f);
         }
 
-        Object2IntOpenHashMap<ItemStackWrapper> merged = new Object2IntOpenHashMap<>();
-        for (ItemStack drop : allDrops) {
-            if (drop == null) continue;
-            ItemStackWrapper key = new ItemStackWrapper(drop);
-            merged.put(key, merged.getOrDefault(key, 0) + drop.stackSize);
-        }
-        for (Object2IntMap.Entry<ItemStackWrapper> entry : merged.object2IntEntrySet()) {
-            ItemStack dropStack = entry.getKey()
-                .stack()
-                .copy();
-            dropStack.stackSize = entry.getIntValue();
-
-            EntityItem entityItem = new EntityItem(world, player.posX, player.posY + 1, player.posZ, dropStack);
-            entityItem.delayBeforeCanPickup = 0;
-            entityItem.motionX = 0;
-            entityItem.motionY = 0;
-            entityItem.motionZ = 0;
-            world.spawnEntityInWorld(entityItem);
+        if (!mergedDrops.isEmpty()) {
+            ToolHelper.generateMatterCluster(world, player, mergedDrops);
         }
         isEnable = false;
     }

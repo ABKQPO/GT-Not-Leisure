@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PotionEffect.class)
+@Mixin(value = PotionEffect.class, remap = true)
 public abstract class MixinPotionEffect {
 
     @Shadow

@@ -14,14 +14,15 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
@@ -39,6 +40,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.item.BaubleItem;
@@ -48,7 +50,6 @@ import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffec
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
 import com.science.gtnl.common.packet.NBTUpdatePacket;
-import com.science.gtnl.common.packet.client.TitleDisplayHandler;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
@@ -223,8 +224,8 @@ public class SubscribeEventClientUtils {
             PotionEffect effect = player.getActivePotionEffect(EffectLoader.awe);
 
             if (effect != null && event.gui instanceof GuiIngameMenu) {
-                TitleDisplayHandler
-                    .displayTitle(StatCollector.translateToLocal("Awe_Cancel_01"), 100, 0xFFFFFF, 3, 10, 20);
+                TitleAPI.setTimes(10, 100, 20);
+                TitleAPI.setTitle(new ChatComponentTranslation("Awe_Cancel_01"));
                 event.setCanceled(true);
             }
         }
@@ -241,7 +242,8 @@ public class SubscribeEventClientUtils {
             if (effect != null && event.gui instanceof GuiInventory) {
                 String[] messages = { "Awe_Cancel_02_01", "Awe_Cancel_02_02" };
                 String message = messages[RANDOM.nextInt(messages.length)];
-                TitleDisplayHandler.displayTitle(StatCollector.translateToLocal(message), 100, 0xFFFFFF, 3, 10, 20);
+                TitleAPI.setTimes(10, 100, 20);
+                TitleAPI.setTitle(new ChatComponentTranslation(message));
 
                 event.setCanceled(true);
             }
@@ -290,10 +292,6 @@ public class SubscribeEventClientUtils {
 
     @SubscribeEvent
     public void onRenderProjectedArmor(RenderPlayerEvent.SetArmorModel event) {
-        if (event.stack != null) {
-            return;
-        }
-
         DraconicArmorProjectionType projectionType = DraconicArmorProjectionState.get(event.entityPlayer);
         if (projectionType == null) {
             return;
@@ -304,16 +302,36 @@ public class SubscribeEventClientUtils {
             return;
         }
 
-        ModelBiped model = itemArmor.getArmorModel(event.entityPlayer, projectedArmor, event.slot);
-        if (model == null) {
-            return;
-        }
-
+        Minecraft.getMinecraft()
+            .getTextureManager()
+            .bindTexture(RenderBiped.getArmorResource(event.entityPlayer, projectedArmor, event.slot, null));
+        ModelBiped model = event.slot == 2 ? event.renderer.modelArmor : event.renderer.modelArmorChestplate;
+        model.bipedHead.showModel = event.slot == 0;
+        model.bipedHeadwear.showModel = event.slot == 0;
+        model.bipedBody.showModel = event.slot == 1 || event.slot == 2;
+        model.bipedRightArm.showModel = event.slot == 1;
+        model.bipedLeftArm.showModel = event.slot == 1;
+        model.bipedRightLeg.showModel = event.slot == 2 || event.slot == 3;
+        model.bipedLeftLeg.showModel = event.slot == 2 || event.slot == 3;
+        model = net.minecraftforge.client.ForgeHooksClient
+            .getArmorModel(event.entityPlayer, projectedArmor, event.slot, model);
         event.renderer.setRenderPassModel(model);
         model.onGround = event.renderer.modelBipedMain.onGround;
         model.isRiding = event.renderer.modelBipedMain.isRiding;
         model.isChild = event.renderer.modelBipedMain.isChild;
-        event.result = 1;
+
+        int color = itemArmor.getColor(projectedArmor);
+        if (color != -1) {
+            float red = (float) (color >> 16 & 255) / 255.0F;
+            float green = (float) (color >> 8 & 255) / 255.0F;
+            float blue = (float) (color & 255) / 255.0F;
+            GL11.glColor3f(red, green, blue);
+            event.result = projectedArmor.isItemEnchanted() ? 31 : 16;
+            return;
+        }
+
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
+        event.result = projectedArmor.isItemEnchanted() ? 15 : 1;
     }
 
     @SubscribeEvent

@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.machine;
 
-import java.util.List;
-
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
@@ -20,28 +18,26 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class VMTweakHelper {
 
-    public static final List<String> dimName = DimensionHelper.getAllDimNames();
-    public static final List<String> dimNameShort = DimensionHelper.getAllDisplayedNames();
-    public static final BiMap<Integer, String> dimMapping = HashBiMap.create();
-    public static final Int2ObjectOpenHashMap<String> cache = new Int2ObjectOpenHashMap<>();
+    public static final BiMap<Integer, String> DIM_MAPPING = HashBiMap.create();
+    public static final Int2ObjectOpenHashMap<String> CACHE = new Int2ObjectOpenHashMap<>();
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         for (int i : DimensionManager.getStaticDimensionIDs()) {
-            if (dimMapping.containsKey(i)) continue;
+            if (DIM_MAPPING.containsKey(i)) continue;
             String name = getNameForID(i);
             if (i == 100) name = "Underdark";
 
-            int index = dimName.indexOf(name);
+            int index = DimensionHelper.ALL_DIM_NAMES.indexOf(name);
             if (index >= 0) {
-                dimMapping.forcePut(i, dimNameShort.get(index));
+                DIM_MAPPING.forcePut(i, DimensionHelper.ALL_DISPLAYED_NAMES.get(index));
             }
         }
 
         try {
             World world = event.world;
             if (world.getChunkProvider() instanceof ChunkProviderServer) {
-                cache.put(
+                CACHE.put(
                     world.provider.dimensionId,
                     ((ChunkProviderServer) world.getChunkProvider()).currentChunkProvider.getClass()
                         .getName());

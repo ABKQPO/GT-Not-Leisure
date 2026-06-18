@@ -9,8 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -28,13 +26,13 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.command.CommandTickrate;
@@ -49,7 +47,6 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.packet.DraconicArmorProjectionHitEffectPacket;
 import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
-import com.science.gtnl.common.packet.TitlePacket;
 import com.science.gtnl.common.render.PlayerDollRenderManager;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.AchievementsLoader;
@@ -87,7 +84,8 @@ public class SubscribeEventUtils {
         new String[] { ModList.QzMiner.ID, ModList.Baubles.ID, ModList.ReAvaritia.ID, ModList.ScienceNotLeisure.ID,
             ModList.Sudoku.ID, ModList.GiveCount.ID, ModList.ChromaticTooltips.ID, ModList.ChromaticTooltipsCompat.ID,
             ModList.NewHorizonsCoreMod.ID, ModList.GalaxySpace.ID, ModList.EnhancedLootBags.ID,
-            ModList.NotEnoughEnergistics.ID, ModList.NEICustomDiagrams.ID, ModList.AvaritiaAddons.ID });
+            ModList.NotEnoughEnergistics.ID, ModList.NEICustomDiagrams.ID, ModList.AvaritiaAddons.ID,
+            ModList.EtFuturumRequiem.ID, ModList.NotEnoughItems.ID });
 
     public static final Object2IntMap<UUID> FOOD_TICK_TIMERS = new Object2IntOpenHashMap<>();
 
@@ -165,7 +163,8 @@ public class SubscribeEventUtils {
                 }
 
                 if (MainConfig.recipe.enableShowDelRecipeTitle) {
-                    TitlePacket.sendTitleToPlayer(player, "Welcome_GTNL_DeleteRecipe", 200, 0xFFFF55, 2);
+                    TitlePacketHandler.sendTimes(player, 10, 200, 20);
+                    TitlePacketHandler.sendTitle(player, new ChatComponentTranslation("Welcome_GTNL_DeleteRecipe"));
                 }
             }
 
@@ -216,6 +215,18 @@ public class SubscribeEventUtils {
         }
         if (DraconicArmorProjectionState.get(player) == null) {
             return;
+        }
+        DamageSource source = event.source;
+        if (source != null) {
+            EntityLivingBase trueSource = null;
+            if (source.getEntity() instanceof EntityLivingBase entitySource) {
+                trueSource = entitySource;
+            } else if (source.getSourceOfDamage() instanceof EntityLivingBase indirectSource) {
+                trueSource = indirectSource;
+            }
+            if (trueSource == player) {
+                return;
+            }
         }
 
         ScienceNotLeisure.network.sendToAllAround(
@@ -471,22 +482,6 @@ public class SubscribeEventUtils {
                 }
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onZombieDeath(LivingDeathEvent event) {
-        if (!(event.entity instanceof EntityZombie zombie)) return;
-        if (zombie.worldObj.isRemote) return;
-        if (!zombie.isChild()) return;
-        if (!(zombie.ridingEntity instanceof EntityChicken)) return;
-        EntityItem drop = new EntityItem(
-            zombie.worldObj,
-            zombie.posX,
-            zombie.posY,
-            zombie.posZ,
-            GTNLItemList.RecordLavaChicken.get(1));
-        drop.delayBeforeCanPickup = 10;
-        zombie.worldObj.spawnEntityInWorld(drop);
     }
 
     // Botania

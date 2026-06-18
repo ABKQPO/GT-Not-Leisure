@@ -1,6 +1,7 @@
 package com.science.gtnl.common.gui.modularui;
 
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -12,29 +13,28 @@ import com.science.gtnl.common.machine.hatch.SuperDataAccessHatch;
 import gregtech.api.enums.ItemList;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
+import gregtech.common.gui.modularui.hatch.MTEHatchDataAccessGUI;
 import gregtech.common.modularui2.widget.builder.ItemSlotGridBuilder;
 
-public class SuperDataAccessHatchGui {
-
-    private final SuperDataAccessHatch hatch;
+public class SuperDataAccessHatchGui extends MTEHatchDataAccessGUI {
 
     public SuperDataAccessHatchGui(SuperDataAccessHatch hatch) {
-        this.hatch = hatch;
+        super(hatch);
     }
 
+    @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return GTGuis.mteTemplatePanelBuilder(hatch, guiData, syncManager, uiSettings)
-            .setWidth(hatch.getGUIWidth())
-            .setHeight(hatch.getGUIHeight())
+        return GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
+            .setWidth(machine.getGUIWidth())
+            .setHeight(machine.getGUIHeight())
             .doesAddGregTechLogo(false)
-            .doesBindPlayerInventory(false)
             .build()
             .child(createDataStickGrid(syncManager))
             .child(createLogo());
     }
 
-    private IWidget createDataStickGrid(PanelSyncManager syncManager) {
-        return new ItemSlotGridBuilder(hatch.inventoryHandler, syncManager).size(9, 9)
+    public IWidget createDataStickGrid(PanelSyncManager syncManager) {
+        return new ItemSlotGridBuilder(machine.inventoryHandler, syncManager).size(9, 9)
             .slotGroupKey("data_inv")
             .filter(itemStack -> ItemList.Tool_DataStick.isStackEqual(itemStack, false, true))
             .itemSlotSupplier(
@@ -44,9 +44,8 @@ public class SuperDataAccessHatchGui {
             .pos(43, 18);
     }
 
-    private IWidget createLogo() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
-            .size(18)
-            .pos(210, 162);
+    @Override
+    protected UITexture getLogoTexture() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 }

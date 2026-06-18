@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.science.gtnl.utils.GTNLNBTTagList;
 
-@Mixin(NBTTagList.class)
+@Mixin(value = NBTTagList.class, remap = true)
 public class MixinNBTTagList implements GTNLNBTTagList {
 
     @Shadow

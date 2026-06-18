@@ -8,13 +8,20 @@ import bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.common.FMLCommonHandler;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.util.GTLanguageManager;
 
 public class LanguageLoader {
 
+    private static boolean fluidPipePrefixLocalized;
+    private static boolean itemPipePrefixLocalized;
+
     public static void registry() {
-        if (!FMLCommonHandler.instance()
-            .getCurrentLanguage()
-            .equals("zh_CN")) return;
+        String currentLanguage = FMLCommonHandler.instance()
+            .getCurrentLanguage();
+        if (currentLanguage == null || currentLanguage.isEmpty()) {
+            currentLanguage = GTLanguageManager.LanguageCode;
+        }
+        if (!"zh_CN".equals(currentLanguage)) return;
 
         // Bartwork material
         addWerkstoffLocalization(GTNLMaterials.Hexanitrohexaazaisowurtzitane, "六硝基六氮杂异伍兹烷", false);
@@ -165,7 +172,6 @@ public class LanguageLoader {
         String unlocalizedName = aWerkstoff.getDefaultName()
             .toLowerCase();
         String mName = unlocalizedName.replace(" ", "");
-        String mPipeName = unlocalizedName.replace(" ", "_");
 
         addStringLocalization("Material." + mName, localizedName);
         addStringLocalization("bw.werkstoff." + aWerkstoff.getmID() + ".name", localizedName);
@@ -178,83 +184,48 @@ public class LanguageLoader {
         }
 
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt01, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".01.name", "1x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".01.name", "1x%s导线");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt02, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".02.name", "2x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".02.name", "2x%s导线");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt04, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".04.name", "4x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".04.name", "4x%s导线");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt08, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".08.name", "8x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".08.name", "8x%s导线");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt12, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".12.name", "12x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".12.name", "12x%s导线");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.wireGt16, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".16.name", "16x%material导线");
+            addStringLocalization("gt.blockmachines.wire." + unlocalizedName + ".16.name", "16x%s导线");
         }
 
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt01, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".01.name", "1x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".01.name", "1x%s线缆");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt02, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".02.name", "2x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".02.name", "2x%s线缆");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt04, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".04.name", "4x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".04.name", "4x%s线缆");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt08, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".08.name", "8x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".08.name", "8x%s线缆");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt12, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".12.name", "12x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".12.name", "12x%s线缆");
         }
         if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.cableGt16, aWerkstoff, 1) != null) {
-            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".16.name", "16x%material线缆");
+            addStringLocalization("gt.blockmachines.cable." + unlocalizedName + ".16.name", "16x%s线缆");
         }
 
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeTiny, aWerkstoff, 1) != null) {
+        if (hasAnyPipePrefix(aWerkstoff)) {
             if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + ".name", "%material物品管道");
+                registerItemPipePrefixLocalization();
             } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + ".name", "%material流体管道");
-            }
-        }
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeTiny, aWerkstoff, 1) != null) {
-            if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_tiny.name", "%material物品管道");
-            } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_tiny.name", "%material流体管道");
-            }
-        }
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeSmall, aWerkstoff, 1) != null) {
-            if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_small.name", "%material物品管道");
-            } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_small.name", "%material流体管道");
-            }
-        }
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeMedium, aWerkstoff, 1) != null) {
-            if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_medium.name", "%material物品管道");
-            } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_medium.name", "%material流体管道");
-            }
-        }
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeLarge, aWerkstoff, 1) != null) {
-            if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_large.name", "%material物品管道");
-            } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_large.name", "%material流体管道");
-            }
-        }
-        if (WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeHuge, aWerkstoff, 1) != null) {
-            if (isItemPipe) {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_huge.name", "%material物品管道");
-            } else {
-                addStringLocalization("gt.blockmachines.gt_pipe_" + mPipeName + "_huge.name", "%material流体管道");
+                registerFluidPipePrefixLocalization();
             }
         }
     }
@@ -263,106 +234,137 @@ public class LanguageLoader {
         String mName = aMaterial.mName.toLowerCase();
         int mID = aMaterial.mMetaItemSubID;
 
-        addStringLocalization("gt.blockframes." + mID + ".name", "%material框架");
-        addStringLocalization("gt.blockores.1" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.2" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.3" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.4" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.5" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.6" + mID + ".name", "%material矿石");
-        addStringLocalization("gt.blockores.16" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.17" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.18" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.19" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.20" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.21" + mID + ".name", "贫瘠%material矿石");
-        addStringLocalization("gt.blockores.22" + mID + ".name", "贫瘠%material矿石");
+        addStringLocalization("gt.blockframes." + mID + ".name", "%s框架");
+        addStringLocalization("gt.blockores.1" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.2" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.3" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.4" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.5" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.6" + mID + ".name", "%s矿石");
+        addStringLocalization("gt.blockores.16" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.17" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.18" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.19" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.20" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.21" + mID + ".name", "贫瘠%s矿石");
+        addStringLocalization("gt.blockores.22" + mID + ".name", "贫瘠%s矿石");
 
-        addStringLocalization("gt.metaitem.01." + mID + ".name", "小撮%material粉");
-        addStringLocalization("gt.metaitem.01.1" + mID + ".name", "小堆%material粉");
-        addStringLocalization("gt.metaitem.01.2" + mID + ".name", "%material粉");
-        addStringLocalization("gt.metaitem.01.9" + mID + ".name", "%material粒");
+        addStringLocalization("gt.metaitem.01." + mID + ".name", "小撮%s粉");
+        addStringLocalization("gt.metaitem.01.1" + mID + ".name", "小堆%s粉");
+        addStringLocalization("gt.metaitem.01.2" + mID + ".name", "%s粉");
+        addStringLocalization("gt.metaitem.01.9" + mID + ".name", "%s粒");
 
-        addStringLocalization("gt.metaitem.01.11" + mID + ".name", "%material锭");
-        addStringLocalization("gt.metaitem.01.12" + mID + ".name", "热%material锭");
-        addStringLocalization("gt.metaitem.01.13" + mID + ".name", "双重%material锭");
-        addStringLocalization("gt.metaitem.01.14" + mID + ".name", "三重%material锭");
-        addStringLocalization("gt.metaitem.01.15" + mID + ".name", "四重%material锭");
-        addStringLocalization("gt.metaitem.01.16" + mID + ".name", "五重%material锭");
-        addStringLocalization("gt.metaitem.01.17" + mID + ".name", "%material板");
-        addStringLocalization("gt.metaitem.01.18" + mID + ".name", "双重%material板");
-        addStringLocalization("gt.metaitem.01.19" + mID + ".name", "三重%material板");
-        addStringLocalization("gt.metaitem.01.20" + mID + ".name", "四重%material板");
-        addStringLocalization("gt.metaitem.01.21" + mID + ".name", "五重%material板");
-        addStringLocalization("gt.metaitem.01.22" + mID + ".name", "致密%material板");
-        addStringLocalization("gt.metaitem.01.23" + mID + ".name", "%material杆");
-        addStringLocalization("gt.metaitem.01.24" + mID + ".name", "%material弹簧");
-        addStringLocalization("gt.metaitem.01.25" + mID + ".name", "%material滚珠");
-        addStringLocalization("gt.metaitem.01.26" + mID + ".name", "%material螺栓");
-        addStringLocalization("gt.metaitem.01.27" + mID + ".name", "%material螺丝");
-        addStringLocalization("gt.metaitem.01.28" + mID + ".name", "%material环");
-        addStringLocalization("gt.metaitem.01.29" + mID + ".name", "%material箔");
-        addStringLocalization("gt.metaitem.01.31" + mID + ".name", "%material等离子单元");
+        addStringLocalization("gt.metaitem.01.11" + mID + ".name", "%s锭");
+        addStringLocalization("gt.metaitem.01.12" + mID + ".name", "热%s锭");
+        addStringLocalization("gt.metaitem.01.13" + mID + ".name", "双重%s锭");
+        addStringLocalization("gt.metaitem.01.14" + mID + ".name", "三重%s锭");
+        addStringLocalization("gt.metaitem.01.15" + mID + ".name", "四重%s锭");
+        addStringLocalization("gt.metaitem.01.16" + mID + ".name", "五重%s锭");
+        addStringLocalization("gt.metaitem.01.17" + mID + ".name", "%s板");
+        addStringLocalization("gt.metaitem.01.18" + mID + ".name", "双重%s板");
+        addStringLocalization("gt.metaitem.01.19" + mID + ".name", "三重%s板");
+        addStringLocalization("gt.metaitem.01.20" + mID + ".name", "四重%s板");
+        addStringLocalization("gt.metaitem.01.21" + mID + ".name", "五重%s板");
+        addStringLocalization("gt.metaitem.01.22" + mID + ".name", "致密%s板");
+        addStringLocalization("gt.metaitem.01.23" + mID + ".name", "%s杆");
+        addStringLocalization("gt.metaitem.01.24" + mID + ".name", "%s弹簧");
+        addStringLocalization("gt.metaitem.01.25" + mID + ".name", "%s滚珠");
+        addStringLocalization("gt.metaitem.01.26" + mID + ".name", "%s螺栓");
+        addStringLocalization("gt.metaitem.01.27" + mID + ".name", "%s螺丝");
+        addStringLocalization("gt.metaitem.01.28" + mID + ".name", "%s环");
+        addStringLocalization("gt.metaitem.01.29" + mID + ".name", "%s箔");
+        addStringLocalization("gt.metaitem.01.31" + mID + ".name", "%s等离子单元");
 
-        addStringLocalization("gt.metaitem.02." + mID + ".name", "%material剑刃");
-        addStringLocalization("gt.metaitem.02.1" + mID + ".name", "%material镐头");
-        addStringLocalization("gt.metaitem.02.2" + mID + ".name", "%material铲头");
-        addStringLocalization("gt.metaitem.02.3" + mID + ".name", "%material斧头");
-        addStringLocalization("gt.metaitem.02.4" + mID + ".name", "%material锄头");
-        addStringLocalization("gt.metaitem.02.5" + mID + ".name", "%material锤头");
-        addStringLocalization("gt.metaitem.02.6" + mID + ".name", "%material锉刀刃");
-        addStringLocalization("gt.metaitem.02.7" + mID + ".name", "%material锯刃");
-        addStringLocalization("gt.metaitem.02.8" + mID + ".name", "%material钻头");
-        addStringLocalization("gt.metaitem.02.9" + mID + ".name", "%material链锯刃");
-        addStringLocalization("gt.metaitem.02.10" + mID + ".name", "%material扳手顶");
-        addStringLocalization("gt.metaitem.02.11" + mID + ".name", "%material万用铲头");
-        addStringLocalization("gt.metaitem.02.12" + mID + ".name", "%material镰刀刃");
-        addStringLocalization("gt.metaitem.02.13" + mID + ".name", "%material犁头");
-        addStringLocalization("gt.metaitem.02.15" + mID + ".name", "%material圆锯锯刃");
-        addStringLocalization("gt.metaitem.02.16" + mID + ".name", "%material涡轮扇叶");
-        addStringLocalization("gt.metaitem.02.18" + mID + ".name", "%material外壳");
-        addStringLocalization("gt.metaitem.02.19" + mID + ".name", "细%material导线");
-        addStringLocalization("gt.metaitem.02.20" + mID + ".name", "小型%material齿轮");
-        addStringLocalization("gt.metaitem.02.21" + mID + ".name", "%material转子");
-        addStringLocalization("gt.metaitem.02.22" + mID + ".name", "长%material杆");
-        addStringLocalization("gt.metaitem.02.23" + mID + ".name", "小型%material弹簧");
-        addStringLocalization("gt.metaitem.02.24" + mID + ".name", "%material弹簧");
-        addStringLocalization("gt.metaitem.02.31" + mID + ".name", "%material齿轮");
+        addStringLocalization("gt.metaitem.02." + mID + ".name", "%s剑刃");
+        addStringLocalization("gt.metaitem.02.1" + mID + ".name", "%s镐头");
+        addStringLocalization("gt.metaitem.02.2" + mID + ".name", "%s铲头");
+        addStringLocalization("gt.metaitem.02.3" + mID + ".name", "%s斧头");
+        addStringLocalization("gt.metaitem.02.4" + mID + ".name", "%s锄头");
+        addStringLocalization("gt.metaitem.02.5" + mID + ".name", "%s锤头");
+        addStringLocalization("gt.metaitem.02.6" + mID + ".name", "%s锉刀刃");
+        addStringLocalization("gt.metaitem.02.7" + mID + ".name", "%s锯刃");
+        addStringLocalization("gt.metaitem.02.8" + mID + ".name", "%s钻头");
+        addStringLocalization("gt.metaitem.02.9" + mID + ".name", "%s链锯刃");
+        addStringLocalization("gt.metaitem.02.10" + mID + ".name", "%s扳手顶");
+        addStringLocalization("gt.metaitem.02.11" + mID + ".name", "%s万用铲头");
+        addStringLocalization("gt.metaitem.02.12" + mID + ".name", "%s镰刀刃");
+        addStringLocalization("gt.metaitem.02.13" + mID + ".name", "%s犁头");
+        addStringLocalization("gt.metaitem.02.15" + mID + ".name", "%s圆锯锯刃");
+        addStringLocalization("gt.metaitem.02.16" + mID + ".name", "%s涡轮扇叶");
+        addStringLocalization("gt.metaitem.02.18" + mID + ".name", "%s外壳");
+        addStringLocalization("gt.metaitem.02.19" + mID + ".name", "细%s导线");
+        addStringLocalization("gt.metaitem.02.20" + mID + ".name", "小型%s齿轮");
+        addStringLocalization("gt.metaitem.02.21" + mID + ".name", "%s转子");
+        addStringLocalization("gt.metaitem.02.22" + mID + ".name", "长%s杆");
+        addStringLocalization("gt.metaitem.02.23" + mID + ".name", "小型%s弹簧");
+        addStringLocalization("gt.metaitem.02.24" + mID + ".name", "%s弹簧");
+        addStringLocalization("gt.metaitem.02.31" + mID + ".name", "%s齿轮");
 
-        addStringLocalization("gt.metaitem.03.6" + mID + ".name", "超致密%material板");
+        addStringLocalization("gt.metaitem.03.6" + mID + ".name", "超致密%s板");
 
-        addStringLocalization("gt.metaitem.99." + mID + ".name", "熔融%material单元");
+        addStringLocalization("gt.metaitem.99." + mID + ".name", "熔融%s单元");
 
         addStringLocalization("Material." + mName, localizedName);
         addStringLocalization("fluid.molten." + mName, "熔融" + localizedName);
         addStringLocalization("fluid.plasma." + mName, localizedName + "等离子体");
-        addStringLocalization("gt.blockmachines.gt_frame_" + mName + ".name", "%material框架");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".01.name", "1x%material导线");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".02.name", "2x%material导线");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".04.name", "4x%material导线");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".08.name", "8x%material导线");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".12.name", "12x%material导线");
-        addStringLocalization("gt.blockmachines.wire." + mName + ".16.name", "16x%material导线");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".01.name", "1x%material线缆");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".02.name", "2x%material线缆");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".04.name", "4x%material线缆");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".08.name", "8x%material线缆");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".12.name", "12x%material线缆");
-        addStringLocalization("gt.blockmachines.cable." + mName + ".16.name", "16x%material线缆");
+        addStringLocalization("gt.blockmachines.gt_frame_" + mName + ".name", "%s框架");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".01.name", "1x%s导线");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".02.name", "2x%s导线");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".04.name", "4x%s导线");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".08.name", "8x%s导线");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".12.name", "12x%s导线");
+        addStringLocalization("gt.blockmachines.wire." + mName + ".16.name", "16x%s导线");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".01.name", "1x%s线缆");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".02.name", "2x%s线缆");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".04.name", "4x%s线缆");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".08.name", "8x%s线缆");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".12.name", "12x%s线缆");
+        addStringLocalization("gt.blockmachines.cable." + mName + ".16.name", "16x%s线缆");
 
         if (isItemPipe) {
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + ".name", "%material物品管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_huge.name", "巨型%material物品管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_large.name", "大型%material物品管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_small.name", "小型%material物品管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_tiny.name", "微型%material物品管道");
+            registerItemPipePrefixLocalization();
         } else {
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + ".name", "%material流体管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_huge.name", "巨型%material流体管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_large.name", "大型%material流体管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_small.name", "小型%material流体管道");
-            addStringLocalization("gt.blockmachines.gt_pipe_" + mName + "_tiny.name", "微型%material流体管道");
+            registerFluidPipePrefixLocalization();
         }
+    }
+
+    private static boolean hasAnyPipePrefix(Werkstoff aWerkstoff) {
+        return WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeTiny, aWerkstoff, 1) != null
+            || WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeSmall, aWerkstoff, 1) != null
+            || WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeMedium, aWerkstoff, 1) != null
+            || WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeLarge, aWerkstoff, 1) != null
+            || WerkstoffLoader.getCorrespondingItemStackUnsafe(OrePrefixes.pipeHuge, aWerkstoff, 1) != null;
+    }
+
+    private static void registerFluidPipePrefixLocalization() {
+        if (fluidPipePrefixLocalized) {
+            return;
+        }
+        addStringLocalization("gt.oreprefix.tiny_material_fluid_pipe", "微型%s流体管道");
+        addStringLocalization("gt.oreprefix.small_material_fluid_pipe", "小型%s流体管道");
+        addStringLocalization("gt.oreprefix.material_fluid_pipe", "%s流体管道");
+        addStringLocalization("gt.oreprefix.large_material_fluid_pipe", "大型%s流体管道");
+        addStringLocalization("gt.oreprefix.huge_material_fluid_pipe", "巨型%s流体管道");
+        addStringLocalization("gt.oreprefix.quadruple_material_fluid_pipe", "四联%s流体管道");
+        addStringLocalization("gt.oreprefix.nonuple_material_fluid_pipe", "九联%s流体管道");
+        fluidPipePrefixLocalized = true;
+    }
+
+    private static void registerItemPipePrefixLocalization() {
+        if (itemPipePrefixLocalized) {
+            return;
+        }
+        addStringLocalization("gt.oreprefix.tiny_material_item_pipe", "微型%s物品管道");
+        addStringLocalization("gt.oreprefix.small_material_item_pipe", "小型%s物品管道");
+        addStringLocalization("gt.oreprefix.material_item_pipe", "%s物品管道");
+        addStringLocalization("gt.oreprefix.large_material_item_pipe", "大型%s物品管道");
+        addStringLocalization("gt.oreprefix.huge_material_item_pipe", "巨型%s物品管道");
+        addStringLocalization("gt.oreprefix.tiny_restrictive_material_item_pipe", "微型限流%s物品管道");
+        addStringLocalization("gt.oreprefix.small_restrictive_material_item_pipe", "小型限流%s物品管道");
+        addStringLocalization("gt.oreprefix.restrictive_material_item_pipe", "限流%s物品管道");
+        addStringLocalization("gt.oreprefix.large_restrictive_material_item_pipe", "大型限流%s物品管道");
+        addStringLocalization("gt.oreprefix.huge_restrictive_material_item_pipe", "巨型限流%s物品管道");
+        itemPipePrefixLocalized = true;
     }
 
     public static String addStringLocalization(String trimmedKey, String text) {

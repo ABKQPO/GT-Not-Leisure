@@ -122,6 +122,7 @@ import com.science.gtnl.common.recipe.gtnl.SteamWeatherModuleRecipes;
 import com.science.gtnl.common.recipe.gtnl.SteamWoodcutterRecipes;
 import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
 import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
+import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
@@ -195,7 +196,7 @@ public class RecipeLoader {
             new ElectricNeutronActivatorRecipes(), new ReactorProcessingUnitRecipes(),
             new NuclearSaltProcessingPlantRecipes(), new MaceratorRecipes(), new QuantumForceTransformerRecipes(),
             new MicroorganismMasterRecipes(), new SolarMuonCatalystRecipes(), new CircuitAssemblerRecipes(),
-            new CircuitAssemblyLineRecipes() };
+            new CircuitAssemblyLineRecipes(), new WoodDistillationRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

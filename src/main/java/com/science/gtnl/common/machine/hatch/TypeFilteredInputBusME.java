@@ -73,9 +73,33 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     }
 
     @Override
+    public String[] getInfoData() {
+        String busStatusKey = getProxy() != null && getProxy().isActive()
+            ? StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Online")
+            : StatCollector.translateToLocalFormatted("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
+
+        String filterInfo = hasFilter()
+            ? StatCollector.translateToLocalFormatted(
+                "Info_TypeFilteredInputBusME_Filtered_Set",
+                modid != null ? modid : "*",
+                name != null ? name : "*",
+                meta != GTRecipeBuilder.WILDCARD ? meta : "*")
+            : StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered_Unset");
+
+        return new String[] { busStatusKey,
+            StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered") + filterInfo };
+    }
+
+    @Override
     public boolean hasFilter() {
         return (modid != null && !modid.isEmpty()) || (name != null && !name.isEmpty())
             || (meta != GTRecipeBuilder.WILDCARD);
+    }
+
+    @Override
+    public Predicate<IAEItemStack> createFilter() {
+        if (!hasFilter()) return null;
+        return ItemFilteredList.makeFilter(buildFilterString());
     }
 
     @Nullable
@@ -92,6 +116,14 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
         return meta;
     }
 
+    public String getModidForGui() {
+        return modid == null ? "" : modid;
+    }
+
+    public String getNameFilterForGui() {
+        return name == null ? "" : name;
+    }
+
     public void setModid(@Nullable String modid) {
         this.modid = modid;
         refreshItemList();
@@ -105,20 +137,6 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     public void setMetaFilter(@Nullable int meta) {
         this.meta = meta;
         refreshItemList();
-    }
-
-    public String getModidForGui() {
-        return modid == null ? "" : modid;
-    }
-
-    public String getNameFilterForGui() {
-        return name == null ? "" : name;
-    }
-
-    @Override
-    public Predicate<IAEItemStack> createFilter() {
-        if (!hasFilter()) return null;
-        return ItemFilteredList.makeFilter(buildFilterString());
     }
 
     public String buildFilterString() {
@@ -156,20 +174,6 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
             }
         }
         return gridProxy;
-    }
-
-    @Override
-    public void saveFilter(NBTTagCompound aNBT) {
-        if (modid != null) aNBT.setString("modid", modid);
-        if (name != null) aNBT.setString("name", name);
-        aNBT.setInteger("meta", meta);
-    }
-
-    @Override
-    public void loadFilter(NBTTagCompound aNBT) {
-        if (aNBT.hasKey("modid")) modid = aNBT.getString("modid");
-        if (aNBT.hasKey("name")) name = aNBT.getString("name");
-        if (aNBT.hasKey("meta")) meta = aNBT.getInteger("meta");
     }
 
     @Override
@@ -289,20 +293,16 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     }
 
     @Override
-    public String[] getInfoData() {
-        String busStatusKey = getProxy() != null && getProxy().isActive()
-            ? StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Online")
-            : StatCollector.translateToLocalFormatted("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
+    public void saveFilter(NBTTagCompound aNBT) {
+        if (modid != null) aNBT.setString("modid", modid);
+        if (name != null) aNBT.setString("name", name);
+        aNBT.setInteger("meta", meta);
+    }
 
-        String filterInfo = hasFilter()
-            ? StatCollector.translateToLocalFormatted(
-                "Info_TypeFilteredInputBusME_Filtered_Set",
-                modid != null ? modid : "*",
-                name != null ? name : "*",
-                meta != GTRecipeBuilder.WILDCARD ? meta : "*")
-            : StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered_Unset");
-
-        return new String[] { busStatusKey,
-            StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered") + filterInfo };
+    @Override
+    public void loadFilter(NBTTagCompound aNBT) {
+        if (aNBT.hasKey("modid")) modid = aNBT.getString("modid");
+        if (aNBT.hasKey("name")) name = aNBT.getString("name");
+        if (aNBT.hasKey("meta")) meta = aNBT.getInteger("meta");
     }
 }

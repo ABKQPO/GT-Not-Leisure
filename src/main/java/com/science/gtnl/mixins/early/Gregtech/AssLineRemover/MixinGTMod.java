@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.Gregtech.AssLineRemover;
+package com.science.gtnl.mixins.early.Gregtech.AssLineRemover;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

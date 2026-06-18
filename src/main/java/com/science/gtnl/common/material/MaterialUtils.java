@@ -27,13 +27,13 @@ public class MaterialUtils {
     public static void registerItemPipe(int ID, Materials material, int aInvSlotCount, int aStepSize,
         boolean aIsRestrictive, int aTickTime) {
         String unName = material.mName;
-        String name = GTLanguageManager.i18nPlaceholder ? "%material" : material.mDefaultLocalName;
         GTOreDictUnificator.registerOre(
             OrePrefixes.pipeTiny.get(material),
             new MTEItemPipe(
                 ID,
                 "GT_Pipe_" + unName + "_Tiny",
-                "Tiny " + name + " Item Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.tiny_material_item_pipe"
+                    : "Tiny " + material.mDefaultLocalName + " Item Pipe",
                 0.25F,
                 material,
                 Math.max(aInvSlotCount / 4, 1),
@@ -45,7 +45,8 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 1,
                 "GT_Pipe_" + unName + "_Small",
-                "Small " + name + " Item Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.small_material_item_pipe"
+                    : "Small " + material.mDefaultLocalName + " Item Pipe",
                 0.375F,
                 material,
                 Math.max(aInvSlotCount / 2, 1),
@@ -57,7 +58,8 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 2,
                 "GT_Pipe_" + unName,
-                name + " Item Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.material_item_pipe"
+                    : material.mDefaultLocalName + " Item Pipe",
                 0.5F,
                 material,
                 aInvSlotCount,
@@ -69,7 +71,8 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 3,
                 "GT_Pipe_" + unName + "_Large",
-                "Large " + name + " Item Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.large_material_item_pipe"
+                    : "Large " + material.mDefaultLocalName + " Item Pipe",
                 0.75F,
                 material,
                 aInvSlotCount * 2,
@@ -81,7 +84,8 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 4,
                 "GT_Pipe_" + unName + "_Huge",
-                "Huge " + name + " Item Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.huge_material_item_pipe"
+                    : "Huge " + material.mDefaultLocalName + " Item Pipe",
                 0.875F,
                 material,
                 aInvSlotCount * 4,
@@ -109,7 +113,8 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Tiny",
-                "Tiny " + material.mDefaultLocalName + " Fluid Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.tiny_material_fluid_pipe"
+                    : "Tiny " + material.mDefaultLocalName + " Fluid Pipe",
                 0.25F,
                 material,
                 transferRatePerTick * 2,
@@ -120,7 +125,8 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 1,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Small",
-                "Small " + material.mDefaultLocalName + " Fluid Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.small_material_fluid_pipe"
+                    : "Small " + material.mDefaultLocalName + " Fluid Pipe",
                 0.375F,
                 material,
                 transferRatePerTick * 4,
@@ -131,7 +137,8 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 2,
                 "GT_Pipe_" + material.mDefaultLocalName,
-                material.mDefaultLocalName + " Fluid Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.material_fluid_pipe"
+                    : material.mDefaultLocalName + " Fluid Pipe",
                 0.5F,
                 material,
                 transferRatePerTick * 12,
@@ -142,7 +149,8 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 3,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Large",
-                "Large " + material.mDefaultLocalName + " Fluid Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.large_material_fluid_pipe"
+                    : "Large " + material.mDefaultLocalName + " Fluid Pipe",
                 0.75F,
                 material,
                 transferRatePerTick * 24,
@@ -153,7 +161,8 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 4,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Huge",
-                "Huge " + material.mDefaultLocalName + " Fluid Pipe",
+                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.huge_material_fluid_pipe"
+                    : "Huge " + material.mDefaultLocalName + " Fluid Pipe",
                 0.875F,
                 material,
                 transferRatePerTick * 48,

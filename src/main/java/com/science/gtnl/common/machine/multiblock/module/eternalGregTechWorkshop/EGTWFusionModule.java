@@ -10,12 +10,12 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 public class EGTWFusionModule extends EternalGregTechWorkshopModule {
 
-    public EGTWFusionModule(String aName) {
-        super(aName);
-    }
-
     public EGTWFusionModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    public EGTWFusionModule(String aName) {
+        super(aName);
     }
 
     @Override

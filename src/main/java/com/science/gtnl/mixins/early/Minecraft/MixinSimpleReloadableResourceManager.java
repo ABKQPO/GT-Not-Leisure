@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(SimpleReloadableResourceManager.class)
+@Mixin(value = SimpleReloadableResourceManager.class, remap = true)
 public class MixinSimpleReloadableResourceManager {
 
     @Shadow

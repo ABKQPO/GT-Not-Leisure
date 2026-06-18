@@ -53,22 +53,12 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new Steamgate(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean active, boolean redstoneLevel) {
-        if (side == facing) {
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(14870), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_STEAM_GATE)
-                .extFacing()
-                .glow()
-                .build() };
-
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(14870) };
+    public IStructureDefinition<Steamgate> getStructureDefinition() {
+        return StructureDefinition.<Steamgate>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 21))
+            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 22))
+            .build();
     }
 
     @Override
@@ -92,12 +82,22 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     }
 
     @Override
-    public IStructureDefinition<Steamgate> getStructureDefinition() {
-        return StructureDefinition.<Steamgate>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 21))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 22))
-            .build();
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean active, boolean redstoneLevel) {
+        if (side == facing) {
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(14870), TextureFactory.builder()
+                .addIcon(OVERLAY_FRONT_STEAM_GATE)
+                .extFacing()
+                .glow()
+                .build() };
+
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(14870) };
     }
 
     @Override
@@ -113,28 +113,8 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     }
 
     @Override
-    public boolean getDefaultHasMaintenanceChecks() {
-        return false;
-    }
-
-    @Override
-    public boolean isCorrectMachinePart(ItemStack aStack) {
-        return true;
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
-    }
-
-    @Override
-    public int getMaxEfficiency(ItemStack aStack) {
-        return 0;
-    }
-
-    @Override
-    public int getDamageToComponent(ItemStack aStack) {
-        return 0;
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new Steamgate(this.mName);
     }
 
     @Override
@@ -161,6 +141,26 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
 
             trySetControllerFromCoord(x, y, z);
         }
+    }
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean isCorrectMachinePart(ItemStack aStack) {
+        return true;
+    }
+
+    @Override
+    public int getMaxEfficiency(ItemStack aStack) {
+        return 0;
+    }
+
+    @Override
+    public int getDamageToComponent(ItemStack aStack) {
+        return 0;
     }
 
     @Override
@@ -225,7 +225,6 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     }
 
     public boolean trySetControllerFromCoord(int x, int y, int z) {
-        // Find the block at the requested coordinated and check if it is a STEAMGATE WOOOOOOOOO.
         var tileEntity = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
         if (tileEntity == null) return false;
@@ -234,7 +233,6 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
         if (!(metaTileEntity instanceof Steamgate steamgate)) return false;
         if (metaTileEntity == this) return false;
 
-        // Before linking, unlink from current STEAMGATE YEAAAAAAAA
         if (linkedGate != null) {
             linkedGate.linkedGate = null;
         }

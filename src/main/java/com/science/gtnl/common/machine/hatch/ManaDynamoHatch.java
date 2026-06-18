@@ -34,12 +34,13 @@ import vazkii.botania.common.block.tile.mana.TilePool;
 
 public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
-    private boolean isLiquidizerMode = true;
     private static final int MANA_POOL_RADIUS = 2;
     private static final int MANA_FLOWER_RADIUS = 6;
     private static final int MANA_TO_EU_RATE = 20;
     private static final FluidStack fluidMana = GTNLMaterials.FluidMana.getFluidOrGas(1);
     private static int mAmp;
+
+    private boolean isLiquidizerMode = true;
 
     public ManaDynamoHatch(int aID, String aName, String aNameRegional, int aTier, int aAmp) {
         super(aID, aName, aNameRegional, aTier);
@@ -54,33 +55,6 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new ManaDynamoHatch(mName, mTier, mDescriptionArray, mTextures, mAmp);
-    }
-
-    @Override
-    public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_01"));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_02", MANA_TO_EU_RATE));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_03", getCapacity()));
-        return desc.toArray(new String[] {});
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setBoolean("isLiquidizerMode", isLiquidizerMode);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        isLiquidizerMode = aNBT.getBoolean("isLiquidizerMode");
-    }
-
-    @Override
-    public int getCapacity() {
-        return 2000000 * this.mTier;
     }
 
     @Override
@@ -126,6 +100,113 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         }
     }
 
+    @Override
+    public boolean canTankBeFilled() {
+        return true;
+    }
+
+    @Override
+    public boolean canTankBeEmptied() {
+        return true;
+    }
+
+    @Override
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        isLiquidizerMode = !isLiquidizerMode;
+        GTUtility.sendChatToPlayer(
+            aPlayer,
+            StatCollector.translateToLocal("Mode_ManaDynamoHatch_0" + (isLiquidizerMode ? 1 : 0)));
+    }
+
+    @Override
+    public int getCapacity() {
+        return 2000000 * this.mTier;
+    }
+
+    @Override
+    public long maxEUStore() {
+        return 512L + GTValues.V[mTier + 1] * 16L;
+    }
+
+    @Override
+    public long maxAmperesOut() {
+        return mAmp;
+    }
+
+    @Override
+    public String[] getDescription() {
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_00"));
+        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_01"));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_02", MANA_TO_EU_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_03", getCapacity()));
+        return desc.toArray(new String[] {});
+    }
+
+    @Override
+    public String[] getInfoData() {
+        FluidStack currentManaStack = getFillableStack();
+        int currentMana = currentManaStack != null ? currentManaStack.amount : 0;
+        int capacity = getCapacity();
+
+        if (currentMana != 0) {
+            return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
+                + EnumChatFormatting.RESET
+                + EnumChatFormatting.GREEN
+                + NumberFormatUtil.formatNumber(currentMana)
+                + EnumChatFormatting.RESET
+                + " / "
+                + EnumChatFormatting.YELLOW
+                + NumberFormatUtil.formatNumber(capacity) };
+        }
+
+        return new String[] {};
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setBoolean("isLiquidizerMode", isLiquidizerMode);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        isLiquidizerMode = aNBT.getBoolean("isLiquidizerMode");
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        FluidStack currentManaStack = getFillableStack();
+        if (currentManaStack != null && currentManaStack.amount > 0) {
+            tag.setInteger("currentMana", currentManaStack.amount);
+            tag.setInteger("capacity", getCapacity());
+        }
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        final NBTTagCompound tag = accessor.getNBTData();
+        if (tag.hasKey("currentMana")) {
+            int currentMana = tag.getInteger("currentMana");
+            int capacity = tag.getInteger("capacity");
+            currentTip.add(
+                EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
+                    + EnumChatFormatting.RESET
+                    + EnumChatFormatting.GREEN
+                    + NumberFormatUtil.formatNumber(currentMana)
+                    + EnumChatFormatting.RESET
+                    + " / "
+                    + EnumChatFormatting.YELLOW
+                    + NumberFormatUtil.formatNumber(capacity));
+        }
+    }
+
     private void fillChamberToMax() {
         int targetMana = getCapacity();
         FluidStack currentMana = getFillableStack();
@@ -158,16 +239,6 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         }
     }
 
-    @Override
-    public boolean canTankBeFilled() {
-        return true;
-    }
-
-    @Override
-    public boolean canTankBeEmptied() {
-        return true;
-    }
-
     private void transferFluidToPools(List<TilePool> pools) {
         FluidStack currentMana = getFillableStack();
         int currentAmount = currentMana != null ? currentMana.amount : 0;
@@ -176,7 +247,6 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             if (isDropMetaValid(pool)) continue;
 
             int availableSpace = pool.getAvailableSpaceForMana();
-
             if (availableSpace <= 0) continue;
 
             int manaToTransfer = Math.min(currentAmount, availableSpace);
@@ -214,11 +284,6 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         }
     }
 
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
-    }
-
     private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
         World world = aBaseMetaTileEntity.getWorld();
         int x = aBaseMetaTileEntity.getXCoord();
@@ -252,12 +317,10 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {
                 for (int dz = -MANA_FLOWER_RADIUS; dz <= MANA_FLOWER_RADIUS; dz++) {
                     TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TileEntity) {
-                        if (te instanceof TileSpecialFlower flowerTile) {
-                            SubTileEntity subTile = flowerTile.getSubTile();
-                            if (subTile instanceof SubTileGenerating) {
-                                flowers.add((SubTileGenerating) subTile);
-                            }
+                    if (te instanceof TileSpecialFlower flowerTile) {
+                        SubTileEntity subTile = flowerTile.getSubTile();
+                        if (subTile instanceof SubTileGenerating) {
+                            flowers.add((SubTileGenerating) subTile);
                         }
                     }
                 }
@@ -266,73 +329,8 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         return flowers;
     }
 
-    @Override
-    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        isLiquidizerMode = !isLiquidizerMode;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("Mode_ManaDynamoHatch_0" + (isLiquidizerMode ? 1 : 0)));
-    }
-
-    @Override
-    public String[] getInfoData() {
-        FluidStack currentManaStack = getFillableStack();
-        int currentMana = currentManaStack != null ? currentManaStack.amount : 0;
-        int capacity = getCapacity();
-
-        if (currentMana != 0) {
-            return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
-                + EnumChatFormatting.RESET
-                + EnumChatFormatting.GREEN
-                + NumberFormatUtil.formatNumber(currentMana)
-                + EnumChatFormatting.RESET
-                + " / "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(capacity) };
-        }
-
-        return new String[] {};
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        FluidStack currentManaStack = getFillableStack();
-        if (currentManaStack != null && currentManaStack.amount > 0) {
-            tag.setInteger("currentMana", currentManaStack.amount);
-            tag.setInteger("capacity", getCapacity());
-        }
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.hasKey("currentMana")) {
-            int currentMana = tag.getInteger("currentMana");
-            int capacity = tag.getInteger("capacity");
-            currentTip.add(
-                EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
-                    + EnumChatFormatting.RESET
-                    + EnumChatFormatting.GREEN
-                    + NumberFormatUtil.formatNumber(currentMana)
-                    + EnumChatFormatting.RESET
-                    + " / "
-                    + EnumChatFormatting.YELLOW
-                    + NumberFormatUtil.formatNumber(capacity));
-        }
-    }
-
-    @Override
-    public long maxEUStore() {
-        return 512L + GTValues.V[mTier + 1] * 16L;
-    }
-
-    @Override
-    public long maxAmperesOut() {
-        return mAmp;
+    private boolean isDropMetaValid(TilePool pool) {
+        int meta = pool.getBlockMetadata();
+        return meta == 1;
     }
 }

@@ -33,7 +33,6 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -83,57 +82,6 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new PhaseChangeCube(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PhaseChangeCubeRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(19, 19, 19, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return BlockGTCasingsTT.textureOffset;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
@@ -198,15 +146,30 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing > 1);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 2);
     }
 
     @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && getMCoilLevel() != HeatingCoilLevel.None;
+    protected boolean requiresCoilStructureCheck() {
+        return true;
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        if (machineMode == MACHINEMODE_EXTRA) return RecipeMaps.extractorRecipes;
+        if (machineMode == MACHINEMODE_FLUID) return RecipeMaps.fluidExtractionRecipes;
+        if (machineMode == MACHINEMODE_SOLID) return RecipeMaps.fluidSolidifierRecipes;
+        return RecipeMaps.extractorRecipes;
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays
+            .asList(RecipeMaps.extractorRecipes, RecipeMaps.fluidExtractionRecipes, RecipeMaps.fluidSolidifierRecipes);
     }
 
     @Override
@@ -304,31 +267,6 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     }
 
     @Override
-    public double getEUtDiscount() {
-        return super.getEUtDiscount() * Math.pow(0.80, getMCoilLevel().getTier());
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return super.getDurationModifier() * Math.pow(0.80, getMCoilLevel().getTier());
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        if (machineMode == MACHINEMODE_EXTRA) return RecipeMaps.extractorRecipes;
-        else if (machineMode == MACHINEMODE_FLUID) return RecipeMaps.fluidExtractionRecipes;
-        else if (machineMode == MACHINEMODE_SOLID) return RecipeMaps.fluidSolidifierRecipes;
-        return RecipeMaps.extractorRecipes;
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays
-            .asList(RecipeMaps.extractorRecipes, RecipeMaps.fluidExtractionRecipes, RecipeMaps.fluidSolidifierRecipes);
-    }
-
-    @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
             GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
@@ -346,10 +284,71 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     }
 
     @Override
+    public int getCasingTextureID() {
+        return BlockGTCasingsTT.textureOffset;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("PhaseChangeCubeRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(19, 19, 19, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_PhaseChangeCube_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return super.getEUtDiscount() * Math.pow(0.80, getMCoilLevel().getTier());
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return super.getDurationModifier() * Math.pow(0.80, getMCoilLevel().getTier());
+    }
+
+    @Override
     public int nextMachineMode() {
         if (machineMode == MACHINEMODE_EXTRA) return MACHINEMODE_FLUID;
-        else if (machineMode == MACHINEMODE_FLUID) return MACHINEMODE_SOLID;
-        else if (machineMode == MACHINEMODE_SOLID) return MACHINEMODE_EXTRA;
+        if (machineMode == MACHINEMODE_FLUID) return MACHINEMODE_SOLID;
+        if (machineMode == MACHINEMODE_SOLID) return MACHINEMODE_EXTRA;
         return MACHINEMODE_EXTRA;
     }
 

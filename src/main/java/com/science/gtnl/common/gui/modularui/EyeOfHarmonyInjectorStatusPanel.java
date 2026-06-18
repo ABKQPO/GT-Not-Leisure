@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.ToLongFunction;
-import java.util.stream.Collectors;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -168,8 +167,8 @@ public class EyeOfHarmonyInjectorStatusPanel {
         GenericListSyncHandler<EyeOfHarmonyInjector.LinkedUnitGuiData> linkedUnitsSyncer, IPanelHandler panelHandler) {
         List<EyeOfHarmonyInjector.LinkedUnitGuiData> units = linkedUnitsSyncer.getValue()
             .stream()
-            .filter(unit -> unit != null)
-            .collect(Collectors.toList());
+            .filter(Objects::nonNull)
+            .toList();
         if (units.isEmpty()) {
             return IKey.lang("Info_EyeOfHarmonyInjector_05")
                 .asWidget()
@@ -179,6 +178,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
 
         ListWidget<IWidget, ?> list = new GTNLListWidget<>(linkedUnitsScrollY).size(PANEL_WIDTH - 10, PANEL_HEIGHT - 25)
             .scrollDirection(new VerticalScrollData())
+            .showScrollShadows(false)
             .crossAxisAlignment(Alignment.CrossAxis.START);
         linkedUnitsScrollY = 0;
         for (EyeOfHarmonyInjector.LinkedUnitGuiData unit : units) {
@@ -319,9 +319,9 @@ public class EyeOfHarmonyInjectorStatusPanel {
                 refreshLinkedUnitsWidget(syncManager);
             }).allowC2S());
         return new TextFieldWidget().value(amountSyncer)
-            .setNumbersLong(value -> Math.min(Long.MAX_VALUE, Math.max(-1, value)))
-            .setFormatAsInteger(true)
-            .setScrollValues(1, 10000, 1000000)
+            .numbersLong(value -> Math.max(-1, value))
+            .formatAsInteger(true)
+            .scrollValues(1, 10000, 1000000, 100000000)
             .setTextColor(Color.WHITE.main)
             .setTextAlignment(Alignment.Center)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
@@ -344,9 +344,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
     private void refreshLinkedUnitsWidget(PanelSyncManager syncManager) {
         DynamicSyncHandler linkedUnitsWidgetSyncer = syncManager
             .findSyncHandler(LINKED_UNITS_WIDGET_SYNC_KEY, DynamicSyncHandler.class);
-        if (linkedUnitsWidgetSyncer != null) {
-            linkedUnitsWidgetSyncer.notifyUpdate(packet -> {});
-        }
+        linkedUnitsWidgetSyncer.notifyUpdate(packet -> {});
     }
 
     @SuppressWarnings("unchecked")

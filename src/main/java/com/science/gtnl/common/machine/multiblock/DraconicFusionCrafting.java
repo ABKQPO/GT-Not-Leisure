@@ -2,7 +2,9 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
+import static com.science.gtnl.loader.BlockLoader.metaCasing;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static kubatech.loaders.BlockLoader.defcCasingBlock;
 
 import java.util.List;
 
@@ -38,10 +40,10 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import kubatech.loaders.BlockLoader;
 import kubatech.loaders.DEFCRecipes;
 import tectech.thing.casing.TTCasingsContainer;
 
@@ -55,6 +57,15 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     private static final int VERTICAL_OFF_SET = 33;
     private static final int DEPTH_OFF_SET = 5;
     private static final String[][] shape = StructureUtils.readStructureFromFile(DFC_STRUCTURE_FILE_PATH);
+
+    @Nullable
+    public static Integer getTierCasingFromBlock(Block block, int meta) {
+        if (block == null) return null;
+        if (block == defcCasingBlock) return meta - 7;
+        if (block == TTCasingsContainer.SpacetimeCompressionFieldGenerators && 2 == meta) return 6;
+        return null;
+    }
+
     public int tierCasing = -1;
 
     public DraconicFusionCrafting(int aID, String aName, String aNameRegional) {
@@ -71,51 +82,9 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_TELEPORTER_ACTIVE)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_TELEPORTER)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 12);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return DEFCRecipes.fusionCraftingRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DraconicFusionCraftingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(29, 36, 29, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .toolTipFinisher();
-        return tt;
+    public void clearHatches() {
+        super.clearHatches();
+        tierCasing = -1;
     }
 
     @Override
@@ -123,7 +92,7 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
         return StructureDefinition.<DraconicFusionCrafting>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('B', StructureUtility.ofBlock(com.science.gtnl.loader.BlockLoader.metaCasing, 14))
+            .addElement('B', StructureUtility.ofBlock(metaCasing, 14))
             .addElement(
                 'C',
                 buildHatchAdder(DraconicFusionCrafting.class).casingIndex(getCasingTextureID())
@@ -146,11 +115,11 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
                     StructureUtility.ofBlocksTiered(
                         DraconicFusionCrafting::getTierCasingFromBlock,
                         ImmutableList.of(
-                            Pair.of(BlockLoader.defcCasingBlock, 8),
-                            Pair.of(BlockLoader.defcCasingBlock, 9),
-                            Pair.of(BlockLoader.defcCasingBlock, 10),
-                            Pair.of(BlockLoader.defcCasingBlock, 11),
-                            Pair.of(BlockLoader.defcCasingBlock, 12),
+                            Pair.of(defcCasingBlock, 8),
+                            Pair.of(defcCasingBlock, 9),
+                            Pair.of(defcCasingBlock, 10),
+                            Pair.of(defcCasingBlock, 11),
+                            Pair.of(defcCasingBlock, 12),
                             Pair.of(TTCasingsContainer.SpacetimeCompressionFieldGenerators, 2)),
                         -1,
                         (t, m) -> t.tierCasing = m,
@@ -159,17 +128,61 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
             .build();
     }
 
-    @Nullable
-    public static Integer getTierCasingFromBlock(Block block, int meta) {
-        if (block == null) return null;
-        if (block == BlockLoader.defcCasingBlock) return meta - 7;
-        if (block == TTCasingsContainer.SpacetimeCompressionFieldGenerators && 2 == meta) return 6;
-        return null;
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 25);
+        if (tierCasing < 0) {
+            errors.add(StructureErrorRegistry.UNKNOWN_TIER);
+        }
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return tierCasing >= 4;
+    public void checkEnergyHatch(List<StructureError> errors) {}
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 12);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_TELEPORTER_ACTIVE)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_TELEPORTER)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
@@ -195,6 +208,16 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return DEFCRecipes.fusionCraftingRecipes;
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return tierCasing >= 4;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return 0.5 - (mParallelTier / 50.0);
     }
@@ -205,46 +228,22 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 25);
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        tierCasing = -1;
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && tierCasing >= 0;
-    }
-
-    @Override
-    public boolean checkEnergyHatch() {
-        return true;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("DraconicFusionCraftingRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(29, 36, 29, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+            .toolTipFinisher();
+        return tt;
     }
 }

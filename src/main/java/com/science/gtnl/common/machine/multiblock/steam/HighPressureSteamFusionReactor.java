@@ -52,11 +52,6 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("HighPressureSteamFusionReactorRecipeType");
-    }
-
-    @Override
     public IStructureDefinition<HighPressureSteamFusionReactor> getStructureDefinition() {
         return StructureDefinition.<HighPressureSteamFusionReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -109,6 +104,12 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+    }
+
+    @Override
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.SteamFusionReactorRecipes;
     }
@@ -125,19 +126,8 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_03"))
-            .beginStructureBlock(47, 7, 47, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
+    public String getMachineType() {
+        return StatCollector.translateToLocal("HighPressureSteamFusionReactorRecipeType");
     }
 
     @Override
@@ -162,12 +152,22 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
         }
         return new ITexture[] {
             Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 32)) };
-
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_03"))
+            .beginStructureBlock(47, 7, 47, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

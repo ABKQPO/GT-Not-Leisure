@@ -61,34 +61,8 @@ public class SteamTurbine extends MTEBasicGenerator implements IAddGregtechLogo 
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after SteamTurbine mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicGeneratorGui<>(this, GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO)
-            .build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return null;
-    }
-
-    @Override
-    public String[] getDescription() {
-        return mDescriptionArray;
     }
 
     @Override
@@ -227,6 +201,32 @@ public class SteamTurbine extends MTEBasicGenerator implements IAddGregtechLogo 
                     .addIcon(Textures.BlockIcons.STEAM_TURBINE_SIDE_ACTIVE_GLOW)
                     .glow()
                     .build()) };
+    }
+
+    @Override
+    public String[] getDescription() {
+        return mDescriptionArray;
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after SteamTurbine mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicGeneratorGui<>(this, GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO)
+            .build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
     }
 
     @Override

@@ -89,6 +89,20 @@ import lombok.Setter;
 
 public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHouse {
 
+    private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String EG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/eden_garden";
+    private static final String[][] shape = StructureUtils.readStructureFromFile(EG_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 6;
+    private static final int VERTICAL_OFF_SET = 43;
+    private static final int DEPTH_OFF_SET = 10;
+    private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
+        GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
+
+    // TODO: Remove this MUI1 fallback after Eden Garden no longer supports MUI1 startup paths.
+    @Deprecated
+    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
+        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
+
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
     public HashMap<ItemStack, Double> synchedGUIDropTracker = new HashMap<>();
     @Getter
@@ -108,19 +122,127 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     @Getter
     @Setter
     public GreenHouseViewMode greenHouseViewMode = GreenHouseViewMode.SEEDS;
-
     @Getter
     @Setter
     public boolean useNoHumidity = false;
 
-    private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String EG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/eden_garden";
-    private static final String[][] shape = StructureUtils.readStructureFromFile(EG_STRUCTURE_FILE_PATH);
-    private static final int HORIZONTAL_OFF_SET = 6;
-    private static final int VERTICAL_OFF_SET = 43;
-    private static final int DEPTH_OFF_SET = 10;
-    private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
-        GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
+    public boolean isInInventory = true;
+
+    public EdenGarden(int aID, String aName, String aNameRegional) {
+        super(aID, aName, aNameRegional);
+    }
+
+    public EdenGarden(String aName) {
+        super(aName);
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
+        return new EdenGarden(this.mName);
+    }
+
+    @Override
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        if (this.toMigrate == null) return;
+
+        for (GreenHouseMode.EIGMigrationHolder holder : toMigrate) {
+            holder.seed.stackSize = holder.count;
+            CheckRecipeResult result = tryAddCropStack(holder.seed, false);
+            if (!result.wasSuccessful() && holder.seed.stackSize > 0) {
+                addOutputPartial(holder.seed);
+            }
+        }
+    }
+
+    @Override
+    public void onRemoval() {
+        super.onRemoval();
+        IGregTechTileEntity mte = getBaseMetaTileEntity();
+        for (GreenHouseStoredCrop crop : storedCrops) {
+            dropStoredStack(mte, crop.getSeedStack());
+            dropStoredStack(mte, crop.getBlockUnderStack());
+        }
+        storedCrops.clear();
+    }
+
+    @Override
+    public IStructureDefinition<EdenGarden> getStructureDefinition() {
+        return StructureDefinition.<EdenGarden>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement(
+                'B',
+                StructureUtility.ofChain(
+                    buildHatchAdder(EdenGarden.class)
+                        .atLeast(
+                            HatchElement.Maintenance,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.Maintenance,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 4))
+                        .hint(1)
+                        .build(),
+                    StructureUtility.onElementPass(
+                        x -> ++x.mCountCasing,
+                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 3))
+            .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_GLASS, 0))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
+            .addElement('I', StructureUtility.ofBlock(Blocks.farmland, 0))
+            .addElement(
+                'J',
+                StructureUtility.ofChain(
+                    StructureUtility.ofBlockAnyMeta(Blocks.water),
+                    StructureUtility.ofBlock(BlocksItems.getFluidBlock(InternalName.fluidDistilledWater), 0)))
+            .build();
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
+        List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 1000);
+        checkHasAnyEnergy(errors);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        this.buildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public IAlignmentLimits getInitialAlignmentLimits() {
+        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated();
+    }
 
     @Override
     public int getCasingTextureID() {
@@ -128,8 +250,44 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
     public boolean getPerfectOC() {
         return true;
+    }
+
+    @Override
+    @NotNull
+    public CheckRecipeResult checkProcessing() {
+        this.mEfficiency = 10000;
+        this.mEfficiencyIncrease = 10000;
+        return processIndustrialFarmMode();
     }
 
     @Override
@@ -249,93 +407,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    public IStructureDefinition<EdenGarden> getStructureDefinition() {
-        return StructureDefinition.<EdenGarden>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement(
-                'B',
-                StructureUtility.ofChain(
-                    buildHatchAdder(EdenGarden.class)
-                        .atLeast(
-                            HatchElement.Maintenance,
-                            HatchElement.InputBus,
-                            HatchElement.OutputBus,
-                            HatchElement.InputHatch,
-                            HatchElement.Maintenance,
-                            HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 4))
-                        .hint(1)
-                        .build(),
-                    StructureUtility.onElementPass(
-                        x -> ++x.mCountCasing,
-                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 3))
-            .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_GLASS, 0))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
-            .addElement('I', StructureUtility.ofBlock(Blocks.farmland, 0))
-            .addElement(
-                'J',
-                StructureUtility.ofChain(
-                    StructureUtility.ofBlockAnyMeta(Blocks.water),
-                    StructureUtility.ofBlock(BlocksItems.getFluidBlock(InternalName.fluidDistilledWater), 0)))
-            .build();
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack itemStack,
-        List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 1000);
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && !(this.mEnergyHatches.isEmpty() && this.mExoticEnergyHatches.isEmpty());
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public IAlignmentLimits getInitialAlignmentLimits() {
-        return (d, r, f) -> d.offsetY == 0 && r.isNotRotated();
-    }
-
-    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("EdenGardenRecipeType"))
@@ -357,193 +428,34 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         return tt;
     }
 
-    public EdenGarden(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional);
-    }
-
-    public EdenGarden(String aName) {
-        super(aName);
-    }
-
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
-        return new EdenGarden(this.mName);
-    }
+    public String[] getInfoData() {
+        List<String> info = new ArrayList<>(
+            Arrays.asList(
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_01",
+                    EnumChatFormatting.GREEN + getMachineModeName() + EnumChatFormatting.RESET),
 
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-        if (this.toMigrate == null) return;
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_04",
+                    EnumChatFormatting.GREEN,
+                    this.maxSeedCount,
+                    EnumChatFormatting.RESET),
 
-        for (GreenHouseMode.EIGMigrationHolder holder : toMigrate) {
-            holder.seed.stackSize = holder.count;
-            CheckRecipeResult result = tryAddCropStack(holder.seed, false);
-            if (!result.wasSuccessful() && holder.seed.stackSize > 0) {
-                addItemOutputs(new ItemStack[] { holder.seed });
-            }
-        }
-    }
+                StatCollector.translateToLocalFormatted(
+                    "Info_EdenGarden_05",
+                    ((this.getTotalStoredCropCount() > maxSeedCount) ? EnumChatFormatting.RED
+                        : EnumChatFormatting.GREEN),
+                    this.getTotalStoredCropCount())));
 
-    @Override
-    public void onRemoval() {
-        super.onRemoval();
-        IGregTechTileEntity mte = getBaseMetaTileEntity();
-        for (GreenHouseStoredCrop crop : storedCrops) {
-            dropStoredStack(mte, crop.getSeedStack());
-            dropStoredStack(mte, crop.getBlockUnderStack());
-        }
-        storedCrops.clear();
-    }
-
-    private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {
-        if (CropsNHUtils.isStackInvalid(stack)) return;
-        EntityItem entityitem = new EntityItem(
-            mte.getWorld(),
-            mte.getXCoord(),
-            mte.getYCoord(),
-            mte.getZCoord(),
-            stack);
-        entityitem.delayBeforeCanPickup = 10;
-        mte.getWorld()
-            .spawnEntityInWorld(entityitem);
-    }
-
-    @Override
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        nextMachineMode();
-        GTUtility.sendChatToPlayer(aPlayer, getMachineModeName());
-    }
-
-    @Override
-    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
-        float aX, float aY, float aZ, ItemStack aTool) {
-        greenHouseViewMode = greenHouseViewMode.next();
-        GTUtility.sendChatToPlayer(aPlayer, greenHouseViewMode.name());
-        return true;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setInteger("greenHouseViewMode", this.greenHouseViewMode.ordinal());
-        NBTTagList cropListNBT = new NBTTagList();
-        for (GreenHouseStoredCrop crop : this.storedCrops) {
-            cropListNBT.appendTag(crop.save());
-        }
-        aNBT.setTag("industrialFarmProgress", this.industrialFarmDropTracker.save());
-        aNBT.setTag("industrialFarmCrops", cropListNBT);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        this.greenHouseViewMode = GreenHouseViewMode.fromOrdinal(aNBT.getInteger("greenHouseViewMode"));
-        this.industrialFarmDropTracker = new IFDropTable(aNBT, "industrialFarmProgress");
-        this.storedCrops.clear();
-        NBTTagList cropListNBT = aNBT.getTagList("industrialFarmCrops", 10);
-        for (int i = 0; i < cropListNBT.tagCount(); i++) {
-            GreenHouseStoredCrop crop = GreenHouseStoredCrop.load(cropListNBT.getCompoundTagAt(i));
-            if (crop.isValid()) {
-                this.storedCrops.add(crop);
-            }
-        }
-    }
-
-    @Override
-    @NotNull
-    public CheckRecipeResult checkProcessing() {
-        this.mEfficiency = 10000;
-        this.mEfficiencyIncrease = 10000;
-        return processIndustrialFarmMode();
-    }
-
-    // TODO: Remove this MUI1 fallback after Eden Garden no longer supports MUI1 startup paths.
-    @Deprecated
-    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
-        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new EdenGardenGui(this).withMachineModeIcons(MODE_ICONS);
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        if (aBaseMetaTileEntity.isClientSide()) return true;
-        openGui(aPlayer);
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after Eden Garden no longer supports mui1 startup paths.
-        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
-        configurationElements.setSynced(false);
-        configurationElements.widget(
-            new ButtonWidget().setOnClick(
-                (clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
-                })
-                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))
-                .setSize(16, 16));
-    }
-
-    @Override
-    public void createInventorySlots() {}
-
-    public boolean isInInventory = true;
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Eden Garden main GUI is fully ported to mui2.
-        isInInventory = !getBaseMetaTileEntity().isActive();
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85)
-                .setEnabled(w -> !isInInventory));
-        builder.widget(
-            new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
-                .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Inventory"))
-                        : new Text(StatCollector.translateToLocal("Info_EdenGarden_Status")))
-                .setBackground(GTUITextures.BUTTON_STANDARD)
-                .setPos(140, 91)
-                .setSize(55, 16));
-
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, null);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements.setPos(10, 0))
-                .setPos(0, 7)
-                .setSize(190, 79)
-                .setEnabled(w -> !isInInventory));
-
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createVoidExcessButton(builder))
-            .widget(createInputSeparationButton(builder))
-            .widget(createBatchModeButton(builder))
-            .widget(createLockToSingleRecipeButton(builder))
-            .widget(createStructureUpdateButton(builder));
-
-        if (supportsMachineInfo()) {
-            builder.widget(createMachineInfoButton(builder));
-            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
+        if (this.getTotalStoredCropCount() > this.maxSeedCount) {
+            info.add(
+                EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("Info_EdenGarden_07")
+                    + EnumChatFormatting.RESET);
         }
 
-        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
-        addConfigurationWidgets(configurationElements, buildContext);
-
-        builder.widget(
-            configurationElements.setSpace(2)
-                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
-                .setPos(getRecipeLockingButtonPos().add(18, 0)));
+        info.addAll(Arrays.asList(super.getInfoData()));
+        return info.toArray(new String[0]);
     }
 
     @Override
@@ -652,60 +564,138 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    public String[] getInfoData() {
-        List<String> info = new ArrayList<>(
-            Arrays.asList(
-                StatCollector.translateToLocalFormatted(
-                    "Info_EdenGarden_01",
-                    EnumChatFormatting.GREEN + getMachineModeName() + EnumChatFormatting.RESET),
-
-                StatCollector.translateToLocalFormatted(
-                    "Info_EdenGarden_04",
-                    EnumChatFormatting.GREEN,
-                    this.maxSeedCount,
-                    EnumChatFormatting.RESET),
-
-                StatCollector.translateToLocalFormatted(
-                    "Info_EdenGarden_05",
-                    ((this.getTotalStoredCropCount() > maxSeedCount) ? EnumChatFormatting.RED
-                        : EnumChatFormatting.GREEN),
-                    this.getTotalStoredCropCount())));
-
-        if (this.getTotalStoredCropCount() > this.maxSeedCount) {
-            info.add(
-                EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("Info_EdenGarden_07")
-                    + EnumChatFormatting.RESET);
-        }
-
-        info.addAll(Arrays.asList(super.getInfoData()));
-        return info.toArray(new String[0]);
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new EdenGardenGui(this).withMachineModeIcons(MODE_ICONS);
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        if (aBaseMetaTileEntity.isClientSide()) return true;
+        openGui(aPlayer);
+        return true;
+    }
+
+    @Override
+    @Deprecated
+    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after Eden Garden no longer supports mui1 startup paths.
+        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
+        configurationElements.setSynced(false);
+        configurationElements.widget(
+            new ButtonWidget().setOnClick(
+                (clickData, widget) -> {
+                    if (!widget.isClient()) widget.getContext()
+                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
+                })
+                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
+                .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))
+                .setSize(16, 16));
+    }
+
+    @Override
+    public void createInventorySlots() {}
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after the Eden Garden main GUI is fully ported to mui2.
+        isInInventory = !getBaseMetaTileEntity().isActive();
+        builder.widget(
+            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
+                .setPos(4, 4)
+                .setSize(190, 85)
+                .setEnabled(w -> !isInInventory));
+        builder.widget(
+            new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
+                .setTextureGetter(
+                    i -> i == 0 ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Inventory"))
+                        : new Text(StatCollector.translateToLocal("Info_EdenGarden_Status")))
+                .setBackground(GTUITextures.BUTTON_STANDARD)
+                .setPos(140, 91)
+                .setSize(55, 16));
+
+        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
+        drawTexts(screenElements, null);
+        builder.widget(
+            new Scrollable().setVerticalScroll()
+                .widget(screenElements.setPos(10, 0))
+                .setPos(0, 7)
+                .setSize(190, 79)
+                .setEnabled(w -> !isInInventory));
+
+        builder.widget(createPowerSwitchButton(builder))
+            .widget(createVoidExcessButton(builder))
+            .widget(createInputSeparationButton(builder))
+            .widget(createBatchModeButton(builder))
+            .widget(createLockToSingleRecipeButton(builder))
+            .widget(createStructureUpdateButton(builder));
+
+        if (supportsMachineInfo()) {
+            builder.widget(createMachineInfoButton(builder));
+            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
         }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+
+        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
+        addConfigurationWidgets(configurationElements, buildContext);
+
+        builder.widget(
+            configurationElements.setSpace(2)
+                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
+                .setPos(getRecipeLockingButtonPos().add(18, 0)));
+    }
+
+    @Override
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        nextMachineMode();
+        GTUtility.sendChatToPlayer(aPlayer, getMachineModeName());
+    }
+
+    @Override
+    public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
+        float aX, float aY, float aZ, ItemStack aTool) {
+        greenHouseViewMode = greenHouseViewMode.next();
+        GTUtility.sendChatToPlayer(aPlayer, greenHouseViewMode.name());
+        return true;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("greenHouseViewMode", this.greenHouseViewMode.ordinal());
+        NBTTagList cropListNBT = new NBTTagList();
+        for (GreenHouseStoredCrop crop : this.storedCrops) {
+            cropListNBT.appendTag(crop.save());
+        }
+        aNBT.setTag("industrialFarmProgress", this.industrialFarmDropTracker.save());
+        aNBT.setTag("industrialFarmCrops", cropListNBT);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        this.greenHouseViewMode = GreenHouseViewMode.fromOrdinal(aNBT.getInteger("greenHouseViewMode"));
+        this.industrialFarmDropTracker = new IFDropTable(aNBT, "industrialFarmProgress");
+        this.storedCrops.clear();
+        NBTTagList cropListNBT = aNBT.getTagList("industrialFarmCrops", 10);
+        for (int i = 0; i < cropListNBT.tagCount(); i++) {
+            GreenHouseStoredCrop crop = GreenHouseStoredCrop.load(cropListNBT.getCompoundTagAt(i));
+            if (crop.isValid()) {
+                this.storedCrops.add(crop);
+            }
+        }
+    }
+
+    private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {
+        if (CropsNHUtils.isStackInvalid(stack)) return;
+        EntityItem entityitem = new EntityItem(
+            mte.getWorld(),
+            mte.getXCoord(),
+            mte.getYCoord(),
+            mte.getZCoord(),
+            stack);
+        entityitem.delayBeforeCanPickup = 10;
+        mte.getWorld()
+            .spawnEntityInWorld(entityitem);
     }
 }

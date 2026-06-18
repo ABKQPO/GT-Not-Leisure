@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8.5-GTNH",
+  "package": "com.science.gtnl.mixins.late",
+  "refmap": "mixins.sciencenotleisure.refmap.json",
+  "target": "@env(DEFAULT)",
+  "injectors":{
+    "maxShiftBy": 5
+  },
+  "compatibilityLevel": "JAVA_17",
+  "overwrites": {
+    "conformVisibility": true
+  }
+}

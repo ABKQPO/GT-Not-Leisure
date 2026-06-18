@@ -59,37 +59,6 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
     }
 
     @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamExtractinatorRecipeType");
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons
-                        .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE)
-                        .extFacing()
-                        .build() };
-            } else {
-                return new ITexture[] {
-                    Textures.BlockIcons
-                        .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR)
-                        .extFacing()
-                        .build() };
-            }
-        }
-        return new ITexture[] { Textures.BlockIcons
-            .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)) };
-    }
-
-    @Override
     public IStructureDefinition<SteamExtractinator> getStructureDefinition() {
         return StructureDefinition.<SteamExtractinator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -157,7 +126,10 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) {
+            return;
+        }
+        checkHatch(errors);
     }
 
     @Override
@@ -173,6 +145,36 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
     @Override
     public RecipeMap<?> getRecipeMap() {
         return GTNLRecipeMaps.SteamExtractinatorRecipes;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) {
+                return new ITexture[] {
+                    Textures.BlockIcons
+                        .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE)
+                        .extFacing()
+                        .build() };
+            }
+            return new ITexture[] {
+                Textures.BlockIcons
+                    .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_EXTRACTINATOR)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons
+            .getCasingTextureForId(GTUtility.getCasingTextureIndex(GregTechAPI.sBlockCasings1, 10)) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamExtractinatorRecipeType");
     }
 
     @Override

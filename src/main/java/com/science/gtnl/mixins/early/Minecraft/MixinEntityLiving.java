@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 
-@Mixin(value = EntityLiving.class)
+@Mixin(value = EntityLiving.class, remap = true)
 public abstract class MixinEntityLiving extends EntityLivingBase {
 
     @Shadow

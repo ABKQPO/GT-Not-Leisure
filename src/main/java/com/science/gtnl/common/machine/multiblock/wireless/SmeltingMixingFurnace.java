@@ -73,8 +73,9 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public static final FluidStack[] valid_fuels = { Materials.ExcitedDTCC.getFluid(1L),
         Materials.ExcitedDTPC.getFluid(1L), Materials.ExcitedDTRC.getFluid(1L), Materials.ExcitedDTEC.getFluid(1L),
         Materials.ExcitedDTSC.getFluid(1L) };
-
     public static final ItemStack martix = ItemList.Transdimensional_Alignment_Matrix.get(1);
+    public static final int MACHINEMODE_SMF = 0;
+    public static final int MACHINEMODE_DTPF = 1;
 
     private static final int HORIZONTAL_OFF_SET = 8;
     private static final int VERTICAL_OFF_SET = 14;
@@ -82,8 +83,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SMF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/smelting_mixing_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SMF_STRUCTURE_FILE_PATH);
-    public static final int MACHINEMODE_SMF = 0;
-    public static final int MACHINEMODE_DTPF = 1;
+
     public boolean enableMnemonic = false;
 
     public SmeltingMixingFurnace(String aName) {
@@ -96,59 +96,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SmeltingMixingFurnace(this.mName);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SmeltingMixingFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
-            .beginStructureBlock(17, 17, 33, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return BlockGTCasingsTT.textureOffset;
+        return new SmeltingMixingFurnace(mName);
     }
 
     @Override
@@ -194,19 +142,13 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
+        if (mMachine) return -1;
+        return survivalBuildPiece(
             STRUCTURE_PIECE_MAIN,
             stackSize,
             HORIZONTAL_OFF_SET,
@@ -220,46 +162,14 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        return;
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        if (!enableMnemonic) {
-            ItemStack heldItem = aPlayer.getHeldItem();
-            if (GTUtility.areStacksEqual(heldItem, GTNLItemList.TransdimensionalMnemonicMatrix.get(1), true)) {
-                aPlayer.setCurrentItemOrArmor(0, ItemUtils.depleteStack(heldItem, 1));
-                enableMnemonic = true;
-                return true;
-            }
-        }
-        return super.onRightclick(aBaseMetaTileEntity, aPlayer);
-    }
-
-    @Override
-    public void setItemNBT(NBTTagCompound aNBT) {
-        super.setItemNBT(aNBT);
-        if (enableMnemonic) aNBT.setBoolean("enableMnemonic", enableMnemonic);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        if (enableMnemonic) aNBT.setBoolean("enableMnemonic", enableMnemonic);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        if (aNBT.hasKey("enableMnemonic")) enableMnemonic = aNBT.getBoolean("enableMnemonic");
+        checkHatch(errors);
     }
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return (machineMode == MACHINEMODE_SMF) ? GTNLRecipeMaps.SmeltingMixingFurnaceRecipes
+        return machineMode == MACHINEMODE_SMF ? GTNLRecipeMaps.SmeltingMixingFurnaceRecipes
             : RecipeMaps.plasmaForgeRecipes;
     }
 
@@ -272,8 +182,8 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
-        if (this.getRecipeMap() == RecipeMaps.plasmaForgeRecipes) {
-            if (!GTUtility.areStacksEqual(martix, getControllerSlot())) return CheckRecipeResultRegistry.NO_RECIPE;
+        if (getRecipeMap() == RecipeMaps.plasmaForgeRecipes && !GTUtility.areStacksEqual(martix, getControllerSlot())) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
         }
         return super.checkProcessing();
     }
@@ -359,15 +269,14 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
             logic.setAvailableAmperage(8L << (2L * mParallelTier) - 2L);
             logic.setAmperageOC(true);
             logic.enablePerfectOverclock();
-        } else {
-            boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty()
-                && getMaxInputAmps() <= 4;
-            logic.setAvailableVoltage(
-                machineMode == MACHINEMODE_DTPF ? getMachineVoltageLimit() * getMaxInputAmps()
-                    : getMachineVoltageLimit());
-            logic.setAvailableAmperage((machineMode == MACHINEMODE_DTPF || useSingleAmp) ? 1 : getMaxInputAmps());
-            logic.setAmperageOC(!useSingleAmp);
+            return;
         }
+
+        boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty() && getMaxInputAmps() <= 4;
+        logic.setAvailableVoltage(
+            machineMode == MACHINEMODE_DTPF ? getMachineVoltageLimit() * getMaxInputAmps() : getMachineVoltageLimit());
+        logic.setAvailableAmperage((machineMode == MACHINEMODE_DTPF || useSingleAmp) ? 1 : getMaxInputAmps());
+        logic.setAmperageOC(!useSingleAmp);
     }
 
     @Override
@@ -377,7 +286,92 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public double getDurationModifier() {
-        return 1 * Math.pow(0.75, mParallelTier);
+        return Math.pow(0.75, mParallelTier);
+    }
+
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        if (!enableMnemonic) {
+            ItemStack heldItem = aPlayer.getHeldItem();
+            if (GTUtility.areStacksEqual(heldItem, GTNLItemList.TransdimensionalMnemonicMatrix.get(1), true)) {
+                aPlayer.setCurrentItemOrArmor(0, ItemUtils.depleteStack(heldItem, 1));
+                enableMnemonic = true;
+                return true;
+            }
+        }
+        return super.onRightclick(aBaseMetaTileEntity, aPlayer);
+    }
+
+    @Override
+    public void setItemNBT(NBTTagCompound aNBT) {
+        super.setItemNBT(aNBT);
+        if (enableMnemonic) aNBT.setBoolean("enableMnemonic", enableMnemonic);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        if (enableMnemonic) aNBT.setBoolean("enableMnemonic", enableMnemonic);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        if (aNBT.hasKey("enableMnemonic")) enableMnemonic = aNBT.getBoolean("enableMnemonic");
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return BlockGTCasingsTT.textureOffset;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) {
+                return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                    TextureFactory.builder()
+                        .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
+                        .extFacing()
+                        .build() };
+            }
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SmeltingMixingFurnaceRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(17, 17, 33, true)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -387,22 +381,6 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         List<String> list = new ArrayList<>(Arrays.asList(original));
         list.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
         return list.toArray(new String[0]);
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        NBTTagCompound tag = accessor.getNBTData();
-        if (!tag.getBoolean("enableMnemonic")) return;
-        currentTip.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        tag.setBoolean("enableMnemonic", enableMnemonic);
     }
 
     @Override
@@ -423,10 +401,9 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     @Override
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
-        this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("SmeltingMixingFurnace_Mode_" + this.machineMode));
+        machineMode = (machineMode + 1) % 2;
+        GTUtility
+            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("SmeltingMixingFurnace_Mode_" + machineMode));
     }
 
     @Override
@@ -439,4 +416,19 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         return true;
     }
 
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+        if (!tag.getBoolean("enableMnemonic")) return;
+        currentTip.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        tag.setBoolean("enableMnemonic", enableMnemonic);
+    }
 }

@@ -93,23 +93,16 @@ public class Enchanting extends MTEBasicMachine {
     }
 
     @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after Enchanting mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
+    public void startSoundLoop(byte aIndex, double aX, double aY, double aZ) {
+        super.startSoundLoop(aIndex, aX, aY, aZ);
+        if (aIndex == 1) {
+            GTUtility.doSoundAtClient(SoundResource.IC2_MACHINES_MAGNETIZER_LOOP, 10, 1.0F, aX, aY, aZ);
+        }
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
+    public void startProcess() {
+        sendLoopStart((byte) 1);
     }
 
     @Override
@@ -120,11 +113,6 @@ public class Enchanting extends MTEBasicMachine {
     @Override
     public boolean drainEnergyForProcess(long aEUt) {
         return true;
-    }
-
-    @Override
-    public boolean isFluidInputAllowed(FluidStack aFluid) {
-        return getFillableStack() != null;
     }
 
     @Override
@@ -144,15 +132,27 @@ public class Enchanting extends MTEBasicMachine {
     }
 
     @Override
-    public void startSoundLoop(byte aIndex, double aX, double aY, double aZ) {
-        super.startSoundLoop(aIndex, aX, aY, aZ);
-        if (aIndex == 1) {
-            GTUtility.doSoundAtClient(SoundResource.IC2_MACHINES_MAGNETIZER_LOOP, 10, 1.0F, aX, aY, aZ);
-        }
+    public boolean isFluidInputAllowed(FluidStack aFluid) {
+        return getFillableStack() != null;
     }
 
     @Override
-    public void startProcess() {
-        sendLoopStart((byte) 1);
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after Enchanting mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
     }
 }

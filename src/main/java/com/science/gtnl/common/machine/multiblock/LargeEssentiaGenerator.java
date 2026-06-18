@@ -32,6 +32,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.machine.LargeEssentiaEnergyData;
+import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
@@ -63,14 +64,6 @@ import thaumcraft.common.config.ConfigBlocks;
 
 public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenerator> implements ISurvivalConstructable {
 
-    public int mStableValue = 0;
-    public int mTierLimit = -1;
-    public int tierMachine = -1;
-    public long mLeftEnergy;
-    public int mUpgrade = 1;
-    public final XSTR random = new XSTR();
-    public List<TileEntityEssentiaHatch> mEssentiaHatch = new ArrayList<>();
-
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 0;
     private static final int DEPTH_OFF_SET = 4;
@@ -97,22 +90,21 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
         ESSENTIA_UPGRADE.put(ItemId.createWithoutNBT(GTNLItemList.EssentiaUpgradeElectric.get(1)), 9);
     }
 
+    public int mStableValue = 0;
+    public int mTierLimit = -1;
+    public int tierMachine = -1;
+    public long mLeftEnergy;
+    public int mUpgrade = 1;
+
+    public final XSTR random = new XSTR();
+    public List<TileEntityEssentiaHatch> mEssentiaHatch = new ArrayList<>();
+
     public LargeEssentiaGenerator(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
     }
 
     public LargeEssentiaGenerator(String name) {
         super(name);
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeEssentiaGenerator(this.mName);
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 1536;
     }
 
     @Override
@@ -125,7 +117,9 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndHatch(mName, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(mName, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
     }
 
     @Override
@@ -154,58 +148,30 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
     }
 
     @Override
-    public boolean checkHatch() {
-        setupParameters();
-        if (mDynamoHatches.size() + mExoticDynamoHatches.size() != 1) return false;
+    public void checkHatch(List<StructureError> errors) {
+        if (mDynamoHatches.size() + mExoticDynamoHatches.size() != 1) {
+            errors.add(GTNLStructureErrors.invalidHatchConfiguration());
+        }
         for (MTEHatchInput tHatch : mInputHatches) {
-            if (tHatch.mTier > mTierLimit) return false;
+            if (tHatch.mTier > mTierLimit) {
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
+            }
         }
         for (MTEHatchDynamo tHatch : mDynamoHatches) {
-            if (tHatch.mTier > mTierLimit) return false;
+            if (tHatch.mTier > mTierLimit) {
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
+            }
         }
         for (MTEHatch tHatch : mExoticDynamoHatches) {
-            if (tHatch.mTier > mTierLimit) return false;
-            int maxAmp = 64 << (Integer.bitCount(mUpgrade) + Math.max(0, GTUtility.getTier(tHatch.maxEUOutput()) - 5));
-            if (tHatch.maxAmperesOut() > maxAmp) return false;
-        }
-        return super.checkHatch();
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        this.mStableValue = aNBT.getInteger("mStableValue");
-        this.mLeftEnergy = aNBT.getLong("mLeftEnergy");
-        this.mUpgrade = aNBT.getInteger("mUpgrade");
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setInteger("mStableValue", this.mStableValue);
-        aNBT.setLong("mLeftEnergy", this.mLeftEnergy);
-        aNBT.setInteger("mUpgrade", this.mUpgrade);
-    }
-
-    @Override
-    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
-        if (!getBaseMetaTileEntity().isServerSide()) return super.onRightclick(aBaseMetaTileEntity, aPlayer);
-        var itemstack = aPlayer.inventory.getCurrentItem();
-        if (itemstack == null) return super.onRightclick(aBaseMetaTileEntity, aPlayer);
-        var tCurrentItem = ItemId.createWithoutNBT(itemstack);
-        int upgrade = ESSENTIA_UPGRADE.getOrDefault(tCurrentItem, -1);
-        if (upgrade != -1) {
-            if ((mUpgrade & (1 << upgrade)) == 0 && upgrade != 0) {
-                itemstack.stackSize--;
-                mUpgrade = mUpgrade | (1 << upgrade);
-                GTUtility.sendChatToPlayer(
-                    aPlayer,
-                    itemstack.getDisplayName() + StatCollector.translateToLocal("Info_LargeEssentiaGenerator_00"));
+            if (tHatch.mTier > mTierLimit) {
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
             }
-            setupParameters();
-            return true;
+            int maxAmp = 64 << (Integer.bitCount(mUpgrade) + Math.max(0, GTUtility.getTier(tHatch.maxEUOutput()) - 5));
+            if (tHatch.maxAmperesOut() > maxAmp) {
+                errors.add(GTNLStructureErrors.invalidHatchConfiguration());
+            }
         }
-        return super.onRightclick(aBaseMetaTileEntity, aPlayer);
+        super.checkHatch(errors);
     }
 
     @Override
@@ -257,15 +223,24 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
             .build();
     }
 
-    @Nullable
-    public static Integer getTierCasing(Block block, int meta) {
-        if (block == null) return null;
-        if (block == Loaders.essentiaCell) return meta;
-        return null;
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(mName, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
-    public boolean addEssentiaHatch(TileEntityEssentiaHatch aTileEntity) {
-        return this.mEssentiaHatch.add(aTileEntity);
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            mName,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
     }
 
     @NotNull
@@ -549,6 +524,11 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
     }
 
     @Override
+    public int getCasingTextureID() {
+        return 1536;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
         final MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeEssentiaGeneratorRecipeType"))
@@ -587,28 +567,61 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        this.mStableValue = aNBT.getInteger("mStableValue");
+        this.mLeftEnergy = aNBT.getLong("mLeftEnergy");
+        this.mUpgrade = aNBT.getInteger("mUpgrade");
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("mStableValue", this.mStableValue);
+        aNBT.setLong("mLeftEnergy", this.mLeftEnergy);
+        aNBT.setInteger("mUpgrade", this.mUpgrade);
+    }
+
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        if (!getBaseMetaTileEntity().isServerSide()) return super.onRightclick(aBaseMetaTileEntity, aPlayer);
+        var itemstack = aPlayer.inventory.getCurrentItem();
+        if (itemstack == null) return super.onRightclick(aBaseMetaTileEntity, aPlayer);
+        var tCurrentItem = ItemId.createWithoutNBT(itemstack);
+        int upgrade = ESSENTIA_UPGRADE.getOrDefault(tCurrentItem, -1);
+        if (upgrade != -1) {
+            if ((mUpgrade & (1 << upgrade)) == 0 && upgrade != 0) {
+                itemstack.stackSize--;
+                mUpgrade = mUpgrade | (1 << upgrade);
+                GTUtility.sendChatToPlayer(
+                    aPlayer,
+                    itemstack.getDisplayName() + StatCollector.translateToLocal("Info_LargeEssentiaGenerator_00"));
+            }
+            setupParameters();
+            return true;
+        }
+        return super.onRightclick(aBaseMetaTileEntity, aPlayer);
+    }
+
+    @Nullable
+    public static Integer getTierCasing(Block block, int meta) {
+        if (block == null) return null;
+        if (block == Loaders.essentiaCell) return meta;
+        return null;
+    }
+
+    public boolean addEssentiaHatch(TileEntityEssentiaHatch aTileEntity) {
+        return this.mEssentiaHatch.add(aTileEntity);
+    }
+
     public boolean isValidEssentia(Aspect aspect) {
         int type = LargeEssentiaEnergyData.getAspectTypeIndex(aspect);
         return type != -1 && (mUpgrade & (1 << type)) != 0;
     }
 
     @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(mName, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            mName,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeEssentiaGenerator(this.mName);
     }
 }

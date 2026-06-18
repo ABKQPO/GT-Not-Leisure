@@ -50,44 +50,6 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
         return new SuperVoidBus(mName, mTier, mDescriptionArray, mTextures);
     }
 
-    @Override
-    public NBTTagCompound getCopiedData(EntityPlayer player) {
-        final NBTTagCompound nbt = new NBTTagCompound();
-        final NBTTagList lockedItemList = new NBTTagList();
-
-        nbt.setString("type", DATA_STICK_DATA_TYPE);
-        for (int i = 0; i < lockedItems.length; i++) {
-            if (lockedItems[i] == null) continue;
-            NBTTagCompound itemTag = new NBTTagCompound();
-            itemTag.setByte("Slot", (byte) i);
-            lockedItems[i].writeToNBT(itemTag);
-            lockedItemList.appendTag(itemTag);
-        }
-
-        nbt.setTag(LOCKED_ITEMS_NBT_KEY, lockedItemList);
-        return nbt;
-    }
-
-    @Override
-    public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound nbt) {
-        if (nbt == null || !DATA_STICK_DATA_TYPE.equals(nbt.getString("type"))) return false;
-        if (!nbt.hasKey(LOCKED_ITEMS_NBT_KEY)) return false;
-
-        // Clear current configuration
-        Arrays.fill(lockedItems, null);
-
-        NBTTagList lockedItemList = nbt.getTagList(LOCKED_ITEMS_NBT_KEY, Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < lockedItemList.tagCount(); i++) {
-            NBTTagCompound itemTag = lockedItemList.getCompoundTagAt(i);
-            int slot = itemTag.getByte("Slot");
-            if (slot < lockedItems.length) {
-                lockedItems[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean storePartial(ItemStack stack, boolean simulate) {
         for (ItemStack lockedItem : lockedItems) {
             if (lockedItem != null && lockedItem.isItemEqual(stack)) {
@@ -126,6 +88,25 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
     }
 
     @Override
+    public int getGUIWidth() {
+        return 220;
+    }
+
+    @Override
+    public boolean isLocked() {
+        for (ItemStack lockedItem : lockedItems) {
+            if (lockedItem != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ItemStack[] getLockedItems() {
+        return lockedItems;
+    }
+
+    @Override
     protected boolean useMui2() {
         return true;
     }
@@ -157,23 +138,40 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
         addGregTechLogo(builder);
     }
 
-    public ItemStack[] getLockedItems() {
-        return lockedItems;
+    @Override
+    public NBTTagCompound getCopiedData(EntityPlayer player) {
+        final NBTTagCompound nbt = new NBTTagCompound();
+        final NBTTagList lockedItemList = new NBTTagList();
+
+        nbt.setString("type", DATA_STICK_DATA_TYPE);
+        for (int i = 0; i < lockedItems.length; i++) {
+            if (lockedItems[i] == null) continue;
+            NBTTagCompound itemTag = new NBTTagCompound();
+            itemTag.setByte("Slot", (byte) i);
+            lockedItems[i].writeToNBT(itemTag);
+            lockedItemList.appendTag(itemTag);
+        }
+
+        nbt.setTag(LOCKED_ITEMS_NBT_KEY, lockedItemList);
+        return nbt;
     }
 
     @Override
-    public int getGUIWidth() {
-        return 220;
-    }
+    public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound nbt) {
+        if (nbt == null || !DATA_STICK_DATA_TYPE.equals(nbt.getString("type"))) return false;
+        if (!nbt.hasKey(LOCKED_ITEMS_NBT_KEY)) return false;
 
-    @Override
-    public boolean isLocked() {
-        for (ItemStack lockedItem : lockedItems) {
-            if (lockedItem != null) {
-                return true;
+        Arrays.fill(lockedItems, null);
+
+        NBTTagList lockedItemList = nbt.getTagList(LOCKED_ITEMS_NBT_KEY, Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < lockedItemList.tagCount(); i++) {
+            NBTTagCompound itemTag = lockedItemList.getCompoundTagAt(i);
+            int slot = itemTag.getByte("Slot");
+            if (slot < lockedItems.length) {
+                lockedItems[slot] = ItemStack.loadItemStackFromNBT(itemTag);
             }
         }
-        return false;
+        return true;
     }
 
     @Override

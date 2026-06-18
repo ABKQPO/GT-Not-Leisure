@@ -121,7 +121,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Potassium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Calcium, 1))
             .fluidOutputs(Materials.SulfuricAcid.getFluid(400))
-            .outputChances(10000, 10000)
+            .outputChances(5000, 5000, 5000)
             .duration(200)
             .eut(480)
             .addTo(CDNCR)

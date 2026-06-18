@@ -37,31 +37,6 @@ public class TapDynamoHatch extends MTEHatchDynamo {
         return new TapDynamoHatch(mName, mTier, mDescriptionArray, mTextures);
     }
 
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setInteger("clickCount", clickCount);
-        aNBT.setLong("lastClickTime", lastClickTime);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        clickCount = aNBT.getInteger("clickCount");
-        lastClickTime = aNBT.getLong("lastClickTime");
-    }
-
-    @Override
-    public long maxAmperesOut() {
-        return 16;
-    }
-
-    @Override
-    public long maxEUStore() {
-        return 512L + GTValues.V[mTier + 1] * 16L;
-    }
-
-    @Override
     public void onLeftclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         World world = aBaseMetaTileEntity.getWorld();
         int x = aBaseMetaTileEntity.getXCoord();
@@ -99,5 +74,29 @@ public class TapDynamoHatch extends MTEHatchDynamo {
         float aX, float aY, float aZ) {
         this.onLeftclick(aBaseMetaTileEntity, aPlayer);
         return false;
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setInteger("clickCount", clickCount);
+        aNBT.setLong("lastClickTime", lastClickTime);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        clickCount = aNBT.getInteger("clickCount");
+        lastClickTime = aNBT.getLong("lastClickTime");
+    }
+
+    @Override
+    public long maxAmperesOut() {
+        return 16;
+    }
+
+    @Override
+    public long maxEUStore() {
+        return 512L + GTValues.V[mTier + 1] * 16L;
     }
 }

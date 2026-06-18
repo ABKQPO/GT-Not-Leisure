@@ -35,10 +35,7 @@ import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolid
 
 public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAddGregtechLogo {
 
-    public final FluidStackTank[] fluidTanks;
-    public final FluidStack[] mStoredFluid;
     public static final int moldSlot = 2;
-    public final int mCapacityPer = Integer.MAX_VALUE;
     public static final ItemStack[] solidifierMolds = { ItemList.Shape_Mold_Bottle.get(1),
         ItemList.Shape_Mold_Plate.get(1), ItemList.Shape_Mold_Ingot.get(1), ItemList.Shape_Mold_Casing.get(1),
         ItemList.Shape_Mold_Gear.get(1), ItemList.Shape_Mold_Gear_Small.get(1), ItemList.Shape_Mold_Credit.get(1),
@@ -50,29 +47,39 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
         ItemList.Shape_Mold_Pipe_Tiny.get(1), ItemList.Shape_Mold_Pipe_Small.get(1),
         ItemList.Shape_Mold_Pipe_Medium.get(1), ItemList.Shape_Mold_Pipe_Large.get(1),
         ItemList.Shape_Mold_Pipe_Huge.get(1), ItemList.Shape_Mold_ToolHeadDrill.get(1),
-
         GGItemList.SingleUseFileMold.get(1), GGItemList.SingleUseWrenchMold.get(1),
         GGItemList.SingleUseCrowbarMold.get(1), GGItemList.SingleUseWireCutterMold.get(1),
         GGItemList.SingleUseHardHammerMold.get(1), GGItemList.SingleUseSoftMalletMold.get(1),
         GGItemList.SingleUseScrewdriverMold.get(1), GGItemList.SingleUseSawMold.get(1) };
 
+    public final FluidStackTank[] fluidTanks;
+    public final FluidStack[] mStoredFluid;
+    public final int mCapacityPer = Integer.MAX_VALUE;
+
     public HumongousSolidifierHatch(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, 14);
-        this.mStoredFluid = new FluidStack[9];
+        mStoredFluid = new FluidStack[9];
         fluidTanks = new FluidStackTank[9];
+        initFluidTanks();
     }
 
     public HumongousSolidifierHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, 14, aDescription, aTextures);
-        this.mStoredFluid = new FluidStack[9];
+        mStoredFluid = new FluidStack[9];
         fluidTanks = new FluidStackTank[9];
-        for (int i = 0; i < 9; i++) {
-            final int index = i;
-            fluidTanks[i] = new FluidStackTank(
-                () -> mStoredFluid[index],
-                fluid -> mStoredFluid[index] = fluid,
-                mCapacityPer);
+        initFluidTanks();
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        if (aBaseMetaTileEntity.isServerSide() && mStoredFluid != null) {
+            for (int i = 0; i < getMaxType(); i++) {
+                if (mStoredFluid[i] != null && mStoredFluid[i].amount <= 0) {
+                    mStoredFluid[i] = null;
+                }
+            }
         }
+        super.onPostTick(aBaseMetaTileEntity, aTick);
     }
 
     @Override
@@ -86,30 +93,9 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
     }
 
     @Override
-    public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new HumongousSolidifierHatch(mName, 14, mDescriptionArray, mTextures);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_00"),
-            StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_01") };
-    }
-
-    @Override
     public boolean isItemValidForSlot(int aIndex, ItemStack aStack) {
         if (aIndex == moldSlot && aStack != null) {
-            for (final ItemStack itemStack : solidifierMolds) {
+            for (ItemStack itemStack : solidifierMolds) {
                 if (GTUtility.areStacksEqual(itemStack, aStack, true)) {
                     return true;
                 }
@@ -122,111 +108,11 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
     }
 
     @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
-        final int SLOT_NUMBER = 9;
-        final Pos2d[] positions = new Pos2d[] { new Pos2d(61, 16), new Pos2d(79, 16), new Pos2d(97, 16),
-            new Pos2d(61, 34), new Pos2d(79, 34), new Pos2d(97, 34), new Pos2d(61, 52), new Pos2d(79, 52),
-            new Pos2d(97, 52) };
-
-        for (int i = 0; i < SLOT_NUMBER; i++) {
-            builder.widget(
-                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
-                    .setPos(positions[i]));
-        }
-
-        builder.widget(
-            new SlotWidget(new MoldSlot(inventoryHandler, moldSlot)).setShiftClickPriority(-1)
-                .setPos(125, 35)
-                .setBackground(getGUITextureSet().getItemSlot(), GTUITextures.OVERLAY_SLOT_MOLD)
-                .setSize(18, 18));
-    }
-
-    public FluidStackTank[] getFluidTanksForGui() {
-        return fluidTanks;
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new HumongousSolidifierHatchGui(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
     public FluidStack getFluid() {
         for (FluidStack tFluid : mStoredFluid) {
             if (tFluid != null && tFluid.amount > 0) return tFluid;
         }
         return null;
-    }
-
-    private class MoldSlot extends BaseSlot {
-
-        public MoldSlot(IItemHandlerModifiable inventory, int index) {
-            super(inventory, index);
-        }
-
-        @Override
-        public boolean isItemValidPhantom(ItemStack stack) {
-            return super.isItemValidPhantom(stack) && getBaseMetaTileEntity().isItemValidForSlot(getSlotIndex(), stack);
-        }
-
-    }
-
-    @Override
-    public void onBlockDestroyed() {
-        super.onBlockDestroyed();
-    }
-
-    public int getMaxType() {
-        return 9;
-    }
-
-    public int getFirstEmptySlot() {
-        for (int i = 0; i < mStoredFluid.length; i++) {
-            if (mStoredFluid[i] == null) return i;
-        }
-        return -1;
-    }
-
-    public boolean hasFluid(FluidStack aFluid) {
-        if (aFluid == null) return false;
-        for (FluidStack tFluid : mStoredFluid) {
-            if (aFluid.isFluidEqual(tFluid)) return true;
-        }
-        return false;
-    }
-
-    public int getFluidSlot(FluidStack tFluid) {
-        if (tFluid == null) return -1;
-        for (int i = 0; i < mStoredFluid.length; i++) {
-            if (tFluid.equals(mStoredFluid[i])) return i;
-        }
-        return -1;
-    }
-
-    public int getFluidAmount(FluidStack tFluid) {
-        int tSlot = getFluidSlot(tFluid);
-        if (tSlot != -1) {
-            return mStoredFluid[tSlot].amount;
-        }
-        return 0;
-    }
-
-    public void setFluid(FluidStack aFluid, int aSlot) {
-        if (aSlot < 0 || aSlot >= getMaxType()) return;
-        mStoredFluid[aSlot] = aFluid;
-    }
-
-    public void addFluid(FluidStack aFluid, int aSlot) {
-        if (aSlot < 0 || aSlot >= getMaxType()) return;
-        if (aFluid.equals(mStoredFluid[aSlot])) mStoredFluid[aSlot].amount += aFluid.amount;
-        if (mStoredFluid[aSlot] == null) mStoredFluid[aSlot] = aFluid.copy();
     }
 
     @Override
@@ -307,27 +193,140 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        FluidTankInfo[] FTI = new FluidTankInfo[getMaxType()];
+        FluidTankInfo[] tankInfo = new FluidTankInfo[getMaxType()];
         for (int i = 0; i < getMaxType(); i++) {
-            FTI[i] = new FluidTankInfo(mStoredFluid[i], mCapacityPer);
+            tankInfo[i] = new FluidTankInfo(mStoredFluid[i], mCapacityPer);
         }
-        return FTI;
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        if (aBaseMetaTileEntity.isServerSide() && mStoredFluid != null) {
-            for (int i = 0; i < getMaxType(); i++) {
-                if (mStoredFluid[i] != null && mStoredFluid[i].amount <= 0) {
-                    mStoredFluid[i] = null;
-                }
-            }
-        }
-        super.onPostTick(aBaseMetaTileEntity, aTick);
+        return tankInfo;
     }
 
     @Override
     public boolean isValidSlot(int aIndex) {
-        return aIndex >= 9;
+        return aIndex == moldSlot || aIndex == getCircuitSlot() || aIndex >= 9;
+    }
+
+    @Override
+    public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new HumongousSolidifierHatch(mName, 14, mDescriptionArray, mTextures);
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_00"),
+            StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_01") };
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after HumongousSolidifierHatch mui2 rollout is complete.
+        final int slotCount = 9;
+        final Pos2d[] positions = new Pos2d[] { new Pos2d(61, 16), new Pos2d(79, 16), new Pos2d(97, 16),
+            new Pos2d(61, 34), new Pos2d(79, 34), new Pos2d(97, 34), new Pos2d(61, 52), new Pos2d(79, 52),
+            new Pos2d(97, 52) };
+
+        for (int i = 0; i < slotCount; i++) {
+            builder.widget(
+                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
+                    .setPos(positions[i]));
+        }
+
+        builder.widget(
+            new SlotWidget(new MoldSlot(inventoryHandler, moldSlot)).setShiftClickPriority(-1)
+                .setPos(125, 35)
+                .setBackground(getGUITextureSet().getItemSlot(), GTUITextures.OVERLAY_SLOT_MOLD)
+                .setSize(18, 18));
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new HumongousSolidifierHatchGui(this).build(data, syncManager, uiSettings);
+    }
+
+    public FluidStackTank[] getFluidTanksForGui() {
+        return fluidTanks;
+    }
+
+    public int getMaxType() {
+        return 9;
+    }
+
+    public int getFirstEmptySlot() {
+        for (int i = 0; i < mStoredFluid.length; i++) {
+            if (mStoredFluid[i] == null) return i;
+        }
+        return -1;
+    }
+
+    public boolean hasFluid(FluidStack aFluid) {
+        if (aFluid == null) return false;
+        for (FluidStack tFluid : mStoredFluid) {
+            if (aFluid.isFluidEqual(tFluid)) return true;
+        }
+        return false;
+    }
+
+    public int getFluidSlot(FluidStack tFluid) {
+        if (tFluid == null) return -1;
+        for (int i = 0; i < mStoredFluid.length; i++) {
+            if (tFluid.equals(mStoredFluid[i])) return i;
+        }
+        return -1;
+    }
+
+    public int getFluidAmount(FluidStack tFluid) {
+        int tSlot = getFluidSlot(tFluid);
+        if (tSlot != -1) {
+            return mStoredFluid[tSlot].amount;
+        }
+        return 0;
+    }
+
+    public void setFluid(FluidStack aFluid, int aSlot) {
+        if (aSlot < 0 || aSlot >= getMaxType()) return;
+        mStoredFluid[aSlot] = aFluid;
+    }
+
+    public void addFluid(FluidStack aFluid, int aSlot) {
+        if (aSlot < 0 || aSlot >= getMaxType()) return;
+        if (aFluid.equals(mStoredFluid[aSlot])) mStoredFluid[aSlot].amount += aFluid.amount;
+        if (mStoredFluid[aSlot] == null) mStoredFluid[aSlot] = aFluid.copy();
+    }
+
+    private void initFluidTanks() {
+        for (int i = 0; i < fluidTanks.length; i++) {
+            final int index = i;
+            fluidTanks[i] = new FluidStackTank(
+                () -> mStoredFluid[index],
+                fluid -> mStoredFluid[index] = fluid,
+                mCapacityPer);
+        }
+    }
+
+    private class MoldSlot extends BaseSlot {
+
+        public MoldSlot(IItemHandlerModifiable inventory, int index) {
+            super(inventory, index);
+        }
+
+        @Override
+        public boolean isItemValidPhantom(ItemStack stack) {
+            return super.isItemValidPhantom(stack) && getBaseMetaTileEntity().isItemValidForSlot(getSlotIndex(), stack);
+        }
     }
 }

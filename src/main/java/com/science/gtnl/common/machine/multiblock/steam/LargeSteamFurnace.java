@@ -57,6 +57,14 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     private static final String LSF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSF_STRUCTURE_FILE_PATH);
 
+    public LargeSteamFurnace(int aID, String aName, String aNameRegional) {
+        super(aID, aName, aNameRegional);
+    }
+
+    public LargeSteamFurnace(String aName) {
+        super(aName);
+    }
+
     @Override
     public IStructureDefinition<LargeSteamFurnace> getStructureDefinition() {
         return StructureDefinition.<LargeSteamFurnace>builder()
@@ -155,51 +163,50 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
             .build();
     }
 
-    public LargeSteamFurnace(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional);
-    }
-
-    public LargeSteamFurnace(String aName) {
-        super(aName);
-    }
-
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeSteamFurnace(this.mName);
+        return new LargeSteamFurnace(mName);
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
-            .beginStructureBlock(9, 8, 10, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .toolTipFinisher();
-        return tt;
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE_ACTIVE)
-                .extFacing()
-                .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE)
-                .extFacing()
-                .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+        checkMachineTier(
+            errors,
+            50,
+            tierPipeCasing == 1 && tierMachineCasing == 1
+                && tierFrameCasing == 1
+                && tierPlatedCasing == 1
+                && tierBrickCasing == 1
+                && tierFireboxCasing == 1
+                && tierIndustrialCasing == 1,
+            tierPipeCasing == 2 && tierMachineCasing == 2
+                && tierFrameCasing == 2
+                && tierPlatedCasing == 2
+                && tierBrickCasing == 2
+                && tierFireboxCasing == 2
+                && tierIndustrialCasing == 2);
     }
 
     @Override
@@ -209,7 +216,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
     @Override
     public ProcessingLogic createProcessingLogic() {
-
         return new GTNLProcessingLogic() {
 
             @Override
@@ -221,83 +227,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                     .setMaxOverclocks(0);
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        if (tierPipeCasing == 1 && tierMachineCasing == 1
-            && tierFrameCasing == 1
-            && tierPlatedCasing == 1
-            && tierBrickCasing == 1
-            && tierFireboxCasing == 1
-            && tierIndustrialCasing == 1
-            && mCountCasing >= 50) {
-            tierMachine = 1;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        if (tierPipeCasing == 2 && tierMachineCasing == 2
-            && tierFrameCasing == 2
-            && tierPlatedCasing == 2
-            && tierBrickCasing == 2
-            && tierFireboxCasing == 2
-            && tierIndustrialCasing == 2
-            && mCountCasing >= 50) {
-            tierMachine = 2;
-            getCasingTextureID();
-            updateHatchTexture();
-            return;
-        }
-        checkStructureCondition(errors, false);
-    }
-
-    @Override
-    public int getMaxParallelRecipes() {
-        if (tierMachine == 1) {
-            return 128;
-        } else if (tierMachine == 2) {
-            return 256;
-        }
-        return 128;
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamFurnaceRecipeType");
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 3;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
     }
 
     @Override
@@ -349,7 +278,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
             .calculate();
 
         double batchMultiplierMax = 1;
-        // In case batch mode enabled
         if (currentParallel > maxParallelBeforeBatchMode && calculator.getDuration() < getMaxBatchSize()) {
             batchMultiplierMax = (double) getMaxBatchSize() / calculator.getDuration();
             batchMultiplierMax = Math.min(batchMultiplierMax, (double) currentParallel / maxParallelBeforeBatchMode);
@@ -357,7 +285,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
         int finalParallel = (int) (batchMultiplierMax * currentParallelBeforeBatchMode);
 
-        // Copy the getItemOutputSlots as to not mutate the output busses' slots.
         List<ItemStack> outputSlots = new ArrayList<>();
         for (ItemStack stack : getItemOutputSlots(null)) {
             if (stack != null) {
@@ -375,7 +302,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                 break;
             }
         }
-        // Consume items and generate outputs
+
         ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
         int toSmelt = finalParallel;
         for (ItemStack item : tInput) {
@@ -385,11 +312,8 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                 int remainingToSmelt = Math.min(toSmelt, item.stackSize);
 
                 if (hasMEOutputBus) {
-                    // Has an unlocked ME Output Bus and therefore can always fit the full stack
                     maxOutput = remainingToSmelt;
                 } else {
-
-                    // Calculate how many of this output can fit in the output slots
                     int needed = remainingToSmelt;
                     ItemStack outputType = smeltedOutput.copy();
                     outputType.stackSize = 1;
@@ -397,33 +321,28 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                     for (int i = 0; i < outputSlots.size(); i++) {
                         ItemStack slot = outputSlots.get(i);
                         if (slot == null) {
-                            // Empty slot: can fit a full stack
                             int canFit = Math.min(needed, outputType.getMaxStackSize());
                             ItemStack newStack = outputType.copy();
                             newStack.stackSize = canFit;
-                            outputSlots.set(i, newStack); // Fill the slot
+                            outputSlots.set(i, newStack);
                             maxOutput += canFit;
                             needed -= canFit;
                         } else if (slot.isItemEqual(outputType)) {
                             int canFit;
-                            // Check for locked ME Output bus
                             if (slot.stackSize == 65) {
                                 canFit = needed;
                             } else {
-                                // Same type: can fit up to max stack size
                                 int space = outputType.getMaxStackSize() - slot.stackSize;
                                 canFit = Math.min(needed, space);
                             }
                             slot.stackSize += canFit;
                             maxOutput += canFit;
                             needed -= canFit;
-                            // No need to set, since slot is a reference
                         }
                         if (needed <= 0) break;
                     }
                 }
 
-                // If void protection is enabled, only process what fits
                 int toProcess = protectsExcessItem() ? maxOutput : remainingToSmelt;
 
                 if (toProcess > 0) {
@@ -441,17 +360,71 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        this.mOutputItems = smeltedOutputs.toArray(new ItemStack[0]);
+        mOutputItems = smeltedOutputs.toArray(new ItemStack[0]);
 
-        this.mEfficiency = 10000 - (getIdealStatus() - getRepairStatus()) * 1000;
-        this.mEfficiencyIncrease = 10000;
-        this.mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax / (1 << recipeOcCount));
-        this.lEUt = GTValues.VP[GTUtility.getTier(calculator.getConsumption())] * (1L << (2 * recipeOcCount));
-        if (this.lEUt > 0) {
-            this.lEUt = -this.lEUt;
+        mEfficiency = 10000 - (getIdealStatus() - getRepairStatus()) * 1000;
+        mEfficiencyIncrease = 10000;
+        mMaxProgresstime = (int) (calculator.getDuration() * batchMultiplierMax / (1 << recipeOcCount));
+        lEUt = GTValues.VP[GTUtility.getTier(calculator.getConsumption())] * (1L << (2 * recipeOcCount));
+        if (lEUt > 0) {
+            lEUt = -lEUt;
         }
-        this.updateSlots();
+        updateSlots();
 
         return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    @Override
+    public int getMaxParallelRecipes() {
+        if (tierMachine == 1) {
+            return 128;
+        } else if (tierMachine == 2) {
+            return 256;
+        }
+        return 128;
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 3;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
+            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE_ACTIVE)
+                .extFacing()
+                .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
+                .addIcon(Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE)
+                .extFacing()
+                .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id) };
+    }
+
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("LargeSteamFurnaceRecipeType");
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeSteamFurnaceRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_02"))
+            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+            .beginStructureBlock(9, 8, 10, false)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
+            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+            .toolTipFinisher();
+        return tt;
     }
 }

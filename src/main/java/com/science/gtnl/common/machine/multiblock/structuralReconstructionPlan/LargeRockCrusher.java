@@ -63,87 +63,6 @@ public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> impl
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeRockCrusher(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialRockBreakerActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCAIndustrialRockBreaker)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 14);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.IndustrialRockCrusherRecipes;
-    }
-
-    @Override
-    public @NotNull CheckRecipeResult checkProcessing() {
-        boolean hasWater = false;
-        boolean hasLava = false;
-
-        for (FluidStack fluid : getStoredFluids()) {
-            if (GTUtility.areFluidsEqual(fluid, water)) {
-                hasWater = true;
-            }
-            if (GTUtility.areFluidsEqual(fluid, lava)) {
-                hasLava = true;
-            }
-            if (hasWater && hasLava) break;
-        }
-
-        if (!hasWater || !hasLava) return CheckRecipeResultRegistry.NO_RECIPE;
-
-        return super.checkProcessing();
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 1;
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeRockCrusherRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 4, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IStructureDefinition<LargeRockCrusher> getStructureDefinition() {
         return StructureDefinition.<LargeRockCrusher>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
@@ -174,10 +93,10 @@ public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> impl
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 30);
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 30);
     }
 
     @Override
@@ -198,5 +117,86 @@ public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> impl
             env,
             false,
             true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.IndustrialRockCrusherRecipes;
+    }
+
+    @Override
+    public @NotNull CheckRecipeResult checkProcessing() {
+        boolean hasWater = false;
+        boolean hasLava = false;
+
+        for (FluidStack fluid : getStoredFluids()) {
+            if (GTUtility.areFluidsEqual(fluid, water)) {
+                hasWater = true;
+            }
+            if (GTUtility.areFluidsEqual(fluid, lava)) {
+                hasLava = true;
+            }
+            if (hasWater && hasLava) break;
+        }
+
+        if (!hasWater || !hasLava) return CheckRecipeResultRegistry.NO_RECIPE;
+
+        return super.checkProcessing();
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialRockBreakerActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCAIndustrialRockBreaker)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(sBlockCasings4, 14);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeRockCrusherRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 4, 5, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 1;
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1;
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeRockCrusher(this.mName);
     }
 }

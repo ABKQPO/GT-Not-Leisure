@@ -27,15 +27,6 @@ public class OriginalInputHatch extends MTEHatchInput {
     }
 
     @Override
-    public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalInputHatch_00"),
-            StatCollector.translateToLocal("Tooltip_OriginalInputHatch_01"),
-            StatCollector.translateToLocalFormatted(
-                "Tooltip_OriginalInputHatch_02",
-                NumberFormatUtil.formatNumber(getCapacity())) };
-    }
-
-    @Override
     public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
         ItemStack aStack) {
         return false;
@@ -44,5 +35,14 @@ public class OriginalInputHatch extends MTEHatchInput {
     @Override
     public int getCapacity() {
         return 8000;
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalInputHatch_00"),
+            StatCollector.translateToLocal("Tooltip_OriginalInputHatch_01"),
+            StatCollector.translateToLocalFormatted(
+                "Tooltip_OriginalInputHatch_02",
+                NumberFormatUtil.formatNumber(getCapacity())) };
     }
 }

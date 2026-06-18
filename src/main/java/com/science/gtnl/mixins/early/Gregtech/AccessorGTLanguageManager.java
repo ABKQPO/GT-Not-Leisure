@@ -27,6 +27,11 @@ public interface AccessorGTLanguageManager {
         throw new AssertionError();
     }
 
+    @Accessor("stringTranslateLanguageListFallBack")
+    static Map<String, String> getStringTranslateLanguageListFallBack() {
+        throw new AssertionError();
+    }
+
     @Accessor("hasUnsavedEntry")
     static boolean getHasUnsavedEntry() {
         throw new AssertionError();

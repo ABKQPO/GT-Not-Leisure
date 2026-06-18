@@ -72,76 +72,6 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new LargeChemicalBath(this.mName);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlantActive)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlant)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return TAE.GTPP_INDEX(11);
-    }
-
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        switch (machineMode) {
-            case MACHINEMODE_SIMPLEWASH -> {
-                return GTPPRecipeMaps.simpleWasherRecipes;
-            }
-            case MACHINEMODE_CHEMBATH -> {
-                return RecipeMaps.chemicalBathRecipes;
-            }
-            default -> {
-                return RecipeMaps.oreWasherRecipes;
-            }
-        }
-    }
-
-    @NotNull
-    @Override
-    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays
-            .asList(RecipeMaps.oreWasherRecipes, GTPPRecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeChemicalBathRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
-            .beginStructureBlock(5, 3, 7, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public IAlignmentLimits getInitialAlignmentLimits() {
         return (d, r, f) -> d.offsetY == 0 && r.isNotRotated() && !f.isVerticallyFliped();
     }
@@ -174,6 +104,104 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
         if (machineMode == MACHINEMODE_OREWASH) return MACHINEMODE_SIMPLEWASH;
         else if (machineMode == MACHINEMODE_SIMPLEWASH) return MACHINEMODE_CHEMBATH;
         else return MACHINEMODE_OREWASH;
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        replaceWater();
+        checkHatch(errors);
+        checkCasingMin(errors, mCountCasing, 55);
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (mMachine) return -1;
+        return survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return switch (machineMode) {
+            case MACHINEMODE_SIMPLEWASH -> GTPPRecipeMaps.simpleWasherRecipes;
+            case MACHINEMODE_CHEMBATH -> RecipeMaps.chemicalBathRecipes;
+            default -> RecipeMaps.oreWasherRecipes;
+        };
+    }
+
+    @NotNull
+    @Override
+    public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
+        return Arrays
+            .asList(RecipeMaps.oreWasherRecipes, GTPPRecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return 0.8 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return Math.max(0.05, 1.0 / 5.0 - (Math.max(0, mParallelTier - 1) / 50.0));
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlantActive)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCDIndustrialWashPlant)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return TAE.GTPP_INDEX(11);
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeChemicalBathRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addMultiAmpHatchInfo()
+            .beginStructureBlock(5, 3, 7, true)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
@@ -213,47 +241,8 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        replaceWater();
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 55);
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return Math.max(0.05, 1.0 / 5.0 - (Math.max(0, mParallelTier - 1) / 50.0));
-    }
-
-    @Override
     public boolean supportsMachineModeSwitch() {
         return true;
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (mMachine) return -1;
-        return survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
     }
 
     public void replaceWater() {
@@ -287,5 +276,10 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
                 }
             }
         }
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new LargeChemicalBath(this.mName);
     }
 }

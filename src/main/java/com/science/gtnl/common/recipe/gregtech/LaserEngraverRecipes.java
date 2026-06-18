@@ -20,6 +20,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
@@ -53,8 +54,100 @@ public class LaserEngraverRecipes implements IRecipePool {
             .addTo(lER);
     }
 
+    public void oreRecipeWithPurifiedWater(Object[] inputs, ItemStack[] outputs, Materials lowTierWater,
+        Materials highTierWater, int duration, int boostedDuration, long eut) {
+
+        RecipeBuilder.builder()
+            .itemInputs(inputs)
+            .itemOutputs(outputs)
+            .fluidInputs(lowTierWater.getFluid(100L))
+            .duration(duration)
+            .eut(eut)
+            .addTo(lER);
+
+        RecipeBuilder.builder()
+            .itemInputs(inputs)
+            .itemOutputs(outputs)
+            .fluidInputs(highTierWater.getFluid(100L))
+            .duration(boostedDuration)
+            .eut(eut)
+            .addTo(lER);
+    }
+
     @Override
     public void loadRecipes() {
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensWhite", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(256, ItemList.Circuit_Wafer_CPU.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            50,
+            25,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensGreen", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(256, ItemList.Circuit_Wafer_ULPIC.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            50,
+            25,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensYellow", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_SoC.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            500,
+            250,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensOrange", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(256, ItemList.Circuit_Wafer_Simple_SoC.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            50,
+            25,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensBlue", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(64, ItemList.Circuit_Wafer_PIC.get(1)) },
+            Materials.Grade1PurifiedWater,
+            Materials.Grade2PurifiedWater,
+            200,
+            100,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensPink", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(4, ItemList.Circuit_Wafer_QPIC.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            2400,
+            1200,
+            TierEU.RECIPE_UV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensCyan", 0), GTNLItemList.NeutroniumWafer.get(1) },
+            new ItemStack[] { GTUtility.copyAmountUnsafe(256, ItemList.Circuit_Wafer_Ram.get(1)) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            50,
+            25,
+            TierEU.RECIPE_IV);
+
+        oreRecipeWithPurifiedWater(
+            new Object[] { new OreDictItemStack("craftingLensBlack", 0), GTNLItemList.HighlyAdvancedSocWafer.get(1) },
+            new ItemStack[] { GTNLItemList.HighlyAdvancedSocWafer.get(1) },
+            Materials.Grade5PurifiedWater,
+            Materials.Grade6PurifiedWater,
+            900,
+            450,
+            TierEU.RECIPE_IV);
 
         RecipeBuilder.builder()
             .itemInputs(GTNLItemList.NinefoldInputHatchUHV.get(1), ItemList.Quantum_Tank_IV.get(1))

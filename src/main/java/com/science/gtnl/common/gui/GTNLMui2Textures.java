@@ -4,7 +4,6 @@ import com.cleanroommc.modularui.drawable.UITexture;
 import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.Mods;
-import gregtech.api.modularui2.GTGuiTextures;
 
 public class GTNLMui2Textures {
 
@@ -22,12 +21,6 @@ public class GTNLMui2Textures {
     public static final UITexture BACKGROUND_GLOW_WHITE = UITexture
         .fullImage(Mods.TecTech.ID, "gui/background/white_glow");
 
-    public static final UITexture BACKGROUND_SPACE = GTGuiTextures.BACKGROUND_SPACE;
-
-    public static final UITexture BACKGROUND_STAR = GTGuiTextures.BACKGROUND_STAR;
-
-    public static final UITexture PICTURE_GODFORGE_LOGO = GTGuiTextures.PICTURE_GODFORGE_LOGO;
-
     public static final UITexture OVERLAY_BUTTON_ARROW_GREEN_UP = UITexture
         .fullImage(Mods.GregTech.ID, "gui/overlay_button/arrow_green_up");
 
@@ -39,6 +32,4 @@ public class GTNLMui2Textures {
 
     public static final UITexture OVERLAY_BUTTON_PLANET_TELEPORT = UITexture
         .fullImage(Mods.GTNHIntergalactic.ID, "gui/overlay_button/planet_teleport.png");
-
-    public static final UITexture OVERLAY_BUTTON_MACHINEMODE_SLICING = GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_SLICING;
 }

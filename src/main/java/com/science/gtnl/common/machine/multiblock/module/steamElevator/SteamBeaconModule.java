@@ -56,6 +56,34 @@ import vazkii.botania.common.brew.ModPotions;
 
 public class SteamBeaconModule extends SteamElevatorModule {
 
+    public static final int CONFIG_WINDOW_ID = 14;
+    public static final UITexture SPEED_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 198, 18, 216);
+    public static final UITexture STRENGTH_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 198, 90, 216);
+    public static final UITexture JUMP_BOOST_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 216, 54, 234);
+    public static final UITexture RESISTANCE_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 108, 216, 126, 234);
+    public static final UITexture HEALTH_REGENERATION_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 198, 144, 216);
+    public static final UITexture NIGHT_VISION_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 216, 90, 234);
+    public static final UITexture HASTE_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 198, 54, 216);
+    public static final UITexture WATER_BREATHING_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 234, 18, 252);
+    public static final UITexture FIRE_RESISTANCE_EFFECT = UITexture
+        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 216, 144, 234);
+    public static final UITexture WARP_WARD_EFFECT = UITexture
+        .partly(Mods.Thaumcraft.resourceDomain, "misc/potions", 256, 256, 54, 234, 72, 252);
+    public static final UITexture FEATHER_FEET_EFFECT = UITexture
+        .partly(Mods.Botania.resourceDomain, "gui/potions", 256, 256, 18, 198, 36, 216);
+    public static final UITexture VIS_REGEN_EFFECT = UITexture
+        .partly(Mods.ThaumicHorizons.resourceDomain, "misc/potions", 256, 256, 54, 198, 72, 216);
+    public static final UITexture BEACON_MATERIAL = UITexture
+        .fullImage(ModList.ScienceNotLeisure.resourceDomain, "gui/picture/steam_beacon");
+
     private boolean hasSpeedEffect;
     private boolean hasStrengthEffect;
     private boolean hasJumpBoostEffect;
@@ -87,8 +115,6 @@ public class SteamBeaconModule extends SteamElevatorModule {
     private int runningTickCounter = 0;
     private final ItemStackHandler inputSlotHandler = new ItemStackHandler(1);
     private ItemStack storedWindowItems;
-
-    public static final int CONFIG_WINDOW_ID = 14;
 
     public SteamBeaconModule(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
@@ -765,34 +791,6 @@ public class SteamBeaconModule extends SteamElevatorModule {
         }
         return super.onRunningTick(stack);
     }
-
-    public static final UITexture SPEED_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 198, 18, 216);
-    public static final UITexture STRENGTH_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 198, 90, 216);
-    public static final UITexture JUMP_BOOST_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 216, 54, 234);
-    public static final UITexture RESISTANCE_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 108, 216, 126, 234);
-    public static final UITexture HEALTH_REGENERATION_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 198, 144, 216);
-    public static final UITexture NIGHT_VISION_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 72, 216, 90, 234);
-    public static final UITexture HASTE_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 36, 198, 54, 216);
-    public static final UITexture WATER_BREATHING_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 0, 234, 18, 252);
-    public static final UITexture FIRE_RESISTANCE_EFFECT = UITexture
-        .partly(Mods.Minecraft.resourceDomain, "gui/container/inventory", 256, 256, 126, 216, 144, 234);
-    public static final UITexture WARP_WARD_EFFECT = UITexture
-        .partly(Mods.Thaumcraft.resourceDomain, "misc/potions", 256, 256, 54, 234, 72, 252);
-    public static final UITexture FEATHER_FEET_EFFECT = UITexture
-        .partly(Mods.Botania.resourceDomain, "gui/potions", 256, 256, 18, 198, 36, 216);
-    public static final UITexture VIS_REGEN_EFFECT = UITexture
-        .partly(Mods.ThaumicHorizons.resourceDomain, "misc/potions", 256, 256, 54, 198, 72, 216);
-
-    public static final UITexture BEACON_MATERIAL = UITexture
-        .fullImage(ModList.ScienceNotLeisure.resourceDomain, "gui/picture/steam_beacon");
 
     @Override
     public boolean supportsPowerPanel() {

@@ -30,31 +30,30 @@ public class SteamMonsterRepellentModule extends SteamElevatorModule {
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new SteamMonsterRepellentModule(this.mName, this.mTier);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType");
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType"));
-        switch (mTier) {
-            case 1 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleI_00"));
-            case 2 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleII_00"));
-            case 3 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleIII_00"));
+    public void stopMachine(@NotNull ShutDownReason reason) {
+        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
+        if (mte.isServerSide()) {
+            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
         }
-        tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_03") + (1 << (5 + mTier)))
-            .beginStructureBlock(1, 5, 2, false)
-            .toolTipFinisher();
-        return tt;
+        super.stopMachine(reason);
+    }
+
+    @Override
+    public void onRemoval() {
+        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
+        if (mte.isServerSide()) {
+            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+        }
+        super.onRemoval();
+    }
+
+    @Override
+    public void onUnload() {
+        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
+        if (mte.isServerSide()) {
+            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+        }
+        super.onUnload();
     }
 
     @Override
@@ -88,30 +87,31 @@ public class SteamMonsterRepellentModule extends SteamElevatorModule {
     }
 
     @Override
-    public void stopMachine(@NotNull ShutDownReason reason) {
-        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
-        if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
-        }
-        super.stopMachine(reason);
+    public String getMachineType() {
+        return StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType");
     }
 
     @Override
-    public void onRemoval() {
-        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
-        if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType"));
+        switch (mTier) {
+            case 1 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleI_00"));
+            case 2 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleII_00"));
+            case 3 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleIII_00"));
         }
-        super.onRemoval();
+        tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_03") + (1 << (5 + mTier)))
+            .beginStructureBlock(1, 5, 2, false)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override
-    public void onUnload() {
-        final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
-        if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
-        }
-        super.onUnload();
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new SteamMonsterRepellentModule(this.mName, this.mTier);
     }
 
     @Override

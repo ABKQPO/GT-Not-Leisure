@@ -121,7 +121,7 @@ public class TypeFilteredInputBusMEGui extends OredictInputBusMEGui {
         return new TextFieldWidget().value(syncer)
             .numbersInt(0, GTRecipeBuilder.WILDCARD)
             .formatAsInteger(true)
-            .setScrollValues(1, 16, 64)
+            .scrollValues(1, 4, 64, 256)
             .setTextAlignment(Alignment.Center)
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)

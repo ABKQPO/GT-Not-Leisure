@@ -59,6 +59,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
@@ -73,6 +74,7 @@ import tectech.thing.casing.TTCasingsContainer;
 
 public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationArrayToAlfheim> {
 
+    private static final TranslatableText MANA_INPUT_HATCH_NAME = TranslatableText.lang("FluidManaInputHatch");
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String TATA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/teleportation_array_to_alfheim";
@@ -84,10 +86,10 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public static final int NATURE_MODE = 1;
     public static final int MANA_MODE = 2;
     public static final int RUNE_MODE = 3;
-    public boolean enableInfinityMana = false;
     public static final ItemStack asgardandelion = ItemUtils
         .getItemStack(Mods.Botania.ID, "specialFlower", 1, 0, "{type:\"asgardandelion\"}", null);
 
+    public boolean enableInfinityMana = false;
     public ArrayList<CustomFluidHatch> mFluidManaInputHatch = new ArrayList<>();
     public final ArrayList<FluidStack> sharedManaRecipeFluids = new ArrayList<>();
 
@@ -97,6 +99,122 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     public TeleportationArrayToAlfheim(String aName) {
         super(aName);
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new TeleportationArrayToAlfheim(this.mName);
+    }
+
+    @Override
+    public void clearHatches() {
+        super.clearHatches();
+        mFluidManaInputHatch.clear();
+        enableInfinityMana = false;
+    }
+
+    @Override
+    public void updateSlots() {
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) tHatch.updateSlots();
+        super.updateSlots();
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (this.mStartUpCheck < 0) {
+            if (this.mMaxProgresstime > 0 && this.mProgresstime != 0 || this.getBaseMetaTileEntity()
+                .hasWorkJustBeenEnabled()) {
+                if ((aTick % 20 == 0 || this.getBaseMetaTileEntity()
+                    .hasWorkJustBeenEnabled()) && !enableInfinityMana) {
+                    if (!this.depleteInputFromRestrictedHatches(this.mFluidManaInputHatch, 100)) {
+                        this.causeMaintenanceIssue();
+                        this.stopMachine(ShutDownReasonRegistry.outOfFluid(GTNLMaterials.FluidMana.getFluidOrGas(100)));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public IStructureDefinition<TeleportationArrayToAlfheim> getStructureDefinition() {
+        return StructureDefinition.<TeleportationArrayToAlfheim>builder()
+            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement(
+                'E',
+                StructureUtility.ofChain(
+                    buildHatchAdder(TeleportationArrayToAlfheim.class)
+                        .atLeast(
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
+                            HatchElement.Maintenance)
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
+                        .hint(1)
+                        .build(),
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10)),
+                    buildHatchAdder(TeleportationArrayToAlfheim.class)
+                        .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
+                        .hatchId(21501)
+                        .shouldReject(x -> !x.mFluidManaInputHatch.isEmpty())
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
+                        .hint(1)
+                        .build()))
+            .addElement('F', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 0))
+            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 1))
+            .build();
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        this.buildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            hintsOnly,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        if (this.mMachine) return -1;
+        return this.survivalBuildPiece(
+            STRUCTURE_PIECE_MAIN,
+            stackSize,
+            HORIZONTAL_OFF_SET,
+            VERTICAL_OFF_SET,
+            DEPTH_OFF_SET,
+            elementBudget,
+            env,
+            false,
+            true);
+    }
+
+    @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
+        checkHatchMin(errors, MANA_INPUT_HATCH_NAME, mFluidManaInputHatch.size(), 1);
+        checkCasingMin(errors, mCountCasing, 350);
+    }
+
+    @Override
+    public void setupParameters() {
+        super.setupParameters();
+        if (GTUtility.areStacksEqual(getControllerSlot(), GTModHandler.getModItem(Mods.Botania.ID, "pool", 1, 1), true)
+            || GTUtility.areStacksEqual(getControllerSlot(), asgardandelion, true)) {
+            enableInfinityMana = true;
+        }
     }
 
     @Override
@@ -129,70 +247,22 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             GTNLRecipeMaps.PortalToAlfheimRecipes);
     }
 
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        tag.setInteger("mode", machineMode);
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
-    }
-
-    @Override
-    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
-            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-    }
-
-    @Override
-    @Deprecated
-    public void setMachineModeIcons() {
-        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
-        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
-    }
-
-    @Override
-    public int nextMachineMode() {
-        if (machineMode == PORTAL_MODE) return NATURE_MODE;
-        else if (machineMode == NATURE_MODE) return MANA_MODE;
-        else if (machineMode == MANA_MODE) return RUNE_MODE;
-        else return PORTAL_MODE;
-    }
-
-    @Override
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
-        ItemStack aTool) {
-        this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + this.machineMode));
-    }
-
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         boolean shouldExplode = false;
-        long Strength = 0;
+        long strength = 0;
         IGregTechTileEntity aBaseMetaTileEntity = getBaseMetaTileEntity();
         for (ItemStack items : getAllStoredInputs()) {
             if (items.isItemEqual(new ItemStack(Items.bread, 1))) {
-                Strength += 50L * items.stackSize;
+                strength += 50L * items.stackSize;
                 shouldExplode = true;
                 items.stackSize = 0;
             }
         }
         updateSlots();
-        if (Strength > 500) {
-            Strength = 500;
+        if (strength > 500) {
+            strength = 500;
         }
         if (shouldExplode) {
             World world = aBaseMetaTileEntity.getWorld();
@@ -203,7 +273,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                 RESOURCE_ROOT_ID + ":" + "protal.boom",
                 1.0F,
                 1.0F);
-            triggerExplosion(aBaseMetaTileEntity, Strength);
+            triggerExplosion(aBaseMetaTileEntity, strength);
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
@@ -217,7 +287,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
         List<FluidStack> manaHatchStored = collectManaInputFluids();
 
-        // 优先复用双输入仓缓存并补入法力流体 / Reuse dual-input buffers first and append mana fluids
+        // Reuse dual-input buffers first and append mana fluids.
         for (IDualInputHatch dualInputHatch : mDualInputHatches) {
             ItemStack[] sharedItems = dualInputHatch.getSharedItems();
             for (var it = dualInputHatch.inventories(); it.hasNext();) {
@@ -232,7 +302,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                         return foundResult;
                     }
                     if (foundResult != CheckRecipeResultRegistry.NO_RECIPE) {
-                        // Recipe failed in interesting way, so remember that and continue searching
+                        // Keep the most relevant non-empty failure while continuing the search.
                         result = foundResult;
                     }
                 }
@@ -291,246 +361,6 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
         return result;
     }
 
-    public List<FluidStack> collectManaInputFluids() {
-        sharedManaRecipeFluids.clear();
-        for (CustomFluidHatch tHatch : mFluidManaInputHatch) {
-            FluidStack fillableStack = tHatch.getFillableStack();
-            if (fillableStack != null) {
-                sharedManaRecipeFluids.add(fillableStack);
-            }
-        }
-        return sharedManaRecipeFluids;
-    }
-
-    public void appendSharedManaRecipeFluids(List<FluidStack> manaHatchStored) {
-        recipeSearchFluidInputs.ensureCapacity(recipeSearchFluidInputs.size() + manaHatchStored.size() + 1);
-        if (!manaHatchStored.isEmpty()) {
-            recipeSearchFluidInputs.addAll(manaHatchStored);
-        }
-        if (enableInfinityMana) {
-            recipeSearchFluidInputs.add(GTNLMaterials.FluidMana.getFluidOrGas(Integer.MAX_VALUE));
-        }
-    }
-
-    @Override
-    public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
-        if (aLiquid == null) return false;
-        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
-            setHatchRecipeMap(tHatch);
-            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
-            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                if (simulate) {
-                    return true;
-                }
-                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
-                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-            }
-        }
-        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) {
-            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
-            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                if (simulate) {
-                    return true;
-                }
-                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
-                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-            }
-        }
-        return false;
-    }
-
-    public void triggerExplosion(IGregTechTileEntity aBaseMetaTileEntity, float strength) {
-        if (MainConfig.machine.portal_to_alfheim.bigBoom) {
-            ProcessHandler.addProcess(
-                new PortalToAlfheimExplosion(
-                    aBaseMetaTileEntity.getWorld(),
-                    aBaseMetaTileEntity.getXCoord(),
-                    aBaseMetaTileEntity.getYCoord(),
-                    aBaseMetaTileEntity.getZCoord(),
-                    strength));
-        } else {
-            triggerExplosion(aBaseMetaTileEntity, 5);
-        }
-        aBaseMetaTileEntity.getWorld()
-            .setBlockToAir(
-                aBaseMetaTileEntity.getXCoord(),
-                aBaseMetaTileEntity.getYCoord(),
-                aBaseMetaTileEntity.getZCoord());
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-        world.createExplosion(null, x, y, z, strength * 20, true);
-    }
-
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-        this.buildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            hintsOnly,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET);
-    }
-
-    @Override
-    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        if (this.mMachine) return -1;
-        return this.survivalBuildPiece(
-            STRUCTURE_PIECE_MAIN,
-            stackSize,
-            HORIZONTAL_OFF_SET,
-            VERTICAL_OFF_SET,
-            DEPTH_OFF_SET,
-            elementBudget,
-            env,
-            false,
-            true);
-    }
-
-    @Override
-    public IStructureDefinition<TeleportationArrayToAlfheim> getStructureDefinition() {
-        return StructureDefinition.<TeleportationArrayToAlfheim>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement(
-                'E',
-                StructureUtility.ofChain(
-                    buildHatchAdder(TeleportationArrayToAlfheim.class)
-                        .atLeast(
-                            HatchElement.InputBus,
-                            HatchElement.OutputBus,
-                            HatchElement.InputHatch,
-                            HatchElement.OutputHatch,
-                            HatchElement.Energy.or(HatchElement.ExoticEnergy),
-                            HatchElement.Maintenance)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
-                        .build(),
-                    StructureUtility
-                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10)),
-                    buildHatchAdder(TeleportationArrayToAlfheim.class)
-                        .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
-                        .hatchId(21501)
-                        .shouldReject(x -> !x.mFluidManaInputHatch.isEmpty())
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
-                        .hint(1)
-                        .hint(1)
-                        .build()))
-            .addElement('F', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 0))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 1))
-            .build();
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("TeleportationArrayToAlfheimRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_03"))
-            .addPerfectOCInfo()
-            .addTecTechHatchInfo()
-            .beginStructureBlock(23, 18, 23, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("FluidManaInputHatch"),
-                StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"),
-                1)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new TeleportationArrayToAlfheim(this.mName);
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        if (!checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors))
-            return;
-        setupParameters();
-        checkStructureCondition(errors, mCountCasing >= 350);
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-        if (GTUtility.areStacksEqual(getControllerSlot(), GTModHandler.getModItem(Mods.Botania.ID, "pool", 1, 1), true)
-            || GTUtility.areStacksEqual(getControllerSlot(), asgardandelion, true)) {
-            enableInfinityMana = true;
-        }
-    }
-
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        mFluidManaInputHatch.clear();
-        enableInfinityMana = false;
-    }
-
-    @Override
-    public boolean checkHatch() {
-        return super.checkHatch() && !mFluidManaInputHatch.isEmpty();
-    }
-
-    @Override
-    public void updateSlots() {
-        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) tHatch.updateSlots();
-        super.updateSlots();
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (this.mStartUpCheck < 0) {
-            if (this.mMaxProgresstime > 0 && this.mProgresstime != 0 || this.getBaseMetaTileEntity()
-                .hasWorkJustBeenEnabled()) {
-                if ((aTick % 20 == 0 || this.getBaseMetaTileEntity()
-                    .hasWorkJustBeenEnabled()) && !enableInfinityMana) {
-                    if (!this.depleteInputFromRestrictedHatches(this.mFluidManaInputHatch, 100)) {
-                        this.causeMaintenanceIssue();
-                        this.stopMachine(ShutDownReasonRegistry.outOfFluid(GTNLMaterials.FluidMana.getFluidOrGas(100)));
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
@@ -579,9 +409,52 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
         return recipe;
     }
 
+    public List<FluidStack> collectManaInputFluids() {
+        sharedManaRecipeFluids.clear();
+        for (CustomFluidHatch tHatch : mFluidManaInputHatch) {
+            FluidStack fillableStack = tHatch.getFillableStack();
+            if (fillableStack != null) {
+                sharedManaRecipeFluids.add(fillableStack);
+            }
+        }
+        return sharedManaRecipeFluids;
+    }
+
+    public void appendSharedManaRecipeFluids(List<FluidStack> manaHatchStored) {
+        recipeSearchFluidInputs.ensureCapacity(recipeSearchFluidInputs.size() + manaHatchStored.size() + 1);
+        if (!manaHatchStored.isEmpty()) {
+            recipeSearchFluidInputs.addAll(manaHatchStored);
+        }
+        if (enableInfinityMana) {
+            recipeSearchFluidInputs.add(GTNLMaterials.FluidMana.getFluidOrGas(Integer.MAX_VALUE));
+        }
+    }
+
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + machineMode);
+    public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
+        if (aLiquid == null) return false;
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
+            setHatchRecipeMap(tHatch);
+            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
+            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
+                if (simulate) {
+                    return true;
+                }
+                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
+                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
+            }
+        }
+        for (CustomFluidHatch tHatch : GTUtility.validMTEList(mFluidManaInputHatch)) {
+            FluidStack tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, false);
+            if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
+                if (simulate) {
+                    return true;
+                }
+                tLiquid = tHatch.drain(ForgeDirection.UNKNOWN, aLiquid, true);
+                return tLiquid != null && tLiquid.amount >= aLiquid.amount;
+            }
+        }
+        return false;
     }
 
     public boolean addFluidManaInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
@@ -597,5 +470,130 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             }
         }
         return false;
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_ON)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_DTPF_OFF)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("TeleportationArrayToAlfheimRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_03"))
+            .addPerfectOCInfo()
+            .addTecTechHatchInfo()
+            .beginStructureBlock(23, 18, 23, false)
+            .addInputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addOutputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("FluidManaInputHatch"),
+                StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"),
+                1)
+            .toolTipFinisher();
+        return tt;
+    }
+
+    @Override
+    public String getMachineModeName() {
+        return StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + machineMode);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new GTNLMultiBlockBaseGui<>(this).withMachineModeIcons(
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL,
+            GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
+    }
+
+    @Override
+    @Deprecated
+    public void setMachineModeIcons() {
+        // TODO: Remove this mui1 fallback after this GUI no longer supports mui1 startup paths.
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_FLUID);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_LPF_METAL);
+        machineModeIcons.add(GTUITextures.OVERLAY_BUTTON_MACHINEMODE_BENDING);
+    }
+
+    @Override
+    public int nextMachineMode() {
+        if (machineMode == PORTAL_MODE) return NATURE_MODE;
+        else if (machineMode == NATURE_MODE) return MANA_MODE;
+        else if (machineMode == MANA_MODE) return RUNE_MODE;
+        else return PORTAL_MODE;
+    }
+
+    @Override
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
+        this.machineMode = (this.machineMode + 1) % 4;
+        GTUtility.sendChatToPlayer(
+            aPlayer,
+            StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + this.machineMode));
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        tag.setInteger("mode", machineMode);
+    }
+
+    @Override
+    public boolean supportsMachineModeSwitch() {
+        return true;
+    }
+
+    public void triggerExplosion(IGregTechTileEntity aBaseMetaTileEntity, float strength) {
+        if (MainConfig.machine.portal_to_alfheim.bigBoom) {
+            ProcessHandler.addProcess(
+                new PortalToAlfheimExplosion(
+                    aBaseMetaTileEntity.getWorld(),
+                    aBaseMetaTileEntity.getXCoord(),
+                    aBaseMetaTileEntity.getYCoord(),
+                    aBaseMetaTileEntity.getZCoord(),
+                    strength));
+        } else {
+            triggerExplosion(aBaseMetaTileEntity, 5);
+        }
+        aBaseMetaTileEntity.getWorld()
+            .setBlockToAir(
+                aBaseMetaTileEntity.getXCoord(),
+                aBaseMetaTileEntity.getYCoord(),
+                aBaseMetaTileEntity.getZCoord());
+        World world = aBaseMetaTileEntity.getWorld();
+        int x = aBaseMetaTileEntity.getXCoord();
+        int y = aBaseMetaTileEntity.getYCoord();
+        int z = aBaseMetaTileEntity.getZCoord();
+        world.createExplosion(null, x, y, z, strength * 20, true);
     }
 }

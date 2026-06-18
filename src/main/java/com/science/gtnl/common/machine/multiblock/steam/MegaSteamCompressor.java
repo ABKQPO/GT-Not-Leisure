@@ -53,22 +53,14 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     private static final int VERTICAL_OFF_SET = 27;
     private static final int DEPTH_OFF_SET = 10;
 
+    private RenderingTileEntityBlackhole rendererTileEntity = null;
+
     public MegaSteamCompressor(String aName) {
         super(aName);
     }
 
     public MegaSteamCompressor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
-    }
-
-    @Override
-    public String getMachineType() {
-        return StatCollector.translateToLocal("MegaSteamCompressorRecipeType");
-    }
-
-    @Override
-    public int getTierRecipes() {
-        return 4;
     }
 
     @Override
@@ -107,6 +99,11 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new MegaSteamCompressor(this.mName);
+    }
+
+    @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET);
     }
@@ -128,62 +125,14 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
+    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        checkHatch(errors);
+    }
+
+    @Override
     public RecipeMap<?> getRecipeMap() {
         return compressorRecipes;
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_03"))
-            .beginStructureBlock(35, 33, 35, true)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int aColorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE)
-                        .extFacing()
-                        .build(),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW)
-                        .extFacing()
-                        .glow()
-                        .build() };
-            } else {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR)
-                        .extFacing()
-                        .build(),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW)
-                        .extFacing()
-                        .glow()
-                        .build() };
-            }
-        }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)) };
-
-    }
-
-    @Override
-    public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndSteamInput(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
     }
 
     @Override
@@ -230,11 +179,6 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new MegaSteamCompressor(this.mName);
-    }
-
-    @Override
     public void onBlockDestroyed() {
         destroyRenderBlock();
         super.onBlockDestroyed();
@@ -250,7 +194,64 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
         return false;
     }
 
-    private RenderingTileEntityBlackhole rendererTileEntity = null;
+    @Override
+    public String getMachineType() {
+        return StatCollector.translateToLocal("MegaSteamCompressorRecipeType");
+    }
+
+    @Override
+    public int getTierRecipes() {
+        return 4;
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int aColorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) {
+                return new ITexture[] {
+                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE)
+                        .extFacing()
+                        .build(),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW)
+                        .extFacing()
+                        .glow()
+                        .build() };
+            } else {
+                return new ITexture[] {
+                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR)
+                        .extFacing()
+                        .build(),
+                    TextureFactory.builder()
+                        .addIcon(BlockIcons.OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW)
+                        .extFacing()
+                        .glow()
+                        .build() };
+            }
+        }
+        return new ITexture[] {
+            Textures.BlockIcons.getCasingTextureForId(GTUtility.getCasingTextureIndex(sBlockCasings2, 0)) };
+
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(getMachineType())
+            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_03"))
+            .beginStructureBlock(35, 33, 35, true)
+            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+            .toolTipFinisher();
+        return tt;
+    }
 
     // Returns true if render was actually created
     private boolean createRenderBlock() {

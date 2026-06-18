@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.IInfinityChestGui;
 
-@Mixin(value = GuiContainer.class)
+@Mixin(value = GuiContainer.class, remap = true)
 public abstract class MixinGuiContainer extends GuiScreen {
 
     @ModifyArg(

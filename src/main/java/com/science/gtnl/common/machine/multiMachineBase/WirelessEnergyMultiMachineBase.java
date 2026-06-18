@@ -40,8 +40,19 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMultiMachineBase<T>>
     extends MultiMachineBase<T> implements IWirelessEnergy {
 
+    public UUID ownerUUID;
+    @Getter
+    public boolean wirelessMode = getDefaultWirelessMode();
+    @Getter
+    @Setter
+    public boolean wirelessUpgrade = false;
     public int totalOverclockedDuration = 0;
     public int maxParallelStored = -1;
+    public boolean isRecipeProcessing = false;
+    public BigInteger costingEU = BigInteger.ZERO;
+    public String costingEUText = Utils.ZERO_STRING;
+    public int cycleNum = 100_000;
+    public int cycleNow = 0;
 
     public WirelessEnergyMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -51,59 +62,28 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         super(aName);
     }
 
-    public UUID ownerUUID;
-    public boolean isRecipeProcessing = false;
-    @Getter
-    public boolean wirelessMode = getDefaultWirelessMode();
-    @Getter
-    @Setter
-    public boolean wirelessUpgrade = false;
-    public BigInteger costingEU = BigInteger.ZERO;
-    public String costingEUText = Utils.ZERO_STRING;
-    public int cycleNum = 100_000;
-    public int cycleNow = 0;
-
-    @Override
-    public void setWirelessMode(boolean mode) {
-        if (wirelessUpgrade) {
-            wirelessMode = mode;
-        } else {
-            wirelessMode = false;
-        }
-    }
-
-    @Override
-    public void setItemNBT(NBTTagCompound aNBT) {
-        if (wirelessUpgrade) aNBT.setBoolean("wirelessUpgrade", true);
-        super.setItemNBT(aNBT);
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-        super.saveNBTData(aNBT);
-        aNBT.setBoolean("wirelessUpgrade", wirelessUpgrade);
-        aNBT.setBoolean("wirelessMode", wirelessMode);
-        aNBT.setInteger("parallelTier", mParallelTier);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-        super.loadNBTData(aNBT);
-        wirelessUpgrade = aNBT.getBoolean("wirelessUpgrade");
-        wirelessMode = aNBT.getBoolean("wirelessMode");
-        mParallelTier = aNBT.getInteger("parallelTier");
-    }
-
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
-        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+        ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }
 
     @Override
     public void clearHatches() {
         super.clearHatches();
         wirelessMode = false;
+    }
+
+    @Override
+    public void startRecipeProcessing() {
+        isRecipeProcessing = true;
+        super.startRecipeProcessing();
+    }
+
+    @Override
+    public void endRecipeProcessing() {
+        super.endRecipeProcessing();
+        isRecipeProcessing = false;
     }
 
     @Override
@@ -120,73 +100,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             mParallelTier = module.mTier;
             break;
         }
-    }
-
-    @Override
-    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
-        super.getWailaBody(itemStack, currentTip, accessor, config);
-        final NBTTagCompound tag = accessor.getNBTData();
-        if (tag.getBoolean("wirelessUpgrade")) {
-            currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("Waila_WirelessUpgrade"));
-        }
-        if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
-            currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + tag.getString("costingEUText")
-                    + EnumChatFormatting.RESET
-                    + " EU");
-        }
-    }
-
-    @Override
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
-        super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
-        if (tileEntity != null) {
-            tag.setBoolean("wirelessUpgrade", wirelessUpgrade);
-            tag.setBoolean("wirelessMode", wirelessMode);
-            if (wirelessMode) tag.setString("costingEUText", costingEUText);
-        }
-    }
-
-    @Override
-    public String[] getInfoData() {
-        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        if (wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
-            ret.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + costingEUText
-                    + EnumChatFormatting.RESET
-                    + " EU");
-        }
-        return ret.toArray(new String[0]);
-    }
-
-    @Override
-    public void startRecipeProcessing() {
-        isRecipeProcessing = true;
-        super.startRecipeProcessing();
-    }
-
-    @Override
-    public void endRecipeProcessing() {
-        super.endRecipeProcessing();
-        isRecipeProcessing = false;
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return true;
     }
 
     @Override
@@ -212,16 +125,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
-    @Override
-    public double getEUtDiscount() {
-        return (wirelessUpgrade ? 0.4 : 0.6) - (mParallelTier / 50.0);
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return 1.0 / (wirelessUpgrade ? 10.0 : 5.0) * Math.pow(0.75, mParallelTier);
-    }
-
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
@@ -234,19 +137,17 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         if (!wirelessMode) return super.checkProcessing();
 
         maxParallelStored = getTrueParallel();
-
         boolean succeeded = false;
         CheckRecipeResult finalResult = CheckRecipeResultRegistry.SUCCESSFUL;
         for (cycleNow = 0; cycleNow < cycleNum; cycleNow++) {
-            CheckRecipeResult r = wirelessModeProcessOnce(null);
-
-            if (!r.wasSuccessful()) {
-                finalResult = r;
+            CheckRecipeResult result = wirelessModeProcessOnce(null);
+            if (!result.wasSuccessful()) {
+                finalResult = result;
                 break;
             }
             succeeded = true;
             if (maxParallelStored <= -1) {
-                finalResult = r;
+                finalResult = result;
                 break;
             }
         }
@@ -257,7 +158,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         }
         updateSlots();
         costingEUText = NumberFormatUtil.formatNumber(costingEU);
-
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = totalOverclockedDuration;
@@ -277,13 +177,11 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
-
         if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
-
         mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
         mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
@@ -306,16 +204,109 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
             logic.setAmperageOC(true);
             logic.enablePerfectOverclock();
-        } else {
-            logic.setAvailableVoltage(getMaxInputEu());
-            logic.setAvailableAmperage(1);
-            logic.setAmperageOC(true);
+            return;
+        }
+        logic.setAvailableVoltage(getMaxInputEu());
+        logic.setAvailableAmperage(1);
+        logic.setAmperageOC(true);
+    }
+
+    @Override
+    public String[] getInfoData() {
+        List<String> infoData = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        if (wirelessMode) {
+            infoData.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            infoData.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + costingEUText
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        }
+        return infoData.toArray(new String[0]);
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
+        IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("wirelessUpgrade")) {
+            currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("Waila_WirelessUpgrade"));
+        }
+        if (tag.getBoolean("wirelessMode")) {
+            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip.add(
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + tag.getString("costingEUText")
+                    + EnumChatFormatting.RESET
+                    + " EU");
         }
     }
 
     @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+        int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
+        if (tileEntity != null) {
+            tag.setBoolean("wirelessUpgrade", wirelessUpgrade);
+            tag.setBoolean("wirelessMode", wirelessMode);
+            if (wirelessMode) {
+                tag.setString("costingEUText", costingEUText);
+            }
+        }
+    }
+
+    @Override
+    public void setItemNBT(NBTTagCompound aNBT) {
+        if (wirelessUpgrade) {
+            aNBT.setBoolean("wirelessUpgrade", true);
+        }
+        super.setItemNBT(aNBT);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setBoolean("wirelessUpgrade", wirelessUpgrade);
+        aNBT.setBoolean("wirelessMode", wirelessMode);
+        aNBT.setInteger("parallelTier", mParallelTier);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        wirelessUpgrade = aNBT.getBoolean("wirelessUpgrade");
+        wirelessMode = aNBT.getBoolean("wirelessMode");
+        mParallelTier = aNBT.getInteger("parallelTier");
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return (wirelessUpgrade ? 0.4 : 0.6) - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1.0 / (wirelessUpgrade ? 10.0 : 5.0) * Math.pow(0.75, mParallelTier);
+    }
+
+    @Override
     public long getMaxInputVoltage() {
-        if (wirelessMode) return GTValues.V[Math.min(mParallelTier + 1, 14)];
+        if (wirelessMode) {
+            return GTValues.V[Math.min(mParallelTier + 1, 14)];
+        }
         return super.getMaxInputVoltage();
     }
 
@@ -330,13 +321,8 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         }
         if (mParallelTier <= 1) {
             return 8;
-        } else {
-            return 1 << (2 * (mParallelTier - 2) + 4);
         }
-    }
-
-    public boolean getDefaultWirelessMode() {
-        return false;
+        return 1 << (2 * (mParallelTier - 2) + 4);
     }
 
     @Override
@@ -347,8 +333,21 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         return false;
     }
 
+    public boolean getDefaultWirelessMode() {
+        return false;
+    }
+
     @Override
     public boolean shouldCheckMaintenance() {
         return false;
+    }
+
+    @Override
+    public void setWirelessMode(boolean mode) {
+        if (wirelessUpgrade) {
+            wirelessMode = mode;
+        } else {
+            wirelessMode = false;
+        }
     }
 }

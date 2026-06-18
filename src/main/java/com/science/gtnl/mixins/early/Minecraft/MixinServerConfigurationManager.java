@@ -29,7 +29,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAncho
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 
-@Mixin(ServerConfigurationManager.class)
+@Mixin(value = ServerConfigurationManager.class, remap = true)
 public abstract class MixinServerConfigurationManager {
 
     @Shadow

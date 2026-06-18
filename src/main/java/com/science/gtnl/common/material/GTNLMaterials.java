@@ -6,11 +6,28 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TextureSet;
 
 public class GTNLMaterials implements Runnable {
 
-    public static final int offsetID = 25_000;
+    public static final int OFFSET_ID = 25_000;
+
+    private static final Werkstoff.GenerationFeatures ADD_CASINGS_ONLY = new Werkstoff.GenerationFeatures().disable()
+        .addPrefix(OrePrefixes.blockCasing)
+        .addPrefix(OrePrefixes.blockCasingAdvanced);
+
+    // TODO: Enable in 2.9.0-beta2
+    // public static Werkstoff Bronze = new Werkstoff(
+    // Materials.Bronze,
+    // ADD_CASINGS_ONLY,
+    // Werkstoff.Types.MIXTURE,
+    // 31_766 + 300);
+    // public static Werkstoff Neutronium = new Werkstoff(
+    // Materials.Neutronium,
+    // ADD_CASINGS_ONLY,
+    // Werkstoff.Types.ELEMENT,
+    // 31_766 + 129);
 
     public static final Werkstoff Hexanitrohexaazaisowurtzitane = new Werkstoff(
         new short[] { 47, 53, 57 },
@@ -20,7 +37,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 1,
+        OFFSET_ID + 1,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff CrudeHexanitrohexaazaisowurtzitane = new Werkstoff(
@@ -31,7 +48,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 2,
+        OFFSET_ID + 2,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SilicaGel = new Werkstoff(
@@ -42,7 +59,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 3,
+        OFFSET_ID + 3,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Ethylenediamine = new Werkstoff(
@@ -53,7 +70,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 4,
+        OFFSET_ID + 4,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Ethanolamine = new Werkstoff(
@@ -64,7 +81,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 5,
+        OFFSET_ID + 5,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SilicaGelBase = new Werkstoff(
@@ -75,7 +92,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 6,
+        OFFSET_ID + 6,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluoroboricAcide = new Werkstoff(
@@ -86,7 +103,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 7,
+        OFFSET_ID + 7,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Tetraacetyldinitrohexaazaisowurtzitane = new Werkstoff(
@@ -97,7 +114,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 8,
+        OFFSET_ID + 8,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitroniumTetrafluoroborate = new Werkstoff(
@@ -108,7 +125,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 9,
+        OFFSET_ID + 9,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitronsoniumTetrafluoroborate = new Werkstoff(
@@ -119,7 +136,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 10,
+        OFFSET_ID + 10,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BoronFluoride = new Werkstoff(
@@ -130,7 +147,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 11,
+        OFFSET_ID + 11,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SodiumTetrafluoroborate = new Werkstoff(
@@ -141,7 +158,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 12,
+        OFFSET_ID + 12,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BoronTrioxide = new Werkstoff(
@@ -152,7 +169,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 13,
+        OFFSET_ID + 13,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Dibenzyltetraacetylhexaazaisowurtzitane = new Werkstoff(
@@ -163,7 +180,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 14,
+        OFFSET_ID + 14,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Benzaldehyde = new Werkstoff(
@@ -174,7 +191,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 15,
+        OFFSET_ID + 15,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff HydrobromicAcid = new Werkstoff(
@@ -185,7 +202,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 16,
+        OFFSET_ID + 16,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuccinimidylAcetate = new Werkstoff(
@@ -196,7 +213,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 17,
+        OFFSET_ID + 17,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hexabenzylhexaazaisowurtzitane = new Werkstoff(
@@ -207,7 +224,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 18,
+        OFFSET_ID + 18,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NHydroxysuccinimide = new Werkstoff(
@@ -218,7 +235,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 19,
+        OFFSET_ID + 19,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SuccinicAnhydride = new Werkstoff(
@@ -229,7 +246,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 20,
+        OFFSET_ID + 20,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff HydroxylamineHydrochloride = new Werkstoff(
@@ -240,7 +257,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 21,
+        OFFSET_ID + 21,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BariumChloride = new Werkstoff(
@@ -251,7 +268,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 22,
+        OFFSET_ID + 22,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff HydroxylammoniumSulfate = new Werkstoff(
@@ -262,7 +279,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 23,
+        OFFSET_ID + 23,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff AcrylonitrileButadieneStyrene = new Werkstoff(
@@ -279,7 +296,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 24,
+        OFFSET_ID + 24,
         TextureSet.SET_DULL);
 
     public static final Werkstoff PotassiumHydroxylaminedisulfonate = new Werkstoff(
@@ -290,7 +307,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 25,
+        OFFSET_ID + 25,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PotassiumSulfate = new Werkstoff(
@@ -301,7 +318,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 26,
+        OFFSET_ID + 26,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PotassiumBisulfite = new Werkstoff(
@@ -312,7 +329,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 27,
+        OFFSET_ID + 27,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff NitrousAcid = new Werkstoff(
@@ -323,7 +340,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 28,
+        OFFSET_ID + 28,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SodiumNitrite = new Werkstoff(
@@ -334,7 +351,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 29,
+        OFFSET_ID + 29,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff CoAcAbCatalyst = new Werkstoff(
@@ -345,7 +362,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 30,
+        OFFSET_ID + 30,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff SodiumNitrateSolution = new Werkstoff(
@@ -356,7 +373,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 31,
+        OFFSET_ID + 31,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Benzylamine = new Werkstoff(
@@ -367,7 +384,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 32,
+        OFFSET_ID + 32,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Glyoxal = new Werkstoff(
@@ -378,7 +395,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 33,
+        OFFSET_ID + 33,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Acetonitrile = new Werkstoff(
@@ -389,7 +406,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 34,
+        OFFSET_ID + 34,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff AmmoniumChloride = new Werkstoff(
@@ -400,7 +417,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 35,
+        OFFSET_ID + 35,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hexamethylenetetramine = new Werkstoff(
@@ -411,7 +428,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 36,
+        OFFSET_ID + 36,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff BenzylChloride = new Werkstoff(
@@ -422,7 +439,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 37,
+        OFFSET_ID + 37,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuccinicAcid = new Werkstoff(
@@ -433,7 +450,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 38,
+        OFFSET_ID + 38,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff MaleicAnhydride = new Werkstoff(
@@ -444,7 +461,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 39,
+        OFFSET_ID + 39,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SuperMutatedLivingSolder = new Werkstoff(
@@ -455,7 +472,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 40,
+        OFFSET_ID + 40,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Polyimide = new Werkstoff(
@@ -472,7 +489,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 41,
+        OFFSET_ID + 41,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PloyamicAcid = new Werkstoff(
@@ -483,7 +500,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 42,
+        OFFSET_ID + 42,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Oxydianiline = new Werkstoff(
@@ -494,7 +511,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 43,
+        OFFSET_ID + 43,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PyromelliticDianhydride = new Werkstoff(
@@ -505,7 +522,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 44,
+        OFFSET_ID + 44,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Durene = new Werkstoff(
@@ -516,7 +533,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 45,
+        OFFSET_ID + 45,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Germaniumtungstennitride = new Werkstoff(
@@ -536,7 +553,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 46,
+        OFFSET_ID + 46,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Polyetheretherketone = new Werkstoff(
@@ -553,7 +570,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 47,
+        OFFSET_ID + 47,
         TextureSet.SET_DULL);
 
     public static final Werkstoff FluidMana = new Werkstoff(
@@ -564,7 +581,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 48,
+        OFFSET_ID + 48,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ExcitedNaquadahFuel = new Werkstoff(
@@ -575,7 +592,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 49,
+        OFFSET_ID + 49,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthHydroxides = new Werkstoff(
@@ -586,7 +603,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 50,
+        OFFSET_ID + 50,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthChlorides = new Werkstoff(
@@ -597,7 +614,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 51,
+        OFFSET_ID + 51,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthOxide = new Werkstoff(
@@ -608,7 +625,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 52,
+        OFFSET_ID + 52,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RareEarthMetal = new Werkstoff(
@@ -619,7 +636,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 53,
+        OFFSET_ID + 53,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BarnardaCSappy = new Werkstoff(
@@ -630,7 +647,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 54,
+        OFFSET_ID + 54,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff NeutralisedRedMud = new Werkstoff(
@@ -641,7 +658,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 55,
+        OFFSET_ID + 55,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FerricReeChloride = new Werkstoff(
@@ -652,7 +669,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 56,
+        OFFSET_ID + 56,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LaNdOxidesSolution = new Werkstoff(
@@ -663,7 +680,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 57,
+        OFFSET_ID + 57,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SmGdOxidesSolution = new Werkstoff(
@@ -674,7 +691,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 58,
+        OFFSET_ID + 58,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff TbHoOxidesSolution = new Werkstoff(
@@ -685,7 +702,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 59,
+        OFFSET_ID + 59,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ErLuOxidesSolution = new Werkstoff(
@@ -696,7 +713,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 60,
+        OFFSET_ID + 60,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PraseodymiumOxide = new Werkstoff(
@@ -707,7 +724,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 61,
+        OFFSET_ID + 61,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ScandiumOxide = new Werkstoff(
@@ -718,7 +735,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 62,
+        OFFSET_ID + 62,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff GadoliniumOxide = new Werkstoff(
@@ -729,7 +746,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 63,
+        OFFSET_ID + 63,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff TerbiumOxide = new Werkstoff(
@@ -740,7 +757,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 64,
+        OFFSET_ID + 64,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff DysprosiumOxide = new Werkstoff(
@@ -751,7 +768,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 65,
+        OFFSET_ID + 65,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff HolmiumOxide = new Werkstoff(
@@ -762,7 +779,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 66,
+        OFFSET_ID + 66,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ErbiumOxide = new Werkstoff(
@@ -773,7 +790,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 67,
+        OFFSET_ID + 67,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ThuliumOxide = new Werkstoff(
@@ -784,7 +801,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 68,
+        OFFSET_ID + 68,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff YtterbiumOxide = new Werkstoff(
@@ -795,7 +812,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 69,
+        OFFSET_ID + 69,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LutetiumOxide = new Werkstoff(
@@ -806,7 +823,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 70,
+        OFFSET_ID + 70,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff MolybdenumDisilicide = new Werkstoff(
@@ -827,7 +844,7 @@ public class GTNLMaterials implements Runnable {
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes()
             .addMixerRecipes((short) 2),
-        offsetID + 71,
+        OFFSET_ID + 71,
         TextureSet.SET_SHINY,
         Pair.of(Materials.Molybdenum, 1),
         Pair.of(Materials.Silicon, 2));
@@ -851,7 +868,7 @@ public class GTNLMaterials implements Runnable {
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes()
             .addMixerRecipes((short) 4),
-        offsetID + 72,
+        OFFSET_ID + 72,
         TextureSet.SET_SHINY,
         Pair.of(Materials.Invar, 2),
         Pair.of(Materials.Vanadium, 1),
@@ -872,7 +889,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 73,
+        OFFSET_ID + 73,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Rutherfordium = new Werkstoff(
@@ -889,7 +906,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 74,
+        OFFSET_ID + 74,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Dubnium = new Werkstoff(
@@ -906,7 +923,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 75,
+        OFFSET_ID + 75,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Seaborgium = new Werkstoff(
@@ -923,7 +940,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 76,
+        OFFSET_ID + 76,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Technetium = new Werkstoff(
@@ -940,7 +957,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 77,
+        OFFSET_ID + 77,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Bohrium = new Werkstoff(
@@ -957,7 +974,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 78,
+        OFFSET_ID + 78,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Hassium = new Werkstoff(
@@ -974,7 +991,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 79,
+        OFFSET_ID + 79,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Meitnerium = new Werkstoff(
@@ -991,7 +1008,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 80,
+        OFFSET_ID + 80,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Darmstadtium = new Werkstoff(
@@ -1008,7 +1025,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 81,
+        OFFSET_ID + 81,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Roentgenium = new Werkstoff(
@@ -1025,7 +1042,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 82,
+        OFFSET_ID + 82,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Copernicium = new Werkstoff(
@@ -1042,7 +1059,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 83,
+        OFFSET_ID + 83,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Moscovium = new Werkstoff(
@@ -1059,7 +1076,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 84,
+        OFFSET_ID + 84,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Livermorium = new Werkstoff(
@@ -1076,7 +1093,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 85,
+        OFFSET_ID + 85,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Astatine = new Werkstoff(
@@ -1093,7 +1110,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 86,
+        OFFSET_ID + 86,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Tennessine = new Werkstoff(
@@ -1110,7 +1127,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 87,
+        OFFSET_ID + 87,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Francium = new Werkstoff(
@@ -1127,7 +1144,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 88,
+        OFFSET_ID + 88,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Berkelium = new Werkstoff(
@@ -1144,7 +1161,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 89,
+        OFFSET_ID + 89,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Einsteinium = new Werkstoff(
@@ -1161,7 +1178,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 90,
+        OFFSET_ID + 90,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Mendelevium = new Werkstoff(
@@ -1178,7 +1195,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 91,
+        OFFSET_ID + 91,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Nobelium = new Werkstoff(
@@ -1195,7 +1212,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 92,
+        OFFSET_ID + 92,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Lawrencium = new Werkstoff(
@@ -1212,7 +1229,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 93,
+        OFFSET_ID + 93,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Nihonium = new Werkstoff(
@@ -1229,7 +1246,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 94,
+        OFFSET_ID + 94,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff ZnFeAlCl = new Werkstoff(
@@ -1240,7 +1257,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 95,
+        OFFSET_ID + 95,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff BenzenediazoniumTetrafluoroborate = new Werkstoff(
@@ -1251,7 +1268,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 96,
+        OFFSET_ID + 96,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluoroBenzene = new Werkstoff(
@@ -1262,7 +1279,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 97,
+        OFFSET_ID + 97,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff AntimonyTrifluoride = new Werkstoff(
@@ -1273,7 +1290,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 98,
+        OFFSET_ID + 98,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Fluorotoluene = new Werkstoff(
@@ -1284,7 +1301,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 99,
+        OFFSET_ID + 99,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Resorcinol = new Werkstoff(
@@ -1295,7 +1312,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 100,
+        OFFSET_ID + 100,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Hydroquinone = new Werkstoff(
@@ -1306,7 +1323,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 101,
+        OFFSET_ID + 101,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff Difluorobenzophenone = new Werkstoff(
@@ -1317,7 +1334,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 102,
+        OFFSET_ID + 102,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff FluorineCrackedNaquadah = new Werkstoff(
@@ -1327,7 +1344,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 103,
+        OFFSET_ID + 103,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff EnrichedNaquadahWaste = new Werkstoff(
@@ -1337,7 +1354,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 104,
+        OFFSET_ID + 104,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff RadonCrackedEnrichedNaquadah = new Werkstoff(
@@ -1347,7 +1364,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 105,
+        OFFSET_ID + 105,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff NaquadriaWaste = new Werkstoff(
@@ -1357,7 +1374,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 106,
+        OFFSET_ID + 106,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SmallBaka = new Werkstoff(
@@ -1368,7 +1385,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 107,
+        OFFSET_ID + 107,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LargeBaka = new Werkstoff(
@@ -1379,7 +1396,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 108,
+        OFFSET_ID + 108,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff CompressedSteam = new Werkstoff(
@@ -1400,7 +1417,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 109,
+        OFFSET_ID + 109,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Stronze = new Werkstoff(
@@ -1421,7 +1438,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 110,
+        OFFSET_ID + 110,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Breel = new Werkstoff(
@@ -1442,7 +1459,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 111,
+        OFFSET_ID + 111,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff PitchblendeSlag = new Werkstoff(
@@ -1453,7 +1470,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 112,
+        OFFSET_ID + 112,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff UraniumSlag = new Werkstoff(
@@ -1464,7 +1481,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 113,
+        OFFSET_ID + 113,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff UraniumChlorideSlag = new Werkstoff(
@@ -1475,7 +1492,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 114,
+        OFFSET_ID + 114,
         TextureSet.SET_NUCLEAR);
 
     public static final Werkstoff RadiumChloride = new Werkstoff(
@@ -1486,7 +1503,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MATERIAL,
         new Werkstoff.GenerationFeatures().disable()
             .onlyDust(),
-        offsetID + 115,
+        OFFSET_ID + 115,
         TextureSet.SET_NUCLEAR);
 
     public static final Werkstoff GravelSluice = new Werkstoff(
@@ -1496,7 +1513,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 116,
+        OFFSET_ID + 116,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff SandSluice = new Werkstoff(
@@ -1506,7 +1523,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 117,
+        OFFSET_ID + 117,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ObsidianSluice = new Werkstoff(
@@ -1516,7 +1533,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 118,
+        OFFSET_ID + 118,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff GemSluice = new Werkstoff(
@@ -1526,7 +1543,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 119,
+        OFFSET_ID + 119,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff TwilightSluice = new Werkstoff(
@@ -1546,7 +1563,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 120,
+        OFFSET_ID + 120,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff LiquidEnderAir = new Werkstoff(
@@ -1556,7 +1573,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 121,
+        OFFSET_ID + 121,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff MixturePineoil = new Werkstoff(
@@ -1566,7 +1583,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 122,
+        OFFSET_ID + 122,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff ToxicMercurySludge = new Werkstoff(
@@ -1576,7 +1593,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 123,
+        OFFSET_ID + 123,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff PostProcessBeWaste = new Werkstoff(
@@ -1586,7 +1603,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 124,
+        OFFSET_ID + 124,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff QuantumInfusion = new Werkstoff(
@@ -1596,7 +1613,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 125,
+        OFFSET_ID + 125,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff GlowThorium = new Werkstoff(
@@ -1606,7 +1623,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MIXTURE,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 126,
+        OFFSET_ID + 126,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff UraniumFuel = new Werkstoff(
@@ -1616,7 +1633,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.MIXTURE,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 127,
+        OFFSET_ID + 127,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff UraniumWaste = new Werkstoff(
@@ -1626,7 +1643,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 128,
+        OFFSET_ID + 128,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff AmmoniumBisulfate = new Werkstoff(
@@ -1637,7 +1654,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.COMPOUND,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 129,
+        OFFSET_ID + 129,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff AmmoniumPersulfate = new Werkstoff(
@@ -1648,7 +1665,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.COMPOUND,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 130,
+        OFFSET_ID + 130,
         TextureSet.SET_FLUID);
     // Special
 
@@ -1682,7 +1699,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 200,
+        OFFSET_ID + 200,
         TextureSet.SET_SHINY);
 
     public static final Werkstoff Stargate = new Werkstoff(
@@ -1699,7 +1716,7 @@ public class GTNLMaterials implements Runnable {
             .addDoubleAndDensePlates()
             .addMetaSolidifierRecipes()
             .addMetalCraftingSolidifierRecipes(),
-        offsetID + 201,
+        OFFSET_ID + 201,
         TextureSet.SET_SHINY);
 
     @Override

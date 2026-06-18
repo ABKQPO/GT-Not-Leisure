@@ -24,7 +24,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.common.block.blocks.BlockShimmerFluid;
 import com.science.gtnl.common.item.items.PortableItem;
 
-@Mixin(EntityItem.class)
+@Mixin(value = EntityItem.class, remap = true)
 public abstract class MixinEntityItem extends Entity {
 
     @Shadow

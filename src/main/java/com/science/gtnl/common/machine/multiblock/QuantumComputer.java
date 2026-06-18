@@ -84,6 +84,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo, ICustomNameObject {
 
     public static int CASING_INDEX = GTUtility.getTextureId((byte) 116, (byte) 42);
+    public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
+    public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
 
     public static Block CRAFTING_STORAGE = AEApi.instance()
         .definitions()
@@ -136,6 +138,11 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public int usedParallel = 0;
     public boolean enabledSingularityCore = false;
     public String customName = "";
+    public CraftingCPUCluster virtualCPU = null;
+    public final List<CraftingCPUCluster> cpus = new ReferenceArrayList<>();
+
+    private AENetworkProxy gridProxy;
+    private boolean wasActive = false;
 
     public long getMaximumStorage() {
         if (singularityCraftingStorageCount > 0) return Long.MAX_VALUE;
@@ -250,49 +257,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
-    public void onBlockDestroyed() {
-        super.onBlockDestroyed();
-        clearCPUs();
-        postCPUClusterChangeEvent();
-    }
-
-    public void clearCPUs() {
-        IMEMonitor<IAEItemStack> itemInventory = null;
-        try {
-            var t = getBaseMetaTileEntity();
-            var te = t.getWorld()
-                .getTileEntity(t.getXCoord(), t.getYCoord() + 1, t.getZCoord());
-            if (te instanceof IGridHost igh) itemInventory = igh.getGridNode(ForgeDirection.UNKNOWN)
-                .getGrid()
-                .<IStorageGrid>getCache(IStorageGrid.class)
-                .getItemInventory();
-        } catch (Exception ignored) {
-
-        }
-        final var s = new MachineSource(this);
-        for (var cpu : cpus) {
-            if (itemInventory != null) {
-                IItemList<IAEItemStack> itemList = AEApi.instance()
-                    .storage()
-                    .createItemList();
-                ((MECraftingInventory) cpu.getInventory()).getAvailableItems(itemList);
-                for (var stack : itemList) {
-                    itemInventory.injectItems(stack, Actionable.MODULATE, s);
-                }
-            }
-            ECPUCluster.from(cpu)
-                .ec$markDestroyed();
-        }
-        cpus.clear();
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isAllowedToWork()) aBaseMetaTileEntity.disableWorking();
-    }
-
-    @Override
     public void onFirstTick(IGregTechTileEntity baseMetaTileEntity) {
         super.onFirstTick(baseMetaTileEntity);
         if (checkStructure(true, getBaseMetaTileEntity())) {
@@ -300,148 +264,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             this.mUpdate = 200;
         }
         getProxy().onReady();
-    }
-
-    @Override
-    public boolean supportsSingleRecipeLocking() {
-        return super.supportsSingleRecipeLocking();
-    }
-
-    @Override
-    public boolean isRecipeLockingEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsVoidProtection() {
-        return super.supportsVoidProtection();
-    }
-
-    @Override
-    public VoidingMode getVoidingMode() {
-        return VoidingMode.VOID_NONE;
-    }
-
-    @Override
-    public boolean supportsInputSeparation() {
-        return super.supportsInputSeparation();
-    }
-
-    @Override
-    public boolean isInputSeparationEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsBatchMode() {
-        return super.supportsBatchMode();
-    }
-
-    @Override
-    public boolean isBatchModeEnabled() {
-        return false;
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound aNBT) {
-
-        // structure bounds
-        aNBT.setInteger("dxMin", this.dxMin);
-        aNBT.setInteger("dxMax", this.dxMax);
-        aNBT.setInteger("dzMin", this.dzMin);
-        aNBT.setInteger("dzMax", this.dzMax);
-        aNBT.setInteger("dyMin", this.dyMin);
-
-        // dimensions
-        aNBT.setInteger("width", this.width);
-        aNBT.setInteger("height", this.height);
-        aNBT.setInteger("depth", this.depth);
-
-        // counts
-        aNBT.setInteger("casingCount", this.casingCount);
-        aNBT.setInteger("coreCount", this.coreCount);
-        aNBT.setInteger("unitCount", this.unitCount);
-        aNBT.setInteger("multiThreaderCount", this.multiThreaderCount);
-        aNBT.setInteger("dataEntanglerCount", this.dataEntanglerCount);
-        aNBT.setInteger("singularityCraftingStorageCount", this.singularityCraftingStorageCount);
-
-        // storage / parallel
-        aNBT.setLong("maximumStorage", getMaximumStorage());
-        aNBT.setInteger("maximumParallel", this.maximumParallel);
-        aNBT.setBoolean("enabledSingularityCore", enabledSingularityCore);
-
-        if (customName != null) aNBT.setString("customName", customName);
-
-        getProxy().writeToNBT(aNBT);
-        writeCPUNBT(aNBT);
-
-        super.saveNBTData(aNBT);
-    }
-
-    public void writeCPUNBT(final NBTTagCompound compound) {
-        final NBTTagList clustersTag = new NBTTagList();
-        cpus.forEach(cluster -> {
-            ECPUCluster eCluster = ECPUCluster.from(cluster);
-            NBTTagCompound clusterTag = new NBTTagCompound();
-            cluster.writeToNBT(clusterTag);
-            clusterTag.setLong("availableStorage", cluster.getAvailableStorage());
-            clustersTag.appendTag(clusterTag);
-        });
-        compound.setTag("clusters", clustersTag);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound aNBT) {
-
-        // structure bounds
-        this.dxMin = aNBT.getInteger("dxMin");
-        this.dxMax = aNBT.getInteger("dxMax");
-        this.dzMin = aNBT.getInteger("dzMin");
-        this.dzMax = aNBT.getInteger("dzMax");
-        this.dyMin = aNBT.getInteger("dyMin");
-
-        // dimensions
-        this.width = aNBT.getInteger("width");
-        this.height = aNBT.getInteger("height");
-        this.depth = aNBT.getInteger("depth");
-
-        // counts
-        this.casingCount = aNBT.getInteger("casingCount");
-        this.coreCount = aNBT.getInteger("coreCount");
-        this.unitCount = aNBT.getInteger("unitCount");
-        this.multiThreaderCount = aNBT.getInteger("multiThreaderCount");
-        this.dataEntanglerCount = aNBT.getInteger("dataEntanglerCount");
-        this.singularityCraftingStorageCount = aNBT.getInteger("singularityCraftingStorageCount");
-
-        // storage / parallel
-        this.maximumStorage = aNBT.getLong("maximumStorage");
-        this.maximumParallel = aNBT.getInteger("maximumParallel");
-        this.enabledSingularityCore = aNBT.getBoolean("enabledSingularityCore");
-
-        if (aNBT.hasKey("customName")) setCustomName(aNBT.getString("customName"));
-
-        getProxy().readFromNBT(aNBT);
-        readCPUNBT(aNBT);
-
-        super.loadNBTData(aNBT);
-    }
-
-    public void readCPUNBT(final NBTTagCompound compound) {
-        new ReferenceArrayList<>(cpus).forEach(CraftingCPUCluster::destroy);
-        cpus.clear();
-
-        final NBTTagList clustersTag = compound.getTagList("clusters", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < clustersTag.tagCount(); i++) {
-            NBTTagCompound clusterTag = clustersTag.getCompoundTagAt(i);
-
-            WorldCoord coord = getWorldCoord();
-            CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
-            ECPUCluster eCluster = ECPUCluster.from(cluster);
-            eCluster.ec$setVirtualCPUOwner(this);
-            eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
-            cluster.readFromNBT(clusterTag);
-            cpus.add(cluster);
-        }
     }
 
     @Override
@@ -1012,6 +834,125 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (aBaseMetaTileEntity.isAllowedToWork()) aBaseMetaTileEntity.disableWorking();
+    }
+
+    @Override
+    public void onBlockDestroyed() {
+        super.onBlockDestroyed();
+        clearCPUs();
+        postCPUClusterChangeEvent();
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        aNBT.setInteger("dxMin", dxMin);
+        aNBT.setInteger("dxMax", dxMax);
+        aNBT.setInteger("dzMin", dzMin);
+        aNBT.setInteger("dzMax", dzMax);
+        aNBT.setInteger("dyMin", dyMin);
+        aNBT.setInteger("width", width);
+        aNBT.setInteger("height", height);
+        aNBT.setInteger("depth", depth);
+        aNBT.setInteger("casingCount", casingCount);
+        aNBT.setInteger("coreCount", coreCount);
+        aNBT.setInteger("unitCount", unitCount);
+        aNBT.setInteger("multiThreaderCount", multiThreaderCount);
+        aNBT.setInteger("dataEntanglerCount", dataEntanglerCount);
+        aNBT.setInteger("singularityCraftingStorageCount", singularityCraftingStorageCount);
+        aNBT.setLong("maximumStorage", getMaximumStorage());
+        aNBT.setInteger("maximumParallel", maximumParallel);
+        aNBT.setBoolean("enabledSingularityCore", enabledSingularityCore);
+
+        if (customName != null) aNBT.setString("customName", customName);
+
+        getProxy().writeToNBT(aNBT);
+        writeCPUNBT(aNBT);
+
+        super.saveNBTData(aNBT);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        dxMin = aNBT.getInteger("dxMin");
+        dxMax = aNBT.getInteger("dxMax");
+        dzMin = aNBT.getInteger("dzMin");
+        dzMax = aNBT.getInteger("dzMax");
+        dyMin = aNBT.getInteger("dyMin");
+        width = aNBT.getInteger("width");
+        height = aNBT.getInteger("height");
+        depth = aNBT.getInteger("depth");
+        casingCount = aNBT.getInteger("casingCount");
+        coreCount = aNBT.getInteger("coreCount");
+        unitCount = aNBT.getInteger("unitCount");
+        multiThreaderCount = aNBT.getInteger("multiThreaderCount");
+        dataEntanglerCount = aNBT.getInteger("dataEntanglerCount");
+        singularityCraftingStorageCount = aNBT.getInteger("singularityCraftingStorageCount");
+        maximumStorage = aNBT.getLong("maximumStorage");
+        maximumParallel = aNBT.getInteger("maximumParallel");
+        enabledSingularityCore = aNBT.getBoolean("enabledSingularityCore");
+
+        if (aNBT.hasKey("customName")) setCustomName(aNBT.getString("customName"));
+
+        getProxy().readFromNBT(aNBT);
+        readCPUNBT(aNBT);
+
+        super.loadNBTData(aNBT);
+    }
+
+    public void writeCPUNBT(final NBTTagCompound compound) {
+        final NBTTagList clustersTag = new NBTTagList();
+        cpus.forEach(cluster -> {
+            ECPUCluster eCluster = ECPUCluster.from(cluster);
+            NBTTagCompound clusterTag = new NBTTagCompound();
+            cluster.writeToNBT(clusterTag);
+            clusterTag.setLong("availableStorage", cluster.getAvailableStorage());
+            clustersTag.appendTag(clusterTag);
+        });
+        compound.setTag("clusters", clustersTag);
+    }
+
+    public void readCPUNBT(final NBTTagCompound compound) {
+        new ReferenceArrayList<>(cpus).forEach(CraftingCPUCluster::destroy);
+        cpus.clear();
+
+        final NBTTagList clustersTag = compound.getTagList("clusters", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < clustersTag.tagCount(); i++) {
+            NBTTagCompound clusterTag = clustersTag.getCompoundTagAt(i);
+
+            WorldCoord coord = getWorldCoord();
+            CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
+            ECPUCluster eCluster = ECPUCluster.from(cluster);
+            eCluster.ec$setVirtualCPUOwner(this);
+            eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
+            cluster.readFromNBT(clusterTag);
+            cpus.add(cluster);
+        }
+    }
+
+    @Override
+    public boolean isRecipeLockingEnabled() {
+        return false;
+    }
+
+    @Override
+    public VoidingMode getVoidingMode() {
+        return VoidingMode.VOID_NONE;
+    }
+
+    @Override
+    public boolean isInputSeparationEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isBatchModeEnabled() {
+        return false;
+    }
+
+    @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new QuantumComputerGui(this);
     }
@@ -1154,8 +1095,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return AECableType.DENSE_COVERED;
     }
 
-    private AENetworkProxy gridProxy;
-
     @Override
     public AENetworkProxy getProxy() {
         if (gridProxy == null) {
@@ -1180,33 +1119,26 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     @Override
     public boolean hasCustomName() {
-        return customName != null && !this.customName.isEmpty();
+        return customName != null && !customName.isEmpty();
     }
 
     @Override
     public void setCustomName(String name) {
         customName = name;
-        if (this.virtualCPU != null) {
+        if (virtualCPU != null) {
             ECPUCluster.from(virtualCPU)
                 .ec$setName(customName);
         }
     }
 
-    public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
-    public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
-
     @Override
-    public void securityBreak() {
-
-    }
-
-    private boolean wasActive = false;
+    public void securityBreak() {}
 
     @MENetworkEventSubscribe
     public void stateChange(final MENetworkPowerStatusChange c) {
         final boolean currentActive = isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
+        if (wasActive != currentActive) {
+            wasActive = currentActive;
             postCPUClusterChangeEvent();
         }
     }
@@ -1214,8 +1146,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @MENetworkEventSubscribe
     public void stateChange(final MENetworkChannelsChanged c) {
         final boolean currentActive = isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
+        if (wasActive != currentActive) {
+            wasActive = currentActive;
             postCPUClusterChangeEvent();
         }
     }
@@ -1233,9 +1165,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return getProxy().isActive();
     }
 
-    public CraftingCPUCluster virtualCPU = null;
-    public final List<CraftingCPUCluster> cpus = new ReferenceArrayList<>();
-
     public boolean isVirtualCPU(Object cluster) {
         return virtualCPU == cluster;
     }
@@ -1243,15 +1172,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public List<CraftingCPUCluster> getCPUs() {
         if (!isActive()) return ObjectLists.emptyList();
 
-        if (cpus.isEmpty())
-            return this.virtualCPU != null ? ObjectLists.singleton(this.virtualCPU) : ObjectLists.emptyList();
+        if (cpus.isEmpty()) {
+            return virtualCPU != null ? ObjectLists.singleton(virtualCPU) : ObjectLists.emptyList();
+        }
 
         final List<CraftingCPUCluster> clusters = new ReferenceArrayList<>(cpus);
-        if (this.virtualCPU != null) {
-            // Refresh machine source.
-            ECPUCluster.from(this.virtualCPU)
+        if (virtualCPU != null) {
+            ECPUCluster.from(virtualCPU)
                 .ec$setVirtualCPUOwner(this);
-            clusters.add(this.virtualCPU);
+            clusters.add(virtualCPU);
         }
         return clusters;
     }
@@ -1267,10 +1196,10 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             markDirty();
         }
 
-        ECPUCluster ecpuCluster = ECPUCluster.from(this.virtualCPU);
+        ECPUCluster ecpuCluster = ECPUCluster.from(virtualCPU);
         ecpuCluster.ec$setAvailableStorage(usedBytes);
         ecpuCluster.ec$setName("");
-        this.virtualCPU = null;
+        virtualCPU = null;
         createVirtualCPU();
     }
 
@@ -1296,22 +1225,50 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public void createVirtualCPU() {
         final long availableBytes = getAvailableBytes();
-        if (this.virtualCPU != null) {
-            ECPUCluster eCluster = ECPUCluster.from(this.virtualCPU);
+        if (virtualCPU != null) {
+            ECPUCluster eCluster = ECPUCluster.from(virtualCPU);
             eCluster.ec$setAvailableStorage(availableBytes);
             eCluster.ec$setAccelerators(maximumParallel);
             return;
         }
 
         WorldCoord pos = getWorldCoord();
-        this.virtualCPU = new CraftingCPUCluster(pos, pos);
-        ECPUCluster eCluster = ECPUCluster.from(this.virtualCPU);
+        virtualCPU = new CraftingCPUCluster(pos, pos);
+        ECPUCluster eCluster = ECPUCluster.from(virtualCPU);
         eCluster.ec$setVirtualCPUOwner(this);
         eCluster.ec$setAvailableStorage(availableBytes);
         eCluster.ec$setAccelerators(maximumParallel);
         if (hasCustomName()) eCluster.ec$setName(customName);
 
-        this.postCPUClusterChangeEvent();
+        postCPUClusterChangeEvent();
+    }
+
+    public void clearCPUs() {
+        IMEMonitor<IAEItemStack> itemInventory = null;
+        try {
+            var t = getBaseMetaTileEntity();
+            var te = t.getWorld()
+                .getTileEntity(t.getXCoord(), t.getYCoord() + 1, t.getZCoord());
+            if (te instanceof IGridHost igh) itemInventory = igh.getGridNode(ForgeDirection.UNKNOWN)
+                .getGrid()
+                .<IStorageGrid>getCache(IStorageGrid.class)
+                .getItemInventory();
+        } catch (Exception ignored) {}
+        final var s = new MachineSource(this);
+        for (var cpu : cpus) {
+            if (itemInventory != null) {
+                IItemList<IAEItemStack> itemList = AEApi.instance()
+                    .storage()
+                    .createItemList();
+                ((MECraftingInventory) cpu.getInventory()).getAvailableItems(itemList);
+                for (var stack : itemList) {
+                    itemInventory.injectItems(stack, Actionable.MODULATE, s);
+                }
+            }
+            ECPUCluster.from(cpu)
+                .ec$markDestroyed();
+        }
+        cpus.clear();
     }
 
     public WorldCoord getWorldCoord() {

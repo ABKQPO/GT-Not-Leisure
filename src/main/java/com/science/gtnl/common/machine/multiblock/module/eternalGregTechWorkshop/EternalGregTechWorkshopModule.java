@@ -69,6 +69,15 @@ import tectech.thing.gui.TecTechUITextures;
 
 public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<EternalGregTechWorkshopModule> {
 
+    public static final String STRUCTURE_PIECE_MAIN = "main";
+    public static final String EGTWM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
+        + "multiblock/eternal_gregTech_workshop/module";
+    public static final String[][] shape = StructureUtils.readStructureFromFile(EGTWM_STRUCTURE_FILE_PATH);
+    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int VERTICAL_OFF_SET = 3;
+    private static final int DEPTH_OFF_SET = 0;
+    private static final int GENERAL_INFO_WINDOW_ID = 10;
+
     public UUID ownerUUID;
     public boolean isConnected = false;
     public double mEUtDiscount = 1;
@@ -82,16 +91,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     @Getter
     @Setter
     public long recipeTally = 0;
+
     public long EUt = 0;
     public int currentParallel = 0;
-
-    public static final String STRUCTURE_PIECE_MAIN = "main";
-    public static final String EGTWM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
-        + "multiblock/eternal_gregTech_workshop/module";
-    public static final String[][] shape = StructureUtils.readStructureFromFile(EGTWM_STRUCTURE_FILE_PATH);
-    private static final int HORIZONTAL_OFF_SET = 4;
-    private static final int VERTICAL_OFF_SET = 3;
-    private static final int DEPTH_OFF_SET = 0;
 
     public EternalGregTechWorkshopModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -101,174 +103,10 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         super(aName);
     }
 
-    public void connect() {
-        isConnected = true;
-    }
-
-    public void disconnect() {
-        isConnected = false;
-    }
-
-    @Override
-    public double getEUtDiscount() {
-        return mEUtDiscount;
-    }
-
-    public void setEUtDiscount(double discount) {
-        mEUtDiscount = discount;
-    }
-
-    public void setHeat(int heat) {
-        mHeatingCapacity = heat;
-    }
-
-    public int getHeat() {
-        return mHeatingCapacity;
-    }
-
-    @Override
-    public double getDurationModifier() {
-        return mSpeedBoost;
-    }
-
-    public void setDurationModifier(double boost) {
-        mSpeedBoost = boost;
-    }
-
-    @Override
-    public int getMaxParallelRecipes() {
-        return maxParallel;
-    }
-
-    public void setMaxParallel(int parallel) {
-        maxParallel = parallel;
-    }
-
-    @Override
-    public ProcessingLogic createProcessingLogic() {
-        return new GTNLProcessingLogic() {
-
-            @NotNull
-            @Override
-            public CheckRecipeResult process() {
-                setAvailableVoltage(getMaxUseEUt());
-                setAvailableAmperage(1);
-                return super.process();
-            }
-
-            @NotNull
-            @Override
-            public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                if (!addEUToGlobalEnergyMap(ownerUUID, -calculatedEut * duration)) {
-                    return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
-                }
-
-                addToPowerTally(
-                    BigInteger.valueOf(calculatedEut)
-                        .multiply(BigInteger.valueOf(duration)));
-                addToRecipeTally(calculatedParallels);
-
-                currentParallel = calculatedParallels;
-                EUt = calculatedEut;
-                calculatedEut = 0;
-                return CheckRecipeResultRegistry.SUCCESSFUL;
-            }
-
-            @NotNull
-            @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
-                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
-                    .setMachineHeat(getHeat())
-                    .setEUtDiscount(getEUtDiscount())
-                    .setDurationModifier(getDurationModifier());
-            }
-        }.setMaxParallelSupplier(this::getMaxParallelRecipes);
-    }
-
-    @Override
-    public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>();
-        str.add(
-            StatCollector.translateToLocalFormatted(
-                "GT5U.infodata.progress",
-                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
-                    + EnumChatFormatting.RESET));
-        str.add(
-            StatCollector.translateToLocalFormatted(
-                "tt.infodata.multi.currently_using",
-                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
-                    + EnumChatFormatting.RESET));
-        str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
-                "tt.infodata.multi.max_parallel",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(Integer.MAX_VALUE)));
-        str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
-                "GT5U.infodata.parallel.current",
-                EnumChatFormatting.RESET
-                    + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
-        str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
-                "tt.infodata.multi.capacity.heat",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getHeat())));
-        str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
-                "tt.infodata.multi.multiplier.recipe_time",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(mSpeedBoost)));
-        return str.toArray(new String[0]);
-    }
-
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
         this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-    }
-
-    @Override
-    public void saveNBTData(NBTTagCompound NBT) {
-        NBT.setBoolean("isConnected", isConnected);
-        NBT.setLong("maxUseEUt", maxUseEUt);
-        NBT.setLong("recipeTally", recipeTally);
-        NBT.setByteArray("powerTally", powerTally.toByteArray());
-        super.saveNBTData(NBT);
-    }
-
-    @Override
-    public void loadNBTData(final NBTTagCompound NBT) {
-        isConnected = NBT.getBoolean("isConnected");
-        maxUseEUt = NBT.getLong("maxUseEUt");
-        recipeTally = NBT.getLong("recipeTally");
-        powerTally = new BigInteger(NBT.getByteArray("powerTally"));
-        super.loadNBTData(NBT);
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 960;
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
-        int colorIndex, boolean aActive, boolean aRedstone) {
-        if (side == facing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_GOD_FORGE_CONTROLLER)
-                    .extFacing()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_GOD_FORGE_CONTROLLER)
-                    .extFacing()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
@@ -314,7 +152,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        checkPieceAndHatch(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors);
+        if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
+        setupParameters();
+        checkHatch(errors);
     }
 
     @Override
@@ -344,19 +184,102 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     }
 
     @Override
-    public void checkMaintenance() {}
+    public ProcessingLogic createProcessingLogic() {
+        return new GTNLProcessingLogic() {
 
-    @Override
-    public boolean getDefaultHasMaintenanceChecks() {
-        return false;
+            @NotNull
+            @Override
+            public CheckRecipeResult process() {
+                setAvailableVoltage(getMaxUseEUt());
+                setAvailableAmperage(1);
+                return super.process();
+            }
+
+            @NotNull
+            @Override
+            public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
+                if (!addEUToGlobalEnergyMap(ownerUUID, -calculatedEut * duration)) {
+                    return CheckRecipeResultRegistry.insufficientPower(calculatedEut * duration);
+                }
+
+                addToPowerTally(
+                    BigInteger.valueOf(calculatedEut)
+                        .multiply(BigInteger.valueOf(duration)));
+                addToRecipeTally(calculatedParallels);
+
+                currentParallel = calculatedParallels;
+                EUt = calculatedEut;
+                calculatedEut = 0;
+                return CheckRecipeResultRegistry.SUCCESSFUL;
+            }
+
+            @NotNull
+            @Override
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setMachineHeat(getHeat())
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier());
+            }
+        }.setMaxParallelSupplier(this::getMaxParallelRecipes);
     }
 
     @Override
-    public boolean shouldCheckMaintenance() {
-        return false;
+    public int getCasingTextureID() {
+        return 960;
     }
 
-    private static final int GENERAL_INFO_WINDOW_ID = 10;
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_GOD_FORGE_CONTROLLER)
+                    .extFacing()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_GOD_FORGE_CONTROLLER)
+                    .extFacing()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public String[] getInfoData() {
+        ArrayList<String> str = new ArrayList<>();
+        str.add(
+            StatCollector.translateToLocalFormatted(
+                "GT5U.infodata.progress",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
+                    + EnumChatFormatting.RESET));
+        str.add(
+            StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.currently_using",
+                EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
+                    + EnumChatFormatting.RESET));
+        str.add(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.max_parallel",
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(Integer.MAX_VALUE)));
+        str.add(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "GT5U.infodata.parallel.current",
+                EnumChatFormatting.RESET
+                    + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
+        str.add(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.capacity.heat",
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getHeat())));
+        str.add(
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "tt.infodata.multi.multiplier.recipe_time",
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(mSpeedBoost)));
+        return str.toArray(new String[0]);
+    }
 
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
@@ -426,10 +349,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
                     if (isAllowedToWork()) {
                         return new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
                             TecTechUITextures.OVERLAY_BUTTON_POWER_SWITCH_ON };
-                    } else {
-                        return new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
-                            TecTechUITextures.OVERLAY_BUTTON_POWER_SWITCH_OFF };
                     }
+                    return new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
+                        TecTechUITextures.OVERLAY_BUTTON_POWER_SWITCH_OFF };
                 })
                 .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isAllowedToWork, val -> {
                     if (val) enableWorking();
@@ -464,6 +386,72 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         if (supportsInputSeparation()) builder.widget(createInputSeparationButton(builder));
         if (supportsBatchMode()) builder.widget(createBatchModeButton(builder));
         if (supportsSingleRecipeLocking()) builder.widget(createLockToSingleRecipeButton(builder));
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound NBT) {
+        NBT.setBoolean("isConnected", isConnected);
+        NBT.setLong("maxUseEUt", maxUseEUt);
+        NBT.setLong("recipeTally", recipeTally);
+        NBT.setByteArray("powerTally", powerTally.toByteArray());
+        super.saveNBTData(NBT);
+    }
+
+    @Override
+    public void loadNBTData(final NBTTagCompound NBT) {
+        isConnected = NBT.getBoolean("isConnected");
+        maxUseEUt = NBT.getLong("maxUseEUt");
+        recipeTally = NBT.getLong("recipeTally");
+        powerTally = new BigInteger(NBT.getByteArray("powerTally"));
+        super.loadNBTData(NBT);
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
+    public double getEUtDiscount() {
+        return mEUtDiscount;
+    }
+
+    public void setEUtDiscount(double discount) {
+        mEUtDiscount = discount;
+    }
+
+    public void setHeat(int heat) {
+        mHeatingCapacity = heat;
+    }
+
+    public int getHeat() {
+        return mHeatingCapacity;
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return mSpeedBoost;
+    }
+
+    public void setDurationModifier(double boost) {
+        mSpeedBoost = boost;
+    }
+
+    @Override
+    public int getMaxParallelRecipes() {
+        return maxParallel;
+    }
+
+    public void setMaxParallel(int parallel) {
+        maxParallel = parallel;
+    }
+
+    public void connect() {
+        isConnected = true;
+    }
+
+    public void disconnect() {
+        isConnected = false;
     }
 
     private Text connectionStatus() {
@@ -509,6 +497,19 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     public ButtonWidget createVoidExcessButton(IWidgetBuilder<?> builder) {
         // TODO: Remove this mui1 fallback after the Eternal GregTech Workshop module buttons are verified in mui2.
         return EternalGregTechWorkshopUI.createVoidExcessButton(getBaseMetaTileEntity(), this, builder);
+    }
+
+    @Override
+    public void checkMaintenance() {}
+
+    @Override
+    public boolean getDefaultHasMaintenanceChecks() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCheckMaintenance() {
+        return false;
     }
 
     public void addToPowerTally(BigInteger amount) {

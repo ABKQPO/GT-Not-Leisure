@@ -22,7 +22,7 @@ public enum ModList implements IMod, ITargetMod {
     ProgrammableHatches(ModIds.PROGRAMMABLE_HATCHES, Names.PROGRAMMABLE_HATCHES),
     TwistSpaceTechnology(ModIds.TWIST_SPACE_TECHNOLOGY, Names.TWIST_SPACE_TECHNOLOGY),
     BoxPlusPlus(ModIds.BOX_PLUS_PLUS, Names.BOX_PLUS_PLUS),
-    NHUtilities(ModIds.NH_UTILITIES, Names.NH_UTILITIES),
+    NHUtilities(ModIds.NH_UTILITIES, Names.NH_UTILITIES, "com.xir.NHUtilities.main.NHUtilitiesCore"),
     AE2Thing(ModIds.AE2_THING, Names.AE2_THING),
     QzMiner(ModIds.QZ_MINER, Names.QZ_MINER),
     OTHTechnology(ModIds.OTH_TECHNOLOGY, Names.OTH_TECHNOLOGY),
@@ -41,6 +41,7 @@ public enum ModList implements IMod, ITargetMod {
     GalaxySpace(ModIds.GALAXY_SPACE, Names.GALAXY_SPACE),
     BetterQuestingAPI(ModIds.BETTER_QUESTING_API, Names.BETTER_QUESTING_API),
     EnhancedLootBags(ModIds.ENHANCED_LOOT_BAGS, Names.ENHANCED_LOOT_BAGS),
+    NotEnoughItems(ModIds.NOT_ENOUGH_ITEMS, Names.NOT_ENOUGH_ITEMS),
     NotEnoughEnergistics(ModIds.NOT_ENOUGH_ENERGISTICS, Names.NOT_ENOUGH_ENERGISTICS),
     NEICustomDiagrams(ModIds.N_E_I_CUSTOM_DIAGRAMS, Names.N_E_I_CUSTOM_DIAGRAMS),
     AvaritiaAddons(ModIds.AVARITIA_ADDONS, Names.AVARITIA_ADDONS),
@@ -72,6 +73,7 @@ public enum ModList implements IMod, ITargetMod {
         public static final String GALAXY_SPACE = "GalaxySpace";
         public static final String BETTER_QUESTING_API = "bqapi";
         public static final String ENHANCED_LOOT_BAGS = "enhancedlootbags";
+        public static final String NOT_ENOUGH_ITEMS = "NotEnoughItems";
         public static final String NOT_ENOUGH_ENERGISTICS = "neenergistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "neicustomdiagram";
         public static final String AVARITIA_ADDONS = "avaritiaddons";
@@ -104,6 +106,7 @@ public enum ModList implements IMod, ITargetMod {
         public static final String GALAXY_SPACE = "Galaxy Space";
         public static final String BETTER_QUESTING_API = "Better Questing API";
         public static final String ENHANCED_LOOT_BAGS = "Enhanced Loot Bags";
+        public static final String NOT_ENOUGH_ITEMS = "Not Enough Items";
         public static final String NOT_ENOUGH_ENERGISTICS = "Not Enough Energistics";
         public static final String N_E_I_CUSTOM_DIAGRAMS = "NEI Custom Diagrams";
         public static final String AVARITIA_ADDONS = "Avaritia Addons";

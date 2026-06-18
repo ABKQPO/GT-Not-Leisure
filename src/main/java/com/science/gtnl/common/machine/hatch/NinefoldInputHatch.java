@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import java.util.ArrayList;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,6 +25,7 @@ import com.science.gtnl.common.gui.modularui.NinefoldInputHatchGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
@@ -32,7 +34,8 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.render.TextureFactory;
 
-public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidgets, IAddGregtechLogo {
+public class NinefoldInputHatch extends MTEHatchMultiInput
+    implements IConfigurationCircuitSupport, IAddUIWidgets, IAddGregtechLogo {
 
     private final FluidStack[] mStoredFluid;
     private final FluidStackTank[] fluidTanks;
@@ -43,6 +46,7 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
         this.mStoredFluid = new FluidStack[aSlot];
         fluidTanks = new FluidStackTank[aSlot];
         mCapacityPer = getCapacityPerTank(aTier, aSlot);
+        initFluidTanks();
     }
 
     public NinefoldInputHatch(String aName, int aSlot, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -50,7 +54,11 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
         this.mStoredFluid = new FluidStack[aSlot];
         fluidTanks = new FluidStackTank[aSlot];
         mCapacityPer = getCapacityPerTank(aTier, aSlot);
-        for (int i = 0; i < aSlot; i++) {
+        initFluidTanks();
+    }
+
+    private void initFluidTanks() {
+        for (int i = 0; i < fluidTanks.length; i++) {
             final int index = i;
             fluidTanks[i] = new FluidStackTank(
                 () -> mStoredFluid[index],
@@ -60,36 +68,8 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
     }
 
     @Override
-    public String[] getDescription() {
-
-        ArrayList<String> desc = new ArrayList<>();
-
-        desc.add(StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_00"));
-        desc.add(
-            StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01")
-                + NumberFormatUtil.formatNumber(mCapacityPer)
-                + "L");
-        desc.add(
-            StatCollector.translateToLocalFormatted(
-                "Tooltip_NinefoldInputHatch_02",
-                NumberFormatUtil.formatNumber(mInventory.length)));
-
-        return desc.toArray(new String[] {});
-    }
-
-    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new NinefoldInputHatch(mName, getMaxType(), mTier, mDescriptionArray, mTextures);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after NinefoldInputHatch mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override
@@ -120,37 +100,39 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
 
     @Override
     public boolean isValidSlot(int aIndex) {
-        return aIndex >= 9;
+        return aIndex >= 9 && aIndex != getCircuitSlot();
     }
 
     @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after NinefoldInputHatch mui2 rollout is complete.
-        final int SLOT_NUMBER = 9;
-        final Pos2d[] positions = new Pos2d[] { new Pos2d(61, 16), new Pos2d(79, 16), new Pos2d(97, 16),
-            new Pos2d(61, 34), new Pos2d(79, 34), new Pos2d(97, 34), new Pos2d(61, 52), new Pos2d(79, 52),
-            new Pos2d(97, 52) };
-
-        for (int i = 0; i < SLOT_NUMBER; i++) {
-            builder.widget(
-                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
-                    .setPos(positions[i]));
-        }
-    }
-
-    public FluidStackTank[] getFluidTanksForGui() {
-        return fluidTanks;
+    public boolean allowPullStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return aIndex != getCircuitSlot() && super.allowPullStack(aBaseMetaTileEntity, aIndex, side, aStack);
     }
 
     @Override
-    protected boolean useMui2() {
+    public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
+        ItemStack aStack) {
+        return aIndex != getCircuitSlot() && super.allowPutStack(aBaseMetaTileEntity, aIndex, side, aStack);
+    }
+
+    @Override
+    public int getCircuitSlot() {
+        return 0;
+    }
+
+    @Override
+    public boolean allowSelectCircuit() {
         return true;
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new NinefoldInputHatchGui(this).build(data, syncManager, uiSettings);
+    public int getCircuitSlotX() {
+        return 153;
+    }
+
+    @Override
+    public int getCircuitSlotY() {
+        return 63;
     }
 
     @Override
@@ -358,6 +340,61 @@ public class NinefoldInputHatch extends MTEHatchMultiInput implements IAddUIWidg
             }
         }
         super.onPostTick(aBaseMetaTileEntity, aTick);
+    }
+
+    @Override
+    public String[] getDescription() {
+        ArrayList<String> desc = new ArrayList<>();
+        desc.add(StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_00"));
+        desc.add(
+            StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01")
+                + NumberFormatUtil.formatNumber(mCapacityPer)
+                + "L");
+        desc.add(
+            StatCollector.translateToLocalFormatted(
+                "Tooltip_NinefoldInputHatch_02",
+                NumberFormatUtil.formatNumber(mInventory.length)));
+        return desc.toArray(new String[] {});
+    }
+
+    @Override
+    @Deprecated
+    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
+        // TODO: Remove this mui1 fallback after NinefoldInputHatch mui2 rollout is complete.
+        final int slotNumber = 9;
+        final Pos2d[] positions = new Pos2d[] { new Pos2d(61, 16), new Pos2d(79, 16), new Pos2d(97, 16),
+            new Pos2d(61, 34), new Pos2d(79, 34), new Pos2d(97, 34), new Pos2d(61, 52), new Pos2d(79, 52),
+            new Pos2d(97, 52) };
+
+        for (int i = 0; i < slotNumber; i++) {
+            builder.widget(
+                new FluidSlotWidget(fluidTanks[i]).setBackground(ModularUITextures.FLUID_SLOT)
+                    .setPos(positions[i]));
+        }
+    }
+
+    @Override
+    @Deprecated
+    public void addGregTechLogo(ModularWindow.Builder builder) {
+        // TODO: Remove this mui1 fallback after NinefoldInputHatch mui2 rollout is complete.
+        builder.widget(
+            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+                .setSize(18, 18)
+                .setPos(151, 62));
+    }
+
+    public FluidStackTank[] getFluidTanksForGui() {
+        return fluidTanks;
+    }
+
+    @Override
+    protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
+        return new NinefoldInputHatchGui(this).build(data, syncManager, uiSettings);
     }
 
 }

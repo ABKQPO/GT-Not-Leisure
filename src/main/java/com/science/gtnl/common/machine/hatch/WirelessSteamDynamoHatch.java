@@ -144,8 +144,9 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             if (allowed.getName()
                 .equals(
                     aFluid.getFluid()
-                        .getName()))
+                        .getName())) {
                 return true;
+            }
         }
         return false;
     }
@@ -204,20 +205,16 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             } else {
                 return new ITexture[] { getBaseTexture(colorIndex) };
             }
-        } else {
-            if (textureIndex > 0 && textureIndex < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
-                if (aActive) {
-                    return getTexturesActive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
-                } else {
-                    return getTexturesInactive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
-                }
+        } else if (textureIndex > 0 && textureIndex < Textures.BlockIcons.casingTexturePages[mTexturePage].length) {
+            if (aActive) {
+                return getTexturesActive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
             } else {
-                if (aActive) {
-                    return getTexturesActive(getBaseTexture(colorIndex));
-                } else {
-                    return getTexturesInactive(getBaseTexture(colorIndex));
-                }
+                return getTexturesInactive(Textures.BlockIcons.casingTexturePages[mTexturePage][textureIndex]);
             }
+        } else if (aActive) {
+            return getTexturesActive(getBaseTexture(colorIndex));
+        } else {
+            return getTexturesInactive(getBaseTexture(colorIndex));
         }
     }
 
@@ -260,24 +257,20 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public void onPreTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPreTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide()) {
-            if (aTick % number_of_energy_additions == 0L) {
-                tryFetchingSteam();
-            }
+        if (aBaseMetaTileEntity.isServerSide() && aTick % number_of_energy_additions == 0L) {
+            tryFetchingSteam();
         }
     }
 
     @Override
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
         super.onPostTick(baseMetaTileEntity, tick);
-        if (baseMetaTileEntity.isServerSide()) {
-            if (tick % 200 == 0L) {
-                isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
+        if (baseMetaTileEntity.isServerSide() && tick % 200 == 0L) {
+            isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
 
-                if (isInTeam) {
-                    teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-                    steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-                }
+            if (isInTeam) {
+                teamUUID = SpaceProjectManager.getLeader(ownerUUID);
+                steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
             }
         }
     }
@@ -286,7 +279,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
         FluidStack currentSteamStack = getFillableStack();
 
         if (currentSteamStack != null && currentSteamStack.amount > 0) {
-
             int rawAmount = currentSteamStack.amount;
             Fluid fluidType = currentSteamStack.getFluid();
 
