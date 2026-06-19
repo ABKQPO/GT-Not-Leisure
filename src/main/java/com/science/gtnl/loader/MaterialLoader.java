@@ -52,6 +52,7 @@ public class MaterialLoader {
     }
 
     public static void loadInit() {
+        GTNLMaterials.init();
         MachineLoader.registerGlasses();
         WailaLoader.register();
         TickrateAPI.changeTickrate(MainConfig.tickrate.defaultTickrate);

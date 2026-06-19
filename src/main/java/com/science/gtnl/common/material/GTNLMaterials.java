@@ -1553,7 +1553,7 @@ public class GTNLMaterials implements Runnable {
         Werkstoff.Types.ELEMENT,
         new Werkstoff.GenerationFeatures().disable()
             .addCells(),
-        offsetID + 202,
+        OFFSET_ID + 202,
         TextureSet.SET_FLUID);
 
     public static final Werkstoff EnderAir = new Werkstoff(
@@ -1718,6 +1718,17 @@ public class GTNLMaterials implements Runnable {
             .addMetalCraftingSolidifierRecipes(),
         OFFSET_ID + 201,
         TextureSet.SET_SHINY);
+
+    public static void init() {
+        setToolHandleMaterial(Breel.getBridgeMaterial(), Materials.Wood);
+        setToolHandleMaterial(Stronze.getBridgeMaterial(), Materials.Wood);
+        setToolHandleMaterial(CompressedSteam.getBridgeMaterial(), Materials.Wood);
+    }
+
+    private static void setToolHandleMaterial(Materials material, Materials handleMaterial) {
+        if (material == null || handleMaterial == null) return;
+        material.mHandleMaterial = handleMaterial;
+    }
 
     @Override
     public void run() {}
