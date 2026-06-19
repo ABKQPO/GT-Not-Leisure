@@ -1528,7 +1528,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public String getCustomName() {
-        return customName != null ? customName : getMachineCraftingIcon().getDisplayName();
+        return customName != null ? customName
+            : MainConfig.machine.enableHatchInterfaceTerminalEnhance ? getName()
+                : getMachineCraftingIcon().getDisplayName();
     }
 
     @Override

@@ -15,7 +15,6 @@ import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.DrawableStack;
 import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -31,6 +30,7 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.CycleButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
 import com.cleanroommc.modularui.widgets.DynamicSyncedWidget;
 import com.cleanroommc.modularui.widgets.ItemDisplayWidget;
@@ -107,16 +107,11 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
     @Override
     protected IWidget createModeSwitchButton(PanelSyncManager syncManager) {
         IntSyncValue machineModeSyncer = syncManager.findSyncHandler("machineMode", IntSyncValue.class);
-        IntSyncValue maxProgressTimeSyncer = syncManager.findSyncHandler("maxProgressTime", IntSyncValue.class);
-        return new ButtonWidget<>().size(18, 18)
-            .overlay(new DynamicDrawable(() -> createMachineModeOverlay(machineModeSyncer, maxProgressTimeSyncer)))
-            .syncHandler(new InteractionSyncHandler().setOnMousePressed(mouseData -> {
-                if (maxProgressTimeSyncer.getIntValue() > 0) return;
-                multiblock.onMachineModeSwitchClick();
-                machineModeSyncer.setIntValue(multiblock.nextMachineMode(), true, true);
-            }))
-            .tooltipDynamic(tooltip -> createModeSwitchTooltip(tooltip, maxProgressTimeSyncer))
-            .tooltipAutoUpdate(true)
+        return new CycleButtonWidget().size(18, 18)
+            .syncHandler("machineMode")
+            .length(machineModeIcons.size())
+            .overlay(new DynamicDrawable(() -> getMachineModeIcon(machineModeSyncer.getIntValue())))
+            .tooltipBuilder(this::createModeSwitchTooltip)
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -303,19 +298,30 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
                     .tooltipBuilder(tooltip -> tooltip.addLine(lineTooltip)));
     }
 
-    private IDrawable createMachineModeOverlay(IntSyncValue machineModeSyncer, IntSyncValue maxProgressTimeSyncer) {
-        if (maxProgressTimeSyncer.getIntValue() > 0) {
-            return new DrawableStack(GTGuiTextures.BUTTON_STANDARD, GTGuiTextures.OVERLAY_BUTTON_RECIPE_LOCKED);
-        }
-        return new DrawableStack(GTGuiTextures.BUTTON_STANDARD, getMachineModeIcon(machineModeSyncer.getIntValue()));
+    @Override
+    protected void createModeSwitchTooltip(RichTooltip tooltip) {
+        super.createModeSwitchTooltip(tooltip);
+        tooltip.addLine(IKey.dynamic(() -> GTUtility.getColoredSecondaryTooltip(multiblock.getMachineModeName())));
     }
 
-    private void createModeSwitchTooltip(RichTooltip tooltip, IntSyncValue maxProgressTimeSyncer) {
-        tooltip.addLine(
-            IKey.dynamic(
-                () -> StatCollector.translateToLocal(
-                    maxProgressTimeSyncer.getIntValue() > 0 ? "GT5U.gui.button.forbidden"
-                        : "GT5U.gui.button.mode_switch")));
+    @Override
+    protected boolean shouldDisplayVoidExcess() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldDisplayInputSeparation() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldDisplayBatchMode() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldDisplayRecipeLock() {
+        return false;
     }
 
     private static boolean areAEItemStacksEqual(IAEItemStack left, IAEItemStack right) {

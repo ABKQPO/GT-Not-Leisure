@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,47 +66,68 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements IMultiblockR
         return !gtnl$customName.isEmpty() || MainConfig.machine.enableHatchInterfaceTerminalEnhance;
     }
 
-    @Override
-    public String getCustomName() {
-        if (!gtnl$customName.isEmpty()) return gtnl$customName;
-        String mainText = getLocalName();
-        StringBuilder sb = new StringBuilder(mainText);
+    @Unique
+    private String gtnl$getAutoNameKey() {
+        StringBuilder sb = new StringBuilder();
         MTEHatch hatch = (MTEHatch) (Object) this;
 
         if (hatch instanceof IConfigurationCircuitSupport circuitHatch) {
             ItemStack circuit = getStackInSlot(circuitHatch.getCircuitSlot());
             if (circuit != null) {
-                sb.append(" - ")
-                    .append(circuit.getItemDamage());
+                sb.append("gt_circuit_")
+                    .append(circuit.getItemDamage())
+                    .append('_');
             }
         }
 
         if (hatch instanceof MTEHatchInput inputHatch
             && (gtnl$multiBlockRecipeMapName != null || inputHatch.mRecipeMap != null)) {
-            sb.append(" - ")
+            sb.append("extra_start_")
                 .append(
-                    StatCollector.translateToLocal(
-                        gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                            : inputHatch.mRecipeMap.unlocalizedName));
+                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
+                        : inputHatch.mRecipeMap.unlocalizedName)
+                .append("_extra_end_");
         }
         if (hatch instanceof MTEHatchInputBus inputBus
             && (gtnl$multiBlockRecipeMapName != null || inputBus.mRecipeMap != null)) {
-            sb.append(" - ")
+            sb.append("extra_start_")
                 .append(
-                    StatCollector.translateToLocal(
-                        gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                            : inputBus.mRecipeMap.unlocalizedName));
+                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
+                        : inputBus.mRecipeMap.unlocalizedName)
+                .append("_extra_end_");
         }
 
         for (int i = 0; i < 10 && i < mInventory.length; i++) {
             ItemStack stack = mInventory[i];
             if (!ItemUtils.isExtraItem(stack)) continue;
-            sb.append(" - ")
-                .append(stack.getDisplayName());
+
+            String registryName = GameRegistry.findUniqueIdentifierFor(stack.getItem())
+                .toString();
+
+            sb.append("extra_item_start_")
+                .append(registryName)
+                .append("@")
+                .append(stack.getItemDamage());
+
+            if (stack.hasDisplayName()) {
+                sb.append("{")
+                    .append(stack.getDisplayName())
+                    .append("}");
+            }
+
+            sb.append("extra_item_end_");
             break;
         }
 
-        return sb.toString();
+        return sb.append(super.getMachineCraftingIcon().getUnlocalizedName())
+            .toString();
+    }
+
+    @Override
+    public String getCustomName() {
+        if (!gtnl$customName.isEmpty()) return gtnl$customName;
+        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return getLocalName();
+        return gtnl$getAutoNameKey();
     }
 
     @Override
@@ -212,7 +232,7 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements IMultiblockR
             break;
         }
 
-        if (sb != null && sb.length() > 0) {
+        if (sb != null && !sb.isEmpty()) {
             ItemStack modified = value.copy();
             modified.setStackDisplayName(sb.toString());
             return modified;

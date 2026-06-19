@@ -38,7 +38,6 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
     private static final String PATTERN_MANUAL_PANEL_KEY_PREFIX = "gtnl_super_crafting_pattern_manual_panel_";
     private static final String OPTIMIZER_SYNC_KEY = "gtnl_super_crafting_pattern_optimizer";
     private static final String SHOW_PATTERN_SYNC_KEY = "gtnl_super_crafting_show_pattern";
-    private static final int PATTERN_SLOT_PER_ROW = 10;
     private static final int VISIBLE_PATTERN_ROWS = 4;
     private static final int VISIBLE_MANUAL_ROWS = 4;
     private static final int MANUAL_SLOT_ROW = 9;
@@ -98,18 +97,19 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
     }
 
     private Grid createPatternGrid(ModularPanel panel, PanelSyncManager syncManager) {
-        syncManager.registerSlotGroup(PATTERN_INV_NAME, machine.getPatternRowsForGui());
+        int patternColumns = machine.getPatternColumnsForGui();
+        syncManager.registerSlotGroup(PATTERN_INV_NAME, patternColumns);
 
         return new Grid().scrollable(new VerticalScrollData())
             .showScrollShadows(false)
             .minColWidth(SLOT_SIZE)
             .minRowHeight(SLOT_SIZE)
-            .size(SLOT_SIZE * PATTERN_SLOT_PER_ROW + 4, SLOT_SIZE * VISIBLE_PATTERN_ROWS)
+            .size(SLOT_SIZE * patternColumns + 4, SLOT_SIZE * VISIBLE_PATTERN_ROWS)
             .pos(0, 0)
             .child(
                 new Grid().coverChildren()
                     .gridOfWidthHeight(
-                        PATTERN_SLOT_PER_ROW,
+                        patternColumns,
                         machine.getPatternRowsForGui(),
                         ($x, $y, index) -> createPatternSlot(panel, syncManager, index)));
     }

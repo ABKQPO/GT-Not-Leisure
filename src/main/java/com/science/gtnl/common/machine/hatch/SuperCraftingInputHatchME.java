@@ -620,8 +620,13 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         return new SuperCraftingInputHatchMEGui(this).build(data, syncManager, uiSettings);
     }
 
+    public int getPatternColumnsForGui() {
+        return 10;
+    }
+
     public int getPatternRowsForGui() {
-        return MAX_PATTERN_COUNT / rowSize();
+        int patternColumns = getPatternColumnsForGui();
+        return (MAX_PATTERN_COUNT + patternColumns - 1) / patternColumns;
     }
 
     public int getManualSlotStartForGui() {
@@ -797,6 +802,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
 
     public void onPatternChange(int index, ItemStack newItem) {
         if (!getBaseMetaTileEntity().isServerSide()) return;
+        if (index < 0 || index >= internalInventory.length) return;
 
         World world = getBaseMetaTileEntity().getWorld();
 

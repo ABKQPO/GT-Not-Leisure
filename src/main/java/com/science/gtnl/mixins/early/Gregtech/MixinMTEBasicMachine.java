@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -116,7 +115,7 @@ public abstract class MixinMTEBasicMachine extends MTEBasicTank implements ICust
             break;
         }
 
-        if (sb != null && sb.length() > 0) {
+        if (sb != null && !sb.isEmpty()) {
             ItemStack modified = super.getMachineCraftingIcon().copy();
             modified.setStackDisplayName(sb.toString());
             return modified;
@@ -125,33 +124,57 @@ public abstract class MixinMTEBasicMachine extends MTEBasicTank implements ICust
         return super.getMachineCraftingIcon();
     }
 
-    @Override
-    public String getCustomName() {
-        if (!gtnl$customName.isEmpty()) return gtnl$customName;
-        String mainText = getLocalName();
-        StringBuilder sb = new StringBuilder(mainText);
+    @Unique
+    private String gtnl$getAutoNameKey() {
+        StringBuilder sb = new StringBuilder();
 
         ItemStack circuit = getStackInSlot(getCircuitSlot());
         if (circuit != null) {
-            sb.append(" - ")
-                .append(circuit.getItemDamage());
+            sb.append("gt_circuit_")
+                .append(circuit.getItemDamage())
+                .append('_');
         }
 
         if (((Object) this) instanceof MTEBasicMachineWithRecipe machine) {
             var recipeMap = machine.getRecipeMap();
-            if (recipeMap != null) sb.append(" - ")
-                .append(StatCollector.translateToLocal(recipeMap.unlocalizedName));
+            if (recipeMap != null) {
+                sb.append("extra_start_")
+                    .append(recipeMap.unlocalizedName)
+                    .append("_extra_end_");
+            }
         }
 
-        for (int i = 0; i < 4 && i < mInventory.length; i++) {
+        for (int i = 0; i < 10 && i < mInventory.length; i++) {
             ItemStack stack = mInventory[i];
             if (!ItemUtils.isExtraItem(stack)) continue;
-            sb.append(" - ")
-                .append(stack.getDisplayName());
+
+            String registryName = GameRegistry.findUniqueIdentifierFor(stack.getItem())
+                .toString();
+
+            sb.append("extra_item_start_")
+                .append(registryName)
+                .append("@")
+                .append(stack.getItemDamage());
+
+            if (stack.hasDisplayName()) {
+                sb.append("{")
+                    .append(stack.getDisplayName())
+                    .append("}");
+            }
+
+            sb.append("extra_item_end_");
             break;
         }
 
-        return sb.toString();
+        return sb.append(super.getMachineCraftingIcon().getUnlocalizedName())
+            .toString();
+    }
+
+    @Override
+    public String getCustomName() {
+        if (!gtnl$customName.isEmpty()) return gtnl$customName;
+        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return getLocalName();
+        return gtnl$getAutoNameKey();
     }
 
     @Override

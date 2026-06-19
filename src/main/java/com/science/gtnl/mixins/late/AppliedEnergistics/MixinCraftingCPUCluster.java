@@ -327,7 +327,11 @@ public abstract class MixinCraftingCPUCluster {
                 this.remainingOperations -= (int) (craftingFrequency.get() - 1);
             }
             var value = original.call(instance);
-            value.setValue(value.getValue() - (craftingFrequency.get() - 1));
+            long extraCrafts = craftingFrequency.get() - 1;
+            value.setValue(value.getValue() - extraCrafts);
+            for (long i = 0; i < extraCrafts; i++) {
+                value.consumeCraftSession();
+            }
             return value;
         }
         return original.call(instance);

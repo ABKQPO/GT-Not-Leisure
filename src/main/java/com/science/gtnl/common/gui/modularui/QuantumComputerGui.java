@@ -176,7 +176,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
         return Flow.column()
             .width(18)
             .leftRel(1, -2, 1)
-            .top(55)
+            .top(36)
             .child(createStructureUpdateButton(syncManager))
             .childIf(
                 multiblock.doesBindPlayerInventory(),
@@ -189,7 +189,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
                         }
                     }.singletonSlotGroup())
                     .backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK)
-                    .marginTop(1));
+                    .marginTop(4));
     }
 
     @Override

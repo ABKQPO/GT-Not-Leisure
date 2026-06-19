@@ -1419,6 +1419,18 @@ public class CraftingTableRecipes implements IRecipePool {
                     .orNull(),
                 'F', GregtechItemList.GT_Chisel_HV.get(1) });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.WyvernProjectionNecklace.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.dye, 1, 5), 'B',
+                new ItemStack(Items.string, 1), 'C',
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 0) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.DraconicProjectionNecklace.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.dye, 1, 14), 'B',
+                new ItemStack(Items.string, 1), 'C',
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 0) });
+
         if (Mods.NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
             if (MainConfig.recipe.enableSomethingRecipe) loadExtraRecipe();

@@ -152,6 +152,9 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
         super.onPostTick(baseMetaTileEntity, tick);
         if (baseMetaTileEntity.isServerSide() && tick % 200 == 0L) {
+            if (ownerUUID == null) {
+                ownerUUID = baseMetaTileEntity.getOwnerUuid();
+            }
             isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
 
             if (isInTeam) {
