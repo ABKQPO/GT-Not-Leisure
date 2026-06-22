@@ -68,7 +68,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private static final int PANEL_WIDTH = 222;
     private static final int PANEL_HEIGHT = 205;
-    private static final int TERMINAL_X = 4;
+    private static final int TERMINAL_X = 12;
     private static final int TERMINAL_Y = 4;
     private static final int TERMINAL_WIDTH = 198;
     private static final int TERMINAL_HEIGHT = 118;
@@ -83,6 +83,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     private static final int LOGO_SIZE = 18;
     private static final int INLINE_BUTTON_HEIGHT = 10;
     private static final int INLINE_BUTTON_SPACING = 2;
+    private static final int MODE_BUTTON_PADDING = 8;
 
     private int terminalScrollY;
     private DynamicSyncedWidget<?> terminalWidget;
@@ -234,9 +235,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                         EnumChatFormatting.GRAY + totalEnergySyncer.getValue()))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .maxWidth(
-                        TERMINAL_TEXT_WIDTH - getModeButtonWidth(true, EnergyMonitorMode.WIRELESS)
-                            - INLINE_BUTTON_SPACING))
+                    .maxWidth(TERMINAL_TEXT_WIDTH - getModeButtonWidth(true) - INLINE_BUTTON_SPACING))
             .child(createModeButton(totalModeSyncer, true));
     }
 
@@ -288,9 +287,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                 IKey.str(StatCollector.translateToLocal("gtnl.energy_monitor.statistics"))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .maxWidth(
-                        TERMINAL_TEXT_WIDTH - getModeButtonWidth(false, EnergyMonitorMode.WIRELESS)
-                            - INLINE_BUTTON_SPACING))
+                    .maxWidth(TERMINAL_TEXT_WIDTH - getModeButtonWidth(false) - INLINE_BUTTON_SPACING))
             .child(createModeButton(statisticsModeSyncer, false));
     }
 
@@ -362,7 +359,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(LOGO_SIZE)
-            .pos(PANEL_WIDTH - LOGO_SIZE - 2, TERMINAL_Y + TERMINAL_HEIGHT - LOGO_SIZE);
+            .pos(TERMINAL_X + TERMINAL_WIDTH - LOGO_SIZE + 8, TERMINAL_Y + TERMINAL_HEIGHT + 4);
     }
 
     @Override
@@ -399,7 +396,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                     .tooltipShowUpTimer(TOOLTIP_DELAY)
                     .setEnabledIf(widget -> resolveMode(modeSyncer.getIntValue()) == mode));
         }
-        return holder.size(getModeButtonWidth(wrapWithParentheses, EnergyMonitorMode.WIRELESS), INLINE_BUTTON_HEIGHT)
+        return holder.size(getModeButtonWidth(wrapWithParentheses), INLINE_BUTTON_HEIGHT)
             .marginLeft(INLINE_BUTTON_SPACING);
     }
 
@@ -533,8 +530,12 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         return left == null ? right == null : left.sameAs(right);
     }
 
-    private static int getModeButtonWidth(boolean wrapWithParentheses, EnergyMonitorMode mode) {
-        return getTextWidth(formatModeText(mode, wrapWithParentheses));
+    private static int getModeButtonWidth(boolean wrapWithParentheses) {
+        int maxWidth = 0;
+        for (EnergyMonitorMode mode : EnergyMonitorMode.values()) {
+            maxWidth = Math.max(maxWidth, getTextWidth(formatModeText(mode, wrapWithParentheses)));
+        }
+        return (int) Math.ceil((maxWidth + MODE_BUTTON_PADDING) * 1.5D);
     }
 
     private static int getTextWidth(String text) {
