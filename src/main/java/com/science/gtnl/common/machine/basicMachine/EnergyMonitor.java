@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -82,12 +83,12 @@ public class EnergyMonitor extends MTEBasicTank {
     public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection sideDirection,
         ForgeDirection facingDirection, int colorIndex, boolean active, boolean redstoneLevel) {
         if (sideDirection == facingDirection) {
-            return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[1][1], TextureFactory.builder()
+            return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[1][0], TextureFactory.builder()
                 .addIcon(BlockIcons.OVERLAY_ENERGY_MONITOR)
                 .extFacing()
                 .build() };
         }
-        return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[1][1] };
+        return new ITexture[] { Textures.BlockIcons.MACHINE_CASINGS[1][0] };
     }
 
     @Override
@@ -129,6 +130,18 @@ public class EnergyMonitor extends MTEBasicTank {
 
     @Override
     protected boolean useMui2() {
+        return true;
+    }
+
+    @Override
+    public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
+        if (aBaseMetaTileEntity.isClientSide()) return true;
+        openGui(aPlayer);
+        return true;
+    }
+
+    @Override
+    public boolean isFacingValid(ForgeDirection facing) {
         return true;
     }
 
