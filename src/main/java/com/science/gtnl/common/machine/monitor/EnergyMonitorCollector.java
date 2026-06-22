@@ -84,8 +84,9 @@ public class EnergyMonitorCollector {
             return EnergyMonitorSnapshot.empty();
         }
 
-        UUID leader = WirelessTeam.resolveLeader(monitorOwnerUuid);
-        Set<UUID> teamMembers = WirelessTeam.resolveMembers(monitorOwnerUuid);
+        WirelessTeam.TeamContext teamContext = WirelessTeam.resolveContext(monitorOwnerUuid);
+        UUID leader = teamContext.getLeader();
+        Set<UUID> teamMembers = teamContext.getMembers();
         if (leader == null || teamMembers.isEmpty()) {
             return EnergyMonitorSnapshot.empty();
         }
@@ -184,40 +185,33 @@ public class EnergyMonitorCollector {
 
     public static List<EnergyMonitorRowSnapshot> getVisibleRows(List<EnergyMonitorRowSnapshot> rows,
         EnergyMonitorMode statsMode, int visibleRowCount) {
+        return getVisibleRowsResult(rows, statsMode, visibleRowCount).getRows();
+    }
+
+    public static VisibleRowsResult getVisibleRowsResult(List<EnergyMonitorRowSnapshot> rows,
+        EnergyMonitorMode statsMode, int visibleRowCount) {
         if (rows == null || rows.isEmpty()) {
-            return Collections.emptyList();
+            return new VisibleRowsResult(Collections.emptyList(), false);
         }
         int clampedVisible = Math.max(visibleRowCount, 40);
         List<EnergyMonitorRowSnapshot> visibleRows = new ArrayList<>(clampedVisible);
+        boolean hasMoreRows = false;
         for (EnergyMonitorRowSnapshot row : rows) {
             if (!matchesMode(row, statsMode)) {
                 continue;
             }
-            visibleRows.add(row);
             if (visibleRows.size() >= clampedVisible) {
+                hasMoreRows = true;
                 break;
             }
+            visibleRows.add(row);
         }
-        return visibleRows;
+        return new VisibleRowsResult(visibleRows, hasMoreRows);
     }
 
     public static boolean hasMoreRows(List<EnergyMonitorRowSnapshot> rows, EnergyMonitorMode statsMode,
         int visibleRowCount) {
-        if (rows == null || rows.isEmpty()) {
-            return false;
-        }
-        int clampedVisible = Math.max(visibleRowCount, 40);
-        int matchedRows = 0;
-        for (EnergyMonitorRowSnapshot row : rows) {
-            if (!matchesMode(row, statsMode)) {
-                continue;
-            }
-            matchedRows++;
-            if (matchedRows > clampedVisible) {
-                return true;
-            }
-        }
-        return false;
+        return getVisibleRowsResult(rows, statsMode, visibleRowCount).hasMoreRows();
     }
 
     public static BigInteger calculateStatisticsTotal(List<EnergyMonitorRowSnapshot> rows,
@@ -652,5 +646,24 @@ public class EnergyMonitorCollector {
             case WIRELESS -> row.isWireless();
             case ALL -> true;
         };
+    }
+
+    public static class VisibleRowsResult {
+
+        private final List<EnergyMonitorRowSnapshot> rows;
+        private final boolean hasMoreRows;
+
+        public VisibleRowsResult(List<EnergyMonitorRowSnapshot> rows, boolean hasMoreRows) {
+            this.rows = rows == null ? Collections.emptyList() : rows;
+            this.hasMoreRows = hasMoreRows;
+        }
+
+        public List<EnergyMonitorRowSnapshot> getRows() {
+            return rows;
+        }
+
+        public boolean hasMoreRows() {
+            return hasMoreRows;
+        }
     }
 }

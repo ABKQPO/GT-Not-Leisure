@@ -9,23 +9,42 @@ import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class WirelessTeam {
 
-    public static Set<UUID> resolveMembers(UUID viewerUuid) {
+    public static TeamContext resolveContext(UUID viewerUuid) {
         if (viewerUuid == null) {
-            return Set.of();
+            return new TeamContext(null, Set.of());
         }
         SpaceProjectManager.checkOrCreateTeam(viewerUuid);
         UUID leader = SpaceProjectManager.getLeader(viewerUuid);
         Collection<UUID> members = SpaceProjectManager.getTeamMembers(leader);
         Set<UUID> resolved = new HashSet<>(members);
         resolved.add(leader);
-        return resolved;
+        return new TeamContext(leader, resolved);
+    }
+
+    public static Set<UUID> resolveMembers(UUID viewerUuid) {
+        return resolveContext(viewerUuid).getMembers();
     }
 
     public static UUID resolveLeader(UUID viewerUuid) {
-        if (viewerUuid == null) {
-            return null;
+        return resolveContext(viewerUuid).getLeader();
+    }
+
+    public static class TeamContext {
+
+        private final UUID leader;
+        private final Set<UUID> members;
+
+        public TeamContext(UUID leader, Set<UUID> members) {
+            this.leader = leader;
+            this.members = members == null ? Set.of() : members;
         }
-        SpaceProjectManager.checkOrCreateTeam(viewerUuid);
-        return SpaceProjectManager.getLeader(viewerUuid);
+
+        public UUID getLeader() {
+            return leader;
+        }
+
+        public Set<UUID> getMembers() {
+            return members;
+        }
     }
 }

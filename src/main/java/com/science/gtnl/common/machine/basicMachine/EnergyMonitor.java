@@ -323,8 +323,10 @@ public class EnergyMonitor extends MTEBasicTank {
             return;
         }
         List<EnergyMonitorRowSnapshot> sourceRows = ensureCachedSnapshot().getRows();
-        cachedVisibleRows = EnergyMonitorCollector.getVisibleRows(sourceRows, statisticsMode, visibleRowCount);
-        cachedHasMoreRows = EnergyMonitorCollector.hasMoreRows(sourceRows, statisticsMode, visibleRowCount);
+        EnergyMonitorCollector.VisibleRowsResult visibleRowsResult = EnergyMonitorCollector
+            .getVisibleRowsResult(sourceRows, statisticsMode, visibleRowCount);
+        cachedVisibleRows = visibleRowsResult.getRows();
+        cachedHasMoreRows = visibleRowsResult.hasMoreRows();
         visibleRowsDirty = false;
     }
 
