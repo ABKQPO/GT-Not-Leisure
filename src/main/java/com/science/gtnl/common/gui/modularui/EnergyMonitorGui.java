@@ -372,7 +372,10 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         ParentWidget<?> holder = new ParentWidget<>().height(INLINE_BUTTON_HEIGHT);
         for (EnergyMonitorMode mode : modes) {
             String buttonText = formatModeText(mode, wrapWithParentheses);
-            int buttonWidth = getTextWidth(buttonText);
+            int buttonWidth = Math.max(
+                1,
+                IKey.str(buttonText)
+                    .getDefaultWidth() + 2);
             holder.child(
                 new ButtonWidget<>().background(IDrawable.EMPTY)
                     .size(buttonWidth, INLINE_BUTTON_HEIGHT)
@@ -533,14 +536,14 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     private static int getModeButtonWidth(boolean wrapWithParentheses) {
         int maxWidth = 0;
         for (EnergyMonitorMode mode : EnergyMonitorMode.values()) {
-            maxWidth = Math.max(maxWidth, getTextWidth(formatModeText(mode, wrapWithParentheses)));
+            maxWidth = Math.max(
+                maxWidth,
+                Math.max(
+                    1,
+                    IKey.str(formatModeText(mode, wrapWithParentheses))
+                        .getDefaultWidth() + 2));
         }
         return (int) Math.ceil((maxWidth + MODE_BUTTON_PADDING) * 1.5D);
-    }
-
-    private static int getTextWidth(String text) {
-        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(text);
-        return Math.max(1, plainText.length() * 6 + 2);
     }
 
     public static class MonitoringListWidget extends GTNLListWidget<IWidget, MonitoringListWidget> {

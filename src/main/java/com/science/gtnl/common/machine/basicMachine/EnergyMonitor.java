@@ -34,12 +34,13 @@ public class EnergyMonitor extends MTEBasicTank {
     public static final int DEFAULT_VISIBLE_ROWS = 40;
     public static final int LOAD_MORE_ROWS = 40;
     public static final long REFRESH_INTERVAL_TICKS = 10L;
+    private static final long DIRTY_SNAPSHOT_TICK = -REFRESH_INTERVAL_TICKS;
 
     private UUID monitorOwnerUuid;
     private EnergyMonitorMode totalEnergyMode = EnergyMonitorMode.ALL;
     private EnergyMonitorMode statisticsMode = EnergyMonitorMode.ALL;
     private int visibleRowCount = DEFAULT_VISIBLE_ROWS;
-    private long lastSnapshotTick = Long.MIN_VALUE;
+    private long lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
     private EnergyMonitorSnapshot cachedSnapshot = EnergyMonitorSnapshot.empty();
 
     public EnergyMonitor(int aID, String aName, String aNameRegional, int aTier, ITexture... aTextures) {
@@ -121,7 +122,7 @@ public class EnergyMonitor extends MTEBasicTank {
         IGregTechTileEntity base = getBaseMetaTileEntity();
         monitorOwnerUuid = base == null ? null : base.getOwnerUuid();
         visibleRowCount = DEFAULT_VISIBLE_ROWS;
-        lastSnapshotTick = Long.MIN_VALUE;
+        lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
         cachedSnapshot = EnergyMonitorSnapshot.empty();
         EnergyMonitorRegistry.cleanupInvalidEntries();
         refreshSnapshotIfNeeded();
@@ -249,7 +250,7 @@ public class EnergyMonitor extends MTEBasicTank {
     }
 
     public void markSnapshotDirty() {
-        lastSnapshotTick = Long.MIN_VALUE;
+        lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
     }
 
     private void refreshSnapshotIfNeeded() {
