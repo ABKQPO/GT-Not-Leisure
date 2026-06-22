@@ -3212,7 +3212,22 @@ public class AssemblerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
 
-        loadLamp();
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(18),
+                ItemList.Hull_LV.get(1),
+                ItemList.Cover_Screen.get(1),
+                new ItemStack(Items.ender_pearl, 16),
+                GTModHandler.getModItem(Mods.StructureLib.ID, "item.structurelib.constructableTrigger", 1, 0),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.LV, 4),
+                GTOreDictUnificator.get(OrePrefixes.foil, Materials.Steel, 16))
+            .itemOutputs(GTNLItemList.EnergyMonitor.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
+            .duration(400)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        loadLampRecipes();
         loadWirelessHatch();
         loadLaserHatch();
 
@@ -3222,7 +3237,7 @@ public class AssemblerRecipes implements IRecipePool {
         if (MainConfig.recipe.enableDeleteRecipe) loadDeleteRecipe();
     }
 
-    public void loadLamp() {
+    public void loadLampRecipes() {
         String[] lampTypes = { "Lamp", "LampBorderless", "LampOff", "LampOffBorderless" };
 
         String[] colors = { "Black", "Pink", "Red", "Orange", "Yellow", "Green", "Lime", "Blue", "LightBlue", "Cyan",
