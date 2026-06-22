@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
@@ -17,6 +16,7 @@ import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -359,10 +359,15 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .fullWidth();
     }
 
-    private IWidget createLogo() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
-            .size(LOGO_SIZE)
+    @Override
+    protected IDrawable.DrawableWidget createLogo() {
+        return new IDrawable.DrawableWidget(getLogoTexture()).size(LOGO_SIZE)
             .pos(PANEL_WIDTH - LOGO_SIZE - 2, TERMINAL_Y + TERMINAL_HEIGHT - LOGO_SIZE);
+    }
+
+    @Override
+    protected UITexture getLogoTexture() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     private IWidget createModeButton(IntSyncValue modeSyncer, boolean wrapWithParentheses) {
@@ -394,7 +399,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                     .tooltipShowUpTimer(TOOLTIP_DELAY)
                     .setEnabledIf(widget -> resolveMode(modeSyncer.getIntValue()) == mode));
         }
-        return holder.width(getModeButtonWidth(wrapWithParentheses, EnergyMonitorMode.WIRELESS))
+        return holder.size(getModeButtonWidth(wrapWithParentheses, EnergyMonitorMode.WIRELESS), INLINE_BUTTON_HEIGHT)
             .marginLeft(INLINE_BUTTON_SPACING);
     }
 
@@ -443,7 +448,8 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private static String formatModeText(EnergyMonitorMode mode, boolean wrapWithParentheses) {
         String translatedMode = EnumChatFormatting.YELLOW + translateMode(mode);
-        return wrapWithParentheses ? translatedMode + EnumChatFormatting.YELLOW + ")" : translatedMode;
+        return wrapWithParentheses ? EnumChatFormatting.YELLOW + "(" + translatedMode + EnumChatFormatting.YELLOW + ")"
+            : translatedMode;
     }
 
     private static String buildRowText(EnergyMonitorRowSnapshot row) {
@@ -468,7 +474,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     }
 
     private static String translateMode(EnergyMonitorMode mode) {
-        return "(" + StatCollector.translateToLocal(mode.getTranslationKey());
+        return StatCollector.translateToLocal(mode.getTranslationKey());
     }
 
     private static String translateIfNeeded(String value) {
@@ -533,7 +539,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private static int getTextWidth(String text) {
         String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(text);
-        return Math.max(1, Minecraft.getMinecraft().fontRenderer.getStringWidth(plainText));
+        return Math.max(1, plainText.length() * 6 + 2);
     }
 
     public static class MonitoringListWidget extends GTNLListWidget<IWidget, MonitoringListWidget> {
