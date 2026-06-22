@@ -37,6 +37,28 @@ public class EnergyMonitorFormatter {
         return builder.toString();
     }
 
+    public static String formatCompactBigInteger(BigInteger value) {
+        if (value == null) {
+            return "0";
+        }
+        BigInteger absolute = value.abs();
+        if (absolute.toString()
+            .length() > 12) {
+            String scientific = GTUtility.scientificFormat(absolute);
+            return value.signum() < 0 ? "-" + scientific : scientific;
+        }
+        return formatBigInteger(value);
+    }
+
+    public static String formatPercentage(BigInteger numerator, BigInteger denominator) {
+        if (numerator == null || denominator == null || denominator.signum() <= 0) {
+            return "0.0%";
+        }
+        BigDecimal percentage = new BigDecimal(numerator).multiply(BigDecimal.valueOf(100L))
+            .divide(new BigDecimal(denominator), 1, RoundingMode.HALF_UP);
+        return percentage.toPlainString() + "%";
+    }
+
     public static int getVoltageTier(BigInteger eutMagnitude) {
         if (eutMagnitude == null || eutMagnitude.signum() <= 0) {
             return 0;

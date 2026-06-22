@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,7 +34,6 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshopModule;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.EnergyInfuser;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.KuangBiaoOneGiantNuclearFusionReactor.UEVTier;
-import com.science.gtnl.mixins.late.energymonitor.AccessorMTELapotronicSuperCapacitorEnergyMonitor;
 import com.science.gtnl.mixins.late.energymonitormodule.AccessorETGWEyeOfHarmonyModuleEnergyMonitor;
 import com.science.gtnl.mixins.late.energymonitormodule.AccessorEternalGregTechWorkshopModuleEnergyMonitor;
 import com.science.gtnl.mixins.late.energymonitormodule.AccessorFOGAlloyBlastSmelterModuleEnergyMonitor;
@@ -81,10 +79,7 @@ public class EnergyMonitorCollector {
             row -> row.getHighlightTarget()
                 .getZ());
 
-    private static final Comparator<EnergyMonitorRowSnapshot> ROW_RETENTION_ORDER = ROW_DISPLAY_ORDER.reversed();
-
-    public static EnergyMonitorSnapshot collect(UUID monitorOwnerUuid, EnergyMonitorMode totalMode,
-        EnergyMonitorMode statsMode, int visibleRowCount) {
+    public static EnergyMonitorSnapshot collect(UUID monitorOwnerUuid) {
         if (monitorOwnerUuid == null) {
             return EnergyMonitorSnapshot.empty();
         }
@@ -97,13 +92,7 @@ public class EnergyMonitorCollector {
 
         BigInteger wiredEnergy = BigInteger.ZERO;
         BigInteger wiredCapacity = BigInteger.ZERO;
-        int clampedVisible = Math.max(visibleRowCount, 40);
-        int retainedRowLimit = clampedVisible + 1;
-        PriorityQueue<EnergyMonitorRowSnapshot> visibleRowHeap = new PriorityQueue<>(
-            retainedRowLimit,
-            ROW_RETENTION_ORDER);
-        BigInteger statisticsTotal = BigInteger.ZERO;
-        int matchedRowCount = 0;
+        List<EnergyMonitorRowSnapshot> rows = new ArrayList<>();
 
         for (MetaTileEntity metaTileEntity : EnergyMonitorRegistry.snapshot()) {
             IGregTechTileEntity base = metaTileEntity.getBaseMetaTileEntity();
@@ -117,89 +106,49 @@ public class EnergyMonitorCollector {
             }
 
             World world = base.getWorld();
-            if (world == null || !world.blockExists(base.getXCoord(), base.getYCoord(), base.getZCoord())) {
+            if (world == null || world.isRemote
+                || !world.blockExists(base.getXCoord(), base.getYCoord(), base.getZCoord())) {
                 continue;
             }
 
             if (metaTileEntity instanceof MTELapotronicSuperCapacitor capacitor) {
-                AccessorMTELapotronicSuperCapacitorEnergyMonitor accessor = (AccessorMTELapotronicSuperCapacitorEnergyMonitor) capacitor;
-                wiredEnergy = wiredEnergy.add(accessor.gtnl$getStored());
-                wiredCapacity = wiredCapacity.add(accessor.gtnl$getCapacity());
+                wiredEnergy = wiredEnergy.add(capacitor.getStored());
+                wiredCapacity = wiredCapacity.add(capacitor.getEnergyCapacity());
             }
 
             for (EnergyMonitorRowSnapshot machineRow : createMachineRows(metaTileEntity, base)) {
                 if (machineRow == null) {
                     continue;
                 }
-                matchedRowCount = collectVisibleRow(
-                    machineRow,
-                    statsMode,
-                    visibleRowHeap,
-                    retainedRowLimit,
-                    matchedRowCount);
-                if (matchesMode(machineRow, statsMode)) {
-                    statisticsTotal = statisticsTotal.add(machineRow.getEut());
-                }
+                rows.add(machineRow);
             }
 
             for (EnergyMonitorRowSnapshot coverRow : createCoverRows(metaTileEntity, base)) {
-                matchedRowCount = collectVisibleRow(
-                    coverRow,
-                    statsMode,
-                    visibleRowHeap,
-                    retainedRowLimit,
-                    matchedRowCount);
-                if (matchesMode(coverRow, statsMode)) {
-                    statisticsTotal = statisticsTotal.add(coverRow.getEut());
-                }
+                rows.add(coverRow);
             }
         }
 
         BigInteger wirelessEnergy = WirelessNetworkManager.getUserEU(leader);
-        List<EnergyMonitorRowSnapshot> visibleRows = new ArrayList<>(visibleRowHeap);
-        visibleRows.sort(ROW_DISPLAY_ORDER);
-        boolean moreRows = matchedRowCount > clampedVisible;
-        if (visibleRows.size() > clampedVisible) {
-            visibleRows = new ArrayList<>(visibleRows.subList(0, clampedVisible));
-        }
-
-        EnergyMonitorSummarySnapshot summary = createSummary(
-            totalMode,
-            statisticsTotal,
-            wiredEnergy,
-            wiredCapacity,
-            wirelessEnergy);
-        return new EnergyMonitorSnapshot(summary, visibleRows, moreRows);
+        rows.sort(ROW_DISPLAY_ORDER);
+        return new EnergyMonitorSnapshot(rows, wiredEnergy, wiredCapacity, wirelessEnergy);
     }
 
-    private static int collectVisibleRow(EnergyMonitorRowSnapshot row, EnergyMonitorMode statsMode,
-        PriorityQueue<EnergyMonitorRowSnapshot> visibleRowHeap, int retainedRowLimit, int matchedRowCount) {
-        if (row == null || !matchesMode(row, statsMode)) {
-            return matchedRowCount;
-        }
-        matchedRowCount++;
-        if (visibleRowHeap.size() < retainedRowLimit) {
-            visibleRowHeap.offer(row);
-            return matchedRowCount;
-        }
-        EnergyMonitorRowSnapshot smallestRow = visibleRowHeap.peek();
-        if (smallestRow == null || ROW_DISPLAY_ORDER.compare(row, smallestRow) >= 0) {
-            return matchedRowCount;
-        }
-        visibleRowHeap.poll();
-        visibleRowHeap.offer(row);
-        return matchedRowCount;
-    }
-
-    private static EnergyMonitorSummarySnapshot createSummary(EnergyMonitorMode totalMode, BigInteger statisticsTotal,
-        BigInteger wiredStored, BigInteger wiredCapacity, BigInteger wirelessEnergy) {
+    public static EnergyMonitorSummarySnapshot createSummary(EnergyMonitorSnapshot snapshot,
+        EnergyMonitorMode totalMode, EnergyMonitorMode statsMode) {
         EnergyMonitorSummarySnapshot summary = EnergyMonitorSummarySnapshot.empty();
+        BigInteger wiredStored = snapshot == null ? BigInteger.ZERO : snapshot.getWiredStored();
+        BigInteger wiredCapacity = snapshot == null ? BigInteger.ZERO : snapshot.getWiredCapacity();
+        BigInteger wirelessEnergy = snapshot == null ? BigInteger.ZERO : snapshot.getWirelessStored();
+        BigInteger statisticsTotal = calculateStatisticsTotal(
+            snapshot == null ? Collections.emptyList() : snapshot.getRows(),
+            statsMode);
         BigInteger totalEnergy = switch (totalMode) {
             case WIRED -> wiredStored;
             case WIRELESS -> wirelessEnergy;
             case ALL -> wiredStored.add(wirelessEnergy);
         };
-        summary.setTotalEnergyText(EnergyMonitorFormatter.formatBigInteger(totalEnergy));
+        summary.setTotalEnergyText(
+            formatTotalEnergyText(totalMode, totalEnergy, wiredStored, wiredCapacity, wirelessEnergy));
 
         BigInteger magnitude = statisticsTotal.abs();
         boolean outputMode = statisticsTotal.signum() < 0;
@@ -233,6 +182,73 @@ public class EnergyMonitorCollector {
         return summary;
     }
 
+    public static List<EnergyMonitorRowSnapshot> getVisibleRows(List<EnergyMonitorRowSnapshot> rows,
+        EnergyMonitorMode statsMode, int visibleRowCount) {
+        if (rows == null || rows.isEmpty()) {
+            return Collections.emptyList();
+        }
+        int clampedVisible = Math.max(visibleRowCount, 40);
+        List<EnergyMonitorRowSnapshot> visibleRows = new ArrayList<>(clampedVisible);
+        for (EnergyMonitorRowSnapshot row : rows) {
+            if (!matchesMode(row, statsMode)) {
+                continue;
+            }
+            visibleRows.add(row);
+            if (visibleRows.size() >= clampedVisible) {
+                break;
+            }
+        }
+        return visibleRows;
+    }
+
+    public static boolean hasMoreRows(List<EnergyMonitorRowSnapshot> rows, EnergyMonitorMode statsMode,
+        int visibleRowCount) {
+        if (rows == null || rows.isEmpty()) {
+            return false;
+        }
+        int clampedVisible = Math.max(visibleRowCount, 40);
+        int matchedRows = 0;
+        for (EnergyMonitorRowSnapshot row : rows) {
+            if (!matchesMode(row, statsMode)) {
+                continue;
+            }
+            matchedRows++;
+            if (matchedRows > clampedVisible) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static BigInteger calculateStatisticsTotal(List<EnergyMonitorRowSnapshot> rows,
+        EnergyMonitorMode statsMode) {
+        if (rows == null || rows.isEmpty()) {
+            return BigInteger.ZERO;
+        }
+        BigInteger statisticsTotal = BigInteger.ZERO;
+        for (EnergyMonitorRowSnapshot row : rows) {
+            if (matchesMode(row, statsMode)) {
+                statisticsTotal = statisticsTotal.add(row.getEut());
+            }
+        }
+        return statisticsTotal;
+    }
+
+    private static String formatTotalEnergyText(EnergyMonitorMode totalMode, BigInteger totalEnergy,
+        BigInteger wiredStored, BigInteger wiredCapacity, BigInteger wirelessEnergy) {
+        return switch (totalMode) {
+            case WIRED -> EnergyMonitorFormatter.formatCompactBigInteger(wiredStored) + " / "
+                + EnergyMonitorFormatter.formatCompactBigInteger(wiredCapacity)
+                + " EU ("
+                + EnergyMonitorFormatter.formatPercentage(wiredStored, wiredCapacity)
+                + ")";
+            case WIRELESS -> EnergyMonitorFormatter.formatCompactBigInteger(wirelessEnergy) + " EU";
+            case ALL -> EnergyMonitorFormatter.formatCompactBigInteger(wiredStored) + " + "
+                + EnergyMonitorFormatter.formatCompactBigInteger(wirelessEnergy)
+                + " EU";
+        };
+    }
+
     private static List<EnergyMonitorRowSnapshot> createMachineRows(MetaTileEntity metaTileEntity,
         IGregTechTileEntity base) {
         if (metaTileEntity instanceof MTEBasicMachine basicMachine) {
@@ -242,6 +258,17 @@ public class EnergyMonitorCollector {
                 BigInteger.valueOf(-basicMachine.mEUt),
                 EnergyMonitorCategory.BASIC_MACHINE,
                 false,
+                getMachineDisplayStack(metaTileEntity));
+            return row == null ? Collections.emptyList() : List.of(row);
+        }
+        if (metaTileEntity instanceof MTELapotronicSuperCapacitor capacitor) {
+            BigInteger eut = resolveLapotronicSuperCapacitorEut(base, capacitor);
+            EnergyMonitorRowSnapshot row = buildRow(
+                metaTileEntity,
+                base,
+                eut,
+                EnergyMonitorCategory.MULTIBLOCK,
+                capacitor.isWireless_mode(),
                 getMachineDisplayStack(metaTileEntity));
             return row == null ? Collections.emptyList() : List.of(row);
         }
@@ -313,6 +340,20 @@ public class EnergyMonitorCollector {
         return Collections.emptyList();
     }
 
+    private static BigInteger resolveLapotronicSuperCapacitorEut(IGregTechTileEntity base,
+        MTELapotronicSuperCapacitor capacitor) {
+        if (base == null || !base.isActive()) {
+            return BigInteger.ZERO;
+        }
+        return BigInteger.valueOf(
+            capacitor.getEnergyInputValues()
+                .avgLong())
+            .subtract(
+                BigInteger.valueOf(
+                    capacitor.getEnergyOutputValues()
+                        .avgLong()));
+    }
+
     private static List<EnergyMonitorRowSnapshot> createCoverRows(MetaTileEntity metaTileEntity,
         IGregTechTileEntity base) {
         if (!(base instanceof ICoverable coverable)) {
@@ -354,8 +395,6 @@ public class EnergyMonitorCollector {
         row.setDisplayName(resolveDisplayName(metaTileEntity, iconStack));
         row.setOwnerName(resolveOwnerName(base));
         row.setEut(eut);
-        row.setFormattedEut(EnergyMonitorFormatter.formatBigInteger(eut));
-        row.setVoltageTier(EnergyMonitorFormatter.getVoltageTier(eut.abs()));
         row.setCategory(category);
         row.setWireless(wireless);
         row.setHighlightTarget(

@@ -2,45 +2,39 @@ package com.science.gtnl.common.gui.modularui;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
-import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
-import com.cleanroommc.modularui.api.IPacketWriter;
 import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.utils.Alignment;
-import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
-import com.cleanroommc.modularui.value.sync.DynamicSyncHandler;
-import com.cleanroommc.modularui.value.sync.GenericListSyncHandler;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.StringSyncValue;
-import com.cleanroommc.modularui.widget.EmptyWidget;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.DynamicSyncedWidget;
-import com.cleanroommc.modularui.widgets.ItemDisplayWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
-import com.science.gtnl.common.machine.monitor.EnergyMonitorCategory;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorHighlightTarget;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorMode;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorRowSnapshot;
+import com.science.gtnl.common.machine.monitor.EnergyMonitorSnapshot;
+import com.science.gtnl.common.machine.monitor.EnergyMonitorSummarySnapshot;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.highlighter.BlockPosHighlighter;
@@ -49,22 +43,15 @@ import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
 import gregtech.api.util.GTUtility;
 import gregtech.common.gui.modularui.singleblock.base.MTETieredMachineBlockBaseGui;
+import gregtech.common.gui.modularui.synchandler.NBTSerializableSyncHandler;
 
 public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor> {
 
     private static final String OWNER_SYNC_KEY = "energyMonitorOwner";
     private static final String TOTAL_MODE_SYNC_KEY = "energyMonitorTotalMode";
-    private static final String TOTAL_ENERGY_SYNC_KEY = "energyMonitorTotalEnergy";
     private static final String STATISTICS_MODE_SYNC_KEY = "energyMonitorStatisticsMode";
-    private static final String AVERAGE_EU_SYNC_KEY = "energyMonitorAverageEu";
-    private static final String AMP_SYNC_KEY = "energyMonitorAmp";
-    private static final String VOLTAGE_TIER_SYNC_KEY = "energyMonitorVoltageTier";
-    private static final String OUTPUT_MODE_SYNC_KEY = "energyMonitorOutputMode";
-    private static final String ESTIMATED_TIME_SYNC_KEY = "energyMonitorEstimatedTime";
     private static final String VISIBLE_ROW_COUNT_SYNC_KEY = "energyMonitorVisibleRowCount";
-    private static final String HAS_MORE_ROWS_SYNC_KEY = "energyMonitorHasMoreRows";
-    private static final String ROWS_SYNC_KEY = "energyMonitorRows";
-    private static final String TERMINAL_WIDGET_SYNC_KEY = "energyMonitorTerminalWidget";
+    private static final String SNAPSHOT_SYNC_KEY = "energyMonitorSnapshot";
 
     private static final int PANEL_WIDTH = 222;
     private static final int PANEL_HEIGHT = 205;
@@ -84,9 +71,9 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     private static final int INLINE_BUTTON_HEIGHT = 10;
     private static final int INLINE_BUTTON_SPACING = 2;
     private static final int MODE_BUTTON_PADDING = 8;
+    private static final int ROW_MIN_HEIGHT = 18;
 
-    private int terminalScrollY;
-    private DynamicSyncedWidget<?> terminalWidget;
+    private MonitoringListWidget terminalListWidget;
 
     public EnergyMonitorGui(EnergyMonitor machine) {
         super(machine);
@@ -108,71 +95,57 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     @Override
     protected void registerSyncValues(PanelSyncManager syncManager) {
-        syncManager.syncValue(OWNER_SYNC_KEY, new StringSyncValue(machine::getOwnerNameForGui));
+        syncManager.syncValue(
+            OWNER_SYNC_KEY,
+            new StringSyncValue(machine::getOwnerNameForGui, null, machine::getOwnerNameForGui, null));
         syncManager.syncValue(
             TOTAL_MODE_SYNC_KEY,
             new IntSyncValue(
                 () -> machine.getTotalEnergyMode()
                     .ordinal(),
                 value -> machine.setTotalEnergyMode(resolveMode(value))).allowC2S());
-        syncManager.syncValue(TOTAL_ENERGY_SYNC_KEY, new StringSyncValue(machine::getTotalEnergyTextForGui));
         syncManager.syncValue(
             STATISTICS_MODE_SYNC_KEY,
             new IntSyncValue(
                 () -> machine.getStatisticsMode()
                     .ordinal(),
                 value -> machine.setStatisticsMode(resolveMode(value))).allowC2S());
-        syncManager.syncValue(AVERAGE_EU_SYNC_KEY, new StringSyncValue(machine::getAverageEuTextForGui));
-        syncManager.syncValue(AMP_SYNC_KEY, new StringSyncValue(machine::getAmpTextForGui));
-        syncManager.syncValue(VOLTAGE_TIER_SYNC_KEY, new IntSyncValue(machine::getVoltageTierForGui));
-        syncManager.syncValue(OUTPUT_MODE_SYNC_KEY, new BooleanSyncValue(machine::isOutputModeForGui));
-        syncManager.syncValue(ESTIMATED_TIME_SYNC_KEY, new StringSyncValue(machine::getEstimatedTimeTextForGui));
         syncManager.syncValue(
             VISIBLE_ROW_COUNT_SYNC_KEY,
             new IntSyncValue(machine::getVisibleRowCount, machine::setVisibleRowCount).allowC2S());
-
-        BooleanSyncValue hasMoreRowsSyncer = new BooleanSyncValue(machine::hasMoreRowsForGui);
-        syncManager.syncValue(HAS_MORE_ROWS_SYNC_KEY, hasMoreRowsSyncer);
-
-        GenericListSyncHandler<EnergyMonitorRowSnapshot> rowsSyncer = new GenericListSyncHandler<>(
-            machine::getVisibleRowsForGui,
-            machine::setVisibleRowsFromGui,
-            EnergyMonitorGui::readRowSnapshot,
-            EnergyMonitorGui::writeRowSnapshot,
-            EnergyMonitorGui::areRowsEqual,
-            EnergyMonitorRowSnapshot::copy);
-        syncManager.syncValue(ROWS_SYNC_KEY, rowsSyncer);
-
-        DynamicSyncHandler terminalWidgetSyncer = new DynamicSyncHandler() {
-
-            @Override
-            public void notifyUpdate(IPacketWriter packetWriter) {
-                saveTerminalScroll();
-                super.notifyUpdate(packetWriter);
-            }
-        }.widgetProvider(
-            (panelSyncManager, packet) -> packet == null ? new EmptyWidget() : createTerminalList(panelSyncManager));
-        syncManager.syncValue(TERMINAL_WIDGET_SYNC_KEY, terminalWidgetSyncer);
-
-        if (!syncManager.isClient()) {
-            rowsSyncer.setChangeListener(() -> terminalWidgetSyncer.notifyUpdate(packet -> {}));
-            hasMoreRowsSyncer.setChangeListener(() -> terminalWidgetSyncer.notifyUpdate(packet -> {}));
-        }
+        syncManager.syncValue(
+            SNAPSHOT_SYNC_KEY,
+            new NBTSerializableSyncHandler<>(
+                EnergyMonitorSnapshot::empty,
+                machine::getSnapshotForSync,
+                machine::setSnapshotFromSync).withEqualityFunc((left, right) -> {
+                    if (left == right) {
+                        return true;
+                    }
+                    if (left == null || right == null) {
+                        return false;
+                    }
+                    EnergyMonitorSnapshot leftSnapshot = EnergyMonitorSnapshot.empty();
+                    leftSnapshot.deserializeNBT(left);
+                    EnergyMonitorSnapshot rightSnapshot = EnergyMonitorSnapshot.empty();
+                    rightSnapshot.deserializeNBT(right);
+                    return leftSnapshot.sameAs(rightSnapshot);
+                }));
     }
 
     private IWidget createTerminal(PanelSyncManager syncManager) {
-        DynamicSyncHandler terminalWidgetSyncer = syncManager
-            .findSyncHandler(TERMINAL_WIDGET_SYNC_KEY, DynamicSyncHandler.class);
-        terminalWidget = new DynamicSyncedWidget<>().syncHandler(terminalWidgetSyncer)
-            .initialChild(createTerminalList(syncManager))
-            .pos(TERMINAL_TEXT_X, TERMINAL_TEXT_Y)
-            .size(TERMINAL_TEXT_WIDTH, TERMINAL_TEXT_HEIGHT);
+        terminalListWidget = new MonitoringListWidget(syncManager).pos(TERMINAL_TEXT_X, TERMINAL_TEXT_Y)
+            .size(TERMINAL_TEXT_WIDTH, TERMINAL_TEXT_HEIGHT)
+            .scrollDirection(new VerticalScrollData())
+            .showScrollShadows(false)
+            .crossAxisAlignment(Alignment.CrossAxis.START);
+        terminalListWidget.buildStaticContent();
         return new ParentWidget<>().pos(TERMINAL_X, TERMINAL_Y)
             .size(TERMINAL_WIDTH, TERMINAL_HEIGHT)
             .child(
                 GTGuiTextures.PICTURE_SCREEN_BLACK.asWidget()
                     .size(TERMINAL_WIDTH, TERMINAL_HEIGHT))
-            .child(terminalWidget);
+            .child(terminalListWidget);
     }
 
     private IWidget createPlayerInventory() {
@@ -181,34 +154,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .size(INVENTORY_WIDTH, INVENTORY_HEIGHT)
             .mainAxisAlignment(Alignment.MainAxis.CENTER)
             .child(SlotGroupWidget.playerInventory(false));
-    }
-
-    private IWidget createTerminalList(PanelSyncManager syncManager) {
-        GenericListSyncHandler<EnergyMonitorRowSnapshot> rowsSyncer = getRowsSyncer(syncManager);
-        IntSyncValue visibleRowCountSyncer = syncManager
-            .findSyncHandler(VISIBLE_ROW_COUNT_SYNC_KEY, IntSyncValue.class);
-        BooleanSyncValue hasMoreRowsSyncer = syncManager
-            .findSyncHandler(HAS_MORE_ROWS_SYNC_KEY, BooleanSyncValue.class);
-
-        MonitoringListWidget listWidget = new MonitoringListWidget(
-            terminalScrollY,
-            visibleRowCountSyncer,
-            hasMoreRowsSyncer).size(TERMINAL_TEXT_WIDTH, TERMINAL_TEXT_HEIGHT)
-                .scrollDirection(new VerticalScrollData())
-                .showScrollShadows(false)
-                .crossAxisAlignment(Alignment.CrossAxis.START);
-        terminalScrollY = 0;
-
-        listWidget.child(createOwnerLine(syncManager));
-        listWidget.child(createTotalEnergyLine(syncManager));
-        listWidget.child(createAverageLine(syncManager));
-        listWidget.child(createEstimatedTimeLine(syncManager));
-        listWidget.child(createStatisticsLine(syncManager));
-        for (EnergyMonitorRowSnapshot row : rowsSyncer.getValue()) {
-            listWidget.child(createRowWidget(syncManager, row));
-        }
-        listWidget.childIf(hasMoreRowsSyncer.getBoolValue(), this::createLoadMoreHint);
-        return listWidget;
     }
 
     private IWidget createOwnerLine(PanelSyncManager syncManager) {
@@ -222,36 +167,35 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     }
 
     private IWidget createTotalEnergyLine(PanelSyncManager syncManager) {
-        StringSyncValue totalEnergySyncer = syncManager.findSyncHandler(TOTAL_ENERGY_SYNC_KEY, StringSyncValue.class);
         IntSyncValue totalModeSyncer = syncManager.findSyncHandler(TOTAL_MODE_SYNC_KEY, IntSyncValue.class);
         return Flow.row()
             .width(TERMINAL_TEXT_WIDTH)
-            .height(INLINE_BUTTON_HEIGHT)
-            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-            .child(
-                IKey.dynamic(
-                    () -> buildTranslatedLine(
-                        "gtnl.energy_monitor.total_energy",
-                        EnumChatFormatting.GRAY + totalEnergySyncer.getValue()))
-                    .asWidget()
-                    .textAlign(Alignment.CenterLeft)
-                    .maxWidth(TERMINAL_TEXT_WIDTH - getModeButtonWidth(true) - INLINE_BUTTON_SPACING))
+            .coverChildrenHeight(INLINE_BUTTON_HEIGHT)
+            .wrap()
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .crossAxisChildPadding(1)
+            .child(IKey.dynamic(() -> {
+                EnergyMonitorSummarySnapshot summary = machine.getSummarySnapshot();
+                return buildTranslatedLine(
+                    "gtnl.energy_monitor.total_energy",
+                    EnumChatFormatting.GRAY + summary.getTotalEnergyText());
+            })
+                .asWidget()
+                .textAlign(Alignment.CenterLeft)
+                .maxWidth(TERMINAL_TEXT_WIDTH))
             .child(createModeButton(totalModeSyncer, true));
     }
 
-    private IWidget createAverageLine(PanelSyncManager syncManager) {
-        BooleanSyncValue outputModeSyncer = syncManager.findSyncHandler(OUTPUT_MODE_SYNC_KEY, BooleanSyncValue.class);
-        StringSyncValue averageEuSyncer = syncManager.findSyncHandler(AVERAGE_EU_SYNC_KEY, StringSyncValue.class);
-        StringSyncValue ampSyncer = syncManager.findSyncHandler(AMP_SYNC_KEY, StringSyncValue.class);
-        IntSyncValue voltageTierSyncer = syncManager.findSyncHandler(VOLTAGE_TIER_SYNC_KEY, IntSyncValue.class);
+    private IWidget createAverageLine() {
         return IKey.dynamic(() -> {
-            String key = outputModeSyncer.getBoolValue() ? "gtnl.energy_monitor.average_output"
+            EnergyMonitorSummarySnapshot summary = machine.getSummarySnapshot();
+            String key = summary.isOutputMode() ? "gtnl.energy_monitor.average_output"
                 : "gtnl.energy_monitor.average_input";
-            String tierName = GTUtility.getColoredTierNameFromTier((byte) voltageTierSyncer.getIntValue());
+            String tierName = GTUtility.getColoredTierNameFromTier((byte) summary.getVoltageTier());
             return EnumChatFormatting.WHITE + String.format(
                 StatCollector.translateToLocal(key),
-                EnumChatFormatting.GRAY + averageEuSyncer.getValue() + EnumChatFormatting.WHITE,
-                EnumChatFormatting.GRAY + ampSyncer.getValue() + EnumChatFormatting.WHITE,
+                EnumChatFormatting.GRAY + summary.getAverageEuText() + EnumChatFormatting.WHITE,
+                EnumChatFormatting.GRAY + summary.getAmpText() + EnumChatFormatting.WHITE,
                 tierName + EnumChatFormatting.WHITE);
         })
             .asWidget()
@@ -260,16 +204,14 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .fullWidth();
     }
 
-    private IWidget createEstimatedTimeLine(PanelSyncManager syncManager) {
-        BooleanSyncValue outputModeSyncer = syncManager.findSyncHandler(OUTPUT_MODE_SYNC_KEY, BooleanSyncValue.class);
-        StringSyncValue estimatedTimeSyncer = syncManager
-            .findSyncHandler(ESTIMATED_TIME_SYNC_KEY, StringSyncValue.class);
+    private IWidget createEstimatedTimeLine() {
         return IKey.dynamic(() -> {
-            String key = outputModeSyncer.getBoolValue() ? "gtnl.energy_monitor.estimated_empty"
+            EnergyMonitorSummarySnapshot summary = machine.getSummarySnapshot();
+            String key = summary.isOutputMode() ? "gtnl.energy_monitor.estimated_empty"
                 : "gtnl.energy_monitor.estimated_full";
             return buildTranslatedLine(
                 key,
-                EnumChatFormatting.GRAY + translateIfNeeded(estimatedTimeSyncer.getValue()));
+                EnumChatFormatting.GRAY + translateIfNeeded(summary.getEstimatedTimeText()));
         })
             .asWidget()
             .textAlign(Alignment.CenterLeft)
@@ -281,55 +223,72 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         IntSyncValue statisticsModeSyncer = syncManager.findSyncHandler(STATISTICS_MODE_SYNC_KEY, IntSyncValue.class);
         return Flow.row()
             .width(TERMINAL_TEXT_WIDTH)
-            .height(INLINE_BUTTON_HEIGHT)
-            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+            .coverChildrenHeight(INLINE_BUTTON_HEIGHT)
+            .wrap()
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .crossAxisChildPadding(1)
             .child(
                 IKey.str(StatCollector.translateToLocal("gtnl.energy_monitor.statistics"))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .maxWidth(TERMINAL_TEXT_WIDTH - getModeButtonWidth(false) - INLINE_BUTTON_SPACING))
+                    .maxWidth(TERMINAL_TEXT_WIDTH))
             .child(createModeButton(statisticsModeSyncer, false));
     }
 
     private IWidget createRowWidget(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row) {
-        boolean hasIcon = row.getIconStack() != null;
-        Flow rowWidget = Flow.row()
-            .fullWidth()
-            .height(18)
-            .crossAxisAlignment(Alignment.CrossAxis.CENTER);
-        if (hasIcon) {
-            rowWidget.child(createIconHolder(row.getIconStack()));
-        }
-        return rowWidget.child(createRowText(row, hasIcon))
-            .child(createHighlightButton(syncManager, row));
-    }
-
-    private IWidget createIconHolder(ItemStack iconStack) {
-        ParentWidget<?> holder = new ParentWidget<>().size(16, 16);
-        if (iconStack != null) {
-            holder.child(
-                new ItemDisplayWidget().item(iconStack)
-                    .size(16)
-                    .disableThemeBackground(true)
-                    .disableHoverThemeBackground(true));
-        }
-        return holder;
-    }
-
-    private IWidget createRowText(EnergyMonitorRowSnapshot row, boolean hasIcon) {
-        return IKey.dynamic(() -> buildRowText(row))
-            .asWidget()
-            .textAlign(Alignment.CenterLeft)
-            .marginLeft(2)
-            .maxWidth(hasIcon ? TERMINAL_TEXT_WIDTH - 30 : TERMINAL_TEXT_WIDTH - 14)
+        int highlightButtonWidth = getHighlightButtonWidth();
+        int contentWidth = getRowContentWidth(row, TERMINAL_TEXT_WIDTH);
+        ButtonWidget<?> contentButton = new ButtonWidget<>().background(IDrawable.EMPTY)
+            .disableThemeBackground(true)
+            .disableHoverThemeBackground(true)
+            .disableHoverBackground()
+            .disableHoverOverlay()
+            .width(contentWidth)
+            .coverChildrenHeight(ROW_MIN_HEIGHT)
             .tooltipBuilder(tooltip -> tooltip.addLine(buildRowTooltip(row)))
             .tooltipShowUpTimer(TOOLTIP_DELAY)
-            .fullWidth();
+            .onMousePressed(mouseButton -> {
+                if (!Interactable.hasShiftDown() || mouseButton != 0 && mouseButton != 1) {
+                    return false;
+                }
+                highlightRow(syncManager, row);
+                return true;
+            })
+            .child(createRowContent(row, contentWidth));
+        return Flow.row()
+            .width(TERMINAL_TEXT_WIDTH)
+            .coverChildrenHeight(ROW_MIN_HEIGHT)
+            .wrap()
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .crossAxisChildPadding(1)
+            .child(contentButton)
+            .child(createHighlightButton(syncManager, row, highlightButtonWidth));
     }
 
-    private IWidget createHighlightButton(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row) {
+    private IWidget createRowContent(EnergyMonitorRowSnapshot row, int contentWidth) {
+        ParentWidget<?> content = new ParentWidget<>().size(contentWidth, ROW_MIN_HEIGHT);
+        int textX = 0;
+        ItemStack iconStack = row.getIconStack();
+        if (iconStack != null && iconStack.getItem() != null) {
+            content.child(
+                new ItemDrawable(iconStack.copy()).asWidget()
+                    .size(16, 16)
+                    .pos(0, 1));
+            textX = 18;
+        }
+        content.child(
+            IKey.str(buildRowText(row))
+                .asWidget()
+                .textAlign(Alignment.CenterLeft)
+                .size(Math.max(1, contentWidth - textX), ROW_MIN_HEIGHT)
+                .maxWidth(Math.max(1, contentWidth - textX))
+                .pos(textX, 0));
+        return content;
+    }
+
+    private IWidget createHighlightButton(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row, int buttonWidth) {
         return new ButtonWidget<>().background(IDrawable.EMPTY)
-            .size(16, 10)
+            .size(buttonWidth, INLINE_BUTTON_HEIGHT)
             .disableThemeBackground(true)
             .disableHoverThemeBackground(true)
             .disableHoverBackground()
@@ -337,8 +296,8 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .child(
                 IKey.str(EnumChatFormatting.YELLOW + "[]")
                     .asWidget()
-                    .textAlign(Alignment.Center)
-                    .size(16, 10))
+                    .textAlign(Alignment.CenterLeft)
+                    .size(buttonWidth, INLINE_BUTTON_HEIGHT))
             .onMousePressed(mouseButton -> {
                 if (mouseButton != 0 && mouseButton != 1) {
                     return false;
@@ -372,10 +331,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         ParentWidget<?> holder = new ParentWidget<>().height(INLINE_BUTTON_HEIGHT);
         for (EnergyMonitorMode mode : modes) {
             String buttonText = formatModeText(mode, wrapWithParentheses);
-            int buttonWidth = Math.max(
-                1,
-                IKey.str(buttonText)
-                    .getDefaultWidth() + 2);
+            int buttonWidth = getModeButtonWidth(mode, wrapWithParentheses);
             holder.child(
                 new ButtonWidget<>().background(IDrawable.EMPTY)
                     .size(buttonWidth, INLINE_BUTTON_HEIGHT)
@@ -393,6 +349,9 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                             return false;
                         }
                         cycleMode(modeSyncer, mouseButton);
+                        if (terminalListWidget != null) {
+                            terminalListWidget.rebuildDynamicRows();
+                        }
                         return true;
                     })
                     .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.energy_monitor.mode_hint")))
@@ -412,23 +371,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             row.getDisplayName(),
             PlayerMessages.MachineHighlighted.getUnlocalized(),
             PlayerMessages.MachineInOtherDim.getUnlocalized());
-    }
-
-    private void saveTerminalScroll() {
-        if (terminalWidget == null || !terminalWidget.hasChildren()) {
-            return;
-        }
-        IWidget widget = terminalWidget.getChildren()
-            .get(0);
-        if (widget instanceof MonitoringListWidget listWidget && listWidget.getScrollData()
-            .getScrollSize() != 0) {
-            terminalScrollY = listWidget.getScrollY();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private GenericListSyncHandler<EnergyMonitorRowSnapshot> getRowsSyncer(PanelSyncManager syncManager) {
-        return syncManager.findSyncHandler(ROWS_SYNC_KEY, GenericListSyncHandler.class);
     }
 
     private static void cycleMode(IntSyncValue syncer, int mouseButton) {
@@ -484,86 +426,91 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         return value.startsWith("gtnl.energy_monitor.") ? StatCollector.translateToLocal(value) : value;
     }
 
-    private static void writeRowSnapshot(PacketBuffer buffer, EnergyMonitorRowSnapshot row) throws IOException {
-        buffer.writeBoolean(row.getIconStack() != null);
-        if (row.getIconStack() != null) {
-            buffer.writeItemStackToBuffer(row.getIconStack());
-        }
-        buffer.writeStringToBuffer(row.getDisplayName());
-        buffer.writeStringToBuffer(row.getOwnerName());
-        buffer.writeStringToBuffer(
-            row.getEut()
-                .toString());
-        buffer.writeStringToBuffer(row.getFormattedEut());
-        buffer.writeVarIntToBuffer(row.getVoltageTier());
-        buffer.writeVarIntToBuffer(
-            row.getCategory()
-                .ordinal());
-        buffer.writeBoolean(row.isWireless());
-        buffer.writeInt(
-            row.getHighlightTarget()
-                .getDimensionId());
-        buffer.writeInt(
-            row.getHighlightTarget()
-                .getX());
-        buffer.writeInt(
-            row.getHighlightTarget()
-                .getY());
-        buffer.writeInt(
-            row.getHighlightTarget()
-                .getZ());
-    }
-
-    private static EnergyMonitorRowSnapshot readRowSnapshot(PacketBuffer buffer) throws IOException {
-        EnergyMonitorRowSnapshot row = new EnergyMonitorRowSnapshot();
-        row.setIconStack(buffer.readBoolean() ? buffer.readItemStackFromBuffer() : null);
-        row.setDisplayName(buffer.readStringFromBuffer(32767));
-        row.setOwnerName(buffer.readStringFromBuffer(32767));
-        row.setEut(new BigInteger(buffer.readStringFromBuffer(32767)));
-        row.setFormattedEut(buffer.readStringFromBuffer(32767));
-        row.setVoltageTier(buffer.readVarIntFromBuffer());
-        row.setCategory(EnergyMonitorCategory.values()[buffer.readVarIntFromBuffer()]);
-        row.setWireless(buffer.readBoolean());
-        row.setHighlightTarget(
-            new EnergyMonitorHighlightTarget(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt()));
-        return row;
-    }
-
-    private static boolean areRowsEqual(EnergyMonitorRowSnapshot left, EnergyMonitorRowSnapshot right) {
-        return left == null ? right == null : left.sameAs(right);
-    }
-
     private static int getModeButtonWidth(boolean wrapWithParentheses) {
         int maxWidth = 0;
         for (EnergyMonitorMode mode : EnergyMonitorMode.values()) {
-            maxWidth = Math.max(
-                maxWidth,
-                Math.max(
-                    1,
-                    IKey.str(formatModeText(mode, wrapWithParentheses))
-                        .getDefaultWidth() + 2));
+            maxWidth = Math.max(maxWidth, getModeButtonWidth(mode, wrapWithParentheses));
         }
-        return (int) Math.ceil((maxWidth + MODE_BUTTON_PADDING) * 1.5D);
+        return maxWidth;
     }
 
-    public static class MonitoringListWidget extends GTNLListWidget<IWidget, MonitoringListWidget> {
+    private static int getModeButtonWidth(EnergyMonitorMode mode, boolean wrapWithParentheses) {
+        return Math.max(
+            1,
+            (int) Math.ceil(
+                (IKey.str(formatModeText(mode, wrapWithParentheses))
+                    .getDefaultWidth() + MODE_BUTTON_PADDING) * 1.5D));
+    }
 
-        private final IntSyncValue visibleRowCountSyncer;
-        private final BooleanSyncValue hasMoreRowsSyncer;
+    private static int getHighlightButtonWidth() {
+        return Math.max(
+            1,
+            IKey.str(EnumChatFormatting.YELLOW + "[]")
+                .getDefaultWidth() + 2);
+    }
 
-        public MonitoringListWidget(int initialScrollY, IntSyncValue visibleRowCountSyncer,
-            BooleanSyncValue hasMoreRowsSyncer) {
-            super(initialScrollY);
-            this.visibleRowCountSyncer = visibleRowCountSyncer;
-            this.hasMoreRowsSyncer = hasMoreRowsSyncer;
+    private static int getRowContentWidth(EnergyMonitorRowSnapshot row, int totalWidth) {
+        int textWidth = Math.max(
+            1,
+            IKey.str(buildRowText(row))
+                .getDefaultWidth() + 2);
+        int iconWidth = row.getIconStack() != null && row.getIconStack()
+            .getItem() != null ? 18 : 0;
+        return Math.max(1, Math.min(totalWidth, textWidth + iconWidth));
+    }
+
+    public class MonitoringListWidget extends GTNLListWidget<IWidget, MonitoringListWidget> {
+
+        private final PanelSyncManager syncManager;
+        private final Flow dynamicRows = Flow.column()
+            .width(TERMINAL_TEXT_WIDTH)
+            .coverChildrenHeight(1)
+            .crossAxisAlignment(Alignment.CrossAxis.START);
+        private long lastVisibleRowsRevision = Long.MIN_VALUE;
+
+        public MonitoringListWidget(PanelSyncManager syncManager) {
+            this.syncManager = syncManager;
+        }
+
+        public void buildStaticContent() {
+            child(createOwnerLine(syncManager));
+            child(createTotalEnergyLine(syncManager));
+            child(createAverageLine());
+            child(createEstimatedTimeLine());
+            child(createStatisticsLine(syncManager));
+            child(dynamicRows);
+            rebuildDynamicRows();
+        }
+
+        public void rebuildDynamicRows() {
+            List<EnergyMonitorRowSnapshot> visibleRows = machine.getVisibleRowsForGui();
+            boolean hasMoreRows = machine.hasMoreRowsForGui();
+            dynamicRows.removeAll();
+            for (EnergyMonitorRowSnapshot row : visibleRows) {
+                dynamicRows.child(createRowWidget(syncManager, row));
+            }
+            if (hasMoreRows) {
+                dynamicRows.child(createLoadMoreHint());
+            }
+            dynamicRows.scheduleResize();
+            scheduleResize();
+            lastVisibleRowsRevision = machine.getVisibleRowsRevision();
+        }
+
+        @Override
+        public void onUpdate() {
+            super.onUpdate();
+            if (lastVisibleRowsRevision != machine.getVisibleRowsRevision()) {
+                rebuildDynamicRows();
+            }
         }
 
         @Override
         public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
             boolean handled = super.onMouseScroll(scrollDirection, amount);
-            if (scrollDirection.isDown() && hasMoreRowsSyncer.getBoolValue() && isAtBottom()) {
-                visibleRowCountSyncer
-                    .setIntValue(visibleRowCountSyncer.getIntValue() + EnergyMonitor.LOAD_MORE_ROWS, true, true);
+            if (scrollDirection.isDown() && machine.hasMoreRowsForGui() && isAtBottom()) {
+                machine.loadMoreRows();
+                rebuildDynamicRows();
                 return true;
             }
             return handled;

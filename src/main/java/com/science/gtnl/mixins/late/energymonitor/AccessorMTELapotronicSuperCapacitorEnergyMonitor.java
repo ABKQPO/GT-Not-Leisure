@@ -15,4 +15,13 @@ public interface AccessorMTELapotronicSuperCapacitorEnergyMonitor {
 
     @Accessor("stored")
     BigInteger gtnl$getStored();
+
+    @Accessor("inputLastTick")
+    long gtnl$getInputLastTick();
+
+    @Accessor("outputLastTick")
+    long gtnl$getOutputLastTick();
+
+    @Accessor("wireless_mode")
+    boolean gtnl$isWirelessMode();
 }

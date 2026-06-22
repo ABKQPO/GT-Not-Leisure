@@ -54,6 +54,12 @@ public class EnergyMonitorRegistry {
         if (metaTileEntity == null || metaTileEntity instanceof EnergyMonitor) {
             return false;
         }
+        if (metaTileEntity.getBaseMetaTileEntity() == null || metaTileEntity.getBaseMetaTileEntity()
+            .getWorld() == null
+            || metaTileEntity.getBaseMetaTileEntity()
+                .getWorld().isRemote) {
+            return false;
+        }
         return metaTileEntity instanceof MTEBasicMachine || metaTileEntity instanceof MTEHatch
             || metaTileEntity instanceof MTEMultiBlockBase;
     }

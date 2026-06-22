@@ -9,17 +9,25 @@ import com.science.gtnl.common.machine.monitor.EnergyMonitorRegistry;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.CommonBaseMetaTileEntity;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 
-@Mixin(value = CommonBaseMetaTileEntity.class, remap = false)
-public class MixinCommonMetaTileEntityEnergyMonitor {
+@Mixin(value = BaseMetaTileEntity.class, remap = false)
+public class MixinBaseMetaTileEntityEnergyMonitor {
 
-    @Inject(method = "handleFirstTick", at = @At("TAIL"))
-    private void gtnl$registerEnergyMonitorEntry(boolean isServerSide, CallbackInfo callbackInfo) {
+    @Inject(method = "invalidate", at = @At("HEAD"))
+    private void gtnl$unregisterEnergyMonitorEntry(CallbackInfo callbackInfo) {
         MetaTileEntity metaTileEntity = gtnl$resolveTrackedMetaTileEntity();
         if (metaTileEntity != null) {
-            EnergyMonitorRegistry.register(metaTileEntity);
+            EnergyMonitorRegistry.unregister(metaTileEntity);
+        }
+    }
+
+    @Inject(method = "onUnload", at = @At("HEAD"))
+    private void gtnl$unregisterEnergyMonitorEntryOnUnload(CallbackInfo callbackInfo) {
+        MetaTileEntity metaTileEntity = gtnl$resolveTrackedMetaTileEntity();
+        if (metaTileEntity != null) {
+            EnergyMonitorRegistry.unregister(metaTileEntity);
         }
     }
 

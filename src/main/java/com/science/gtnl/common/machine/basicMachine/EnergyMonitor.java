@@ -1,5 +1,6 @@
 package com.science.gtnl.common.machine.basicMachine;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,12 @@ public class EnergyMonitor extends MTEBasicTank {
     private int visibleRowCount = DEFAULT_VISIBLE_ROWS;
     private long lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
     private EnergyMonitorSnapshot cachedSnapshot = EnergyMonitorSnapshot.empty();
+    private EnergyMonitorSummarySnapshot cachedSummary = EnergyMonitorSummarySnapshot.empty();
+    private List<EnergyMonitorRowSnapshot> cachedVisibleRows = Collections.emptyList();
+    private boolean cachedHasMoreRows;
+    private boolean summaryDirty = true;
+    private boolean visibleRowsDirty = true;
+    private long visibleRowsRevision;
 
     public EnergyMonitor(int aID, String aName, String aNameRegional, int aTier, ITexture... aTextures) {
         super(
@@ -124,6 +131,11 @@ public class EnergyMonitor extends MTEBasicTank {
         visibleRowCount = DEFAULT_VISIBLE_ROWS;
         lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
         cachedSnapshot = EnergyMonitorSnapshot.empty();
+        cachedSummary = EnergyMonitorSummarySnapshot.empty();
+        cachedVisibleRows = Collections.emptyList();
+        cachedHasMoreRows = false;
+        summaryDirty = true;
+        visibleRowsDirty = true;
         EnergyMonitorRegistry.cleanupInvalidEntries();
         refreshSnapshotIfNeeded();
         return new EnergyMonitorGui(this).build(data, syncManager, uiSettings);
@@ -151,11 +163,10 @@ public class EnergyMonitor extends MTEBasicTank {
     }
 
     public void setTotalEnergyMode(EnergyMonitorMode mode) {
-        if (mode == null) {
-            return;
+        if (mode != null && totalEnergyMode != mode) {
+            totalEnergyMode = mode;
+            markSummaryDirty();
         }
-        totalEnergyMode = mode;
-        markSnapshotDirty();
     }
 
     public EnergyMonitorMode getStatisticsMode() {
@@ -170,7 +181,8 @@ public class EnergyMonitor extends MTEBasicTank {
             visibleRowCount = DEFAULT_VISIBLE_ROWS;
         }
         statisticsMode = mode;
-        markSnapshotDirty();
+        markVisibleRowsDirty();
+        markSummaryDirty();
     }
 
     public int getVisibleRowCount() {
@@ -178,8 +190,11 @@ public class EnergyMonitor extends MTEBasicTank {
     }
 
     public void setVisibleRowCount(int count) {
-        visibleRowCount = Math.max(DEFAULT_VISIBLE_ROWS, count);
-        markSnapshotDirty();
+        int clampedCount = Math.max(DEFAULT_VISIBLE_ROWS, count);
+        if (visibleRowCount != clampedCount) {
+            visibleRowCount = clampedCount;
+            markVisibleRowsDirty();
+        }
     }
 
     public String getOwnerNameForGui() {
@@ -195,62 +210,66 @@ public class EnergyMonitor extends MTEBasicTank {
         return ownerUuid == null ? "" : ownerUuid.toString();
     }
 
-    public String getTotalEnergyTextForGui() {
-        return getSummarySnapshot().getTotalEnergyText();
-    }
-
-    public String getAverageEuTextForGui() {
-        return getSummarySnapshot().getAverageEuText();
-    }
-
-    public String getAmpTextForGui() {
-        return getSummarySnapshot().getAmpText();
-    }
-
-    public int getVoltageTierForGui() {
-        return getSummarySnapshot().getVoltageTier();
-    }
-
-    public boolean isOutputModeForGui() {
-        return getSummarySnapshot().isOutputMode();
-    }
-
-    public boolean isEstimatedEmptyForGui() {
-        return getSummarySnapshot().isEstimatedEmpty();
-    }
-
-    public String getEstimatedTimeTextForGui() {
-        return getSummarySnapshot().getEstimatedTimeText();
+    public EnergyMonitorSummarySnapshot getSummarySnapshot() {
+        if (summaryDirty) {
+            cachedSummary = EnergyMonitorCollector
+                .createSummary(ensureCachedSnapshot(), totalEnergyMode, statisticsMode);
+            summaryDirty = false;
+        }
+        return cachedSummary;
     }
 
     public boolean hasMoreRowsForGui() {
-        refreshSnapshotIfNeeded();
-        return cachedSnapshot.hasMoreRows();
+        refreshVisibleRowsIfNeeded();
+        return cachedHasMoreRows;
     }
 
     public List<EnergyMonitorRowSnapshot> getVisibleRowsForGui() {
-        refreshSnapshotIfNeeded();
-        return cachedSnapshot.getRows();
+        refreshVisibleRowsIfNeeded();
+        return cachedVisibleRows;
     }
 
-    public void setVisibleRowsFromGui(List<EnergyMonitorRowSnapshot> rows) {
-        if (rows == null) {
-            return;
-        }
-        cachedSnapshot = new EnergyMonitorSnapshot(getSummarySnapshot(), rows, cachedSnapshot.hasMoreRows());
+    public EnergyMonitorSnapshot getSnapshotForSync() {
+        refreshSnapshotIfNeeded();
+        return ensureCachedSnapshot();
+    }
+
+    public void setSnapshotFromSync(EnergyMonitorSnapshot snapshot) {
+        cachedSnapshot = snapshot == null ? EnergyMonitorSnapshot.empty() : snapshot.copy();
+        markVisibleRowsDirty();
+        markSummaryDirty();
     }
 
     public void loadMoreRows() {
         setVisibleRowCount(visibleRowCount + LOAD_MORE_ROWS);
     }
 
-    public EnergyMonitorSummarySnapshot getSummarySnapshot() {
-        refreshSnapshotIfNeeded();
-        return cachedSnapshot.getSummary();
-    }
-
     public void markSnapshotDirty() {
         lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
+    }
+
+    public UUID getMonitorOwnerUuid() {
+        return monitorOwnerUuid;
+    }
+
+    public List<EnergyMonitorRowSnapshot> getCachedRows() {
+        return cachedSnapshot == null ? Collections.emptyList() : cachedSnapshot.getRows();
+    }
+
+    public BigInteger getCachedWiredStored() {
+        return ensureCachedSnapshot().getWiredStored();
+    }
+
+    public BigInteger getCachedWiredCapacity() {
+        return ensureCachedSnapshot().getWiredCapacity();
+    }
+
+    public BigInteger getCachedWirelessStored() {
+        return ensureCachedSnapshot().getWirelessStored();
+    }
+
+    public long getVisibleRowsRevision() {
+        return visibleRowsRevision;
     }
 
     private void refreshSnapshotIfNeeded() {
@@ -264,6 +283,9 @@ public class EnergyMonitor extends MTEBasicTank {
             cachedSnapshot = EnergyMonitorSnapshot.empty();
             return;
         }
+        if (base.getWorld().isRemote) {
+            return;
+        }
 
         long worldTick = base.getWorld()
             .getTotalWorldTime();
@@ -271,16 +293,58 @@ public class EnergyMonitor extends MTEBasicTank {
             return;
         }
 
-        cachedSnapshot = EnergyMonitorCollector
-            .collect(monitorOwnerUuid, totalEnergyMode, statisticsMode, visibleRowCount);
+        cachedSnapshot = EnergyMonitorCollector.collect(monitorOwnerUuid);
+        markVisibleRowsDirty();
+        markSummaryDirty();
         lastSnapshotTick = worldTick;
     }
 
-    public UUID getMonitorOwnerUuid() {
-        return monitorOwnerUuid;
+    private EnergyMonitorSnapshot ensureCachedSnapshot() {
+        if (cachedSnapshot == null) {
+            cachedSnapshot = EnergyMonitorSnapshot.empty();
+        }
+        if (cachedSnapshot.getRows() == null) {
+            cachedSnapshot.setRows(Collections.emptyList());
+        }
+        if (cachedSnapshot.getWiredStored() == null) {
+            cachedSnapshot.setWiredStored(BigInteger.ZERO);
+        }
+        if (cachedSnapshot.getWiredCapacity() == null) {
+            cachedSnapshot.setWiredCapacity(BigInteger.ZERO);
+        }
+        if (cachedSnapshot.getWirelessStored() == null) {
+            cachedSnapshot.setWirelessStored(BigInteger.ZERO);
+        }
+        return cachedSnapshot;
     }
 
-    public List<EnergyMonitorRowSnapshot> getCachedRows() {
-        return cachedSnapshot == null ? Collections.emptyList() : cachedSnapshot.getRows();
+    private void refreshVisibleRowsIfNeeded() {
+        if (!visibleRowsDirty) {
+            return;
+        }
+        List<EnergyMonitorRowSnapshot> sourceRows = ensureCachedSnapshot().getRows();
+        cachedVisibleRows = EnergyMonitorCollector.getVisibleRows(sourceRows, statisticsMode, visibleRowCount);
+        cachedHasMoreRows = EnergyMonitorCollector.hasMoreRows(sourceRows, statisticsMode, visibleRowCount);
+        visibleRowsDirty = false;
+    }
+
+    private void markSummaryDirty() {
+        summaryDirty = true;
+    }
+
+    private void markVisibleRowsDirty() {
+        visibleRowsDirty = true;
+        visibleRowsRevision++;
+    }
+
+    private static BigInteger parseBigInteger(String value) {
+        if (value == null || value.isEmpty()) {
+            return BigInteger.ZERO;
+        }
+        try {
+            return new BigInteger(value);
+        } catch (NumberFormatException ignored) {
+            return BigInteger.ZERO;
+        }
     }
 }

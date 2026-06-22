@@ -151,6 +151,7 @@ public enum Mixins implements IMixins {
             "Gregtech.MixinProcessingDust",
             "Gregtech.MixinTTMultiblockBase",
             "energymonitor.AccessorMTELapotronicSuperCapacitorEnergyMonitor",
+            "energymonitor.MixinBaseMetaTileEntityEnergyMonitor",
             "energymonitor.MixinCommonMetaTileEntityEnergyMonitor",
             "energymonitormodule.AccessorETGWEyeOfHarmonyModuleEnergyMonitor",
             "energymonitormodule.AccessorEternalGregTechWorkshopModuleEnergyMonitor",

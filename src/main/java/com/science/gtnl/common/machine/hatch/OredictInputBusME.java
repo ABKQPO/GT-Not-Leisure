@@ -160,7 +160,8 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     public void setOreDict(@Nullable String oreDict) {
         this.oreDict = oreDict;
         if (hasFilter()) {
-            for (int i = 0; i < SLOT_COUNT; i++) {
+            int filterSlotCount = Math.min(getConfiguredFilterSlotCount(), mInventory.length);
+            for (int i = 0; i < filterSlotCount; i++) {
                 mInventory[i] = null;
             }
         } else {
@@ -521,11 +522,11 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     }
 
     public int getFilterSlotCountForGui() {
-        return isSuper ? SIDE_SLOT_COUNT : SLOT_COUNT;
+        return getConfiguredFilterSlotCount();
     }
 
     public int getStockSlotOffsetForGui() {
-        return isSuper ? SIDE_SLOT_COUNT : SLOT_COUNT;
+        return getConfiguredFilterSlotCount();
     }
 
     public int getManualSlotStartForGui() {
@@ -534,6 +535,10 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
 
     public ItemStack updateInformationSlotForGui(int index, ItemStack stack) {
         return updateInformationSlot(index, stack);
+    }
+
+    protected int getConfiguredFilterSlotCount() {
+        return isSuper ? SIDE_SLOT_COUNT : SLOT_COUNT;
     }
 
     public Slot[] getSlotsForGui() {
