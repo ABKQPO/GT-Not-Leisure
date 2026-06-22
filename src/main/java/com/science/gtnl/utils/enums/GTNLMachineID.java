@@ -373,7 +373,7 @@ public enum GTNLMachineID {
 
     ENCHANTING(22589),
 
-    // 22590 Unused
+    ENERGY_MONITOR(22590),
 
     VAULT_PORT_HATCH(22591),
 

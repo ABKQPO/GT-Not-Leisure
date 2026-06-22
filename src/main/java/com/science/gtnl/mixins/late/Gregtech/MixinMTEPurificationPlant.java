@@ -40,7 +40,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @Mixin(value = MTEPurificationPlant.class, remap = false)
 public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlockBase<MixinMTEPurificationPlant>
-    implements IWirelessMode {
+    implements IWirelessMode, ICostingEUHolder {
 
     @Getter
     @Setter
@@ -59,6 +59,11 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     public MixinMTEPurificationPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public BigInteger getGtnl$costingEU() {
+        return gtnl$costingEU;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.basicMachine.DebugResearchStation;
 import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
+import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
 import com.science.gtnl.common.machine.basicMachine.GasTurbine;
 import com.science.gtnl.common.machine.basicMachine.LootBagRedemption;
 import com.science.gtnl.common.machine.basicMachine.ManaTank;
@@ -2515,6 +2516,14 @@ public class MachineLoader {
         GTNLItemList.Enchanting.set(
             new Enchanting(GTNLMachineID.ENCHANTING.ID, "Enchanting", StatCollector.translateToLocal("Enchanting"), 7));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Enchanting.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.EnergyMonitor.set(
+            new EnergyMonitor(
+                GTNLMachineID.ENERGY_MONITOR.ID,
+                "EnergyMonitor",
+                StatCollector.translateToLocal("EnergyMonitor"),
+                1));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyMonitor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.OredictInputBusME.set(
             new OredictInputBusME(

@@ -19,10 +19,10 @@ public class BlockIcons {
     public static IIconContainer LASER_BEACON_TOP = Textures.BlockIcons.custom(BASE + "LASER_BEACON_TOP");
 
     public static IIconContainer BEAMLINE_PIPE_MIRROR = Textures.BlockIcons.custom(BASE + "BEAMLINE_PIPE_MIRROR");
-
     public static IIconContainer OVERLAY_FRONT_FULLAUTOMAINTENANCE = Textures.BlockIcons
         .custom("iconsets/OVERLAY_FULLAUTOMAINTENANCE");
     public static IIconContainer OVERLAY_FRONT_DUAL_HATCH = Textures.BlockIcons.custom(BASE + "OVERLAY_DUAL_HATCH");
+    public static IIconContainer OVERLAY_ENERGY_MONITOR = Textures.BlockIcons.custom(BASE + "OVERLAY_ENERGY_MONITOR");
     public static IIconContainer OVERLAY_FRONT_PARALLEL_CONTROLLER = Textures.BlockIcons
         .custom(BASE + "OVERLAY_PARALLEL_CONTROLLER");
     public static IIconContainer OVERLAY_FRONT_ITEMVAULTPORTHATCH = Textures.BlockIcons
