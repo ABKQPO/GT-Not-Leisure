@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Collections;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumChatFormatting;
@@ -34,6 +35,7 @@ import com.cleanroommc.modularui.widgets.DynamicSyncedWidget;
 import com.cleanroommc.modularui.widgets.ItemDisplayWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCategory;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorHighlightTarget;
@@ -64,20 +66,23 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     private static final String ROWS_SYNC_KEY = "energyMonitorRows";
     private static final String TERMINAL_WIDGET_SYNC_KEY = "energyMonitorTerminalWidget";
 
-    private static final int PANEL_WIDTH = 198;
+    private static final int PANEL_WIDTH = 222;
     private static final int PANEL_HEIGHT = 205;
     private static final int TERMINAL_X = 4;
     private static final int TERMINAL_Y = 4;
-    private static final int TERMINAL_WIDTH = 190;
+    private static final int TERMINAL_WIDTH = 198;
     private static final int TERMINAL_HEIGHT = 118;
     private static final int TERMINAL_TEXT_X = 6;
     private static final int TERMINAL_TEXT_Y = 5;
-    private static final int TERMINAL_TEXT_WIDTH = 178;
+    private static final int TERMINAL_TEXT_WIDTH = 186;
     private static final int TERMINAL_TEXT_HEIGHT = 108;
-    private static final int INVENTORY_X = 18;
+    private static final int INVENTORY_X = 30;
     private static final int INVENTORY_Y = 126;
     private static final int INVENTORY_WIDTH = 162;
     private static final int INVENTORY_HEIGHT = 76;
+    private static final int LOGO_SIZE = 18;
+    private static final int INLINE_BUTTON_HEIGHT = 10;
+    private static final int INLINE_BUTTON_SPACING = 2;
 
     private int terminalScrollY;
     private DynamicSyncedWidget<?> terminalWidget;
@@ -96,7 +101,8 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .doesBindPlayerInventory(false)
             .build()
             .child(createTerminal(syncManager))
-            .child(createPlayerInventory());
+            .child(createPlayerInventory())
+            .child(createLogo());
     }
 
     @Override
@@ -194,11 +200,9 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
         listWidget.child(createOwnerLine(syncManager));
         listWidget.child(createTotalEnergyLine(syncManager));
-        listWidget.child(createTotalModeButton(syncManager));
         listWidget.child(createAverageLine(syncManager));
         listWidget.child(createEstimatedTimeLine(syncManager));
-        listWidget.child(createStatisticsHeader());
-        listWidget.child(createStatisticsModeButton(syncManager));
+        listWidget.child(createStatisticsLine(syncManager));
         for (EnergyMonitorRowSnapshot row : rowsSyncer.getValue()) {
             listWidget.child(createRowWidget(syncManager, row));
         }
@@ -218,38 +222,22 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private IWidget createTotalEnergyLine(PanelSyncManager syncManager) {
         StringSyncValue totalEnergySyncer = syncManager.findSyncHandler(TOTAL_ENERGY_SYNC_KEY, StringSyncValue.class);
-        return IKey
-            .dynamic(
-                () -> buildTranslatedLine(
-                    "gtnl.energy_monitor.total_energy",
-                    EnumChatFormatting.GRAY + totalEnergySyncer.getValue()))
-            .asWidget()
-            .textAlign(Alignment.CenterLeft)
-            .maxWidth(TERMINAL_TEXT_WIDTH)
-            .fullWidth();
-    }
-
-    private IWidget createTotalModeButton(PanelSyncManager syncManager) {
         IntSyncValue totalModeSyncer = syncManager.findSyncHandler(TOTAL_MODE_SYNC_KEY, IntSyncValue.class);
-        return new ButtonWidget<>().background(IDrawable.EMPTY)
-            .size(TERMINAL_TEXT_WIDTH, 10)
+        return Flow.row()
+            .width(TERMINAL_TEXT_WIDTH)
+            .height(INLINE_BUTTON_HEIGHT)
+            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
             .child(
                 IKey.dynamic(
-                    () -> EnumChatFormatting.YELLOW + "("
-                        + translateMode(resolveMode(totalModeSyncer.getIntValue()))
-                        + ")")
+                    () -> buildTranslatedLine(
+                        "gtnl.energy_monitor.total_energy",
+                        EnumChatFormatting.GRAY + totalEnergySyncer.getValue()))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .size(TERMINAL_TEXT_WIDTH, 10))
-            .onMousePressed(mouseButton -> {
-                if (mouseButton != 0 && mouseButton != 1) {
-                    return false;
-                }
-                cycleMode(totalModeSyncer, mouseButton);
-                return true;
-            })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.energy_monitor.mode_hint")))
-            .tooltipShowUpTimer(TOOLTIP_DELAY);
+                    .maxWidth(
+                        TERMINAL_TEXT_WIDTH - getModeButtonWidth(true, EnergyMonitorMode.WIRELESS)
+                            - INLINE_BUTTON_SPACING))
+            .child(createModeButton(totalModeSyncer, true));
     }
 
     private IWidget createAverageLine(PanelSyncManager syncManager) {
@@ -290,32 +278,20 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .fullWidth();
     }
 
-    private IWidget createStatisticsHeader() {
-        return IKey.str(StatCollector.translateToLocal("gtnl.energy_monitor.statistics"))
-            .asWidget()
-            .textAlign(Alignment.CenterLeft)
-            .fullWidth();
-    }
-
-    private IWidget createStatisticsModeButton(PanelSyncManager syncManager) {
+    private IWidget createStatisticsLine(PanelSyncManager syncManager) {
         IntSyncValue statisticsModeSyncer = syncManager.findSyncHandler(STATISTICS_MODE_SYNC_KEY, IntSyncValue.class);
-        return new ButtonWidget<>().background(IDrawable.EMPTY)
-            .size(TERMINAL_TEXT_WIDTH, 10)
+        return Flow.row()
+            .width(TERMINAL_TEXT_WIDTH)
+            .height(INLINE_BUTTON_HEIGHT)
+            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
             .child(
-                IKey.dynamic(
-                    () -> EnumChatFormatting.YELLOW + translateMode(resolveMode(statisticsModeSyncer.getIntValue())))
+                IKey.str(StatCollector.translateToLocal("gtnl.energy_monitor.statistics"))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .size(TERMINAL_TEXT_WIDTH, 10))
-            .onMousePressed(mouseButton -> {
-                if (mouseButton != 0 && mouseButton != 1) {
-                    return false;
-                }
-                cycleMode(statisticsModeSyncer, mouseButton);
-                return true;
-            })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.energy_monitor.mode_hint")))
-            .tooltipShowUpTimer(TOOLTIP_DELAY);
+                    .maxWidth(
+                        TERMINAL_TEXT_WIDTH - getModeButtonWidth(false, EnergyMonitorMode.WIRELESS)
+                            - INLINE_BUTTON_SPACING))
+            .child(createModeButton(statisticsModeSyncer, false));
     }
 
     private IWidget createRowWidget(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row) {
@@ -357,6 +333,10 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     private IWidget createHighlightButton(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row) {
         return new ButtonWidget<>().background(IDrawable.EMPTY)
             .size(16, 10)
+            .disableThemeBackground(true)
+            .disableHoverThemeBackground(true)
+            .disableHoverBackground()
+            .disableHoverOverlay()
             .child(
                 IKey.str(EnumChatFormatting.YELLOW + "[]")
                     .asWidget()
@@ -377,6 +357,45 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .textAlign(Alignment.CenterLeft)
             .maxWidth(TERMINAL_TEXT_WIDTH)
             .fullWidth();
+    }
+
+    private IWidget createLogo() {
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
+            .size(LOGO_SIZE)
+            .pos(PANEL_WIDTH - LOGO_SIZE - 2, TERMINAL_Y + TERMINAL_HEIGHT - LOGO_SIZE);
+    }
+
+    private IWidget createModeButton(IntSyncValue modeSyncer, boolean wrapWithParentheses) {
+        EnergyMonitorMode[] modes = EnergyMonitorMode.values();
+        ParentWidget<?> holder = new ParentWidget<>().height(INLINE_BUTTON_HEIGHT);
+        for (EnergyMonitorMode mode : modes) {
+            String buttonText = formatModeText(mode, wrapWithParentheses);
+            int buttonWidth = getTextWidth(buttonText);
+            holder.child(
+                new ButtonWidget<>().background(IDrawable.EMPTY)
+                    .size(buttonWidth, INLINE_BUTTON_HEIGHT)
+                    .disableThemeBackground(true)
+                    .disableHoverThemeBackground(true)
+                    .disableHoverBackground()
+                    .disableHoverOverlay()
+                    .child(
+                        IKey.str(buttonText)
+                            .asWidget()
+                            .textAlign(Alignment.CenterLeft)
+                            .size(buttonWidth, INLINE_BUTTON_HEIGHT))
+                    .onMousePressed(mouseButton -> {
+                        if (mouseButton != 0 && mouseButton != 1) {
+                            return false;
+                        }
+                        cycleMode(modeSyncer, mouseButton);
+                        return true;
+                    })
+                    .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.energy_monitor.mode_hint")))
+                    .tooltipShowUpTimer(TOOLTIP_DELAY)
+                    .setEnabledIf(widget -> resolveMode(modeSyncer.getIntValue()) == mode));
+        }
+        return holder.width(getModeButtonWidth(wrapWithParentheses, EnergyMonitorMode.WIRELESS))
+            .marginLeft(INLINE_BUTTON_SPACING);
     }
 
     private void highlightRow(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row) {
@@ -422,6 +441,11 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         return EnumChatFormatting.WHITE + String.format(StatCollector.translateToLocal(translationKey), valueText);
     }
 
+    private static String formatModeText(EnergyMonitorMode mode, boolean wrapWithParentheses) {
+        String translatedMode = EnumChatFormatting.YELLOW + translateMode(mode);
+        return wrapWithParentheses ? translatedMode + EnumChatFormatting.YELLOW + ")" : translatedMode;
+    }
+
     private static String buildRowText(EnergyMonitorRowSnapshot row) {
         return EnumChatFormatting.WHITE + row.getDisplayName()
             + " "
@@ -444,7 +468,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     }
 
     private static String translateMode(EnergyMonitorMode mode) {
-        return StatCollector.translateToLocal(mode.getTranslationKey());
+        return "(" + StatCollector.translateToLocal(mode.getTranslationKey());
     }
 
     private static String translateIfNeeded(String value) {
@@ -501,6 +525,15 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private static boolean areRowsEqual(EnergyMonitorRowSnapshot left, EnergyMonitorRowSnapshot right) {
         return left == null ? right == null : left.sameAs(right);
+    }
+
+    private static int getModeButtonWidth(boolean wrapWithParentheses, EnergyMonitorMode mode) {
+        return getTextWidth(formatModeText(mode, wrapWithParentheses));
+    }
+
+    private static int getTextWidth(String text) {
+        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(text);
+        return Math.max(1, Minecraft.getMinecraft().fontRenderer.getStringWidth(plainText));
     }
 
     public static class MonitoringListWidget extends GTNLListWidget<IWidget, MonitoringListWidget> {
