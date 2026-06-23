@@ -153,6 +153,7 @@ import com.science.gtnl.common.machine.multiblock.steam.LargeSteamMixer;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamOreWasher;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamSifter;
 import com.science.gtnl.common.machine.multiblock.steam.LargeSteamThermalCentrifuge;
+import com.science.gtnl.common.machine.multiblock.steam.LargeSteamWiremill;
 import com.science.gtnl.common.machine.multiblock.steam.MegaSolarBoiler;
 import com.science.gtnl.common.machine.multiblock.steam.MegaSteamCompressor;
 import com.science.gtnl.common.machine.multiblock.steam.PrimitiveBrickKiln;
@@ -1784,6 +1785,13 @@ public class MachineLoader {
                 "LargeSteamBending",
                 StatCollector.translateToLocal("NameLargeSteamBending")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamBending.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.LargeSteamWiremill.set(
+            new LargeSteamWiremill(
+                GTNLMachineID.LARGE_STEAM_WIREMILL.ID,
+                "LargeSteamWiremill",
+                StatCollector.translateToLocal("NameLargeSteamWiremill")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamWiremill.get(1), AnimatedText.SNL_QYZG);
 
         GTNLItemList.ChemicalComplex.set(
             new ChemicalComplex(

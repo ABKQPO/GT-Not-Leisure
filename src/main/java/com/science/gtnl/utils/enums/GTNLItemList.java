@@ -477,6 +477,7 @@ public enum GTNLItemList implements IItemContainer {
     LargeBoilerTitanium,
     LargeBoilerTungstenSteel,
     LargeSteamMixer,
+    LargeSteamWiremill,
     ElectricBlastFurnace,
 
     EternalGregTechWorkshop,
