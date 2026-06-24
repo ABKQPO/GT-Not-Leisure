@@ -2,7 +2,6 @@ package com.science.gtnl.common.gui.modularui;
 
 import static gregtech.api.util.GTUtility.translate;
 
-import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -17,9 +16,7 @@ import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.drawable.UITexture;
-import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
-import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
@@ -31,21 +28,18 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
-import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.OredictInputBusME;
 
-import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import gregtech.api.modularui2.GTGuiTextures;
-import gregtech.api.modularui2.GTGuis;
-import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTDataUtils;
 import gregtech.api.util.GTUtility;
 import gregtech.common.gui.modularui.hatch.MTEHatchInputBusMEGui;
@@ -85,29 +79,13 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
     }
 
     @Override
-    public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        if (!oredictHatch.isSuper) {
-            return super.build(guiData, syncManager, uiSettings);
-        }
-        registerSyncValues(syncManager);
+    protected int getBasePanelWidth() {
+        return oredictHatch.isSuper ? 392 : super.getBasePanelWidth();
+    }
 
-        ModularPanel panel = GTGuis.mteTemplatePanelBuilder(machine, guiData, syncManager, uiSettings)
-            .setWidth(machine.getGUIWidth())
-            .setHeight(getBasePanelHeight())
-            .doesAddGregTechLogo(false)
-            .build();
-
-        panel.child(createFilterGrid(syncManager))
-            .child(createStockGrid(syncManager))
-            .child(
-                GTGuiTextures.PICTURE_ARROW_DOUBLE.asWidget()
-                    .size(12)
-                    .pos(190, 30))
-            .child(createAutoPullButton(panel, syncManager))
-            .child(createManualSlotButton(panel, syncManager))
-            .child(createStatusText(syncManager))
-            .child(createLogo());
-        return panel;
+    @Override
+    protected int getBasePanelHeight() {
+        return oredictHatch.isSuper ? 179 : super.getBasePanelHeight();
     }
 
     @Override
@@ -136,7 +114,12 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
     @Override
     protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {
         if (oredictHatch.isSuper) {
-            return super.createContentSection(panel, syncManager);
+            Flow mainRow = Flow.row()
+                .coverChildren();
+            mainRow.child(createFilterGrid(syncManager));
+            mainRow.child(createMiddleColumn(syncManager, panel));
+            mainRow.child(createStockGrid(syncManager));
+            return getEmptyContent().child(mainRow);
         }
 
         BooleanSyncValue autoPullSyncer = syncManager.findSyncHandler(AUTO_PULL_SYNC_KEY, BooleanSyncValue.class);
@@ -145,12 +128,25 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
         mainRow.child(createLegacyFilterGrid(syncManager, autoPullSyncer));
         mainRow.child(createLegacyMiddleColumn(syncManager, panel, autoPullSyncer));
         mainRow.child(createLegacyStockGrid(syncManager));
-        return super.createContentSection(panel, syncManager).child(mainRow);
+        return getEmptyContent().child(mainRow);
+    }
+
+    protected Flow createMiddleColumn(PanelSyncManager syncManager, ModularPanel panel) {
+        return Flow.column()
+            .coverChildren()
+            .childPadding(3)
+            .mainAxisAlignment(Alignment.MainAxis.CENTER)
+            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+            .child(createAutoPullButton(panel, syncManager))
+            .child(
+                GTGuiTextures.PICTURE_ARROW_DOUBLE.asWidget()
+                    .size(12))
+            .child(createManualSlotButton(panel, syncManager));
     }
 
     protected Grid createFilterGrid(PanelSyncManager syncManager) {
         BooleanSyncValue autoPullSyncer = syncManager.findSyncHandler(AUTO_PULL_SYNC_KEY, BooleanSyncValue.class);
-        return createGridShell(FILTER_GRID_X).child(
+        return createGridShell().child(
             new ItemSlotGridBuilder(machine.inventoryHandler, syncManager).size(SLOT_COLUMNS, getSlotRows())
                 .slotGroupKey(FILTER_INV_NAME)
                 .filter(stack -> !autoPullSyncer.getBoolValue() && !oredictHatch.containsFilterStackForGui(stack))
@@ -175,12 +171,29 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
     }
 
     protected Grid createStockGrid(PanelSyncManager syncManager) {
-        return createGridShell(STOCK_GRID_X).child(
+        return createGridShell().child(
             new ItemSlotGridBuilder(machine.inventoryHandler, syncManager).size(SLOT_COLUMNS, getSlotRows())
                 .slotGroupKey(STOCK_INV_NAME)
                 .indexOffset(oredictHatch.getStockSlotOffsetForGui())
                 .accessibility(false, false)
-                .itemSlotSupplier(() -> new ItemSlot().background(GTGuiTextures.SLOT_ITEM_DARK))
+                .itemSlotSupplier(() -> new PhantomItemSlot() {
+
+                    @Override
+                    public @NotNull Result onMousePressed(int mouseButton) {
+                        return Result.IGNORE;
+                    }
+
+                    @Override
+                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean handleDragAndDrop(@NotNull ItemStack draggedStack, int button) {
+                        return false;
+                    }
+                }.backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK))
+                .modularSlotSupplier((handler, index) -> new ModularSlot(handler, index))
                 .build());
     }
 
@@ -193,13 +206,12 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .build();
     }
 
-    protected Grid createGridShell(int x) {
+    protected Grid createGridShell() {
         return new Grid().scrollable(new VerticalScrollData())
             .showScrollShadows(false)
             .minColWidth(SLOT_SIZE)
             .minRowHeight(SLOT_SIZE)
-            .size(SLOT_SIZE * SLOT_COLUMNS + 4, SLOT_SIZE * VISIBLE_SLOT_ROWS)
-            .pos(x, FILTER_GRID_Y);
+            .size(SLOT_SIZE * SLOT_COLUMNS + 4, SLOT_SIZE * VISIBLE_SLOT_ROWS);
     }
 
     protected int getSlotRows() {
@@ -294,7 +306,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             }
         }.value(autoPullSyncer)
             .size(16, 16)
-            .pos(188, 10)
             .background(true, GTGuiTextures.BUTTON_STANDARD_PRESSED)
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
@@ -310,7 +321,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE)
             .size(16, 16)
-            .pos(188, 46)
             .onMousePressed(mouseButton -> {
                 if (manualPanel.isPanelOpen()) {
                     manualPanel.closePanel();
@@ -425,27 +435,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                     .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
-    protected TextWidget<?> createStatusText(PanelSyncManager syncManager) {
-        BooleanSyncValue activeSyncer = syncManager.findSyncHandler(ACTIVE_SYNC_KEY, BooleanSyncValue.class);
-        BooleanSyncValue poweredSyncer = syncManager.findSyncHandler(POWERED_SYNC_KEY, BooleanSyncValue.class);
-        BooleanSyncValue bootingSyncer = syncManager.findSyncHandler(BOOTING_SYNC_KEY, BooleanSyncValue.class);
-
-        return IKey.dynamic(() -> {
-            boolean active = activeSyncer.getBoolValue();
-            boolean powered = poweredSyncer.getBoolValue();
-            String state = WailaText.getPowerState(active, powered, bootingSyncer.getBoolValue());
-            if (active && powered) {
-                return MessageFormat.format("{0}{1}§f", EnumChatFormatting.GREEN, state);
-            }
-            return EnumChatFormatting.DARK_RED + state;
-        })
-            .asWidget()
-            .pos(131, 84)
-            .size(130, 9)
-            .textAlign(Alignment.Center)
-            .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
-    }
-
     protected IItemHandlerModifiable createConfigItemHandler() {
         return new IItemHandlerModifiable() {
 
@@ -503,10 +492,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
 
     @Override
     protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
-            .pos(
-                STOCK_GRID_X + SLOT_SIZE * SLOT_COLUMNS + 4 - SLOT_SIZE,
-                FILTER_GRID_Y + SLOT_SIZE * VISIBLE_SLOT_ROWS + 2);
+        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
     }
 
     @Override

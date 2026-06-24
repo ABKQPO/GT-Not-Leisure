@@ -33,6 +33,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.SuperInputBusME;
@@ -151,7 +152,24 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                 .slotGroupKey(STOCK_INV_NAME)
                 .indexOffset(machine.getStockSlotOffsetForGui())
                 .accessibility(false, false)
-                .itemSlotSupplier(() -> new ItemSlot().background(GTGuiTextures.SLOT_ITEM_DARK))
+                .itemSlotSupplier(() -> new PhantomItemSlot() {
+
+                    @Override
+                    public @NotNull Result onMousePressed(int mouseButton) {
+                        return Result.IGNORE;
+                    }
+
+                    @Override
+                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean handleDragAndDrop(@NotNull ItemStack draggedStack, int button) {
+                        return false;
+                    }
+                }.backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK))
+                .modularSlotSupplier((handler, index) -> new ModularSlot(handler, index))
                 .build());
     }
 

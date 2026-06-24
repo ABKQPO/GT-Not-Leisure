@@ -600,7 +600,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
         }
         if (autoPullItemList) {
             refreshItemList();
-            return;
         }
         updateAllInformationSlots();
     }

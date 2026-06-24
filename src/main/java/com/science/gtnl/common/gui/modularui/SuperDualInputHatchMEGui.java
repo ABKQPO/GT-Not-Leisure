@@ -50,6 +50,7 @@ import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.FluidSlot;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.SuperDualInputHatchME;
@@ -161,6 +162,8 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             new LongArraySyncValue(
                 machine::getInformationFluidAmountsForGui,
                 machine::setInformationFluidAmountsForGui));
+        syncManager.registerSlotGroup(ITEM_STOCK_INV_NAME, getSlotRows());
+        syncManager.registerSlotGroup(FLUID_STOCK_INV_NAME, getSlotRows());
     }
 
     public PagedWidget<?> createPages(ModularPanel panel, PanelSyncManager syncManager,
@@ -248,7 +251,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
     public Grid createItemStockGrid() {
         return createGridShell(STOCK_GRID_X).child(
             new Grid().coverChildren()
-                .gridOfWidthHeight(SLOT_COLUMNS, getSlotRows(), (x, y, index) -> new ItemSlot() {
+                .gridOfWidthHeight(SLOT_COLUMNS, getSlotRows(), (x, y, index) -> new PhantomItemSlot() {
 
                     @Override
                     public void buildTooltip(ItemStack stack, RichTooltip tooltip) {
@@ -271,7 +274,22 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                             format,
                             getArea());
                     }
-                }.background(GTGuiTextures.SLOT_ITEM_DARK)
+
+                    @Override
+                    public @NotNull Result onMousePressed(int mouseButton) {
+                        return Result.IGNORE;
+                    }
+
+                    @Override
+                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean handleDragAndDrop(@NotNull ItemStack draggedStack, int button) {
+                        return false;
+                    }
+                }.backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK)
                     .slot(
                         new ModularSlot(machine.getMui2InformationItemHandler(), index).accessibility(false, false)
                             .slotGroup(ITEM_STOCK_INV_NAME))));
