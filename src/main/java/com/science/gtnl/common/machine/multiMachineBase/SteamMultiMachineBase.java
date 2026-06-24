@@ -566,13 +566,11 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         }
 
         if (aMetaTileEntity instanceof WirelessSteamEnergyHatch) {
-            ScienceNotLeisure.LOG.warn("Adding Steam Wireless Input Hatch");
             aDidAdd = addToMachineListInternal(
                 mSteamWirelessInputFluids,
                 (WirelessSteamEnergyHatch) aMetaTileEntity,
                 aBaseCasingIndex);
         } else if (aMetaTileEntity instanceof CustomFluidHatch) {
-            ScienceNotLeisure.LOG.warn("Adding Steam Big Input Hatch");
             aDidAdd = addToMachineListInternal(
                 mSteamBigInputFluids,
                 (CustomFluidHatch) aMetaTileEntity,

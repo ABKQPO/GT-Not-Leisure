@@ -52,6 +52,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     public boolean isEnable;
+    private final List<ItemStack> capturedHarvestDrops = new ArrayList<>();
+    private int harvestingX;
+    private int harvestingY;
+    private int harvestingZ;
 
     public VeinMiningPickaxe() {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
@@ -367,17 +371,40 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         float hardness = blk.getBlockHardness(world, x, y, z);
         if (hardness < 0) return drops;
 
-        if (player.theItemInWorldManager.tryHarvestBlock(x, y, z)) {
-            if (silk) {
-                Item item = Item.getItemFromBlock(blk);
-                if (item != null) {
-                    drops.add(new ItemStack(item, 1, blk.damageDropped(meta)));
-                }
-            } else {
-                drops.addAll(blk.getDrops(world, x, y, z, meta, fortune));
+        beginDropCapture(x, y, z);
+        try {
+            if (player.theItemInWorldManager.tryHarvestBlock(x, y, z)) {
+                drops.addAll(capturedHarvestDrops);
             }
+        } finally {
+            endDropCapture();
         }
         return drops;
+    }
+
+    private void beginDropCapture(int x, int y, int z) {
+        capturedHarvestDrops.clear();
+        harvestingX = x;
+        harvestingY = y;
+        harvestingZ = z;
+    }
+
+    private void endDropCapture() {
+        capturedHarvestDrops.clear();
+    }
+
+    private List<ItemStack> copyDrops(List<ItemStack> drops) {
+        List<ItemStack> copiedDrops = new ArrayList<>();
+        for (ItemStack drop : drops) {
+            if (drop != null && drop.stackSize > 0) {
+                copiedDrops.add(drop.copy());
+            }
+        }
+        return copiedDrops;
+    }
+
+    private void captureDrops(List<ItemStack> drops) {
+        capturedHarvestDrops.addAll(copyDrops(drops));
     }
 
     @SubscribeEvent
@@ -387,8 +414,15 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         if (!(heldItem.getItem() instanceof VeinMiningPickaxe veinMiningPickaxe)) return;
         EntityPlayer harvester = event.harvester;
         if (harvester instanceof EntityPlayerMP && veinMiningPickaxe.isEnable) {
+            if (veinMiningPickaxe.isCapturingDropAt(event.x, event.y, event.z)) {
+                veinMiningPickaxe.captureDrops(event.drops);
+            }
             event.drops.clear();
         }
+    }
+
+    private boolean isCapturingDropAt(int x, int y, int z) {
+        return harvestingX == x && harvestingY == y && harvestingZ == z;
     }
 
     @Desugar
