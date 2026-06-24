@@ -68,6 +68,16 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
     public static final int FILTER_GRID_X = 7;
     public static final int FILTER_GRID_Y = 9;
     public static final int STOCK_GRID_X = 205;
+    public static final int AUTO_PULL_BUTTON_X = 188;
+    public static final int AUTO_PULL_BUTTON_Y = 10;
+    public static final int ARROW_X = 190;
+    public static final int ARROW_Y = 30;
+    public static final int MANUAL_SLOT_BUTTON_X = 188;
+    public static final int MANUAL_SLOT_BUTTON_Y = 46;
+    public static final int STATUS_TEXT_X = 131;
+    public static final int STATUS_TEXT_Y = 84;
+    public static final int LOGO_X = 367;
+    public static final int LOGO_Y = 81;
 
     public SuperInputBusMEGui(SuperInputBusME hatch) {
         super(hatch);
@@ -88,7 +98,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .child(
                 GTGuiTextures.PICTURE_ARROW_DOUBLE.asWidget()
                     .size(12)
-                    .pos(190, 30))
+                    .pos(ARROW_X, ARROW_Y))
             .child(createAutoPullButton(panel, syncManager))
             .child(createManualSlotButton(panel, syncManager))
             .child(createStatusText(syncManager))
@@ -211,7 +221,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             }
         }.value(autoPullSyncer)
             .size(16, 16)
-            .pos(188, 10)
+            .pos(AUTO_PULL_BUTTON_X, AUTO_PULL_BUTTON_Y)
             .background(true, GTGuiTextures.BUTTON_STANDARD_PRESSED)
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
@@ -228,7 +238,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE)
             .size(16, 16)
-            .pos(188, 46)
+            .pos(MANUAL_SLOT_BUTTON_X, MANUAL_SLOT_BUTTON_Y)
             .onMousePressed(mouseButton -> {
                 manualPanel.togglePanel();
                 return true;
@@ -374,7 +384,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             return EnumChatFormatting.DARK_RED + state;
         })
             .asWidget()
-            .pos(131, 84)
+            .pos(STATUS_TEXT_X, STATUS_TEXT_Y)
             .size(130, 9)
             .textAlign(Alignment.Center)
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
@@ -383,7 +393,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
     @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
-            .pos(367, 85);
+            .pos(LOGO_X, LOGO_Y);
     }
 
     @Override
