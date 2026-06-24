@@ -141,7 +141,8 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .child(
                 GTGuiTextures.PICTURE_ARROW_DOUBLE.asWidget()
                     .size(12))
-            .child(createManualSlotButton(panel, syncManager));
+            .child(createManualSlotButton(panel, syncManager))
+            .child(createCircuitSlot(syncManager));
     }
 
     protected Grid createFilterGrid(PanelSyncManager syncManager) {
