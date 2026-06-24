@@ -28,6 +28,8 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.interfaces.item.IPickBlockHandler;
+import gregtech.crossmod.backhand.Backhand;
 
 @SideOnly(Side.CLIENT)
 public class ClientUtils {
@@ -45,6 +47,9 @@ public class ClientUtils {
     }
 
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
+        if (tryHandlePickBlockHandler(playerMP)) {
+            return true;
+        }
         boolean isCtrlKeyDown = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
         double reachDistance = 1000;
         boolean handled = onPickEntity(playerMP, reachDistance, useAE);
@@ -57,6 +62,18 @@ public class ClientUtils {
             }
         }
         return false;
+    }
+
+    private static boolean tryHandlePickBlockHandler(EntityPlayer player) {
+        ItemStack mainHand = player.getCurrentEquippedItem();
+        if (mainHand != null && mainHand.getItem() instanceof IPickBlockHandler handler
+            && handler.onPickBlock(mainHand, player)) {
+            return true;
+        }
+
+        ItemStack offHand = Backhand.getOffhandItem(player);
+        return offHand != null && offHand.getItem() instanceof IPickBlockHandler handler
+            && handler.onPickBlock(offHand, player);
     }
 
     public static boolean onPickEntity(EntityPlayer player, double range, boolean useAE) {

@@ -3165,6 +3165,13 @@ Tooltip_LargeSteamChemicalBath_01=Consumes only 80% of the normal steam requirem
 Tooltip_LargeSteamChemicalBath_02=Can process up to 16 items at once.
 Tooltip_LargeSteamChemicalBath_Casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
+NameLargeSteamWiremill=Large Steam Wiremill
+LargeSteamWiremillRecipeType=Wiremill
+Tooltip_LargeSteamWiremill_00=11% faster than a single-block wiremill of the same tier
+Tooltip_LargeSteamWiremill_01=Consumes only 85% of the normal steam requirement.
+Tooltip_LargeSteamWiremill_02=Can process up to 4 items at once.
+Tooltip_LargeSteamWiremill_Casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
+
 NamePrimitiveDistillationTower=Primitive Distillation Tower
 PrimitiveDistillationTowerRecipeType=Distillation Tower
 Tooltip_PrimitiveDistillationTower_00=Can only output 6 types of fluids!

@@ -60,11 +60,10 @@ dependencies {
 
     compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.7.15:dev") { transitive = false }
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
+    compileOnlyApi(rfg.deobf("curse.maven:extra-utilities-225561:2264383")) { transitive = false }
 
     compileOnlyApi("com.github.GTNewHorizons:BetterQuesting:3.8.70-GTNH:dev") { transitive = false }
     compileOnlyApi("com.github.ABKQPO:BetterQuestingAPI:1.1.0:dev") { transitive = false }
-
-    compileOnlyApi files("libs/extrautilities-1.2.12.jar")
 }
 
 configurations.configureEach {
