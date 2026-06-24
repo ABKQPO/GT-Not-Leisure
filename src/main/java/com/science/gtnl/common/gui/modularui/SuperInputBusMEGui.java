@@ -383,7 +383,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
     @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
-            .pos(367, 81);
+            .pos(367, 85);
     }
 
     @Override

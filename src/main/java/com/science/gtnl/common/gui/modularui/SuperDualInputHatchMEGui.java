@@ -26,9 +26,12 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.MouseData;
+import com.cleanroommc.modularui.utils.NumberFormat;
 import com.cleanroommc.modularui.utils.fluid.FluidInteractions;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.FluidSlotSyncHandler;
@@ -52,6 +55,7 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.SuperDualInputHatchME;
 
@@ -102,7 +106,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
     public static final int CENTER_ARROW_X = 190;
     public static final int CENTER_ARROW_Y = 21;
     public static final int CONFIG_FIELD_WIDTH = 84;
-    public static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("#,###");
     public static final DecimalFormat DOUBLE_FORMAT = new DecimalFormat("#,###.00");
 
     public SuperDualInputHatchMEGui(SuperDualInputHatchME hatch) {
@@ -258,7 +261,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                         super.buildTooltip(stack, tooltip);
                         long amount = machine.getInformationItemAmountForGui(index);
                         if (amount >= 1000) {
-                            tooltip.addLine(IKey.lang("modularui.amount", NUMBER_FORMAT.format(amount)));
+                            tooltip.addLine(IKey.lang("modularui2.amount", NumberFormatUtil.formatNumber(amount)));
                         }
                         if (amount > Integer.MAX_VALUE) {
                             tooltip.addLine(IKey.lang("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
@@ -269,10 +272,20 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
 
                     @Override
                     protected void drawSlotAmountText(int amount, String format) {
-                        GuiDraw.drawStandardSlotAmountText(
-                            machine.getInformationItemAmountForGui(index),
-                            format,
-                            getArea());
+                        long stacksize = machine.getInformationItemAmountForGui(index);
+                        String s = NumberFormat.format(stacksize, NumberFormat.AMOUNT_TEXT);
+                        // mc doesn't consider the 1px border in item slots for amount text, but it looks weird when it
+                        // touches the left border, so
+                        // we only apply padding there
+                        if (amount > 1) {
+                            GuiDraw.drawScaledAlignedTextInBox(
+                                s,
+                                1,
+                                0,
+                                getArea().width - 1,
+                                getArea().height,
+                                Alignment.BottomRight);
+                        }
                     }
 
                     @Override
@@ -385,7 +398,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                             tooltip.addLine(
                                 IKey.lang(
                                     "modularui2.fluid.phantom.amount",
-                                    NUMBER_FORMAT.format(amount),
+                                    NumberFormatUtil.formatNumber(amount),
                                     getBaseUnit()));
                             if (amount > Integer.MAX_VALUE) {
                                 tooltip.addLine(IKey.lang("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
@@ -412,12 +425,24 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     }
 
                     @Override
-                    public void drawOverlay(com.cleanroommc.modularui.screen.viewport.ModularGuiContext context,
-                        com.cleanroommc.modularui.theme.WidgetThemeEntry<?> widgetTheme) {
+                    public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
                         super.drawOverlay(context, widgetTheme);
                         long amount = machine.getInformationFluidAmountForGui(index);
+                        String s = NumberFormat.format(getBaseUnitAmount(amount), NumberFormat.AMOUNT_TEXT)
+                            + getBaseUnit();
+                        // mc doesn't consider the 1px border in item slots for amount text, but it looks weird when it
+                        // touches the left border, so
+                        // we only apply padding there
                         if (amount > 1) {
-                            GuiDraw.drawStandardSlotAmountText(amount, null, getArea());
+                            GuiDraw.drawScaledAlignedTextInBox(
+                                s,
+                                this.getContentPadding()
+                                    .getLeft(),
+                                0,
+                                getArea().width - this.getContentPadding()
+                                    .getLeft(),
+                                getArea().height,
+                                Alignment.BottomRight);
                         }
                     }
                 }.syncHandler(new FluidSlotSyncHandler(new InformationFluidTank(index)) {

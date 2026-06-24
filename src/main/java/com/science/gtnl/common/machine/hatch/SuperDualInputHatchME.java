@@ -482,7 +482,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     public List<String> getExtraTooltip() {
                         List<String> extraLines = new ArrayList<>();
                         if (i_client[slot.getSlotIndex()] >= 1000) {
-                            extraLines.add(I18n.format("modularui.amount", i_client[slot.getSlotIndex()]));
+                            extraLines.add(I18n.format("modularui2.amount", i_client[slot.getSlotIndex()]));
                         }
                         if (isPhantom()) {
                             if (canControlAmount()) {
