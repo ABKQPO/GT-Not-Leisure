@@ -142,7 +142,7 @@ GTNL provides industrial-grade automation for your favorite magic mods.
 
 ## 🧩 Quest Loading
 
-GTNL uses **BetterQuesting + BetterQuestingAPI** to import built-in quest lines from resources during startup.
+GTNL uses **BetterQuesting** and **[BetterQuestingAPI](https://github.com/ABKQPO/BetterQuestingAPI)** to import built-in quest lines from resources during startup.
 
 ### What loads by default
 
