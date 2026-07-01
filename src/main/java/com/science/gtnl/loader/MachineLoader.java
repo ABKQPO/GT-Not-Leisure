@@ -92,6 +92,7 @@ import com.science.gtnl.common.machine.multiblock.LargeCircuitAssembler;
 import com.science.gtnl.common.machine.multiblock.LargeEssentiaGenerator;
 import com.science.gtnl.common.machine.multiblock.LargeGasCollector;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
+import com.science.gtnl.common.machine.multiblock.LargeResearchStation;
 import com.science.gtnl.common.machine.multiblock.LibraryOfRuina;
 import com.science.gtnl.common.machine.multiblock.MassFabricator;
 import com.science.gtnl.common.machine.multiblock.MatterFabricator;
@@ -2477,6 +2478,14 @@ public class MachineLoader {
                 14));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.DebugResearchStation.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.LargeResearchStation.set(
+            new LargeResearchStation(
+                GTNLMachineID.LARGE_RESEARCH_STATION.ID,
+                "LargeResearchStation",
+                StatCollector.translateToLocal("LargeResearchStation")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.LargeResearchStation.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
