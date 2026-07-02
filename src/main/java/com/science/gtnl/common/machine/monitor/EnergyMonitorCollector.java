@@ -282,7 +282,7 @@ public class EnergyMonitorCollector {
                     EnergyMonitorCategory.HATCH,
                     wireless,
                     displayStack);
-                if (hatchRow != null) {
+                if (hatchRow != null && !isDuplicateMultiblockRow(machineRow, hatchRow)) {
                     rows.add(hatchRow);
                 }
             }
@@ -392,6 +392,11 @@ public class EnergyMonitorCollector {
                 base.getYCoord(),
                 base.getZCoord()));
         return row;
+    }
+
+    private static boolean isDuplicateMultiblockRow(EnergyMonitorRowSnapshot machineRow,
+        EnergyMonitorRowSnapshot hatchRow) {
+        return machineRow != null && hatchRow != null && machineRow.sameAs(hatchRow);
     }
 
     private static String resolveDisplayName(MetaTileEntity metaTileEntity, ItemStack iconStack) {

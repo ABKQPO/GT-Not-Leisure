@@ -260,8 +260,7 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("VacuumDryingFurnace_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "VacuumDryingFurnace_Mode_" + this.machineMode);
     }
 
     @Override

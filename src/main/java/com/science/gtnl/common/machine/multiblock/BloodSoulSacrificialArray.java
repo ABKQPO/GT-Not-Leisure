@@ -508,9 +508,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "BloodSoulSacrificialArray_Mode_" + this.machineMode);
     }
 
     @Override
@@ -518,10 +516,9 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
+            GTUtility.sendChatTrans(
                 aPlayer,
-                StatCollector.translateToLocal(
-                    "BloodSoulSacrificialArray_Render_" + (this.enableRender ? "Enabled" : "Disabled")));
+                "BloodSoulSacrificialArray_Render_" + (this.enableRender ? "Enabled" : "Disabled"));
         }
         return true;
     }

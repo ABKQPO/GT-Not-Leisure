@@ -594,9 +594,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
             if ((mUpgrade & (1 << upgrade)) == 0 && upgrade != 0) {
                 itemstack.stackSize--;
                 mUpgrade = mUpgrade | (1 << upgrade);
-                GTUtility.sendChatToPlayer(
-                    aPlayer,
-                    itemstack.getDisplayName() + StatCollector.translateToLocal("Info_LargeEssentiaGenerator_00"));
+                GTUtility.sendChatTrans(aPlayer, "Info_LargeEssentiaGenerator_Install", itemstack.getDisplayName());
             }
             setupParameters();
             return true;

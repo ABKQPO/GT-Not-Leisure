@@ -212,7 +212,7 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargeBrewer_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "LargeBrewer_Mode_" + this.machineMode);
     }
 
     @Override

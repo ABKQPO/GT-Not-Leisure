@@ -268,8 +268,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("EngravingLaserPlant_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "EngravingLaserPlant_Mode_" + this.machineMode);
     }
 
     @Override

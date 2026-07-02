@@ -295,10 +295,10 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessModeEnabled = !wirelessModeEnabled;
             if (wirelessModeEnabled) {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode enabled");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode disabled");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Disabled");
                 WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
             }
         }

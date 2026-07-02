@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -249,14 +250,14 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         nextMachineMode();
-        GTUtility.sendChatToPlayer(aPlayer, getMachineModeName());
+        GTUtility.sendChatTrans(aPlayer, getMachineModeNameKey());
     }
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
         greenHouseViewMode = greenHouseViewMode.next();
-        GTUtility.sendChatToPlayer(aPlayer, greenHouseViewMode.name());
+        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_ViewMode_Change", greenHouseViewMode.name());
         return true;
     }
 
@@ -489,10 +490,14 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
 
     @Override
     public String getMachineModeName() {
+        return StatCollector.translateToLocal(getMachineModeNameKey());
+    }
+
+    private String getMachineModeNameKey() {
         return switch (machineMode) {
-            case MODE_FARM -> StatCollector.translateToLocal("Info_EdenGarden_Operating");
-            case MODE_OUTPUT -> StatCollector.translateToLocal("Info_EdenGarden_Output");
-            default -> StatCollector.translateToLocal("Info_EdenGarden_Input");
+            case MODE_FARM -> "Info_EdenGarden_Operating";
+            case MODE_OUTPUT -> "Info_EdenGarden_Output";
+            default -> "Info_EdenGarden_Input";
         };
     }
 
@@ -535,45 +540,35 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
     public void tryChangeSetupPhase(EntityPlayer aPlayer) {
         // TODO: Remove this legacy MUI1 setup phase toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Working"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
             return;
         }
         this.setupPhase++;
         if (this.setupPhase == 3) this.setupPhase = 0;
 
-        String phaseChangeMessage = StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Change") + " ";
-        switch (this.setupPhase) {
-            case 0:
-                phaseChangeMessage += StatCollector.translateToLocal("Info_EdenGarden_Operating");
-                break;
-            case 1:
-                phaseChangeMessage += StatCollector.translateToLocal("Info_EdenGarden_Input");
-                break;
-            case 2:
-                phaseChangeMessage += StatCollector.translateToLocal("Info_EdenGarden_Output");
-                break;
-            default:
-                phaseChangeMessage += StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Invalid");
-                break;
-        }
-        GTUtility.sendChatToPlayer(aPlayer, phaseChangeMessage);
+        String phaseKey = switch (this.setupPhase) {
+            case 0 -> "Info_EdenGarden_Operating";
+            case 1 -> "Info_EdenGarden_Input";
+            case 2 -> "Info_EdenGarden_Output";
+            default -> "Info_EdenGarden_SetupPhase_Invalid";
+        };
+        GTUtility
+            .sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Change_Format", new ChatComponentTranslation(phaseKey));
     }
 
     @Deprecated
     public void tryChangeMode(EntityPlayer aPlayer) {
         // TODO: Remove this legacy MUI1 greenhouse mode toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_Working"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Working");
             return;
         }
         if (!this.storedCrops.isEmpty()) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_HasSeeds"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_HasSeeds");
             return;
         }
         this.mode = GreenHouseModes.getNextMode(this.mode);
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocalFormatted("Info_EdenGarden_Mode_Change", this.mode.getName()));
+        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Change", this.mode.getName());
     }
 
     @Deprecated
@@ -581,11 +576,9 @@ public class SteamGreenhouseModule extends SteamElevatorModule implements IGreen
         // TODO: Remove this legacy humidity toggle after CropsNH biome checks are the only growth environment control.
         this.useNoHumidity = !this.useNoHumidity;
         if (this.useNoHumidity) {
-            GTUtility
-                .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode_Enabled"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Enabled");
         } else {
-            GTUtility
-                .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode_Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Disabled");
         }
     }
 

@@ -493,9 +493,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         staticAnimations = !staticAnimations;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal(staticAnimations ? "Info_HighwayToHell_00" : "Info_HighwayToHell_01"));
+        GTUtility.sendChatTrans(aPlayer, staticAnimations ? "Info_HighwayToHell_00" : "Info_HighwayToHell_01");
         for (MTEHatchTurbine h : GTUtility.validMTEList(mTurbineHatches)) {
             h.mUsingAnimation = staticAnimations;
         }

@@ -455,10 +455,10 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessMode = !wirelessMode;
             if (wirelessMode) {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode enabled");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
-                GTUtility.sendChatToPlayer(aPlayer, "Wireless mode disabled");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Disabled");
                 WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
             }
         }

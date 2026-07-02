@@ -9,13 +9,14 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.gtnewhorizons.modularui.api.forge.IItemHandlerModifiable;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 
 import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.api.util.GTUtility;
@@ -24,7 +25,7 @@ import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
 @Mixin(value = MTEResearchStation.class, remap = false)
-public abstract class MixinMTEResearchStation extends TTMultiblockBase {
+public abstract class MixinMTEResearchStation extends TTMultiblockBase implements IResearchStationMarker {
 
     @Unique
     public ItemStack[] gtnl$lockedItems = new ItemStack[1];
@@ -69,6 +70,11 @@ public abstract class MixinMTEResearchStation extends TTMultiblockBase {
                 .build()
                 .setSize(18, 18)
                 .setPos(173, 96));
+    }
+
+    @Override
+    public IItemHandlerModifiable gtnl$getResearchMarkerInventoryHandler() {
+        return gtnl$lockedInventoryHandler;
     }
 
     @Redirect(

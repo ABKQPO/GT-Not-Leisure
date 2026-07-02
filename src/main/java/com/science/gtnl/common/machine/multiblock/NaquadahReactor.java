@@ -701,9 +701,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             float aX, float aY, float aZ, ItemStack aTool) {
             if (getBaseMetaTileEntity().isServerSide()) {
                 enableRender = !enableRender;
-                GTUtility.sendChatToPlayer(
-                    aPlayer,
-                    StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
+                GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
                 checkStructure(true, getBaseMetaTileEntity());
             }
             return true;

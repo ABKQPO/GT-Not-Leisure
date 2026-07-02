@@ -252,7 +252,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("DissolutionCore_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "DissolutionCore_Mode_" + this.machineMode);
     }
 
     @Override

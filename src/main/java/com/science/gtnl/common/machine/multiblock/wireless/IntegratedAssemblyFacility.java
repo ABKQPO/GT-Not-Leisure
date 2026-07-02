@@ -395,9 +395,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("IntegratedAssemblyFacility_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "IntegratedAssemblyFacility_Mode_" + this.machineMode);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
@@ -12,9 +14,10 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,14 +36,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.api.IItemVault;
+import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.IStackVault;
+import com.science.gtnl.common.gui.modularui.SingularityDataHubGui;
+import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -48,9 +56,11 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
-import appeng.api.AEApi;
+import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
@@ -70,6 +80,7 @@ import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gtPlusPlus.core.block.ModBlocks;
@@ -82,17 +93,12 @@ import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
-    implements ISurvivalConstructable, IItemVault {
+    implements ISurvivalConstructable, IStackVault {
 
     private static final TranslatableText VAULT_PORT_HATCH_NAME = TranslatableText.lang("VaultPortHatch");
 
     public static long MAX_DISTINCT_ITEMS = Long.MAX_VALUE - 1;
     public static long MAX_DISTINCT_FLUIDS = Long.MAX_VALUE - 1;
-
-    public static BigInteger MAX_CAPACITY_ITEM = BigInteger.valueOf(MAX_DISTINCT_FLUIDS)
-        .multiply(BigInteger.valueOf(MAX_DISTINCT_ITEMS));
-    public static BigInteger MAX_CAPACITY_FLUID = BigInteger.valueOf(MAX_DISTINCT_FLUIDS)
-        .multiply(BigInteger.valueOf(MAX_DISTINCT_FLUIDS));
 
     public long capacityPerItem = Long.MAX_VALUE;
     public long capacityPerFluid = Long.MAX_VALUE;
@@ -114,13 +120,11 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     public static NumberFormat nf = NumberFormat.getNumberInstance();
 
-    public IItemList<IAEItemStack> STORE_ITEM = AEApi.instance()
-        .storage()
-        .createItemList();
+    private static final String STORE_STACKS_KEY = "STORE_STACKS";
+    private static final char GUI_PAYLOAD_SEPARATOR = '\t';
 
-    public IItemList<IAEFluidStack> STORE_FLUID = AEApi.instance()
-        .storage()
-        .createFluidList();
+    public Map<IAEStackType<?>, IItemList<?>> STORE_STACKS = new IdentityHashMap<>();
+    private String typeCountPayloadForGui = "";
 
     public SingularityDataHub(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -128,6 +132,21 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     public SingularityDataHub(String aName) {
         super(aName);
+    }
+
+    private <T extends IAEStack<T>> IItemList<T> registerStore(IAEStackType<T> type) {
+        IItemList<T> list = type.createList();
+        STORE_STACKS.put(type, list);
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends IAEStack<T>> IItemList<T> getOrCreateStore(IAEStackType<T> type) {
+        IItemList<T> store = (IItemList<T>) STORE_STACKS.get(type);
+        if (store == null) {
+            store = registerStore(type);
+        }
+        return store;
     }
 
     @Override
@@ -170,23 +189,64 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
-    public long maxItemCount() {
-        return MAX_DISTINCT_ITEMS;
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SingularityDataHubGui(this);
     }
 
     @Override
-    public long maxFluidCount() {
-        return MAX_DISTINCT_FLUIDS;
+    @Deprecated
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        super.drawTexts(screenElements, inventorySlot);
+        screenElements
+            .widget(
+                new TextWidget()
+                    .setStringSupplier(
+                        () -> VaultTypeCountFormatter
+                            .createTypeCountText(typeCountPayloadForGui, "Info_SingularityDataHub_TypeCount"))
+                    .setDefaultColor(COLOR_TEXT_WHITE.get())
+                    .setEnabled(true))
+            .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));
     }
 
     @Override
-    public boolean hasItem() {
-        return true;
+    public boolean supportsStackType(IAEStackType<?> type) {
+        return type != null && AEStackTypeRegistry.getType(type.getId()) == type;
     }
 
     @Override
-    public boolean hasFluid() {
-        return true;
+    public Iterable<IAEStackType<?>> getSupportedStackTypes() {
+        return AEStackTypeRegistry.getAllTypes();
+    }
+
+    @Override
+    public <T extends IAEStack<T>> IItemList<T> getStoredStacks(IAEStackType<T> type) {
+        return getOrCreateStore(type);
+    }
+
+    @Override
+    public <T extends IAEStack<T>> T getStoredStack(T stack) {
+        if (stack == null || !supportsStackType(stack.getStackType())) return null;
+        return getOrCreateStore(stack.getStackType()).findPrecise(stack);
+    }
+
+    @Override
+    public long stackTypesCount(IAEStackType<?> type) {
+        IItemList<?> store = STORE_STACKS.get(type);
+        return store == null ? 0 : store.size();
+    }
+
+    @Override
+    public long maxStackTypes(IAEStackType<?> type) {
+        if (type == ITEM_STACK_TYPE) return MAX_DISTINCT_ITEMS;
+        if (type == FLUID_STACK_TYPE) return MAX_DISTINCT_FLUIDS;
+        return Long.MAX_VALUE - 1;
+    }
+
+    @Override
+    public long capacityPerStack(IAEStackType<?> type) {
+        if (type == ITEM_STACK_TYPE) return capacityPerItem;
+        if (type == FLUID_STACK_TYPE) return capacityPerFluid;
+        return Long.MAX_VALUE;
     }
 
     @Override
@@ -219,9 +279,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         setDoVoidExcess(!doVoidExcess);
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("Info_SingularityDataHub_AutoVoiding") + doVoidExcess);
+        GTUtility.sendChatTrans(aPlayer, "Info_SingularityDataHub_AutoVoiding", doVoidExcess);
     }
 
     @Override
@@ -293,7 +351,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         if (!inputItems.isEmpty()) {
             for (ItemStack aItem : inputItems) {
                 ItemStack toDeplete = aItem.copy();
-                toDeplete.stackSize = injectItems(aItem, true);
+                toDeplete.stackSize = toIntAmount(injectStack(AEItemStack.create(aItem), true));
                 depleteInput(toDeplete);
             }
         }
@@ -301,7 +359,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         if (!inputFluids.isEmpty()) {
             for (FluidStack aFluid : inputFluids) {
                 FluidStack toDeplete = aFluid.copy();
-                toDeplete.amount = injectFluids(aFluid, true);
+                toDeplete.amount = toIntAmount(injectStack(AEFluidStack.create(aFluid), true));
                 depleteInput(toDeplete, false);
             }
         }
@@ -397,70 +455,19 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     public String[] getInfoData() {
         ArrayList<String> ll = new ArrayList<>();
-        ll.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SingularityDataHub_StoredItems")
-                + EnumChatFormatting.RESET);
-
-        int i = 0;
-        for (IAEItemStack tank : STORE_ITEM) {
-            String localizedName = Objects.requireNonNull(
-                tank.getItem()
-                    .getItemStackDisplayName(tank.getItemStack()));
-            String amount = nf.format(tank.getStackSize());
-            String percentage = capacityPerItem > 0 ? String.valueOf(tank.getStackSize() * 100 / capacityPerItem) : "";
-            ll.add(MessageFormat.format("{0} - {1}: {2} ({3}%)", i++, localizedName, amount, percentage));
-            if (i >= 32) break;
-        }
-
-        ll.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SingularityDataHub_StoredFluids")
-                + EnumChatFormatting.RESET);
-
-        int j = 0;
-        for (IAEFluidStack tank : STORE_FLUID) {
-            String localizedName = Objects.requireNonNull(
-                tank.getFluid()
-                    .getLocalizedName(tank.getFluidStack()));
-            String amount = nf.format(tank.getStackSize());
-            String percentage = capacityPerFluid > 0 ? String.valueOf(tank.getStackSize() * 100 / capacityPerFluid)
-                : "";
-            ll.add(MessageFormat.format("{0} - {1}: {2} ({3}%)", j++, localizedName, amount, percentage));
-            if (j >= 32) break;
+        for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+            IItemList<?> store = STORE_STACKS.get(type);
+            if (store == null || store.isEmpty()) continue;
+            addStoredTypeInfo(ll, type, store);
         }
 
         ll.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SingularityDataHub_OperationalData")
                 + EnumChatFormatting.RESET);
 
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_ItemUsed", nf.format(getItemStoredAmount())));
-        ll.add(
-            StatCollector.translateToLocalFormatted("Info_SingularityDataHub_ItemTotal", nf.format(MAX_CAPACITY_ITEM)));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_PerItemCapacity", nf.format(capacityPerItem)));
-        ll.add(
-            StatCollector.translateToLocalFormatted("Info_SingularityDataHub_ItemUsedTypes", nf.format(itemsCount())));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_ItemTotalTypes", nf.format(maxItemCount())));
-
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_FluidUsed", nf.format(getFluidStoredAmount())));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_FluidTotal", nf.format(MAX_CAPACITY_FLUID)));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_PerFluidCapacity", nf.format(capacityPerFluid)));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_FluidUsedTypes", nf.format(fluidsCount())));
-        ll.add(
-            StatCollector
-                .translateToLocalFormatted("Info_SingularityDataHub_FluidTotalTypes", nf.format(maxFluidCount())));
+        for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+            addOperationalTypeInfo(ll, type);
+        }
 
         ll.add(StatCollector.translateToLocalFormatted("Info_SingularityDataHub_RunningCost", getActualEnergyUsage()));
         ll.add(StatCollector.translateToLocalFormatted("Info_SingularityDataHub_AutoVoiding", doVoidExcess));
@@ -471,6 +478,57 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         return ll.toArray(new String[0]);
     }
 
+    private <T extends IAEStack<T>> void addStoredTypeInfo(ArrayList<String> info, IAEStackType<T> type,
+        IItemList<?> store) {
+        info.add(
+            EnumChatFormatting.YELLOW
+                + StatCollector.translateToLocalFormatted("Info_SingularityDataHub_StoredStacks", getTypeName(type))
+                + EnumChatFormatting.RESET);
+
+        int index = 0;
+        IItemList<T> typedStore = getOrCreateStore(type);
+        for (T stack : typedStore) {
+            if (stack == null) continue;
+            long capacity = capacityPerStack(type);
+            String amount = formatStackAmount(type, stack.getStackSize());
+            String percentage = capacity > 0 && capacity < Long.MAX_VALUE
+                ? String.valueOf(stack.getStackSize() * 100 / capacity)
+                : "";
+            info.add(
+                MessageFormat.format("{0} - {1}: {2} ({3}%)", index++, stack.getDisplayName(), amount, percentage));
+            if (index >= 32) break;
+        }
+    }
+
+    private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
+        String typeName = getTypeName(type);
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SingularityDataHub_TypeUsed",
+                typeName,
+                formatStackAmount(type, getStoredAmount(type))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SingularityDataHub_TypeCapacity",
+                typeName,
+                formatStackAmount(type, maxTotalCapacity(type))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SingularityDataHub_PerTypeCapacity",
+                typeName,
+                formatStackAmount(type, capacityPerStack(type))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SingularityDataHub_TypeUsedTypes",
+                typeName,
+                nf.format(stackTypesCount(type))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SingularityDataHub_TypeTotalTypes",
+                typeName,
+                nf.format(maxStackTypes(type))));
+    }
+
     @Override
     public long getActualEnergyUsage() {
         return wirelessMode ? TierEU.RECIPE_MAX / 20 : super.getActualEnergyUsage();
@@ -478,26 +536,17 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public void setItemNBT(NBTTagCompound aNBT) {
-        aNBT.setBoolean("doVoidExcess", doVoidExcess);
-        aNBT.setBoolean("locked", locked);
+        if (doVoidExcess) {
+            aNBT.setBoolean("doVoidExcess", true);
+        }
+        if (!locked) {
+            aNBT.setBoolean("locked", false);
+        }
 
+        if (!hasStoredStacks()) return;
         String uuid = Utils.ensureUUID(aNBT);
-
         NBTTagCompound storeRoot = new NBTTagCompound();
-        NBTTagList itemNbt = new NBTTagList();
-        for (IAEItemStack aeItem : STORE_ITEM) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            aeItem.writeToNBT(nbt);
-            itemNbt.appendTag(nbt);
-        }
-        NBTTagList fluidNbt = new NBTTagList();
-        for (IAEFluidStack aeFluid : STORE_FLUID) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            aeFluid.writeToNBT(nbt);
-            fluidNbt.appendTag(nbt);
-        }
-        storeRoot.setTag("STORE_ITEM", itemNbt);
-        storeRoot.setTag("STORE_FLUID", fluidNbt);
+        writeStoredStacks(storeRoot);
 
         File worldDir = DimensionManager.getCurrentSaveRootDirectory();
         File dataDir = new File(worldDir, "data");
@@ -513,32 +562,31 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
-        aNBT.setBoolean("wirelessMode", wirelessMode);
-        aNBT.setBoolean("doVoidExcess", doVoidExcess);
-        aNBT.setBoolean("locked", locked);
+        if (wirelessMode) {
+            aNBT.setBoolean("wirelessMode", true);
+        }
+        if (doVoidExcess) {
+            aNBT.setBoolean("doVoidExcess", true);
+        }
+        if (!locked) {
+            aNBT.setBoolean("locked", false);
+        }
         Utils.ensureUUID(aNBT);
-        NBTTagList itemNbt = new NBTTagList();
-        aNBT.setTag("STORE_ITEM", itemNbt);
-        NBTTagList fluidNbt = new NBTTagList();
-        aNBT.setTag("STORE_FLUID", fluidNbt);
-        for (IAEItemStack aeItem : STORE_ITEM) {
-            var nbt = new NBTTagCompound();
-            aeItem.writeToNBT(nbt);
-            itemNbt.appendTag(nbt);
-        }
-        for (IAEFluidStack aeFluid : STORE_FLUID) {
-            var nbt = new NBTTagCompound();
-            aeFluid.writeToNBT(nbt);
-            fluidNbt.appendTag(nbt);
-        }
+        writeStoredStacks(aNBT);
         super.saveNBTData(aNBT);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
-        this.setDoVoidExcess(aNBT.getBoolean("doVoidExcess"));
-        this.locked = aNBT.getBoolean("locked");
-        wirelessMode = aNBT.getBoolean("wirelessMode");
+        if (aNBT.hasKey("doVoidExcess")) {
+            this.setDoVoidExcess(aNBT.getBoolean("doVoidExcess"));
+        }
+        if (aNBT.hasKey("locked")) {
+            this.locked = aNBT.getBoolean("locked");
+        }
+        if (aNBT.hasKey("wirelessMode")) {
+            wirelessMode = aNBT.getBoolean("wirelessMode");
+        }
         if (aNBT.hasKey("storeUUID")) {
             String uuid = aNBT.getString("storeUUID");
             try {
@@ -548,16 +596,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
                 if (vaultFile.exists()) {
                     NBTTagCompound fileNBT = CompressedStreamTools.read(vaultFile);
-                    NBTTagList itemNbt = fileNBT.getTagList("STORE_ITEM", 10);
-                    NBTTagList fluidNbt = fileNBT.getTagList("STORE_FLUID", 10);
-
-                    for (int i = 0; i < itemNbt.tagCount(); i++) {
-                        STORE_ITEM.add(AEItemStack.loadItemStackFromNBT(itemNbt.getCompoundTagAt(i)));
-                    }
-
-                    for (int i = 0; i < fluidNbt.tagCount(); i++) {
-                        STORE_FLUID.add(AEFluidStack.loadFluidStackFromNBT(fluidNbt.getCompoundTagAt(i)));
-                    }
+                    readStoredStacks(fileNBT);
 
                     if (!vaultFile.delete()) {
                         System.err.println("Warning: Failed to delete vault file " + vaultFile);
@@ -567,249 +606,206 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                 e.printStackTrace();
             }
         }
-        NBTTagList itemNbt = aNBT.getTagList("STORE_ITEM", 10);
-        if (itemNbt != null) {
-            for (int i = 0; i < itemNbt.tagCount(); i++) {
-                STORE_ITEM.add(AEItemStack.loadItemStackFromNBT(itemNbt.getCompoundTagAt(i)));
-            }
-        }
-        NBTTagList fluidNbt = aNBT.getTagList("STORE_FLUID", 10);
-        if (fluidNbt != null) {
-            for (int i = 0; i < fluidNbt.tagCount(); i++) {
-                STORE_FLUID.add(AEFluidStack.loadFluidStackFromNBT(fluidNbt.getCompoundTagAt(i)));
-            }
-        }
+        readStoredStacks(aNBT);
         super.loadNBTData(aNBT);
     }
 
-    @Override
-    public int injectItems(ItemStack aItem, boolean doInput) {
-        if (locked) return 0;
-        if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        var aeItem = getStoredItem(aItem);
-        long size = aeItem == null ? 0 : aeItem.getStackSize();
-        if (size >= capacityPerItem) return doVoidExcess ? aItem.stackSize : 0;
-        if (capacityPerItem - size < aItem.stackSize) {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(
-                        AEItemStack.create(aItem)
-                            .setStackSize(capacityPerItem - size));
-                } else {
-                    aeItem.setStackSize(capacityPerItem);
-                }
-                portHatch.postUpdateItem(aItem, capacityPerItem - size);
-            }
-            return doVoidExcess ? aItem.stackSize : (int) (capacityPerItem - size);
-        } else {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(AEItemStack.create(aItem));
-                } else {
-                    aeItem.setStackSize(size + aItem.stackSize);
-                }
-                portHatch.postUpdateItem(aItem, aItem.stackSize);
-            }
-            return aItem.stackSize;
+    private void writeStoredStacks(NBTTagCompound tag) {
+        NBTTagList genericStores = new NBTTagList();
+        for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+            writeStore(genericStores, type);
+        }
+        if (genericStores.tagCount() > 0) {
+            tag.setTag(STORE_STACKS_KEY, genericStores);
         }
     }
 
-    @Override
-    public long injectItems(IAEItemStack aItem, boolean doInput) {
-        if (locked) return 0;
-        if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        var aeItem = getStoredItem(aItem.getItemStack());
-        long size = aeItem == null ? 0 : aeItem.getStackSize();
-        if (size >= capacityPerItem) return doVoidExcess ? aItem.getStackSize() : 0;
-        if (capacityPerItem - size < aItem.getStackSize()) {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(
-                        aItem.copy()
-                            .setStackSize(capacityPerItem - size));
-                } else {
-                    aeItem.setStackSize(capacityPerItem);
+    private <T extends IAEStack<T>> void writeStore(NBTTagList genericStores, IAEStackType<T> type) {
+        IItemList<T> store = getOrCreateStore(type);
+        if (store.isEmpty()) return;
+
+        NBTTagCompound storeTag = new NBTTagCompound();
+        NBTTagList stackTags = new NBTTagList();
+        for (T stack : store) {
+            if (stack == null) continue;
+            NBTTagCompound stackTag = new NBTTagCompound();
+            stack.writeToNBTGeneric(stackTag);
+            stackTags.appendTag(stackTag);
+        }
+        storeTag.setString("Type", type.getId());
+        storeTag.setTag("Stacks", stackTags);
+        genericStores.appendTag(storeTag);
+    }
+
+    private void readStoredStacks(NBTTagCompound tag) {
+        if (tag.hasKey(STORE_STACKS_KEY)) {
+            readGenericStoredStacks(tag.getTagList(STORE_STACKS_KEY, 10));
+            return;
+        }
+        readLegacyStoredStacks(tag);
+    }
+
+    private void readGenericStoredStacks(NBTTagList genericStores) {
+        for (int i = 0; i < genericStores.tagCount(); i++) {
+            NBTTagCompound storeTag = genericStores.getCompoundTagAt(i);
+            NBTTagList stacks = storeTag.getTagList("Stacks", 10);
+            for (int j = 0; j < stacks.tagCount(); j++) {
+                IAEStack<?> stack = IAEStack.fromNBTGeneric(stacks.getCompoundTagAt(j));
+                if (stack != null) {
+                    addStoredStack(stack);
                 }
-                portHatch.postUpdateItem(aItem.getItemStack(), capacityPerItem - size);
             }
-            return doVoidExcess ? aItem.getStackSize() : (int) (capacityPerItem - size);
-        } else {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(aItem);
-                } else {
-                    aeItem.setStackSize(size + aItem.getStackSize());
-                }
-                portHatch.postUpdateItem(aItem.getItemStack(), aItem.getStackSize());
-            }
-            return aItem.getStackSize();
         }
     }
 
-    @Override
-    public int injectFluids(FluidStack aFluid, boolean doInput) {
-        if (locked) return 0;
-        if (STORE_FLUID.size() >= MAX_DISTINCT_FLUIDS) return 0;
-        var aeFluid = getStoredFluid(aFluid);
-        long size = aeFluid == null ? 0 : aeFluid.getStackSize();
-        if (size >= capacityPerFluid) return doVoidExcess ? aFluid.amount : 0;
-        if (capacityPerFluid - size < aFluid.amount) {
-            if (doInput) {
-                if (aeFluid == null) {
-                    STORE_FLUID.addStorage(
-                        AEFluidStack.create(aFluid)
-                            .setStackSize(capacityPerFluid - size));
-                } else {
-                    aeFluid.setStackSize(capacityPerFluid);
-                }
-                portHatch.postUpdateFluid(aFluid, capacityPerFluid - size);
+    private void readLegacyStoredStacks(NBTTagCompound tag) {
+        NBTTagList itemNbt = tag.getTagList("STORE_ITEM", 10);
+        for (int i = 0; i < itemNbt.tagCount(); i++) {
+            IAEItemStack stack = AEItemStack.loadItemStackFromNBT(itemNbt.getCompoundTagAt(i));
+            if (stack != null) {
+                getOrCreateStore(ITEM_STACK_TYPE).add(stack);
             }
-            return doVoidExcess ? aFluid.amount : (int) (capacityPerFluid - size);
-        } else {
-            if (doInput) {
-                if (aeFluid == null) {
-                    STORE_FLUID.addStorage(AEFluidStack.create(aFluid));
-                } else {
-                    aeFluid.setStackSize(size + aFluid.amount);
-                }
-                portHatch.postUpdateFluid(aFluid, capacityPerFluid - aFluid.amount);
+        }
+
+        NBTTagList fluidNbt = tag.getTagList("STORE_FLUID", 10);
+        for (int i = 0; i < fluidNbt.tagCount(); i++) {
+            IAEFluidStack stack = AEFluidStack.loadFluidStackFromNBT(fluidNbt.getCompoundTagAt(i));
+            if (stack != null) {
+                getOrCreateStore(FLUID_STACK_TYPE).add(stack);
             }
-            return aFluid.amount;
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void addStoredStack(IAEStack<?> stack) {
+        IAEStackType<IAEStack> type = (IAEStackType<IAEStack>) stack.getStackType();
+        IItemList<IAEStack> store = getOrCreateStore(type);
+        store.add(stack);
+    }
+
     @Override
-    public long injectFluids(IAEFluidStack aFluid, boolean doInput) {
-        if (locked) return 0;
-        if (STORE_FLUID.size() >= MAX_DISTINCT_FLUIDS) return 0;
-        var aeFluid = getStoredFluid(aFluid.getFluidStack());
-        long size = aeFluid == null ? 0 : aeFluid.getStackSize();
-        if (size >= capacityPerFluid) return doVoidExcess ? aFluid.getStackSize() : 0;
-        if (capacityPerFluid - size < aFluid.getStackSize()) {
-            if (doInput) {
-                if (aeFluid == null) {
-                    STORE_FLUID.addStorage(
-                        AEFluidStack.create(aFluid)
-                            .setStackSize(capacityPerFluid - size));
-                } else {
-                    aeFluid.setStackSize(capacityPerFluid);
-                }
-                portHatch.postUpdateFluid(aFluid.getFluidStack(), capacityPerFluid - size);
+    public <T extends IAEStack<T>> long injectStack(T stack, boolean doInput) {
+        if (locked || stack == null || !supportsStackType(stack.getStackType())) return 0;
+        IItemList<T> store = getOrCreateStore(stack.getStackType());
+        T stored = store.findPrecise(stack);
+        long storedSize = stored == null ? 0 : stored.getStackSize();
+        long capacity = capacityPerStack(stack.getStackType());
+        long inputSize = stack.getStackSize();
+        if (storedSize >= capacity) return doVoidExcess ? inputSize : 0;
+        if (stored == null && store.size() >= maxStackTypes(stack.getStackType())) return 0;
+
+        long inserted = Math.min(inputSize, capacity - storedSize);
+        if (doInput && inserted > 0) {
+            if (stored == null) {
+                store.addStorage(
+                    stack.copy()
+                        .setStackSize(inserted));
+            } else {
+                stored.setStackSize(storedSize + inserted);
             }
-            return doVoidExcess ? aFluid.getStackSize() : capacityPerFluid - size;
-        } else {
-            if (doInput) {
-                if (aeFluid == null) {
-                    STORE_FLUID.addStorage(aFluid);
-                } else {
-                    aeFluid.setStackSize(size + aFluid.getStackSize());
-                }
-                portHatch.postUpdateFluid(aFluid.getFluidStack(), aFluid.getStackSize());
+            if (portHatch != null) {
+                portHatch.postUpdate(stack, inserted);
             }
-            return aFluid.getStackSize();
         }
+        return doVoidExcess ? inputSize : inserted;
     }
 
     @Override
-    public long extractItems(IAEItemStack aItem, boolean doOutput) {
-        if (locked) return 0;
-        var aeItem = getStoredItem(aItem.getItemStack());
-        if (aeItem == null) return 0;
-        long storedSize = aeItem.getStackSize();
-        long requestSize = aItem.getStackSize();
-        if (storedSize > requestSize) {
-            if (doOutput) {
-                aeItem.setStackSize(storedSize - requestSize);
-                portHatch.postUpdateItem(aItem.getItemStack(), -requestSize);
+    public <T extends IAEStack<T>> long extractStack(T stack, boolean doOutput) {
+        if (locked || stack == null || !supportsStackType(stack.getStackType())) return 0;
+        T stored = getStoredStack(stack);
+        if (stored == null) return 0;
+
+        long extracted = Math.min(stored.getStackSize(), stack.getStackSize());
+        if (doOutput && extracted > 0) {
+            stored.setStackSize(stored.getStackSize() - extracted);
+            if (portHatch != null) {
+                portHatch.postUpdate(stack, -extracted);
             }
-            return requestSize;
-        } else {
-            if (doOutput) {
-                aeItem.setStackSize(0);
-                portHatch.postUpdateItem(aItem.getItemStack(), -storedSize);
-            }
-            return storedSize;
         }
+        return extracted;
     }
 
-    @Override
-    public long extractFluids(IAEFluidStack aFluid, boolean doOutput) {
-        if (locked) return 0;
-        var aeFluid = getStoredFluid(aFluid.getFluidStack());
-        if (aeFluid == null) return 0;
-        long storedSize = aeFluid.getStackSize();
-        long requestSize = aFluid.getStackSize();
-        if (storedSize > requestSize) {
-            if (doOutput) {
-                aeFluid.setStackSize(storedSize - requestSize);
-                portHatch.postUpdateFluid(aFluid.getFluidStack(), -requestSize);
-            }
-            return requestSize;
-        } else {
-            if (doOutput) {
-                aeFluid.setStackSize(0);
-                portHatch.postUpdateFluid(aFluid.getFluidStack(), -storedSize);
-            }
-            return storedSize;
+    private int toIntAmount(long amount) {
+        return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
+    }
+
+    private boolean hasStoredStacks() {
+        Collection<IItemList<?>> stores = STORE_STACKS.values();
+        for (IItemList<?> store : stores) {
+            if (store != null && !store.isEmpty()) return true;
         }
+        return false;
     }
 
-    @Override
-    public long itemsCount() {
-        return STORE_ITEM.size();
-    }
-
-    @Override
-    public long fluidsCount() {
-        return STORE_FLUID.size();
-    }
-
-    @Override
-    public IAEItemStack getStoredItem(@Nullable ItemStack aItem) {
-        if (aItem == null) return null;
-        return STORE_ITEM.findPrecise(AEItemStack.create(aItem));
-    }
-
-    @Override
-    public IAEFluidStack getStoredFluid(@Nullable FluidStack aFluid) {
-        if (aFluid == null) return null;
-        return STORE_FLUID.findPrecise(AEFluidStack.create(aFluid));
-    }
-
-    @Override
-    public boolean containsItems(ItemStack aItem) {
-        return getStoredItem(aItem) != null;
-    }
-
-    @Override
-    public boolean containsFluids(FluidStack aFluid) {
-        return getStoredFluid(aFluid) != null;
-    }
-
-    @Override
-    public IItemList<IAEItemStack> getStoreItems() {
-        return STORE_ITEM;
-    }
-
-    @Override
-    public IItemList<IAEFluidStack> getStoreFluids() {
-        return STORE_FLUID;
-    }
-
-    public BigInteger getItemStoredAmount() {
+    private BigInteger getStoredAmount(IAEStackType<?> type) {
+        IItemList<?> store = STORE_STACKS.get(type);
+        if (store == null || store.isEmpty()) return BigInteger.ZERO;
         BigInteger amount = BigInteger.ZERO;
-        for (IAEItemStack item : STORE_ITEM) {
-            amount = amount.add(BigInteger.valueOf(item.getStackSize()));
+        for (IAEStack<?> stack : store) {
+            amount = amount.add(BigInteger.valueOf(stack.getStackSize()));
         }
         return amount;
     }
 
-    public BigInteger getFluidStoredAmount() {
-        BigInteger amount = BigInteger.ZERO;
-        for (IAEFluidStack fluid : STORE_FLUID) {
-            amount = amount.add(BigInteger.valueOf(fluid.getStackSize()));
+    private BigInteger maxTotalCapacity(IAEStackType<?> type) {
+        long stackCapacity = capacityPerStack(type);
+        long maxTypes = maxStackTypes(type);
+        return BigInteger.valueOf(maxTypes)
+            .multiply(BigInteger.valueOf(stackCapacity));
+    }
+
+    private String formatStackAmount(IAEStackType<?> type, BigInteger amount) {
+        String suffix = type.getDisplayUnit();
+        String formatted = nf.format(amount);
+        return suffix == null || suffix.isEmpty() ? formatted : formatted + " " + suffix;
+    }
+
+    private String formatStackAmount(IAEStackType<?> type, long amount) {
+        return formatStackAmount(type, BigInteger.valueOf(amount));
+    }
+
+    private String getTypeName(IAEStackType<?> type) {
+        String displayName = type.getDisplayName();
+        if (displayName != null && !displayName.isEmpty() && !displayName.equals(type.getId())) {
+            return displayName;
         }
-        return amount;
+        String id = type.getId();
+        if (StatCollector.canTranslate(id)) {
+            return StatCollector.translateToLocal(id);
+        }
+        if (StatCollector.canTranslate(id + ".name")) {
+            return StatCollector.translateToLocal(id + ".name");
+        }
+        return id;
+    }
+
+    public String getTypeCountPayloadForGui() {
+        StringBuilder payload = new StringBuilder();
+        for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+            appendTypeCountPayload(payload, type);
+        }
+        return payload.toString();
+    }
+
+    private void appendTypeCountPayload(StringBuilder payload, IAEStackType<?> type) {
+        if (type == null) return;
+        if (!payload.isEmpty()) {
+            payload.append('\n');
+        }
+        payload.append(type.getId())
+            .append(GUI_PAYLOAD_SEPARATOR)
+            .append(stackTypesCount(type))
+            .append(GUI_PAYLOAD_SEPARATOR)
+            .append(maxStackTypes(type));
+    }
+
+    public void setTypeCountPayloadFromGui(String typeCountPayloadForGui) {
+        this.typeCountPayloadForGui = typeCountPayloadForGui == null ? "" : typeCountPayloadForGui;
+    }
+
+    public String getSyncedTypeCountPayloadForGui() {
+        return typeCountPayloadForGui;
     }
 
     @Override

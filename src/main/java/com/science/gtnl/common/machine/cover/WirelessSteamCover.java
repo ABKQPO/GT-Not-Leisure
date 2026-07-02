@@ -87,11 +87,10 @@ public class WirelessSteamCover extends CoverLegacyData {
             coverData = SteamTypes.values().length - 1;
         }
 
-        GTUtility.sendChatToPlayer(
+        GTUtility.sendChatTrans(
             aPlayer,
-            StatCollector.translateToLocalFormatted(
-                "Info_PipelessSteamCover_00",
-                SteamTypes.values()[coverData].fluid.getLocalizedName()));
+            "Info_PipelessSteamCover_00",
+            SteamTypes.values()[coverData].fluid.getLocalizedName());
     }
 
     @Override

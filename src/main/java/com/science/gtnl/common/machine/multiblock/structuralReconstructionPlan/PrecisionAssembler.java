@@ -408,7 +408,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         machineMode = (machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("PreciseAssembler_Mode_" + machineMode));
+        GTUtility.sendChatTrans(aPlayer, "PreciseAssembler_Mode_" + machineMode);
     }
 
     @Override

@@ -161,8 +161,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         machineMode = (machineMode + 1) % 2;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + machineMode));
+        GTUtility.sendChatTrans(aPlayer, "ResourceCollectionModule_Mode_" + machineMode);
     }
 
     @Override

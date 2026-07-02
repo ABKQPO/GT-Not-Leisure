@@ -10,7 +10,6 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -78,7 +77,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         if (!(tile instanceof TileEntityEssentiaHatch essentiaHatch)) return false;
         var tItemStack = player.getHeldItem();
         if (tItemStack == null) {
-            GTUtility.sendChatToPlayer(player, StatCollector.translateToLocal("Info_EssentiaHatch_01"));
+            GTUtility.sendChatTrans(player, "Info_EssentiaHatch_01");
             return false;
         }
         var tItem = tItemStack.getItem();
@@ -91,9 +90,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         var tLocked = heldAspects.getAspects()[0];
         essentiaHatch.setLockedAspect(tLocked);
 
-        GTUtility.sendChatToPlayer(
-            player,
-            StatCollector.translateToLocalFormatted("Info_EssentiaHatch_00", tLocked.getLocalizedDescription()));
+        GTUtility.sendChatTrans(player, "Info_EssentiaHatch_00", tLocked.getLocalizedDescription());
         world.markBlockForUpdate(x, y, z);
         return true;
     }

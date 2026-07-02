@@ -158,6 +158,7 @@ public enum Mixins implements IMixins {
             "TConstruct.MixinSmelteryLogic",
             "TecTech.MixinMTEEyeOfHarmony",
             "TecTech.MixinMTEResearchStation",
+            "TecTech.MixinMTEResearchStationGui",
             "TecTech.MixinTTRecipeAdder",
             "ThaumicTinkerer.AccessorAspectCropLootManager",
             "ThaumicTinkerer.MixinItemBloodSword",

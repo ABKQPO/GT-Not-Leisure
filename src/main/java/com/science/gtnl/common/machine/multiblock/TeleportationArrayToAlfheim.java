@@ -556,9 +556,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "TeleportationArrayToAlfheim_Mode_" + this.machineMode);
     }
 
     @Override

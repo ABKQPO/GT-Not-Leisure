@@ -728,9 +728,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
+            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
             if (!enableRender && isRenderActive) destroyRenderer();
         }
         return true;

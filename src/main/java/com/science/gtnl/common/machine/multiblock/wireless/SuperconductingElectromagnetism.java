@@ -234,9 +234,7 @@ public class SuperconductingElectromagnetism extends WirelessEnergyMultiMachineB
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("SuperconductingElectromagnetism_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "SuperconductingElectromagnetism_Mode_" + this.machineMode);
     }
 
     @Override

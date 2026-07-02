@@ -242,8 +242,7 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility
-            .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("ExtremeCompressor_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "ExtremeCompressor_Mode_" + this.machineMode);
     }
 
     @Override

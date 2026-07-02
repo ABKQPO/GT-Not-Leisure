@@ -177,20 +177,20 @@ public class SteamApiaryModule extends SteamElevatorModule {
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, "Can't change mode when running !");
+            GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotChangeModeRunning");
             return;
         }
         mPrimaryMode++;
         if (mPrimaryMode == 3) mPrimaryMode = 0;
         switch (mPrimaryMode) {
             case 0:
-                GTUtility.sendChatToPlayer(aPlayer, "Changed primary mode to: Input mode");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Input");
                 break;
             case 1:
-                GTUtility.sendChatToPlayer(aPlayer, "Changed primary mode to: Output mode");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Output");
                 break;
             case 2:
-                GTUtility.sendChatToPlayer(aPlayer, "Changed primary mode to: Operating mode");
+                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Operating");
                 break;
         }
     }
@@ -586,20 +586,20 @@ public class SteamApiaryModule extends SteamElevatorModule {
                     .setGetter(() -> mPrimaryMode)
                     .setSetter(val -> {
                         if (this.mMaxProgresstime > 0) {
-                            GTUtility.sendChatToPlayer(player, "Can't change mode when running !");
+                            GTUtility.sendChatTrans(player, "Info_GTNL_CannotChangeModeRunning");
                             return;
                         }
                         mPrimaryMode = val;
                         if (!(player instanceof EntityPlayerMP)) return;
                         switch (mPrimaryMode) {
                             case 0:
-                                GTUtility.sendChatToPlayer(player, "Changed primary mode to: Input mode");
+                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Input");
                                 break;
                             case 1:
-                                GTUtility.sendChatToPlayer(player, "Changed primary mode to: Output mode");
+                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Output");
                                 break;
                             case 2:
-                                GTUtility.sendChatToPlayer(player, "Changed primary mode to: Operating mode");
+                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Operating");
                                 break;
                         }
                     })
@@ -959,7 +959,7 @@ public class SteamApiaryModule extends SteamElevatorModule {
             if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
             if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
                 if (mte.mMaxProgresstime > 0) {
-                    GTUtility.sendChatToPlayer(aPlayer, EnumChatFormatting.RED + "Can't insert while running !");
+                    GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotInsertRunning_Red");
                     return super.transferStackInSlot(aPlayer, aSlotIndex);
                 }
                 World w = mte.getBaseMetaTileEntity()

@@ -619,9 +619,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Info_Render_" + (enableRender ? "Enabled" : "Disabled")));
+            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
         }
         return true;
     }

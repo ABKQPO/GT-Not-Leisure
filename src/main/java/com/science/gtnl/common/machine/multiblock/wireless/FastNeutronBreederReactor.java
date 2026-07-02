@@ -179,9 +179,7 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("FastNeutronBreederReactor_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "FastNeutronBreederReactor_Mode_" + this.machineMode);
     }
 
     @Override

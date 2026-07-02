@@ -288,7 +288,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
 
     private IWidget createHighlightButton(PanelSyncManager syncManager, EnergyMonitorRowSnapshot row, int buttonWidth) {
         return new ButtonWidget<>().background(IDrawable.EMPTY)
-            .size(buttonWidth, INLINE_BUTTON_HEIGHT)
+            .size(buttonWidth, ROW_MIN_HEIGHT)
             .disableThemeBackground(true)
             .disableHoverThemeBackground(true)
             .disableHoverBackground()
@@ -297,7 +297,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                 IKey.str(EnumChatFormatting.YELLOW + "[]")
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
-                    .size(buttonWidth, INLINE_BUTTON_HEIGHT))
+                    .size(buttonWidth, ROW_MIN_HEIGHT))
             .onMousePressed(mouseButton -> {
                 if (mouseButton != 0 && mouseButton != 1) {
                     return false;

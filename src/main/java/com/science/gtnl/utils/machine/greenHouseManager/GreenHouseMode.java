@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 
 import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
 import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
@@ -225,9 +223,7 @@ public abstract class GreenHouseMode {
             IGreenHouse mte = parent.get();
             if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
             if (mte.getMaxProgressTime() > 0) {
-                GTUtility.sendChatToPlayer(
-                    aPlayer,
-                    EnumChatFormatting.RED + StatCollector.translateToLocal("Info_EdenGarden_00"));
+                GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_00_Red");
                 return super.transferStackInSlot(aPlayer, aSlotIndex);
             }
 

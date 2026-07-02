@@ -142,7 +142,7 @@ GTNL provides industrial-grade automation for your favorite magic mods.
 
 ## 🧩 Quest Loading
 
-GTNL uses **BetterQuesting + BetterQuestingAPI** to import built-in quest lines from resources during startup.
+GTNL uses **BetterQuesting** and **[BetterQuestingAPI](https://github.com/ABKQPO/BetterQuestingAPI)** to import built-in quest lines from resources during startup.
 
 ### What loads by default
 
@@ -150,17 +150,6 @@ The following quest lines are always registered:
 
 * `GTNotLeisure75SteamAge`
 * `GTNotLeisure99SteamAge`
-
-### Optional extra quest line
-
-An additional debug/extended quest line (`GTNotLeisureQuestsLine`) is available but disabled by default.
-
-To enable it:
-
-1. Start the game once to generate config files.
-2. Open `config/GTNotLeisure/GTNotLeisure.cfg`.
-3. Set `debug.enableQuest=true`.
-4. Restart the game/server.
 
 ### Resource source path
 

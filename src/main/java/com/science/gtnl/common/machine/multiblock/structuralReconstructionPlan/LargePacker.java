@@ -190,7 +190,7 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("LargePacker_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "LargePacker_Mode_" + this.machineMode);
     }
 
     @Override

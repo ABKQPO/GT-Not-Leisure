@@ -316,9 +316,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         enableRender = !enableRender;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("MeteorMiner_Render_" + (enableRender ? "Enabled" : "Disabled")));
+        GTUtility.sendChatTrans(aPlayer, "MeteorMiner_Render_" + (enableRender ? "Enabled" : "Disabled"));
         if (renderer != null) renderer.setShouldRender(enableRender);
     }
 

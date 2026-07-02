@@ -263,9 +263,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             showPattern = !showPattern;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+            GTUtility.sendChatTrans(aPlayer, "Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"));
         }
         return true;
     }
@@ -274,11 +272,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, "Can't change mode when running !");
+            GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotChangeModeRunning");
             return;
         }
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("AssemblerMatrix_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "AssemblerMatrix_Mode_" + this.machineMode);
     }
 
     public void setPatternMultiply(int patternMultiply) {

@@ -345,10 +345,14 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public String getMachineModeName() {
+        return StatCollector.translateToLocal(getMachineModeNameKey());
+    }
+
+    private String getMachineModeNameKey() {
         return switch (machineMode) {
-            case MODE_FARM -> StatCollector.translateToLocal("Info_EdenGarden_Operating");
-            case MODE_OUTPUT -> StatCollector.translateToLocal("Info_EdenGarden_Output");
-            default -> StatCollector.translateToLocal("Info_EdenGarden_Input");
+            case MODE_FARM -> "Info_EdenGarden_Operating";
+            case MODE_OUTPUT -> "Info_EdenGarden_Output";
+            default -> "Info_EdenGarden_Input";
         };
     }
 
@@ -648,14 +652,14 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         nextMachineMode();
-        GTUtility.sendChatToPlayer(aPlayer, getMachineModeName());
+        GTUtility.sendChatTrans(aPlayer, getMachineModeNameKey());
     }
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
         greenHouseViewMode = greenHouseViewMode.next();
-        GTUtility.sendChatToPlayer(aPlayer, greenHouseViewMode.name());
+        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_ViewMode_Change", greenHouseViewMode.name());
         return true;
     }
 

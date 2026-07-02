@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -150,9 +149,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
             env,
             true);
         if (built == -1) {
-            GTUtility.sendChatToPlayer(
-                env.getActor(),
-                EnumChatFormatting.GOLD + "Auto placing done ! Now go place the water and lava by yourself !");
+            GTUtility.sendChatTrans(env.getActor(), "Info_SteamRockBreaker_AutoPlacingDone");
             return 0;
         }
         return built;

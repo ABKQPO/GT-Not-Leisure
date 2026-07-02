@@ -114,9 +114,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         isLiquidizerMode = !isLiquidizerMode;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("Mode_ManaDynamoHatch_0" + (isLiquidizerMode ? 1 : 0)));
+        GTUtility.sendChatTrans(aPlayer, "Mode_ManaDynamoHatch_0" + (isLiquidizerMode ? 1 : 0));
     }
 
     @Override

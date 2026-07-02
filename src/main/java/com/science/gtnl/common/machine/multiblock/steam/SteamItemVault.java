@@ -1,5 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +27,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -33,7 +34,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.api.IItemVault;
+import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnewhorizons.modularui.common.widget.SlotWidget;
+import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.IStackVault;
+import com.science.gtnl.common.gui.modularui.SteamItemVaultGui;
+import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
@@ -42,6 +49,8 @@ import com.science.gtnl.utils.enums.BlockIcons;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
 import gregtech.api.enums.HatchElement;
@@ -58,6 +67,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
@@ -66,7 +76,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
-    implements ISurvivalConstructable, IItemVault {
+    implements ISurvivalConstructable, IStackVault {
 
     public static final long MAX_DISTINCT_ITEMS = 1024;
     public static final BigInteger MAX_CAPACITY_ITEM = BigInteger.valueOf(640000)
@@ -79,11 +89,13 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     private static final int HORIZONTAL_OFF_SET = 3;
     private static final int VERTICAL_OFF_SET = 8;
     private static final int DEPTH_OFF_SET = 0;
+    private static final char GUI_PAYLOAD_SEPARATOR = '\t';
 
     public BigInteger capacityItem = MAX_CAPACITY_ITEM;
     public long capacityPerItem = capacityItem.divide(BigInteger.valueOf(MAX_DISTINCT_ITEMS))
         .longValue();
     public boolean locked = true;
+    private String typeCountPayloadForGui = "";
 
     @Setter
     @Getter
@@ -105,6 +117,26 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamItemVault(this.mName);
+    }
+
+    @Override
+    protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
+        return new SteamItemVaultGui(this);
+    }
+
+    @Override
+    @Deprecated
+    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
+        super.drawTexts(screenElements, inventorySlot);
+        screenElements
+            .widget(
+                new TextWidget()
+                    .setStringSupplier(
+                        () -> VaultTypeCountFormatter
+                            .createTypeCountText(getSyncedTypeCountPayloadForGui(), "Info_SteamItemVault_TypeCount"))
+                    .setDefaultColor(COLOR_TEXT_WHITE.get())
+                    .setEnabled(true))
+            .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));
     }
 
     @Override
@@ -230,7 +262,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         if (!inputItems.isEmpty()) {
             for (ItemStack aItem : inputItems) {
                 ItemStack toDeplete = aItem.copy();
-                toDeplete.stackSize = this.injectItems(aItem, true);
+                toDeplete.stackSize = toIntAmount(injectStack(AEItemStack.create(aItem), true));
                 depleteInput(toDeplete);
             }
         }
@@ -240,7 +272,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 .copy();
             stack.setStackSize(stack.getStackSize() - this.tryAddOutput(stack.getItemStack()).stackSize);
             if (stack.getStackSize() > 0) {
-                this.extractItems(stack, true);
+                extractStack(stack, true);
             }
         }
 
@@ -377,9 +409,14 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotal", NF.format(capacityItem)));
         info.add(
             StatCollector.translateToLocalFormatted("Info_SteamItemVault_PerItemCapacity", NF.format(capacityPerItem)));
-        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsedTypes", NF.format(itemsCount())));
         info.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotalTypes", NF.format(maxItemCount())));
+            StatCollector.translateToLocalFormatted(
+                "Info_SteamItemVault_ItemUsedTypes",
+                NF.format(stackTypesCount(ITEM_STACK_TYPE))));
+        info.add(
+            StatCollector.translateToLocalFormatted(
+                "Info_SteamItemVault_ItemTotalTypes",
+                NF.format(maxStackTypes(ITEM_STACK_TYPE))));
         info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_RunningCost", getActualEnergyUsage()));
         info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_AutoVoiding", doVoidExcess));
         info.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
@@ -388,9 +425,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         this.setDoVoidExcess(!doVoidExcess);
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("Info_SteamItemVault_AutoVoiding") + doVoidExcess);
+        GTUtility.sendChatTrans(aPlayer, "Info_SteamItemVault_AutoVoiding", doVoidExcess);
     }
 
     @Override
@@ -476,18 +511,44 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public long maxItemCount() {
-        return MAX_DISTINCT_ITEMS;
+    public boolean supportsStackType(IAEStackType<?> type) {
+        return type == ITEM_STACK_TYPE;
     }
 
     @Override
-    public boolean hasItem() {
-        return true;
+    public Iterable<IAEStackType<?>> getSupportedStackTypes() {
+        return Collections.singletonList(ITEM_STACK_TYPE);
     }
 
     @Override
-    public boolean hasFluid() {
-        return false;
+    @SuppressWarnings("unchecked")
+    public <T extends IAEStack<T>> IItemList<T> getStoredStacks(IAEStackType<T> type) {
+        if (type == ITEM_STACK_TYPE) {
+            return (IItemList<T>) STORE_ITEM;
+        }
+        return type.createList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends IAEStack<T>> T getStoredStack(T stack) {
+        if (stack == null || stack.getStackType() != ITEM_STACK_TYPE) return null;
+        return (T) STORE_ITEM.findPrecise((IAEItemStack) stack);
+    }
+
+    @Override
+    public long stackTypesCount(IAEStackType<?> type) {
+        return type == ITEM_STACK_TYPE ? STORE_ITEM.size() : 0;
+    }
+
+    @Override
+    public long maxStackTypes(IAEStackType<?> type) {
+        return type == ITEM_STACK_TYPE ? MAX_DISTINCT_ITEMS : 0;
+    }
+
+    @Override
+    public long capacityPerStack(IAEStackType<?> type) {
+        return type == ITEM_STACK_TYPE ? capacityPerItem : 0;
     }
 
     @Override
@@ -506,122 +567,51 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
-    public int injectItems(ItemStack aItem, boolean doInput) {
+    public <T extends IAEStack<T>> long injectStack(T stack, boolean doInput) {
+        if (stack == null || stack.getStackType() != ITEM_STACK_TYPE) return 0;
         if (locked) return 0;
-        if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        IAEItemStack aeItem = getStoredItem(aItem);
-        long size = aeItem == null ? 0 : aeItem.getStackSize();
-        if (size >= capacityPerItem) return doVoidExcess ? aItem.stackSize : 0;
-        if (capacityPerItem - size < aItem.stackSize) {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(
-                        AEItemStack.create(aItem)
-                            .setStackSize(capacityPerItem - size));
-                } else {
-                    aeItem.setStackSize(capacityPerItem);
-                }
-                if (portHatch != null) {
-                    portHatch.postUpdateItem(aItem, capacityPerItem - size);
-                }
-            }
-            return doVoidExcess ? aItem.stackSize : (int) (capacityPerItem - size);
-        }
+        IAEItemStack itemStack = (IAEItemStack) stack;
+        IAEItemStack stored = STORE_ITEM.findPrecise(itemStack);
+        long storedSize = stored == null ? 0 : stored.getStackSize();
+        if (storedSize >= capacityPerItem) return doVoidExcess ? itemStack.getStackSize() : 0;
+        if (stored == null && STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
 
-        if (doInput) {
-            if (aeItem == null) {
-                STORE_ITEM.addStorage(AEItemStack.create(aItem));
+        long inserted = Math.min(itemStack.getStackSize(), capacityPerItem - storedSize);
+        if (doInput && inserted > 0) {
+            if (stored == null) {
+                STORE_ITEM.addStorage(
+                    itemStack.copy()
+                        .setStackSize(inserted));
             } else {
-                aeItem.setStackSize(size + aItem.stackSize);
+                stored.setStackSize(storedSize + inserted);
             }
             if (portHatch != null) {
-                portHatch.postUpdateItem(aItem, aItem.stackSize);
+                portHatch.postUpdate(itemStack, inserted);
             }
         }
-        return aItem.stackSize;
+        return doVoidExcess ? itemStack.getStackSize() : inserted;
     }
 
     @Override
-    public long injectItems(IAEItemStack aItem, boolean doInput) {
+    public <T extends IAEStack<T>> long extractStack(T stack, boolean doOutput) {
+        if (stack == null || stack.getStackType() != ITEM_STACK_TYPE) return 0;
         if (locked) return 0;
-        if (STORE_ITEM.size() >= MAX_DISTINCT_ITEMS) return 0;
-        IAEItemStack aeItem = getStoredItem(aItem.getItemStack());
-        long size = aeItem == null ? 0 : aeItem.getStackSize();
-        if (size >= capacityPerItem) return doVoidExcess ? aItem.getStackSize() : 0;
-        if (capacityPerItem - size < aItem.getStackSize()) {
-            if (doInput) {
-                if (aeItem == null) {
-                    STORE_ITEM.addStorage(
-                        aItem.copy()
-                            .setStackSize(capacityPerItem - size));
-                } else {
-                    aeItem.setStackSize(capacityPerItem);
-                }
-                if (portHatch != null) {
-                    portHatch.postUpdateItem(aItem.getItemStack(), capacityPerItem - size);
-                }
-            }
-            return doVoidExcess ? aItem.getStackSize() : (int) (capacityPerItem - size);
-        }
+        IAEItemStack itemStack = (IAEItemStack) stack;
+        IAEItemStack stored = STORE_ITEM.findPrecise(itemStack);
+        if (stored == null) return 0;
 
-        if (doInput) {
-            if (aeItem == null) {
-                STORE_ITEM.addStorage(aItem);
-            } else {
-                aeItem.setStackSize(size + aItem.getStackSize());
-            }
+        long extracted = Math.min(stored.getStackSize(), itemStack.getStackSize());
+        if (doOutput && extracted > 0) {
+            stored.setStackSize(stored.getStackSize() - extracted);
             if (portHatch != null) {
-                portHatch.postUpdateItem(aItem.getItemStack(), aItem.getStackSize());
+                portHatch.postUpdate(itemStack, -extracted);
             }
         }
-        return aItem.getStackSize();
+        return extracted;
     }
 
-    @Override
-    public long extractItems(IAEItemStack aItem, boolean doOutput) {
-        if (locked) return 0;
-        IAEItemStack aeItem = getStoredItem(aItem.getItemStack());
-        if (aeItem == null) return 0;
-        long storedSize = aeItem.getStackSize();
-        long requestSize = aItem.getStackSize();
-        if (storedSize > requestSize) {
-            if (doOutput) {
-                aeItem.setStackSize(storedSize - requestSize);
-                if (portHatch != null) {
-                    portHatch.postUpdateItem(aItem.getItemStack(), -requestSize);
-                }
-            }
-            return requestSize;
-        }
-
-        if (doOutput) {
-            aeItem.setStackSize(0);
-            if (portHatch != null) {
-                portHatch.postUpdateItem(aItem.getItemStack(), -storedSize);
-            }
-        }
-        return storedSize;
-    }
-
-    @Override
-    public long itemsCount() {
-        return STORE_ITEM.size();
-    }
-
-    @Override
-    public IAEItemStack getStoredItem(@Nullable ItemStack aItem) {
-        if (aItem == null) return null;
-        return STORE_ITEM.findPrecise(AEItemStack.create(aItem));
-    }
-
-    @Override
-    public boolean containsItems(ItemStack aItem) {
-        return getStoredItem(aItem) != null;
-    }
-
-    @Override
-    public IItemList<IAEItemStack> getStoreItems() {
-        return STORE_ITEM;
+    private int toIntAmount(long amount) {
+        return amount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) amount;
     }
 
     public void setCapacityItem(BigInteger capacityItem) {
@@ -641,6 +631,21 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
             amount = amount.add(BigInteger.valueOf(item.getStackSize()));
         }
         return amount;
+    }
+
+    public String getTypeCountPayloadForGui() {
+        return ITEM_STACK_TYPE.getId() + GUI_PAYLOAD_SEPARATOR
+            + stackTypesCount(ITEM_STACK_TYPE)
+            + GUI_PAYLOAD_SEPARATOR
+            + maxStackTypes(ITEM_STACK_TYPE);
+    }
+
+    public void setTypeCountPayloadFromGui(String typeCountPayloadForGui) {
+        this.typeCountPayloadForGui = typeCountPayloadForGui == null ? "" : typeCountPayloadForGui;
+    }
+
+    public String getSyncedTypeCountPayloadForGui() {
+        return typeCountPayloadForGui;
     }
 
     private String ensureUUID(NBTTagCompound aNBT) {

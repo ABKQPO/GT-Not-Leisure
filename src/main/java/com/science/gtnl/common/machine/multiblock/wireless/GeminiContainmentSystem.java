@@ -185,9 +185,7 @@ public class GeminiContainmentSystem extends WirelessEnergyMultiMachineBase<Gemi
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatToPlayer(
-            aPlayer,
-            StatCollector.translateToLocal("GeminiContainmentSystem_Mode_" + this.machineMode));
+        GTUtility.sendChatTrans(aPlayer, "GeminiContainmentSystem_Mode_" + this.machineMode);
     }
 
     @Override

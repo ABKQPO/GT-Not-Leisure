@@ -13,6 +13,7 @@ import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
@@ -649,43 +650,41 @@ public interface IGreenHouse extends IVoidable {
     default void tryChangeMode(EntityPlayer aPlayer) {
         // TODO: Remove this legacy greenhouse mode toggle after the MUI2 machine mode path replaces it.
         if (this.getMaxProgressTime() > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_Working"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Working");
             return;
         }
         if (!this.getStoredCrops()
             .isEmpty()) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_Mode_HasSeeds"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_HasSeeds");
             return;
         }
         this.setMode(GreenHouseModes.getNextMode(this.getMode()));
-        GTUtility.sendChatToPlayer(
+        GTUtility.sendChatTrans(
             aPlayer,
-            StatCollector.translateToLocalFormatted(
-                "Info_EdenGarden_Mode_Change",
-                this.getMode()
-                    .getName()));
+            "Info_EdenGarden_Mode_Change",
+            this.getMode()
+                .getName());
     }
 
     @Deprecated
     default void tryChangeSetupPhase(EntityPlayer aPlayer) {
         // TODO: Remove this legacy setup phase toggle after greenhouse setup is fully owned by MUI2 machine modes.
         if (this.getMaxProgressTime() > 0) {
-            GTUtility.sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Working"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
             return;
         }
         this.setSetupPhase(this.getSetupPhase() + 1);
         if (this.getSetupPhase() == 3) this.setSetupPhase(0);
 
-        String phaseChangeMessage = StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Change") + " ";
-
-        phaseChangeMessage += switch (this.getSetupPhase()) {
-            case 0 -> StatCollector.translateToLocal("Info_EdenGarden_Operating");
-            case 1 -> StatCollector.translateToLocal("Info_EdenGarden_Input");
-            case 2 -> StatCollector.translateToLocal("Info_EdenGarden_Output");
-            default -> StatCollector.translateToLocal("Info_EdenGarden_SetupPhase_Invalid");
+        String phaseKey = switch (this.getSetupPhase()) {
+            case 0 -> "Info_EdenGarden_Operating";
+            case 1 -> "Info_EdenGarden_Input";
+            case 2 -> "Info_EdenGarden_Output";
+            default -> "Info_EdenGarden_SetupPhase_Invalid";
         };
 
-        GTUtility.sendChatToPlayer(aPlayer, phaseChangeMessage);
+        GTUtility
+            .sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Change_Format", new ChatComponentTranslation(phaseKey));
     }
 
     @Deprecated
@@ -693,11 +692,9 @@ public interface IGreenHouse extends IVoidable {
         // TODO: Remove this legacy humidity toggle after greenhouse biome handling is fully CropsNH based.
         this.setUseNoHumidity(!this.isUseNoHumidity());
         if (this.isUseNoHumidity()) {
-            GTUtility
-                .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode_Enabled"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Enabled");
         } else {
-            GTUtility
-                .sendChatToPlayer(aPlayer, StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode_Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Disabled");
         }
     }
 

@@ -2,7 +2,6 @@ package com.science.gtnl.mixins.late.Gregtech;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,9 +24,7 @@ public abstract class MixinMTEDigitalTankBase {
 
         if (self instanceof ManaTank tank) {
             tank.isLiquidizerMode = !tank.isLiquidizerMode;
-            GTUtility.sendChatToPlayer(
-                aPlayer,
-                StatCollector.translateToLocal("Mode_ManaTank_0" + (tank.isLiquidizerMode ? 0 : 1)));
+            GTUtility.sendChatTrans(aPlayer, "Mode_ManaTank_0" + (tank.isLiquidizerMode ? 0 : 1));
             ci.cancel();
         }
     }

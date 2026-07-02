@@ -1,10 +1,14 @@
 package com.science.gtnl.common.machine.hatch;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_ITEMVAULTPORTHATCH;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +16,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.science.gtnl.api.IItemVault;
+import org.jetbrains.annotations.NotNull;
+
+import com.science.gtnl.api.IStackVault;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.config.AccessRestriction;
@@ -31,8 +37,8 @@ import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
@@ -52,11 +58,10 @@ import gregtech.api.render.TextureFactory;
 public class VaultPortHatch extends MTEHatch
     implements ICellContainer, IGridProxyable, IActionHost, IPowerChannelState, IMEConnectable {
 
-    public IItemVault controller;
+    public IStackVault controller;
     public AENetworkProxy gridProxy = null;
     public BaseActionSource machineSource = new MachineSource(this);
-    public IMEInventoryHandler<IAEItemStack> itemHandler;
-    public IMEInventoryHandler<IAEFluidStack> fluidHandler;
+    private final Map<IAEStackType<?>, List<IMEInventoryHandler>> handlers = new IdentityHashMap<>();
 
     public VaultPortHatch(int aID, String aName, String aNameRegional) {
         super(
@@ -70,8 +75,6 @@ public class VaultPortHatch extends MTEHatch
 
     public VaultPortHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, 0, aDescription, aTextures);
-        this.itemHandler = new ItemMEInventory();
-        this.fluidHandler = new FluidMEInventory();
     }
 
     @Override
@@ -122,33 +125,28 @@ public class VaultPortHatch extends MTEHatch
         updateValidGridProxySides();
     }
 
-    public void bind(IItemVault controller) {
+    public void bind(IStackVault controller) {
         if (this.controller != null && this.controller == controller) return;
         unbind();
         this.controller = controller;
-        if (this.controller.hasItem()) {
-            for (IAEItemStack item : controller.getStoreItems()) {
-                postUpdateItem(item.getItemStack(), item.getStackSize());
-            }
+        for (IAEStackType<?> type : this.controller.getSupportedStackTypes()) {
+            postStoredStacks(type, 1);
         }
-        if (this.controller.hasFluid()) {
-            for (IAEFluidStack fluid : controller.getStoreFluids()) {
-                postUpdateFluid(fluid.getFluidStack(), fluid.getStackSize());
+    }
+
+    private <T extends IAEStack<T>> void postStoredStacks(IAEStackType<T> type, long multiplier) {
+        IItemList<T> stacks = this.controller.getStoredStacks(type);
+        for (T stack : stacks) {
+            if (stack != null) {
+                postUpdate(stack, stack.getStackSize() * multiplier);
             }
         }
     }
 
     public void unbind() {
         if (this.controller == null) return;
-        if (this.controller.hasItem()) {
-            for (IAEItemStack item : controller.getStoreItems()) {
-                postUpdateItem(item.getItemStack(), -item.getStackSize());
-            }
-        }
-        if (this.controller.hasFluid()) {
-            for (IAEFluidStack fluid : controller.getStoreFluids()) {
-                postUpdateFluid(fluid.getFluidStack(), -fluid.getStackSize());
-            }
+        for (IAEStackType<?> type : this.controller.getSupportedStackTypes()) {
+            postStoredStacks(type, -1);
         }
         this.controller = null;
     }
@@ -233,11 +231,30 @@ public class VaultPortHatch extends MTEHatch
     @SuppressWarnings("rawtypes")
     public List<IMEInventoryHandler> getCellArray(StorageChannel channel) {
         if (channel == StorageChannel.ITEMS) {
-            return Collections.singletonList(itemHandler);
+            return getCellArray(ITEM_STACK_TYPE);
         } else if (channel == StorageChannel.FLUIDS) {
-            return Collections.singletonList(fluidHandler);
+            return getCellArray(FLUID_STACK_TYPE);
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public @NotNull List<IMEInventoryHandler> getCellArray(IAEStackType<?> type) {
+        if (controller == null || type == null || !controller.supportsStackType(type)) {
+            return Collections.emptyList();
+        }
+        List<IMEInventoryHandler> cached = handlers.get(type);
+        if (cached != null) {
+            return cached;
+        }
+        List<IMEInventoryHandler> created = Collections.singletonList(createHandler(type));
+        handlers.put(type, created);
+        return created;
+    }
+
+    private <T extends IAEStack<T>> IMEInventoryHandler<T> createHandler(IAEStackType<T> type) {
+        return new StackMEInventory<>(type);
     }
 
     @Override
@@ -262,27 +279,24 @@ public class VaultPortHatch extends MTEHatch
     }
 
     public void postUpdateItem(ItemStack itemStack, long amt) {
-        try {
-            getProxy().getStorage()
-                .postAlterationOfStoredItems(
-                    StorageChannel.ITEMS,
-                    Collections.singletonList(
-                        AEItemStack.create(itemStack)
-                            .setStackSize(amt)),
-                    this.machineSource);
-        } catch (GridAccessException e) {
-            // Ignore grid access failures during passive cache updates.
-        }
+        if (itemStack == null) return;
+        postUpdate(AEItemStack.create(itemStack), amt);
     }
 
     public void postUpdateFluid(FluidStack fluid, long amt) {
+        if (fluid == null) return;
+        postUpdate(AEFluidStack.create(fluid), amt);
+    }
+
+    public void postUpdate(IAEStack<?> stack, long amt) {
+        if (stack == null || amt == 0) return;
+        IAEStack<?> delta = stack.copy()
+            .setStackSize(amt);
         try {
             getProxy().getStorage()
                 .postAlterationOfStoredItems(
-                    StorageChannel.FLUIDS,
-                    Collections.singletonList(
-                        AEFluidStack.create(fluid)
-                            .setStackSize(amt)),
+                    delta.getStackType(),
+                    Collections.singletonList(delta),
                     this.machineSource);
         } catch (GridAccessException e) {
             // Ignore grid access failures during passive cache updates.
@@ -315,37 +329,49 @@ public class VaultPortHatch extends MTEHatch
         }
     }
 
-    public class ItemMEInventory implements IMEInventoryHandler<IAEItemStack> {
+    public class StackMEInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
+
+        private final IAEStackType<T> stackType;
+
+        public StackMEInventory(IAEStackType<T> stackType) {
+            this.stackType = stackType;
+        }
 
         @Override
-        public IAEItemStack injectItems(IAEItemStack input, Actionable mode, BaseActionSource src) {
-            final ItemStack inputStack = input.getItemStack();
-            if (inputStack == null) return null;
-            if (controller == null || getBaseMetaTileEntity() == null || !controller.hasItem()) return input;
+        public T injectItems(T input, Actionable mode, BaseActionSource src) {
+            if (input == null) return null;
+            if (controller == null || getBaseMetaTileEntity() == null || !controller.supportsStackType(stackType))
+                return input;
             if (mode != Actionable.SIMULATE) getBaseMetaTileEntity().markDirty();
-            long amount = controller.injectItems(input, mode != Actionable.SIMULATE);
+            long amount = controller.injectStack(input, mode != Actionable.SIMULATE);
             if (amount == 0) return input;
-            if (amount == input.getStackSize()) return null;
-            IAEItemStack result = AEItemStack.create(input.getItemStack());
-            return result.copy()
+            if (amount >= input.getStackSize()) return null;
+            return input.copy()
                 .setStackSize(input.getStackSize() - amount);
         }
 
         @Override
-        public IAEItemStack extractItems(IAEItemStack request, Actionable mode, BaseActionSource src) {
-            if (controller == null || getBaseMetaTileEntity() == null || !controller.hasItem()) return null;
+        public T extractItems(T request, Actionable mode, BaseActionSource src) {
+            if (request == null) return null;
+            if (controller == null || getBaseMetaTileEntity() == null || !controller.supportsStackType(stackType))
+                return null;
             if (mode != Actionable.SIMULATE) getBaseMetaTileEntity().markDirty();
-            long amount = controller.extractItems(request, mode != Actionable.SIMULATE);
+            long amount = controller.extractStack(request, mode != Actionable.SIMULATE);
             if (amount == 0) return null;
-            if (amount == request.getStackSize()) return request.copy();
-            IAEItemStack result = AEItemStack.create(request.getItemStack());
-            return result.copy()
+            return request.copy()
                 .setStackSize(amount);
         }
 
         @Override
         public StorageChannel getChannel() {
-            return StorageChannel.ITEMS;
+            if (stackType == ITEM_STACK_TYPE) return StorageChannel.ITEMS;
+            if (stackType == FLUID_STACK_TYPE) return StorageChannel.FLUIDS;
+            return null;
+        }
+
+        @Override
+        public IAEStackType<?> getStackType() {
+            return stackType;
         }
 
         @Override
@@ -354,15 +380,15 @@ public class VaultPortHatch extends MTEHatch
         }
 
         @Override
-        public boolean isPrioritized(IAEItemStack input) {
+        public boolean isPrioritized(T input) {
             return true;
         }
 
         @Override
-        public boolean canAccept(IAEItemStack input) {
-            if (controller == null || input == null || !controller.hasItem()) return false;
-            return controller.containsItems(input.getItemStack())
-                || controller.itemsCount() < controller.maxItemCount();
+        public boolean canAccept(T input) {
+            if (controller == null || input == null || !controller.supportsStackType(stackType)) return false;
+            return controller.getStoredStack(input) != null
+                || controller.stackTypesCount(stackType) < controller.maxStackTypes(stackType);
         }
 
         @Override
@@ -381,93 +407,14 @@ public class VaultPortHatch extends MTEHatch
         }
 
         @Override
-        public IItemList<IAEItemStack> getAvailableItems(IItemList<IAEItemStack> out, int iteration) {
-            if (controller != null && controller.hasItem()) {
-                controller.getStoreItems()
-                    .forEach(item -> {
-                        if (item != null) {
-                            out.add(item.copy());
-                        }
-                    });
-            }
-            return out;
-        }
-    }
-
-    public class FluidMEInventory implements IMEInventoryHandler<IAEFluidStack> {
-
-        @Override
-        public IAEFluidStack injectItems(IAEFluidStack input, Actionable mode, BaseActionSource src) {
-            final FluidStack inputStack = input.getFluidStack();
-            if (inputStack == null) return null;
-            if (controller == null || getBaseMetaTileEntity() == null || !controller.hasFluid()) return input;
-            if (mode != Actionable.SIMULATE) getBaseMetaTileEntity().markDirty();
-            long amount = controller.injectFluids(input, mode != Actionable.SIMULATE);
-            if (amount == 0) return input;
-            if (amount == input.getStackSize()) return null;
-            IAEFluidStack result = AEFluidStack.create(input.getFluidStack());
-            return result.copy()
-                .setStackSize(input.getStackSize() - amount);
-        }
-
-        @Override
-        public IAEFluidStack extractItems(IAEFluidStack request, Actionable mode, BaseActionSource src) {
-            if (controller == null || getBaseMetaTileEntity() == null || !controller.hasFluid()) return null;
-            if (mode != Actionable.SIMULATE) getBaseMetaTileEntity().markDirty();
-            long amount = controller.extractFluids(request, mode != Actionable.SIMULATE);
-            if (amount == 0) return null;
-            if (amount == request.getStackSize()) return request.copy();
-            IAEFluidStack result = AEFluidStack.create(request.getFluidStack());
-            return result.copy()
-                .setStackSize(amount);
-        }
-
-        @Override
-        public StorageChannel getChannel() {
-            return StorageChannel.FLUIDS;
-        }
-
-        @Override
-        public AccessRestriction getAccess() {
-            return AccessRestriction.READ_WRITE;
-        }
-
-        @Override
-        public boolean isPrioritized(IAEFluidStack input) {
-            return true;
-        }
-
-        @Override
-        public boolean canAccept(IAEFluidStack input) {
-            if (controller == null || input == null || !controller.hasFluid()) return false;
-            return controller.containsFluids(input.getFluidStack())
-                || controller.fluidsCount() < controller.maxFluidCount();
-        }
-
-        @Override
-        public int getPriority() {
-            return 0;
-        }
-
-        @Override
-        public int getSlot() {
-            return 0;
-        }
-
-        @Override
-        public boolean validForPass(int i) {
-            return true;
-        }
-
-        @Override
-        public IItemList<IAEFluidStack> getAvailableItems(IItemList<IAEFluidStack> out, int iteration) {
-            if (controller != null && controller.hasFluid()) {
-                controller.getStoreFluids()
-                    .forEach(fluid -> {
-                        if (fluid != null) {
-                            out.add(fluid.copy());
-                        }
-                    });
+        public IItemList<T> getAvailableItems(IItemList<T> out, int iteration) {
+            if (controller != null && controller.supportsStackType(stackType)) {
+                IItemList<T> storedStacks = controller.getStoredStacks(stackType);
+                for (T stack : storedStacks) {
+                    if (stack != null) {
+                        out.add(stack.copy());
+                    }
+                }
             }
             return out;
         }
