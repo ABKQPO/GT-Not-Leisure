@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -48,6 +47,7 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.recipe.TTRecipeAdder;
 import tectech.thing.CustomItemList;
+import tectech.thing.casing.TTCasingsContainer;
 
 @SuppressWarnings("deprecation")
 public class AssemblingLineRecipes implements IRecipePool {
@@ -70,16 +70,25 @@ public class AssemblingLineRecipes implements IRecipePool {
             .blocks();
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            ItemList.Machine_Multi_Furnace.get(1),
-            200000,
+            CustomItemList.Machine_Multi_Research.get(1),
+            640000,
+            256,
+            (int) TierEU.RECIPE_UV,
             1,
-            (int) TierEU.RECIPE_UXV,
-            1,
-            new Object[] { new ItemStack(Blocks.cobblestone, 4) },
-            new FluidStack[0],
+            new Object[] { CustomItemList.Machine_Multi_Research.get(1),
+                new ItemStack(TTCasingsContainer.sBlockCasingsTT, 16, 3), CustomItemList.DATApipe.get(64),
+                aeMaterials.cardSuperSpeed()
+                    .maybeStack(16)
+                    .orNull(),
+                GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.SuperconductorUV, 8),
+                new Object[] { OrePrefixes.circuit.get(Materials.UHV), 4 },
+                GTOreDictUnificator.get(OrePrefixes.wireGt01, Materials.NaquadahAlloy, 64),
+                ItemList.Field_Generator_UV.get(1) },
+            new FluidStack[] { Materials.UUMatter.getFluid(32000), Materials.Naquadah.getMolten(1152),
+                Materials.NaquadahEnriched.getMolten(1152), Materials.SuperCoolant.getFluid(8000) },
             GTNLItemList.LargeResearchStation.get(1),
-            20 * GTRecipeBuilder.SECONDS,
-            (int) TierEU.RECIPE_UXV);
+            30 * GTRecipeBuilder.SECONDS,
+            (int) TierEU.RECIPE_UV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
             CropsNHItemList.IndustrialFarmController.get(1),
