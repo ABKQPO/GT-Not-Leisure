@@ -3,12 +3,14 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +27,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,9 +37,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.gui.modularui.LargeResearchStationGui;
+import com.science.gtnl.utils.StructureUtils;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
+import gregtech.api.enums.Textures;
+import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -49,6 +58,8 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
+import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
+import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
 public class LargeResearchStation extends MTEResearchStation implements IResearchStationMarker {
 
@@ -61,20 +72,21 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     private static final String NBT_RESEARCH_OUTPUTS = "gtnlLargeResearchOutputs";
     private static final String NBT_DATA_STICKS = "gtnlLargeResearchDataSticks";
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final int HORIZONTAL_OFF_SET = 1;
-    private static final int VERTICAL_OFF_SET = 1;
-    private static final int DEPTH_OFF_SET = 0;
+    private static final String LRS_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_research_station";
+    private static final int HORIZONTAL_OFF_SET = 28;
+    private static final int VERTICAL_OFF_SET = 4;
+    private static final int DEPTH_OFF_SET = 4;
+    private static final int CONTROLLER_TEXTURE_ID = StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     private static final String[] STRUCTURE_DESCRIPTION = new String[] { EnumChatFormatting.AQUA + "Hint Details:",
-        "3x3x3 Cobblestone cube", "Controller: center of the front face",
-        "Allowed hatches: Energy, Multi-Amp/Laser Energy, Maintenance, Data Input, Input Bus, Output Bus, Input Hatch" };
+        "37x8x10 Research Center structure", "Controller: embedded in the research center casing row",
+        "Allowed hatches on Research Center casings: Energy, Multi-Amp/Laser Energy, Maintenance, Data Input, Input Bus, Output Bus, Input Hatch" };
     private static final Field PACKET_LOSS_DECAY_FROM_FIELD = getResearchStationField("packetLossDecayFrom");
+    private static final String[][] shape = StructureUtils.readStructureFromFile(LRS_STRUCTURE_FILE_PATH);
     private static final IStructureDefinition<MTEResearchStation> STRUCTURE_DEFINITION = IStructureDefinition
         .<MTEResearchStation>builder()
-        .addShape(
-            STRUCTURE_PIECE_MAIN,
-            transpose(new String[][] { { "AAA", "AAA", "AAA" }, { "A~A", "AAA", "AAA" }, { "AAA", "AAA", "AAA" } }))
+        .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
         .addElement(
-            'A',
+            'C',
             buildHatchAdder(MTEResearchStation.class)
                 .atLeast(
                     Energy.or(HatchElement.EnergyMulti),
@@ -83,9 +95,14 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
                     InputBus,
                     OutputBus,
                     InputHatch)
-                .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
+                .casingIndex(CONTROLLER_TEXTURE_ID)
                 .hint(1)
-                .buildAndChain(ofBlock(Blocks.cobblestone, 0)))
+                .buildAndChain(ofBlock(GregTechAPI.sBlockCasings8, 10)))
+        .addElement('A', chainAllGlasses())
+        .addElement('B', ofBlock(GregTechAPI.sBlockCasings8, 7))
+        .addElement('D', ofBlock(GregTechAPI.sBlockCasings9, 7))
+        .addElement('E', ofBlock(steelBars(), 0))
+        .addElement('F', ofBlock(chiselNeonite(), 3))
         .build();
 
     private int currentParallel = 1;
@@ -94,6 +111,16 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     private final ArrayList<ItemStack> researchStacksToConsume = new ArrayList<>();
     private final ArrayList<ItemStack> researchOutputsForGUI = new ArrayList<>();
     private int dataSticksToConsume;
+
+    private static Block steelBars() {
+        Block block = GameRegistry.findBlock("dreamcraft", "SteelBars");
+        return block == null ? Blocks.iron_bars : block;
+    }
+
+    private static Block chiselNeonite() {
+        Block block = GameRegistry.findBlock("chisel", "neonite");
+        return block == null ? Blocks.glowstone : block;
+    }
 
     public LargeResearchStation(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -130,6 +157,16 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     }
 
     @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean aActive, boolean aRedstone) {
+        if (side == facing) {
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CONTROLLER_TEXTURE_ID),
+                new TTRenderedExtendedFacingTexture(aActive ? TTMultiblockBase.ScreenON : TTMultiblockBase.ScreenOFF) };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(CONTROLLER_TEXTURE_ID) };
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("LargeResearchStationRecipeType"))
@@ -138,7 +175,22 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_03"))
             .addTecTechHatchInfo()
-            .beginStructureBlock(3, 3, 3, false)
+            .beginStructureBlock(37, 8, 10, false)
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_00"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_01"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_02"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_03"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_04"))
+            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Structure_05"))
+            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"), 1)
+            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"), 1)
+            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"), 1)
+            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"), 1)
+            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"), 1)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("tt.keyword.Structure.DataAccessHatch"),
+                StatCollector.translateToLocal("Tooltip_LargeResearchStation_Casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }

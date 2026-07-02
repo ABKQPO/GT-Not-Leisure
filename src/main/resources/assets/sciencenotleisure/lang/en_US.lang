@@ -947,6 +947,13 @@ Tooltip_LargeResearchStation_00=Has 4 parallels
 Tooltip_LargeResearchStation_01=Research Station mode is not limited by minimum computation input; each parallel can use the full computation
 Tooltip_LargeResearchStation_02=Has 4 research target filter slots, each slot corresponds to one parallel
 Tooltip_LargeResearchStation_03=Scanner mode is equivalent to a Debug Scanner
+Tooltip_LargeResearchStation_Casing=Any Radiant Naquadah Alloy Machine Casing
+Tooltip_LargeResearchStation_Structure_00=113x Any Tier Glass
+Tooltip_LargeResearchStation_Structure_01=682x Advanced Iridium Plated Machine Casing
+Tooltip_LargeResearchStation_Structure_02=232x Radiant Naquadah Alloy Machine Casing
+Tooltip_LargeResearchStation_Structure_03=335x Stabilized Naquadah Water Plant Machine Casing
+Tooltip_LargeResearchStation_Structure_04=4x Steel Bars
+Tooltip_LargeResearchStation_Structure_05=36x Neonite
 
 Replicator=Replicator
 Enchanting=Enchanting
