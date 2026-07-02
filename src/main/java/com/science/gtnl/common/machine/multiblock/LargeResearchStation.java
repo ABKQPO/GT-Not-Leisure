@@ -174,6 +174,11 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     }
 
     @Override
+    public int getMaxParallelRecipes() {
+        return Math.min(FILTER_SLOTS, Math.max(1, MAX_PARALLEL));
+    }
+
+    @Override
     @NotNull
     protected CheckRecipeResult checkProcessing_EM() {
         resetLargeProgress();
@@ -193,7 +198,7 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
         long computationRequired = 0;
         int recipeEUt = 0;
         long ampereFlow = 0;
-        int maxParallel = Math.min(FILTER_SLOTS, Math.max(1, MAX_PARALLEL));
+        int maxParallel = Math.min(getMaxParallelRecipes(), getTrueParallel());
         int outputFullAt = -1;
 
         for (int channel = 0; channel < maxParallel; channel++) {
@@ -579,7 +584,7 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
             + EnumChatFormatting.RESET
             + " / "
             + EnumChatFormatting.YELLOW
-            + formatNumber(MAX_PARALLEL)
+            + formatNumber(getMaxParallelRecipes())
             + EnumChatFormatting.RESET;
         return extended;
     }

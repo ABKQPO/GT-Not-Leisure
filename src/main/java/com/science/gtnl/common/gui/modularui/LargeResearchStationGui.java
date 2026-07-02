@@ -30,12 +30,19 @@ public class LargeResearchStationGui extends MTEMultiBlockBaseGui<LargeResearchS
     }
 
     @Override
-    protected IWidget createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
+    protected Flow createLeftPanelGapRow(ModularPanel parent, PanelSyncManager syncManager) {
+        return Flow.row()
+            .coverChildrenWidth()
+            .heightRel(1)
+            .child(createFilterSlots())
+            .childIf(!machineModeIcons.isEmpty(), () -> createModeSwitchButton(syncManager));
+    }
+
+    private IWidget createFilterSlots() {
         IResearchStationMarker marker = (IResearchStationMarker) multiblock;
         Flow row = Flow.row()
             .coverChildren()
-            .childPadding(1)
-            .marginLeft(5);
+            .childPadding(0);
         for (int i = 0; i < 4; i++) {
             row.child(
                 new PhantomItemSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), i))
