@@ -330,7 +330,6 @@ tc.research_text.gtnl.essentiaUpgradeElectric.0=ELECTRUM源质本身就代表了
 tc.research_text.gtnl.essentiaUpgradeElectric.1=可用源质:Electrum<BR><BR>能量公式:<BR>8x(3.0^动力仓等级)EU
 
 Tooltip_ResearchStation_00=在GUI内标记物品来指定研究目标
-Tooltip_ResearchStation_01=支持TecTech多安能源仓与激光仓！
 
 Tooltip_PurificationPlant_00=当连接绝对重子完美净化单元且不安装能源仓时将进入无线模式
 Tooltip_PurificationPlant_01=在无线模式下，所有连接此净水厂的净化单元最大并行提升为Long
@@ -943,7 +942,7 @@ Tooltip_DieselGenerator_02=流体容量：%sL
 DebugResearchStation=Debug研究站
 Tooltip_DebugResearchStation_00=立即扫描研究站配方，无需能量
 LargeResearchStation=科研中心
-LargeResearchStationRecipeType=研究站，扫描仪
+LargeResearchStationRecipeType=研究站,扫描仪
 Tooltip_LargeResearchStation_00=拥有4并行
 Tooltip_LargeResearchStation_01=研究站模式不受最小算力输入限制，每个并行均能享受完整算力
 Tooltip_LargeResearchStation_02=拥有4个研究目标过滤槽，每个槽位对应一并行
