@@ -1,5 +1,6 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -67,6 +68,18 @@ public class AssemblingLineRecipes implements IRecipePool {
         var aeBlocks = AEApi.instance()
             .definitions()
             .blocks();
+
+        TTRecipeAdder.addResearchableAssemblylineRecipe(
+            ItemList.Machine_Multi_Furnace.get(1),
+            200000,
+            1,
+            (int) TierEU.RECIPE_UXV,
+            1,
+            new Object[] { new ItemStack(Blocks.cobblestone, 4) },
+            new FluidStack[0],
+            GTNLItemList.LargeResearchStation.get(1),
+            20 * GTRecipeBuilder.SECONDS,
+            (int) TierEU.RECIPE_UXV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
             CropsNHItemList.IndustrialFarmController.get(1),

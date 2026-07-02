@@ -14,6 +14,10 @@ import com.cleanroommc.modularui.value.sync.LongSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widgets.ListWidget;
+import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
+import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.machine.multiblock.LargeResearchStation;
 
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
@@ -23,6 +27,21 @@ public class LargeResearchStationGui extends MTEMultiBlockBaseGui<LargeResearchS
 
     public LargeResearchStationGui(LargeResearchStation multiblock) {
         super(multiblock);
+    }
+
+    @Override
+    protected IWidget createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
+        IResearchStationMarker marker = (IResearchStationMarker) multiblock;
+        Flow row = Flow.row()
+            .coverChildren()
+            .childPadding(1)
+            .marginLeft(5);
+        for (int i = 0; i < 4; i++) {
+            row.child(
+                new PhantomItemSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), i))
+                    .size(18, 18));
+        }
+        return row;
     }
 
     @Override

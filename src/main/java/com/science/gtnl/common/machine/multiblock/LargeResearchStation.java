@@ -26,8 +26,11 @@ import net.minecraftforge.common.util.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.gui.modularui.LargeResearchStationGui;
 
 import gregtech.api.enums.HatchElement;
@@ -45,11 +48,13 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 
-public class LargeResearchStation extends MTEResearchStation {
+public class LargeResearchStation extends MTEResearchStation implements IResearchStationMarker {
 
     public static int MAX_PARALLEL = 4;
+    private static final int FILTER_SLOTS = 4;
 
     private static final String NBT_PARALLEL = "gtnlLargeResearchParallel";
+    private static final String NBT_LOCKED_OUTPUTS = "gtnlLargeResearchLockedOutputs";
     private static final String NBT_RESEARCH_STACKS = "gtnlLargeResearchStacks";
     private static final String NBT_RESEARCH_OUTPUTS = "gtnlLargeResearchOutputs";
     private static final String NBT_DATA_STICKS = "gtnlLargeResearchDataSticks";
@@ -61,7 +66,6 @@ public class LargeResearchStation extends MTEResearchStation {
         "3x3x3 Cobblestone cube", "Controller: center of the front face",
         "Allowed hatches: Energy, Maintenance, Data Input, Input Bus, Output Bus, Input Hatch" };
     private static final Field PACKET_LOSS_DECAY_FROM_FIELD = getResearchStationField("packetLossDecayFrom");
-    private static final Field LOCKED_ITEMS_FIELD = getOptionalResearchStationField("gtnl$lockedItems");
     private static final IStructureDefinition<MTEResearchStation> STRUCTURE_DEFINITION = IStructureDefinition
         .<MTEResearchStation>builder()
         .addShape(
@@ -83,6 +87,8 @@ public class LargeResearchStation extends MTEResearchStation {
         .build();
 
     private int currentParallel = 1;
+    private final ItemStack[] lockedOutputs = new ItemStack[FILTER_SLOTS];
+    private final IItemHandlerModifiable lockedOutputHandler = new ItemStackHandler(lockedOutputs);
     private final ArrayList<ItemStack> researchStacksToConsume = new ArrayList<>();
     private final ArrayList<ItemStack> researchOutputsForGUI = new ArrayList<>();
     private int dataSticksToConsume;
@@ -98,6 +104,11 @@ public class LargeResearchStation extends MTEResearchStation {
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new LargeResearchStation(mName);
+    }
+
+    @Override
+    public IItemHandlerModifiable gtnl$getResearchMarkerInventoryHandler() {
+        return lockedOutputHandler;
     }
 
     @Override
@@ -182,50 +193,39 @@ public class LargeResearchStation extends MTEResearchStation {
         long computationRequired = 0;
         int recipeEUt = 0;
         long ampereFlow = 0;
-        int maxParallel = Math.max(1, MAX_PARALLEL);
+        int maxParallel = Math.min(FILTER_SLOTS, Math.max(1, MAX_PARALLEL));
         int outputFullAt = -1;
 
-        for (TecTechRecipeMaps.TTResearchStationALRecipe assRecipe : TecTechRecipeMaps.researchableALRecipeList) {
-            if (outputs.size() >= maxParallel || outputs.size() >= availableDataSticks) {
+        for (int channel = 0; channel < maxParallel; channel++) {
+            if (outputs.size() >= availableDataSticks) {
                 break;
             }
-            if (!matchesLockedOutput(assRecipe.mOutput)) {
-                continue;
-            }
-            int availableResearchItems = countResearchItems(assRecipe.mResearchItem, researchStacksToConsume);
-            if (availableResearchItems < assRecipe.mResearchItem.stackSize) {
+            TecTechRecipeMaps.TTResearchStationALRecipe assRecipe = findRecipeForChannel(
+                getLockedOutput(channel),
+                researchStacksToConsume);
+            if (assRecipe == null) {
                 continue;
             }
 
-            int parallel = Math.min(
-                maxParallel - outputs.size(),
-                Math.min(
-                    availableResearchItems / assRecipe.mResearchItem.stackSize,
-                    availableDataSticks - outputs.size()));
-            for (int i = 0; i < parallel; i++) {
-                outputs.add(outputDataStick(assRecipe));
-                if (protectsExcessItem() && !canOutputAll(outputs.toArray(new ItemStack[0]))) {
-                    outputFullAt = outputs.size();
-                    outputs.remove(outputs.size() - 1);
-                    break;
-                }
-                if (firstResearchOutput == null && assRecipe.mOutput != null) {
-                    firstResearchOutput = assRecipe.mOutput.copy();
-                }
-                if (assRecipe.mOutput != null) {
-                    researchOutputsForGUI.add(assRecipe.mOutput.copy());
-                }
-                addResearchStackToConsume(
-                    researchStacksToConsume,
-                    assRecipe.mResearchItem,
-                    assRecipe.mResearchItem.stackSize);
-                computationRequired += assRecipe.mComputation * 20L;
-                recipeEUt = Math.min(recipeEUt, Math.min(assRecipe.mEUt, -assRecipe.mEUt));
-                ampereFlow = Math.max(ampereFlow, assRecipe.mAmperage);
-            }
-            if (outputFullAt > 0) {
+            outputs.add(outputDataStick(assRecipe));
+            if (protectsExcessItem() && !canOutputAll(outputs.toArray(new ItemStack[0]))) {
+                outputFullAt = outputs.size();
+                outputs.remove(outputs.size() - 1);
                 break;
             }
+            if (firstResearchOutput == null && assRecipe.mOutput != null) {
+                firstResearchOutput = assRecipe.mOutput.copy();
+            }
+            if (assRecipe.mOutput != null) {
+                researchOutputsForGUI.add(assRecipe.mOutput.copy());
+            }
+            addResearchStackToConsume(
+                researchStacksToConsume,
+                assRecipe.mResearchItem,
+                assRecipe.mResearchItem.stackSize);
+            computationRequired += assRecipe.mComputation * 20L;
+            recipeEUt = Math.min(recipeEUt, Math.min(assRecipe.mEUt, -assRecipe.mEUt));
+            ampereFlow = Math.max(ampereFlow, assRecipe.mAmperage);
         }
 
         if (outputs.isEmpty()) {
@@ -248,13 +248,27 @@ public class LargeResearchStation extends MTEResearchStation {
         return SimpleCheckRecipeResult.ofSuccess("researching");
     }
 
+    private TecTechRecipeMaps.TTResearchStationALRecipe findRecipeForChannel(ItemStack lockedOutput,
+        List<ItemStack> plannedConsumes) {
+        for (TecTechRecipeMaps.TTResearchStationALRecipe assRecipe : TecTechRecipeMaps.researchableALRecipeList) {
+            if (!matchesChannelLockedOutput(assRecipe.mOutput, lockedOutput)) {
+                continue;
+            }
+            int availableResearchItems = countResearchItems(assRecipe.mResearchItem, plannedConsumes);
+            if (availableResearchItems >= assRecipe.mResearchItem.stackSize) {
+                return assRecipe;
+            }
+        }
+        return null;
+    }
+
     private CheckRecipeResult checkDebugScannerProcessing() {
         if (countDataSticks() <= 0) {
             return CheckRecipeResultRegistry.NO_DATA_STICKS;
         }
 
         for (TecTechRecipeMaps.TTResearchStationALRecipe assRecipe : TecTechRecipeMaps.researchableALRecipeList) {
-            if (!matchesLockedOutput(assRecipe.mOutput)) {
+            if (!matchesAnyLockedOutput(assRecipe.mOutput)) {
                 continue;
             }
             if (countResearchItems(assRecipe.mResearchItem) < assRecipe.mResearchItem.stackSize) {
@@ -367,16 +381,37 @@ public class LargeResearchStation extends MTEResearchStation {
         return count;
     }
 
-    private boolean matchesLockedOutput(ItemStack output) {
-        if (LOCKED_ITEMS_FIELD == null) {
+    private ItemStack getLockedOutput(int channel) {
+        if (channel < 0 || channel >= FILTER_SLOTS) {
+            return null;
+        }
+        return lockedOutputHandler.getStackInSlot(channel);
+    }
+
+    private boolean matchesChannelLockedOutput(ItemStack output, ItemStack lockedOutput) {
+        return lockedOutput == null || GTUtility.areStacksEqual(output, lockedOutput, true);
+    }
+
+    private boolean matchesAnyLockedOutput(ItemStack output) {
+        if (!hasAnyLockedOutput()) {
             return true;
         }
-        try {
-            ItemStack[] lockedItems = (ItemStack[]) LOCKED_ITEMS_FIELD.get(this);
-            return lockedItems[0] == null || GTUtility.areStacksEqual(output, lockedItems[0], true);
-        } catch (IllegalAccessException e) {
-            return true;
+        for (int i = 0; i < FILTER_SLOTS; i++) {
+            ItemStack lockedOutput = getLockedOutput(i);
+            if (lockedOutput != null && matchesChannelLockedOutput(output, lockedOutput)) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private boolean hasAnyLockedOutput() {
+        for (int i = 0; i < FILTER_SLOTS; i++) {
+            if (getLockedOutput(i) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getResearchOutputsForGui() {
@@ -464,6 +499,19 @@ public class LargeResearchStation extends MTEResearchStation {
         super.saveNBTData(aNBT);
         aNBT.setInteger(NBT_PARALLEL, this.currentParallel);
         aNBT.setInteger(NBT_DATA_STICKS, this.dataSticksToConsume);
+        NBTTagList lockedOutputsTag = new NBTTagList();
+        for (int i = 0; i < FILTER_SLOTS; i++) {
+            ItemStack lockedOutput = getLockedOutput(i);
+            if (lockedOutput != null) {
+                NBTTagCompound lockedOutputTag = new NBTTagCompound();
+                lockedOutputTag.setInteger("Slot", i);
+                lockedOutput.writeToNBT(lockedOutputTag);
+                lockedOutputsTag.appendTag(lockedOutputTag);
+            }
+        }
+        if (lockedOutputsTag.tagCount() > 0) {
+            aNBT.setTag(NBT_LOCKED_OUTPUTS, lockedOutputsTag);
+        }
         if (!this.researchStacksToConsume.isEmpty()) {
             NBTTagList stacksTag = new NBTTagList();
             for (ItemStack stackToConsume : this.researchStacksToConsume) {
@@ -491,6 +539,17 @@ public class LargeResearchStation extends MTEResearchStation {
         this.dataSticksToConsume = aNBT.getInteger(NBT_DATA_STICKS);
         this.researchStacksToConsume.clear();
         this.researchOutputsForGUI.clear();
+        Arrays.fill(this.lockedOutputs, null);
+        if (aNBT.hasKey(NBT_LOCKED_OUTPUTS, Constants.NBT.TAG_LIST)) {
+            NBTTagList lockedOutputsTag = aNBT.getTagList(NBT_LOCKED_OUTPUTS, Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < lockedOutputsTag.tagCount(); i++) {
+                NBTTagCompound lockedOutputTag = lockedOutputsTag.getCompoundTagAt(i);
+                int slot = lockedOutputTag.getInteger("Slot");
+                if (slot >= 0 && slot < FILTER_SLOTS) {
+                    this.lockedOutputs[slot] = ItemStack.loadItemStackFromNBT(lockedOutputTag);
+                }
+            }
+        }
         if (aNBT.hasKey(NBT_RESEARCH_STACKS, Constants.NBT.TAG_LIST)) {
             NBTTagList stacksTag = aNBT.getTagList(NBT_RESEARCH_STACKS, Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < stacksTag.tagCount(); i++) {
@@ -550,13 +609,4 @@ public class LargeResearchStation extends MTEResearchStation {
         }
     }
 
-    private static Field getOptionalResearchStationField(String name) {
-        try {
-            Field field = MTEResearchStation.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (ReflectiveOperationException e) {
-            return null;
-        }
-    }
 }
