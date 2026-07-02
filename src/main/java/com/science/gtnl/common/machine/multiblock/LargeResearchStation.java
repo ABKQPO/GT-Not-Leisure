@@ -499,14 +499,43 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     @Override
     public void outputAfterRecipe_EM() {
         for (ItemStack researchStackToConsume : this.researchStacksToConsume) {
-            if (!depleteInput(researchStackToConsume)) {
+            if (!depleteInputsAcrossSlots(researchStackToConsume)) {
                 this.mOutputItems = null;
                 return;
             }
         }
-        if (this.dataSticksToConsume > 0 && !depleteInput(ItemList.Tool_DataStick.get(this.dataSticksToConsume))) {
+        if (this.dataSticksToConsume > 0
+            && !depleteInputsAcrossSlots(ItemList.Tool_DataStick.get(this.dataSticksToConsume))) {
             this.mOutputItems = null;
         }
+    }
+
+    private boolean depleteInputsAcrossSlots(ItemStack stack) {
+        if (GTUtility.isStackInvalid(stack)) {
+            return false;
+        }
+        if (countDepletableItems(stack) < stack.stackSize) {
+            return false;
+        }
+
+        ItemStack singleItem = GTUtility.copyAmount(1, stack);
+        for (int i = 0; i < stack.stackSize; i++) {
+            if (!depleteInput(singleItem)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int countDepletableItems(ItemStack stack) {
+        int count = 0;
+        ArrayList<ItemStack> inputs = getStoredInputs();
+        for (ItemStack input : inputs) {
+            if (GTUtility.areStacksEqual(stack, input)) {
+                count += input.stackSize;
+            }
+        }
+        return count;
     }
 
     @Override
