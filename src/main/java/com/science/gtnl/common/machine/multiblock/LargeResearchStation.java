@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,7 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
@@ -64,7 +66,7 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     private static final int DEPTH_OFF_SET = 0;
     private static final String[] STRUCTURE_DESCRIPTION = new String[] { EnumChatFormatting.AQUA + "Hint Details:",
         "3x3x3 Cobblestone cube", "Controller: center of the front face",
-        "Allowed hatches: Energy, Maintenance, Data Input, Input Bus, Output Bus, Input Hatch" };
+        "Allowed hatches: Energy, Multi-Amp/Laser Energy, Maintenance, Data Input, Input Bus, Output Bus, Input Hatch" };
     private static final Field PACKET_LOSS_DECAY_FROM_FIELD = getResearchStationField("packetLossDecayFrom");
     private static final IStructureDefinition<MTEResearchStation> STRUCTURE_DEFINITION = IStructureDefinition
         .<MTEResearchStation>builder()
@@ -125,6 +127,20 @@ public class LargeResearchStation extends MTEResearchStation implements IResearc
     @Override
     public String[] getStructureDescription(ItemStack stackSize) {
         return STRUCTURE_DESCRIPTION;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
+        tt.addMachineType(StatCollector.translateToLocal("LargeResearchStationRecipeType"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_00"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_01"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_02"))
+            .addInfo(StatCollector.translateToLocal("Tooltip_LargeResearchStation_03"))
+            .addTecTechHatchInfo()
+            .beginStructureBlock(3, 3, 3, false)
+            .toolTipFinisher();
+        return tt;
     }
 
     @Override

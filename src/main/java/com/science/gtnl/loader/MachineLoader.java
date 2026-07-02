@@ -2484,6 +2484,9 @@ public class MachineLoader {
                 GTNLMachineID.LARGE_RESEARCH_STATION.ID,
                 "LargeResearchStation",
                 StatCollector.translateToLocal("LargeResearchStation")));
+        AnimatedTooltipHandler.addItemTooltip(
+            GTNLItemList.LargeResearchStation.get(1),
+            () -> StatCollector.translateToLocal("Tooltip_ResearchStation_00"));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.LargeResearchStation.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 

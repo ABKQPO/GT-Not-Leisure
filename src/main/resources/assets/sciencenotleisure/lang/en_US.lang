@@ -329,7 +329,8 @@ tc.research_text.gtnl.essentiaUpgradeElectric=Get electricity from... electricit
 tc.research_text.gtnl.essentiaUpgradeElectric.0=The ELECTRUM Essentia itself represents electricity!<BR><BR>The higher the voltage of the generator dynamo hatch, the more ELECTRUM will be affected by potential difference and increase the amount of energy.
 tc.research_text.gtnl.essentiaUpgradeElectric.1=Acceptable Aspects: Electrum<BR><BR>The formula to calculate its power:<BR>8x(3.0^Dynamo Hatch Tier)EU
 
-Tooltip_ResearchStation_00=Mark item in GUI to designate the research target
+Tooltip_ResearchStation_00=Mark items in the GUI to specify research targets
+Tooltip_ResearchStation_01=Supports TecTech multi-amp Energy Hatches and Laser Energy Hatches!
 
 Tooltip_PurificationPlant_00=Enters Wireless Mode when linked to an Absolute Baryonic Perfection Purification Unit without energy hatches.
 Tooltip_PurificationPlant_01=In Wireless Mode, all linked units gain Long parallel capacity.
@@ -941,6 +942,12 @@ Tooltip_DieselGenerator_02=Fluid capacity: %sL
 
 DebugResearchStation=Debug Research Station
 Tooltip_DebugResearchStation_00=Immediately scans Research Station recipes, requires no energy
+LargeResearchStation=Research center
+LargeResearchStationRecipeType=Research Station, Scanner
+Tooltip_LargeResearchStation_00=Has 4 parallels
+Tooltip_LargeResearchStation_01=Research Station mode is not limited by minimum computation input; each parallel can use the full computation
+Tooltip_LargeResearchStation_02=Has 4 research target filter slots, each slot corresponds to one parallel
+Tooltip_LargeResearchStation_03=Scanner mode is equivalent to a Debug Scanner
 
 Replicator=Replicator
 Enchanting=Enchanting
