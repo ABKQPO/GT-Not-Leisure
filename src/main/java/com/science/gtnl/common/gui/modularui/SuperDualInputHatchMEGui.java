@@ -768,10 +768,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             return super.onMousePressed(mouseButton);
         }
 
-        @Override
-        public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
-            return false;
-        }
     }
 
     public static class StoredStackSizeFluidSlot extends FluidSlot {

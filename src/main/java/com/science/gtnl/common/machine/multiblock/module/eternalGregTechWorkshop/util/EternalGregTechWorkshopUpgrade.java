@@ -498,6 +498,7 @@ public enum EternalGregTechWorkshopUpgrade {
         }
     }
 
+    @Getter
     public enum BGWindowSize {
 
         STANDARD(250, 250, 110),
@@ -507,7 +508,6 @@ public enum EternalGregTechWorkshopUpgrade {
 
         private final int width;
         private final int height;
-        @Getter
         private final int loreY;
 
         BGWindowSize(int width, int height, int loreY) {
@@ -520,14 +520,6 @@ public enum EternalGregTechWorkshopUpgrade {
         public Size getWindowSize() {
             // TODO: Remove this MUI1 size getter after Eternal GregTech Workshop fallback windows are removed.
             return new Size(width, height);
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
         }
 
     }

@@ -6,7 +6,7 @@ import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.mixins.early.Gregtech.AccessorRecipeDisplayInfo;
+import com.science.gtnl.mixins.early.gregtech.AccessorRecipeDisplayInfo;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import gregtech.api.recipe.RecipeMetadataKey;

@@ -15,7 +15,6 @@ import com.gtnewhorizons.modularui.common.widget.ProgressBar;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
-import gregtech.api.enums.SteamVariant;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
 import gregtech.api.gui.modularui.GUITextureSet;
@@ -154,11 +153,6 @@ public class SteamAssemblerSteel extends MTEBasicMachineSteel {
                 .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
-    }
-
-    @Override
-    public SteamVariant getSteamVariant() {
-        return SteamVariant.STEEL;
     }
 
     @Override

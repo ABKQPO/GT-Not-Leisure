@@ -70,11 +70,6 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
         // TODO: Remove this mui1 fallback after DieselGenerator mui2 rollout is complete.

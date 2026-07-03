@@ -63,7 +63,7 @@ public class GreenHouseIC2Mode extends GreenHouseMode {
 
     @Override
     public MultiblockTooltipBuilder addTooltipInfo(MultiblockTooltipBuilder builder) {
-        String minVoltageTier = GTUtility.getColoredTierNameFromTier((byte) this.getMinVoltageTier());
+        String minVoltageTier = GTUtility.getColoredTierNameFromTier((byte) this.EIG_BALANCE_IC2_ACCELERATOR_TIER);
 
         int acceleration = (1 << EIG_BALANCE_IC2_ACCELERATOR_TIER);
 
@@ -86,7 +86,7 @@ public class GreenHouseIC2Mode extends GreenHouseMode {
 
     @Override
     public int getSlotCount(int machineTier) {
-        int tierAboveMin = machineTier - this.getMinVoltageTier();
+        int tierAboveMin = machineTier - this.EIG_BALANCE_IC2_ACCELERATOR_TIER;
         if (tierAboveMin < 0) return 0;
         return 4 << (2 * (tierAboveMin));
     }

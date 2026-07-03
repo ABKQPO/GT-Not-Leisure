@@ -113,7 +113,7 @@ public abstract class GreenHouseBucket {
         // display invalid buckets, we don't want people to think they lost their seeds or something.
         sb.append(this.isValid() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED);
         sb.append("x");
-        sb.append(this.getSeedCount());
+        sb.append(this.seedCount);
         sb.append(" ");
         sb.append(this.getDisplayName());
         this.getAdditionalInfoData(sb);

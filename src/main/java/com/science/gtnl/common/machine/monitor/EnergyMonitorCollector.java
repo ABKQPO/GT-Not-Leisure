@@ -47,6 +47,7 @@ import gregtech.api.metatileentity.implementations.MTEWirelessEnergy;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import kekztech.common.tileentities.MTELapotronicSuperCapacitor;
+import lombok.Getter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessDynamoMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessMulti;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
@@ -118,9 +119,7 @@ public class EnergyMonitorCollector {
                 rows.add(machineRow);
             }
 
-            for (EnergyMonitorRowSnapshot coverRow : createCoverRows(metaTileEntity, base)) {
-                rows.add(coverRow);
-            }
+            rows.addAll(createCoverRows(metaTileEntity, base));
         }
 
         BigInteger wirelessEnergy = WirelessNetworkManager.getUserEU(leader);
@@ -645,16 +644,13 @@ public class EnergyMonitorCollector {
 
     public static class VisibleRowsResult {
 
+        @Getter
         private final List<EnergyMonitorRowSnapshot> rows;
         private final boolean hasMoreRows;
 
         public VisibleRowsResult(List<EnergyMonitorRowSnapshot> rows, boolean hasMoreRows) {
             this.rows = rows == null ? Collections.emptyList() : rows;
             this.hasMoreRows = hasMoreRows;
-        }
-
-        public List<EnergyMonitorRowSnapshot> getRows() {
-            return rows;
         }
 
         public boolean hasMoreRows() {

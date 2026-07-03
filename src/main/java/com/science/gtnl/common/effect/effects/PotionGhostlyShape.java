@@ -22,7 +22,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.loader.EffectLoader;
-import com.science.gtnl.mixins.early.Minecraft.AccessorFoodStats;
+import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 

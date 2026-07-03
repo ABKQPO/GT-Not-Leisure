@@ -20,8 +20,9 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
     private final ItemStack pattern;
     private final IAEItemStack[] inputs;
     private IAEItemStack[] condensedInputs;
-    private final IAEItemStack[] output;
-    private final long baseOutput;
+    private final long[] baseInputSizes;
+    private final IAEItemStack[] outputs;
+    private final long[] baseOutputSizes;
     @Getter
     private int multiply = 1;
 
@@ -30,19 +31,26 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
 
         if (is.hasTagCompound()) {
             inputs = new IAEItemStack[81];
-            output = new IAEItemStack[1];
+            baseInputSizes = new long[inputs.length];
+            outputs = new IAEItemStack[1];
+            baseOutputSizes = new long[outputs.length];
             var list = new ItemList();
             var tag = is.getTagCompound();
             var in = tag.getTagList("in", Constants.NBT.TAG_COMPOUND);
             for (var i = 0; i < in.tagCount(); i++) {
                 var item = fromTagCreateAEItem(in.getCompoundTagAt(i));
                 inputs[i] = item;
-                list.addStorage(item);
+                if (item != null) {
+                    baseInputSizes[i] = item.getStackSize();
+                    list.addStorage(item);
+                }
             }
-            output[0] = fromTagCreateAEItem(tag.getCompoundTag("out"));
+            outputs[0] = fromTagCreateAEItem(tag.getCompoundTag("out"));
+            if (outputs[0] != null) {
+                baseOutputSizes[0] = outputs[0].getStackSize();
+            }
 
             this.condensedInputs = list.toArray(new IAEItemStack[0]);
-            this.baseOutput = output[0].getStackSize();
         } else {
             throw new IllegalArgumentException("No pattern here!");
         }
@@ -51,29 +59,24 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
     public DireCraftingPatternDetails(ICraftingPatternDetails is) {
         pattern = is.getPattern()
             .copy();
-        inputs = is.getInputs()
-            .clone();
+        inputs = copyStacks(is.getInputs());
+        baseInputSizes = captureStackSizes(inputs);
         var list = new ItemList();
-        for (var i = 0; i < inputs.length; i++) {
-            var ii = inputs[i];
+        for (IAEItemStack ii : inputs) {
             if (ii == null) continue;
-            inputs[i] = ii.copy();
             list.addStorage(ii);
         }
         condensedInputs = list.toArray(new IAEItemStack[0]);
-        output = is.getCondensedOutputs()
-            .clone();
-        for (var i = 0; i < output.length; i++) {
-            output[i] = output[i].copy();
-        }
-        this.baseOutput = output[0].getStackSize();
+        outputs = copyStacks(is.getCondensedOutputs());
+        baseOutputSizes = captureStackSizes(outputs);
     }
 
     public void setMultiply(int multiply) {
-        this.multiply = multiply;
-        for (var input : inputs) {
+        this.multiply = Math.max(1, multiply);
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
             if (input == null) continue;
-            input.setStackSize(multiply);
+            input.setStackSize(multiplyStackSize(baseInputSizes[i], this.multiply));
         }
         var list = new ItemList();
         for (var i = 0; i < inputs.length; i++) {
@@ -83,7 +86,37 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
             list.addStorage(ii);
         }
         condensedInputs = list.toArray(new IAEItemStack[0]);
-        output[0].setStackSize(baseOutput * multiply);
+        for (var i = 0; i < outputs.length; i++) {
+            var output = outputs[i];
+            if (output == null) continue;
+            output.setStackSize(multiplyStackSize(baseOutputSizes[i], this.multiply));
+        }
+    }
+
+    private static IAEItemStack[] copyStacks(IAEItemStack[] stacks) {
+        IAEItemStack[] copy = stacks.clone();
+        for (var i = 0; i < copy.length; i++) {
+            if (copy[i] != null) {
+                copy[i] = copy[i].copy();
+            }
+        }
+        return copy;
+    }
+
+    private static long[] captureStackSizes(IAEItemStack[] stacks) {
+        long[] sizes = new long[stacks.length];
+        for (var i = 0; i < stacks.length; i++) {
+            if (stacks[i] != null) {
+                sizes[i] = stacks[i].getStackSize();
+            }
+        }
+        return sizes;
+    }
+
+    private static long multiplyStackSize(long stackSize, int multiplier) {
+        if (stackSize <= 0) return stackSize;
+        if (stackSize > Long.MAX_VALUE / multiplier) return Long.MAX_VALUE;
+        return stackSize * multiplier;
     }
 
     private static AEItemStack fromTagCreateAEItem(final NBTTagCompound i) {
@@ -118,12 +151,12 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
 
     @Override
     public IAEItemStack[] getCondensedOutputs() {
-        return output;
+        return outputs;
     }
 
     @Override
     public IAEItemStack[] getOutputs() {
-        return output;
+        return outputs;
     }
 
     @Override

@@ -18,7 +18,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class SteamEntityCrusherModule extends SteamElevatorModule {
+public class SteamEntityCrusherModule extends SteamElevatorModuleBase {
 
     public static Random random = new Random();
 
@@ -121,11 +121,6 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
     }
 
     @Override
-    public int getMachineEffectRange() {
-        return 0;
-    }
-
-    @Override
     public double getEUtDiscount() {
         return 0.5 * (1 << (2 * Math.min(4, recipeOcCount)));
     }
@@ -133,11 +128,6 @@ public class SteamEntityCrusherModule extends SteamElevatorModule {
     @Override
     public double getDurationModifier() {
         return 2 / Math.pow(2, Math.min(4, recipeOcCount));
-    }
-
-    @Override
-    public int getMaxParallelRecipes() {
-        return 1;
     }
 
     @Override

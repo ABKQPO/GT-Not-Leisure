@@ -69,9 +69,7 @@ public class ToolHelper {
             hammerdrops.put(player, new ArrayList<>());
         }
 
-        if (!hammering.contains(player)) {
-            hammering.add(player);
-        }
+        hammering.add(player);
 
         for (int x1 = xs; x1 < xe; x1++)
             for (int y1 = ys; y1 < ye; y1++) for (int z1 = zs; z1 < ze; z1++) removeBlockWithDrops(
@@ -91,9 +89,7 @@ public class ToolHelper {
         int meta = world.getBlockMetadata(x, y, z);
         if (!world.isRemote) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
 
-        if (hammering.contains(player)) {
-            hammering.remove(player);
-        }
+        hammering.remove(player);
 
         if (!world.isRemote) {
             List<ItemStack> clusters = MatterCluster.makeReAvaritiaClusters(hammerdrops.get(player));

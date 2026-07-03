@@ -323,17 +323,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         return GTValues.V[Math.min(mMachineTier, mEnergyHatchTier)];
     }
 
-    public int checkEnergyHatchTier() {
-        int tier = 0;
-        for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) {
-            tier = Math.max(tHatch.mTier, tier);
-        }
-        for (MTEHatch tHatch : GTUtility.validMTEList(mExoticEnergyHatches)) {
-            tier = Math.max(tHatch.mTier, tier);
-        }
-        return tier;
-    }
-
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {

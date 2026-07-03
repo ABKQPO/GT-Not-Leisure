@@ -11,7 +11,11 @@ import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 
 import gregtech.api.util.GTUtility;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class GreenHouseStoredCrop {
 
     private static final String NBT_SEED = "seed";
@@ -22,22 +26,6 @@ public class GreenHouseStoredCrop {
 
     public GreenHouseStoredCrop(ItemStack seedStack, @Nullable ItemStack blockUnderStack) {
         this.seedStack = seedStack;
-        this.blockUnderStack = blockUnderStack;
-    }
-
-    public ItemStack getSeedStack() {
-        return seedStack;
-    }
-
-    public void setSeedStack(ItemStack seedStack) {
-        this.seedStack = seedStack;
-    }
-
-    public ItemStack getBlockUnderStack() {
-        return blockUnderStack;
-    }
-
-    public void setBlockUnderStack(ItemStack blockUnderStack) {
         this.blockUnderStack = blockUnderStack;
     }
 

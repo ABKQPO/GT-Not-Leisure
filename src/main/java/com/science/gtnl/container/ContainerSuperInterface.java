@@ -3,7 +3,7 @@ package com.science.gtnl.container;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorContainerUpgradeable;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorContainerUpgradeable;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SidelessMode;

@@ -54,7 +54,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import thaumcraft.common.config.Config;
 import vazkii.botania.common.brew.ModPotions;
 
-public class SteamBeaconModule extends SteamElevatorModule {
+public class SteamBeaconModule extends SteamElevatorModuleBase {
 
     public static final int CONFIG_WINDOW_ID = 14;
     public static final UITexture SPEED_EFFECT = UITexture

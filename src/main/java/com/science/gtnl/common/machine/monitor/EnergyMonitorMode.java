@@ -1,5 +1,8 @@
 package com.science.gtnl.common.machine.monitor;
 
+import lombok.Getter;
+
+@Getter
 public enum EnergyMonitorMode {
 
     WIRED("gtnl.energy_monitor.mode.wired"),
@@ -10,10 +13,6 @@ public enum EnergyMonitorMode {
 
     EnergyMonitorMode(String translationKey) {
         this.translationKey = translationKey;
-    }
-
-    public String getTranslationKey() {
-        return translationKey;
     }
 
     public EnergyMonitorMode next() {

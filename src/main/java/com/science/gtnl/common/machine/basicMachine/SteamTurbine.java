@@ -225,11 +225,6 @@ public class SteamTurbine extends MTEBasicGenerator implements IAddGregtechLogo 
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public int getPollution() {
         return 0;
     }

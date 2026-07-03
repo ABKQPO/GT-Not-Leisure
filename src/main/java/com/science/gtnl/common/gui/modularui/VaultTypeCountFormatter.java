@@ -43,7 +43,7 @@ public class VaultTypeCountFormatter {
 
         StringBuilder text = new StringBuilder();
         for (TypeCountLine line : lines) {
-            if (text.length() > 0) {
+            if (!text.isEmpty()) {
                 text.append(LINE_SEPARATOR);
             }
             text.append(formatLine(line, translationKey));

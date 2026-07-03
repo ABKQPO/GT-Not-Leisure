@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -19,7 +18,7 @@ import org.lwjgl.opengl.GL12;
 import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.block.blocks.BlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
-import com.science.gtnl.mixins.early.Minecraft.AccessorTessellator;
+import com.science.gtnl.mixins.early.minecraft.AccessorTessellator;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;

@@ -169,7 +169,7 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
 
     @Override
     public boolean isConfiguration() {
-        return getMinConfigTime() != 100 || getMaxConfigTime() != 100;
+        return mMinConfigTime != 100 || mMaxConfigTime != 100;
     }
 
     @Override
@@ -180,11 +180,6 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     @Override
     public int getMaxConfigTime() {
         return this.mMaxConfigTime;
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
     }
 
     @Override
@@ -214,7 +209,7 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
                 .widget(
                     new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
                         .setGetterInt(() -> mConfigTime)
-                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
+                        .setNumbers(mMinConfigTime, mMaxConfigTime)
                         .setOnScrollNumbers(1, 2, 5)
                         .setTextAlignment(Alignment.Center)
                         .setTextColor(Color.WHITE.normal)
@@ -260,6 +255,6 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     }
 
     public void setConfigTimeFromGui(int configTime) {
-        mConfigTime = Math.min(getMaxConfigTime(), Math.max(getMinConfigTime(), configTime));
+        mConfigTime = Math.min(mMaxConfigTime, Math.max(mMinConfigTime, configTime));
     }
 }

@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,7 +51,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.core.sync.GuiBridge;
-import appeng.items.contents.CellUpgrades;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
@@ -305,11 +303,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
     }
 
     @Override
-    public IInventory getUpgradesInventory(ItemStack is) {
-        return new CellUpgrades(is, 0);
-    }
-
-    @Override
     public boolean isEditable(final ItemStack is) {
         return false;
     }
@@ -372,21 +365,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
     }
 
     @Override
-    public int getBytes(ItemStack cellItem) {
-        return 0;
-    }
-
-    @Override
-    public int getBytesPerType(ItemStack cellItem) {
-        return 0;
-    }
-
-    @Override
-    public long getBytesLong(ItemStack cellItem) {
-        return 0;
-    }
-
-    @Override
     public boolean isBlackListed(IAEStack<?> requestedAddition) {
         if (!(requestedAddition instanceof IAEFluidStack fluidStack)) {
             return false;
@@ -395,16 +373,6 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
             .isBlacklistedInStorage(
                 fluidStack.getFluid()
                     .getClass());
-    }
-
-    @Override
-    public boolean storableInStorageCell() {
-        return false;
-    }
-
-    @Override
-    public boolean isStorageCell(ItemStack i) {
-        return true;
     }
 
     @Override

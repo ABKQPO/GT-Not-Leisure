@@ -551,7 +551,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         List<FluidStack> fluidStacks = getStoredFluids();
         for (FluidStack fluidStack : fluidStacks) {
             if (validFluidMap.containsKey(fluidStack.getFluid())) {
-                validFluidMap.merge(fluidStack.getFluid(), (long) fluidStack.amount, Long::sum);
+                validFluidMap.merge(fluidStack.getFluid(), fluidStack.amount, Long::sum);
                 fluidStack.amount = 0;
             }
         }

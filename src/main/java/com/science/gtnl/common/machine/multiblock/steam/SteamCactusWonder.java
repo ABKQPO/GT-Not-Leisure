@@ -114,7 +114,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
                 Arrays.stream(StructureUtility.transpose(shape))
                     .map(
                         sa -> Arrays.stream(sa)
-                            .map(s -> s.replaceAll("E", " "))
+                            .map(s -> s.replace("E", " "))
                             .toArray(String[]::new))
                     .toArray(String[][]::new))
             .addElement('A', GTStructureUtility.chainAllGlasses())

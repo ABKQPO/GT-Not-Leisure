@@ -18,48 +18,34 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class AssemblerMatrixPatternState {
 
     private final Map<ItemStack, DireCraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
     private final Set<IAEItemStack> possibleOutputs = new ObjectOpenHashSet<>();
     private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
     private final Queue<IAEItemStack> inputs = new ArrayDeque<>();
+    @Setter
     private IAEItemStack[] cachedOutputItems;
     private int patternMultiply = 1;
-
-    public Map<ItemStack, DireCraftingPatternDetails> getPatterns() {
-        return patterns;
-    }
-
-    public Set<IAEItemStack> getPossibleOutputs() {
-        return possibleOutputs;
-    }
-
-    public Queue<IAEItemStack> getOutputs() {
-        return outputs;
-    }
-
-    public Queue<IAEItemStack> getInputs() {
-        return inputs;
-    }
-
-    public IAEItemStack[] getCachedOutputItems() {
-        return cachedOutputItems;
-    }
-
-    public void setCachedOutputItems(IAEItemStack[] cachedOutputItems) {
-        this.cachedOutputItems = cachedOutputItems;
-    }
-
-    public int getPatternMultiply() {
-        return patternMultiply;
-    }
 
     public void setPatternMultiply(int patternMultiply) {
         this.patternMultiply = Math.max(1, patternMultiply);
         for (DireCraftingPatternDetails pattern : patterns.values()) {
             pattern.setMultiply(this.patternMultiply);
+        }
+        rebuildPossibleOutputs();
+    }
+
+    public void addPattern(ItemStack stack, DireCraftingPatternDetails details) {
+        DireCraftingPatternDetails previous = patterns.put(stack, details);
+        if (previous != null) {
+            rebuildPossibleOutputs();
+        } else {
+            addPossibleOutputs(details);
         }
     }
 
@@ -68,7 +54,7 @@ public class AssemblerMatrixPatternState {
         if (removedStack != null) {
             DireCraftingPatternDetails removedPattern = patterns.remove(removedStack);
             if (removedPattern != null) {
-                possibleOutputs.remove(removedPattern.getCondensedOutputs()[0]);
+                rebuildPossibleOutputs();
             }
             changed = true;
         }
@@ -82,8 +68,7 @@ public class AssemblerMatrixPatternState {
             }
             if (pattern instanceof DireCraftingPatternDetails details) {
                 details.setMultiply(patternMultiply);
-                patterns.put(newStack, details);
-                possibleOutputs.add(details.getCondensedOutputs()[0]);
+                addPattern(newStack, details);
                 changed = true;
             }
         }
@@ -95,23 +80,29 @@ public class AssemblerMatrixPatternState {
             return false;
         }
 
-        IAEItemStack output = patternDetails.getCondensedOutputs()[0];
-        long assemblerSize = ((LargeInventoryCrafting) table).getAssemblerSize();
+        long assemblerSize = Math.max(1, ((LargeInventoryCrafting) table).getAssemblerSize());
+        IAEItemStack[] patternInputs = direPattern.getInputs();
         for (int slot = 0; slot < table.getSizeInventory(); slot++) {
             ItemStack stack = table.getStackInSlot(slot);
             if (stack != null) {
                 ItemStack containerItem = AssemblerMatrix.resolveContainerItem(stack);
                 if (containerItem != null) {
+                    IAEItemStack patternInput = slot < patternInputs.length ? patternInputs[slot] : null;
+                    long containerAmount = patternInput == null ? assemblerSize
+                        : multiplyStackSize(patternInput.getStackSize(), assemblerSize);
                     inputs.add(
                         AEItemStack.create(containerItem)
-                            .setStackSize(assemblerSize * direPattern.getMultiply()));
+                            .setStackSize(containerAmount));
                 }
                 stack.stackSize = 1;
             }
         }
-        outputs.add(
-            output.copy()
-                .setStackSize(output.getStackSize() * assemblerSize));
+        for (IAEItemStack output : patternDetails.getCondensedOutputs()) {
+            if (output == null) continue;
+            outputs.add(
+                output.copy()
+                    .setStackSize(multiplyStackSize(output.getStackSize(), assemblerSize)));
+        }
         return true;
     }
 
@@ -124,5 +115,26 @@ public class AssemblerMatrixPatternState {
         outputs.clear();
         inputs.clear();
         cachedOutputItems = new IAEItemStack[0];
+    }
+
+    private void addPossibleOutputs(DireCraftingPatternDetails details) {
+        for (IAEItemStack output : details.getCondensedOutputs()) {
+            if (output != null) {
+                possibleOutputs.add(output);
+            }
+        }
+    }
+
+    private void rebuildPossibleOutputs() {
+        possibleOutputs.clear();
+        for (DireCraftingPatternDetails details : patterns.values()) {
+            addPossibleOutputs(details);
+        }
+    }
+
+    private static long multiplyStackSize(long stackSize, long multiplier) {
+        if (stackSize <= 0 || multiplier <= 0) return 0;
+        if (stackSize > Long.MAX_VALUE / multiplier) return Long.MAX_VALUE;
+        return stackSize * multiplier;
     }
 }

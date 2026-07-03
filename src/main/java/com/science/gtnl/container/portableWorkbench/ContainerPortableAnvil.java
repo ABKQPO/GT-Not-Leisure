@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.item.items.PortableItem;
-import com.science.gtnl.mixins.early.Minecraft.AccessorContainerRepair;
+import com.science.gtnl.mixins.early.minecraft.AccessorContainerRepair;
 
 public class ContainerPortableAnvil extends ContainerRepair {
 

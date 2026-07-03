@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.api.IGreenHouse;
-import com.science.gtnl.mixins.late.ThaumicTinkerer.AccessorAspectCropLootManager;
+import com.science.gtnl.mixins.late.thaumicTinkerer.AccessorAspectCropLootManager;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseDropTable;
 import com.science.gtnl.utils.machine.greenHouseManager.IGreenHouseBucketFactory;
@@ -73,7 +73,7 @@ public class GreenHouseInfusedSeedBucket extends GreenHouseBucket {
 
         HashMap<ItemStack, Integer> aspectDrops = AccessorAspectCropLootManager.getLootMap()
             .get(aspect);
-        if (aspectDrops == null || aspectDrops.size() == 0) return; // no drops
+        if (aspectDrops == null || aspectDrops.isEmpty()) return; // no drops
 
         int totalDrop = this.seedCount;
         int ordoTendency = ItemInfusedSeeds.getAspectTendencies(this.seed)

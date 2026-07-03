@@ -200,11 +200,6 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
     public void checkMaintenance() {}
 
     @Override
-    public boolean getDefaultHasMaintenanceChecks() {
-        return false;
-    }
-
-    @Override
     public boolean shouldCheckMaintenance() {
         return false;
     }

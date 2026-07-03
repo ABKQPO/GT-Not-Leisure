@@ -4,9 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorAEBaseItemBlock;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorAEBaseItemBlock;
 
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseTileBlock;

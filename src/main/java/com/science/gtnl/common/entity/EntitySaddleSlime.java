@@ -18,7 +18,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import com.science.gtnl.mixins.early.Minecraft.AccessorEntityLivingBase;
+import com.science.gtnl.mixins.early.minecraft.AccessorEntityLivingBase;
 
 public class EntitySaddleSlime extends EntitySlime {
 

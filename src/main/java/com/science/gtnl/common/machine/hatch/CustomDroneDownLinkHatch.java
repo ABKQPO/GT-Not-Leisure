@@ -122,7 +122,7 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
 
     @Override
     public boolean isConfiguration() {
-        return getMinConfigTime() != 100 || getMaxConfigTime() != 100;
+        return mMinConfigTime != 100 || mMaxConfigTime != 100;
     }
 
     @Override
@@ -138,11 +138,6 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     @Override
     public int getGUIHeight() {
         return isConfiguration() ? 85 : 40;
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
     }
 
     @Override
@@ -174,7 +169,7 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
                 .widget(
                     new TextFieldWidget().setSetterInt(val -> mConfigTime = val)
                         .setGetterInt(() -> mConfigTime)
-                        .setNumbers(getMinConfigTime(), getMaxConfigTime())
+                        .setNumbers(mMinConfigTime, mMaxConfigTime)
                         .setOnScrollNumbers(1, 2, 5)
                         .setTextAlignment(Alignment.Center)
                         .setTextColor(Color.WHITE.normal)
@@ -220,6 +215,6 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     }
 
     public void setConfigTimeFromGui(int configTime) {
-        mConfigTime = Math.min(getMaxConfigTime(), Math.max(getMinConfigTime(), configTime));
+        mConfigTime = Math.min(mMaxConfigTime, Math.max(mMinConfigTime, configTime));
     }
 }

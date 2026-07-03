@@ -1,7 +1,6 @@
 package com.science.gtnl.loader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.dreammaster.scripts.IScriptLoader;
@@ -15,7 +14,7 @@ public class ScriptLoader {
 
     public static void registry() {
 
-        List<IScriptLoader> scripts = new ArrayList<>(Arrays.asList(new ScriptTinkersConstruct()));
+        List<IScriptLoader> scripts = new ArrayList<>(List.of(new ScriptTinkersConstruct()));
 
         if (Mods.Avaritia.isModLoaded()) scripts.add(new ScriptAvaritia());
 

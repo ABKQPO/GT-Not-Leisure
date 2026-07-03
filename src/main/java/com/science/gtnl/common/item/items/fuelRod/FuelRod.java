@@ -85,7 +85,7 @@ public class FuelRod extends RadioactiveItem implements IReactorComponent, IBoxa
                             heatAcceptors.get(0).y,
                             dheat);
                         heat += dheat;
-                        heatAcceptors.remove(0);
+                        heatAcceptors.removeFirst();
                     }
 
                     if (heat > 0) {
@@ -93,7 +93,7 @@ public class FuelRod extends RadioactiveItem implements IReactorComponent, IBoxa
                     }
                 }
             }
-            if (this.getCustomDamage(stack) >= this.getMaxCustomDamage() - 1) {
+            if (this.getCustomDamage(stack) >= this.Duration - 1) {
                 reactor.setItemAt(x, y, GTUtility.copyAmount(1, depletedResult));
             } else if (heatRun) {
                 this.setCustomDamage(stack, this.getCustomDamage(stack) + 1);
@@ -200,8 +200,8 @@ public class FuelRod extends RadioactiveItem implements IReactorComponent, IBoxa
         list.add(
             String.format(
                 StatCollector.translateToLocal("Tooltip_FuelRod_00"),
-                getMaxCustomDamage() - getCustomDamage(stack),
-                getMaxCustomDamage()));
+                Duration - getCustomDamage(stack),
+                Duration));
         if (this.HeatBonus > 0F)
             list.add(String.format(StatCollector.translateToLocal("Tooltip_FuelRod_01"), this.HeatBonus));
         list.add(

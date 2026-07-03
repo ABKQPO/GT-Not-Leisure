@@ -28,12 +28,14 @@ import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoidBus;
+import lombok.Getter;
 
 public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
 
     public static String DATA_STICK_DATA_TYPE = "superVoidBusFilter";
     public static String LOCKED_ITEMS_NBT_KEY = "lockedItems";
 
+    @Getter
     public ItemStack[] lockedItems = new ItemStack[100];
     public ItemStackHandler lockedInventoryHandler = new ItemStackHandler(lockedItems);
 
@@ -100,10 +102,6 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
             }
         }
         return false;
-    }
-
-    public ItemStack[] getLockedItems() {
-        return lockedItems;
     }
 
     @Override

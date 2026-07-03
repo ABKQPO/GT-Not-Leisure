@@ -249,11 +249,6 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new HumongousSolidifierHatchGui(this).build(data, syncManager, uiSettings);
     }

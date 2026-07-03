@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.Objects;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -27,11 +25,10 @@ public class ShimmerRecipes {
     }
 
     public static void registerConversion(ItemStack input, ObjectList<ItemStack> outputs) {
-        if (input == null || outputs == null || outputs.isEmpty()) return;
+        if (!GTUtility.isStackValid(input) || input.stackSize <= 0 || outputs == null || outputs.isEmpty()) return;
 
-        // Filter non-null outputs
         ObjectArrayList<ItemStack> filteredOutputs = outputs.stream()
-            .filter(Objects::nonNull)
+            .filter(stack -> GTUtility.isStackValid(stack) && stack.stackSize > 0)
             .collect(ObjectArrayList::new, ObjectArrayList::add, ObjectArrayList::addAll);
 
         if (filteredOutputs.isEmpty()) return;

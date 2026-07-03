@@ -43,7 +43,7 @@ public class PortalToAlfheimExplosion implements IProcess {
                 double distance = Utils.getDistanceAtoB(x, z, xCoord, zCoord);
                 if (distance < expansion && distance >= size - 1) {
                     float tracePower = power - (float) (expansion / 10D);
-                    tracePower *= 1F + (world.rand.nextFloat() - 0.5F) * 0.2;
+                    tracePower *= (float) (1F + (world.rand.nextFloat() - 0.5F) * 0.2);
                     ProcessHandler.addProcess(new PortalToAlfheimExplosionTrace(world, x, yCoord, z, tracePower));
                 }
             }

@@ -2,7 +2,7 @@ package com.science.gtnl.container;
 
 import net.minecraft.entity.player.InventoryPlayer;
 
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorContainerUpgradeable;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorContainerUpgradeable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;

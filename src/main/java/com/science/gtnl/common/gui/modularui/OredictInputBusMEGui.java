@@ -194,7 +194,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                         return false;
                     }
                 }.backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK))
-                .modularSlotSupplier((handler, index) -> new ModularSlot(handler, index))
+                .modularSlotSupplier(ModularSlot::new)
                 .build());
     }
 

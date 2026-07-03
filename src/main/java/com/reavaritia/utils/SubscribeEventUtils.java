@@ -203,7 +203,7 @@ public class SubscribeEventUtils {
                         .getBoolean("HammerMode")
                         || held.getTagCompound()
                             .getBoolean("DestroyerMode")) {
-                        event.newSpeed *= 0.5;
+                        event.newSpeed *= 0.5F;
                     }
                 }
             }

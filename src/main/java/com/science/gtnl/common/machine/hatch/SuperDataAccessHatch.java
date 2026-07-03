@@ -14,8 +14,8 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.science.gtnl.common.gui.modularui.SuperDataAccessHatchGui;
-import com.science.gtnl.mixins.early.Gregtech.AccessorCommonMetaTileEntity;
-import com.science.gtnl.mixins.early.Gregtech.AccessorMetaTileEntity;
+import com.science.gtnl.mixins.early.gregtech.AccessorCommonMetaTileEntity;
+import com.science.gtnl.mixins.early.gregtech.AccessorMetaTileEntity;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;
@@ -41,11 +41,6 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperDataAccessHatch(mName, mTier, mDescriptionArray, mTextures);
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
     }
 
     @Override

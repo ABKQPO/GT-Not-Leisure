@@ -97,7 +97,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_elevator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SE_STRUCTURE_FILE_PATH);
-    public ArrayList<SteamElevatorModule> mModuleHatches = new ArrayList<>();
+    public ArrayList<SteamElevatorModuleBase> mModuleHatches = new ArrayList<>();
     public boolean isLoadedChunk;
     public boolean wirelessMode = false;
     public String costingEUText = Utils.ZERO_STRING;
@@ -118,7 +118,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     @Override
     public void onRemoval() {
         if (mModuleHatches != null && !mModuleHatches.isEmpty()) {
-            for (SteamElevatorModule projectModule : mModuleHatches) {
+            for (SteamElevatorModuleBase projectModule : mModuleHatches) {
                 projectModule.disconnect();
             }
         }
@@ -162,7 +162,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                         } else {
                             perModuleEnergy = getEUVar() / mModuleHatches.size();
                         }
-                        for (SteamElevatorModule mModule : mModuleHatches) {
+                        for (SteamElevatorModuleBase mModule : mModuleHatches) {
                             mModule.connect();
                             if (wirelessMode && SteamWirelessNetworkManager.getUserSteam(ownerUUID)
                                 .compareTo(BigInteger.ZERO) > 0) {
@@ -183,7 +183,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                 }
             } else {
                 if (!mModuleHatches.isEmpty()) {
-                    for (SteamElevatorModule mModule : mModuleHatches) {
+                    for (SteamElevatorModuleBase mModule : mModuleHatches) {
                         mModule.disconnect();
                     }
                 }
@@ -224,17 +224,28 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             .addElement('G', StructureUtility.ofBlock(Blocks.brick_block, 0))
             .addElement(
                 'H',
-                GTStructureUtility.buildHatchAdder(SteamElevator.class)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .atLeast(
-                        SteamHatchElement.InputBus_Steam,
-                        SteamHatchElement.OutputBus_Steam,
-                        HatchElement.InputHatch,
-                        HatchElement.OutputHatch,
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus)
-                    .buildAndChain(GregTechAPI.sBlockCasings2, 0))
+                StructureUtility.ofChain(
+                    GTStructureUtility.buildHatchAdder(SteamElevator.class)
+                        .casingIndex(getCasingTextureID())
+                        .hint(1)
+                        .atLeast(
+                            SteamHatchElement.InputBus_Steam,
+                            SteamHatchElement.OutputBus_Steam,
+                            HatchElement.InputHatch,
+                            HatchElement.OutputHatch,
+                            HatchElement.InputBus,
+                            HatchElement.OutputBus)
+                        .buildAndChain(GregTechAPI.sBlockCasings2, 0),
+                    buildSteamWirelessInput(SteamElevator.class)
+                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .build(),
+                    buildSteamBigInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .build(),
+                    buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .hint(1)
+                        .buildAndChain(BlockLoader.metaCasing, 25)))
             .addElement(
                 'I',
                 HatchElementBuilder.<SteamElevator>builder()
@@ -396,7 +407,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         if (aMetaTileEntity == null) {
             return false;
         }
-        if (aMetaTileEntity instanceof SteamElevatorModule moduleBase) {
+        if (aMetaTileEntity instanceof SteamElevatorModuleBase moduleBase) {
             return mModuleHatches.add(moduleBase);
         }
         return false;
@@ -720,7 +731,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     public enum SteamModuleElement implements IHatchElement<SteamElevator> {
 
-        SteamModule(SteamElevator::addModuleToMachineList, SteamElevatorModule.class) {
+        SteamModule(SteamElevator::addModuleToMachineList, SteamElevatorModuleBase.class) {
 
             @Override
             public long count(SteamElevator tileEntity) {

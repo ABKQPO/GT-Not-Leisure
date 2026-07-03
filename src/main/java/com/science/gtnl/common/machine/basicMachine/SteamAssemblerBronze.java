@@ -13,7 +13,6 @@ import com.gtnewhorizons.modularui.common.widget.ProgressBar;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
-import gregtech.api.enums.SteamVariant;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.interfaces.ITexture;
@@ -129,11 +128,6 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
                 .addIcon(Textures.BlockIcons.OVERLAY_BOTTOM_DISASSEMBLER_GLOW)
                 .glow()
                 .build() };
-    }
-
-    @Override
-    public SteamVariant getSteamVariant() {
-        return SteamVariant.BRONZE;
     }
 
     @Override

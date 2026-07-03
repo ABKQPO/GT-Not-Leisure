@@ -232,7 +232,7 @@ public class CheatOreProcessingRecipes implements IRecipePool {
         // registry gt stone ore
         for (OrePrefixes prefixes : basicStoneTypesExceptNormalStone) {
             if (GTOreDictUnificator.get(prefixes, material, 1) == null) {
-                ScienceNotLeisure.LOG.info("Failed to get ore: material=" + material + " , prefixes=" + prefixes);
+                ScienceNotLeisure.LOG.info("Failed to get ore: material={} , prefixes={}", material, prefixes);
                 continue;
             }
             registryOreProcessRecipe(

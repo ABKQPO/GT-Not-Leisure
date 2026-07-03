@@ -4,6 +4,7 @@ import static com.reavaritia.common.BlockLoader.ExtremeAnvil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -268,11 +269,7 @@ public class EntityExtremeAnvil extends Entity {
         tagCompound.setFloat("FallHurtAmount", this.fallDamageMultiplier);
         tagCompound.setInteger("FallHurtMax", this.maxFallDamage);
 
-        if (this.tileEntityData != null) {
-            tagCompound.setTag("TileEntityData", this.tileEntityData);
-        } else {
-            tagCompound.setTag("TileEntityData", new NBTTagCompound());
-        }
+        tagCompound.setTag("TileEntityData", Objects.requireNonNullElseGet(this.tileEntityData, NBTTagCompound::new));
     }
 
     /**

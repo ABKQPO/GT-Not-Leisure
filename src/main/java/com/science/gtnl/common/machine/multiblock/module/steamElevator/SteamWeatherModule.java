@@ -5,7 +5,7 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.mixins.early.Gregtech.AccessorProcessingLogic;
+import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -15,7 +15,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class SteamWeatherModule extends SteamElevatorModule {
+public class SteamWeatherModule extends SteamElevatorModuleBase {
 
     public SteamWeatherModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 1);

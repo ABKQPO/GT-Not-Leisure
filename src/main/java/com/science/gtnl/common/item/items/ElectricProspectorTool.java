@@ -209,7 +209,7 @@ public class ElectricProspectorTool extends Item {
                         ctx.stop(null);
                         break;
                     }
-                    Chunk c = chunks.remove(chunks.size() - 1);
+                    Chunk c = chunks.removeLast();
                     switch (scanMode) {
                         case ProspectingPacket.MODE_BIG_ORES, ProspectingPacket.MODE_ALL_ORES -> {
                             for (int x = 0; x < 16; x++) {

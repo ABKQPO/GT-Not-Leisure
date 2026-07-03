@@ -156,11 +156,6 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
     }
 
     @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
     public double getDurationModifier() {
         return 1.0 / 2.5 - (Math.max(0, mParallelTier - 1) / 50.0);
     }

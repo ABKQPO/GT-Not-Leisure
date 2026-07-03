@@ -116,7 +116,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
         cropInventoryWidget.pos(10, 12)
             .setEnabledIf(
                 widget -> GreenHouseViewMode.fromOrdinal(viewModeSyncer.getIntValue()) != GreenHouseViewMode.STATUS);
-        return new ParentWidget<>().size(getTerminalWidgetWidth(), getTerminalWidgetHeight())
+        return new ParentWidget<>().size(getTerminalWidgetWidth(), TERMINAL_HEIGHT)
             .child(
                 GTGuiTextures.PICTURE_SCREEN_BLACK.asWidget()
                     .pos(4, 4)

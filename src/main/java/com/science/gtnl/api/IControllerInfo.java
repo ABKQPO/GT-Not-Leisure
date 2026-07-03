@@ -76,7 +76,7 @@ public interface IControllerInfo {
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
             if (supportsMachineInfo()) {
                 if (!widget.isClient()) widget.getContext()
-                    .openSyncedWindow(getMachineInfoWindowID());
+                    .openSyncedWindow(MACHINE_INFO_WINDOW_ID);
             }
         })
             .setPlayClickSound(true)

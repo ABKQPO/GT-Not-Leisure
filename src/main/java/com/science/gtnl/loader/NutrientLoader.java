@@ -11,21 +11,12 @@ public class NutrientLoader {
     public static void registry() {
         for (Nutrient nutrient : NutrientList.get()) {
             switch (FoodCategory.fromName(nutrient.name)) {
-                case DAIRY -> {
+                case DAIRY, FRUIT -> {
 
                 }
-                case FRUIT -> {
-
-                }
-                case GRAIN -> {
-                    nutrient.foodItems.add(GTNLItemList.SuspiciousStew.get(1));
-                }
-                case PROTEIN -> {
-                    nutrient.foodItems.add(GTNLItemList.KFCFamily.get(1));
-                }
-                case VEGETABLE -> {
-                    nutrient.foodItems.add(GTNLItemList.SuspiciousStew.get(1));
-                }
+                case GRAIN -> nutrient.foodItems.add(GTNLItemList.SuspiciousStew.get(1));
+                case PROTEIN -> nutrient.foodItems.add(GTNLItemList.KFCFamily.get(1));
+                case VEGETABLE -> nutrient.foodItems.add(GTNLItemList.SuspiciousStew.get(1));
                 default -> throw new IllegalStateException("Unexpected value: " + nutrient.name);
             }
         }

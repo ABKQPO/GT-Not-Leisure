@@ -27,7 +27,7 @@ public class SelectorFilter {
 
     /**
      * type filter
-     *
+     * <p>
      * type=zombie
      * type=!player
      * type=zombie,type=skeleton
@@ -143,7 +143,7 @@ public class SelectorFilter {
 
     /**
      * sort filter
-     *
+     * <p>
      * sort=random
      * sort=nearest
      * sort=furthest

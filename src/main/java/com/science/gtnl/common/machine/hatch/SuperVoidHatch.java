@@ -215,11 +215,6 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new SuperVoidHatchGui(this).build(data, syncManager, uiSettings);
     }
@@ -264,7 +259,7 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
             if (name != null) {
                 FluidStack fs = FluidRegistry.getFluidStack(name, 1);
                 if (fs != null) {
-                    if (sb.length() > 0) sb.append(", ");
+                    if (!sb.isEmpty()) sb.append(", ");
                     sb.append(StatCollector.translateToLocal(fs.getUnlocalizedName()));
                 }
             }

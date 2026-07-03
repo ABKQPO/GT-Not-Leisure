@@ -7,7 +7,7 @@ import net.minecraft.util.Vec3;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorPartInterface;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorPartInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 

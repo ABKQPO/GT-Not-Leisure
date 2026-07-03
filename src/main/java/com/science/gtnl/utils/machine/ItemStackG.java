@@ -18,10 +18,8 @@ public class ItemStackG {
     public ArrayList<ItemStack> arr = new ArrayList<>();
 
     public boolean isEmpty() {
-        return !arr.stream()
-            .filter(s -> s.stackSize > 0)
-            .findFirst()
-            .isPresent();
+        return arr.stream()
+            .anyMatch(s -> s.stackSize > 0);
     }
 
     public static ItemStackG neo(ItemStack is) {

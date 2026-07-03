@@ -137,6 +137,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -170,6 +172,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public long mMaxParallelLong = 0;
     public UUID ownerUUID;
     public boolean wirelessMode;
+    @Setter
+    @Getter
     public boolean showPattern = true;
     public String costingEUText = Utils.ZERO_STRING;
     public long recipesDone;
@@ -179,6 +183,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     private AENetworkProxy gridProxy;
     private DualityInterface di;
     private final MachineSource source = new MachineSource(this);
+    @Getter
     private final CombinationPatternsIInventory inventory = new CombinationPatternsIInventory();
     private final AssemblerMatrixPatternState patternState = new AssemblerMatrixPatternState();
 
@@ -297,14 +302,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     public void setCachedPatternOutputsFromGui(List<IAEItemStack> cachedOutputItems) {
         patternState.setCachedOutputItems(cachedOutputItems.toArray(new IAEItemStack[0]));
-    }
-
-    public boolean isShowPattern() {
-        return showPattern;
-    }
-
-    public void setShowPattern(boolean showPattern) {
-        this.showPattern = showPattern;
     }
 
     public String getGuiCustomName() {
@@ -846,10 +843,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 }
                 if (pattern instanceof DireCraftingPatternDetails d) {
                     d.setMultiply(getPatternMultiply());
-                    patternState.getPatterns()
-                        .put(newStack, d);
-                    patternState.getPossibleOutputs()
-                        .add(d.getCondensedOutputs()[0]);
+                    patternState.addPattern(newStack, d);
                 }
             }
         }
@@ -1026,10 +1020,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     pattern.stackSize = 1;
                     inventory.setInventorySlotContents(slot, pattern);
                     d.setMultiply(getPatternMultiply());
-                    patternState.getPatterns()
-                        .put(pattern, d);
-                    patternState.getPossibleOutputs()
-                        .add(d.getCondensedOutputs()[0]);
+                    patternState.addPattern(pattern, d);
                     input.stackSize--;
                     updated = true;
                     if (inventory.size() >= mMaxSlots) break;
@@ -1571,10 +1562,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public ItemStack getDisplayRep() {
         return getSelfRep();
-    }
-
-    public CombinationPatternsIInventory getInventory() {
-        return inventory;
     }
 
     public Set<IAEItemStack> getPossibleOutputs() {

@@ -17,7 +17,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class SteamBeeBreedingModule extends SteamElevatorModule {
+public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
 
     public SteamBeeBreedingModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 8);
@@ -75,11 +75,6 @@ public class SteamBeeBreedingModule extends SteamElevatorModule {
         this.mOutputItems = new ItemStack[] { createIgnobleCopy(itemStack) };
         this.updateSlots();
         return CheckRecipeResultRegistry.SUCCESSFUL;
-    }
-
-    @Override
-    public int getMachineEffectRange() {
-        return 0;
     }
 
     public ItemStack createIgnobleCopy(ItemStack queenStack) {

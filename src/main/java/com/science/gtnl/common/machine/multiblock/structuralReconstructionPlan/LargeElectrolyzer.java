@@ -107,11 +107,6 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
     }
 
     @Override
-    public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0);
-    }
-
-    @Override
     public double getDurationModifier() {
         return 1.0 / 3.0 - (Math.max(0, mParallelTier - 1) / 50.0);
     }

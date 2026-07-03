@@ -1,6 +1,6 @@
 package com.reavaritia.client.gui;
 
-import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -52,7 +52,7 @@ public class NeutronCollectorGUI extends GuiContainer {
             float percentage = machine.getProgressPercentage();
             String progressText = String
                 .format(StatCollector.translateToLocal("GUI_NeutronCollector_Progress") + "%.2f%%", percentage);
-            drawHoveringText(Arrays.asList(progressText), mouseX - k, mouseY - l, fontRendererObj);
+            drawHoveringText(List.of(progressText), mouseX - k, mouseY - l, fontRendererObj);
         }
     }
 

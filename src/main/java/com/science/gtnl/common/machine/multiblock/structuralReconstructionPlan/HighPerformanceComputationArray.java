@@ -640,12 +640,9 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     public void setRenderRotation(ForgeDirection direction) {
         switch (direction) {
-            case SOUTH -> rotAngle = 90;
-            case NORTH -> rotAngle = 90;
-            case WEST -> rotAngle = 0;
+            case SOUTH, NORTH, WEST -> rotAngle = 90;
             case EAST -> rotAngle = 180;
-            case UP -> rotAngle = -90;
-            case DOWN -> rotAngle = -90;
+            case UP, DOWN -> rotAngle = -90;
         }
         rotAxisX = 0;
         rotAxisY = direction.offsetZ + direction.offsetX;

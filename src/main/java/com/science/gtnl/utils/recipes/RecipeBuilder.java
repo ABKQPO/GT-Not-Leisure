@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.mixins.early.Gregtech.AccessorGTRecipe;
-import com.science.gtnl.mixins.early.Gregtech.AccessorGTRecipeBuilder;
-import com.science.gtnl.mixins.early.Gregtech.AccessorGTRecipeWithAlt;
+import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipe;
+import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeBuilder;
+import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeWithAlt;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;

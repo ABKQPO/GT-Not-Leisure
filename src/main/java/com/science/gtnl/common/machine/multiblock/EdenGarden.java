@@ -402,9 +402,9 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         if (seedData == null) return null;
         ItemStack runtimeSeed = seedStack.copy();
         SeedStats bestStats = new SeedStats(
-            (byte) Constants.MAX_SEED_STAT,
-            (byte) Constants.MAX_SEED_STAT,
-            (byte) Constants.MAX_SEED_STAT,
+            Constants.MAX_SEED_STAT,
+            Constants.MAX_SEED_STAT,
+            Constants.MAX_SEED_STAT,
             true);
         runtimeSeed.setTagCompound(bestStats.writeToNBT(new NBTTagCompound()));
         return new SeedData(seedData.getCrop(), bestStats, runtimeSeed);

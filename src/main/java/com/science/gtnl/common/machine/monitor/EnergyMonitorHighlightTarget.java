@@ -1,5 +1,10 @@
 package com.science.gtnl.common.machine.monitor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class EnergyMonitorHighlightTarget {
 
     private int dimensionId;
@@ -16,35 +21,4 @@ public class EnergyMonitorHighlightTarget {
         this.z = z;
     }
 
-    public int getDimensionId() {
-        return dimensionId;
-    }
-
-    public void setDimensionId(int dimensionId) {
-        this.dimensionId = dimensionId;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
 }

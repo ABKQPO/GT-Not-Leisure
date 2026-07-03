@@ -4,7 +4,6 @@ import static gregtech.api.enums.Dyes.MACHINE_METAL;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -323,11 +322,6 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
 
     @Override
     public boolean shouldJoinIc2Enet() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccessAllowed(EntityPlayer aPlayer) {
         return true;
     }
 

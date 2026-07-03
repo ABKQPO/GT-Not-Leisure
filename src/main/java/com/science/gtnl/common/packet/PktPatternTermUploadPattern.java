@@ -7,7 +7,7 @@ import net.minecraft.util.ChatComponentTranslation;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.mixins.late.AppliedEnergistics.assembler.AccessorContainerPatternTerm;
+import com.science.gtnl.mixins.late.appliedEnergistics.assembler.AccessorContainerPatternTerm;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.Utils;
 

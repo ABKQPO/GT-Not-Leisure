@@ -275,7 +275,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.capacity.heat",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getHeat())));
+                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(mHeatingCapacity)));
         str.add(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
                 "tt.infodata.multi.multiplier.recipe_time",
@@ -523,9 +523,9 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     }
 
     public static void queryMilestoneStats(EternalGregTechWorkshopModule module, EternalGregTechWorkshop egtw) {
-        egtw.addTotalPowerConsumed(module.getPowerTally());
+        egtw.addTotalPowerConsumed(module.powerTally);
         module.setPowerTally(BigInteger.ZERO);
-        egtw.addTotalRecipesProcessed(module.getRecipeTally());
+        egtw.addTotalRecipesProcessed(module.recipeTally);
         module.setRecipeTally(0);
     }
 }

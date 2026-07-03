@@ -161,7 +161,6 @@ public class RenderBlockBeamFormer extends BaseBlockRender<BlockBeamFormer, Tile
         float z2 = box[5] / 16.0F;
 
         return switch (forward) {
-            case SOUTH -> new float[] { x1, y1, z1, x2, y2, z2 };
             case NORTH -> new float[] { 1 - x2, y1, 1 - z2, 1 - x1, y2, 1 - z1 };
             case EAST -> new float[] { z1, y1, 1 - x2, z2, y2, 1 - x1 };
             case WEST -> new float[] { 1 - z2, y1, x1, 1 - z1, y2, x2 };
