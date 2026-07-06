@@ -18,14 +18,14 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
-import com.science.gtnl.common.machine.multiblock.LargeResearchStation;
+import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 
-public class LargeResearchStationGui extends MTEMultiBlockBaseGui<LargeResearchStation> {
+public class ResearchCenterGui extends MTEMultiBlockBaseGui<ResearchCenter> {
 
-    public LargeResearchStationGui(LargeResearchStation multiblock) {
+    public ResearchCenterGui(ResearchCenter multiblock) {
         super(multiblock);
     }
 
@@ -64,7 +64,7 @@ public class LargeResearchStationGui extends MTEMultiBlockBaseGui<LargeResearchS
             () -> multiblock.ticksUntilPacketLossFail,
             val -> multiblock.ticksUntilPacketLossFail = val);
 
-        syncManager.syncValue("largeResearchOutputs", outputsSyncer);
+        syncManager.syncValue("researchCenterOutputs", outputsSyncer);
         syncManager.syncValue("computationRequired", computationReqSyncer);
         syncManager.syncValue("computationRemaining", computationRemSyncer);
         syncManager.syncValue("ticksUntilPacketLossFail", ticksUntilPacketLossFailSyncer);

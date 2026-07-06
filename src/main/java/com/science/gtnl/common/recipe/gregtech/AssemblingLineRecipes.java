@@ -86,7 +86,7 @@ public class AssemblingLineRecipes implements IRecipePool {
                 ItemList.Field_Generator_UV.get(1) },
             new FluidStack[] { Materials.UUMatter.getFluid(32000), Materials.Naquadah.getMolten(1152),
                 Materials.NaquadahEnriched.getMolten(1152), Materials.SuperCoolant.getFluid(8000) },
-            GTNLItemList.LargeResearchStation.get(1),
+            GTNLItemList.ResearchCenter.get(1),
             30 * GTRecipeBuilder.SECONDS,
             (int) TierEU.RECIPE_UV);
 
