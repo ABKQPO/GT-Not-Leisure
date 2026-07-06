@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.recipes.DisassemblerHelper;
 import com.science.gtnl.utils.recipes.ReversedRecipeRegistry;
 
@@ -19,6 +20,8 @@ public class ShimmerRecipes {
     public static Object2ObjectOpenHashMap<Item, ObjectList<ConversionEntry>> conversionMap = new Object2ObjectOpenHashMap<>();
 
     public static void loadRecipes() {
+        if (!MainConfig.recipe.enableShimmerDisassemblyRecipes) return;
+
         DisassemblerHelper.loadHardOverrideRecipes();
         DisassemblerHelper.loadAssemblerRecipesToDisassembler();
         ReversedRecipeRegistry.registerAllReversedRecipes();

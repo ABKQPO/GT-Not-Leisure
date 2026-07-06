@@ -5293,7 +5293,7 @@ public class MachineLoader {
 
     public static void loadItemTooltip() {
 
-        if (MainConfig.machine.enableVoidMinerTweak) {
+        if (MainConfig.machine.enableVoidMinerTweak && !ModList.VMTweak.isModLoaded()) {
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[0], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);

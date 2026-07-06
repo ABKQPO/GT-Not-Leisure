@@ -160,6 +160,8 @@ gtnl.gui.config.general.recipe.enableshowdelrecipetitle=显示配方删除标题
 gtnl.gui.config.general.recipe.enableshowdelrecipetitle.tooltip=启用后玩家进入世界时显示大标题提示
 gtnl.gui.config.general.recipe.enablesomethingrecipe=添加一些配方
 gtnl.gui.config.general.recipe.enablesomethingrecipe.tooltip=启用一些廉价的配方
+gtnl.gui.config.general.recipe.enableshimmerdisassemblyrecipes=启用微光拆解配方
+gtnl.gui.config.general.recipe.enableshimmerdisassemblyrecipes.tooltip=根据可反向拆解的配方生成微光转化配方
 gtnl.gui.config.general.recipe.enableshimmerfakerecipeinnei=在 NEI 中注册微光假配方
 gtnl.gui.config.general.recipe.enableshimmerfakerecipeinnei.tooltip=控制是否在 NEI 中注册生成的微光假配方，同时保留实际的微光转化功能
 
@@ -240,6 +242,9 @@ Info_SteamNetwork_02=玩家 §9%s§7 当前在 §9%s§7 的无线蒸汽网络.
 Info_VoltageChanceBonus_00=电压概率加成：§3%s%% §7(机器电压：%s，配方电压：%s) 
 
 Info_Dimension_Override=维度覆盖为：
+vmtweak.gui.override.error=维度覆盖没有可用的虚空采矿矿物数据。
+vmtweak.gui.override.failed=维度覆盖失败，正在使用机器当前所在维度。
+vmtweak.gui.filter.no_ores=这个维度没有可用的虚空采矿矿物。
 
 CleanroomMetadata.0=需要超净间环境
 CleanroomMetadata.1=需要无菌环境

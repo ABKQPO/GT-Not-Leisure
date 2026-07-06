@@ -325,8 +325,10 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         tierMachine = 0;
         if (checkPiece(STRUCTURE_PIECE_MAIN, 9, 13, 7, errors)) {
             tierMachine = 1;
+            errors.clear();
         } else if (checkPiece(STRUCTURE_PIECE_TIER2, 9, 15, 3, errors)) {
             tierMachine = 2;
+            errors.clear();
         } else {
             errors.add(StructureErrorRegistry.UNKNOWN_TIER);
             return;

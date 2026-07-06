@@ -146,6 +146,7 @@ public class CommonProxy implements IGuiHandler {
 
     public void completeInit(FMLLoadCompleteEvent event) {
         MaterialLoader.loadCompleteInit();
+        VMTweakHelper.initializeDimensionMappings();
     }
 
     @Override

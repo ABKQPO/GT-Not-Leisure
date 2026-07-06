@@ -368,6 +368,11 @@ public class MainConfig {
         @RequiresMcRestart
         public boolean enableSomethingRecipe = true;
 
+        @Comment("Enable generated Shimmer disassembly recipes")
+        @DefaultBoolean(true)
+        @RequiresMcRestart
+        public boolean enableShimmerDisassemblyRecipes = true;
+
         @Comment("Register generated Shimmer fake recipes in NEI")
         @DefaultBoolean(true)
         @RequiresMcRestart

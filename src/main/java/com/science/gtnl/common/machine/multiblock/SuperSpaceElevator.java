@@ -449,17 +449,16 @@ public class SuperSpaceElevator extends TTMultiblockBase
             return;
         }
 
-        if (motorTier > 1) {
-            while (mTier < motorTier) {
-                if (checkPiece(
-                    STRUCTURE_PIECE_EXTENDED,
-                    STRUCTURE_PIECE_EXTENDED_HOR_OFFSET,
-                    STRUCTURE_PIECE_EXTENDED_VERT_OFFSET - mTier * 6,
-                    STRUCTURE_PIECE_EXTENDED_DEPTH_OFFSET,
-                    null)) {
-                    mTier++;
-                }
+        while (mTier < motorTier) {
+            if (!checkPiece(
+                STRUCTURE_PIECE_EXTENDED,
+                STRUCTURE_PIECE_EXTENDED_HOR_OFFSET,
+                STRUCTURE_PIECE_EXTENDED_VERT_OFFSET - mTier * 6,
+                STRUCTURE_PIECE_EXTENDED_DEPTH_OFFSET,
+                null)) {
+                break;
             }
+            mTier++;
         }
 
         if (elevatorCable != null) {

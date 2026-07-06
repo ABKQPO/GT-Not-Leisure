@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -20,12 +21,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.mixinHelper.IVoidMinerDimensionOverride;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.machine.VMTweakHelper;
@@ -36,6 +39,7 @@ import bwcrossmod.galacticgreg.VoidMinerUtility;
 import galacticgreg.api.ModDimensionDef;
 import galacticgreg.api.enums.DimensionDef;
 import gregtech.api.enums.GTValues;
+import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
@@ -48,7 +52,8 @@ import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import gtneioreplugin.util.DimensionHelper;
 
 @Mixin(value = MTEVoidMinerBase.class, remap = false)
-public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<MixinMTEVoidMinerBase> {
+public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<MixinMTEVoidMinerBase>
+    implements IVoidMinerDimensionOverride {
 
     @Shadow
     @Final
@@ -82,8 +87,20 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Shadow
     private float totalWeight;
 
+    @Shadow
+    public ItemStackHandler selected;
+
     @Unique
     private static boolean gtnl$enableMixin = !ModList.VMTweak.isModLoaded() && MainConfig.machine.enableVoidMinerTweak;
+
+    @Unique
+    private String vmTweak$warning = "";
+
+    @Unique
+    private int vmTweak$dimChangeVersion = 0;
+
+    @Unique
+    private String vmTweak$activeDropMapDimension = "";
 
     public MixinMTEVoidMinerBase(String aName) {
         super(aName);
@@ -92,10 +109,15 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Unique
     private String vmTweak$resolveDimensionKey() {
         if (!gtnl$enableMixin) return "None";
-        return Optional.ofNullable(this.mInventory[1])
-            .filter(s -> s.getItem() instanceof ItemDimensionDisplay)
-            .map(ItemDimensionDisplay::getDimension)
-            .orElse("None");
+        try {
+            return Optional.ofNullable(this.mInventory[1])
+                .filter(s -> s.getItem() instanceof ItemDimensionDisplay)
+                .map(ItemDimensionDisplay::getDimension)
+                .orElse("None");
+        } catch (Exception e) {
+            ScienceNotLeisure.LOG.debug("[VMTweakMixin] Failed to read dimension override slot.", e);
+            return "None";
+        }
     }
 
     @Unique
@@ -103,18 +125,30 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         String dimensionKey = vmTweak$resolveDimensionKey();
         if ("None".equals(dimensionKey)) return Optional.empty();
 
-        int displayIndex = DimensionHelper.ALL_DISPLAYED_NAMES.indexOf(dimensionKey);
-        if (displayIndex >= 0) {
-            return Optional.ofNullable(DimensionHelper.ALL_DIM_NAMES.get(displayIndex));
+        return vmTweak$toInternalDimensionName(dimensionKey).or(() -> {
+            Integer dimensionId = VMTweakHelper.DIM_MAPPING.inverse()
+                .get(dimensionKey);
+            if (dimensionId == null) return Optional.empty();
+            return vmTweak$toInternalDimensionName(VMTweakHelper.getNameForID(dimensionId));
+        })
+            .or(() -> Optional.of(dimensionKey));
+    }
+
+    @Unique
+    private Optional<String> vmTweak$toInternalDimensionName(String dimensionName) {
+        if (dimensionName == null || dimensionName.isEmpty()) return Optional.empty();
+
+        String internalName = DimensionHelper.ABBR_TO_INTERNAL.get(dimensionName);
+        if (internalName != null) return Optional.of(internalName);
+
+        int fullNameIndex = DimensionHelper.ALL_DIM_NAMES.indexOf(dimensionName);
+        if (fullNameIndex >= 0) {
+            String abbr = DimensionHelper.ALL_DISPLAYED_NAMES.get(fullNameIndex);
+            return Optional.ofNullable(DimensionHelper.ABBR_TO_INTERNAL.get(abbr));
         }
 
-        Integer dimensionId = VMTweakHelper.DIM_MAPPING.inverse()
-            .get(dimensionKey);
-        if (dimensionId != null) {
-            return Optional.ofNullable(VMTweakHelper.getNameForID(dimensionId));
-        }
-
-        return Optional.of(dimensionKey);
+        if (VoidMinerUtility.dropMapsByDimName.containsKey(dimensionName)) return Optional.of(dimensionName);
+        return Optional.empty();
     }
 
     @Unique
@@ -124,12 +158,17 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     public void vmTweak$saveNBT(NBTTagCompound aNBT, CallbackInfo c) {
         if (!gtnl$enableMixin) return;
         aNBT.setString("mLastDimensionOverride", this.vmTweak$mLastDimensionOverride);
+        aNBT.setString("vmTweak$activeDropMapDimension", this.vmTweak$activeDropMapDimension);
     }
 
     @Inject(method = "loadNBTData", at = @At("HEAD"), require = 1, remap = false)
     public void vmTweak$loadNBT(NBTTagCompound aNBT, CallbackInfo c) {
         if (!gtnl$enableMixin) return;
         this.vmTweak$mLastDimensionOverride = aNBT.getString("mLastDimensionOverride");
+        if (this.vmTweak$mLastDimensionOverride.isEmpty()) {
+            this.vmTweak$mLastDimensionOverride = "None";
+        }
+        this.vmTweak$activeDropMapDimension = aNBT.getString("vmTweak$activeDropMapDimension");
     }
 
     @Inject(method = "working", at = @At("HEAD"), remap = false)
@@ -139,42 +178,152 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
 
         if (!Objects.equals(dim, vmTweak$mLastDimensionOverride)) {
             vmTweak$mLastDimensionOverride = dim;
-            totalWeight = 0;
+            vmTweak$dimChangeVersion++;
+            vmTweak$recalculateDropMap();
         }
     }
 
-    @Inject(method = "calculateDropMap", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onFirstTick", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
+    private void vmTweak$onFirstTick(IGregTechTileEntity aBaseMetaTileEntity, CallbackInfo ci) {
+        if (!gtnl$enableMixin) return;
+        ci.cancel();
+        super.onFirstTick(aBaseMetaTileEntity);
+        vmTweak$recalculateDropMap();
+        vmTweak$resizeSelected();
+    }
+
+    @Inject(method = "calculateDropMap", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
     private void vmTweak$calculateDropMap(CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
+        vmTweak$recalculateDropMap();
+        ci.cancel();
+    }
 
-        Optional<String> dimensionNameOverride = vmTweak$resolveDimensionNameOverride();
-        if (dimensionNameOverride.isEmpty()) return;
-
+    @Unique
+    private void vmTweak$recalculateDropMap() {
         this.dropMap = null;
         this.extraDropMap = null;
         this.totalWeight = 0;
         this.canVoidMine = false;
+        this.vmTweak$warning = "";
 
-        this.dimensionDef = DimensionDef.getDefByName(dimensionNameOverride.get());
+        String dimensionKey = vmTweak$resolveDimensionKey();
+        this.vmTweak$mLastDimensionOverride = dimensionKey;
+        Optional<String> dimensionNameOverride = vmTweak$resolveDimensionNameOverride();
+        boolean hasOverride = dimensionNameOverride.isPresent();
+
+        if (getBaseMetaTileEntity() != null) {
+            this.dimensionDef = DimensionDef.getDefForWorld(getBaseMetaTileEntity().getWorld());
+        }
+
+        if (hasOverride) {
+            String dimensionName = dimensionNameOverride.get();
+            if (VoidMinerUtility.dropMapsByDimName.containsKey(dimensionName)) {
+                this.canVoidMine = true;
+                vmTweak$setDropMaps(dimensionName);
+                vmTweak$resizeSelected();
+                return;
+            }
+            this.vmTweak$warning = "vmtweak.gui.override.error";
+        }
+
         if (this.dimensionDef == null || !this.dimensionDef.canBeVoidMined()) {
-            ci.cancel();
+            this.dropMap = new VoidMinerUtility.DropMap();
+            this.extraDropMap = new VoidMinerUtility.DropMap();
+            if (!this.vmTweak$activeDropMapDimension.isEmpty()) {
+                this.selected.setSize(0);
+            }
+            vmTweak$activeDropMapDimension = "";
+            vmTweak$resizeSelected();
             return;
         }
 
         this.canVoidMine = true;
         String dimensionName = this.dimensionDef.getDimensionName();
+        vmTweak$setDropMaps(dimensionName);
+
+        if (hasOverride) {
+            this.vmTweak$warning = this.totalWeight > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error";
+        }
+        vmTweak$resizeSelected();
+    }
+
+    @Unique
+    private void vmTweak$setDropMaps(String dimensionName) {
+        boolean dimensionChanged = !this.vmTweak$activeDropMapDimension.isEmpty()
+            && !Objects.equals(this.vmTweak$activeDropMapDimension, dimensionName);
+        this.vmTweak$activeDropMapDimension = dimensionName;
         this.dropMap = VoidMinerUtility.dropMapsByDimName.getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
         this.extraDropMap = VoidMinerUtility.extraDropsByDimName
             .getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
         this.dropMap.isDistributionCached(this.extraDropMap);
         this.totalWeight = this.dropMap.getTotalWeight() + this.extraDropMap.getTotalWeight();
+        if (dimensionChanged) {
+            vmTweak$resetSelected();
+        }
+    }
 
-        ci.cancel();
+    @Unique
+    private void vmTweak$resizeSelected() {
+        if (this.dropMap == null || this.selected == null) return;
+        var ores = this.dropMap.getOres();
+        if (ores == null) return;
+        int oreCount = ores.length;
+        if (this.selected.getSlots() < oreCount) {
+            this.selected.setSize(oreCount);
+        }
+    }
+
+    @Unique
+    private void vmTweak$resetSelected() {
+        if (this.dropMap == null || this.selected == null) return;
+        var ores = this.dropMap.getOres();
+        this.selected.setSize(ores == null ? 0 : ores.length);
+    }
+
+    @Inject(method = "getCopiedData", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
+    private void vmTweak$getCopiedData(EntityPlayer player, CallbackInfoReturnable<NBTTagCompound> cir) {
+        if (!gtnl$enableMixin) return;
+        vmTweak$recalculateDropMap();
+
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("type", MTEVoidMinerBase.COPIED_DATA_IDENTIFIER);
+        tag.setString("dimension", vmTweak$getCopyDimension());
+        tag.setTag("selected", selected.serializeNBT());
+        tag.setBoolean("blacklist", blacklist);
+        cir.setReturnValue(tag);
+    }
+
+    @Inject(method = "pasteCopiedData", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
+    private void vmTweak$pasteCopiedData(EntityPlayer player, NBTTagCompound nbt, CallbackInfoReturnable<Boolean> cir) {
+        if (!gtnl$enableMixin) return;
+        vmTweak$recalculateDropMap();
+        if (nbt == null || !MTEVoidMinerBase.COPIED_DATA_IDENTIFIER.equals(nbt.getString("type"))) {
+            cir.setReturnValue(false);
+            return;
+        }
+        if (!vmTweak$getCopyDimension().equals(nbt.getString("dimension"))) {
+            cir.setReturnValue(false);
+            return;
+        }
+
+        this.selected.deserializeNBT(nbt.getCompoundTag("selected"));
+        this.blacklist = nbt.getBoolean("blacklist");
+        cir.setReturnValue(true);
+    }
+
+    @Unique
+    private String vmTweak$getCopyDimension() {
+        return vmTweak$activeDropMapDimension.isEmpty() ? "unknown" : vmTweak$activeDropMapDimension;
     }
 
     @Unique
     private Text vmTweak$getDimensionDisplayName() {
         if (!gtnl$enableMixin) return Text.EMPTY;
+        if (!vmTweak$warning.isEmpty()) {
+            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(vmTweak$warning));
+        }
+
         String ext = null;
         try {
             Block block = ModBlocks.getBlock(vmTweak$mLastDimensionOverride);
@@ -408,5 +557,26 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
                 .setDefaultColor(EnumChatFormatting.YELLOW)
                 .setTextAlignment(Alignment.CenterLeft)
                 .setEnabled(true));
+    }
+
+    @Override
+    public String getGtnl$overrideDisplayText() {
+        if (!gtnl$enableMixin || "None".equals(vmTweak$mLastDimensionOverride)) return "";
+        if (!vmTweak$warning.isEmpty()) {
+            return "!" + vmTweak$warning;
+        }
+        return vmTweak$mLastDimensionOverride;
+    }
+
+    @Override
+    public String getGtnl$warning() {
+        if (!gtnl$enableMixin) return "";
+        return vmTweak$warning;
+    }
+
+    @Override
+    public int getGtnl$dimensionChangeVersion() {
+        if (!gtnl$enableMixin) return 0;
+        return vmTweak$dimChangeVersion;
     }
 }
