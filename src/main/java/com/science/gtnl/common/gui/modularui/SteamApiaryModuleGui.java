@@ -38,6 +38,7 @@ import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
+import com.cleanroommc.modularui.value.sync.DynamicLinkedSyncHandler;
 import com.cleanroommc.modularui.value.sync.DynamicSyncHandler;
 import com.cleanroommc.modularui.value.sync.GenericListSyncHandler;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
@@ -79,6 +80,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     private static final String BEE_PAGE_SYNC_KEY = "steamApiaryBeePage";
     private static final String BEE_PAGE_COUNT_SYNC_KEY = "steamApiaryBeePageCount";
     private static final String DROP_PROGRESS_SYNC_KEY = "steamApiaryDropProgress";
+    private static final String DROP_PROGRESS_WIDGET_SYNC_KEY = "steamApiaryDropProgressWidget";
     private static final String CONFIGURATION_PANEL_KEY = "steam_apiary_configuration";
     private static final int TERMINAL_HEIGHT = 85;
     private static final int SLOT_SIZE = 18;
@@ -113,15 +115,18 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
 
     @Override
     protected void registerSyncValues(PanelSyncManager syncManager) {
+        GenericListSyncHandler<DropEntry> dropProgressSyncer = GenericListSyncHandler.<DropEntry>builder()
+            .getter(this::createDropEntries)
+            .setter(this::setClientDropEntries)
+            .serializer(DropEntry::write)
+            .deserializer(DropEntry::read)
+            .equals(SteamApiaryModuleGui::areDropEntriesEqual)
+            .build();
+        syncManager.syncValue(DROP_PROGRESS_SYNC_KEY, dropProgressSyncer);
         syncManager.syncValue(
-            DROP_PROGRESS_SYNC_KEY,
-            GenericListSyncHandler.<DropEntry>builder()
-                .getter(this::createDropEntries)
-                .setter(this::setClientDropEntries)
-                .serializer(DropEntry::write)
-                .deserializer(DropEntry::read)
-                .equals(SteamApiaryModuleGui::areDropEntriesEqual)
-                .build());
+            DROP_PROGRESS_WIDGET_SYNC_KEY,
+            new DynamicLinkedSyncHandler<>(dropProgressSyncer)
+                .widgetProvider((panelSyncManager, syncValue) -> createDropProgressWidget(syncValue.getValue())));
         super.registerSyncValues(syncManager);
 
         mainSyncManager = syncManager;
@@ -171,9 +176,14 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         syncManager.syncValue(BEE_SLOT_WIDGET_SYNC_KEY, beeInventoryWidgetSyncer);
 
         if (!syncManager.isClient()) {
+            beePageSyncer.setChangeListener(() -> {
+                invalidateBeeListCache();
+                beeSlotSyncer.notifyUpdate();
+            });
             beeSlotSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
             maxSlotsSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
             usedSlotsSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
+            notifyBeeInventoryUpdate();
         }
         registerQueenBufferSlot(syncManager);
     }
@@ -219,13 +229,17 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     @Override
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager syncManager, ModularPanel parent) {
         GenericListSyncHandler<DropEntry> dropProgressSyncer = getDropProgressSyncer(syncManager);
+        IntSyncValue maxProgressTimeSyncer = (IntSyncValue) syncManager.getSyncHandlerFromMapKey("maxProgressTime:0");
         return super.createTerminalTextWidget(syncManager, parent).child(
-            new ListWidget<>().fullWidth()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .children(createDropRows(dropProgressSyncer.getValue()))
+            IKey.dynamic(this::createProgressText)
+                .asWidget()
+                .textAlign(Alignment.CenterLeft)
+                .fullWidth()
+                .height(10)
                 .setEnabledIf(
-                    widget -> !dropProgressSyncer.getValue()
-                        .isEmpty() || steamApiary.mMaxProgresstime > 0));
+                    widget -> maxProgressTimeSyncer.getIntValue() > 0 && dropProgressSyncer.getValue()
+                        .isEmpty()))
+            .child(createDropProgressWidget(syncManager));
     }
 
     @Override
@@ -730,6 +744,24 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
             }
         }
         return rows;
+    }
+
+    private IWidget createDropProgressWidget(PanelSyncManager syncManager) {
+        DynamicLinkedSyncHandler<?> dropProgressWidgetSyncer = syncManager
+            .findSyncHandler(DROP_PROGRESS_WIDGET_SYNC_KEY, DynamicLinkedSyncHandler.class);
+        GenericListSyncHandler<DropEntry> dropProgressSyncer = getDropProgressSyncer(syncManager);
+        return new DynamicSyncedWidget<>().syncHandler(dropProgressWidgetSyncer)
+            .initialChild(createDropProgressWidget(List.of()))
+            .fullWidth()
+            .setEnabledIf(
+                widget -> !dropProgressSyncer.getValue()
+                    .isEmpty());
+    }
+
+    private IWidget createDropProgressWidget(List<DropEntry> drops) {
+        return new ListWidget<>().fullWidth()
+            .crossAxisAlignment(Alignment.CrossAxis.START)
+            .children(createDropRows(drops));
     }
 
     private IWidget createDropRow(ItemStack stack, long itemCount) {

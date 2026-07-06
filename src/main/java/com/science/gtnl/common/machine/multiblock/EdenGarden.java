@@ -74,6 +74,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
@@ -293,7 +294,24 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     public CheckRecipeResult checkProcessing() {
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;
-        return processIndustrialFarmMode();
+        return switch (machineMode) {
+            case MODE_INPUT -> {
+                industrialFarmDropTracker.clear();
+                yield checkProcessingInputMode();
+            }
+            case MODE_FARM -> {
+                CheckRecipeResult result = checkProcessingFarmMode();
+                if (!result.wasSuccessful()) {
+                    industrialFarmDropTracker.clear();
+                }
+                yield result;
+            }
+            case MODE_OUTPUT -> {
+                industrialFarmDropTracker.clear();
+                yield checkProcessingOutputMode();
+            }
+            default -> CheckRecipeResultRegistry.NO_RECIPE;
+        };
     }
 
     @Override
@@ -333,6 +351,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
             case MODE_INPUT, MODE_FARM, MODE_OUTPUT -> machineMode;
             default -> MODE_INPUT;
         };
+        this.setupPhase = setupPhaseFromMachineMode(this.machineMode);
     }
 
     @Override
@@ -342,11 +361,12 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public int nextMachineMode() {
-        machineMode = switch (machineMode) {
+        int nextMode = switch (machineMode) {
             case MODE_INPUT -> MODE_FARM;
             case MODE_FARM -> MODE_OUTPUT;
             default -> MODE_INPUT;
         };
+        setMachineMode(nextMode);
         return machineMode;
     }
 
@@ -698,6 +718,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        setMachineMode(machineMode);
         this.greenHouseViewMode = aNBT.hasKey("greenHouseViewMode")
             ? GreenHouseViewMode.fromOrdinal(aNBT.getInteger("greenHouseViewMode"))
             : GreenHouseViewMode.STATUS;

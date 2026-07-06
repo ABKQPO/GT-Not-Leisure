@@ -68,6 +68,7 @@ import forestry.api.apiculture.BeeManager;
 import forestry.api.apiculture.EnumBeeType;
 import forestry.api.apiculture.IAlleleBeeSpecies;
 import forestry.api.apiculture.IBeekeepingMode;
+import forestry.apiculture.genetics.Bee;
 import forestry.plugins.PluginApiculture;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.SoundResource;
@@ -335,12 +336,32 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 this.mEfficiency = 10000;
                 this.mEfficiencyIncrease = 10000;
                 this.mMaxProgresstime = 6000;
-                this.mOutputItems = stacks.toArray(new ItemStack[0]);
+                this.mOutputItems = mergeOutputStacks(stacks);
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
         }
 
         return CheckRecipeResultRegistry.NO_RECIPE;
+    }
+
+    private static ItemStack[] mergeOutputStacks(List<ItemStack> stacks) {
+        HashMap<ItemId, Integer> countMap = new HashMap<>();
+        HashMap<ItemId, ItemStack> stackMap = new HashMap<>();
+        for (ItemStack stack : stacks) {
+            ItemId id = ItemId.createNoCopy(stack);
+            countMap.merge(id, stack.stackSize, Integer::sum);
+            stackMap.putIfAbsent(id, stack);
+        }
+
+        ItemStack[] result = new ItemStack[countMap.size()];
+        int index = 0;
+        for (Map.Entry<ItemId, Integer> entry : countMap.entrySet()) {
+            ItemStack merged = stackMap.get(entry.getKey())
+                .copy();
+            merged.stackSize = entry.getValue();
+            result[index++] = merged;
+        }
+        return result;
     }
 
     @Deprecated
@@ -870,11 +891,17 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         }
 
         public List<ItemStack> getDrops(final SteamApiaryModule machine, final double timePassed) {
+            if (mode == null) mode = BeeManager.beeRoot.getBeekeepingMode(
+                machine.getBaseMetaTileEntity()
+                    .getWorld());
+            float tier = 6 + machine.recipeOcCount;
             drops.forEach(d -> {
+                d.updateTVar(tier);
                 machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
                 if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
             });
             specialDrops.forEach(d -> {
+                d.updateTVar(tier);
                 machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
                 if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
             });
@@ -883,7 +910,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
             machine.dropProgress.entrySet()
                 .forEach(e -> {
                     double v = e.getValue();
-                    while (v > 1.0) {
+                    while (v >= 1.0) {
                         int size = Math.min((int) v, 64);
                         ItemStack stack = dropstacks.get(e.getKey())
                             .copy();
@@ -898,8 +925,11 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
 
         public static class BeeDrop {
 
+            private static final float MAX_PRODUCTION_MODIFIER_FROM_UPGRADES = 17.19926784f;
+
             public ItemStack stack;
             public double chance;
+            public double amount;
             public float beeSpeed;
             public float t;
             public ItemId id;
@@ -910,15 +940,34 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 this.beeSpeed = beeSpeed;
                 this.t = t;
                 this.id = ItemId.createNoCopy(stack);
+                evaluate();
+            }
+
+            public void updateTVar(float t) {
+                if (this.t != t || amount <= 0) {
+                    this.t = t;
+                    evaluate();
+                }
+            }
+
+            public void evaluate() {
+                if (mode == null) {
+                    amount = chance;
+                    return;
+                }
+                float productionModifier = MAX_PRODUCTION_MODIFIER_FROM_UPGRADES + mode.getBeeModifier()
+                    .getProductionModifier(null, MAX_PRODUCTION_MODIFIER_FROM_UPGRADES);
+                amount = Bee.getFinalChance((float) chance, beeSpeed, productionModifier, t);
             }
 
             public double getAmount(double speedModifier) {
-                return chance * speedModifier;
+                return amount * speedModifier;
             }
 
             public BeeDrop(NBTTagCompound tag) {
                 stack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("stack"));
                 chance = tag.getDouble("chance");
+                amount = tag.getDouble("amount");
                 beeSpeed = tag.getFloat("beeSpeed");
                 t = tag.getFloat("t");
                 id = ItemId.createNoCopy(stack);
@@ -928,6 +977,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setTag("stack", ItemUtils.writeItemStackToNBT(stack));
                 tag.setDouble("chance", chance);
+                tag.setDouble("amount", amount);
                 tag.setFloat("beeSpeed", beeSpeed);
                 tag.setFloat("t", t);
                 return tag;

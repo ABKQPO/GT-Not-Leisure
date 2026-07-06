@@ -149,7 +149,24 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     public CheckRecipeResult checkProcessing() {
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;
-        return processIndustrialFarmMode();
+        return switch (machineMode) {
+            case MODE_INPUT -> {
+                industrialFarmDropTracker.clear();
+                yield checkProcessingInputMode();
+            }
+            case MODE_FARM -> {
+                CheckRecipeResult result = checkProcessingFarmMode();
+                if (!result.wasSuccessful()) {
+                    industrialFarmDropTracker.clear();
+                }
+                yield result;
+            }
+            case MODE_OUTPUT -> {
+                industrialFarmDropTracker.clear();
+                yield checkProcessingOutputMode();
+            }
+            default -> CheckRecipeResultRegistry.NO_RECIPE;
+        };
     }
 
     @Override
@@ -491,6 +508,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        setMachineMode(machineMode);
         this.greenHouseViewMode = aNBT.hasKey("greenHouseViewMode")
             ? GreenHouseViewMode.fromOrdinalWithoutBlocks(aNBT.getInteger("greenHouseViewMode"))
             : GreenHouseViewMode.STATUS;
@@ -541,6 +559,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
             case MODE_INPUT, MODE_FARM, MODE_OUTPUT -> machineMode;
             default -> MODE_INPUT;
         };
+        this.setupPhase = setupPhaseFromMachineMode(this.machineMode);
     }
 
     @Override
@@ -550,11 +569,12 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public int nextMachineMode() {
-        machineMode = switch (machineMode) {
+        int nextMode = switch (machineMode) {
             case MODE_INPUT -> MODE_FARM;
             case MODE_FARM -> MODE_OUTPUT;
             default -> MODE_INPUT;
         };
+        setMachineMode(nextMode);
         return machineMode;
     }
 
@@ -619,6 +639,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         }
         this.setupPhase++;
         if (this.setupPhase == 3) this.setupPhase = 0;
+        setMachineMode(machineModeFromSetupPhase(this.setupPhase));
 
         String phaseKey = switch (this.setupPhase) {
             case 0 -> "Info_EdenGarden_Operating";

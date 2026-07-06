@@ -208,24 +208,19 @@ public interface IGreenHouse extends IVoidable {
         return missing;
     }
 
-    default CheckRecipeResult processIndustrialFarmMode() {
-        return switch (getMachineMode()) {
-            case MODE_INPUT -> {
-                getIndustrialFarmDropTracker().clear();
-                yield checkProcessingInputMode();
-            }
-            case MODE_FARM -> {
-                CheckRecipeResult result = checkProcessingFarmMode();
-                if (!result.wasSuccessful()) {
-                    getIndustrialFarmDropTracker().clear();
-                }
-                yield result;
-            }
-            case MODE_OUTPUT -> {
-                getIndustrialFarmDropTracker().clear();
-                yield checkProcessingOutputMode();
-            }
-            default -> CheckRecipeResultRegistry.NO_RECIPE;
+    default int machineModeFromSetupPhase(int setupPhase) {
+        return switch (setupPhase) {
+            case 0 -> MODE_FARM;
+            case 2 -> MODE_OUTPUT;
+            default -> MODE_INPUT;
+        };
+    }
+
+    default int setupPhaseFromMachineMode(int machineMode) {
+        return switch (machineMode) {
+            case MODE_FARM -> 0;
+            case MODE_OUTPUT -> 2;
+            default -> 1;
         };
     }
 
@@ -276,7 +271,6 @@ public interface IGreenHouse extends IVoidable {
                 consume = Math.min(consume, availableBlockUnders - existing.getSeedCount());
                 if (consume <= 0) return BLOCK_UNDER_NOT_FOUND;
                 consumeMatchingStacks(blockUnder, getStoredInputs(), consume, simulate);
-                if (!simulate) blockUnder.stackSize += consume;
             }
             if (!simulate) {
                 input.stackSize -= consume;
@@ -421,33 +415,24 @@ public interface IGreenHouse extends IVoidable {
     }
 
     default CheckRecipeResult checkProcessingOutputMode() {
-        List<ItemStack> simulated = new ArrayList<>();
-        for (GreenHouseStoredCrop crop : getStoredCrops()) {
-            if (CropsNHUtils.isStackValid(crop.getSeedStack())) {
-                simulated.add(CropsNHUtils.copyStackWithSize(crop.getSeedStack(), 1));
-            }
-            if (CropsNHUtils.isStackValid(crop.getBlockUnderStack())) {
-                simulated.add(CropsNHUtils.copyStackWithSize(crop.getBlockUnderStack(), 1));
-            }
-        }
-        if (simulated.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+        int maxRemovable = getTotalStoredCropCount();
+        if (maxRemovable <= 0) return CheckRecipeResultRegistry.NO_RECIPE;
 
-        int maxParallels = getStoredCrops().stream()
-            .mapToInt(GreenHouseStoredCrop::getSeedCount)
-            .sum();
+        int removable = getMaxOutputtableStoredCropCount(maxRemovable);
+        if (removable <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+
+        List<ItemStack> outputs = createStoredCropOutputs(removable);
         ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
-        maxParallels = ejectionHelper.ejectItems(simulated, maxParallels);
-        if (maxParallels <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+        if (ejectionHelper.ejectItems(outputs, 1) <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+        ejectionHelper.commit();
 
-        int remaining = maxParallels;
+        int remaining = removable;
         for (Iterator<GreenHouseStoredCrop> iterator = getStoredCrops().iterator(); iterator.hasNext()
             && remaining > 0;) {
             GreenHouseStoredCrop crop = iterator.next();
             int removed = Math.min(remaining, crop.getSeedCount());
-            ItemStack seed = crop.removeSeeds(removed);
-            ItemStack block = crop.removeBlockUnders(removed);
-            if (seed != null) addItemOutputsToGreenHouse(new ItemStack[] { seed });
-            if (block != null) addItemOutputsToGreenHouse(new ItemStack[] { block });
+            crop.removeSeeds(removed);
+            crop.removeBlockUnders(removed);
             remaining -= removed;
             crop.clearIfEmpty();
             if (crop.getSeedCount() <= 0) {
@@ -458,6 +443,53 @@ public interface IGreenHouse extends IVoidable {
         setLEUt(0);
         updateSlots();
         return CheckRecipeResultRegistry.SUCCESSFUL;
+    }
+
+    default int getMaxOutputtableStoredCropCount(int maxRemovable) {
+        int low = 0;
+        int high = maxRemovable;
+        while (low < high) {
+            int middle = low + (high - low + 1) / 2;
+            if (canOutputStoredCrops(middle)) {
+                low = middle;
+            } else {
+                high = middle - 1;
+            }
+        }
+        return low;
+    }
+
+    default boolean canOutputStoredCrops(int amount) {
+        if (amount <= 0) return false;
+        List<ItemStack> outputs = createStoredCropOutputs(amount);
+        if (outputs.isEmpty()) return false;
+        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+        return ejectionHelper.ejectItems(outputs, 1) > 0;
+    }
+
+    default List<ItemStack> createStoredCropOutputs(int amount) {
+        List<ItemStack> outputs = new ArrayList<>();
+        int remaining = amount;
+        for (GreenHouseStoredCrop crop : getStoredCrops()) {
+            if (remaining <= 0) break;
+            int seedCount = Math.min(remaining, crop.getSeedCount());
+            if (seedCount <= 0) continue;
+
+            ItemStack seed = crop.getSeedStack();
+            if (CropsNHUtils.isStackValid(seed)) {
+                outputs.add(CropsNHUtils.copyStackWithSize(seed, seedCount));
+            }
+
+            ItemStack blockUnder = crop.getBlockUnderStack();
+            if (CropsNHUtils.isStackValid(blockUnder)) {
+                int blockCount = Math.min(seedCount, blockUnder.stackSize);
+                if (blockCount > 0) {
+                    outputs.add(CropsNHUtils.copyStackWithSize(blockUnder, blockCount));
+                }
+            }
+            remaining -= seedCount;
+        }
+        return outputs;
     }
 
     default CheckRecipeResult checkProcessingFarmMode() {
@@ -769,10 +801,12 @@ public interface IGreenHouse extends IVoidable {
             GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
             return;
         }
-        this.setSetupPhase(this.getSetupPhase() + 1);
-        if (this.getSetupPhase() == 3) this.setSetupPhase(0);
+        int nextSetupPhase = this.getSetupPhase() + 1;
+        if (nextSetupPhase == 3) nextSetupPhase = 0;
+        this.setSetupPhase(nextSetupPhase);
+        this.setMachineMode(machineModeFromSetupPhase(nextSetupPhase));
 
-        String phaseKey = switch (this.getSetupPhase()) {
+        String phaseKey = switch (nextSetupPhase) {
             case 0 -> "Info_EdenGarden_Operating";
             case 1 -> "Info_EdenGarden_Input";
             case 2 -> "Info_EdenGarden_Output";
