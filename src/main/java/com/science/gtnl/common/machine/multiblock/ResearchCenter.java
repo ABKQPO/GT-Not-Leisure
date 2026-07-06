@@ -37,12 +37,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.gui.modularui.ResearchCenterGui;
-import com.science.gtnl.mixins.late.TecTech.AccessorMTEResearchStation;
+import com.science.gtnl.mixins.late.tecTech.AccessorMTEResearchStation;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
-import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -87,6 +86,8 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     private static final IStructureDefinition<MTEResearchStation> STRUCTURE_DEFINITION = IStructureDefinition
         .<MTEResearchStation>builder()
         .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
+        .addElement('A', chainAllGlasses())
+        .addElement('B', ofBlock(GregTechAPI.sBlockCasings8, 7))
         .addElement(
             'C',
             buildHatchAdder(MTEResearchStation.class)
@@ -100,8 +101,6 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
                 .casingIndex(CONTROLLER_TEXTURE_ID)
                 .hint(1)
                 .buildAndChain(ofBlock(GregTechAPI.sBlockCasings8, 10)))
-        .addElement('A', chainAllGlasses())
-        .addElement('B', ofBlock(GregTechAPI.sBlockCasings8, 7))
         .addElement('D', ofBlock(GregTechAPI.sBlockCasings9, 7))
         .addElement('E', ofBlock(steelBars(), 0))
         .addElement('F', ofBlock(chiselNeonite(), 3))
@@ -206,25 +205,6 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
                 1)
             .toolTipFinisher();
         return tt;
-    }
-
-    @Override
-    public boolean supportsMachineModeSwitch() {
-        return true;
-    }
-
-    @Override
-    public int nextMachineMode() {
-        if (this.machineMode == MODE_RESEARCH_STATION) return MODE_SCANNER;
-        return MODE_RESEARCH_STATION;
-    }
-
-    @Override
-    public void setMachineMode(int aIndex) {
-        switch (aIndex) {
-            case MODE_RESEARCH_STATION, MODE_SCANNER -> this.machineMode = aIndex;
-            default -> this.machineMode = MODE_RESEARCH_STATION;
-        }
     }
 
     @Override
@@ -804,7 +784,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     }
 
     private void setPacketLossDecayFrom(long value) {
-        ((AccessorMTEResearchStation) (Object) this).setPacketLossDecayFrom(value);
+        ((AccessorMTEResearchStation) this).setPacketLossDecayFrom(value);
     }
 
     private void resetResearchCenterProgress() {
