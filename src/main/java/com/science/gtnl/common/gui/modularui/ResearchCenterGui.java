@@ -17,9 +17,9 @@ import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
-import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 
@@ -39,13 +39,14 @@ public class ResearchCenterGui extends MTEMultiBlockBaseGui<ResearchCenter> {
     }
 
     private IWidget createFilterSlots() {
-        IResearchStationMarker marker = (IResearchStationMarker) multiblock;
         Flow row = Flow.row()
             .coverChildren()
             .childPadding(0);
         for (int i = 0; i < 4; i++) {
             row.child(
-                new PhantomItemSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), i))
+                new PhantomItemSlot().slot(new ModularSlot(multiblock.gtnl$getResearchMarkerInventoryHandler(), i))
+                    .background(GTGuiTextures.SLOT_ITEM_STANDARD)
+                    .backgroundOverlay(GTGuiTextures.OVERLAY_SLOT_FILTER)
                     .size(18, 18));
         }
         return row;
