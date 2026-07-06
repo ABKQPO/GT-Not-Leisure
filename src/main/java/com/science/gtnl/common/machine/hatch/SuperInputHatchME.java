@@ -619,11 +619,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     }
 
     @Override
-    public String getCopiedDataIdentifier(EntityPlayer player) {
-        return COPIED_DATA_IDENTIFIER;
-    }
-
-    @Override
     public boolean pasteCopiedData(EntityPlayer player, NBTTagCompound aNBT) {
         if (aNBT == null || !COPIED_DATA_IDENTIFIER.equals(aNBT.getString("type"))) return false;
 

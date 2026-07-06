@@ -19,7 +19,7 @@ import com.google.common.collect.Sets;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
-import com.science.gtnl.mixins.late.EnhancedLootBags.AccessorItemLootBag;
+import com.science.gtnl.mixins.late.enhancedLootBags.AccessorItemLootBag;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 

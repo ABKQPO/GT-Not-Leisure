@@ -18,7 +18,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
-public class SteamOilDrillModule extends SteamElevatorModule {
+public class SteamOilDrillModule extends SteamElevatorModuleBase {
 
     public static XSTR tVeinRNG = new XSTR(System.nanoTime());
 

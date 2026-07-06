@@ -99,11 +99,6 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
     }
 
     @Override
-    protected int getTextBoxToInventoryGap() {
-        return 22;
-    }
-
-    @Override
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager syncManager, ModularPanel parent) {
         IntSyncValue widthSyncer = syncManager.findSyncHandler(WIDTH_SYNC_KEY, IntSyncValue.class);
         IntSyncValue heightSyncer = syncManager.findSyncHandler(HEIGHT_SYNC_KEY, IntSyncValue.class);

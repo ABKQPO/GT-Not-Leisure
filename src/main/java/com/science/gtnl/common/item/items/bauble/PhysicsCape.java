@@ -148,7 +148,7 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
     @SideOnly(Side.CLIENT)
     public void onPlayerBaubleRender(ItemStack stack, RenderPlayerEvent event, IBaubleRender.RenderType type) {
         if (type == IBaubleRender.RenderType.BODY) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(getRenderTexture());
+            Minecraft.getMinecraft().renderEngine.bindTexture(texture);
             IBaubleRender.Helper.rotateIfSneaking(event.entityPlayer);
             boolean armor = event.entityPlayer.getCurrentArmor(2) != null;
             GL11.glTranslatef(0F, armor ? -0.07F : -0.01F, 0F);

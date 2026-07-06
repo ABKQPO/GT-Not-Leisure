@@ -65,7 +65,7 @@ public class CommandTickrate extends CommandBase {
             String defTickrate = defaultTickrate + "";
             if (defaultTickrate == (int) defaultTickrate) defTickrate = (int) defaultTickrate + "";
             if (!tab.contains(defTickrate)) {
-                tab.add(0, defTickrate);
+                tab.addFirst(defTickrate);
             }
             tab.add("setmap");
             tab.add("freeze");
@@ -76,7 +76,7 @@ public class CommandTickrate extends CommandBase {
                 String defTickrate = defaultTickrate + "";
                 if (defaultTickrate == (int) defaultTickrate) defTickrate = (int) defaultTickrate + "";
                 if (!tab.contains(defTickrate)) {
-                    tab.add(0, defTickrate);
+                    tab.addFirst(defTickrate);
                 }
             } else {
                 tab.add("all");

@@ -126,6 +126,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -144,6 +145,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     public BaseActionSource requestSource = null;
     public @Nullable AENetworkProxy gridProxy = null;
     public List<ProcessingLogic> processingLogics = new ArrayList<>();
+    @Setter
     public boolean showPattern = true;
 
     // holds all internal inventories
@@ -647,10 +649,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
 
     public boolean isShowPatternForGui() {
         return showPattern;
-    }
-
-    public void setShowPattern(boolean showPattern) {
-        this.showPattern = showPattern;
     }
 
     @Override

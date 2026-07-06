@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.ICustomGui;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorTileInterface;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorTileInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.storage.data.IAEItemStack;

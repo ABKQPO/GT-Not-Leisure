@@ -57,7 +57,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.WorldCoord;
-import appeng.crafting.MECraftingInventory;
 import appeng.helpers.ICustomNameObject;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -1260,7 +1259,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 IItemList<IAEItemStack> itemList = AEApi.instance()
                     .storage()
                     .createItemList();
-                ((MECraftingInventory) cpu.getInventory()).getAvailableItems(itemList);
+                cpu.getInventory()
+                    .getAvailableItems(itemList);
                 for (var stack : itemList) {
                     itemInventory.injectItems(stack, Actionable.MODULATE, s);
                 }

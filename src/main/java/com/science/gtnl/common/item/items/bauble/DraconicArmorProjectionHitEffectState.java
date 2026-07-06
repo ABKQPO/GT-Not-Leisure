@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 
 public class DraconicArmorProjectionHitEffectState {
 
@@ -72,6 +73,7 @@ public class DraconicArmorProjectionHitEffectState {
         STATES.clear();
     }
 
+    @Getter
     public static class HitEffectState {
 
         private final float shieldPower;
@@ -82,12 +84,5 @@ public class DraconicArmorProjectionHitEffectState {
             this.remainingTicks = remainingTicks;
         }
 
-        public float getShieldPower() {
-            return shieldPower;
-        }
-
-        public int getRemainingTicks() {
-            return remainingTicks;
-        }
     }
 }

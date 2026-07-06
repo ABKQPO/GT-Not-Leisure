@@ -52,9 +52,9 @@ public class GetTileEntityNBTRequestPacket
     public IMessage onMessage(GetTileEntityNBTRequestPacket message, MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         WorldServer world = player.getServerForPlayer();
-        int x = message.getX();
-        int y = message.getY();
-        int z = message.getZ();
+        int x = message.x;
+        int y = message.y;
+        int z = message.z;
         Block block = world.getBlock(x, y, z);
         if (block != null) {
             TileEntity tileentity = world.getTileEntity(x, y, z);
@@ -66,7 +66,7 @@ public class GetTileEntityNBTRequestPacket
                     nbt.removeTag("y");
                     nbt.removeTag("z");
 
-                    network.sendTo(new TileEntityNBTPacket(message.getBlockID(), message.getBlockMeta(), nbt), player);
+                    network.sendTo(new TileEntityNBTPacket(message.blockID, message.blockMeta, nbt), player);
 
                 } catch (Throwable e) {
                     e.printStackTrace();

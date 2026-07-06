@@ -385,11 +385,6 @@ public class HumongousDualInputHatch extends DualInputHatch
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new HumongousDualInputHatchGui(this).build(data, syncManager, uiSettings);
     }
@@ -713,11 +708,6 @@ public class HumongousDualInputHatch extends DualInputHatch
                 slotIndex,
                 ForgeDirection.UNKNOWN,
                 toInsert == null ? null : toInsert.getItemStack());
-        }
-
-        @Override
-        protected boolean allowPullStack(int slotIndex) {
-            return true;
         }
 
         @Override

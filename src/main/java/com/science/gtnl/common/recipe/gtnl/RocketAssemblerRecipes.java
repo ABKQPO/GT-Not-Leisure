@@ -88,7 +88,7 @@ public class RocketAssemblerRecipes implements IRecipePool {
     }
 
     public static ItemStack findMatchingSpaceshipSteamRecipe(InventorySchematic inventory) {
-        for (INasaWorkbenchRecipe recipe : getRocketSteamRecipes()) {
+        for (INasaWorkbenchRecipe recipe : RECIPES_ROCKET_STEAM) {
             if (recipe.matches(inventory)) {
                 return recipe.getRecipeOutput();
             }
@@ -98,7 +98,7 @@ public class RocketAssemblerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        registerRocketRecipes(getRocketSteamRecipes(), 1);
+        registerRocketRecipes(RECIPES_ROCKET_STEAM, 1);
         registerRocketRecipes(RocketRecipes.getRocketT1Recipes(), 1);
         registerRocketRecipes(RocketRecipes.getRocketT2Recipes(), 2);
         registerRocketRecipes(RocketRecipes.getRocketT3Recipes(), 3);

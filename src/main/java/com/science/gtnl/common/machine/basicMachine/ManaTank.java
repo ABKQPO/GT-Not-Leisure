@@ -240,11 +240,6 @@ public class ManaTank extends MTEDigitalTankBase {
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after ManaTank mui2 rollout is complete.

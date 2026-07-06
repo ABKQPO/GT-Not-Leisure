@@ -1,5 +1,8 @@
 package com.science.gtnl.common.item.items.bauble;
 
+import lombok.Getter;
+
+@Getter
 public enum DraconicArmorProjectionType {
 
     WYVERN("wyvern"),
@@ -11,7 +14,4 @@ public enum DraconicArmorProjectionType {
         this.id = id;
     }
 
-    public String getId() {
-        return id;
-    }
 }

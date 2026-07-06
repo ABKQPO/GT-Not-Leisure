@@ -71,11 +71,6 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public ITexture[] getFront(byte aColor) {
         return new ITexture[] { super.getFront(aColor)[0],
             TextureFactory.of(

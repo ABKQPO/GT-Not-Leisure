@@ -693,11 +693,11 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                     for (EternalGregTechWorkshopModule module : moduleHatches) {
                         if (allowModuleConnection(module, this)) {
                             module.connect();
-                            module.setEUtDiscount(getEUtDiscount());
-                            module.setDurationModifier(getSpeedBoost());
+                            module.setEUtDiscount(mEUtDiscount);
+                            module.setDurationModifier(mSpeedBoost);
                             module.setMaxParallel(getTrueParallel());
-                            module.setMaxUseEUt(getMaxUseEUt());
-                            module.setHeat(getHeatingCapacity());
+                            module.setMaxUseEUt(mMaxUseEUt);
+                            module.setHeat(mHeatingCapacity);
                             EternalGregTechWorkshopModule.queryMilestoneStats(module, this);
                         } else {
                             module.disconnect();
@@ -747,7 +747,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
             fuelToDrain.amount -= drained.amount;
 
             if (fuelToDrain.amount == 0) {
-                totalFuelConsumed += getFuelFactor();
+                totalFuelConsumed += fuelConsumptionFactor;
                 return;
             }
         }
@@ -758,12 +758,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.STEM)) {
             upgradeFactor = 0.8;
         }
-        if (egtw.getFuelType() == 0) {
-            return egtw.getFuelFactor() * 300 * Math.pow(1.15, egtw.getFuelFactor()) * upgradeFactor;
+        if (egtw.selectedFuelType == 0) {
+            return egtw.fuelConsumptionFactor * 300 * Math.pow(1.15, egtw.fuelConsumptionFactor) * upgradeFactor;
         }
-        if (egtw.getFuelType() == 1) {
-            return egtw.getFuelFactor() * 2 * Math.pow(1.08, egtw.getFuelFactor()) * upgradeFactor;
-        } else return egtw.getFuelFactor() / 25f * upgradeFactor;
+        if (egtw.selectedFuelType == 1) {
+            return egtw.fuelConsumptionFactor * 2 * Math.pow(1.08, egtw.fuelConsumptionFactor) * upgradeFactor;
+        } else return egtw.fuelConsumptionFactor / 25f * upgradeFactor;
     }
 
     @Override
@@ -1522,7 +1522,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 fuelCap += egtw.getTotalActiveUpgrades();
             }
             if (egtw.isUpgradeActive(EternalGregTechWorkshopUpgrade.CFCE)) {
-                fuelCap *= 1.2;
+                fuelCap *= (int) 1.2;
             }
         }
         return Math.max(fuelCap, 1);

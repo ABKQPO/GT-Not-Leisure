@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonSyntaxException;
-import com.science.gtnl.mixins.early.Minecraft.AccessorEntityRenderer;
+import com.science.gtnl.mixins.early.minecraft.AccessorEntityRenderer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -15,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -33,7 +32,7 @@ import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.WirelessSteamDynamoHatchGui;
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.mixins.early.Gregtech.AccessorMTEHatch;
+import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
@@ -96,11 +95,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
                 .setSize(18, 18)
                 .setPos(151, 62));
-    }
-
-    @Override
-    protected boolean useMui2() {
-        return true;
     }
 
     @Override

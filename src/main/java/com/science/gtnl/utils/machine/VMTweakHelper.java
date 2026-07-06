@@ -42,9 +42,9 @@ public class VMTweakHelper {
                     ((ChunkProviderServer) world.getChunkProvider()).currentChunkProvider.getClass()
                         .getName());
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             ScienceNotLeisure.LOG
-                .debug("Failed to cache chunk provider class for dim {}", event.world.provider.dimensionId, ignored);
+                .debug("Failed to cache chunk provider class for dim {}", event.world.provider.dimensionId, e);
         }
     }
 

@@ -89,7 +89,7 @@ import kubatech.api.DynamicInventory;
 import kubatech.api.gui.KubaTechUITextures;
 import kubatech.api.utils.ItemUtils;
 
-public class SteamApiaryModule extends SteamElevatorModule {
+public class SteamApiaryModule extends SteamElevatorModuleBase {
 
     public int mMaxSlots = 8;
     public ArrayList<BeeSimulator> mStorage = new ArrayList<>();

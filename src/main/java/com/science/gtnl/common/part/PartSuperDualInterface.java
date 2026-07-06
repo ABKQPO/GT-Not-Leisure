@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -27,7 +26,7 @@ import com.science.gtnl.api.mixinHelper.IDualityInterface;
 import com.science.gtnl.common.me.dual.DualInterfaceHostSupport;
 import com.science.gtnl.common.me.dual.IDualInterfaceHost;
 import com.science.gtnl.common.me.dual.SuperDualInterfaceSlots;
-import com.science.gtnl.mixins.late.AppliedEnergistics.AccessorPartInterface;
+import com.science.gtnl.mixins.late.appliedEnergistics.AccessorPartInterface;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 

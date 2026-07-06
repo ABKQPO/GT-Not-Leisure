@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.TickratePacket;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.mixins.early.Minecraft.AccessorMinecraft;
+import com.science.gtnl.mixins.early.minecraft.AccessorMinecraft;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;

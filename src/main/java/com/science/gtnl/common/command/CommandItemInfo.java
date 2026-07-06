@@ -69,8 +69,4 @@ public class CommandItemInfo extends CommandBase {
         }
     }
 
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 4;
-    }
 }

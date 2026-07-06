@@ -410,7 +410,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkCoilStructureRequirement(List<StructureError> errors) {
-        if (requiresCoilStructureCheck() && getMCoilLevel() == HeatingCoilLevel.None) {
+        if (requiresCoilStructureCheck() && mCoilLevel == HeatingCoilLevel.None) {
             errors.add(StructureErrorRegistry.COIL_LEVEL_NOT_ENOUGH);
         }
     }
@@ -1338,11 +1338,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public boolean supportsBatchMode() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsSingleRecipeLocking() {
         return true;
     }
 

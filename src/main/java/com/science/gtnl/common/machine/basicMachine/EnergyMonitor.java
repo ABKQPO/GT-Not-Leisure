@@ -29,6 +29,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicTank;
 import gregtech.api.render.TextureFactory;
+import lombok.Getter;
 
 public class EnergyMonitor extends MTEBasicTank {
 
@@ -37,9 +38,13 @@ public class EnergyMonitor extends MTEBasicTank {
     public static final long REFRESH_INTERVAL_TICKS = 10L;
     private static final long DIRTY_SNAPSHOT_TICK = -REFRESH_INTERVAL_TICKS;
 
+    @Getter
     private UUID monitorOwnerUuid;
+    @Getter
     private EnergyMonitorMode totalEnergyMode = EnergyMonitorMode.ALL;
+    @Getter
     private EnergyMonitorMode statisticsMode = EnergyMonitorMode.ALL;
+    @Getter
     private int visibleRowCount = DEFAULT_VISIBLE_ROWS;
     private long lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
     private EnergyMonitorSnapshot cachedSnapshot = EnergyMonitorSnapshot.empty();
@@ -48,6 +53,7 @@ public class EnergyMonitor extends MTEBasicTank {
     private boolean cachedHasMoreRows;
     private boolean summaryDirty = true;
     private boolean visibleRowsDirty = true;
+    @Getter
     private long visibleRowsRevision;
 
     public EnergyMonitor(int aID, String aName, String aNameRegional, int aTier, ITexture... aTextures) {
@@ -142,11 +148,6 @@ public class EnergyMonitor extends MTEBasicTank {
     }
 
     @Override
-    protected boolean useMui2() {
-        return true;
-    }
-
-    @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (aBaseMetaTileEntity.isClientSide()) return true;
         openGui(aPlayer);
@@ -158,19 +159,11 @@ public class EnergyMonitor extends MTEBasicTank {
         return true;
     }
 
-    public EnergyMonitorMode getTotalEnergyMode() {
-        return totalEnergyMode;
-    }
-
     public void setTotalEnergyMode(EnergyMonitorMode mode) {
         if (mode != null && totalEnergyMode != mode) {
             totalEnergyMode = mode;
             markSummaryDirty();
         }
-    }
-
-    public EnergyMonitorMode getStatisticsMode() {
-        return statisticsMode;
     }
 
     public void setStatisticsMode(EnergyMonitorMode mode) {
@@ -183,10 +176,6 @@ public class EnergyMonitor extends MTEBasicTank {
         statisticsMode = mode;
         markVisibleRowsDirty();
         markSummaryDirty();
-    }
-
-    public int getVisibleRowCount() {
-        return visibleRowCount;
     }
 
     public void setVisibleRowCount(int count) {
@@ -248,10 +237,6 @@ public class EnergyMonitor extends MTEBasicTank {
         lastSnapshotTick = DIRTY_SNAPSHOT_TICK;
     }
 
-    public UUID getMonitorOwnerUuid() {
-        return monitorOwnerUuid;
-    }
-
     public List<EnergyMonitorRowSnapshot> getCachedRows() {
         return cachedSnapshot == null ? Collections.emptyList() : cachedSnapshot.getRows();
     }
@@ -266,10 +251,6 @@ public class EnergyMonitor extends MTEBasicTank {
 
     public BigInteger getCachedWirelessStored() {
         return ensureCachedSnapshot().getWirelessStored();
-    }
-
-    public long getVisibleRowsRevision() {
-        return visibleRowsRevision;
     }
 
     private void refreshSnapshotIfNeeded() {

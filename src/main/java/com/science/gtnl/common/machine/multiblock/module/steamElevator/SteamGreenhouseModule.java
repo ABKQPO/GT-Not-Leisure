@@ -64,7 +64,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SteamGreenhouseModule extends SteamElevatorModule implements IGreenHouse {
+public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IGreenHouse {
 
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };

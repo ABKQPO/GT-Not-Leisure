@@ -47,7 +47,7 @@ import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class SteamOreProcessorModule extends SteamElevatorModule {
+public class SteamOreProcessorModule extends SteamElevatorModuleBase {
 
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_MACERATOR,
         GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_WASHER, GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_CENTRIFUGE,

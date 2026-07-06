@@ -45,8 +45,8 @@ import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.mixins.late.Botania.AccessorEntityDoppleganger;
-import com.science.gtnl.mixins.late.DraconicEvolution.AccessorCustomArmorHandler;
+import com.science.gtnl.mixins.late.botania.AccessorEntityDoppleganger;
+import com.science.gtnl.mixins.late.draconicEvolution.AccessorCustomArmorHandler;
 import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;

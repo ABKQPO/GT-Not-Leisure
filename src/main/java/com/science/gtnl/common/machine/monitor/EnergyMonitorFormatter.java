@@ -107,7 +107,7 @@ public class EnergyMonitorFormatter {
         appendTimeUnit(builder, hours, "gtnl.energy_monitor.time.hour");
         appendTimeUnit(builder, minutes, "gtnl.energy_monitor.time.minute");
         appendTimeUnit(builder, seconds, "gtnl.energy_monitor.time.second");
-        return builder.length() == 0 ? "0" + StatCollector.translateToLocal("gtnl.energy_monitor.time.second")
+        return builder.isEmpty() ? "0" + StatCollector.translateToLocal("gtnl.energy_monitor.time.second")
             : builder.toString();
     }
 
@@ -115,7 +115,7 @@ public class EnergyMonitorFormatter {
         if (value.signum() <= 0) {
             return;
         }
-        if (builder.length() > 0) {
+        if (!builder.isEmpty()) {
             builder.append(' ');
         }
         builder.append(value)

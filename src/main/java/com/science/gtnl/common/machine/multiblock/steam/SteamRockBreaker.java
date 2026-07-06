@@ -72,8 +72,8 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
                 Arrays.stream(StructureUtility.transpose(shape))
                     .map(
                         sa -> Arrays.stream(sa)
-                            .map(s -> s.replaceAll("E", " "))
-                            .map(s -> s.replaceAll("G", " "))
+                            .map(s -> s.replace("E", " "))
+                            .map(s -> s.replace("G", " "))
                             .toArray(String[]::new))
                     .toArray(String[][]::new))
             .addElement(

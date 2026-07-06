@@ -648,7 +648,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         })
             .setBackground(
                 () -> new IDrawable[] {
-                    isUpgradeConsumed() ? GTUITextures.BUTTON_STANDARD_PRESSED : GTUITextures.BUTTON_STANDARD,
+                    upgradeConsumed ? GTUITextures.BUTTON_STANDARD_PRESSED : GTUITextures.BUTTON_STANDARD,
                     GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
             .addTooltip(getUpgradeButtonTooltip())
             .setTooltipShowUpDelay(5)

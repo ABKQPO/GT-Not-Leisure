@@ -520,7 +520,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     public void appendNonNullFluids(List<FluidStack> target, FluidStack[] fluidStacks) {
-        if (fluidStacks == null || fluidStacks.length == 0) {
+        if (fluidStacks == null) {
             return;
         }
         for (FluidStack fluidStack : fluidStacks) {

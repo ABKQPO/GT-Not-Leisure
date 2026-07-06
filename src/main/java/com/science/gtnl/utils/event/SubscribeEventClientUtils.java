@@ -54,7 +54,7 @@ import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.loader.ItemLoader;
-import com.science.gtnl.mixins.early.Minecraft.AccessorGuiChat;
+import com.science.gtnl.mixins.early.minecraft.AccessorGuiChat;
 import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -313,7 +313,7 @@ public class SubscribeEventClientUtils {
         model.bipedLeftArm.showModel = event.slot == 1;
         model.bipedRightLeg.showModel = event.slot == 2 || event.slot == 3;
         model.bipedLeftLeg.showModel = event.slot == 2 || event.slot == 3;
-        model = net.minecraftforge.client.ForgeHooksClient
+        model = net.minecraftforge.client.forgeHooksClient
             .getArmorModel(event.entityPlayer, projectedArmor, event.slot, model);
         event.renderer.setRenderPassModel(model);
         model.onGround = event.renderer.modelBipedMain.onGround;

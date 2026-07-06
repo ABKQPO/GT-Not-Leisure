@@ -153,7 +153,7 @@ public interface IControllerUpgrade {
     }
 
     default int getPreviewUpgradeWindowId(int previewLevel) {
-        return getUpgradeWindowId() + previewLevel;
+        return UPGRADE_WINDOW_ID + previewLevel;
     }
 
     String getUpgradeButtonTooltip();
@@ -318,7 +318,7 @@ public interface IControllerUpgrade {
             .setPos(nextButtonX, switchButtonY)
             .setSize(16, 16));
 
-        final int previousWindowId = previewLevel == 1 ? getUpgradeWindowId()
+        final int previousWindowId = previewLevel == 1 ? UPGRADE_WINDOW_ID
             : getPreviewUpgradeWindowId(previewLevel - 1);
         builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
             if (!previewMode) return;
@@ -344,7 +344,7 @@ public interface IControllerUpgrade {
                         widget.getWindow()
                             .closeWindow();
                     } else {
-                        EternalGregTechWorkshopUI.reopenWindow(widget, getUpgradeWindowId());
+                        EternalGregTechWorkshopUI.reopenWindow(widget, UPGRADE_WINDOW_ID);
                     }
                 }
             })
@@ -377,7 +377,7 @@ public interface IControllerUpgrade {
     @Deprecated
     default void createUpgradeButton(ModularWindow.Builder builder, UIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after all controller upgrade buttons are fully ported to mui2.
-        buildContext.addSyncedWindow(getUpgradeWindowId(), this::createConsumeWindow);
+        buildContext.addSyncedWindow(UPGRADE_WINDOW_ID, this::createConsumeWindow);
         int maxPreviewLevel = getMaxPreviewUpgradeLevel();
         for (int level = 1; level <= maxPreviewLevel; level++) {
             final int previewLevel = level;
@@ -390,7 +390,7 @@ public interface IControllerUpgrade {
         builder.widget(new ButtonWidget().setOnClick((click, widget) -> {
             if (!widget.isClient()) {
                 widget.getContext()
-                    .openSyncedWindow(getUpgradeWindowId());
+                    .openSyncedWindow(UPGRADE_WINDOW_ID);
             }
         })
             .setBackground(

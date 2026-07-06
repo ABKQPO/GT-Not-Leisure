@@ -133,7 +133,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                 new TextWidget()
                     .setStringSupplier(
                         () -> VaultTypeCountFormatter
-                            .createTypeCountText(getSyncedTypeCountPayloadForGui(), "Info_SteamItemVault_TypeCount"))
+                            .createTypeCountText(typeCountPayloadForGui, "Info_SteamItemVault_TypeCount"))
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
                     .setEnabled(true))
             .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));

@@ -6,16 +6,30 @@ import java.util.Objects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class EnergyMonitorRowSnapshot {
 
+    @Setter
+    @Getter
     private ItemStack iconStack;
+    @Getter
     private String displayName = "";
+    @Getter
     private String ownerName = "";
+    @Getter
     private BigInteger eut = BigInteger.ZERO;
+    @Setter
     private String formattedEut;
+    @Setter
     private int voltageTier = -1;
+    @Getter
     private EnergyMonitorCategory category = EnergyMonitorCategory.BASIC_MACHINE;
+    @Setter
+    @Getter
     private boolean wireless;
+    @Getter
     private EnergyMonitorHighlightTarget highlightTarget = new EnergyMonitorHighlightTarget();
 
     public EnergyMonitorRowSnapshot copy() {
@@ -36,32 +50,12 @@ public class EnergyMonitorRowSnapshot {
         return copy;
     }
 
-    public ItemStack getIconStack() {
-        return iconStack;
-    }
-
-    public void setIconStack(ItemStack iconStack) {
-        this.iconStack = iconStack;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName == null ? "" : displayName;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName == null ? "" : ownerName;
-    }
-
-    public BigInteger getEut() {
-        return eut;
     }
 
     public void setEut(BigInteger eut) {
@@ -74,36 +68,12 @@ public class EnergyMonitorRowSnapshot {
         return formattedEut == null ? EnergyMonitorFormatter.formatBigInteger(eut) : formattedEut;
     }
 
-    public void setFormattedEut(String formattedEut) {
-        this.formattedEut = formattedEut;
-    }
-
     public int getVoltageTier() {
         return voltageTier >= 0 ? voltageTier : EnergyMonitorFormatter.getVoltageTier(eut.abs());
     }
 
-    public void setVoltageTier(int voltageTier) {
-        this.voltageTier = voltageTier;
-    }
-
-    public EnergyMonitorCategory getCategory() {
-        return category;
-    }
-
     public void setCategory(EnergyMonitorCategory category) {
         this.category = category == null ? EnergyMonitorCategory.BASIC_MACHINE : category;
-    }
-
-    public boolean isWireless() {
-        return wireless;
-    }
-
-    public void setWireless(boolean wireless) {
-        this.wireless = wireless;
-    }
-
-    public EnergyMonitorHighlightTarget getHighlightTarget() {
-        return highlightTarget;
     }
 
     public void setHighlightTarget(EnergyMonitorHighlightTarget highlightTarget) {

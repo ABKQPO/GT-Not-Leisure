@@ -1,6 +1,6 @@
 package com.science.gtnl.api.mixinHelper;
 
-import com.science.gtnl.mixins.early.NotEnoughItems.AccessorDrawableBuilder;
+import com.science.gtnl.mixins.early.notEnoughItems.AccessorDrawableBuilder;
 
 import codechicken.nei.drawable.DrawableBuilder;
 

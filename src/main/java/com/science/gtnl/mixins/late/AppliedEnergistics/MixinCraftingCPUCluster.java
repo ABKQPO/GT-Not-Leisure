@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.AppliedEnergistics;
+package com.science.gtnl.mixins.late.appliedEnergistics;
 
 import java.util.Map;
 
@@ -97,11 +97,13 @@ public abstract class MixinCraftingCPUCluster {
                 && instance instanceof AssemblerMatrix ef
                 && !ef.isBusy())) {
             assembly.set(true);
-            var craftingFrequency = Math
-                .min(craftingFrequencyR.get(), Long.MAX_VALUE / details.getCondensedOutputs()[0].getStackSize());
+            long maxOutputSize = r$getMaxStackSize(details.getCondensedAEOutputs());
+            var craftingFrequency = Math.min(craftingFrequencyR.get(), Long.MAX_VALUE / maxOutputSize);
             for (IAEItemStack input : details.getCondensedInputs()) {
                 if (input == null) continue;
-                final long size = craftingFrequency;
+                long inputSize = input.getStackSize();
+                if (inputSize <= 0) continue;
+                final long size = r$multiplyStackSize(inputSize, craftingFrequency);
                 var item = this.inventory.extractItems(
                     input.copy()
                         .setStackSize(size),
@@ -109,11 +111,11 @@ public abstract class MixinCraftingCPUCluster {
                     this.machineSrc);
                 if (item == null) continue;
                 if (item.getStackSize() < size) {
-                    long size0 = item.getStackSize();
-                    if (size0 < 2) {
+                    long availableCrafts = item.getStackSize() / inputSize;
+                    if (availableCrafts < 2) {
                         craftingFrequency = 1;
                     } else {
-                        craftingFrequency = size0;
+                        craftingFrequency = Math.min(craftingFrequency, availableCrafts);
                     }
                 }
             }
@@ -191,6 +193,23 @@ public abstract class MixinCraftingCPUCluster {
             receiver.setStackSize(receiver.getStackSize() * craftingFrequency.get());
         }
         original.call(instance, receiver, single);
+    }
+
+    @Unique
+    private long r$getMaxStackSize(IAEStack<?>[] stacks) {
+        long maxStackSize = 1;
+        for (IAEStack<?> stack : stacks) {
+            if (stack == null) continue;
+            maxStackSize = Math.max(maxStackSize, stack.getStackSize());
+        }
+        return maxStackSize;
+    }
+
+    @Unique
+    private long r$multiplyStackSize(long stackSize, long multiplier) {
+        if (stackSize <= 0 || multiplier <= 0) return 0;
+        if (stackSize > Long.MAX_VALUE / multiplier) return Long.MAX_VALUE;
+        return stackSize * multiplier;
     }
 
     @WrapOperation(

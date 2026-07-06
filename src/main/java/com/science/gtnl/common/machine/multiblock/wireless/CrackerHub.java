@@ -171,7 +171,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
         if (outputItems != null) {
             for (ItemStack itemStack : outputItems) {
                 if (itemStack != null) {
-                    itemStack.stackSize *= 1 + factor;
+                    itemStack.stackSize *= (int) (1 + factor);
                 }
             }
         }

@@ -664,7 +664,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public static double calculateParallelByFluidsUnordered(Object2LongOpenHashMap<Fluid> availableMap,
         double currentParallel, FluidStack[] recipeFluids) {
-        if (recipeFluids == null || recipeFluids.length == 0) return currentParallel;
+        if (recipeFluids == null) return currentParallel;
 
         for (FluidStack req : recipeFluids) {
             if (req == null) continue;

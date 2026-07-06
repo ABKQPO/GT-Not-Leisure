@@ -359,7 +359,7 @@ public class EternalGregTechWorkshopUI {
         widget.addChild(
             new DrawableWidget().setDrawable(upgrade.getSymbol())
                 .setPos((int) ((1 - upgrade.getSymbolWidthRatio() / 2) * w / 2), h / 4)
-                .setSize((int) (w / 2 * upgrade.getSymbolWidthRatio()), h / 2));
+                .setSize((int) ((float) w / 2 * upgrade.getSymbolWidthRatio()), h / 2));
 
         // Background overlay
         widget.addChild(

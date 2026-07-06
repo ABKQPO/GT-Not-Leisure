@@ -15,7 +15,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
 
-public class SteamMonsterRepellentModule extends SteamElevatorModule {
+public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
 
     public int mRange;
 

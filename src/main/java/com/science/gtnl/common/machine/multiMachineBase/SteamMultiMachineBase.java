@@ -553,8 +553,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public boolean addToMachineList(final IGregTechTileEntity aTileEntity, final int aBaseCasingIndex) {
-        boolean aDidAdd = super.addToMachineList(aTileEntity, aBaseCasingIndex);
-
         if (aTileEntity == null) {
             ScienceNotLeisure.LOG.warn("Invalid IGregTechTileEntity");
             return false;
@@ -566,18 +564,15 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         }
 
         if (aMetaTileEntity instanceof WirelessSteamEnergyHatch) {
-            aDidAdd = addToMachineListInternal(
+            return addToMachineListInternal(
                 mSteamWirelessInputFluids,
                 (WirelessSteamEnergyHatch) aMetaTileEntity,
                 aBaseCasingIndex);
-        } else if (aMetaTileEntity instanceof CustomFluidHatch) {
-            aDidAdd = addToMachineListInternal(
-                mSteamBigInputFluids,
-                (CustomFluidHatch) aMetaTileEntity,
-                aBaseCasingIndex);
         }
-
-        return aDidAdd;
+        if (aMetaTileEntity instanceof CustomFluidHatch) {
+            return addToMachineListInternal(mSteamBigInputFluids, (CustomFluidHatch) aMetaTileEntity, aBaseCasingIndex);
+        }
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override
@@ -631,7 +626,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     public void appendNonNullInputItems(List<ItemStack> target, ItemStack[] itemStacks) {
-        if (itemStacks == null || itemStacks.length == 0) {
+        if (itemStacks == null) {
             return;
         }
         for (ItemStack itemStack : itemStacks) {

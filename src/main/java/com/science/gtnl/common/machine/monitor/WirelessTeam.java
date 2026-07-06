@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import lombok.Getter;
 
 public class WirelessTeam {
 
@@ -29,6 +30,7 @@ public class WirelessTeam {
         return resolveContext(viewerUuid).getLeader();
     }
 
+    @Getter
     public static class TeamContext {
 
         private final UUID leader;
@@ -39,12 +41,5 @@ public class WirelessTeam {
             this.members = members == null ? Set.of() : members;
         }
 
-        public UUID getLeader() {
-            return leader;
-        }
-
-        public Set<UUID> getMembers() {
-            return members;
-        }
     }
 }

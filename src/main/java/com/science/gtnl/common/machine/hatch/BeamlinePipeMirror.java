@@ -63,7 +63,7 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
                         }
 
                         if (canConnect) {
-                            mConnections |= 1 << dir.ordinal();
+                            mConnections |= (byte) (1 << dir.ordinal());
                             connectedSides[connectionCount] = dir;
                             connectionCount++;
                         }

@@ -6,7 +6,6 @@ import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,7 +19,7 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.common.gui.modularui.CustomFluidHatchGui;
-import com.science.gtnl.mixins.early.Gregtech.AccessorMTEHatch;
+import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
@@ -190,11 +189,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     }
 
     @Override
-    public boolean doesFillContainers() {
-        return false;
-    }
-
-    @Override
     public boolean doesEmptyContainers() {
         return true;
     }
@@ -225,7 +219,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
         ArrayList<String> desc = new ArrayList<>();
         desc.add(StatCollector.translateToLocal("HatchCustomFluid_00"));
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + getCapacity() + "L");
+        desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + mFluidCapacity + "L");
         desc.add(StatCollector.translateToLocal("HatchCustomFluid_02"));
 
         for (Fluid allowed : mLockedFluids) {

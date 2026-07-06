@@ -10,7 +10,6 @@ import net.minecraft.util.EnumChatFormatting;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
-import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
@@ -179,7 +178,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                         return false;
                     }
                 }.backgroundOverlay(GTGuiTextures.SLOT_ITEM_DARK))
-                .modularSlotSupplier((handler, index) -> new ModularSlot(handler, index))
+                .modularSlotSupplier(ModularSlot::new)
                 .build());
     }
 
@@ -417,11 +416,6 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                 return Interactable.Result.SUCCESS;
             }
             return super.onMousePressed(mouseButton);
-        }
-
-        @Override
-        public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
-            return false;
         }
 
     }

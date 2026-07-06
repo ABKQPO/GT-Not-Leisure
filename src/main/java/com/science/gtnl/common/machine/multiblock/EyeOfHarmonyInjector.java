@@ -1229,7 +1229,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     }
 
     public void appendNonNullItemStacks(List<ItemStack> target, ItemStack[] itemStacks) {
-        if (itemStacks == null || itemStacks.length == 0) {
+        if (itemStacks == null) {
             return;
         }
         for (ItemStack itemStack : itemStacks) {
@@ -1240,7 +1240,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     }
 
     public void appendNonNullFluidStacks(List<FluidStack> target, FluidStack[] fluidStacks) {
-        if (fluidStacks == null || fluidStacks.length == 0) {
+        if (fluidStacks == null) {
             return;
         }
         for (FluidStack fluidStack : fluidStacks) {

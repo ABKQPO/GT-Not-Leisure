@@ -1,7 +1,6 @@
 package com.science.gtnl.utils.machine;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,10 +18,8 @@ public class FluidTankG {
     ArrayList<FluidStack> arr = new ArrayList<>();
 
     public boolean isEmpty() {
-        return !arr.stream()
-            .filter(s -> s.amount > 0)
-            .findFirst()
-            .isPresent();
+        return arr.stream()
+            .anyMatch(s -> s.amount > 0);
     }
 
     public long getFluidAmount() {
@@ -36,7 +33,7 @@ public class FluidTankG {
      * return value is readonly!!!!
      */
     public FluidStack getFluid() {
-        if (arr.size() > 0) {
+        if (!arr.isEmpty()) {
             FluidStack f = arr.get(0)
                 .copy();
             f.amount = (int) Math.min(getFluidAmount(), Integer.MAX_VALUE);
@@ -53,7 +50,7 @@ public class FluidTankG {
     }
 
     public NBTBase writeToNBT(NBTTagCompound nbtTagCompound) {
-        if (arr.size() > 0) {
+        if (!arr.isEmpty()) {
             FluidTank tk = new FluidTank(0);
             tk.setFluid(arr.get(0));
             tk.writeToNBT(nbtTagCompound);
@@ -103,7 +100,7 @@ public class FluidTankG {
             return resource.amount;
         }
 
-        if (arr.size() > 0 && arr.get(0)
+        if (!arr.isEmpty() && arr.get(0)
             .getFluid() != resource.getFluid()) {
             return 0;
         }
@@ -178,13 +175,7 @@ public class FluidTankG {
         }
 
         if (dirty) {
-            Iterator<FluidStack> it = arr.iterator();
-            while (it.hasNext()) {
-                if (it.next().amount <= 0) {
-                    it.remove();
-                }
-
-            }
+            arr.removeIf(fluidStack -> fluidStack.amount <= 0);
 
         }
     }
@@ -227,7 +218,7 @@ public class FluidTankG {
                     - is.amount,
                 todo);
             todo -= cando;
-            is.amount += cando;
+            is.amount += (int) cando;
             if (todo <= 0) return;
         }
         while (todo > 0) {

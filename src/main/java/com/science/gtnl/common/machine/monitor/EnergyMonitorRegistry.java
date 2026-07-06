@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.monitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,13 +36,7 @@ public class EnergyMonitorRegistry {
     }
 
     public static void cleanupInvalidEntries() {
-        Iterator<MetaTileEntity> iterator = TRACKED.iterator();
-        while (iterator.hasNext()) {
-            MetaTileEntity metaTileEntity = iterator.next();
-            if (!shouldTrack(metaTileEntity) || !metaTileEntity.isValid()) {
-                iterator.remove();
-            }
-        }
+        TRACKED.removeIf(metaTileEntity -> !shouldTrack(metaTileEntity) || !metaTileEntity.isValid());
     }
 
     public static boolean isInvalid(MetaTileEntity metaTileEntity) {

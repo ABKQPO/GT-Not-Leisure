@@ -39,6 +39,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
+import lombok.Setter;
 import tectech.TecTech;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
@@ -46,6 +47,7 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     public long EUt = 0;
     public int currentParallel = 0;
+    @Setter
     public boolean fluidMode = false;
     public long wirelessEUt = 0;
 
@@ -236,7 +238,7 @@ public class FOGExtractorModule extends MTEBaseModule {
             .setBackground(() -> {
                 List<UITexture> ret = new ArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
-                if (isFluidModeOn()) {
+                if (fluidMode) {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE);
                 } else {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE_OFF);
@@ -256,10 +258,6 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     public boolean isFluidModeOn() {
         return fluidMode;
-    }
-
-    public void setFluidMode(boolean enabled) {
-        fluidMode = enabled;
     }
 
     @Override
