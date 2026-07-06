@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.Nxer.twistSpaceTechnology.loader.RecipeLoader;
+import com.Nxer.TwistSpaceTechnology.loader.RecipeLoader;
 import com.science.gtnl.ScienceNotLeisure;
 
 @Mixin(value = RecipeLoader.class, remap = false)

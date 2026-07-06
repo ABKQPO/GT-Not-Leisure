@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.science.gtnl.common.item.items.stick;
+import com.science.gtnl.common.item.items.Stick;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {

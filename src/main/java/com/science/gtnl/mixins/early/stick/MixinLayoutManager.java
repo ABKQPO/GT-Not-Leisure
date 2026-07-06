@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.science.gtnl.common.item.items.stick;
+import com.science.gtnl.common.item.items.Stick;
 
 import codechicken.nei.KeyManager;
 import codechicken.nei.LayoutManager;

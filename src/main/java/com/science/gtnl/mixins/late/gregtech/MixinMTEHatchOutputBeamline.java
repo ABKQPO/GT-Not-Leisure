@@ -1,5 +1,7 @@
 package com.science.gtnl.mixins.late.gregtech;
 
+import net.minecraftforge.common.util.ForgeDirection;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

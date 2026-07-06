@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
@@ -57,6 +58,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
@@ -96,8 +98,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     public GreenHouseMode mode = GreenHouseModes.Normal;
 
     @Getter
-    @Setter
-    public GreenHouseViewMode greenHouseViewMode = GreenHouseViewMode.SEEDS;
+    public GreenHouseViewMode greenHouseViewMode = GreenHouseViewMode.STATUS;
 
     @Getter
     @Setter
@@ -154,6 +155,73 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public boolean addItemOutputsToGreenHouse(ItemStack[] outputs) {
         return addItemOutputs(outputs);
+    }
+
+    @Override
+    public void setGreenHouseViewMode(GreenHouseViewMode mode) {
+        this.greenHouseViewMode = mode == null ? GreenHouseViewMode.STATUS : mode.withoutBlocks();
+    }
+
+    @Override
+    public boolean supportsBlockUnderView() {
+        return false;
+    }
+
+    @Override
+    public CheckRecipeResult tryAddBlockUnderStack(ItemStack input, boolean simulate) {
+        if (CropsNHUtils.isStackInvalid(input)) return CheckRecipeResultRegistry.NO_RECIPE;
+
+        ItemStack acceptedType = getAcceptedBlockUnderType();
+        if (CropsNHUtils.isStackValid(acceptedType) && !GTUtility.areStacksEqual(acceptedType, input, false)) {
+            return BLOCK_UNDER_NOT_FOUND;
+        }
+
+        int remaining = input.stackSize;
+        boolean inserted = false;
+        for (GreenHouseStoredCrop crop : storedCrops) {
+            if (remaining <= 0) break;
+
+            ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            if (seedData == null || !needsBlockUnder(seedData)) continue;
+            int missing = getMissingBlockUnderCount(crop);
+            if (missing <= 0) continue;
+
+            ItemStack blockUnder = crop.getBlockUnderStack();
+            if (CropsNHUtils.isStackValid(blockUnder)) {
+                if (!GTUtility.areStacksEqual(blockUnder, input, false)) continue;
+            } else {
+                if (!isValidBlockUnder(seedData, input)) continue;
+                if (!simulate) {
+                    blockUnder = CropsNHUtils.copyStackWithSize(input, 0);
+                    crop.setBlockUnderStack(blockUnder);
+                }
+            }
+
+            int toInsert = Math.min(remaining, missing);
+            remaining -= toInsert;
+            inserted = true;
+            if (!simulate) {
+                input.stackSize -= toInsert;
+                blockUnder.stackSize += toInsert;
+            }
+        }
+
+        return inserted ? CheckRecipeResultRegistry.SUCCESSFUL : BLOCK_UNDER_NOT_FOUND;
+    }
+
+    private ItemStack getAcceptedBlockUnderType() {
+        for (GreenHouseStoredCrop crop : storedCrops) {
+            ItemStack blockUnder = crop.getBlockUnderStack();
+            if (CropsNHUtils.isStackValid(blockUnder)) {
+                return blockUnder;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean supportsPowerPanel() {
+        return false;
     }
 
     @Override
@@ -256,7 +324,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
-        greenHouseViewMode = greenHouseViewMode.next();
+        greenHouseViewMode = greenHouseViewMode.nextWithoutBlocks();
         GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_ViewMode_Change", greenHouseViewMode.name());
         return true;
     }
@@ -423,7 +491,9 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        this.greenHouseViewMode = GreenHouseViewMode.fromOrdinal(aNBT.getInteger("greenHouseViewMode"));
+        this.greenHouseViewMode = aNBT.hasKey("greenHouseViewMode")
+            ? GreenHouseViewMode.fromOrdinalWithoutBlocks(aNBT.getInteger("greenHouseViewMode"))
+            : GreenHouseViewMode.STATUS;
         this.industrialFarmDropTracker = new IFDropTable(aNBT, "industrialFarmProgress");
         this.storedCrops.clear();
         NBTTagList cropListNBT = aNBT.getTagList("industrialFarmCrops", 10);
@@ -523,7 +593,12 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public double getGreenHouseOutputMultiplier() {
-        return 1.0d;
+        return 1.5d;
+    }
+
+    @Override
+    public double getCropDropChanceMultiplier(ISeedData seedData) {
+        return 1.5d;
     }
 
     @Override
@@ -536,9 +611,8 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         return false;
     }
 
-    @Deprecated
+    @Override
     public void tryChangeSetupPhase(EntityPlayer aPlayer) {
-        // TODO: Remove this legacy MUI1 setup phase toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
             GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
             return;

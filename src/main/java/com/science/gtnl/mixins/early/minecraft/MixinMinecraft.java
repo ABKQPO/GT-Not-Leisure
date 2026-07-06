@@ -34,6 +34,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Timer;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

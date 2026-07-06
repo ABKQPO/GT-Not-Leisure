@@ -115,7 +115,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public String costingEUText = Utils.ZERO_STRING;
     public UUID ownerUUID;
     public boolean wirelessMode = false;
-    public int minRecipeTime = 20;
+    public int minRecipeTime = 50;
 
     public GrandAssemblyLine(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -975,7 +975,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     public void setMinRecipeTimeFromGui(int minRecipeTime) {
-        this.minRecipeTime = Math.max(1, minRecipeTime);
+        this.minRecipeTime = Math.max(50, minRecipeTime);
     }
 
     @Override
@@ -1032,7 +1032,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .widget(
                 new NumericWidget().setSetter(val -> minRecipeTime = (int) val)
                     .setGetter(() -> minRecipeTime)
-                    .setBounds(1, Integer.MAX_VALUE)
+                    .setBounds(50, Integer.MAX_VALUE)
                     .setDefaultValue(1)
                     .setScrollValues(1, 4, 64)
                     .setTextAlignment(Alignment.Center)

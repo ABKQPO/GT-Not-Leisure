@@ -10,8 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.Nxer.twistSpaceTechnology.common.machine.multiMachineClasses.GTCM_MultiMachineBase;
-import com.Nxer.twistSpaceTechnology.system.OreProcess.machines.TST_OreProcessingFactory;
+import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.GTCM_MultiMachineBase;
+import com.Nxer.TwistSpaceTechnology.system.OreProcess.machines.TST_OreProcessingFactory;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;

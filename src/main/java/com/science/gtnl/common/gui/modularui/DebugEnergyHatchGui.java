@@ -23,6 +23,8 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
 
     private static final String EUT_SYNC_KEY = "eut";
     private static final String AMP_SYNC_KEY = "amp";
+    private static final int CONTENT_OFFSET_X = -7;
+    private static final int CONTENT_OFFSET_Y = -4;
 
     public DebugEnergyHatchGui(DebugEnergyHatch hatch) {
         super(hatch);
@@ -40,10 +42,16 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
         LongSyncValue eutSyncer = syncManager.findSyncHandler(EUT_SYNC_KEY, LongSyncValue.class);
         LongSyncValue ampSyncer = syncManager.findSyncHandler(AMP_SYNC_KEY, LongSyncValue.class);
 
-        return super.createContentSection(panel, syncManager).child(
-            GTGuiTextures.PICTURE_SCREEN_BLACK.asWidget()
-                .pos(43, 4)
-                .size(90, 72))
+        return super.createContentSection(panel, syncManager).child(createDebugControls(eutSyncer, ampSyncer));
+    }
+
+    private ParentWidget<?> createDebugControls(LongSyncValue eutSyncer, LongSyncValue ampSyncer) {
+        return new ParentWidget<>().pos(CONTENT_OFFSET_X, CONTENT_OFFSET_Y)
+            .size(176, 76)
+            .child(
+                GTGuiTextures.PICTURE_SCREEN_BLACK.asWidget()
+                    .pos(43, 4)
+                    .size(90, 72))
             .child(
                 IKey.dynamic(() -> "TIER: " + getTierName(eutSyncer))
                     .asWidget()

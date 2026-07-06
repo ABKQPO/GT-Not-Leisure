@@ -20,6 +20,7 @@ import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 
 import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.api.util.GTUtility;
+import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.science.gtnl.common.item.items.stick;
+import com.science.gtnl.common.item.items.Stick;
 
 import mcp.mobius.waila.handlers.nei.TooltipHandlerWaila;
 import mcp.mobius.waila.utils.ModIdentification;

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.gtnewhorizon.gtnhlib.util.AnimatedTooltipHandler;
-import com.science.gtnl.common.item.items.stick;
+import com.science.gtnl.common.item.items.Stick;
 
 @Mixin(value = AnimatedTooltipHandler.class, remap = false)
 public abstract class MixinAnimatedTooltipHandler {

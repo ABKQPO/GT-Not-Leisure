@@ -6,7 +6,6 @@ import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.DrawableStack;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
@@ -19,8 +18,6 @@ import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamElevator;
-
-import gregtech.api.modularui2.GTGuiTextures;
 
 public class SteamElevatorGui extends GTNLSteamMultiBlockBaseGui {
 
@@ -83,17 +80,33 @@ public class SteamElevatorGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     @Override
+    protected Flow createLeftPanelGapRow(ModularPanel parent, PanelSyncManager syncManager) {
+        return Flow.row()
+            .coverChildrenWidth()
+            .fullHeight()
+            .child(createPowerSwitchButton())
+            .child(createStructureUpdateButton(syncManager))
+            .child(createTeleportButton(syncManager));
+    }
+
+    @Override
     protected Flow createRightPanelGapRow(ModularPanel parent, PanelSyncManager syncManager) {
-        return super.createRightPanelGapRow(parent, syncManager).child(createTeleportButton(syncManager));
+        return Flow.row()
+            .mainAxisAlignment(Alignment.MainAxis.END)
+            .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+            .reverseLayout(true)
+            .verticalCenter()
+            .rightRel(0)
+            .coverChildrenWidth()
+            .fullHeight();
     }
 
     private IWidget createTeleportButton(PanelSyncManager syncManager) {
         InteractionSyncHandler teleportSyncer = syncManager
             .findSyncHandler(TELEPORT_SYNC_KEY, InteractionSyncHandler.class);
-        return new ButtonWidget<>().size(16, 16)
+        return new ButtonWidget<>().size(18, 18)
             .playClickSound(false)
-            .background(
-                new DrawableStack(GTGuiTextures.BUTTON_STANDARD, GTNLMui2Textures.OVERLAY_BUTTON_PLANET_TELEPORT))
+            .overlay(GTNLMui2Textures.OVERLAY_BUTTON_PLANET_TELEPORT)
             .syncHandler(teleportSyncer)
             .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("ig.button.travel")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);

@@ -13,6 +13,8 @@ import com.science.gtnl.common.machine.multiblock.FOGExtractorModule;
 import com.science.gtnl.common.machine.multiblock.FOGSolarMuonCatalystModule;
 
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
+import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
+import tectech.thing.metaTileEntity.multi.godforge.util.ForgeOfGodsData;
 import tectech.thing.metaTileEntity.multi.godforge.util.GodforgeMath;
 
 @Mixin(value = GodforgeMath.class, remap = false)

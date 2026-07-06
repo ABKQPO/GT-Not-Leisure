@@ -9,6 +9,7 @@ import com.science.gtnl.common.gui.recipe.ExtendQFTFrontend;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMapBuilder;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 @Mixin(value = GTPPRecipeMaps.class, remap = false)
 public class MixinGTPPRecipeMaps {

@@ -23,6 +23,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
@@ -313,8 +314,7 @@ public class SubscribeEventClientUtils {
         model.bipedLeftArm.showModel = event.slot == 1;
         model.bipedRightLeg.showModel = event.slot == 2 || event.slot == 3;
         model.bipedLeftLeg.showModel = event.slot == 2 || event.slot == 3;
-        model = net.minecraftforge.client.forgeHooksClient
-            .getArmorModel(event.entityPlayer, projectedArmor, event.slot, model);
+        model = ForgeHooksClient.getArmorModel(event.entityPlayer, projectedArmor, event.slot, model);
         event.renderer.setRenderPassModel(model);
         model.onGround = event.renderer.modelBipedMain.onGround;
         model.isRiding = event.renderer.modelBipedMain.isRiding;

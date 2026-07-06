@@ -18,6 +18,7 @@ import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
+import tectech.recipe.TecTechRecipeMaps;
 
 @Mixin(value = AssemblyLineUtils.class, remap = false)
 public abstract class MixinAssemblyLineUtils {
