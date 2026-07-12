@@ -31,6 +31,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.gui.modularui.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
 
 import gregtech.api.enums.HatchElement;
@@ -166,8 +167,9 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
         boolean hasMEOutputBus = false;
         for (final IOutputBus bus : GTUtility.validMTEList(mOutputBusses)) {
-            if (!bus.isFiltered() && bus.createTransaction()
-                .hasAvailableSpace()) {
+            if (Utils.isMEOutputBus(bus) && !bus.isFiltered()
+                && bus.createTransaction()
+                    .hasAvailableSpace()) {
                 hasMEOutputBus = true;
                 break;
             }
@@ -175,6 +177,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
         ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
         long toSmelt = maxParallel;
+        boolean outputFull = false;
 
         for (ItemStack item : tInput) {
             ItemStack smeltedOutput = GTModHandler.getSmeltingOutput(item, false, null);
@@ -195,8 +198,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
                     if (slot == null) {
                         spaceInSlot = smeltedOutput.getMaxStackSize();
                     } else if (GTUtility.areStacksEqual(slot, smeltedOutput)) {
-                        spaceInSlot = (slot.stackSize >= 64) ? (int) (neededRecipes * itemsPerRecipe)
-                            : (slot.getMaxStackSize() - slot.stackSize);
+                        spaceInSlot = slot.getMaxStackSize() - slot.stackSize;
                     } else {
                         continue;
                     }
@@ -219,6 +221,11 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
                 }
             }
 
+            if (maxRecipesPossible <= 0) {
+                outputFull = true;
+                continue;
+            }
+
             long toProcess = protectsExcessItem() ? maxRecipesPossible : remainingToSmelt;
             if (toProcess <= 0) continue;
 
@@ -234,7 +241,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
         }
 
         if (smeltedOutputs.isEmpty()) {
-            return CheckRecipeResultRegistry.NO_RECIPE;
+            return outputFull ? CheckRecipeResultRegistry.ITEM_OUTPUT_FULL : CheckRecipeResultRegistry.NO_RECIPE;
         }
 
         this.mOutputItems = smeltedOutputs.toArray(new ItemStack[0]);
