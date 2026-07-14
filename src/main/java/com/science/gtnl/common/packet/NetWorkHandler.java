@@ -15,7 +15,7 @@ public class NetWorkHandler {
     private static int nextPacketId;
     private static boolean initialized;
 
-    public static synchronized void registerAllMessage() {
+    public static synchronized void register() {
         if (initialized) return;
         initialized = true;
         nextPacketId = 0;
