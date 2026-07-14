@@ -1,8 +1,10 @@
-name: Release build
+name: Dev Release build
 
 on:
   push:
-    branches: [ dev-290 ]
+    branches: [ master, main, release/**, dev-* ]
+  pull_request:
+    branches: [ master, main, release/**, dev-* ]
   workflow_dispatch:
 
 permissions:
@@ -11,17 +13,18 @@ permissions:
 jobs:
   dev-build:
     runs-on: ubuntu-24.04
+
     env:
       VERSION: ${{ github.ref_name }}
       RELEASE_VERSION: ${{ github.ref_name }}
       SNAPSHOT: ${{ endsWith(github.ref_name, '-snapshot') || contains(github.event.head_commit.message, '[snapshot]') }}
       MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://nexus.gtnewhorizons.com/repository/releases/' }}
+
     steps:
       - name: Checkout mod repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 32
-          ref: dev-290
 
       - name: Set up JDK versions
         uses: actions/setup-java@v4
@@ -31,14 +34,14 @@ jobs:
             17
             21
             25
-          distribution: 'zulu'
+          distribution: zulu
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
+          build-scan-terms-of-use-url: https://gradle.com/terms-of-service
+          build-scan-terms-of-use-agree: yes
           validate-wrappers: true
 
       - name: Grant execute permission for gradlew
@@ -50,12 +53,23 @@ jobs:
       - name: Build the mod
         run: ./gradlew --build-cache --info --stacktrace assemble
 
+      # PR 时仅上传构建产物到 Actions Artifacts
+      - name: Upload build artifacts
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-build-${{ github.event.pull_request.number }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+
+      # Push 时创建/更新 GitHub Release
       - name: Release
+        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build
-          body: Dynamic action build of all branch
+          body: Dynamic action build of branch ${{ github.ref_name }}
           tag_name: dev-build
           prerelease: true
           files: |
-            ./build/libs/*.jar
+            build/libs/*.jar
