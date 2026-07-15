@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-24.04
 
     env:
-      VERSION: ${{ github.ref_name }}
-      RELEASE_VERSION: ${{ github.ref_name }}
-      SNAPSHOT: ${{ endsWith(github.ref_name, '-snapshot') || contains(github.event.head_commit.message, '[snapshot]') }}
+      VERSION: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+      RELEASE_VERSION: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+      SNAPSHOT: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[snapshot]')) || endsWith(github.event_name == 'pull_request' && github.head_ref || github.ref_name, '-snapshot') }}
       MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://nexus.gtnewhorizons.com/repository/releases/' }}
 
     steps:
@@ -53,7 +53,6 @@ jobs:
       - name: Build the mod
         run: ./gradlew --build-cache --info --stacktrace assemble
 
-      # PR 时仅上传构建产物到 Actions Artifacts
       - name: Upload build artifacts
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
@@ -62,9 +61,8 @@ jobs:
           path: build/libs/*.jar
           if-no-files-found: error
 
-      # Push 时创建/更新 GitHub Release
       - name: Release
-        if: github.event_name == 'push'
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build
