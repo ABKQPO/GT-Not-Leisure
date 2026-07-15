@@ -157,6 +157,7 @@ public enum Mixins implements IMixins {
             "modularUI.MixinFluidSlotWidget",
             "tConstruct.MixinSmelteryLogic",
             "tecTech.MixinMTEEyeOfHarmony",
+            "tecTech.AccessorMTEResearchStation",
             "tecTech.MixinMTEResearchStation",
             "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
