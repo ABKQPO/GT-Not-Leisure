@@ -23,6 +23,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamFlightModule extends SteamElevatorModuleBase {
 
     public static final int POTION_FLIGHT_ID = Mods.BloodMagic.isModLoaded() ? getPotionFlightId() : Potion.jump.id;

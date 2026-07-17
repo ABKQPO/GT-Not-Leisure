@@ -52,6 +52,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
 
     private static final int HORIZONTAL_OFF_SET = 49;

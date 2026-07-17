@@ -36,6 +36,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRareEarthCentrifugal>
     implements ISurvivalConstructable {
 

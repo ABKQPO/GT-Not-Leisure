@@ -68,6 +68,7 @@ import gregtech.common.render.IMTERenderer;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends MultiMachineBase<T>
     implements IConstructable, ISurvivalConstructable {
 

@@ -65,6 +65,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
     private static final int HORIZONTAL_OFF_SET = 62;

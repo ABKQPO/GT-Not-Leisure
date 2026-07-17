@@ -33,6 +33,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MegaCanner extends WirelessEnergyMultiMachineBase<MegaCanner> {
 
     private static final int HORIZONTAL_OFF_SET = 4;

@@ -52,6 +52,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 2;

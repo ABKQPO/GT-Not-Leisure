@@ -73,6 +73,7 @@ import gtnhlanth.common.register.LanthItemList;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<IntegratedAssemblyFacility>
     implements IControllerUpgrade {
 

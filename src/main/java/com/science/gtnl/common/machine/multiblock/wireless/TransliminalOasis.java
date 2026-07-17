@@ -47,6 +47,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class TransliminalOasis extends WirelessEnergyMultiMachineBase<TransliminalOasis> {
 
     private static final int HORIZONTAL_OFF_SET = 21;

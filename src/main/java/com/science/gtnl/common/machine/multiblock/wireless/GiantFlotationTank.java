@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class GiantFlotationTank extends WirelessEnergyMultiMachineBase<GiantFlotationTank> {
 
     private static final int HORIZONTAL_OFF_SET = 4;

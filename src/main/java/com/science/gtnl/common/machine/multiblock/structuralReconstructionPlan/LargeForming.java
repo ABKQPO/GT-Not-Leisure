@@ -36,6 +36,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeForming extends GTMMultiMachineBase<LargeForming> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

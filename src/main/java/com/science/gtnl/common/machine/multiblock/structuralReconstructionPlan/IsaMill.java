@@ -52,6 +52,7 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.nbthandlers.MTEHatchMillingBalls;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalConstructable {
 
     private static final TranslatableText MILLING_BALL_BUS_NAME = TranslatableText

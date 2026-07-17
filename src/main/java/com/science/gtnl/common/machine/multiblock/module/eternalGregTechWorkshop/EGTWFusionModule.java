@@ -8,6 +8,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EGTWFusionModule extends EternalGregTechWorkshopModule {
 
     public EGTWFusionModule(int aID, String aName, String aNameRegional) {

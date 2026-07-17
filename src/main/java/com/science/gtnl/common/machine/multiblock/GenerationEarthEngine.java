@@ -38,6 +38,7 @@ import kubatech.loaders.BlockLoader;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngine> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 321;

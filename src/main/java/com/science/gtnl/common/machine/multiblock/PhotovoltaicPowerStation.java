@@ -213,6 +213,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 + " L/t" };
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class EnergeticPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public EnergeticPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -273,6 +274,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class AdvancedPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public AdvancedPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -333,6 +335,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class VibrantPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public VibrantPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {

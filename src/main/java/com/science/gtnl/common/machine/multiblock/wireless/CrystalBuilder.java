@@ -36,6 +36,7 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class CrystalBuilder extends WirelessEnergyMultiMachineBase<CrystalBuilder> {
 
     private static final int HORIZONTAL_OFF_SET = 11;

@@ -47,6 +47,7 @@ import gregtech.common.misc.GTStructureChannels;
 import kubatech.loaders.DEFCRecipes;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCrafting>
     implements ISurvivalConstructable {
 

@@ -50,6 +50,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.render.IMTERenderer;
 import micdoodle8.mods.galacticraft.core.blocks.GCBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     implements ISurvivalConstructable, IMTERenderer {
 

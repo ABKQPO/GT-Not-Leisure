@@ -39,6 +39,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCokeOven>
     implements ISurvivalConstructable {
 

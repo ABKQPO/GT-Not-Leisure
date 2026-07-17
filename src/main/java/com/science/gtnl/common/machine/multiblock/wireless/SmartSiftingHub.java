@@ -37,6 +37,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSiftingHub> {
 
     private static final int HORIZONTAL_OFF_SET = 7;

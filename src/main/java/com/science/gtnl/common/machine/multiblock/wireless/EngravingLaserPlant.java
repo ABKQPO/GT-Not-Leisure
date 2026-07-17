@@ -67,6 +67,7 @@ import gregtech.common.misc.GTStructureChannels;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<EngravingLaserPlant>
     implements IControllerUpgrade {
 

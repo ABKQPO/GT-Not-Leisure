@@ -109,6 +109,7 @@ import tectech.thing.gui.TecTechUITextures;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperSpaceElevator extends TTMultiblockBase
     implements IConstructable, ISecondaryDescribable, ISurvivalConstructable {
 

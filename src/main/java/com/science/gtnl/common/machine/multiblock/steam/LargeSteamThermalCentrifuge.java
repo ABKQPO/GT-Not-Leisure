@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeSteamThermalCentrifuge extends SteamMultiMachineBase<LargeSteamThermalCentrifuge>
     implements ISurvivalConstructable {
 

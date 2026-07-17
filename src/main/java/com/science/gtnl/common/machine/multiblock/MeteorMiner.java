@@ -87,6 +87,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

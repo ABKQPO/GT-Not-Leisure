@@ -45,6 +45,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
 
     private static final int MACHINEMODE_FREWERY = 0;

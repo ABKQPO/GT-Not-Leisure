@@ -79,6 +79,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class QuantumComputer extends MTETooltipMultiBlockBase
     implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo, ICustomNameObject {
 

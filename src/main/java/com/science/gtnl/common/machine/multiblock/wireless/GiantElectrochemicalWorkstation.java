@@ -37,6 +37,7 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineBase<GiantElectrochemicalWorkstation> {
 
     private static final int HORIZONTAL_OFF_SET = 22;

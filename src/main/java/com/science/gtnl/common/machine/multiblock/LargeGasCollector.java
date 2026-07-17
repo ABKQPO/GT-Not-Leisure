@@ -47,6 +47,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtneioreplugin.plugin.block.ModBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

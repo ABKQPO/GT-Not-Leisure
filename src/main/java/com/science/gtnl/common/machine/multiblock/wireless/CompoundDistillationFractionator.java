@@ -44,6 +44,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.core.material.MaterialsAlloy;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class CompoundDistillationFractionator extends WirelessEnergyMultiMachineBase<CompoundDistillationFractionator> {
 
     private static final int MACHINEMODE_TOWER = 0;

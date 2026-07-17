@@ -41,6 +41,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MagneticConfinementDimensionalityShockDevice
     extends WirelessEnergyMultiMachineBase<MagneticConfinementDimensionalityShockDevice> {
 

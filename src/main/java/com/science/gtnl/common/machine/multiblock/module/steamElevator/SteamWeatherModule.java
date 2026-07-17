@@ -15,6 +15,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamWeatherModule extends SteamElevatorModuleBase {
 
     public SteamWeatherModule(int aID, String aName, String aNameRegional) {

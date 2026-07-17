@@ -55,6 +55,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPhagocytosisPlant> {
 
     private static final int HORIZONTAL_OFF_SET = 10;

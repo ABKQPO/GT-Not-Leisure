@@ -89,6 +89,7 @@ import micdoodle8.mods.galacticraft.core.util.WorldUtil;
 import tectech.thing.gui.TecTechUITextures;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 17;

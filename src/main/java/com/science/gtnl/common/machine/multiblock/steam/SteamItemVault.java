@@ -75,6 +75,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     implements ISurvivalConstructable, IStackVault {
 

@@ -65,6 +65,7 @@ import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ResearchCenter extends MTEResearchStation implements IResearchStationMarker {
 
     private static final int MAX_PARALLEL = 4;

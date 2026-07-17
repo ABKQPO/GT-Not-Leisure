@@ -46,6 +46,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionCore> {
 
     public static final int MACHINEMODE_DISSOLUTION = 0;

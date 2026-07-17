@@ -76,6 +76,7 @@ import gregtech.common.misc.GTStructureChannels;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalConstructable {
 
     public static Object2IntMap<Coords> staticColorMap = new Object2IntOpenHashMap<>();

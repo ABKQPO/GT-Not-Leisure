@@ -82,6 +82,7 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 import tectech.util.CommonValues;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HighPerformanceComputationArray extends TTMultiblockBase implements ISurvivalConstructable, IMTERenderer {
 
     public static final INameFunction<HighPerformanceComputationArray> LENS_NAME = (base, p) -> StatCollector

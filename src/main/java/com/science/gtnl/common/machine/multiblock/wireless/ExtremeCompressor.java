@@ -44,6 +44,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.core.material.MaterialsAlloy;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCompressor> {
 
     private static final int HORIZONTAL_OFF_SET = 8;

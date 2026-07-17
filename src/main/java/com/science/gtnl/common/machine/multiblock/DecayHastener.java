@@ -32,6 +32,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

@@ -41,6 +41,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LapotronChip extends MultiMachineBase<LapotronChip>
     implements ISurvivalConstructable, INEIPreviewModifier {
 

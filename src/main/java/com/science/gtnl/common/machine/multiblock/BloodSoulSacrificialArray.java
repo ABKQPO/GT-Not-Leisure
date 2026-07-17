@@ -72,6 +72,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacrificialArray> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

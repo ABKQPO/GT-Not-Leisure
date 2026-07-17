@@ -36,6 +36,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeCircuitAssembler extends GTMMultiMachineBase<LargeCircuitAssembler>
     implements ISurvivalConstructable {
 

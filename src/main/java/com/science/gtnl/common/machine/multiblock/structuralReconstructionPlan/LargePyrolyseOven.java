@@ -32,6 +32,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargePyrolyseOven extends GTMMultiMachineBase<LargePyrolyseOven> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

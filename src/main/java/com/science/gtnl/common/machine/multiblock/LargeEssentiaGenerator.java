@@ -61,6 +61,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.config.ConfigBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenerator> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 4;

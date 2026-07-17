@@ -57,6 +57,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.render.IMTERenderer;
 import kubatech.loaders.BlockLoader;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnergyExcitationPlant>
     implements ISurvivalConstructable, IMTERenderer {
 

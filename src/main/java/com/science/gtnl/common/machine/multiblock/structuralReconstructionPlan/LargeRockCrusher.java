@@ -42,6 +42,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

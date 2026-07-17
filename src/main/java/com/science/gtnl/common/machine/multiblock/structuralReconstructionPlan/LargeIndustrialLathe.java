@@ -33,6 +33,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLathe> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

@@ -78,6 +78,7 @@ import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public abstract class KuangBiaoOneGiantNuclearFusionReactor
     extends GTMMultiMachineBase<KuangBiaoOneGiantNuclearFusionReactor>
     implements ISurvivalConstructable, IMTERenderer, IWirelessEnergy {
@@ -777,6 +778,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class UEVTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public int totalOverclockedDuration = 0;

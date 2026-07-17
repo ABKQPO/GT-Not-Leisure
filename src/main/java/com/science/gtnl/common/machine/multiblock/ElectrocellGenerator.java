@@ -54,6 +54,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 5;

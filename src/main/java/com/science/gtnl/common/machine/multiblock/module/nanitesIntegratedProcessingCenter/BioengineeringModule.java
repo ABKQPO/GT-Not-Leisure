@@ -25,6 +25,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
