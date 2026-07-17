@@ -8,6 +8,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
+import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
@@ -51,6 +52,7 @@ import appeng.api.parts.IPartHost;
 import appeng.container.ContainerOpenContext;
 import appeng.helpers.IPriorityHost;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -58,6 +60,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import gregtech.api.enums.Mods;
+import thaumicenergistics.api.ThEApi;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -80,7 +83,7 @@ public class CommonProxy implements IGuiHandler {
             .register(VOID_WORLD_HANDLER);
         MinecraftForge.TERRAIN_GEN_BUS.register(GTNL_WORLDGEN_LOADER);
 
-        NetWorkHandler.registerAllMessage();
+        NetWorkHandler.register();
     }
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
@@ -95,9 +98,6 @@ public class CommonProxy implements IGuiHandler {
             .register(WORLD_LISTENER);
         MinecraftForge.EVENT_BUS.register(WORLD_LISTENER);
 
-        if (Mods.MobsInfo.isModLoaded()) {
-            MinecraftForge.EVENT_BUS.register(new ExtremeExtremeEntityCrusherRecipes());
-        }
         CraftingUnitHandler.register();
     }
 
@@ -141,12 +141,31 @@ public class CommonProxy implements IGuiHandler {
         Upgrades.FUZZY.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
         Upgrades.INVERTER.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
 
+        if (Mods.ThaumicEnergistics.isModLoaded()) {
+            registerEssentiaHatch();
+        }
+
+        if (Mods.MobsInfo.isModLoaded()) {
+            MinecraftForge.EVENT_BUS.register(new ExtremeExtremeEntityCrusherRecipes());
+        }
+
         MaterialLoader.loadPostInit();
     }
 
     public void completeInit(FMLLoadCompleteEvent event) {
         MaterialLoader.loadCompleteInit();
         VMTweakHelper.initializeDimensionMappings();
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    public static void registerEssentiaHatch() {
+        ThEApi api = ThEApi.instance();
+        if (api == null) return;
+
+        api.transportPermissions()
+            .addAspectContainerTileToInjectPermissions(
+                TileEntityEssentiaHatch.class,
+                TileEntityEssentiaHatch.MAX_STORED);
     }
 
     @Override

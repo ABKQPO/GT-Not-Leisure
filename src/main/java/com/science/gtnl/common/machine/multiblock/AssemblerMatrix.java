@@ -142,6 +142,7 @@ import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable, ICustomNameObject {
 

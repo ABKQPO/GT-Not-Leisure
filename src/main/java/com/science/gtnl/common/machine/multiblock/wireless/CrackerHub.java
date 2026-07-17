@@ -39,6 +39,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
     private static final int HORIZONTAL_OFF_SET = 7;

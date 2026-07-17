@@ -35,6 +35,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellRegulator>
     implements ISurvivalConstructable {
 

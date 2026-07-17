@@ -60,6 +60,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchTurbine;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell> {
 
     private static final int HORIZONTAL_OFF_SET = 9;
@@ -490,7 +491,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     }
 
     @Override
-    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         staticAnimations = !staticAnimations;
         GTUtility.sendChatTrans(aPlayer, staticAnimations ? "Info_HighwayToHell_00" : "Info_HighwayToHell_01");

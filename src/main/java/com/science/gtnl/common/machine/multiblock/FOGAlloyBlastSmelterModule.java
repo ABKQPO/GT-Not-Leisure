@@ -25,6 +25,7 @@ import gregtech.common.misc.WirelessNetworkManager;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
 
     public long EUt = 0;

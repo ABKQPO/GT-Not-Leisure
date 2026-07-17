@@ -51,6 +51,7 @@ import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 import ic2.core.init.BlocksItems;
 import ic2.core.init.InternalName;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class Digester extends GTMMultiMachineBase<Digester> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

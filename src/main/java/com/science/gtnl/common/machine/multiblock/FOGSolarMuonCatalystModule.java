@@ -33,6 +33,7 @@ import tectech.thing.metaTileEntity.multi.godforge.MTEForgeOfGods;
 import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
 import tectech.thing.metaTileEntity.multi.godforge.util.ForgeOfGodsData;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGModule {
 
     public static final BigInteger BIG_LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);

@@ -86,6 +86,7 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 import tectech.util.CommonValues;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

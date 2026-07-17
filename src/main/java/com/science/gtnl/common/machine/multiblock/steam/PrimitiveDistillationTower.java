@@ -38,6 +38,7 @@ import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveDistillationTower>
     implements ISurvivalConstructable {
 

@@ -34,6 +34,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

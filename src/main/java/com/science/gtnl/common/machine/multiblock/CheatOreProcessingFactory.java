@@ -43,6 +43,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

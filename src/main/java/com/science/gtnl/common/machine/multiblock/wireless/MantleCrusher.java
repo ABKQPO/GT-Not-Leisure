@@ -39,6 +39,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher> {
 
     private static final int HORIZONTAL_OFF_SET = 7;

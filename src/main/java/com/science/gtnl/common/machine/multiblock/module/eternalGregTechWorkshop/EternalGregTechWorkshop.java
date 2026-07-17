@@ -105,6 +105,7 @@ import tectech.TecTech;
 import tectech.thing.casing.TTCasingsContainer;
 import tectech.thing.gui.TecTechUITextures;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWorkshop> implements INEIPreviewModifier {
 
     private static final int DEFAULT_PREVIEW_HEIGHT = 4;

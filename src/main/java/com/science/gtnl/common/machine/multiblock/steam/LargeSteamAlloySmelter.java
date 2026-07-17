@@ -33,6 +33,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAlloySmelter>
     implements ISurvivalConstructable {
 

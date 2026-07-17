@@ -45,6 +45,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.WirelessNetworkManager;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurnace>
     implements ISurvivalConstructable, EnergyMonitorCustomWirelessEutProvider {
 

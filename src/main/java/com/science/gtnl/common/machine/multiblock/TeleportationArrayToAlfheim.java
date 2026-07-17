@@ -72,6 +72,7 @@ import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationArrayToAlfheim> {
 
     private static final TranslatableText MANA_INPUT_HATCH_NAME = TranslatableText.lang("FluidManaInputHatch");

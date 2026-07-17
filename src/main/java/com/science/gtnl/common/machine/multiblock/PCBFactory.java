@@ -86,6 +86,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.CustomItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     implements ISurvivalConstructable, IControllerUpgrade {
 

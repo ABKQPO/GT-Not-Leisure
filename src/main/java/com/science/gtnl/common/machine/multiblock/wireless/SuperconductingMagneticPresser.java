@@ -37,6 +37,7 @@ import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBase<SuperconductingMagneticPresser> {
 
     private static final int HORIZONTAL_OFF_SET = 6;

@@ -121,6 +121,7 @@ import tectech.thing.metaTileEntity.multi.base.LedStatus;
 import tectech.thing.metaTileEntity.multi.base.Parameters;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EyeOfHarmonyInjector extends TTMultiblockBase
     implements IConstructable, ISurvivalConstructable, IMTERenderer {
 

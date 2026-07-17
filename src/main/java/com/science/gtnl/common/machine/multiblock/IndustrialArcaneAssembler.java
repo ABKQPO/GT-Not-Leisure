@@ -43,6 +43,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcaneAssembler>
     implements ISurvivalConstructable {
 

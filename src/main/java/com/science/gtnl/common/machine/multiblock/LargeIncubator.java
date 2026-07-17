@@ -60,6 +60,7 @@ import gregtech.api.util.recipe.Sievert;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

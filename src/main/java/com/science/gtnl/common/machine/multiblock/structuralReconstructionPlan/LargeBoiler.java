@@ -364,6 +364,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         return adjustedBurnTime;
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LargeBoilerBronze extends LargeBoiler {
 
         public LargeBoilerBronze(int aID, String aName, String aNameRegional) {
@@ -444,6 +445,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LargeBoilerSteel extends LargeBoiler {
 
         public LargeBoilerSteel(int aID, String aName, String aNameRegional) {
@@ -524,6 +526,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LargeBoilerTitanium extends LargeBoiler {
 
         public LargeBoilerTitanium(int aID, String aName, String aNameRegional) {
@@ -604,6 +607,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LargeBoilerTungstenSteel extends LargeBoiler {
 
         public LargeBoilerTungstenSteel(int aID, String aName, String aNameRegional) {

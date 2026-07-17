@@ -54,6 +54,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import thaumcraft.common.config.Config;
 import vazkii.botania.common.brew.ModPotions;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamBeaconModule extends SteamElevatorModuleBase {
 
     public static final int CONFIG_WINDOW_ID = 14;

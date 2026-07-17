@@ -34,6 +34,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteamCircuitAssembler>
     implements ISurvivalConstructable {
 

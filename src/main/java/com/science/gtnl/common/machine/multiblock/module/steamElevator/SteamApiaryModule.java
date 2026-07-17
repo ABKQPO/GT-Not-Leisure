@@ -90,6 +90,7 @@ import kubatech.api.DynamicInventory;
 import kubatech.api.gui.KubaTechUITextures;
 import kubatech.api.utils.ItemUtils;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamApiaryModule extends SteamElevatorModuleBase {
 
     public int mMaxSlots = 8;

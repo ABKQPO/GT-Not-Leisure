@@ -36,6 +36,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

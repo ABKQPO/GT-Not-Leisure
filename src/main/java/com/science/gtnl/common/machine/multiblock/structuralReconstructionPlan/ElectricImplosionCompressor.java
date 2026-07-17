@@ -38,6 +38,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImplosionCompressor>
     implements ISurvivalConstructable {
 

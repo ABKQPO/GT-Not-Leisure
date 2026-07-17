@@ -92,6 +92,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     implements ISurvivalConstructable, IStackVault {
 

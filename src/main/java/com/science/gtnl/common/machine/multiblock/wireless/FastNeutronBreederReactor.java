@@ -47,6 +47,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<FastNeutronBreederReactor> {
 
     private static final int MACHINEMODE_DECAY = 0;

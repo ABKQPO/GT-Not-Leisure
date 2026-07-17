@@ -47,6 +47,7 @@ import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamOreProcessorModule extends SteamElevatorModuleBase {
 
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_IOF_MACERATOR,
@@ -332,7 +333,9 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
         return String.join("\n", des);
     }
 
-    public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+    @Override
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
+        ItemStack aTool) {
         if (aPlayer.isSneaking()) {
             mVoidStone = !mVoidStone;
             GTUtility.sendChatTrans(aPlayer, "GT5U.machines.oreprocessor.void", mVoidStone);

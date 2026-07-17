@@ -53,6 +53,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

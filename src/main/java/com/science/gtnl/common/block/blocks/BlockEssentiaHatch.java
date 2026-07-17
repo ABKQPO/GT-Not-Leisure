@@ -77,8 +77,10 @@ public class BlockEssentiaHatch extends BlockContainer {
         if (!(tile instanceof TileEntityEssentiaHatch essentiaHatch)) return false;
         var tItemStack = player.getHeldItem();
         if (tItemStack == null) {
+            if (!player.isSneaking()) return false;
+            essentiaHatch.setLockedAspect(null);
             GTUtility.sendChatTrans(player, "Info_EssentiaHatch_01");
-            return false;
+            return true;
         }
         var tItem = tItemStack.getItem();
         if (!(tItem instanceof IEssentiaContainerItem essItem)) return false;

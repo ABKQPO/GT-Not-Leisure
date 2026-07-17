@@ -51,6 +51,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

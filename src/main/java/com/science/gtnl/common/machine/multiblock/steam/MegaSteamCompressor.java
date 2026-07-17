@@ -44,6 +44,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.render.RenderingTileEntityBlackhole;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompressor> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

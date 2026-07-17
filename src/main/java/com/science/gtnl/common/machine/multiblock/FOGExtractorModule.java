@@ -43,6 +43,7 @@ import lombok.Setter;
 import tectech.TecTech;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FOGExtractorModule extends MTEBaseModule {
 
     public long EUt = 0;

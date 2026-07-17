@@ -57,6 +57,7 @@ import gtPlusPlus.core.material.MaterialsAlloy;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<HorizontalCompressor>
     implements IControllerUpgrade {
 

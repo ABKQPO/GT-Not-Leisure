@@ -12,6 +12,7 @@ import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesDat
 import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetadata;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
@@ -21,6 +22,7 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public abstract class NanitesBaseModule<T extends NanitesBaseModule<T>> extends WirelessEnergyMultiMachineBase<T> {
 
     public static final int HORIZONTAL_OFF_SET = 7;

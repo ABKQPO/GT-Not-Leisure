@@ -35,6 +35,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class FieldForgePress extends WirelessEnergyMultiMachineBase<FieldForgePress> {
 
     private static final int HORIZONTAL_OFF_SET = 8;

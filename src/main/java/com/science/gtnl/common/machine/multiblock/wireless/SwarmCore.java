@@ -65,6 +65,7 @@ import gtnhlanth.common.register.LanthItemList;
 import lombok.Getter;
 import tectech.thing.CustomItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> implements IControllerUpgrade {
 
     private static final int HORIZONTAL_OFF_SET = 20;

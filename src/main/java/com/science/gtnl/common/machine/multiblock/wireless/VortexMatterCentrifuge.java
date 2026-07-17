@@ -34,6 +34,7 @@ import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<VortexMatterCentrifuge> {
 
     private static final int HORIZONTAL_OFF_SET = 15;

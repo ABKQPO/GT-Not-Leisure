@@ -45,6 +45,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperconductingElectromagnetism extends WirelessEnergyMultiMachineBase<SuperconductingElectromagnetism> {
 
     private static final int MACHINEMODE_ELECTROMAGNETIC = 0;

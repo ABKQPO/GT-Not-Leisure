@@ -79,6 +79,7 @@ import tectech.thing.casing.TTCasingsContainer;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EnergyInfuser extends TTMultiblockBase implements IConstructable, ISurvivalConstructable {
 
     public static final int maxRepairedDamagePerOperation = 10000;

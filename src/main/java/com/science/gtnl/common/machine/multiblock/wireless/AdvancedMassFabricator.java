@@ -34,6 +34,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.casing.TTCasingsContainer;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<AdvancedMassFabricator>
     implements ISurvivalConstructable {
 

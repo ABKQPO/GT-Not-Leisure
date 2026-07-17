@@ -59,6 +59,7 @@ import tectech.util.CommonValues;
 import tectech.util.FluidStackLong;
 import tectech.util.ItemStackLong;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
 
     private static final String EYE_OF_HARMONY = "eyeOfHarmonyOutput";

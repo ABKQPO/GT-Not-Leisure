@@ -47,6 +47,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<MegaVacuumDryingFurnace> {
 
     private static final int HORIZONTAL_OFF_SET = 14;

@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
 
     private static final int HORIZONTAL_OFF_SET = 32;

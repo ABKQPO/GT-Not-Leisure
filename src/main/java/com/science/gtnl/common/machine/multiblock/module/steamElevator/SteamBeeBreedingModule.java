@@ -17,6 +17,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
 
     public SteamBeeBreedingModule(int aID, String aName, String aNameRegional) {

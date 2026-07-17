@@ -54,6 +54,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class NanitesIntegratedProcessingCenter
     extends WirelessEnergyMultiMachineBase<NanitesIntegratedProcessingCenter> {
 

@@ -59,6 +59,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeCube> {
 
     private static final int MACHINEMODE_EXTRA = 0;

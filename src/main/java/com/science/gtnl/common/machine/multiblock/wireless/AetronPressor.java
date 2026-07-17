@@ -35,6 +35,7 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor> {
 
     private static final int HORIZONTAL_OFF_SET = 14;

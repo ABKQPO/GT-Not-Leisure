@@ -69,6 +69,7 @@ import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDriller>
     implements ISurvivalConstructable {
 

@@ -83,6 +83,7 @@ import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gtnhlanth.common.register.LanthItemList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopying>
     implements ISurvivalConstructable, EnergyMonitorCustomWirelessEutProvider {
 

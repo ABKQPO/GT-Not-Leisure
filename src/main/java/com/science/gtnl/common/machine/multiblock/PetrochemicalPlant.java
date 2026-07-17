@@ -42,6 +42,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 import kekztech.common.Blocks;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

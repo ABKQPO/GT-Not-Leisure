@@ -88,6 +88,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHouse {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";

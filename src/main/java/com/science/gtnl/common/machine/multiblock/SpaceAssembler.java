@@ -54,6 +54,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.casing.BlockGTCasingsTT;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     implements ISurvivalConstructable, IControllerUpgrade {
 

@@ -35,6 +35,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
 
     private static final int HORIZONTAL_OFF_SET = 53;
