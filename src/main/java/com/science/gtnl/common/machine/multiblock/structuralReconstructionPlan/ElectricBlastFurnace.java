@@ -183,7 +183,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
     @Override
     public double getEUtDiscount() {
-        return 0.9 * Math.pow(0.95, getMCoilLevel().getTier());
+        return 0.75 * Math.pow(0.95, getMCoilLevel().getTier());
     }
 
     @Override

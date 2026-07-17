@@ -2156,7 +2156,7 @@ Tooltip_LargeRockCrusher_Casing=任意坚实铱锇机械方块
 
 NameLargeMacerationTower=大型研磨塔
 LargeMacerationTowerRecipeType=粉碎机
-Tooltip_LargeMacerationTower_00=比相同电压的机器快100%
+Tooltip_LargeMacerationTower_00=比相同电压的机器快300%
 Tooltip_LargeMacerationTower_Casing=任意坚实铱锇机械方块
 
 NameLargeSiftingFunnel=大型筛选漏斗
@@ -2380,7 +2380,7 @@ LargeChemicalBathRecipeType=洗矿池 / 简易洗矿池 / 化学浸洗机
 LargeChemicalBath_Mode_0=洗矿池
 LargeChemicalBath_Mode_1=简易洗矿池
 LargeChemicalBath_Mode_2=化学浸洗机
-Tooltip_LargeChemicalBath_00=比相同电压的机器快400%
+Tooltip_LargeChemicalBath_00=比相同电压的机器快500%
 Tooltip_LargeChemicalBath_01=只需要使用配方要求功率的80%
 Tooltip_LargeChemicalBath_Casing=任意洗矿厂机械方块
 
@@ -2415,7 +2415,7 @@ NameLargeCentrifuge=大型离心机组
 LargeCentrifugeRecipeType=离心机 / 热力离心机
 LargeCentrifuge_Mode_0=离心机
 LargeCentrifuge_Mode_1=热力离心机
-Tooltip_LargeCentrifuge_01=比相同电压的机器快160%
+Tooltip_LargeCentrifuge_01=比相同电压的机器快240%
 Tooltip_LargeCentrifuge_Casing=任意离心机机械方块
 
 NameLargeBioLab=大型生物实验室
@@ -3452,8 +3452,8 @@ Tooltip_VacuumFreezer_Casing=任意防冻机械方块
 NameBlazeBlastFurnace=烈焰高炉
 FluidBlazeInputHatch=烈焰输入仓
 BlazeBlastFurnaceRecipeType=工业高炉
-Tooltip_BlazeBlastFurnace_00=比工业高炉快200%
-Tooltip_BlazeBlastFurnace_01=只需要使用配方要求功率的75%
+Tooltip_BlazeBlastFurnace_00=比工业高炉快300%
+Tooltip_BlazeBlastFurnace_01=只需要使用配方要求功率的70%
 Tooltip_BlazeBlastFurnace_02=最大并行数固定为64
 Tooltip_BlazeBlastFurnace_03=在控制器内放入炽骨立方将并行提高到256
 Tooltip_BlazeBlastFurnace_04=需每秒提供10x配方电压等级^2的熔融烈焰
@@ -3612,7 +3612,7 @@ Tooltip_MegaBlastFurnace_Casing_01=顶部中心放射硅岩合金机械方块
 NameElectricBlastFurnace=电力工业高炉
 Tooltip_ElectricBlastFurnaceRecipeType=工业高炉
 Tooltip_ElectricBlastFurnace_00=比工业高炉快25%
-Tooltip_ElectricBlastFurnace_01=只需要使用配方要求功率的90%
+Tooltip_ElectricBlastFurnace_01=只需要使用配方要求功率的75%
 Tooltip_ElectricBlastFurnace_02=每超过配方温度900K，耗能均将乘以95%(不计超频)
 Tooltip_ElectricBlastFurnace_03=每超过配方温度1800K，将进行一次无损超频
 Tooltip_ElectricBlastFurnace_04=超过MV后的每一级电压，都会将温度提高100K

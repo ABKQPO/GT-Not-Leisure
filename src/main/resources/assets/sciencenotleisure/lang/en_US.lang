@@ -2156,7 +2156,7 @@ Tooltip_LargeRockCrusher_Casing=Any solid Iridium-Osmium machine block
 
 NameLargeMacerationTower=Large Maceration Tower
 LargeMacerationTowerRecipeType=Pulverizer
-Tooltip_LargeMacerationTower_00=100% faster than machines of the same voltage
+Tooltip_LargeMacerationTower_00=300% faster than machines of the same voltage
 Tooltip_LargeMacerationTower_Casing=Any solid Iridium-Osmium machine block
 
 NameLargeSiftingFunnel=Large Sifting Funnel
@@ -2380,7 +2380,7 @@ LargeChemicalBathRecipeType=Ore Washer / Simple Ore Washer / Chemical Bath
 LargeChemicalBath_Mode_0=Ore Washer
 LargeChemicalBath_Mode_1=Simple Ore Washer
 LargeChemicalBath_Mode_2=Chemical Bath
-Tooltip_LargeChemicalBath_00=400% faster than machines of the same voltage
+Tooltip_LargeChemicalBath_00=500% faster than machines of the same voltage
 Tooltip_LargeChemicalBath_01=Only requires 80% of the recipe's power demand
 Tooltip_LargeChemicalBath_Casing=Any ore washing plant machine block
 
@@ -2415,7 +2415,7 @@ NameLargeCentrifuge=Large Centrifuge
 LargeCentrifugeRecipeType=Centrifuge / Thermal Centrifuge
 LargeCentrifuge_Mode_0=Centrifuge
 LargeCentrifuge_Mode_1=Thermal Centrifuge
-Tooltip_LargeCentrifuge_01=160% faster than machines of the same voltage.
+Tooltip_LargeCentrifuge_01=240% faster than machines of the same voltage.
 Tooltip_LargeCentrifuge_Casing=Any Centrifuge Machine Block
 
 NameLargeBioLab=Large Bio Lab
@@ -3452,8 +3452,8 @@ Tooltip_VacuumFreezer_Casing=Any Freeze-Proof Machine Block
 NameBlazeBlastFurnace=Blaze Blast Furnace
 FluidBlazeInputHatch=Blaze Input Hatch
 BlazeBlastFurnaceRecipeType=Industrial Blast Furnace
-Tooltip_BlazeBlastFurnace_00=200% faster than the Industrial Blast Furnace!
-Tooltip_BlazeBlastFurnace_01=Consumes only 75% of the recipe's required power.
+Tooltip_BlazeBlastFurnace_00=300% faster than the Industrial Blast Furnace!
+Tooltip_BlazeBlastFurnace_01=Consumes only 70% of the recipe's required power.
 Tooltip_BlazeBlastFurnace_02=Maximum parallel fixed at 64.
 Tooltip_BlazeBlastFurnace_03=Placing a Blaze Cube in the controller increases parallel to 256.
 Tooltip_BlazeBlastFurnace_04=Requires 10x recipe voltage level^2 of Molten Blaze per second.
@@ -3612,7 +3612,7 @@ Tooltip_MegaBlastFurnace_Casing_01=Top center radioactive silicon alloy mechanic
 NameElectricBlastFurnace=Electric Industrial Blast Furnace
 Tooltip_ElectricBlastFurnaceRecipeType=Industrial Blast Furnace
 Tooltip_ElectricBlastFurnace_00=25% faster than the Industrial Blast Furnace.
-Tooltip_ElectricBlastFurnace_01=Only uses 90% of the required power for the recipe.
+Tooltip_ElectricBlastFurnace_01=Only uses 75% of the required power for the recipe.
 Tooltip_ElectricBlastFurnace_02=For every 900K above the recipe temperature, energy consumption will multiply by 95% (excluding overclocking).
 Tooltip_ElectricBlastFurnace_03=For every 1800K above the recipe temperature, it will perform a lossless overclock
 Tooltip_ElectricBlastFurnace_04=For every voltage level above MV, temperature will increase by 100K.
