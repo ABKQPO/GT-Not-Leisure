@@ -15,12 +15,16 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
+import tectech.recipe.TecTechRecipeMaps;
 
 @Mixin(value = MTEHatchDataAccess.class, remap = false)
 public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUIWidgets {
 
     @Shadow
     private List<GTRecipe.RecipeAssemblyLine> cachedRecipes;
+
+    private int science$cachedAssemblyLineRecipeCount = -1;
+    private int science$cachedTecTechRecipeCount = -1;
 
     public MixinMTEHatchDataAccess(int aID, String aName, String aNameRegional, int aTier, int aInvSlotCount,
         String aDescription, ITexture... aTextures) {
@@ -29,13 +33,19 @@ public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUI
 
     @Inject(method = "getAssemblyLineRecipes", at = @At("TAIL"), cancellable = true)
     public void getAssemblyLineRecipes(CallbackInfoReturnable<List<GTRecipe.RecipeAssemblyLine>> cir) {
-        if (cachedRecipes == null || cachedRecipes.isEmpty()) {
-            cachedRecipes = new ArrayList<>();
-
-            for (int i = 0; i < getSizeInventory(); i++) {
-                cachedRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(getStackInSlot(i)));
-            }
+        int assemblyLineRecipeCount = GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes.size();
+        int tecTechRecipeCount = TecTechRecipeMaps.researchableALRecipeList.size();
+        if (cachedRecipes != null && science$cachedAssemblyLineRecipeCount == assemblyLineRecipeCount
+            && science$cachedTecTechRecipeCount == tecTechRecipeCount) {
+            return;
         }
+
+        cachedRecipes = new ArrayList<>();
+        for (int i = 0; i < getSizeInventory(); i++) {
+            cachedRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(getStackInSlot(i)));
+        }
+        science$cachedAssemblyLineRecipeCount = assemblyLineRecipeCount;
+        science$cachedTecTechRecipeCount = tecTechRecipeCount;
         cir.setReturnValue(cachedRecipes);
     }
 
