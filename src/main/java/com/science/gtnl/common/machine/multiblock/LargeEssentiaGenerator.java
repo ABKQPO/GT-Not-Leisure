@@ -166,7 +166,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
             if (tHatch.mTier > mTierLimit) {
                 errors.add(GTNLStructureErrors.invalidHatchConfiguration());
             }
-            int maxAmp = 64 << (Integer.bitCount(mUpgrade) + Math.max(0, GTUtility.getTier(tHatch.maxEUOutput()) - 5));
+            int maxAmp = 64 << (Integer.bitCount(mUpgrade) + Math.max(0, GTUtility.getTier(tHatch.maxEUOutput()) - 7));
             if (tHatch.maxAmperesOut() > maxAmp) {
                 errors.add(GTNLStructureErrors.invalidHatchConfiguration());
             }
