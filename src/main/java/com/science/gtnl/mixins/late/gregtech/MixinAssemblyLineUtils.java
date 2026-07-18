@@ -1,5 +1,6 @@
 package com.science.gtnl.mixins.late.gregtech;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,12 +34,24 @@ public abstract class MixinAssemblyLineUtils {
     private static void science$findTecTechRecipeByOutput(ItemStack output,
         CallbackInfoReturnable<Collection<GTRecipe.RecipeAssemblyLine>> cir) {
         Collection<GTRecipe.RecipeAssemblyLine> original = cir.getReturnValue();
-        if (GTUtility.isStackInvalid(output) || original != null && !original.isEmpty()) return;
+        if (GTUtility.isStackInvalid(output)) return;
 
         Collection<GTRecipe.RecipeAssemblyLine> fallbackRecipes = science$getTecTechRecipesByOutput(output);
-        if (!fallbackRecipes.isEmpty()) {
+        if (fallbackRecipes.isEmpty()) return;
+
+        if (original == null || original.isEmpty()) {
             cir.setReturnValue(fallbackRecipes);
+            return;
         }
+
+        List<GTRecipe.RecipeAssemblyLine> mergedRecipes = new ArrayList<>(original.size() + fallbackRecipes.size());
+        mergedRecipes.addAll(original);
+        for (GTRecipe.RecipeAssemblyLine recipe : fallbackRecipes) {
+            if (!mergedRecipes.contains(recipe)) {
+                mergedRecipes.add(recipe);
+            }
+        }
+        cir.setReturnValue(mergedRecipes);
     }
 
     private static Collection<GTRecipe.RecipeAssemblyLine> science$getTecTechRecipesByOutput(ItemStack output) {

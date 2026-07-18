@@ -57,7 +57,6 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
-import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -319,7 +318,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public CheckRecipeResult processRecipeLogic(List<IDualInputInventory> inputInventories, long energyEU,
         int maxParallel, int minDuration) {
-        CheckRecipeResult result = null;
+        CheckRecipeResult failureResult = null;
         ObjectList<GTRecipe.RecipeAssemblyLine> validRecipes = new ObjectArrayList<>();
 
         if (AssemblyLineUtils.isItemDataStick(mInventory[1])) {
@@ -330,13 +329,26 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
         if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_DATA_STICKS;
 
-        validRecipes.removeIf(
-            recipe -> recipe.mInputs == null || recipe.mFluidInputs == null
-                || recipe.mOutput == null
-                || (!wirelessMode && recipe.mEUt > energyEU));
+        long minFilteredPower = Long.MAX_VALUE;
+        for (Iterator<GTRecipe.RecipeAssemblyLine> iterator = validRecipes.iterator(); iterator.hasNext();) {
+            GTRecipe.RecipeAssemblyLine recipe = iterator.next();
+            if (recipe.mInputs == null || recipe.mFluidInputs == null || recipe.mOutput == null) {
+                iterator.remove();
+                continue;
+            }
+            if (!wirelessMode && recipe.mEUt > energyEU) {
+                minFilteredPower = Math.min(minFilteredPower, recipe.mEUt);
+                iterator.remove();
+            }
+        }
 
         validRecipes.sort(Comparator.comparingInt(recipe -> recipe.mEUt));
-        if (validRecipes.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
+        if (validRecipes.isEmpty()) {
+            if (minFilteredPower != Long.MAX_VALUE) {
+                return CheckRecipeResultRegistry.insufficientPower(minFilteredPower);
+            }
+            return CheckRecipeResultRegistry.NO_RECIPE;
+        }
 
         BigInteger wirelessUserEU = wirelessMode ? WirelessNetworkManager.getUserEU(ownerUUID) : BigInteger.ZERO;
         List<RecipeTask> tasks = new ArrayList<>();
@@ -344,7 +356,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         long currentWiredInstantPower = 0; // 有线模式累计瞬时功率
         BigInteger currentWirelessTotalEnergy = BigInteger.ZERO; // 无线模式累计消耗总量
 
-        // --- 第一阶段：优先填满并行 ---
+        // 第一阶段：优先填满并行
         for (IDualInputInventory inventory : inputInventories) {
             if (remainingGlobalParallel <= 0) break;
             ItemStack[] invItems = inventory.getItemInputs();
@@ -367,14 +379,19 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
                 int localMax = remainingGlobalParallel;
 
-                double pFactor = calculateParallelByItemsUnordered(itemMap, localMax, recipe);
+                ItemConsumptionPlan itemConsumptionPlan = createItemConsumptionPlan(itemMap, localMax, recipe);
+                double pFactor = itemConsumptionPlan.maxParallel();
                 if (pFactor < 1.0) {
-                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    if (failureResult == null) {
+                        failureResult = CheckRecipeResultRegistry.NO_RECIPE;
+                    }
                     continue;
                 }
                 pFactor = calculateParallelByFluidsUnordered(fluidMap, pFactor, recipe.mFluidInputs);
                 if (pFactor < 1.0) {
-                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    if (failureResult == null) {
+                        failureResult = CheckRecipeResultRegistry.NO_RECIPE;
+                    }
                     continue;
                 }
 
@@ -401,7 +418,9 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 }
 
                 if (finalParallel <= 0) {
-                    result = GTNLParallelHelper.PARALLEL_ZERO;
+                    if (failureResult == null) {
+                        failureResult = CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
+                    }
                     continue;
                 }
 
@@ -417,14 +436,14 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         .build();
                     finalParallel = Math.min(vph.getMaxParallel(), finalParallel);
                     if (vph.isItemFull()) {
-                        result = CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
+                        failureResult = CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
                         finalParallel = 0;
                     }
                 }
 
                 if (finalParallel <= 0) continue;
 
-                consumeItemsUnordered(recipe, finalParallel, invItems, itemMap);
+                consumeItemsUnordered(itemConsumptionPlan, finalParallel, invItems);
                 consumeFluidsUnordered(recipe, finalParallel, invFluids);
                 tasks.add(new RecipeTask(recipe, finalParallel));
                 remainingGlobalParallel -= finalParallel;
@@ -440,11 +459,11 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
 
         if (tasks.isEmpty()) {
-            if (result != null) return result;
+            if (failureResult != null) return failureResult;
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        // --- 第二阶段：尝试超频 ---
+        // 第二阶段：尝试超频
         int overclockFactor = (mParallelTier >= 11) ? 4 : 2;
 
         for (RecipeTask task : tasks) {
@@ -524,7 +543,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             task.adjustedTime = Math.max(1, task.adjustedTime);
         }
 
-        // --- 最终结算 ---
+        // 最终结算
         ArrayList<ItemStack> totalOutputs = new ArrayList<>();
 
         long weightedDurationSum = 0;
@@ -613,54 +632,90 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return fluidMap;
     }
 
-    public static double calculateParallelByItemsUnordered(Object2LongOpenHashMap<ItemId> availableMap, int maxParallel,
-        GTRecipe.RecipeAssemblyLine recipe) {
-        if (recipe.mInputs == null || recipe.mInputs.length == 0) return 0;
+    public static ItemConsumptionPlan createItemConsumptionPlan(Object2LongOpenHashMap<ItemId> availableMap,
+        int maxParallel, GTRecipe.RecipeAssemblyLine recipe) {
+        if (recipe.mInputs == null || recipe.mInputs.length == 0) return ItemConsumptionPlan.empty();
 
         double currentParallel = maxParallel;
+        Object2LongOpenHashMap<ItemId> requiredMap = new Object2LongOpenHashMap<>();
+        List<ItemStack> requirements = new ArrayList<>(recipe.mInputs.length);
 
         for (int i = 0; i < recipe.mInputs.length; i++) {
             ItemStack mainReq = recipe.mInputs[i];
             if (mainReq == null) continue;
 
-            ItemId searchKey = (mainReq.getItemDamage() == GTRecipeBuilder.WILDCARD) ? ItemId.createAsWildcard(mainReq)
-                : ItemId.createNoCopy(mainReq);
+            ItemStack chosenStack = findAvailableIngredient(
+                mainReq,
+                getOreDictAlternatives(recipe, i),
+                availableMap,
+                requiredMap);
+            if (chosenStack == null) return ItemConsumptionPlan.empty();
+            if (chosenStack.stackSize <= 0) continue;
 
-            long mainAvailable = availableMap.getOrDefault(searchKey, -1L);
-
-            long maxParallelForThisSlot = 0;
-
-            if (mainAvailable >= 0 && mainReq.stackSize <= 0) {
-                maxParallelForThisSlot = Integer.MAX_VALUE;
-            } else if (mainAvailable > 0 && mainReq.stackSize > 0) {
-                maxParallelForThisSlot = mainAvailable / mainReq.stackSize;
-            }
-
-            if (maxParallelForThisSlot == 0 && recipe.mOreDictAlt != null
-                && i < recipe.mOreDictAlt.length
-                && recipe.mOreDictAlt[i] != null) {
-                for (ItemStack alt : recipe.mOreDictAlt[i]) {
-                    if (alt == null) continue;
-
-                    ItemId altSearchKey = (alt.getItemDamage() == GTRecipeBuilder.WILDCARD)
-                        ? ItemId.createAsWildcard(alt)
-                        : ItemId.createNoCopy(alt);
-
-                    long altAvailable = availableMap.getOrDefault(altSearchKey, -1L);
-
-                    if (altAvailable > 0 && alt.stackSize <= 0) {
-                        maxParallelForThisSlot = Integer.MAX_VALUE;
-                    } else if (altAvailable > 0 && alt.stackSize > 0) {
-                        maxParallelForThisSlot = altAvailable / alt.stackSize;
-                    }
-                    if (maxParallelForThisSlot > 0) break;
-                }
-            }
-
-            if (maxParallelForThisSlot <= 0) return 0;
+            ItemId chosenKey = getIngredientKey(chosenStack);
+            long required = requiredMap.merge(chosenKey, chosenStack.stackSize, Long::sum);
+            long available = availableMap.getOrDefault(chosenKey, 0L);
+            long maxParallelForThisSlot = available / required;
+            if (maxParallelForThisSlot <= 0) return ItemConsumptionPlan.empty();
             currentParallel = Math.min(currentParallel, (double) maxParallelForThisSlot);
+            requirements.add(chosenStack);
         }
-        return currentParallel;
+        if (requirements.isEmpty()) return ItemConsumptionPlan.empty();
+        return new ItemConsumptionPlan(requirements, currentParallel);
+    }
+
+    public static ItemStack[] getOreDictAlternatives(GTRecipe.RecipeAssemblyLine recipe, int index) {
+        if (recipe.mOreDictAlt == null || index >= recipe.mOreDictAlt.length) return null;
+        return recipe.mOreDictAlt[index];
+    }
+
+    public static ItemStack findAvailableIngredient(ItemStack mainReq, ItemStack[] alternatives,
+        Object2LongOpenHashMap<ItemId> availableMap, Object2LongOpenHashMap<ItemId> requiredMap) {
+        ItemStack bestStack = null;
+        long bestParallel = 0;
+
+        bestStack = findBetterIngredient(mainReq, availableMap, requiredMap, bestStack, bestParallel);
+        if (bestStack != null) {
+            bestParallel = getAvailableParallelAfterAdding(bestStack, availableMap, requiredMap);
+        }
+
+        if (alternatives == null) return bestStack;
+        for (ItemStack alternative : alternatives) {
+            ItemStack candidate = findBetterIngredient(alternative, availableMap, requiredMap, bestStack, bestParallel);
+            if (candidate != bestStack) {
+                bestStack = candidate;
+                bestParallel = getAvailableParallelAfterAdding(bestStack, availableMap, requiredMap);
+            }
+        }
+        return bestStack;
+    }
+
+    public static ItemStack findBetterIngredient(ItemStack candidate, Object2LongOpenHashMap<ItemId> availableMap,
+        Object2LongOpenHashMap<ItemId> requiredMap, ItemStack currentBest, long currentBestParallel) {
+        if (candidate == null) return currentBest;
+        long candidateParallel = getAvailableParallelAfterAdding(candidate, availableMap, requiredMap);
+        if (candidateParallel <= 0) return currentBest;
+        if (currentBest == null || candidateParallel > currentBestParallel) {
+            return candidate;
+        }
+        return currentBest;
+    }
+
+    public static long getAvailableParallelAfterAdding(ItemStack ingredient,
+        Object2LongOpenHashMap<ItemId> availableMap, Object2LongOpenHashMap<ItemId> requiredMap) {
+        if (ingredient == null) return 0;
+        ItemId ingredientKey = getIngredientKey(ingredient);
+        long available = availableMap.getOrDefault(ingredientKey, 0L);
+        if (ingredient.stackSize <= 0) {
+            return available > 0 ? Integer.MAX_VALUE : 0;
+        }
+        long requiredAfterAdding = requiredMap.getOrDefault(ingredientKey, 0L) + ingredient.stackSize;
+        return requiredAfterAdding <= 0 ? 0 : available / requiredAfterAdding;
+    }
+
+    public static ItemId getIngredientKey(ItemStack ingredient) {
+        return ingredient.getItemDamage() == GTRecipeBuilder.WILDCARD ? ItemId.createAsWildcard(ingredient)
+            : ItemId.createNoCopy(ingredient);
     }
 
     public static double calculateParallelByFluidsUnordered(Object2LongOpenHashMap<Fluid> availableMap,
@@ -686,44 +741,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         return currentParallel;
     }
 
-    public void consumeItemsUnordered(GTRecipe.RecipeAssemblyLine recipe, int parallel, ItemStack[] invItems,
-        Object2LongOpenHashMap<ItemId> availableMap) {
-        if (recipe.mInputs == null) return;
-
-        for (int i = 0; i < recipe.mInputs.length; i++) {
-            ItemStack mainReq = recipe.mInputs[i];
-            if (mainReq == null || mainReq.stackSize <= 0) continue;
-
-            ItemStack chosenStack = mainReq;
-
-            ItemId mainSearchKey = (mainReq.getItemDamage() == GTRecipeBuilder.WILDCARD)
-                ? ItemId.createAsWildcard(mainReq)
-                : ItemId.createNoCopy(mainReq);
-
-            long mainAvailable = availableMap.getOrDefault(mainSearchKey, 0L);
-            long maxPossible = mainAvailable / mainReq.stackSize;
-
-            if (maxPossible == 0 && recipe.mOreDictAlt != null && recipe.mOreDictAlt[i] != null) {
-                for (ItemStack alt : recipe.mOreDictAlt[i]) {
-                    if (alt == null || alt.stackSize <= 0) continue;
-
-                    ItemId altSearchKey = (alt.getItemDamage() == GTRecipeBuilder.WILDCARD)
-                        ? ItemId.createAsWildcard(alt)
-                        : ItemId.createNoCopy(alt);
-
-                    long altAvailable = availableMap.getOrDefault(altSearchKey, 0L);
-                    if (altAvailable >= (long) alt.stackSize) {
-                        maxPossible = altAvailable / alt.stackSize;
-                        chosenStack = alt;
-                        break;
-                    }
-                }
-            }
-
-            if (maxPossible > 0) {
-                long totalToConsume = (long) chosenStack.stackSize * parallel;
-                depleteFromRequirement(chosenStack, totalToConsume, invItems);
-            }
+    public void consumeItemsUnordered(ItemConsumptionPlan itemConsumptionPlan, int parallel, ItemStack[] invItems) {
+        for (ItemStack requirement : itemConsumptionPlan.requirements()) {
+            if (requirement == null || requirement.stackSize <= 0) continue;
+            depleteFromRequirement(requirement, (long) requirement.stackSize * parallel, invItems);
         }
     }
 
@@ -1135,6 +1156,14 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         @Override
         public FluidStack[] getFluidInputs() {
             return fluidInputs;
+        }
+    }
+
+    @Desugar
+    public record ItemConsumptionPlan(List<ItemStack> requirements, double maxParallel) {
+
+        public static ItemConsumptionPlan empty() {
+            return new ItemConsumptionPlan(Collections.emptyList(), 0);
         }
     }
 
