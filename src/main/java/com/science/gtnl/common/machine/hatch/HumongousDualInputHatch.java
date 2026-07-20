@@ -145,7 +145,7 @@ public class HumongousDualInputHatch extends DualInputHatch
 
     @Override
     public int getSizeInventory() {
-        return processing > 0 ? getItemStorageSlotCount() + 1 : 0;
+        return getItemStorageSlotCount() + 1;
     }
 
     @Override
