@@ -5,14 +5,9 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,10 +23,8 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.util.BWUtil;
-import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -40,7 +33,6 @@ import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
-import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
@@ -48,8 +40,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
-import ic2.core.init.BlocksItems;
-import ic2.core.init.InternalName;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class Digester extends GTMMultiMachineBase<Digester> implements ISurvivalConstructable {
@@ -163,8 +153,6 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
             @Override
             public @NotNull CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (Mods.NewHorizonsCoreMod.isModLoaded() && !checkForNitricAcid())
-                    return SimpleCheckRecipeResult.ofFailure("no_nitricacid");
                 return recipe.mSpecialValue <= getMCoilLevel().getHeat() ? CheckRecipeResultRegistry.SUCCESSFUL
                     : CheckRecipeResultRegistry.insufficientHeat(recipe.mSpecialValue);
             }
@@ -260,74 +248,5 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public boolean checkForNitricAcid() {
-        IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
-        ForgeDirection backFacing = aBaseMetaTileEntity.getBackFacing();
-        ForgeDirection leftDir = backFacing.getRotation(ForgeDirection.UP);
-        FluidStack nitricAcidTemplate = getNitricAcidTemplate();
-        Block nitricAcidBlock = getNitricAcidBlock();
-        List<FluidStack> storedFluids = getStoredFluids();
-
-        if (nitricAcidTemplate == null || nitricAcidBlock == null) {
-            return false;
-        }
-
-        int tAmount = 0;
-
-        for (int stepBack = 5; stepBack >= 1; stepBack--) {
-            int mainX = backFacing.offsetX * stepBack;
-            int mainZ = backFacing.offsetZ * stepBack;
-
-            for (int stepLeft = -2; stepLeft <= 2; stepLeft++) {
-                int sideX = leftDir.offsetX * stepLeft;
-                int sideZ = leftDir.offsetZ * stepLeft;
-
-                for (int stepUp = 1; stepUp <= 2; stepUp++) {
-                    int x = aBaseMetaTileEntity.getXCoord() + mainX + sideX;
-                    int y = aBaseMetaTileEntity.getYCoord() + stepUp;
-                    int z = aBaseMetaTileEntity.getZCoord() + mainZ + sideZ;
-
-                    Block tBlock = aBaseMetaTileEntity.getBlock(x, y, z);
-                    int metadata = aBaseMetaTileEntity.getMetaID(x, y, z);
-
-                    if (tBlock == Blocks.air || (tBlock == nitricAcidBlock && metadata != 0)) {
-                        if (storedFluids != null) {
-                            for (FluidStack stored : storedFluids) {
-                                if (stored.isFluidEqual(nitricAcidTemplate)) {
-                                    if (stored.amount >= 1000) {
-                                        stored.amount -= 1000;
-                                        Block fluidUsed = null;
-                                        if (tBlock == Blocks.air || (tBlock == nitricAcidBlock && metadata != 0)) {
-                                            fluidUsed = nitricAcidBlock;
-                                        } else if (tBlock == Blocks.water) {
-                                            fluidUsed = BlocksItems.getFluidBlock(InternalName.fluidDistilledWater);
-                                        }
-                                        aBaseMetaTileEntity.getWorld()
-                                            .setBlock(x, y, z, fluidUsed, 0, 3);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (tBlock == nitricAcidBlock && metadata == 0) {
-                        ++tAmount;
-                    }
-                }
-            }
-        }
-
-        return tAmount >= 42;
-    }
-
-    public FluidStack getNitricAcidTemplate() {
-        return FluidRegistry.getFluidStack("nitricacid", 1);
-    }
-
-    public Block getNitricAcidBlock() {
-        Fluid nitricAcid = FluidRegistry.getFluid("nitricacid");
-        return nitricAcid == null ? null : nitricAcid.getBlock();
     }
 }

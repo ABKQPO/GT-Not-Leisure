@@ -3257,7 +3257,6 @@ Tooltip_Desulfurizer_Casing=任意洁净不锈钢机械方块
 
 NameDigester=煮解池
 DigesterRecipeType=煮解池
-GT5U.gui.text.no_nitricacid=§7缺失硝酸
 Tooltip_Digester_00=提升线圈等级来获得更高的速度加成和耗电减免！ 
 Tooltip_Digester_01=超过MV后的每一级电压，都会将温度提高100K
 Tooltip_Digester_Casing=任意强化钨钢机械方块

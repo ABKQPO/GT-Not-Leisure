@@ -3257,7 +3257,6 @@ Tooltip_Desulfurizer_Casing=Any Clean Stainless Steel Machine Block
 
 NameDigester=Digester
 DigesterRecipeType=Digester
-GT5U.gui.text.no_nitricacid=§7Missing Nitric Acid
 Tooltip_Digester_00=Higher coil levels provide greater speed bonuses and power reduction!
 Tooltip_Digester_01=Each voltage level above MV increases temperature by 100K.
 Tooltip_Digester_Casing=Any Reinforced Tungstensteel Machine Block
