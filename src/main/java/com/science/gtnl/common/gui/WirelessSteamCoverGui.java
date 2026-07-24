@@ -21,7 +21,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.modularui2.CoverGuiData;
 import gregtech.api.util.GTModHandler;
 import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
-import gregtech.common.modularui2.widget.builder.EnumRowBuilder;
+import gregtech.common.modularui2.widget.builder.EnumSeriesBuilder;
 
 public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
 
@@ -42,7 +42,7 @@ public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
             cover::getSteamMode,
             cover::setSteamMode);
         syncManager.syncValue("steam_mode", steamModeSyncValue);
-        IWidget steamButtons = new EnumRowBuilder<>(SteamTypes.class).value(steamModeSyncValue)
+        IWidget steamButtons = new EnumSeriesBuilder<>(SteamTypes.class).value(steamModeSyncValue)
             .overlay(
                 new DynamicDrawable(() -> new ItemDrawable(Materials.Steam.getCells(1))),
                 new DynamicDrawable(
@@ -55,7 +55,7 @@ public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
                 IKey.dynamic(() -> SteamTypes.SH_STEAM.displayName),
                 IKey.dynamic(() -> SteamTypes.DSC_STEAM.displayName),
                 IKey.dynamic(() -> SteamTypes.CM_STEAM.displayName))
-            .build();
+            .build(com.cleanroommc.modularui.api.GuiAxis.X);
         IWidget steamLabel = IKey.str(StatCollector.translateToLocal("Info_PipelessSteamCover_01"))
             .asWidget();
 

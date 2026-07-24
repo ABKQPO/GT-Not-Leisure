@@ -491,12 +491,10 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .noneMatch(slot -> GTUtility.areStacksEqual(slot.config, stack));
     }
 
-    @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

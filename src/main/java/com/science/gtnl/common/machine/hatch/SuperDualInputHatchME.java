@@ -382,12 +382,10 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         return fluidTanks;
     }
 
-    @Override
     public boolean doFastRecipeCheck() {
         return expediteRecipeCheck;
     }
 
-    @Override
     public boolean justUpdated() {
         if (expediteRecipeCheck && isAllowedToWork()) {
             boolean ret = justHadNewItems;

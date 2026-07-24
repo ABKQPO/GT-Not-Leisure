@@ -78,7 +78,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
-import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtPlusPlus.api.objects.minecraft.BlockPos;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
@@ -249,9 +248,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public boolean shouldCheckRecipeThisTick(long aTick, IGregTechTileEntity aBaseMetaTileEntity) {
-        if (hasUpdatedCraftingInputs()) {
-            return true;
-        }
         if (aBaseMetaTileEntity != null
             && (aBaseMetaTileEntity.hasWorkJustBeenEnabled() || aBaseMetaTileEntity.hasInventoryBeenModified())) {
             return true;
@@ -270,20 +266,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return false;
     }
 
-    public boolean hasUpdatedCraftingInputs() {
-        // 任意合成输入仓刚写入物品时立即重查配方 / Recheck recipes immediately when any crafting hatch receives items
-        boolean shouldCheck = false;
-        // 必须遍历全部仓室以重置更新标记 / Visit every hatch so each update flag gets cleared
-        for (IDualInputHatch craftingInputMe : mDualInputHatches) {
-            shouldCheck |= craftingInputMe.justUpdated();
-        }
-        if (shouldCheck) return true;
-
-        for (ISmartInputHatch smartInputHatch : mSmartInputHatches) {
-            shouldCheck |= smartInputHatch.justUpdated();
-        }
-        return shouldCheck;
-    }
+    // Note: The justUpdated() method and mSmartInputHatches direct access were removed from the API.
+    // Use scheduleRecipeCheckImmediate() from IHatchWatcher interface instead for recipe re-checks.
+    // This method is no longer needed as the parent class handles this via scheduleRecipeCheckImmediate().
 
     public boolean clearRecipeMapForAllInputHatches() {
         return resetRecipeMapForAllInputHatches(null);

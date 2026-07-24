@@ -7,10 +7,8 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.mixins.early.nHCoreMod.AccessorBacteriaRegistry;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import bartworks.common.loaders.BioItemList;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -230,10 +228,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
 
     @Optional.Method(modid = "dreamcraft")
     public ItemStack getBacPetriDish() {
-        return GTUtility.copyAmount(
-            0,
-            BioItemList.getPetriDish(
-                AccessorBacteriaRegistry.getCultureSet()
-                    .get("CombinedBac")));
+        // CultureSet field removed in NHCoreMod 2.9.5 - return null placeholder
+        return null;
     }
 }

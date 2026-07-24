@@ -37,7 +37,12 @@ public class PktPatternTermUploadPattern extends ServerboundPacket {
             patternSlotOUT = ((AccessorContainerPatternTerm) term).getPatternSlotOUT();
             patternStack = patternSlotOUT.getStack();
             if (patternStack == null) {
-                term.encode();
+                // encode() is now private, use reflection
+                try {
+                    java.lang.reflect.Method encode = ContainerPatternTerm.class.getDeclaredMethod("encode");
+                    encode.setAccessible(true);
+                    encode.invoke(term);
+                } catch (Exception ignored) {}
                 patternStack = patternSlotOUT.getStack();
                 if (patternStack == null) return;
             }

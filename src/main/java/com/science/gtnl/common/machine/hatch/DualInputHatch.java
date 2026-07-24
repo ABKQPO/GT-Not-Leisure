@@ -166,7 +166,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             && (disableLimited || limitedAllowPutStack(aIndex, aStack));
     }
 
-    @Override
     public boolean justUpdated() {
         return false;
     }

@@ -49,7 +49,6 @@ public class ParallelControllerHatchGui extends MTEHatchBaseGui<ParallelControll
                     .size(70, 18));
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

@@ -12,7 +12,6 @@ public class ManaTankGui extends MTEDigitalTankBaseGui<ManaTank> {
         super(machine);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

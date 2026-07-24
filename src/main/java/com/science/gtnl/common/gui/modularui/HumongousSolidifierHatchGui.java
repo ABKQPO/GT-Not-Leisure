@@ -29,7 +29,6 @@ public class HumongousSolidifierHatchGui extends MTEHatchBaseGui<HumongousSolidi
             .child(createMoldSlot(syncManager).pos(125, 35));
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

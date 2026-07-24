@@ -25,7 +25,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.common.tileentities.machines.outputme.MTEHatchOutputBusME;
 import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
-import gregtech.common.tileentities.machines.outputme.filter.MEFilterItem;
 
 @Mixin(value = MTEHatchOutputBusME.class, remap = false)
 public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus implements IOutputME {
@@ -34,7 +33,7 @@ public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus impleme
     EntityPlayer lastClickedPlayer;
 
     @Shadow
-    public abstract MTEHatchOutputMEBase<IAEItemStack, MEFilterItem, ItemStack> getProvider();
+    public abstract MTEHatchOutputMEBase<?> getProvider();
 
     public MixinMTEHatchOutputBusME(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
@@ -42,12 +41,13 @@ public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus impleme
 
     @Override
     public List<IAEItemStack> getItemCache() {
-        return getProvider().getCacheList();
+        return (List<IAEItemStack>) (List<?>) getProvider().getCacheList();
     }
 
     @Override
     public long getLastInputTick() {
-        return getProvider().getLastInputTick();
+        return getProvider().getOutput()
+            .getInputSize();
     }
 
     @Override
@@ -86,7 +86,7 @@ public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus impleme
     }
 
     @Override
-    public MTEHatchOutputMEBase<IAEItemStack, MEFilterItem, ItemStack> getOutputProvider() {
+    public MTEHatchOutputMEBase<?> getOutputProvider() {
         return getProvider();
     }
 

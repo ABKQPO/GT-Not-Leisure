@@ -33,8 +33,7 @@ public enum Mixins implements IMixins {
             .setPhase(Phase.EARLY)
             .addExcludedMod(ModList.NHUtilities)),
 
-    NH_CORE_MOD_EARLY(new MixinBuilder().addCommonMixins("nHCoreMod.AccessorBacteriaRegistry")
-        .setPhase(Phase.EARLY)
+    NH_CORE_MOD_EARLY(new MixinBuilder().setPhase(Phase.EARLY)
         .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
     MINECRAFT_COMMON(Side.COMMON, "minecraft.AccessorStringTranslate", "minecraft.AccessorContainerRepair",

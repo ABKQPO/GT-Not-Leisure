@@ -129,8 +129,8 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
     }
 
     @Override
-    protected IWidget createVoidExcessButton(PanelSyncManager syncManager) {
-        return ((ButtonWidget<?>) super.createVoidExcessButton(syncManager)).size(16)
+    protected ButtonWidget<?> createVoidExcessButton(PanelSyncManager syncManager) {
+        return super.createVoidExcessButton(syncManager).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .overlay(new DynamicDrawable(() -> switch (multiblock.getVoidingMode()) {
             case VOID_NONE -> GTGuiTextures.TT_OVERLAY_BUTTON_VOIDING_OFF;
@@ -143,8 +143,8 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
     }
 
     @Override
-    protected IWidget createInputSeparationButton(PanelSyncManager syncManager) {
-        return ((ToggleButton) super.createInputSeparationButton(syncManager)).size(16)
+    protected ToggleButton createInputSeparationButton(PanelSyncManager syncManager) {
+        return super.createInputSeparationButton(syncManager).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .selectedBackground(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .overlay(
@@ -156,7 +156,7 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
     }
 
     @Override
-    protected IWidget createBatchModeButton(PanelSyncManager syncManager) {
+    protected ToggleButton createBatchModeButton(PanelSyncManager syncManager) {
         return ((ToggleButton) super.createBatchModeButton(syncManager)).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .selectedBackground(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
@@ -169,7 +169,7 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
     }
 
     @Override
-    protected IWidget createLockToSingleRecipeButton(PanelSyncManager syncManager) {
+    protected ToggleButton createLockToSingleRecipeButton(PanelSyncManager syncManager) {
         return ((ToggleButton) super.createLockToSingleRecipeButton(syncManager)).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .selectedBackground(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)

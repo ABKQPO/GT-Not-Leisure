@@ -140,6 +140,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public boolean isInTeam;
     public BigInteger steamDisplay;
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
+
     public ArrayList<ItemStack> recipeSearchItemInputs = new ArrayList<>();
     public ArrayList<FluidStack> recipeSearchFluidInputs = new ArrayList<>();
 
@@ -332,6 +333,16 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     protected IIconContainer getActiveOverlay() {
         return Textures.BlockIcons.OVERLAY_FRONT_STEAM_FURNACE_MULTI_ACTIVE;
+    }
+
+    @Override
+    protected IIconContainer getInactiveGlowOverlay() {
+        return null;
+    }
+
+    @Override
+    protected IIconContainer getActiveGlowOverlay() {
+        return null;
     }
 
     public void updateHatchTexture() {

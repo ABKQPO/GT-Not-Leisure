@@ -278,7 +278,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    public void addFluidOutputs(FluidStack[] outputFluids) {
+    public void addFluidOutputs(@org.jetbrains.annotations.NotNull FluidStack[] outputFluids) {
         for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
             final FluidStack fluidStack = outputFluids[i];
             if (fluidStack == null) continue;

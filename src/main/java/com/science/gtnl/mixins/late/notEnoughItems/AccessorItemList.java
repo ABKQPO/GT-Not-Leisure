@@ -1,6 +1,6 @@
 package com.science.gtnl.mixins.late.notEnoughItems;
 
-import java.util.Map;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
@@ -12,8 +12,8 @@ import codechicken.nei.ItemList;
 @Mixin(value = ItemList.class, remap = false)
 public interface AccessorItemList {
 
-    @Accessor("ordering")
-    static Map<ItemStack, Integer> getOrdering() {
+    @Accessor("items")
+    static List<ItemStack> getItems() {
         throw new AssertionError();
     }
 }

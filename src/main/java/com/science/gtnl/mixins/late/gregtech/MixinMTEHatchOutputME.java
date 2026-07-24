@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,7 +26,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
-import gregtech.common.tileentities.machines.outputme.filter.MEFilterFluid;
 
 @Mixin(value = MTEHatchOutputME.class, remap = false)
 public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IOutputME, IDataCopyable {
@@ -36,7 +34,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     EntityPlayer lastClickedPlayer;
 
     @Shadow
-    public abstract MTEHatchOutputMEBase<IAEFluidStack, MEFilterFluid, FluidStack> getProvider();
+    public abstract MTEHatchOutputMEBase<?> getProvider();
 
     public MixinMTEHatchOutputME(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
@@ -44,12 +42,13 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
 
     @Override
     public List<IAEFluidStack> getFluidCache() {
-        return getProvider().getCacheList();
+        return (List<IAEFluidStack>) (List<?>) getProvider().getCacheList();
     }
 
     @Override
     public long getLastInputTick() {
-        return getProvider().getLastInputTick();
+        return getProvider().getOutput()
+            .getInputSize();
     }
 
     @Override
@@ -98,7 +97,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     }
 
     @Override
-    public MTEHatchOutputMEBase<IAEFluidStack, MEFilterFluid, FluidStack> getOutputProvider() {
+    public MTEHatchOutputMEBase<?> getOutputProvider() {
         return getProvider();
     }
 

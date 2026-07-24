@@ -115,7 +115,7 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
     }
 
     @Override
-    protected IWidget createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
+    protected ButtonWidget<?> createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
         IPanelHandler powerPanel = syncManager.syncedPanel(
             "assemblerMatrixPowerPanel",
             true,

@@ -25,13 +25,13 @@ public class CustomFluidHatchGui extends MTEHatchBaseGui<CustomFluidHatch> {
             .crossAxisAlignment(Alignment.CrossAxis.START);
 
         mainRow.child(createScreen(panel, syncManager, machine.getFluidTank()));
-        mainRow.child(createIO(panel, syncManager, machine.getInputSlot(), machine.getOutputSlot()));
+        mainRow.child(
+            createIO(panel, syncManager, machine.getInputSlot(), machine.getOutputSlot(), machine.getFluidTank()));
         mainRow.childIf(supportsFluidFilterScreen(), () -> createFilterScreen(panel, syncManager));
 
         return super.createContentSection(panel, syncManager).child(mainRow);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return machine.usesSteamLogoForMui2() ? GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO
             : GTNLMui2Textures.PICTURE_GTNL_LOGO;

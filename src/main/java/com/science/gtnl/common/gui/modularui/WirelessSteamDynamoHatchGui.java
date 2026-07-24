@@ -12,7 +12,6 @@ public class WirelessSteamDynamoHatchGui extends MTEHatchOutputGui {
         super(hatch);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO;
     }

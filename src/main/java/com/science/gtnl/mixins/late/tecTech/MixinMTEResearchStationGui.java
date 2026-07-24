@@ -2,9 +2,9 @@ package com.science.gtnl.mixins.late.tecTech;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
@@ -22,7 +22,7 @@ public abstract class MixinMTEResearchStationGui extends MTEMultiBlockBaseGui<MT
     }
 
     @Override
-    protected IWidget createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
+    protected ButtonWidget<?> createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
         IResearchStationMarker marker = (IResearchStationMarker) multiblock;
         return new PhantomItemSlot().slot(new ModularSlot(marker.gtnl$getResearchMarkerInventoryHandler(), 0))
             .background(GTGuiTextures.SLOT_ITEM_STANDARD)

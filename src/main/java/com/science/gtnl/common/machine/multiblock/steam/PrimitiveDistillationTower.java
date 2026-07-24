@@ -295,7 +295,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     }
 
     @Override
-    public void addFluidOutputs(FluidStack[] outputFluids) {
+    public void addFluidOutputs(@org.jetbrains.annotations.NotNull FluidStack[] outputFluids) {
         for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
             FluidStack fluidStack = outputFluids[i];
             if (fluidStack == null) continue;
