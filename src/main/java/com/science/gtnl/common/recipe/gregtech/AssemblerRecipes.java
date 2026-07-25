@@ -1952,7 +1952,7 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(3),
+                GTUtility.getIntegratedCircuit(6),
                 new ItemStack(Blocks.torch, 64),
                 new ItemStack(Blocks.torch, 64),
                 new ItemStack(Blocks.torch, 64),
