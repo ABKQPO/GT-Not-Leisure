@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -200,8 +201,25 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     @Override
     public void onRemoval() {
         super.onRemoval();
-        if (getBaseMetaTileEntity().isServerSide())
-            tryOutputAll(mStorage, s -> Collections.singletonList(s.queenStack));
+        IGregTechTileEntity mte = getBaseMetaTileEntity();
+        if (mte.getWorld().isRemote) return;
+        for (BeeSimulator beeSimulator : mStorage) {
+            dropStoredStack(mte, beeSimulator.queenStack);
+        }
+        mStorage.clear();
+    }
+
+    private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {
+        if (GTUtility.isStackInvalid(stack)) return;
+        EntityItem entityitem = new EntityItem(
+            mte.getWorld(),
+            mte.getXCoord(),
+            mte.getYCoord(),
+            mte.getZCoord(),
+            stack.copy());
+        entityitem.delayBeforeCanPickup = 10;
+        mte.getWorld()
+            .spawnEntityInWorld(entityitem);
     }
 
     @Override

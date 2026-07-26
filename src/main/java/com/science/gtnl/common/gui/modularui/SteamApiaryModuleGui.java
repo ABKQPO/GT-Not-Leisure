@@ -22,13 +22,11 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.ModularUI;
-import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.drawable.GuiDraw;
-import com.cleanroommc.modularui.drawable.GuiTextures;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -42,7 +40,6 @@ import com.cleanroommc.modularui.value.sync.DynamicLinkedSyncHandler;
 import com.cleanroommc.modularui.value.sync.DynamicSyncHandler;
 import com.cleanroommc.modularui.value.sync.GenericListSyncHandler;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
-import com.cleanroommc.modularui.value.sync.InteractionSyncHandler;
 import com.cleanroommc.modularui.value.sync.ItemSlotSH;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.EmptyWidget;
@@ -51,7 +48,6 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.DynamicSyncedWidget;
 import com.cleanroommc.modularui.widgets.ItemDisplayWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
-import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -63,6 +59,7 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.SearchField;
 import forestry.api.apiculture.EnumBeeType;
 import gregtech.api.modularui2.GTGuiTextures;
+import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -77,24 +74,25 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     private static final String BEE_SLOT_LIST_SYNC_KEY = "steamApiaryBeeSlots";
     private static final String BEE_SLOT_WIDGET_SYNC_KEY = "steamApiaryBeeSlotWidget";
     private static final String BEE_CLICK_SYNC_KEY = "steamApiaryBeeClick";
-    private static final String BEE_PAGE_SYNC_KEY = "steamApiaryBeePage";
-    private static final String BEE_PAGE_COUNT_SYNC_KEY = "steamApiaryBeePageCount";
     private static final String DROP_PROGRESS_SYNC_KEY = "steamApiaryDropProgress";
     private static final String DROP_PROGRESS_WIDGET_SYNC_KEY = "steamApiaryDropProgressWidget";
-    private static final String CONFIGURATION_PANEL_KEY = "steam_apiary_configuration";
-    private static final int TERMINAL_HEIGHT = 85;
+    private static final int TERMINAL_WIDTH = 190;
+    private static final int TERMINAL_HEIGHT = 94;
+    private static final int TERMINAL_TEXT_WIDTH = TERMINAL_WIDTH - 4;
+    private static final int TERMINAL_TEXT_HEIGHT = TERMINAL_HEIGHT - 8;
+    private static final int INVENTORY_WIDTH = 162;
+    private static final int INVENTORY_HEIGHT = 60;
     private static final int SLOT_SIZE = 18;
-    private static final int SLOTS_PER_ROW = 9;
-    private static final int BEE_ENTRIES_PER_PAGE = 27;
+    private static final int SLOTS_PER_ROW = INVENTORY_WIDTH / SLOT_SIZE;
+    private static final int MAX_VISIBLE_BEE_ENTRIES = SLOTS_PER_ROW * 3;
+    private static final int VIEW_BUTTON_WIDTH = 54;
+    private static final int VIEW_BUTTON_HEIGHT = 18;
 
     private final SteamApiaryModule steamApiary;
     private DynamicSyncHandler beeInventoryWidgetSyncer;
     private PanelSyncManager mainSyncManager;
     private IntSyncValue beeClickSyncer;
-    private IntSyncValue beePageSyncer;
     private List<BeeSlot> beeSlots = new ArrayList<>();
-    private int beePage;
-    private int beePageCount = 1;
     private int maxSlots;
     private int usedSlots;
     private boolean machineRunning;
@@ -109,7 +107,6 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     @Override
     public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
         steamApiary.refreshMaxSlotsForGui();
-        steamApiary.isInInventory = !baseMetaTileEntity.isActive();
         return super.build(guiData, syncManager, uiSettings);
     }
 
@@ -136,7 +133,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
                 .allowC2S());
         syncManager.syncValue(
             PRIMARY_MODE_SYNC_KEY,
-            new IntSyncValue(() -> steamApiary.mPrimaryMode, value -> steamApiary.mPrimaryMode = value).allowC2S());
+            new IntSyncValue(() -> steamApiary.mPrimaryMode, this::setPrimaryModeFromSync).allowC2S());
 
         IntSyncValue maxSlotsSyncer = new IntSyncValue(() -> {
             steamApiary.refreshMaxSlotsForGui();
@@ -153,14 +150,10 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
                 value -> machineRunning = value));
 
         beeClickSyncer = new IntSyncValue(() -> 0, this::handleBeeClick).allowC2S();
-        beePageSyncer = new IntSyncValue(() -> beePage, value -> beePage = value).allowC2S();
         syncManager.syncValue(BEE_CLICK_SYNC_KEY, beeClickSyncer);
-        syncManager.syncValue(BEE_PAGE_SYNC_KEY, beePageSyncer);
-        syncManager
-            .syncValue(BEE_PAGE_COUNT_SYNC_KEY, new IntSyncValue(() -> beePageCount, value -> beePageCount = value));
 
         GenericListSyncHandler<BeeSlot> beeSlotSyncer = GenericListSyncHandler.<BeeSlot>builder()
-            .getter(this::buildPagedAggregatedBeeList)
+            .getter(this::buildVisibleAggregatedBeeList)
             .setter(value -> beeSlots = value)
             .serializer(BeeSlot::write)
             .deserializer(BeeSlot::read)
@@ -176,10 +169,6 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         syncManager.syncValue(BEE_SLOT_WIDGET_SYNC_KEY, beeInventoryWidgetSyncer);
 
         if (!syncManager.isClient()) {
-            beePageSyncer.setChangeListener(() -> {
-                invalidateBeeListCache();
-                beeSlotSyncer.notifyUpdate();
-            });
             beeSlotSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
             maxSlotsSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
             usedSlotsSyncer.setChangeListener(this::notifyBeeInventoryUpdate);
@@ -193,37 +182,37 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         BooleanSyncValue inventoryViewSyncer = syncManager
             .findSyncHandler(INVENTORY_VIEW_SYNC_KEY, BooleanSyncValue.class);
         DynamicSyncedWidget<?> beeInventoryWidget = createDynamicBeeInventoryWidget(syncManager);
-        beeInventoryWidget.pos(10, 16)
+        beeInventoryWidget.pos((TERMINAL_WIDTH - INVENTORY_WIDTH) / 2, 16)
             .setEnabledIf(unused -> inventoryViewSyncer.getBoolValue());
-        return new ParentWidget<>().size(getTerminalWidgetWidth(), getTerminalWidgetHeight())
+        ParentWidget<?> statusParent = new ParentWidget<>().size(getTerminalWidgetWidth(), TERMINAL_HEIGHT)
+            .paddingTop(4)
+            .paddingBottom(4)
+            .paddingLeft(4)
+            .paddingRight(0)
+            .widgetTheme(GTWidgetThemes.BACKGROUND_TERMINAL)
             .child(
-                GTGuiTextures.PICTURE_SCREEN_BLACK.asWidget()
-                    .pos(4, 4)
-                    .size(190, 85)
-                    .setEnabledIf(unused -> !inventoryViewSyncer.getBoolValue()))
-            .child(beeInventoryWidget)
-            .child(createPageNavigationRow().pos(10, 76))
-            .child(
-                createTerminalTextWidget(syncManager, panel).pos(10, 7)
-                    .size(182, 79)
-                    .collapseDisabledChild()
-                    .setEnabledIf(unused -> !inventoryViewSyncer.getBoolValue()))
+                createTerminalTextWidget(syncManager, panel).size(TERMINAL_TEXT_WIDTH, TERMINAL_TEXT_HEIGHT)
+                    .collapseDisabledChild())
             .childIf(
                 steamApiary.supportsTerminalRightCornerColumn(),
                 () -> createTerminalRightCornerColumn(panel, syncManager))
             .childIf(
                 steamApiary.supportsTerminalLeftCornerColumn(),
-                () -> createTerminalLeftCornerColumn(panel, syncManager));
+                () -> createTerminalLeftCornerColumn(panel, syncManager))
+            .setEnabledIf(unused -> !inventoryViewSyncer.getBoolValue());
+        return new ParentWidget<>().size(getTerminalWidgetWidth(), getTerminalWidgetHeight())
+            .child(statusParent)
+            .child(beeInventoryWidget);
     }
 
     @Override
     protected int getTerminalRowHeight() {
-        return TERMINAL_HEIGHT + 9;
+        return TERMINAL_HEIGHT;
     }
 
     @Override
     protected int getTerminalWidgetHeight() {
-        return TERMINAL_HEIGHT + 9;
+        return TERMINAL_HEIGHT;
     }
 
     @Override
@@ -246,85 +235,52 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     protected Flow createPanelGap(ModularPanel parent, PanelSyncManager syncManager) {
         return Flow.row()
             .fullWidth()
-            .height(getTextBoxToInventoryGap())
+            .paddingRight(2)
             .paddingLeft(4)
-            .paddingRight(25)
-            .mainAxisAlignment(Alignment.MainAxis.END)
-            .child(createInventoryStatusToggle(syncManager))
-            .child(createConfigurationButton(syncManager, parent))
+            .height(getTextBoxToInventoryGap())
+            .child(createMachineModeRow(syncManager))
             .child(createRightPanelGapRow(parent, syncManager));
+    }
+
+    private Flow createMachineModeRow(PanelSyncManager syncManager) {
+        IntSyncValue primaryModeSyncer = syncManager.findSyncHandler(PRIMARY_MODE_SYNC_KEY, IntSyncValue.class);
+        return Flow.row()
+            .coverChildrenWidth()
+            .fullHeight()
+            .child(createPrimaryModeButton(syncManager, primaryModeSyncer))
+            .child(createInventoryStatusToggle(syncManager));
     }
 
     private IWidget createInventoryStatusToggle(PanelSyncManager syncManager) {
         BooleanSyncValue inventoryViewSyncer = syncManager
             .findSyncHandler(INVENTORY_VIEW_SYNC_KEY, BooleanSyncValue.class);
-        return new ButtonWidget<>().size(55, 16)
-            .background(GTGuiTextures.BUTTON_STANDARD)
+        return new ButtonWidget<>().size(VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT)
             .overlay(
                 new DynamicDrawable(
                     () -> IKey.lang(
                         inventoryViewSyncer.getBoolValue() ? "kubatech.gui.text.inventory" : "kubatech.gui.text.status")
                         .asIcon()
-                        .size(55, 16)))
-            .syncHandler(
-                new InteractionSyncHandler().setOnMousePressed(
-                    unused -> inventoryViewSyncer.setBoolValue(!inventoryViewSyncer.getBoolValue(), true, true)))
-            .tooltipShowUpTimer(TOOLTIP_DELAY);
-    }
-
-    private IWidget createConfigurationButton(PanelSyncManager syncManager, ModularPanel parent) {
-        IPanelHandler configPanel = syncManager.syncedPanel(
-            CONFIGURATION_PANEL_KEY,
-            true,
-            (panelSyncManager, syncHandler) -> createConfigurationPanel(parent, syncManager));
-        return new ButtonWidget<>().size(18, 18)
-            .overlay(GuiTextures.GEAR)
+                        .size(VIEW_BUTTON_WIDTH, VIEW_BUTTON_HEIGHT)))
             .onMousePressed(mouseButton -> {
-                if (configPanel.isPanelOpen()) {
-                    configPanel.closePanel();
-                } else {
-                    configPanel.openPanel();
-                }
+                inventoryViewSyncer.setBoolValue(!inventoryViewSyncer.getBoolValue(), true, true);
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("kubatech.gui.text.configuration")))
-            .tooltipShowUpTimer(TOOLTIP_DELAY);
+            .tooltipShowUpTimer(TOOLTIP_DELAY)
+            .marginTop(-1)
+            .marginRight(-1);
     }
 
-    private ModularPanel createConfigurationPanel(ModularPanel parent, PanelSyncManager syncManager) {
-        IntSyncValue primaryModeSyncer = syncManager.findSyncHandler(PRIMARY_MODE_SYNC_KEY, IntSyncValue.class);
-        return new ModularPanel(CONFIGURATION_PANEL_KEY).relative(parent)
-            .leftRel(1)
-            .topRel(0)
-            .size(90, 50)
-            .widgetTheme("backgroundPopup")
-            .child(
-                Flow.column()
-                    .sizeRel(1)
-                    .padding(4)
-                    .child(
-                        new TextWidget<>(
-                            EnumChatFormatting.UNDERLINE
-                                + StatCollector.translateToLocal("kubatech.gui.text.configuration"))
-                                    .alignment(Alignment.Center)
-                                    .height(10)
-                                    .marginBottom(2))
-                    .child(
-                        new TextWidget<>(StatCollector.translateToLocal("kubatech.gui.text.mia.primary_mode"))
-                            .widthRel(1)
-                            .height(9)
-                            .marginBottom(2))
-                    .child(createPrimaryModeButton(primaryModeSyncer)));
-    }
-
-    private IWidget createPrimaryModeButton(IntSyncValue primaryModeSyncer) {
-        return new ButtonWidget<>().overlay(new DynamicDrawable(() -> {
-            IKey key = IKey.str(getPrimaryModeText(primaryModeSyncer.getIntValue()))
-                .alignment(Alignment.Center);
-            return steamApiary.mMaxProgresstime > 0 ? key.color(0xFFA0A0A0) : key;
-        }))
+    private IWidget createPrimaryModeButton(PanelSyncManager syncManager, IntSyncValue primaryModeSyncer) {
+        IntSyncValue maxProgressTimeSyncer = (IntSyncValue) syncManager.getSyncHandlerFromMapKey("maxProgressTime:0");
+        return new ButtonWidget<>().size(VIEW_BUTTON_HEIGHT, VIEW_BUTTON_HEIGHT)
+            .overlay(new DynamicDrawable(() -> switch (primaryModeSyncer.getIntValue()) {
+            case SteamApiaryModule.MODE_PRIMARY_INPUT -> GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT;
+            case SteamApiaryModule.MODE_PRIMARY_OUTPUT -> GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT;
+            case SteamApiaryModule.MODE_PRIMARY_OPERATING -> GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_STEAM;
+            default -> GTGuiTextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT;
+            }))
             .onMousePressed(mouseButton -> {
-                if (steamApiary.mMaxProgresstime > 0) return true;
+                if (maxProgressTimeSyncer.getIntValue() > 0) return true;
                 int current = primaryModeSyncer.getIntValue();
                 int next = mouseButton == 1 ? (current + 2) % 3 : (current + 1) % 3;
                 primaryModeSyncer.setIntValue(next, true, true);
@@ -333,28 +289,32 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
             .tooltipBuilder(tooltip -> {
                 tooltip.setAutoUpdate(true);
                 tooltip.addLine(IKey.str(getPrimaryModeText(primaryModeSyncer.getIntValue())));
-                if (steamApiary.mMaxProgresstime > 0) {
+                if (maxProgressTimeSyncer.getIntValue() > 0) {
                     tooltip.addLine(
                         IKey.str(
                             EnumChatFormatting.RED
                                 + StatCollector.translateToLocal("GT5U.gui.text.cannot_change_when_running")));
                 }
             })
-            .width(65)
-            .height(12);
+            .tooltipShowUpTimer(TOOLTIP_DELAY);
+    }
+
+    private void setPrimaryModeFromSync(int value) {
+        if (steamApiary.mMaxProgresstime > 0) return;
+        steamApiary.mPrimaryMode = Math.floorMod(value, 3);
     }
 
     private DynamicSyncedWidget<?> createDynamicBeeInventoryWidget(PanelSyncManager syncManager) {
         DynamicSyncHandler syncer = syncManager.findSyncHandler(BEE_SLOT_WIDGET_SYNC_KEY, DynamicSyncHandler.class);
         return new DynamicSyncedWidget<>().syncHandler(syncer)
             .initialChild(createBeeSlotGrid(getActiveBeeSlotCount(beeSlots.size())))
-            .size(162, 60);
+            .size(INVENTORY_WIDTH, INVENTORY_HEIGHT);
     }
 
     private IWidget createBeeSlotGrid(int activeCount) {
         if (activeCount <= 0) return new EmptyWidget();
         Flow column = Flow.column()
-            .size(162, 60)
+            .size(INVENTORY_WIDTH, INVENTORY_HEIGHT)
             .crossAxisAlignment(Alignment.CrossAxis.START);
         for (int i = 0; i < activeCount; i += SLOTS_PER_ROW) {
             Flow row = Flow.row()
@@ -394,38 +354,6 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
             })
             .tooltipBuilder(tooltip -> addBeeSlotTooltip(tooltip, index));
         return button;
-    }
-
-    private Flow createPageNavigationRow() {
-        return Flow.row()
-            .width(162)
-            .height(14)
-            .mainAxisAlignment(Alignment.MainAxis.CENTER)
-            .setEnabledIf(unused -> steamApiary.isInInventory && beePageCount > 1)
-            .child(
-                new ButtonWidget<>().size(14, 14)
-                    .overlay(IKey.str("<"))
-                    .onMousePressed(mouseButton -> {
-                        if (beePage > 0) {
-                            beePage--;
-                            beePageSyncer.setIntValue(beePage, true, true);
-                        }
-                        return true;
-                    }))
-            .child(
-                new TextWidget<>(IKey.dynamic(() -> (beePage + 1) + " / " + beePageCount)).alignment(Alignment.Center)
-                    .width(50)
-                    .height(14))
-            .child(
-                new ButtonWidget<>().size(14, 14)
-                    .overlay(IKey.str(">"))
-                    .onMousePressed(mouseButton -> {
-                        if (beePage < beePageCount - 1) {
-                            beePage++;
-                            beePageSyncer.setIntValue(beePage, true, true);
-                        }
-                        return true;
-                    }));
     }
 
     private void addBeeSlotTooltip(RichTooltip tooltip, int index) {
@@ -514,19 +442,13 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         return cachedFullBeeList;
     }
 
-    private List<BeeSlot> buildPagedAggregatedBeeList() {
+    private List<BeeSlot> buildVisibleAggregatedBeeList() {
         List<BeeSlot> full = getFullAggregatedBeeList();
-        int totalPages = Math.max(1, (full.size() + BEE_ENTRIES_PER_PAGE - 1) / BEE_ENTRIES_PER_PAGE);
-        beePageCount = totalPages;
-        if (beePage >= totalPages) beePage = totalPages - 1;
-        if (beePage < 0) beePage = 0;
-        int start = beePage * BEE_ENTRIES_PER_PAGE;
-        int end = Math.min(start + BEE_ENTRIES_PER_PAGE, full.size());
-        if (start >= full.size()) return new ArrayList<>();
-        List<BeeSlot> page = new ArrayList<>(end - start);
-        for (int i = start; i < end; i++) {
+        int end = Math.min(MAX_VISIBLE_BEE_ENTRIES, full.size());
+        List<BeeSlot> page = new ArrayList<>(end);
+        for (int i = 0; i < end; i++) {
             BeeSlot slot = full.get(i);
-            page.add(new BeeSlot(i - start, slot.realIndex(), slot.count(), slot.stack()));
+            page.add(new BeeSlot(i, slot.realIndex(), slot.count(), slot.stack()));
         }
         return page;
     }
@@ -536,12 +458,12 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
         int visibleSlotIndex = (encoded >>> 3) - 1;
         int mouseButton = (encoded >>> 1) & 0x3;
         boolean shift = (encoded & 1) != 0;
-        int slotIndex = beePage * BEE_ENTRIES_PER_PAGE + visibleSlotIndex;
         List<BeeSlot> serverSlots = getFullAggregatedBeeList();
-        if (slotIndex < 0 || slotIndex >= serverSlots.size()) {
+        if (visibleSlotIndex < 0 || visibleSlotIndex >= serverSlots.size()
+            || visibleSlotIndex >= MAX_VISIBLE_BEE_ENTRIES) {
             handleEmptySlotClick(mouseButton == 1, mainSyncManager);
         } else {
-            handleOccupiedSlotClick(serverSlots.get(slotIndex), mouseButton, shift, mainSyncManager);
+            handleOccupiedSlotClick(serverSlots.get(visibleSlotIndex), mouseButton, shift, mainSyncManager);
         }
         invalidateBeeListCache();
         notifyBeeInventoryUpdate();
@@ -678,15 +600,17 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
 
     private void notifyBeeInventoryUpdate() {
         if (beeInventoryWidgetSyncer != null) {
-            int activeCount = getActiveBeeSlotCount(buildPagedAggregatedBeeList().size());
+            int activeCount = getActiveBeeSlotCount(buildVisibleAggregatedBeeList().size());
             beeInventoryWidgetSyncer.notifyUpdate(buffer -> buffer.writeInt(activeCount));
         }
     }
 
     private int getActiveBeeSlotCount(int pagedListSize) {
-        boolean hasEmptySlot = usedSlots < maxSlots;
-        boolean isLastPage = beePage >= beePageCount - 1;
-        return pagedListSize + (hasEmptySlot && isLastPage ? 1 : 0);
+        int currentUsedSlots = mainSyncManager != null && mainSyncManager.isClient() ? usedSlots
+            : steamApiary.mStorage.size();
+        int currentMaxSlots = mainSyncManager != null && mainSyncManager.isClient() ? maxSlots : steamApiary.mMaxSlots;
+        boolean hasEmptySlot = currentUsedSlots < currentMaxSlots;
+        return Math.min(MAX_VISIBLE_BEE_ENTRIES, pagedListSize + (hasEmptySlot ? 1 : 0));
     }
 
     private void invalidateBeeListCache() {

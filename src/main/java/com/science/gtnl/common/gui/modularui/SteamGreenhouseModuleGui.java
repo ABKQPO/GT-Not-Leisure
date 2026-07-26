@@ -292,12 +292,11 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private IWidget createCropSlotButton(int cropIndex, ItemStack stack, PanelSyncManager syncManager) {
-        return createStackSlotWidget(() -> stack, () -> stack.stackSize).background(GTGuiTextures.SLOT_ITEM_DARK)
-            .onMousePressed(mouseButton -> {
-                if (cropClickSyncer == null) return true;
-                cropClickSyncer.setIntValue(encodeCropSlotClick(cropIndex, mouseButton), true, true);
-                return true;
-            })
+        return createStackSlotWidget(() -> stack, () -> stack.stackSize).onMousePressed(mouseButton -> {
+            if (cropClickSyncer == null) return true;
+            cropClickSyncer.setIntValue(encodeCropSlotClick(cropIndex, mouseButton), true, true);
+            return true;
+        })
             .tooltipBuilder(tooltip -> addStackTooltip(tooltip, stack, syncManager))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
@@ -334,13 +333,11 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
         IntSyncValue usedSeedCountSyncer = syncManager.findSyncHandler(USED_SEED_COUNT_SYNC_KEY, IntSyncValue.class);
         return createStackSlotWidget(
             () -> null,
-            () -> maxSeedCountSyncer.getIntValue() - usedSeedCountSyncer.getIntValue())
-                .background(GTGuiTextures.SLOT_ITEM_DARK)
-                .onMousePressed(mouseButton -> {
-                    if (cropClickSyncer == null) return true;
-                    cropClickSyncer.setIntValue(encodeCropInsertionClick(mouseButton), true, true);
-                    return true;
-                })
+            () -> maxSeedCountSyncer.getIntValue() - usedSeedCountSyncer.getIntValue()).onMousePressed(mouseButton -> {
+                if (cropClickSyncer == null) return true;
+                cropClickSyncer.setIntValue(encodeCropInsertionClick(mouseButton), true, true);
+                return true;
+            })
                 .tooltipBuilder(
                     tooltip -> tooltip.addLine(
                         IKey.str(
@@ -352,8 +349,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
     private IWidget createBlockInsertionSlotButton(PanelSyncManager syncManager) {
         return createStackSlotWidget(
             () -> getBlockInsertionStack(syncManager),
-            () -> getBlockInsertionCount(syncManager))
-                .background(GTGuiTextures.SLOT_ITEM_DARK, GTGuiTextures.OVERLAY_SLOT_BLOCK_STANDARD)
+            () -> getBlockInsertionCount(syncManager)).backgroundOverlay(GTGuiTextures.OVERLAY_SLOT_BLOCK_STANDARD)
                 .onMousePressed(mouseButton -> {
                     if (blockClickSyncer == null) return true;
                     blockClickSyncer.setIntValue(encodeBlockInsertionClick(mouseButton), true, true);
