@@ -298,8 +298,18 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     }
 
     @Override
+    public int getManualSlot() {
+        return getManualSlotStartForGui();
+    }
+
+    @Override
     public int getCircuitSlotX() {
         return 188;
+    }
+
+    @Override
+    public int getSizeInventory() {
+        return ALL_SLOT_COUNT;
     }
 
     @Override
@@ -312,14 +322,16 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
 
     @Override
     public ItemStack getStackInSlot(int aIndex) {
-        if (!processingRecipe) return super.getStackInSlot(aIndex);
+        if (aIndex < 0 || aIndex >= mInventory.length) return null;
 
-        if (aIndex < 0 || aIndex > mInventory.length) return null;
+        if (aIndex == getCircuitSlot() || (aIndex >= getManualSlot() && aIndex < ALL_SLOT_COUNT)) {
+            return mInventory[aIndex];
+        }
+
+        if (!processingRecipe) return null;
 
         // Display slots
         if (aIndex >= SIDE_SLOT_COUNT && aIndex < SIDE_SLOT_COUNT * 2) return null;
-
-        if (aIndex == getCircuitSlot() || (aIndex >= 201 && aIndex < ALL_SLOT_COUNT)) return mInventory[aIndex];
 
         if (mInventory[aIndex] != null) {
 

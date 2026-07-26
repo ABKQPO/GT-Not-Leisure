@@ -15,6 +15,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
@@ -196,7 +197,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     @Override
     public FluidStack[] getStoredFluids() {
-        if (!processingRecipe) {
+        if (!isAllowedToWork()) {
             return EMPTY_FLUID_STACK;
         }
 
@@ -205,9 +206,23 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
             return EMPTY_FLUID_STACK;
         }
 
+        if (!processingRecipe) {
+            List<FluidStack> fluids = new ObjectArrayList<>(SLOT_COUNT);
+            for (FluidStack fluidStack : storedFluids) {
+                if (fluidStack != null) {
+                    fluids.add(GTUtility.copyAmount(1, fluidStack));
+                }
+            }
+            return fluids.toArray(EMPTY_FLUID_STACK);
+        }
+
         updateAllInformationSlots();
 
         for (int i = 0; i < SLOT_COUNT; i++) {
+            if (savedStackSizes[i] != 0 || shadowStoredFluids[i] != null) {
+                continue;
+            }
+
             if (storedFluids[i] == null) {
                 setSavedFluid(i, null);
                 continue;
@@ -222,6 +237,33 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     }
 
     @Override
+    public FluidTankInfo[] getTankInfo(ForgeDirection side) {
+        if (side != ForgeDirection.UNKNOWN || !isAllowedToWork()) {
+            return EMPTY_FLUID_TANK_INFOS;
+        }
+
+        if (processingRecipe) {
+            List<FluidTankInfo> tanks = new ObjectArrayList<>(SLOT_COUNT);
+            for (FluidStack fluidStack : getStoredFluids()) {
+                if (fluidStack != null && fluidStack.amount > 0) {
+                    tanks.add(new FluidTankInfo(fluidStack, Integer.MAX_VALUE));
+                }
+            }
+            return tanks.toArray(EMPTY_FLUID_TANK_INFOS);
+        }
+
+        updateAllInformationSlots();
+
+        List<FluidTankInfo> tanks = new ObjectArrayList<>(SLOT_COUNT);
+        for (FluidStack fluidStack : storedInformationFluids) {
+            if (fluidStack != null && fluidStack.amount > 0) {
+                tanks.add(new FluidTankInfo(fluidStack, Integer.MAX_VALUE));
+            }
+        }
+        return tanks.toArray(EMPTY_FLUID_TANK_INFOS);
+    }
+
+    @Override
     public boolean justUpdated() {
         if (expediteRecipeCheck && isAllowedToWork()) {
             boolean ret = justHadNewFluids;
@@ -233,12 +275,18 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     @Override
     public FluidStack drain(ForgeDirection side, FluidStack aFluid, boolean doDrain) {
+        return drain(side, aFluid, aFluid == null ? 0 : aFluid.amount, doDrain);
+    }
+
+    @Override
+    public FluidStack drain(ForgeDirection side, FluidStack aFluid, int amount, boolean doDrain) {
         // this is an ME input hatch. allowing draining via logistics would be very wrong (and against
         // canTankBeEmptied()) but we do need to support draining from controller, which uses the UNKNOWN direction.
         if (side != ForgeDirection.UNKNOWN) return null;
+        if (aFluid == null || amount <= 0) return null;
         FluidStack stored = getMatchingFluidStack(aFluid);
         if (stored == null) return null;
-        FluidStack drained = GTUtility.copyAmount(Math.min(stored.amount, aFluid.amount), stored);
+        FluidStack drained = GTUtility.copyAmount(Math.min(stored.amount, amount), stored);
         if (doDrain) {
             stored.amount -= drained.amount;
         }
@@ -452,6 +500,10 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
             }
 
             if (GTUtility.areFluidsEqual(fluidStack, storedFluids[i], false)) {
+                if (processingRecipe && shadowStoredFluids[i] != null) {
+                    return shadowStoredFluids[i].amount > 0 ? shadowStoredFluids[i] : null;
+                }
+
                 updateInformationSlot(i);
                 if (storedInformationFluids[i] != null) {
                     setSavedFluid(i, storedInformationFluids[i]);
