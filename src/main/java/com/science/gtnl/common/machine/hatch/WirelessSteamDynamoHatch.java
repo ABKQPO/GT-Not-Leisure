@@ -286,7 +286,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             }
 
             if (matchedSteamType != null) {
-                int convertedAmount = rawAmount * matchedSteamType.efficiencyFactor;
+                long convertedAmount = (long) rawAmount * (long) matchedSteamType.efficiencyFactor;
 
                 if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(ownerUUID, convertedAmount)) {
                     return;
