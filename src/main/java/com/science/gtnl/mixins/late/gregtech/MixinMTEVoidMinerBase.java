@@ -171,18 +171,6 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         this.vmTweak$activeDropMapDimension = aNBT.getString("vmTweak$activeDropMapDimension");
     }
 
-    @Inject(method = "working", at = @At("HEAD"), remap = false)
-    public void vmTweak$onWorkingTick(CallbackInfoReturnable<Boolean> cir) {
-        if (!gtnl$enableMixin) return;
-        String dim = vmTweak$resolveDimensionKey();
-
-        if (!Objects.equals(dim, vmTweak$mLastDimensionOverride)) {
-            vmTweak$mLastDimensionOverride = dim;
-            vmTweak$dimChangeVersion++;
-            vmTweak$recalculateDropMap();
-        }
-    }
-
     @Inject(method = "onFirstTick", at = @At("HEAD"), require = 1, remap = false, cancellable = true)
     private void vmTweak$onFirstTick(IGregTechTileEntity aBaseMetaTileEntity, CallbackInfo ci) {
         if (!gtnl$enableMixin) return;

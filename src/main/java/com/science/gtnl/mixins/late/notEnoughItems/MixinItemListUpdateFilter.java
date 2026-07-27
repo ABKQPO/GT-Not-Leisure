@@ -1,7 +1,6 @@
 package com.science.gtnl.mixins.late.notEnoughItems;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +44,13 @@ public class MixinItemListUpdateFilter {
             return;
         }
 
-        filtered.sort(Comparator.comparingInt(AccessorItemList.getOrdering()::get));
+        // NB: item ordering is now directly from the ItemList.items list which is already ordered
+        filtered.sort(
+            (a, b) -> Integer.compare(
+                AccessorItemList.getItems()
+                    .indexOf(a),
+                AccessorItemList.getItems()
+                    .indexOf(b)));
 
         if (((RestartableTask) (Object) this).interrupted()) {
             ci.cancel();

@@ -389,13 +389,11 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
     }
 
-    @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
             .pos(LOGO_X, LOGO_Y);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

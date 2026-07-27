@@ -36,6 +36,7 @@ public enum ModList implements IMod, ITargetMod {
     ChromaticTooltips(ModIds.CHROMATIC_TOOLTIPS, Names.CHROMATIC_TOOLTIPS),
     ChromaticTooltipsCompat(ModIds.CHROMATIC_TOOLTIPS_COMPAT, Names.CHROMATIC_TOOLTIPS_COMPAT),
 
+    BartWorks(ModIds.BART_WORKS, Names.BART_WORKS),
     NewHorizonsCoreMod(ModIds.NEW_HORIZONS_CORE_MOD, Names.NEW_HORIZONS_CORE_MOD,
         "com.dreammaster.coremod.DreamCoreMod"),
     GalaxySpace(ModIds.GALAXY_SPACE, Names.GALAXY_SPACE),
@@ -69,6 +70,7 @@ public enum ModList implements IMod, ITargetMod {
         public static final String CHROMATIC_TOOLTIPS = "chromatictooltips";
         public static final String CHROMATIC_TOOLTIPS_COMPAT = "chromatictooltipscompat";
 
+        public static final String BART_WORKS = "bartworks";
         public static final String NEW_HORIZONS_CORE_MOD = "dreamcraft";
         public static final String GALAXY_SPACE = "GalaxySpace";
         public static final String BETTER_QUESTING_API = "bqapi";
@@ -99,6 +101,8 @@ public enum ModList implements IMod, ITargetMod {
         public static final String RE_AVARITIA = "Re Avaritia";
         public static final String SUDOKU = "Sudoku";
         public static final String TAKO_TECH = "Tako Tech";
+
+        public static final String BART_WORKS = "BartWorks";
         public static final String CHROMATIC_TOOLTIPS = "Chromatic Tooltips";
         public static final String CHROMATIC_TOOLTIPS_COMPAT = "Chromatic Tooltips Compat";
 

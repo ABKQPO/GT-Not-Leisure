@@ -22,7 +22,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
 import gregtech.common.tileentities.machines.outputme.MTEHatchOutputBusME;
-import gregtech.common.tileentities.machines.outputme.filter.MEFilterItem;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -201,7 +200,7 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
             return;
         }
         @SuppressWarnings("unchecked")
-        IOutputMEProviderTransfer<IAEItemStack, MEFilterItem, ItemStack> transferProvider = (IOutputMEProviderTransfer<IAEItemStack, MEFilterItem, ItemStack>) getProvider();
+        IOutputMEProviderTransfer<IAEItemStack> transferProvider = (IOutputMEProviderTransfer<IAEItemStack>) getProvider();
         if (transferProvider.gtnl$transferCacheTo(outputBus.getProvider())) {
             markDirty();
             outputBus.markDirty();

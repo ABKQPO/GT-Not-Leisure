@@ -24,6 +24,7 @@ import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.IHatchElement;
+import gregtech.api.interfaces.IOutputHatch;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -289,21 +290,28 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         return StatCollector.translateToLocal("PrimitiveDistillationTowerRecipeType");
     }
 
-    @Override
     public List<? extends IFluidStore> getFluidOutputSlots(FluidStack[] toOutput) {
-        return getFluidOutputSlotsByLayer(toOutput, mOutputHatchesByLayer);
-    }
-
-    @Override
-    public void addFluidOutputs(FluidStack[] outputFluids) {
-        for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
-            FluidStack fluidStack = outputFluids[i];
-            if (fluidStack == null) continue;
-            FluidStack outputStack = fluidStack.copy();
-            if (!dumpFluid(mOutputHatchesByLayer.get(i), outputStack, true)) {
-                dumpFluid(mOutputHatchesByLayer.get(i), outputStack, false);
+        List<IFluidStore> ret = new ArrayList<>();
+        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
+            for (MTEHatchOutput hatch : layer) {
+                if (hatch.outputsLiquids() && hatch instanceof IFluidStore fs) {
+                    ret.add(fs);
+                }
             }
         }
+        return ret;
+    }
+
+    public boolean addFluidOutputs(@org.jetbrains.annotations.NotNull FluidStack[] outputFluids) {
+        List<IOutputHatch> allHatches = new ArrayList<>();
+        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
+            for (MTEHatchOutput hatch : layer) {
+                if (hatch instanceof IOutputHatch oh && hatch.outputsLiquids()) {
+                    allHatches.add(oh);
+                }
+            }
+        }
+        return addFluidOutputs(outputFluids, allHatches);
     }
 
     @Override

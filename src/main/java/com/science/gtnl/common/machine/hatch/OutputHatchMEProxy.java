@@ -11,7 +11,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.api.mixinHelper.IOutputMEProviderTransfer;
@@ -23,7 +22,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
 import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
-import gregtech.common.tileentities.machines.outputme.filter.MEFilterFluid;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -67,7 +65,7 @@ public class OutputHatchMEProxy extends MTEHatchOutputME {
             return;
         }
         @SuppressWarnings("unchecked")
-        IOutputMEProviderTransfer<IAEFluidStack, MEFilterFluid, FluidStack> transferProvider = (IOutputMEProviderTransfer<IAEFluidStack, MEFilterFluid, FluidStack>) getProvider();
+        IOutputMEProviderTransfer<IAEFluidStack> transferProvider = (IOutputMEProviderTransfer<IAEFluidStack>) getProvider();
         if (transferProvider.gtnl$transferCacheTo(outputHatch.getProvider())) {
             markDirty();
             outputHatch.markDirty();

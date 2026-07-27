@@ -15,7 +15,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
@@ -236,34 +235,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         return shadowStoredFluids;
     }
 
-    @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection side) {
-        if (side != ForgeDirection.UNKNOWN || !isAllowedToWork()) {
-            return EMPTY_FLUID_TANK_INFOS;
-        }
-
-        if (processingRecipe) {
-            List<FluidTankInfo> tanks = new ObjectArrayList<>(SLOT_COUNT);
-            for (FluidStack fluidStack : getStoredFluids()) {
-                if (fluidStack != null && fluidStack.amount > 0) {
-                    tanks.add(new FluidTankInfo(fluidStack, Integer.MAX_VALUE));
-                }
-            }
-            return tanks.toArray(EMPTY_FLUID_TANK_INFOS);
-        }
-
-        updateAllInformationSlots();
-
-        List<FluidTankInfo> tanks = new ObjectArrayList<>(SLOT_COUNT);
-        for (FluidStack fluidStack : storedInformationFluids) {
-            if (fluidStack != null && fluidStack.amount > 0) {
-                tanks.add(new FluidTankInfo(fluidStack, Integer.MAX_VALUE));
-            }
-        }
-        return tanks.toArray(EMPTY_FLUID_TANK_INFOS);
-    }
-
-    @Override
     public boolean justUpdated() {
         if (expediteRecipeCheck && isAllowedToWork()) {
             boolean ret = justHadNewFluids;

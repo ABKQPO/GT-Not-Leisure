@@ -73,12 +73,10 @@ public class SuperVoidHatchGui extends MTEHatchBaseGui<SuperVoidHatch> {
             });
     }
 
-    @Override
     protected IDrawable.DrawableWidget createLogo() {
         return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

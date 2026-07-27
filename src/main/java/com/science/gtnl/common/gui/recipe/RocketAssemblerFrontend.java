@@ -20,7 +20,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.format.RocketAssemblerFormat;
 
 import codechicken.nei.PositionedStack;
-import gregtech.api.enums.SteamVariant;
+import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
@@ -481,7 +481,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
             uiProperties.maxItemOutputs,
             uiProperties.maxFluidInputs,
             uiProperties.maxFluidOutputs,
-            SteamVariant.NONE,
+            TieredVariant.STANDARD,
             ctx.windowOffset);
 
         addGregTechLogo(builder, ctx.windowOffset);

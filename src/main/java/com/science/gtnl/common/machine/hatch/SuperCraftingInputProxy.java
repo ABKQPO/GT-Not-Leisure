@@ -213,10 +213,9 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         return false;
     }
 
-    @Override
     public boolean justUpdated() {
         if (getMasterSuper() != null) return getMasterSuper().justUpdated();
-        if (getCraftingMaster() != null) return getCraftingMaster().justUpdated();
+        if (getCraftingMaster() != null) return false;
         return false;
     }
 

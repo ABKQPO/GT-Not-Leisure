@@ -59,7 +59,6 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
         return machine.getGUIHeight();
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

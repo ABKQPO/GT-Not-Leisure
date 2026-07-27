@@ -54,56 +54,68 @@ import com.science.gtnl.utils.ClientUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+/*
+ * Early mixin — runs BEFORE SRG name mapping at runtime.
+ * All field names below are obfuscated (SEARGE) names that exist
+ * in the transformed Minecraft class at injection time.
+ * Deobfuscated names are shown inline as comments.
+ */
 @Mixin(value = Minecraft.class, remap = true)
 public abstract class MixinMinecraft {
 
-    @Shadow
-    public boolean isGamePaused;
+    // --- @Shadow fields (obfuscated names required for early mixin configs) ---
     @Final
     @Shadow
-    public Profiler mcProfiler;
+    public Profiler field_71424_I; // mcProfiler
     @Shadow
-    public int rightClickDelayTimer;
+    public boolean field_71445_n; // boolean guard
     @Shadow
-    public GuiIngame ingameGUI;
+    public int field_71467_ac; // rightClickDelayTimer
     @Shadow
-    public EntityRenderer entityRenderer;
+    public GuiIngame field_71456_v; // ingameGUI
     @Shadow
-    public WorldClient theWorld;
+    public EntityRenderer field_71460_t; // entityRenderer
     @Shadow
-    public PlayerControllerMP playerController;
+    public WorldClient field_71441_e; // theWorld
     @Shadow
-    public TextureManager renderEngine;
+    public PlayerControllerMP field_71442_b; // playerController
     @Shadow
-    public GuiScreen currentScreen;
+    public TextureManager field_71446_o; // renderEngine
     @Shadow
-    public EntityClientPlayerMP thePlayer;
+    public GuiScreen field_71462_r; // currentScreen
     @Shadow
-    public int leftClickCounter;
+    public EntityClientPlayerMP field_71439_g; // thePlayer
     @Shadow
-    public long systemTime;
+    public int field_71429_W; // leftClickCounter
     @Shadow
-    public GameSettings gameSettings;
+    public long field_71423_H; // systemTime
     @Shadow
-    public boolean inGameHasFocus;
+    public GameSettings field_71474_y; // gameSettings
     @Shadow
-    public long field_83002_am;
+    public boolean field_71415_G; // inGameHasFocus
     @Shadow
-    public int joinPlayerCounter;
+    public long field_83002_am; // debugKey (F3)
     @Shadow
-    public RenderGlobal renderGlobal;
+    public int field_71457_ai; // joinPlayerCounter
     @Shadow
-    public MusicTicker mcMusicTicker;
+    public RenderGlobal field_71438_f; // renderGlobal
     @Shadow
-    public SoundHandler mcSoundHandler;
+    public MusicTicker field_147126_aw; // mcMusicTicker
     @Shadow
-    public EffectRenderer effectRenderer;
+    public SoundHandler field_147127_av; // mcSoundHandler
     @Shadow
-    public NetworkManager myNetworkManager;
+    public EffectRenderer field_71452_i; // effectRenderer
     @Shadow
-    public Timer timer;
+    public NetworkManager field_71453_ak; // myNetworkManager
     @Shadow
-    public boolean refreshTexturePacksScheduled;
+    public Timer field_71428_T; // timer
+    @Shadow
+    public boolean field_71468_ad; // refreshTexturePacksScheduled
+
+    // MC 1.7.10 does not have isGamePaused field - compute it manually
+    private boolean isGamePaused() {
+        return this.field_71441_e == null || (this.field_71462_r != null && this.field_71462_r.doesGuiPauseGame());
+    }
 
     @Redirect(
         method = "startGame",
@@ -121,91 +133,93 @@ public abstract class MixinMinecraft {
         } else {
             ci.cancel();
         }
-        this.mcProfiler.startSection("scheduledExecutables");
+        this.field_71424_I.startSection("scheduledExecutables");
+        this.field_71424_I.endSection();
 
-        this.mcProfiler.endSection();
-
-        if (this.rightClickDelayTimer > 0) {
-            --this.rightClickDelayTimer;
+        if (this.field_71467_ac > 0) {
+            --this.field_71467_ac;
         }
 
         FMLCommonHandler.instance()
             .onPreClientTick();
 
-        this.mcProfiler.startSection("gui");
+        this.field_71424_I.startSection("gui");
 
-        if (!this.isGamePaused) {
-            this.ingameGUI.updateTick();
+        if (!this.isGamePaused()) {
+            this.field_71456_v.updateTick();
         }
 
-        this.mcProfiler.endStartSection("pick");
-        this.entityRenderer.getMouseOver(1.0F);
-        this.mcProfiler.endStartSection("gameMode");
+        this.field_71424_I.endStartSection("pick");
+        this.field_71460_t.getMouseOver(1.0F);
+        this.field_71424_I.endStartSection("gameMode");
 
-        if (!this.isGamePaused && this.theWorld != null) {
-            this.playerController.updateController();
+        if (!this.isGamePaused() && this.field_71441_e != null) {
+            this.field_71442_b.updateController();
         }
 
-        this.mcProfiler.endStartSection("textures");
+        this.field_71424_I.endStartSection("textures");
 
-        if (!this.isGamePaused) {
+        if (!this.isGamePaused()) {
             if (!isStop) {
-                this.renderEngine.tick();
+                this.field_71446_o.tick();
             } else {
-                // Keep the player's own inventory animations ticking.
-                ItemStack[] itemStacks = ((Minecraft) ((Object) this)).thePlayer.inventory.mainInventory;
+                ItemStack[] itemStacks = this.field_71439_g.inventory.mainInventory;
                 for (int i = 0; i < itemStacks.length; i++) {
                     ItemStack stack = itemStacks[i];
                     if (stack == null) continue;
-                    stack.updateAnimation(theWorld, thePlayer, i, thePlayer.inventory.currentItem == i);
+                    stack.updateAnimation(
+                        this.field_71441_e,
+                        this.field_71439_g,
+                        i,
+                        this.field_71439_g.inventory.currentItem == i);
                 }
             }
         }
 
-        if (this.currentScreen == null && this.thePlayer != null) {
-            if (this.thePlayer.getHealth() <= 0.0F) {
+        if (this.field_71462_r == null && this.field_71439_g != null) {
+            if (this.field_71439_g.getHealth() <= 0.0F) {
                 ((Minecraft) ((Object) this)).displayGuiScreen(null);
-            } else if (this.thePlayer.isPlayerSleeping() && this.theWorld != null) {
+            } else if (this.field_71439_g.isPlayerSleeping() && this.field_71441_e != null) {
                 ((Minecraft) ((Object) this)).displayGuiScreen(new GuiSleepMP());
             }
-        } else if (this.currentScreen != null && this.currentScreen instanceof GuiSleepMP
-            && !this.thePlayer.isPlayerSleeping()) {
+        } else if (this.field_71462_r != null && this.field_71462_r instanceof GuiSleepMP
+            && !this.field_71439_g.isPlayerSleeping()) {
                 ((Minecraft) ((Object) this)).displayGuiScreen(null);
             }
 
-        if (this.currentScreen != null) {
-            this.leftClickCounter = 10000;
+        if (this.field_71462_r != null) {
+            this.field_71429_W = 10000;
         }
 
         CrashReport crashreport;
         CrashReportCategory crashreportcategory;
 
-        if (this.currentScreen != null) {
+        if (this.field_71462_r != null) {
             try {
-                this.currentScreen.handleInput();
+                this.field_71462_r.handleInput();
             } catch (Throwable throwable1) {
                 crashreport = CrashReport.makeCrashReport(throwable1, "Updating screen events");
                 crashreportcategory = crashreport.makeCategory("Affected screen");
                 crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
 
                     public String call() {
-                        return ((Minecraft) ((Object) this)).currentScreen.getClass()
+                        return MixinMinecraft.this.field_71462_r.getClass()
                             .getCanonicalName();
                     }
                 });
                 throw new ReportedException(crashreport);
             }
 
-            if (this.currentScreen != null) {
+            if (this.field_71462_r != null) {
                 try {
-                    this.currentScreen.updateScreen();
+                    this.field_71462_r.updateScreen();
                 } catch (Throwable throwable) {
                     crashreport = CrashReport.makeCrashReport(throwable, "Ticking screen");
                     crashreportcategory = crashreport.makeCategory("Affected screen");
                     crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
 
                         public String call() {
-                            return ((Minecraft) ((Object) this)).currentScreen.getClass()
+                            return MixinMinecraft.this.field_71462_r.getClass()
                                 .getCanonicalName();
                         }
                     });
@@ -214,8 +228,8 @@ public abstract class MixinMinecraft {
             }
         }
 
-        if (this.currentScreen == null || this.currentScreen.allowUserInput) {
-            this.mcProfiler.endStartSection("mouse");
+        if (this.field_71462_r == null || this.field_71462_r.allowUserInput) {
+            this.field_71424_I.endStartSection("mouse");
             int j;
 
             while (Mouse.next()) {
@@ -228,44 +242,38 @@ public abstract class MixinMinecraft {
                     KeyBinding.onTick(j - 100);
                 }
 
-                long k = Minecraft.getSystemTime() - this.systemTime;
+                long k = Minecraft.getSystemTime() - this.field_71423_H;
 
                 if (k <= 200L) {
                     int i = Mouse.getEventDWheel();
 
                     if (i != 0) {
-                        this.thePlayer.inventory.changeCurrentItem(i);
+                        this.field_71439_g.inventory.changeCurrentItem(i);
 
-                        if (this.gameSettings.noclip) {
-                            if (i > 0) {
-                                i = 1;
-                            }
-
-                            if (i < 0) {
-                                i = -1;
-                            }
-
-                            this.gameSettings.noclipRate += (float) i * 0.25F;
+                        if (this.field_71474_y.noclip) {
+                            if (i > 0) i = 1;
+                            if (i < 0) i = -1;
+                            this.field_71474_y.noclipRate += (float) i * 0.25F;
                         }
                     }
 
-                    if (this.currentScreen == null) {
-                        if (!this.inGameHasFocus && Mouse.getEventButtonState()) {
+                    if (this.field_71462_r == null) {
+                        if (!this.field_71415_G && Mouse.getEventButtonState()) {
                             ((Minecraft) ((Object) this)).setIngameFocus();
                         }
-                    } else if (this.currentScreen != null) {
-                        this.currentScreen.handleMouseInput();
+                    } else {
+                        this.field_71462_r.handleMouseInput();
                     }
                 }
                 FMLCommonHandler.instance()
                     .fireMouseInput();
             }
 
-            if (this.leftClickCounter > 0) {
-                --this.leftClickCounter;
+            if (this.field_71429_W > 0) {
+                --this.field_71429_W;
             }
 
-            this.mcProfiler.endStartSection("keyboard");
+            this.field_71424_I.endStartSection("keyboard");
             boolean flag;
 
             while (Keyboard.next()) {
@@ -290,12 +298,12 @@ public abstract class MixinMinecraft {
                 ((Minecraft) ((Object) this)).func_152348_aa();
 
                 if (Keyboard.getEventKeyState()) {
-                    if (Keyboard.getEventKey() == 62 && this.entityRenderer != null) {
-                        this.entityRenderer.deactivateShader();
+                    if (Keyboard.getEventKey() == 62 && this.field_71460_t != null) {
+                        this.field_71460_t.deactivateShader();
                     }
 
-                    if (this.currentScreen != null) {
-                        this.currentScreen.handleKeyboardInput();
+                    if (this.field_71462_r != null) {
+                        this.field_71462_r.handleKeyboardInput();
                     } else {
                         if (Keyboard.getEventKey() == 1) {
                             ((Minecraft) ((Object) this)).displayInGameMenu();
@@ -311,16 +319,16 @@ public abstract class MixinMinecraft {
 
                         if (Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(61)) {
                             flag = Keyboard.isKeyDown(42) | Keyboard.isKeyDown(54);
-                            this.gameSettings.setOptionValue(GameSettings.Options.RENDER_DISTANCE, flag ? -1 : 1);
+                            this.field_71474_y.setOptionValue(GameSettings.Options.RENDER_DISTANCE, flag ? -1 : 1);
                         }
 
                         if (Keyboard.getEventKey() == 30 && Keyboard.isKeyDown(61)) {
-                            ((Minecraft) ((Object) this)).renderGlobal.loadRenderers();
+                            this.field_71438_f.loadRenderers();
                         }
 
                         if (Keyboard.getEventKey() == 35 && Keyboard.isKeyDown(61)) {
-                            this.gameSettings.advancedItemTooltips = !this.gameSettings.advancedItemTooltips;
-                            this.gameSettings.saveOptions();
+                            this.field_71474_y.advancedItemTooltips = !this.field_71474_y.advancedItemTooltips;
+                            this.field_71474_y.saveOptions();
                         }
 
                         if (Keyboard.getEventKey() == 48 && Keyboard.isKeyDown(61)) {
@@ -328,37 +336,35 @@ public abstract class MixinMinecraft {
                         }
 
                         if (Keyboard.getEventKey() == 25 && Keyboard.isKeyDown(61)) {
-                            this.gameSettings.pauseOnLostFocus = !this.gameSettings.pauseOnLostFocus;
-                            this.gameSettings.saveOptions();
+                            this.field_71474_y.pauseOnLostFocus = !this.field_71474_y.pauseOnLostFocus;
+                            this.field_71474_y.saveOptions();
                         }
 
                         if (Keyboard.getEventKey() == 59) {
-                            this.gameSettings.hideGUI = !this.gameSettings.hideGUI;
+                            this.field_71474_y.hideGUI = !this.field_71474_y.hideGUI;
                         }
 
                         if (Keyboard.getEventKey() == 61) {
-                            this.gameSettings.showDebugInfo = !this.gameSettings.showDebugInfo;
-                            this.gameSettings.showDebugProfilerChart = GuiScreen.isShiftKeyDown();
+                            this.field_71474_y.showDebugInfo = !this.field_71474_y.showDebugInfo;
+                            this.field_71474_y.showDebugProfilerChart = GuiScreen.isShiftKeyDown();
                         }
 
-                        if (this.gameSettings.keyBindTogglePerspective.isPressed()) {
-                            ++this.gameSettings.thirdPersonView;
-
-                            if (this.gameSettings.thirdPersonView > 2) {
-                                this.gameSettings.thirdPersonView = 0;
+                        if (this.field_71474_y.keyBindTogglePerspective.isPressed()) {
+                            ++this.field_71474_y.thirdPersonView;
+                            if (this.field_71474_y.thirdPersonView > 2) {
+                                this.field_71474_y.thirdPersonView = 0;
                             }
                         }
 
-                        if (this.gameSettings.keyBindSmoothCamera.isPressed()) {
-                            this.gameSettings.smoothCamera = !this.gameSettings.smoothCamera;
+                        if (this.field_71474_y.keyBindSmoothCamera.isPressed()) {
+                            this.field_71474_y.smoothCamera = !this.field_71474_y.smoothCamera;
                         }
                     }
 
-                    if (this.gameSettings.showDebugInfo && this.gameSettings.showDebugProfilerChart) {
+                    if (this.field_71474_y.showDebugInfo && this.field_71474_y.showDebugProfilerChart) {
                         if (Keyboard.getEventKey() == 11) {
                             ((Minecraft) ((Object) this)).updateDebugProfilerName(0);
                         }
-
                         for (j = 0; j < 9; ++j) {
                             if (Keyboard.getEventKey() == 2 + j) {
                                 ((Minecraft) ((Object) this)).updateDebugProfilerName(j + 1);
@@ -371,164 +377,143 @@ public abstract class MixinMinecraft {
             }
 
             for (j = 0; j < 9; ++j) {
-                if (this.gameSettings.keyBindsHotbar[j].isPressed()) {
-                    this.thePlayer.inventory.currentItem = j;
+                if (this.field_71474_y.keyBindsHotbar[j].isPressed()) {
+                    this.field_71439_g.inventory.currentItem = j;
                 }
             }
 
-            flag = this.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN;
+            flag = this.field_71474_y.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN;
 
-            while (this.gameSettings.keyBindInventory.isPressed()) {
-                if (this.playerController.func_110738_j()) {
-                    this.thePlayer.func_110322_i();
+            while (this.field_71474_y.keyBindInventory.isPressed()) {
+                if (this.field_71442_b.func_110738_j()) {
+                    this.field_71439_g.func_110322_i();
                 } else {
                     ((Minecraft) ((Object) this)).getNetHandler()
                         .addToSendQueue(
                             new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
-                    ((Minecraft) ((Object) this)).displayGuiScreen(new GuiInventory(this.thePlayer));
+                    ((Minecraft) ((Object) this)).displayGuiScreen(new GuiInventory(this.field_71439_g));
                 }
             }
 
-            while (this.gameSettings.keyBindDrop.isPressed()) {
-                this.thePlayer.dropOneItem(GuiScreen.isCtrlKeyDown());
+            while (this.field_71474_y.keyBindDrop.isPressed()) {
+                this.field_71439_g.dropOneItem(GuiScreen.isCtrlKeyDown());
             }
 
-            while (this.gameSettings.keyBindChat.isPressed() && flag) {
+            while (this.field_71474_y.keyBindChat.isPressed() && flag) {
                 ((Minecraft) ((Object) this)).displayGuiScreen(new GuiChat());
             }
 
-            if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && flag) {
+            if (this.field_71462_r == null && this.field_71474_y.keyBindCommand.isPressed() && flag) {
                 ((Minecraft) ((Object) this)).displayGuiScreen(new GuiChat("/"));
             }
 
-            if (this.thePlayer.isUsingItem()) {
-                if (!this.gameSettings.keyBindUseItem.getIsKeyPressed()) {
-                    this.playerController.onStoppedUsingItem(this.thePlayer);
+            if (this.field_71439_g.isUsingItem()) {
+                if (!this.field_71474_y.keyBindUseItem.getIsKeyPressed()) {
+                    this.field_71442_b.onStoppedUsingItem(this.field_71439_g);
                 }
-
-                label391:
-
-                while (true) {
-                    if (!this.gameSettings.keyBindAttack.isPressed()) {
-                        while (this.gameSettings.keyBindUseItem.isPressed()) {
-
-                        }
-
+                label391: while (true) {
+                    if (!this.field_71474_y.keyBindAttack.isPressed()) {
+                        while (this.field_71474_y.keyBindUseItem.isPressed()) {}
                         while (true) {
-                            if (this.gameSettings.keyBindPickBlock.isPressed()) {
-                                continue;
-                            }
-
+                            if (!this.field_71474_y.keyBindPickBlock.isPressed()) continue;
                             break label391;
                         }
                     }
                 }
             } else {
-                while (this.gameSettings.keyBindAttack.isPressed()) {
+                while (this.field_71474_y.keyBindAttack.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147116_af();
                 }
-
-                while (this.gameSettings.keyBindUseItem.isPressed()) {
+                while (this.field_71474_y.keyBindUseItem.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147121_ag();
                 }
-
-                while (this.gameSettings.keyBindPickBlock.isPressed()) {
+                while (this.field_71474_y.keyBindPickBlock.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147112_ai();
                 }
             }
 
-            if (this.gameSettings.keyBindUseItem.getIsKeyPressed() && this.rightClickDelayTimer == 0
-                && !this.thePlayer.isUsingItem()) {
+            if (this.field_71474_y.keyBindUseItem.getIsKeyPressed() && this.field_71467_ac == 0
+                && !this.field_71439_g.isUsingItem()) {
                 ((Minecraft) ((Object) this)).func_147121_ag();
             }
 
             ((Minecraft) ((Object) this)).func_147115_a(
-                this.currentScreen == null && this.gameSettings.keyBindAttack.getIsKeyPressed() && this.inGameHasFocus);
+                this.field_71462_r == null && this.field_71474_y.keyBindAttack.getIsKeyPressed() && this.field_71415_G);
         }
 
-        if (this.theWorld != null) {
-            if (this.thePlayer != null) {
-                ++this.joinPlayerCounter;
-
-                if (this.joinPlayerCounter == 30) {
-                    this.joinPlayerCounter = 0;
-                    this.theWorld.joinEntityInSurroundings(this.thePlayer);
+        if (this.field_71441_e != null) {
+            if (this.field_71439_g != null) {
+                ++this.field_71457_ai;
+                if (this.field_71457_ai == 30) {
+                    this.field_71457_ai = 0;
+                    this.field_71441_e.joinEntityInSurroundings(this.field_71439_g);
                 }
             }
 
-            this.mcProfiler.endStartSection("gameRenderer");
-
-            if (!this.isGamePaused) {
-                this.entityRenderer.updateRenderer();
+            this.field_71424_I.endStartSection("gameRenderer");
+            if (!this.isGamePaused()) {
+                this.field_71460_t.updateRenderer();
             }
 
-            this.mcProfiler.endStartSection("levelRenderer");
-
-            if (!this.isGamePaused) {
-                if (!isStop) this.renderGlobal.updateClouds();
+            this.field_71424_I.endStartSection("levelRenderer");
+            if (!this.isGamePaused()) {
+                if (!isStop) this.field_71438_f.updateClouds();
             }
 
-            this.mcProfiler.endStartSection("level");
-
-            if (!this.isGamePaused) {
-                if (this.theWorld.lastLightningBolt > 0) {
-                    if (!isStop) --this.theWorld.lastLightningBolt;
+            this.field_71424_I.endStartSection("level");
+            if (!this.isGamePaused()) {
+                if (this.field_71441_e.lastLightningBolt > 0) {
+                    if (!isStop) --this.field_71441_e.lastLightningBolt;
                 }
-
-                this.theWorld.updateEntities();
+                this.field_71441_e.updateEntities();
             }
         }
 
-        if (!this.isGamePaused) {
-            if (!isStop) this.mcMusicTicker.update();
-            if (!isStop) this.mcSoundHandler.update();
+        if (!this.isGamePaused()) {
+            if (!isStop) this.field_147126_aw.update();
+            if (!isStop) this.field_147127_av.update();
         }
 
-        if (this.theWorld != null) {
-            if (!this.isGamePaused) {
-                if (!isStop) this.theWorld
-                    .setAllowedSpawnTypes(this.theWorld.difficultySetting != EnumDifficulty.PEACEFUL, true);
+        if (this.field_71441_e != null) {
+            if (!this.isGamePaused()) {
+                if (!isStop) this.field_71441_e
+                    .setAllowedSpawnTypes(this.field_71441_e.difficultySetting != EnumDifficulty.PEACEFUL, true);
 
                 try {
-                    if (!isStop) this.theWorld.tick();
+                    if (!isStop) this.field_71441_e.tick();
                 } catch (Throwable throwable2) {
                     crashreport = CrashReport.makeCrashReport(throwable2, "Exception in world tick");
-
-                    if (this.theWorld == null) {
+                    if (this.field_71441_e == null) {
                         crashreportcategory = crashreport.makeCategory("Affected level");
                         crashreportcategory.addCrashSection("Problem", "Level is null!");
                     } else {
-                        this.theWorld.addWorldInfoToCrashReport(crashreport);
+                        this.field_71441_e.addWorldInfoToCrashReport(crashreport);
                     }
-
                     throw new ReportedException(crashreport);
                 }
             }
 
-            this.mcProfiler.endStartSection("animateTick");
-
-            if (!this.isGamePaused && this.theWorld != null) {
-                if (!isStop) this.theWorld.doVoidFogParticles(
-                    MathHelper.floor_double(this.thePlayer.posX),
-                    MathHelper.floor_double(this.thePlayer.posY),
-                    MathHelper.floor_double(this.thePlayer.posZ));
+            this.field_71424_I.endStartSection("animateTick");
+            if (!this.isGamePaused() && this.field_71441_e != null) {
+                if (!isStop) this.field_71441_e.doVoidFogParticles(
+                    MathHelper.floor_double(this.field_71439_g.posX),
+                    MathHelper.floor_double(this.field_71439_g.posY),
+                    MathHelper.floor_double(this.field_71439_g.posZ));
             }
 
-            this.mcProfiler.endStartSection("particles");
-
-            if (!this.isGamePaused) {
-                if (!isStop) this.effectRenderer.updateEffects();
+            this.field_71424_I.endStartSection("particles");
+            if (!this.isGamePaused()) {
+                if (!isStop) this.field_71452_i.updateEffects();
             }
-        } else if (this.myNetworkManager != null) {
-            this.mcProfiler.endStartSection("pendingConnection");
-            this.myNetworkManager.processReceivedPackets();
+        } else if (this.field_71453_ak != null) {
+            this.field_71424_I.endStartSection("pendingConnection");
+            this.field_71453_ak.processReceivedPackets();
         }
 
         FMLCommonHandler.instance()
             .onPostClientTick();
-
-        this.mcProfiler.endSection();
-        this.systemTime = Minecraft.getSystemTime();
+        this.field_71424_I.endSection();
+        this.field_71423_H = Minecraft.getSystemTime();
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -538,78 +523,77 @@ public abstract class MixinMinecraft {
             ci.cancel();
         } else return;
 
-        this.mcProfiler.startSection("root");
+        this.field_71424_I.startSection("root");
 
         if (Display.isCreated() && Display.isCloseRequested()) {
             ((Minecraft) ((Object) this)).shutdown();
         }
 
-        if (this.isGamePaused && this.theWorld != null) {
-            float f = this.timer.renderPartialTicks;
-            this.timer.updateTimer();
-            this.timer.renderPartialTicks = f;
+        if (this.isGamePaused() && this.field_71441_e != null) {
+            float f = this.field_71428_T.renderPartialTicks;
+            this.field_71428_T.updateTimer();
+            this.field_71428_T.renderPartialTicks = f;
         } else {
-            this.timer.updateTimer();
+            this.field_71428_T.updateTimer();
         }
 
-        if ((this.theWorld == null || this.currentScreen == null) && this.refreshTexturePacksScheduled) {
-            this.refreshTexturePacksScheduled = false;
+        if ((this.field_71441_e == null || this.field_71462_r == null) && this.field_71468_ad) {
+            this.field_71468_ad = false;
             ((Minecraft) ((Object) this)).refreshResources();
         }
 
         long j = System.nanoTime();
-        this.mcProfiler.startSection("tick");
+        this.field_71424_I.startSection("tick");
 
-        for (int i = 0; i < this.timer.elapsedTicks; ++i) {
+        for (int i = 0; i < this.field_71428_T.elapsedTicks; ++i) {
             ((Minecraft) ((Object) this)).runTick();
         }
 
-        this.mcProfiler.endStartSection("preRenderErrors");
+        this.field_71424_I.endStartSection("preRenderErrors");
         long k = System.nanoTime() - j;
         ((Minecraft) ((Object) this)).checkGLError("Pre render");
-        RenderBlocks.fancyGrass = this.gameSettings.fancyGraphics;
-        this.mcProfiler.endStartSection("sound");
-        this.mcSoundHandler.setListener(this.thePlayer, this.timer.renderPartialTicks);
-        this.mcProfiler.endSection();
-        this.mcProfiler.startSection("render");
+        RenderBlocks.fancyGrass = this.field_71474_y.fancyGraphics;
+        this.field_71424_I.endStartSection("sound");
+        this.field_147127_av.setListener(this.field_71439_g, this.field_71428_T.renderPartialTicks);
+        this.field_71424_I.endSection();
+        this.field_71424_I.startSection("render");
         GL11.glPushMatrix();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         ((Minecraft) ((Object) this)).framebufferMc.bindFramebuffer(true);
-        this.mcProfiler.startSection("display");
+        this.field_71424_I.startSection("display");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        if (this.thePlayer != null && this.thePlayer.isEntityInsideOpaqueBlock()) {
-            this.gameSettings.thirdPersonView = 0;
+        if (this.field_71439_g != null && this.field_71439_g.isEntityInsideOpaqueBlock()) {
+            this.field_71474_y.thirdPersonView = 0;
         }
 
-        this.mcProfiler.endSection();
+        this.field_71424_I.endSection();
 
         if (!((Minecraft) ((Object) this)).skipRenderWorld) {
             FMLCommonHandler.instance()
-                .onRenderTickStart(this.timer.renderPartialTicks);
-            this.mcProfiler.endStartSection("gameRenderer");
-            this.entityRenderer.updateCameraAndRender(this.timer.renderPartialTicks);
-            this.mcProfiler.endSection();
+                .onRenderTickStart(this.field_71428_T.renderPartialTicks);
+            this.field_71424_I.endStartSection("gameRenderer");
+            this.field_71460_t.updateCameraAndRender(this.field_71428_T.renderPartialTicks);
+            this.field_71424_I.endSection();
             FMLCommonHandler.instance()
-                .onRenderTickEnd(this.timer.renderPartialTicks);
+                .onRenderTickEnd(this.field_71428_T.renderPartialTicks);
         }
 
         GL11.glFlush();
-        this.mcProfiler.endSection();
+        this.field_71424_I.endSection();
 
         if (!Display.isActive() && ((Minecraft) ((Object) this)).fullscreen) {
             ((Minecraft) ((Object) this)).toggleFullscreen();
         }
 
-        if (this.gameSettings.showDebugInfo && this.gameSettings.showDebugProfilerChart) {
-            if (!this.mcProfiler.profilingEnabled) {
-                this.mcProfiler.clearProfiling();
+        if (this.field_71474_y.showDebugInfo && this.field_71474_y.showDebugProfilerChart) {
+            if (!this.field_71424_I.profilingEnabled) {
+                this.field_71424_I.clearProfiling();
             }
-
-            this.mcProfiler.profilingEnabled = true;
+            this.field_71424_I.profilingEnabled = true;
             ((Minecraft) ((Object) this)).displayDebugInfo(k);
         } else {
-            this.mcProfiler.profilingEnabled = false;
+            this.field_71424_I.profilingEnabled = false;
             ((Minecraft) ((Object) this)).prevFrameTime = System.nanoTime();
         }
 
@@ -621,23 +605,20 @@ public abstract class MixinMinecraft {
             .framebufferRender(((Minecraft) ((Object) this)).displayWidth, ((Minecraft) ((Object) this)).displayHeight);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        this.entityRenderer.func_152430_c(this.timer.renderPartialTicks);
+        this.field_71460_t.func_152430_c(this.field_71428_T.renderPartialTicks);
         GL11.glPopMatrix();
-        this.mcProfiler.startSection("root");
+        this.field_71424_I.startSection("root");
         ((Minecraft) ((Object) this)).func_147120_f();
         Thread.yield();
-        this.mcProfiler.startSection("stream");
-        this.mcProfiler.startSection("update");
+        this.field_71424_I.startSection("stream");
+        this.field_71424_I.startSection("update");
         ((Minecraft) ((Object) this)).field_152353_at.func_152935_j();
-        this.mcProfiler.endStartSection("submit");
+        this.field_71424_I.endStartSection("submit");
         ((Minecraft) ((Object) this)).field_152353_at.func_152922_k();
-        this.mcProfiler.endSection();
-        this.mcProfiler.endSection();
+        this.field_71424_I.endSection();
+        this.field_71424_I.endSection();
         ((Minecraft) ((Object) this)).checkGLError("Post render");
         ++((Minecraft) ((Object) this)).fpsCounter;
-        this.isGamePaused = ((Minecraft) ((Object) this)).isSingleplayer() && this.currentScreen != null
-            && this.currentScreen.doesGuiPauseGame()
-            && !((Minecraft) ((Object) this)).theIntegratedServer.getPublic();
 
         while (Minecraft.getSystemTime() >= ((Minecraft) ((Object) this)).debugUpdateTime + 1000L) {
             Minecraft.debugFPS = ((Minecraft) ((Object) this)).fpsCounter;
@@ -654,7 +635,7 @@ public abstract class MixinMinecraft {
             }
         }
 
-        this.mcProfiler.endSection();
+        this.field_71424_I.endSection();
 
         if (((Minecraft) ((Object) this)).isFramerateLimitBelowMax()) {
             Display.sync(((Minecraft) ((Object) this)).getLimitFramerate());
@@ -669,7 +650,7 @@ public abstract class MixinMinecraft {
         cancellable = true,
         remap = false)
     private void onBeforePickBlock(CallbackInfo ci) {
-        if (ClientUtils.onBeforePickBlock(this.thePlayer, this.theWorld, false)) {
+        if (ClientUtils.onBeforePickBlock(this.field_71439_g, this.field_71441_e, false)) {
             ci.cancel();
         }
     }

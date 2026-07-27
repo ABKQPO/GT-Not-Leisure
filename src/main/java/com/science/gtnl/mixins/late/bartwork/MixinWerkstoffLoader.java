@@ -12,15 +12,8 @@ import gregtech.api.enums.OrePrefixes;
 @Mixin(value = WerkstoffLoader.class, remap = false)
 public abstract class MixinWerkstoffLoader {
 
-    @Inject(
-        method = "addItemsForGeneration()V",
-        at = @At(
-            value = "INVOKE",
-            target = "Ljava/util/HashMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
-            ordinal = 41,
-            remap = false))
-    private static void injectSuperdenseAndNaniteItems(CallbackInfo ci) {
-        WerkstoffLoader.items.put(OrePrefixes.plateSuperdense, new BWMetaGeneratedItems(OrePrefixes.plateSuperdense));
+    @Inject(method = "addItemsForGeneration()V", at = @At("TAIL"))
+    private static void injectNaniteItems(CallbackInfo ci) {
         WerkstoffLoader.items.put(OrePrefixes.nanite, new BWMetaGeneratedItems(OrePrefixes.nanite));
     }
 }

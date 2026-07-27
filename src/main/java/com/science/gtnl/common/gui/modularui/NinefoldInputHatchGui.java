@@ -26,7 +26,6 @@ public class NinefoldInputHatchGui extends MTEHatchBaseGui<NinefoldInputHatch> {
                 .center());
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

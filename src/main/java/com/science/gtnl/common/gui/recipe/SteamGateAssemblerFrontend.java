@@ -17,7 +17,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import gregtech.api.enums.SteamVariant;
+import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
@@ -104,7 +104,7 @@ public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
             uiProperties.maxItemOutputs,
             uiProperties.maxFluidInputs,
             uiProperties.maxFluidOutputs,
-            SteamVariant.NONE,
+            TieredVariant.STANDARD,
             ctx.windowOffset);
 
         addGregTechLogo(builder, ctx.windowOffset);

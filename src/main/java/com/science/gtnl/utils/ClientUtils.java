@@ -29,7 +29,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.item.IPickBlockHandler;
-import gregtech.api.items.MetaBaseItem;
 import gregtech.crossmod.backhand.Backhand;
 
 @SideOnly(Side.CLIENT)
@@ -67,21 +66,14 @@ public class ClientUtils {
 
     private static boolean tryHandlePickBlockHandler(EntityPlayer player) {
         ItemStack mainHand = player.getCurrentEquippedItem();
-        if (tryHandlePickBlockStack(mainHand, player)) {
+        if (mainHand != null && mainHand.getItem() instanceof IPickBlockHandler handler
+            && handler.onPickBlock(mainHand, player)) {
             return true;
         }
 
         ItemStack offHand = Backhand.getOffhandItem(player);
-        return tryHandlePickBlockStack(offHand, player);
-    }
-
-    private static boolean tryHandlePickBlockStack(ItemStack stack, EntityPlayer player) {
-        if (stack == null) return false;
-        Item item = stack.getItem();
-        if (item instanceof IPickBlockHandler handler) {
-            return handler.onPickBlock(stack, player);
-        }
-        return item instanceof MetaBaseItem metaBaseItem && metaBaseItem.onMiddleClick(stack, player);
+        return offHand != null && offHand.getItem() instanceof IPickBlockHandler handler
+            && handler.onPickBlock(offHand, player);
     }
 
     public static boolean onPickEntity(EntityPlayer player, double range, boolean useAE) {

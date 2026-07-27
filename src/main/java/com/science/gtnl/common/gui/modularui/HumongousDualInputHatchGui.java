@@ -117,7 +117,6 @@ public class HumongousDualInputHatchGui extends MTEHatchBaseGui<HumongousDualInp
             .visibleRows() <= 4;
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }

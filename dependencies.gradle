@@ -9,34 +9,34 @@ dependencies {
     implementation("com.github.GTNewHorizons:Draconic-Evolution:1.5.26-GTNH:dev")
     implementation("com.github.GTNewHorizons:EnderIO:2.10.30:dev")
     implementation("com.github.GTNewHorizons:Galaxy-Space-GTNH:1.1.139-GTNH:dev")
-    implementation("com.github.GTNewHorizons:GT5-Unofficial:5.09.52.594:dev") {
+    implementation("com.github.GTNewHorizons:GT5-Unofficial:5.09.54.20:dev") {
         exclude group: "com.github.GTNewHorizons", module: "Applied-Energistics-2-Unofficial"
         exclude group: "com.github.GTNewHorizons", module: "AE2FluidCraft-Rework"
     }
     implementation("com.github.GTNewHorizons:CropsNH:2.0.70:dev")
     implementation("com.github.GTNewHorizons:Avaritia:1.97:dev")
-    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.101-GTNH:dev")
+    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.111-GTNH:dev")
     implementation("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
-    api("com.github.GTNewHorizons:GTNHLib:0.11.15:dev")
+    api("com.github.GTNewHorizons:GTNHLib:0.11.24:dev")
     implementation("io.github.legacymoddingmc:unimixins:0.3.1:dev")
 
-    compileOnlyApi("com.github.GTNewHorizons:NewHorizonsCoreMod:2.8.279:dev")
+    compileOnlyApi("com.github.GTNewHorizons:NewHorizonsCoreMod:2.9.5:dev")
     compileOnlyApi("com.github.GTNewHorizons:Avaritiaddons:1.9.4-GTNH:dev")
-    compileOnlyApi("com.github.GTNewHorizons:BloodArsenal:1.5.10:dev")
+    compileOnlyApi("com.github.GTNewHorizons:BloodArsenal:1.5.11:dev")
     compileOnlyApi("com.github.GTNewHorizons:BloodMagic:1.9.4:dev")
     compileOnlyApi("com.github.GTNewHorizons:ThaumicBases:1.9.18:dev")
-    compileOnlyApi("com.github.GTNewHorizons:ThaumicEnergistics:1.7.53-GTNH:dev")
+    compileOnlyApi("com.github.GTNewHorizons:ThaumicEnergistics:1.7.56-GTNH:dev")
     compileOnlyApi(rfg.deobf("curse.maven:thaumcraft-nei-plugin-225095:2241913")) { transitive = false } // Deprecated, use Aspect Recipe Index
-    compileOnlyApi("com.github.GTNewHorizons:AspectRecipeIndex:1.1.1:dev")
+    compileOnlyApi("com.github.GTNewHorizons:AspectRecipeIndex:1.1.3:dev")
     compileOnlyApi("com.github.GTNewHorizons:ThaumicHorizons:1.8.20:dev")
-    compileOnlyApi("com.github.GTNewHorizons:VisualProspecting:1.5.28:dev")
+    compileOnlyApi("com.github.GTNewHorizons:VisualProspecting:1.5.33:dev")
     compileOnlyApi("com.github.GTNewHorizons:Nutrition:0.1.9:dev")
-    compileOnlyApi("com.github.GTNewHorizons:Mobs-Info:0.5.17-GTNH:dev")
-    compileOnlyApi("com.github.GTNewHorizons:nei-custom-diagram:1.8.29:dev")
+    compileOnlyApi("com.github.GTNewHorizons:Mobs-Info:0.5.18-GTNH:dev")
+    compileOnlyApi("com.github.GTNewHorizons:nei-custom-diagram:1.8.30:dev")
     compileOnlyApi("com.github.GTNewHorizons:InventoryBogoSorter:1.3.29-GTNH:dev")
     compileOnlyApi("com.github.GTNewHorizons:GregoryTweaksForCrafting:1.0.3:dev")
     compileOnlyApi("com.github.GTNewHorizons:EnhancedLootBags:1.3.4:dev")
-    compileOnlyApi("com.github.GTNewHorizons:Chisel:2.17.26-GTNH:dev")
+    compileOnlyApi("com.github.GTNewHorizons:Chisel:2.17.28-GTNH:dev")
     compileOnlyApi("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.2.21-GTNH-daily") { transitive = false }
 
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughEnergistics:1.7.30:dev")
@@ -62,7 +62,7 @@ dependencies {
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
     compileOnlyApi(rfg.deobf("curse.maven:extra-utilities-225561:2264383")) { transitive = false }
 
-    compileOnlyApi("com.github.GTNewHorizons:BetterQuesting:3.8.70-GTNH:dev") { transitive = false }
+    compileOnlyApi("com.github.GTNewHorizons:BetterQuesting:3.8.72-GTNH:dev") { transitive = false }
     compileOnlyApi("com.github.ABKQPO:BetterQuestingAPI:1.1.0:dev") { transitive = false }
 }
 
@@ -72,9 +72,9 @@ configurations.configureEach {
         force "com.github.GTNewHorizons:AE2FluidCraft-Rework:1.5.88-gtnh"
         force "com.github.GTNewHorizons:Baubles-Expanded:2.2.21-GTNH"
         force "com.github.GTNewHorizons:CodeChickenCore:1.4.15"
-        force "com.github.GTNewHorizons:GTNHLib:0.11.11"
-        force "com.github.GTNewHorizons:GT5-Unofficial:5.09.52.594"
-        force "com.github.GTNewHorizons:NotEnoughItems:2.8.101-GTNH"
+        force "com.github.GTNewHorizons:GTNHLib:0.11.24"
+        force "com.github.GTNewHorizons:GT5-Unofficial:5.09.54.20"
+        force "com.github.GTNewHorizons:NotEnoughItems:2.8.111-GTNH"
         force "com.github.GTNewHorizons:ThaumicEnergistics:1.7.53-GTNH"
     }
 

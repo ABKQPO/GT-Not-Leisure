@@ -21,7 +21,6 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerFormationPlane;
-import appeng.core.localization.GuiColors;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
@@ -74,13 +73,8 @@ public class GuiActiveFormationPlane extends GuiUpgradeable {
 
     @Override
     public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.fontRendererObj.drawString(
-            this.getGuiDisplayName(GuiText.FormationPlane.getLocal()),
-            8,
-            6,
-            GuiColors.GuiTextColorGray.getColor());
-        this.fontRendererObj
-            .drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, GuiColors.GuiTextColorGray.getColor());
+        this.fontRendererObj.drawString(this.getGuiDisplayName(GuiText.FormationPlane.getLocal()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

@@ -180,7 +180,6 @@ public class GTNLCustomDroneDownLinkHatchGui extends MTEHatchBaseGui<CustomDrone
             new IntSyncValue(machine::getConfigTime, machine::setConfigTimeFromGui).allowC2S());
     }
 
-    @Override
     protected UITexture getLogoTexture() {
         return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
