@@ -45,6 +45,7 @@ dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.4.1:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.17:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ForestryMC:4.11.31:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:AppleCore:3.3.11:dev")
     runtimeOnlyNonPublishable(rfg.deobf("curse.maven:spark-361579:4271867"))
 
     // jvmDowngrader

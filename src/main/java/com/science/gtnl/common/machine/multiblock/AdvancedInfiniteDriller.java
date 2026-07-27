@@ -170,7 +170,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         }
 
         for (MTEHeatSensor hatch : sensorHatches) {
-            hatch.updateRedstoneOutput((float) percent);
+            hatch.setHeatValue((float) percent);
         }
 
         endRecipeProcessing();

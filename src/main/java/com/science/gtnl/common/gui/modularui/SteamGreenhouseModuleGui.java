@@ -49,7 +49,6 @@ import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
-import gregtech.common.modularui2.sync.Predicates;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
 
 public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
@@ -630,8 +629,10 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
             .marginBottom(2)
             .setEnabledIf(
                 widget -> progressTimeSyncer.getIntValue() > 0
-                    && !Predicates.isNonEmptyList(syncManager.getSyncHandlerFromMapKey("itemOutput:0"))
-                    && !Predicates.isNonEmptyList(syncManager.getSyncHandlerFromMapKey("fluidOutput:0")));
+                    && ((GenericListSyncHandler<?>) syncManager.getSyncHandlerFromMapKey("itemOutput:0")).getValue()
+                        .isEmpty()
+                    && ((GenericListSyncHandler<?>) syncManager.getSyncHandlerFromMapKey("fluidOutput:0")).getValue()
+                        .isEmpty());
     }
 
     private void writeCropInventoryWidgetState(PacketBuffer buffer) throws IOException {

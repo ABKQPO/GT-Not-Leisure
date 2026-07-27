@@ -508,7 +508,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         .getZCoord(),
                 this.getBaseMetaTileEntity()
                     .getWorld().provider.dimensionId),
-            lCulture == null ? Color.DKGRAY.getColorRGB() : lCulture.getColorRGB());
+            lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB());
 
         if (SideReference.Side.Server) {
             GTValues.NW.sendPacketToAllPlayersInRange(
@@ -527,7 +527,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getZCoord(),
                         this.getBaseMetaTileEntity()
                             .getWorld().provider.dimensionId),
-                    lCulture == null ? Color.DKGRAY.getColorRGB() : lCulture.getColorRGB(),
+                    lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB(),
                     true),
                 this.getBaseMetaTileEntity()
                     .getXCoord(),
@@ -550,7 +550,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getZCoord(),
                         this.getBaseMetaTileEntity()
                             .getWorld().provider.dimensionId),
-                    lCulture == null ? Color.DKGRAY.getColorRGB() : lCulture.getColorRGB(),
+                    lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB(),
                     false),
                 this.getBaseMetaTileEntity()
                     .getXCoord(),
@@ -700,7 +700,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                             .getZCoord(),
                                     this.getBaseMetaTileEntity()
                                         .getWorld().provider.dimensionId),
-                                this.mCulture == null ? Color.DKGRAY.getColorRGB() : this.mCulture.getColorRGB(),
+                                this.mCulture == null ? Color.DARK_GRAY.getRGB() : this.mCulture.getColorRGB(),
                                 true),
                             this.getBaseMetaTileEntity()
                                 .getXCoord(),

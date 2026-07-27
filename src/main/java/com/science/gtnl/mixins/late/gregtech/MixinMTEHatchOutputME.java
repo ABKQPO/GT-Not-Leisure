@@ -47,8 +47,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
 
     @Override
     public long getLastInputTick() {
-        return getProvider().getOutput()
-            .getInputSize();
+        return getProvider().getCachedAmount();
     }
 
     @Override

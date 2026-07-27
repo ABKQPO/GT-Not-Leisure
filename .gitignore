@@ -55,3 +55,17 @@ layout.json
 /docs
 /.codex
 /.superpowers
+
+#source
+.gtnh_sources/
+gregtech/
+
+#cache
+.codebase-memory/
+
+#Note
+CLAUDE.md
+CONTEXT.md
+
+#File build
+*.class

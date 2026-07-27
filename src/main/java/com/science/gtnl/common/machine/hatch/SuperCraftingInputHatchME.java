@@ -991,7 +991,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         }
     }
 
-    @Override
     public boolean justUpdated() {
         boolean ret = justHadNewItems;
         justHadNewItems = false;

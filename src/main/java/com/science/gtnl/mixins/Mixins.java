@@ -33,9 +33,6 @@ public enum Mixins implements IMixins {
             .setPhase(Phase.EARLY)
             .addExcludedMod(ModList.NHUtilities)),
 
-    NH_CORE_MOD_EARLY(new MixinBuilder().setPhase(Phase.EARLY)
-        .addRequiredMod(ModList.NewHorizonsCoreMod)),
-
     MINECRAFT_COMMON(Side.COMMON, "minecraft.AccessorStringTranslate", "minecraft.AccessorContainerRepair",
         "minecraft.AccessorEntityLivingBase", "minecraft.AccessorTessellator", "minecraft.AccessorFoodStats",
         "minecraft.AccessorMinecraft", "minecraft.MixinCommandTeleport", "minecraft.MixinEntity",
@@ -108,12 +105,6 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingCPUCluster",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
-            "bartwork.MixinItemRegistry",
-            "bartwork.MixinMultipleMetalLoader",
-            "bartwork.MixinSimpleMetalLoader",
-            "bartwork.MixinWerkstoff",
-            "bartwork.MixinWerkstoffLoader",
-            "bartwork.MixinMoltenCellLoader",
             "botania.AccessorEntityDoppleganger",
             "draconicEvolution.AccessorCustomArmorHandler",
             "draconicEvolution.MixinCustomArmorHandler",
@@ -167,6 +158,17 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm")
         .setPhase(Phase.LATE)),
+
+    BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
+        .addCommonMixins(
+            "bartwork.MixinItemRegistry",
+            "bartwork.MixinMultipleMetalLoader",
+            "bartwork.MixinSimpleMetalLoader",
+            "bartwork.MixinWerkstoff",
+            "bartwork.MixinWerkstoffLoader",
+            "bartwork.MixinMoltenCellLoader")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.BartWorks)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")
         .addCommonMixins(

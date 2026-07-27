@@ -644,8 +644,10 @@ public class EdenGardenGui extends GTNLMultiBlockBaseGui<EdenGarden> {
             .marginBottom(2)
             .setEnabledIf(
                 widget -> progressTimeSyncer.getIntValue() > 0
-                    && !isNonEmptyList(syncManager.getSyncHandlerFromMapKey("itemOutput:0"))
-                    && !isNonEmptyList(syncManager.getSyncHandlerFromMapKey("fluidOutput:0")));
+                    && ((GenericListSyncHandler<?>) syncManager.getSyncHandlerFromMapKey("itemOutput:0")).getValue()
+                        .isEmpty()
+                    && ((GenericListSyncHandler<?>) syncManager.getSyncHandlerFromMapKey("fluidOutput:0")).getValue()
+                        .isEmpty());
     }
 
     private void writeCropInventoryWidgetState(PacketBuffer buffer) throws IOException {

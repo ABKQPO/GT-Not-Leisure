@@ -46,8 +46,7 @@ public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus impleme
 
     @Override
     public long getLastInputTick() {
-        return getProvider().getOutput()
-            .getInputSize();
+        return getProvider().getCachedAmount();
     }
 
     @Override
