@@ -236,7 +236,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         return shadowStoredFluids;
     }
 
-    @Override
     public boolean justUpdated() {
         if (expediteRecipeCheck && isAllowedToWork()) {
             boolean ret = justHadNewFluids;
