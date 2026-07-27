@@ -228,7 +228,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
 
     @Optional.Method(modid = "dreamcraft")
     public ItemStack getBacPetriDish() {
-        // CultureSet field removed in NHCoreMod 2.9.5 - return null placeholder
-        return null;
+        // CultureSet field removed in NHCoreMod 2.9.5 - return empty slot as fallback
+        return new ItemStack(Items.paper, 0);
     }
 }
