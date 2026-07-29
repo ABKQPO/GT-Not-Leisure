@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.aEFluidCraft;
+package com.science.gtnl.mixins.late.aeFluidCraft;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.nEICustomDiagram;
+package com.science.gtnl.mixins.late.neiCustomDiagram;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
