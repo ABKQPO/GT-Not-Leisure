@@ -1,12 +1,10 @@
 package com.science.gtnl.common.machine.hatch;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -19,7 +17,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
-import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.gtnhlib.capability.item.ItemSink;
@@ -38,23 +35,16 @@ import com.science.gtnl.api.mixinHelper.ISkipStackSizeCheck;
 import com.science.gtnl.common.gui.modularui.HumongousDualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AEItemStack;
 import gregtech.GTMod;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
-import gregtech.common.gui.modularui.util.ProxiedItemHandlerModifiable;
-import gregtech.common.inventory.AEInventory;
 
 public class HumongousDualInputHatch extends DualInputHatch
     implements ISkipStackSizeCheck, IRecipeProcessingAwareDualHatch {
@@ -62,8 +52,6 @@ public class HumongousDualInputHatch extends DualInputHatch
     private static final String ITEM_INVENTORY_NBT_KEY = "itemInventory";
     private static final String LEGACY_INVENTORY_NBT_KEY = "Inventory";
 
-    private AEInventory itemInventory;
-    private IItemHandlerModifiable humongousItemHandler;
     private int processing;
     private ItemStack[] originalStacks;
     private ItemStack[] containedStacks;
@@ -100,36 +88,7 @@ public class HumongousDualInputHatch extends DualInputHatch
                 fluid -> mStoredFluid[index] = fluid,
                 mCapacityPer);
         }
-
-        this.itemInventory = new HumongousItemInventory(getItemStorageSlotCount());
-        this.humongousItemHandler = createItemHandler();
-        this.inventory = new HumongousInventory(mStoredFluid);
         this.disableSort = true;
-    }
-
-    private IItemHandlerModifiable createItemHandler() {
-        return new ProxiedItemHandlerModifiable(itemInventory) {
-
-            @Override
-            public int getSlots() {
-                return itemInventory.getSlots() + 1;
-            }
-
-            @Override
-            public ItemStack getStackInSlot(int slot) {
-                if (slot == getCircuitSlot()) return mInventory[getCircuitSlot()];
-                return super.getStackInSlot(slot);
-            }
-
-            @Override
-            public void setStackInSlot(int slot, ItemStack stack) {
-                if (slot == getCircuitSlot()) {
-                    mInventory[getCircuitSlot()] = GTUtility.copyAmount(0, stack);
-                    return;
-                }
-                super.setStackInSlot(slot, stack);
-            }
-        };
     }
 
     @Override
@@ -140,7 +99,7 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public int getStackSizeLimit(int slot, ItemStack stack) {
         if (!isItemStorageSlot(slot)) return super.getStackSizeLimit(slot, stack);
-        return GTUtility.longToInt(itemInventory.getAESlotLimit(slot, AEItemStack.create(stack)));
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -152,8 +111,7 @@ public class HumongousDualInputHatch extends DualInputHatch
     public ItemStack getStackInSlot(int slotIndex) {
         if (slotIndex == getCircuitSlot()) return mInventory[getCircuitSlot()];
         if (processing > 0) return getArrayStack(containedStacks, slotIndex);
-        IAEItemStack stack = itemInventory.getAEStackInSlot(slotIndex);
-        return toItemStack(stack);
+        return mInventory[slotIndex];
     }
 
     @Override
@@ -163,9 +121,8 @@ public class HumongousDualInputHatch extends DualInputHatch
             markDirty();
             return;
         }
-
         if (!isItemStorageSlot(slotIndex)) return;
-        itemInventory.setStackInSlot(slotIndex, stack == null ? null : AEItemStack.create(stack));
+        mInventory[slotIndex] = GTUtility.copy(stack);
         markDirty();
     }
 
@@ -173,7 +130,7 @@ public class HumongousDualInputHatch extends DualInputHatch
     public ItemStack decrStackSize(int index, int amount) {
         if (!isItemStorageSlot(index)) return super.decrStackSize(index, amount);
         if (processing > 0) return decrementContainedStack(index, amount);
-        return itemInventory.extractItem(index, amount, false, true);
+        return super.decrStackSize(index, amount);
     }
 
     private ItemStack decrementContainedStack(int index, int amount) {
@@ -199,22 +156,23 @@ public class HumongousDualInputHatch extends DualInputHatch
         if (!isItemStorageSlot(aIndex)) return false;
         if (mRecipeMap != null && !disableFilter && !mRecipeMap.containsInput(aStack)) return false;
 
-        IAEItemStack existing = itemInventory.getAEStackInSlot(aIndex);
-        if (existing != null) {
-            if (existing.getStackSize() >= itemInventory.getAESlotLimit(aIndex, existing)) return false;
-        }
+        ItemStack existing = mInventory[aIndex];
+        if (existing != null && existing.stackSize >= getStackSizeLimit(aIndex, existing)) return false;
 
         if (!disableLimited) {
-            int containingSlot = itemInventory.indexOf(aStack);
+            int containingSlot = findContainingSlot(aStack);
             if (containingSlot != -1) return containingSlot == aIndex;
         }
 
-        return existing == null || existing.isSameType(aStack);
+        return existing == null || GTUtility.areStacksEqual(existing, aStack, true);
     }
 
-    @Override
-    public IItemHandlerModifiable getInventoryHandler() {
-        return humongousItemHandler;
+    private int findContainingSlot(ItemStack aStack) {
+        for (int i = 0; i < getSizeInventory(); i++) {
+            if (i == getCircuitSlot()) continue;
+            if (GTUtility.areStacksEqual(mInventory[i], aStack, true)) return i;
+        }
+        return -1;
     }
 
     @Override
@@ -233,6 +191,11 @@ public class HumongousDualInputHatch extends DualInputHatch
 
         if (processing < 0) {
             processing = 0;
+            return CheckRecipeResultRegistry.SUCCESSFUL;
+        }
+
+        if (controller.getRecipeMap() == null) {
+            clearRecipeSnapshots();
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
@@ -256,8 +219,8 @@ public class HumongousDualInputHatch extends DualInputHatch
                 return CheckRecipeResultRegistry.CRASH;
             }
 
-            IAEItemStack stored = itemInventory.getAEStackInSlot(slotIndex);
-            if (stored == null || delta > stored.getStackSize()) {
+            ItemStack stored = mInventory[slotIndex];
+            if (stored == null || delta > stored.stackSize) {
                 GTMod.GT_FML_LOGGER.error(
                     "Humongous dual input hatch consumed more items than available; cancelling recipe (slot={}, original={}, contained={}, delta={})",
                     slotIndex,
@@ -269,8 +232,8 @@ public class HumongousDualInputHatch extends DualInputHatch
                 return CheckRecipeResultRegistry.CRASH;
             }
 
-            stored.decStackSize(delta);
-            itemInventory.setStackInSlot(slotIndex, stored.getStackSize() == 0 ? null : stored);
+            stored.stackSize -= delta;
+            if (stored.stackSize <= 0) mInventory[slotIndex] = null;
         }
 
         clearRecipeSnapshots();
@@ -286,22 +249,35 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public void setItemNBT(NBTTagCompound aNBT) {
         super.setItemNBT(aNBT);
-        if (!itemInventory.getStorageList()
-            .isEmpty()) {
-            aNBT.setTag(ITEM_INVENTORY_NBT_KEY, itemInventory.writeToNBT(new NBTTagCompound()));
-        }
+        writeItemInventoryToNBT(aNBT);
         writeFluidTanksToNBT(aNBT);
     }
 
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setTag(ITEM_INVENTORY_NBT_KEY, itemInventory.writeToNBT(new NBTTagCompound()));
+        writeItemInventoryToNBT(aNBT);
+        writeFluidTanksToNBT(aNBT);
+    }
+
+    private void writeItemInventoryToNBT(NBTTagCompound tag) {
+        NBTTagList itemList = new NBTTagList();
+        for (int i = 0; i < getItemStorageSlotCount(); i++) {
+            ItemStack stack = mInventory[i];
+            if (stack != null && stack.stackSize > 0) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                stack.writeToNBT(itemTag);
+                itemTag.setInteger("IntSlot", i);
+                itemList.appendTag(itemTag);
+            }
+        }
+        if (itemList.tagCount() > 0) {
+            tag.setTag(ITEM_INVENTORY_NBT_KEY, itemList);
+        }
     }
 
     private void writeFluidTanksToNBT(NBTTagCompound tag) {
         if (mStoredFluid == null) return;
-
         for (int i = 0; i < mStoredFluid.length; i++) {
             FluidStack fluid = mStoredFluid[i];
             if (fluid != null) {
@@ -313,68 +289,47 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-
-        if (aNBT.hasKey(ITEM_INVENTORY_NBT_KEY)) {
-            itemInventory.readFromNBT(aNBT.getCompoundTag(ITEM_INVENTORY_NBT_KEY));
-        } else {
-            loadLegacyItemInventory(aNBT);
-            migrateLoadedStacksFromMachineInventory();
-        }
+        loadItemInventoryFromNBT(aNBT);
+        loadFluidTanksFromNBT(aNBT);
     }
 
-    private void loadLegacyItemInventory(NBTTagCompound tag) {
-        if (!tag.hasKey(LEGACY_INVENTORY_NBT_KEY)) return;
+    private void loadItemInventoryFromNBT(NBTTagCompound aNBT) {
+        // Clear current inventory first
+        for (int i = 0; i < getItemStorageSlotCount(); i++) {
+            mInventory[i] = null;
+        }
 
-        NBTTagList itemList = tag.getTagList(LEGACY_INVENTORY_NBT_KEY, 10);
-        for (int i = 0; i < itemList.tagCount(); i++) {
-            NBTTagCompound itemTag = itemList.getCompoundTagAt(i);
-            int slot = itemTag.getInteger("IntSlot");
-            ItemStack stack = readItemStackFromNBT(itemTag);
-            if (slot == getCircuitSlot()) {
-                mInventory[getCircuitSlot()] = stack;
-            } else if (isItemStorageSlot(slot) && stack != null) {
-                itemInventory.setStackInSlot(slot, AEItemStack.create(stack));
-                mInventory[slot] = null;
+        if (aNBT.hasKey(ITEM_INVENTORY_NBT_KEY)) {
+            NBTTagList itemList = aNBT.getTagList(ITEM_INVENTORY_NBT_KEY, 10);
+            for (int i = 0; i < itemList.tagCount(); i++) {
+                NBTTagCompound itemTag = itemList.getCompoundTagAt(i);
+                int slot = itemTag.getInteger("IntSlot");
+                if (isItemStorageSlot(slot)) {
+                    mInventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+                }
+            }
+        } else if (aNBT.hasKey(LEGACY_INVENTORY_NBT_KEY)) {
+            // Legacy migration: read from old "Inventory" key
+            NBTTagList itemList = aNBT.getTagList(LEGACY_INVENTORY_NBT_KEY, 10);
+            for (int i = 0; i < itemList.tagCount(); i++) {
+                NBTTagCompound itemTag = itemList.getCompoundTagAt(i);
+                int slot = itemTag.getInteger("IntSlot");
+                if (slot == getCircuitSlot()) {
+                    mInventory[getCircuitSlot()] = ItemStack.loadItemStackFromNBT(itemTag);
+                } else if (isItemStorageSlot(slot)) {
+                    mInventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+                }
             }
         }
     }
 
-    private void migrateLoadedStacksFromMachineInventory() {
-        for (int i = 0; i < getItemStorageSlotCount(); i++) {
-            ItemStack stack = mInventory[i];
-            if (stack == null) continue;
-            itemInventory.setStackInSlot(i, AEItemStack.create(stack));
-            mInventory[i] = null;
+    private void loadFluidTanksFromNBT(NBTTagCompound aNBT) {
+        if (mStoredFluid == null) return;
+        for (int i = 0; i < mStoredFluid.length; i++) {
+            if (aNBT.hasKey("mFluid" + i)) {
+                mStoredFluid[i] = FluidStack.loadFluidStackFromNBT(aNBT.getCompoundTag("mFluid" + i));
+            }
         }
-    }
-
-    public static void writeItemStackToNBT(NBTTagCompound tag, ItemStack stack, int slot) {
-        if (stack == null) return;
-        tag.setInteger("id", Item.getIdFromItem(stack.getItem()));
-        tag.setInteger("Damage", stack.getItemDamage());
-        tag.setInteger("Count", stack.stackSize);
-        tag.setInteger("IntSlot", slot);
-
-        if (stack.stackTagCompound != null) {
-            tag.setTag("tag", stack.stackTagCompound);
-        }
-    }
-
-    public static ItemStack readItemStackFromNBT(NBTTagCompound tag) {
-        if (!tag.hasKey("id") || !tag.hasKey("Count") || !tag.hasKey("Damage")) return null;
-
-        int id = tag.getInteger("id");
-        int meta = tag.getInteger("Damage");
-        int count = tag.getInteger("Count");
-
-        if (count < 0) return null;
-
-        ItemStack stack = new ItemStack(Item.getItemById(id), count, meta);
-
-        if (tag.hasKey("tag")) {
-            stack.stackTagCompound = tag.getCompoundTag("tag");
-        }
-        return stack;
     }
 
     @Override
@@ -392,7 +347,6 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     @Deprecated
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after HumongousDualInputHatch mui2 parity is verified.
         final int itemColumns = Math.max(1, mTier);
         final int itemRows = Math.max(1, mTier);
 
@@ -437,7 +391,6 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     @Deprecated
     public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after HumongousDualInputHatch mui2 parity is verified.
         builder.widget(
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
@@ -457,16 +410,17 @@ public class HumongousDualInputHatch extends DualInputHatch
     }
 
     private void refundItems(IGregTechTileEntity base, ForgeDirection front, TileEntity targetTile) {
-        for (int slot = 0; slot < itemInventory.getSlots(); slot++) {
+        for (int slot = 0; slot < getItemStorageSlotCount(); slot++) {
             while (true) {
-                IAEItemStack stored = itemInventory.getAEStackInSlot(slot);
-                if (stored == null || stored.getStackSize() <= 0) break;
+                ItemStack stored = mInventory[slot];
+                if (stored == null || stored.stackSize <= 0) break;
 
-                int chunkSize = GTUtility.longToInt(stored.getStackSize());
-                ItemStack chunk = toItemStack(stored, chunkSize);
+                int chunkSize = stored.stackSize;
+                ItemStack chunk = GTUtility.copyAmount(chunkSize, stored);
                 int inserted = insertIntoTargetInventory(targetTile, front, chunk);
                 if (inserted > 0) {
-                    itemInventory.extractAEItem(slot, inserted, false, true);
+                    mInventory[slot].stackSize -= inserted;
+                    if (mInventory[slot].stackSize <= 0) mInventory[slot] = null;
                 }
 
                 int remaining = chunkSize - inserted;
@@ -498,7 +452,6 @@ public class HumongousDualInputHatch extends DualInputHatch
             if (!inventory.canInsertItem(slot, remaining, side)) continue;
             moved += insertIntoSlot(inventory, slot, remaining);
         }
-
         return moved;
     }
 
@@ -510,7 +463,6 @@ public class HumongousDualInputHatch extends DualInputHatch
             if (remaining.stackSize <= 0) break;
             moved += insertIntoSlot(inventory, slot, remaining);
         }
-
         return moved;
     }
 
@@ -521,8 +473,7 @@ public class HumongousDualInputHatch extends DualInputHatch
 
         if (slotStack == null) {
             int toMove = Math.min(maxStack, remaining.stackSize);
-            ItemStack copy = remaining.copy();
-            copy.stackSize = toMove;
+            ItemStack copy = GTUtility.copyAmount(toMove, remaining);
             inventory.setInventorySlotContents(slot, copy);
             remaining.stackSize -= toMove;
             return toMove;
@@ -539,7 +490,7 @@ public class HumongousDualInputHatch extends DualInputHatch
         return toMove;
     }
 
-    private boolean spawnRefundRemainder(IGregTechTileEntity base, ForgeDirection front, int slot, IAEItemStack stored,
+    private boolean spawnRefundRemainder(IGregTechTileEntity base, ForgeDirection front, int slot, ItemStack stored,
         int amount) {
         int xBlock = base.getXCoord() + front.offsetX;
         int yBlock = base.getYCoord() + front.offsetY;
@@ -550,13 +501,13 @@ public class HumongousDualInputHatch extends DualInputHatch
             return false;
         }
 
-        ItemStack refund = toItemStack(stored, amount);
+        ItemStack refund = GTUtility.copyAmount(amount, stored);
         double x = xBlock + 0.5;
         double y = yBlock + 0.5;
         double z = zBlock + 0.5;
         base.getWorld()
             .spawnEntityInWorld(new EntityItem(base.getWorld(), x, y, z, refund));
-        itemInventory.extractAEItem(slot, amount, false, true);
+        mInventory[slot] = null;
         return true;
     }
 
@@ -579,14 +530,9 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public void updateSlots() {
         super.updateSlots();
-        for (int i = 0; i < itemInventory.getSlots(); i++) {
-            IAEItemStack stack = itemInventory.getAEStackInSlot(i);
-            if (stack != null && stack.getStackSize() <= 0) itemInventory.setStackInSlot(i, (IAEItemStack) null);
+        for (int i = 0; i < mInventory.length - 1; i++) {
+            if (mInventory[i] != null && mInventory[i].stackSize <= 0) mInventory[i] = null;
         }
-    }
-
-    public AEInventory getAEInventory() {
-        return itemInventory;
     }
 
     public int getItemStorageSlotCount() {
@@ -596,13 +542,13 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     protected ItemSource getItemSource(ForgeDirection side) {
         IGregTechTileEntity base = getBaseMetaTileEntity();
-        return base != null && side == base.getFrontFacing() ? itemInventory.getItemIO() : null;
+        return base != null && side == base.getFrontFacing() ? null : null;
     }
 
     @Override
     protected ItemSink getItemSink(ForgeDirection side) {
         IGregTechTileEntity base = getBaseMetaTileEntity();
-        return base != null && side == base.getFrontFacing() ? itemInventory.getItemIO() : null;
+        return base != null && side == base.getFrontFacing() ? null : null;
     }
 
     private void clearRecipeSnapshots() {
@@ -613,7 +559,7 @@ public class HumongousDualInputHatch extends DualInputHatch
     private ItemStack[] createRecipeSnapshot() {
         ItemStack[] snapshot = new ItemStack[getItemStorageSlotCount()];
         for (int i = 0; i < snapshot.length; i++) {
-            snapshot[i] = toItemStack(itemInventory.getAEStackInSlot(i));
+            snapshot[i] = GTUtility.copy(mInventory[i]);
         }
         return snapshot;
     }
@@ -636,88 +582,28 @@ public class HumongousDualInputHatch extends DualInputHatch
         return array[index];
     }
 
-    private ItemStack toItemStack(IAEItemStack stack) {
-        if (stack == null) return null;
-        return toItemStack(stack, GTUtility.longToInt(stack.getStackSize()));
-    }
-
-    private ItemStack toItemStack(IAEItemStack stack, int amount) {
-        if (stack == null || amount <= 0) return null;
-        return GTUtility.copyAmountUnsafe(amount, stack.getItemStack());
-    }
-
     private ItemStack[] getVisibleItemInputs() {
-        ItemStack[] storageInputs = processing > 0 ? containedStacks : createRecipeSnapshot();
+        ItemStack[] storageInputs = processing > 0 ? containedStacks
+            : Arrays.copyOf(mInventory, getItemStorageSlotCount());
         ItemStack circuit = mInventory[getCircuitSlot()];
         if (circuit == null) {
             return Arrays.stream(storageInputs)
-                .filter(Objects::nonNull)
+                .filter(java.util.Objects::nonNull)
                 .toArray(ItemStack[]::new);
         }
 
         ItemStack[] nonNullInputs = Arrays.stream(storageInputs)
-            .filter(Objects::nonNull)
+            .filter(java.util.Objects::nonNull)
             .toArray(ItemStack[]::new);
         ItemStack[] inputs = Arrays.copyOf(nonNullInputs, nonNullInputs.length + 1);
         inputs[inputs.length - 1] = circuit;
         return inputs;
     }
 
-    private boolean isItemStorageEmpty() {
-        for (IAEItemStack stack : itemInventory.inventory) {
-            if (stack != null && stack.getStackSize() > 0) return false;
+    public boolean isItemStorageEmpty() {
+        for (int i = 0; i < getItemStorageSlotCount(); i++) {
+            if (mInventory[i] != null && mInventory[i].stackSize > 0) return false;
         }
         return true;
-    }
-
-    private class HumongousInventory extends Inventory {
-
-        public HumongousInventory(FluidStack[] fluid) {
-            super(new ItemStack[0], fluid);
-        }
-
-        @Override
-        public ItemStack[] getItemInputs() {
-            if (isEmpty()) return new ItemStack[0];
-            return getVisibleItemInputs();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            if (!isItemStorageEmpty()) return false;
-            if (mInventory[getCircuitSlot()] != null) return false;
-            return super.isEmpty();
-        }
-    }
-
-    private class HumongousItemInventory extends AEInventory {
-
-        public HumongousItemInventory(int slotCount) {
-            super(slotCount);
-        }
-
-        @Override
-        public long getAESlotLimit(int slot, IAEItemStack stack) {
-            return Long.MAX_VALUE;
-        }
-
-        @Override
-        protected boolean allowPutStack(int slotIndex, IAEItemStack toInsert) {
-            return HumongousDualInputHatch.this.allowPutStack(
-                getBaseMetaTileEntity(),
-                slotIndex,
-                ForgeDirection.UNKNOWN,
-                toInsert == null ? null : toInsert.getItemStack());
-        }
-
-        @Override
-        protected AEInventory copyImpl() {
-            return new HumongousItemInventory(slotCount);
-        }
-
-        @Override
-        public BaseActionSource getActionSource() {
-            return new MachineSource((BaseMetaTileEntity) getBaseMetaTileEntity());
-        }
     }
 }
