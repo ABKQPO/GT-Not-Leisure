@@ -68,13 +68,18 @@ public class CommandSteamNetwork extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] strings) {
         if (strings.length < 1) {
-            getCommandUsage(sender);
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + getCommandUsage(sender)));
             return;
         }
         switch (strings[0]) {
             case "add" -> {
                 if (!Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
+                    break;
+                }
+                if (strings.length != 3) {
+                    sender.addChatMessage(
+                        new ChatComponentText(EnumChatFormatting.RED + "/steam_network add <player> <amount>"));
                     break;
                 }
                 String username = strings[1];
@@ -121,6 +126,11 @@ public class CommandSteamNetwork extends CommandBase {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
+                if (strings.length != 3) {
+                    sender.addChatMessage(
+                        new ChatComponentText(EnumChatFormatting.RED + "/steam_network set <player> <amount>"));
+                    break;
+                }
 
                 // Usage is /gt global_energy_set username EU
 
@@ -163,8 +173,9 @@ public class CommandSteamNetwork extends CommandBase {
                     usernameTeam = strings[1];
                     usernameSubject = sender.getCommandSenderName();
                 } else {
-                    sender
-                        .addChatMessage(new ChatComponentText("Usage: /steam_network join <your_name> <target_name>"));
+                    sender.addChatMessage(
+                        new ChatComponentText(
+                            EnumChatFormatting.RED + "/steam_network join <your_name> <target_name>"));
                     break;
                 }
 
@@ -215,11 +226,15 @@ public class CommandSteamNetwork extends CommandBase {
                             + "."));
             }
             case "display" -> {
+                if (strings.length != 2 && strings.length != 1) {
+                    sender.addChatMessage(
+                        new ChatComponentText(EnumChatFormatting.RED + "/steam_network display <player>"));
+                    break;
+                }
 
                 // Usage is /gt global_energy_display username.
 
-                String username = strings[1];
-                if (username == null) username = sender.getCommandSenderName();
+                String username = strings.length == 2 ? strings[1] : sender.getCommandSenderName();
                 String formatted_username = EnumChatFormatting.BLUE + username + EnumChatFormatting.RESET;
                 UUID userUUID = SpaceProjectManager.getPlayerUUIDFromName(username);
 
@@ -237,7 +252,7 @@ public class CommandSteamNetwork extends CommandBase {
                             + EnumChatFormatting.RED
                             + NumberFormatUtil.formatNumber(SteamWirelessNetworkManager.getUserSteam(userUUID))
                             + EnumChatFormatting.RESET
-                            + "Steam in their network."));
+                            + " Steam in their network."));
                 if (!userUUID.equals(teamUUID)) sender.addChatMessage(
                     new ChatComponentText(
                         "User " + formatted_username
@@ -246,10 +261,8 @@ public class CommandSteamNetwork extends CommandBase {
                             + SpaceProjectManager.getPlayerNameFromUUID(teamUUID)
                             + EnumChatFormatting.RESET
                             + "."));
-
             }
-            default -> sender
-                .addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Invalid command/syntax detected."));
+            default -> sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + getCommandUsage(sender)));
         }
     }
 

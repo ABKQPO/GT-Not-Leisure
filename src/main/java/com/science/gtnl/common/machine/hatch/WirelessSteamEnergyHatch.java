@@ -137,7 +137,9 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
             steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
         }
 
-        tryFetchingSteam();
+        if (aBaseMetaTileEntity.isServerSide()) {
+            tryFetchingSteam();
+        }
     }
 
     @Override
@@ -189,6 +191,15 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
             if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(ownerUUID, -steamToTransfer)) return;
             fill(Materials.Steam.getGas(steamToTransfer), true);
+        }
+    }
+
+    @Override
+    public void onBlockDestroyed() {
+        super.onBlockDestroyed();
+        FluidStack steamStack = getFillableStack();
+        if (steamStack != null) {
+            SteamWirelessNetworkManager.addSteamToGlobalSteamMap(ownerUUID, steamStack.amount);
         }
     }
 
