@@ -22,6 +22,7 @@ import com.science.gtnl.common.machine.basicMachine.Replicator;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerBronze;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerSteel;
 import com.science.gtnl.common.machine.basicMachine.SteamTurbine;
+import com.science.gtnl.common.machine.basicMachine.StellarIrisController;
 import com.science.gtnl.common.machine.cover.FluidCover;
 import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
@@ -2537,6 +2538,15 @@ public class MachineLoader {
                 StatCollector.translateToLocal("EnergyMonitor"),
                 1));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyMonitor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.StellarIrisController.set(
+            new StellarIrisController(
+                GTNLMachineID.STELLAR_IRIS_CONTROLLER.ID,
+                "StellarIrisController",
+                StatCollector.translateToLocal("StellarIrisController"),
+                1));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.StellarIrisController.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.OredictInputBusME.set(
             new OredictInputBusME(

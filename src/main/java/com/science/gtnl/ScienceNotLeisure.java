@@ -7,6 +7,7 @@ import com.science.gtnl.common.command.CommandEnergyNetwork;
 import com.science.gtnl.common.command.CommandItemInfo;
 import com.science.gtnl.common.command.CommandPlaySound;
 import com.science.gtnl.common.command.CommandSteamNetwork;
+import com.science.gtnl.common.command.CommandStellarIris;
 import com.science.gtnl.common.command.CommandSudo;
 import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
@@ -101,6 +102,7 @@ public class ScienceNotLeisure {
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandTickrate());
         event.registerServerCommand(new CommandSteamNetwork());
+        event.registerServerCommand(new CommandStellarIris());
         event.registerServerCommand(new CommandEnergyNetwork());
         event.registerServerCommand(new CommandPlaySound());
         event.registerServerCommand(new CommandItemInfo());
