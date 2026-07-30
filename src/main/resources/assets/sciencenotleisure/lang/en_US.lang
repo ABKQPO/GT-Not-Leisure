@@ -3266,7 +3266,7 @@ Tooltip_Digester_Casing=Any Reinforced Tungstensteel Machine Block
 
 NameIncubator=Incubator
 IncubatorRecipeType=Bacterial Incubator
-Tooltip_Incubator_00=No longer needs to keep the output bus half full!
+Tooltip_Incubator_00=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
 Tooltip_Incubator_01=Fixed parallel of 4.
 Tooltip_Incubator_02=Glass tier limits the energy hatch tier, UHV glass unlocks all tiers.
 Tooltip_Incubator_RadioHatch=Radioactive Hatch
@@ -3276,7 +3276,7 @@ NameLargeIncubator=Large Incubator
 LargeIncubatorRecipeType=Bacterial Incubator
 Tooltip_LargeIncubator_00=400% faster than the single-block machine of the same voltage.
 Tooltip_LargeIncubator_01=Consumes only 60% of the recipe's required power.
-Tooltip_LargeIncubator_02=No longer needs to keep the output bus half full.
+Tooltip_LargeIncubator_02=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
 Tooltip_LargeIncubator_03=Ignores glass tier requirements and precise dosage requirements.
 Tooltip_LargeIncubator_04=Parallel: 4 * number of petri dishes + 2 * voltage tier * glass tier.
 Tooltip_LargeIncubator_RadioHatch=Radioactive Hatch
@@ -3286,7 +3286,7 @@ NameMicroorganismMaster=Microorganism Master
 gtnl.recipe.MicroorganismMasterRecipes=Microorganism Master
 MicroorganismMasterRecipeType=Bacterial Incubator
 Tooltip_MicroorganismMaster_00=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-Tooltip_MicroorganismMaster_01=No longer needs to keep the output bus half full.
+Tooltip_MicroorganismMaster_01=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
 Tooltip_MicroorganismMaster_02=Ignores glass tier requirements and dosage requirements.
 Tooltip_MicroorganismMaster_Casing=Any Chemically Inert Machine Block
 
