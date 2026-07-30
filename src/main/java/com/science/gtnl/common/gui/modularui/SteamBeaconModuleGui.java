@@ -2,28 +2,33 @@ package com.science.gtnl.common.gui.modularui;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
+import java.util.function.BooleanSupplier;
+
 import net.minecraft.util.ResourceLocation;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.DrawableStack;
-import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.value.BoolValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.InteractionSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
+import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamBeaconModule;
 import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.Mods;
 import gregtech.api.modularui2.GTGuiTextures;
+import gregtech.api.modularui2.GTWidgetThemes;
 
 public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
 
@@ -41,6 +46,9 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
     private static final String FEATHER_FEET_SYNC_KEY = "steamBeaconFeatherFeet";
     private static final String VIS_REGEN_SYNC_KEY = "steamBeaconVisRegen";
     private static final String CAN_WORK_SYNC_KEY = "steamBeaconCanWork";
+    private static final String PREPARE_CONFIG_SYNC_KEY = "steamBeaconPrepareConfig";
+    private static final String PAYMENT_SLOT_GROUP = "steamBeaconPayment";
+    private static final int BUTTON_SIZE = 18;
 
     private static final UITexture INVENTORY_EFFECTS = UITexture
         .fullImage(Mods.Minecraft.resourceDomain, "gui/container/inventory");
@@ -116,6 +124,9 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
         syncManager.syncValue(
             CAN_WORK_SYNC_KEY,
             new BooleanSyncValue(beaconModule::hasMachineCanWork, beaconModule::setMachineCanWork).allowC2S());
+        syncManager.syncValue(
+            PREPARE_CONFIG_SYNC_KEY,
+            new InteractionSyncHandler().setOnMousePressed(mouseButton -> beaconModule.prepareBeaconConfigForGui()));
     }
 
     @Override
@@ -126,37 +137,41 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
             syncManager.syncedPanel(
                 CONFIG_PANEL_KEY,
                 true,
-                (panelSyncManager, panelHandler) -> createConfigPanel(parent, syncManager)));
+                (panelSyncManager, panelHandler) -> createConfigPanel(parent, syncManager, panelSyncManager)));
     }
 
     @Override
     protected Flow createRightPanelGapRow(ModularPanel parent, PanelSyncManager syncManager) {
-        return super.createRightPanelGapRow(parent, syncManager).child(createConfigButton());
+        return super.createRightPanelGapRow(parent, syncManager).child(createConfigButton(syncManager));
     }
 
-    private IWidget createConfigButton() {
-        return new ButtonWidget<>().size(16, 16)
-            .background(GTGuiTextures.BUTTON_STANDARD)
+    private IWidget createConfigButton(PanelSyncManager syncManager) {
+        InteractionSyncHandler prepareSyncer = syncManager
+            .findSyncHandler(PREPARE_CONFIG_SYNC_KEY, InteractionSyncHandler.class);
+        return new ButtonWidget<>().size(BUTTON_SIZE, BUTTON_SIZE)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_BATCH_MODE_ON)
-            .syncHandler(new InteractionSyncHandler().setOnMousePressed(mouseButton -> {
-                beaconModule.prepareBeaconConfigForGui();
+            .onMousePressed(mouseButton -> {
+                prepareSyncer.onMousePressed(mouseButton);
                 IPanelHandler panel = panelMap.get(CONFIG_PANEL_KEY);
                 if (panel != null) {
                     if (panel.isPanelOpen()) panel.closePanel();
                     else panel.openPanel();
                 }
-            }))
+                return true;
+            })
             .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_SteamBeaconModule_00")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
-    private ModularPanel createConfigPanel(ModularPanel parent, PanelSyncManager syncManager) {
+    private ModularPanel createConfigPanel(ModularPanel parent, PanelSyncManager syncManager,
+        PanelSyncManager panelSyncManager) {
+        panelSyncManager.registerSlotGroup(PAYMENT_SLOT_GROUP, 1, SlotGroup.STORAGE_SLOT_PRIO);
         Dialog<?> panel = new Dialog<>(CONFIG_PANEL_KEY, null);
         panel.relative(parent)
             .leftRel(1)
             .topRel(0)
-            .size(100, 116)
-            .background(GTGuiTextures.BACKGROUND_POPUP_STANDARD);
+            .size(104, 118)
+            .widgetTheme(GTWidgetThemes.BACKGROUND_POPUP);
         panel.setDisablePanelsBelow(false)
             .setCloseOnOutOfBoundsClick(false)
             .setDraggable(true);
@@ -165,7 +180,8 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
             IKey.lang("Info_SteamBeaconModule_00")
                 .asWidget()
                 .pos(0, 0)
-                .size(100, 18));
+                .size(104, 18)
+                .textAlign(Alignment.Center));
         panel.child(
             BEACON_MATERIAL.asWidget()
                 .pos(8, 90)
@@ -185,6 +201,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_00",
                 6,
                 18,
+                beaconModule::hasSpeedEffect,
                 beaconModule::toggleSpeedEffect));
         panel.child(
             createEffectButton(
@@ -194,6 +211,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_01",
                 24,
                 18,
+                beaconModule::hasStrengthEffect,
                 beaconModule::toggleStrengthEffect));
         panel.child(
             createEffectButton(
@@ -203,6 +221,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_02",
                 42,
                 18,
+                beaconModule::hasJumpBoostEffect,
                 beaconModule::toggleJumpBoostEffect));
         panel.child(
             createEffectButton(
@@ -212,6 +231,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_03",
                 6,
                 36,
+                beaconModule::hasResistanceEffect,
                 beaconModule::toggleResistanceEffect));
         panel.child(
             createEffectButton(
@@ -221,6 +241,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_04",
                 24,
                 36,
+                beaconModule::hasHealthRegenerationEffect,
                 beaconModule::toggleHealthRegenerationEffect));
         panel.child(
             createEffectButton(
@@ -230,6 +251,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 "Info_SteamBeaconModule_Effect_05",
                 42,
                 36,
+                beaconModule::hasNightVisionEffect,
                 beaconModule::toggleNightVisionEffect));
 
         if (beaconModule.getBeaconTierForGui() > 1) {
@@ -241,6 +263,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     "Info_SteamBeaconModule_Effect_06",
                     6,
                     54,
+                    beaconModule::hasHasteEffect,
                     beaconModule::toggleHasteEffect));
             panel.child(
                 createEffectButton(
@@ -250,6 +273,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     "Info_SteamBeaconModule_Effect_07",
                     24,
                     54,
+                    beaconModule::hasFireResistanceEffect,
                     beaconModule::toggleFireResistanceEffect));
             panel.child(
                 createEffectButton(
@@ -259,6 +283,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     "Info_SteamBeaconModule_Effect_08",
                     42,
                     54,
+                    beaconModule::hasWaterBreathingEffect,
                     beaconModule::toggleWaterBreathingEffect));
         }
 
@@ -271,6 +296,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     "Info_SteamBeaconModule_Effect_09",
                     6,
                     72,
+                    beaconModule::hasWarpWardEffect,
                     beaconModule::toggleWarpWardEffect));
             panel.child(
                 createEffectButton(
@@ -280,6 +306,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     "Info_SteamBeaconModule_Effect_10",
                     24,
                     72,
+                    beaconModule::hasFeatherFeetEffect,
                     beaconModule::toggleFeatherFeetEffect));
             if (Mods.ThaumicHorizons.isModLoaded()) {
                 panel.child(
@@ -290,35 +317,32 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                         "Info_SteamBeaconModule_Effect_11",
                         42,
                         72,
+                        beaconModule::hasVisRegenEffect,
                         beaconModule::toggleVisRegenEffect));
             }
         }
     }
 
     private IWidget createEffectButton(PanelSyncManager syncManager, String syncKey, UITexture icon, String tooltipKey,
-        int x, int y, Runnable toggleAction) {
+        int x, int y, BooleanSupplier stateGetter, Runnable toggleAction) {
         BooleanSyncValue effectSyncer = syncManager.findSyncHandler(syncKey, BooleanSyncValue.class);
-        return new ButtonWidget<>().size(16, 16)
+        return new ToggleButton().size(BUTTON_SIZE, BUTTON_SIZE)
             .pos(x, y)
-            .background(
-                new DynamicDrawable(
-                    () -> new DrawableStack(
-                        effectSyncer.getBoolValue() ? GTGuiTextures.BUTTON_STANDARD_PRESSED
-                            : GTGuiTextures.BUTTON_STANDARD,
-                        icon)))
-            .syncHandler(new InteractionSyncHandler().setOnMousePressed(mouseButton -> {
+            .value(new BoolValue.Dynamic(effectSyncer::getBoolValue, selected -> {
+                if (selected == effectSyncer.getBoolValue()) return;
                 toggleAction.run();
-                effectSyncer.setBoolValue(!effectSyncer.getBoolValue(), false, true);
+                effectSyncer.setBoolValue(stateGetter.getAsBoolean(), true, true);
             }))
+            .overlay(false, icon)
+            .overlay(true, icon)
             .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(tooltipKey)))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
     private IWidget createConfirmButton(PanelSyncManager syncManager) {
         BooleanSyncValue canWorkSyncer = syncManager.findSyncHandler(CAN_WORK_SYNC_KEY, BooleanSyncValue.class);
-        return new ButtonWidget<>().size(16, 16)
-            .pos(66, 37)
-            .background(GTGuiTextures.BUTTON_STANDARD)
+        return new ButtonWidget<>().size(BUTTON_SIZE, BUTTON_SIZE)
+            .pos(65, 36)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
             .syncHandler(new InteractionSyncHandler().setOnMousePressed(mouseButton -> {
                 boolean applied = beaconModule.applyBeaconConfigFromGui();
@@ -339,13 +363,13 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
         ModularSlot slot = new ModularSlot(
             new GTNLMui2ItemHandlerAdapter(beaconModule.getBeaconInputSlotHandlerForGui()),
             0).filter(beaconModule::isValidBeaconPaymentItemForGui)
-                .singletonSlotGroup();
+                .slotGroup(PAYMENT_SLOT_GROUP);
         return new ItemSlot().slot(slot)
-            .background(GTGuiTextures.SLOT_ITEM_STANDARD)
             .pos(65, 18);
     }
 
     private static UITexture fromAtlas(UITexture atlas, int x0, int y0, int x1, int y1) {
         return atlas.getSubArea(x0 / 256.0F, y0 / 256.0F, x1 / 256.0F, y1 / 256.0F);
     }
+
 }
