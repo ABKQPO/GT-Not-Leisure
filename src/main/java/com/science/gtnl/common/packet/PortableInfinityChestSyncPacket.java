@@ -8,6 +8,8 @@ import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class PortableInfinityChestSyncPacket extends ClientboundPacket {
@@ -39,6 +41,7 @@ public class PortableInfinityChestSyncPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         EntityPlayer entityPlayer = minecraft.thePlayer;
         if (entityPlayer.openContainer instanceof ContainerPortableInfinityChest container)

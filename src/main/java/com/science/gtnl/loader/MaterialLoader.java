@@ -12,6 +12,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.cleanroommc.bogosorter.BogoSortAPI;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeCatalog;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.item.steamRocket.SchematicSteamRocket;
@@ -77,6 +78,7 @@ public class MaterialLoader {
         GreenHouseBucket.LoadGreenHouseBuckets();
         MachineLoader.registry();
         AchievementsLoader.registry();
+        StellarIrisUpgradeCatalog.registerDefaults();
 
         if (Mods.GalaxySpace.isModLoaded() && Mods.StevesCarts2.isModLoaded()
             && Mods.Railcraft.isModLoaded()
