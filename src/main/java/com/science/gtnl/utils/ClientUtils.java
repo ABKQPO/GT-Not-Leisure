@@ -25,7 +25,8 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
 import com.science.gtnl.common.packet.RequestGameProfilePacket;
 import com.science.gtnl.utils.item.ItemUtils;
-
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.item.IPickBlockHandler;
@@ -48,6 +49,9 @@ public class ClientUtils {
     }
 
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
+        if (tryOpenMultiEssentiaJarBlock(world)) {
+            return true;
+        }
         if (tryHandlePickBlockHandler(playerMP)) {
             return true;
         }
@@ -63,6 +67,34 @@ public class ClientUtils {
             }
         }
         return false;
+    }
+
+    private static boolean tryOpenMultiEssentiaJarBlock(World world) {
+        MovingObjectPosition target =
+            Minecraft.getMinecraft().objectMouseOver;
+
+        if (target == null
+            || target.typeOfHit
+            != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return false;
+        }
+
+        TileEntity tile = world.getTileEntity(
+            target.blockX,
+            target.blockY,
+            target.blockZ);
+
+        if (!(tile instanceof TileEntityMultiEssentiaJar)) {
+            return false;
+        }
+
+        ScienceNotLeisure.network.sendToServer(
+            OpenMultiEssentiaJarGuiPacket.openBlockGui(
+                target.blockX,
+                target.blockY,
+                target.blockZ));
+
+        return true;
     }
 
     private static boolean tryHandlePickBlockHandler(EntityPlayer player) {

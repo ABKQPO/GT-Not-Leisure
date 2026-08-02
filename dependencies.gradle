@@ -46,6 +46,8 @@ dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.14:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ForestryMC:4.11.26:dev")
     runtimeOnlyNonPublishable(rfg.deobf("curse.maven:spark-361579:4271867"))
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:AspectRecipeIndex:1.1.1:dev") {
+    }
 
     // jvmDowngrader
     compileOnly("javax.xml.bind:jaxb-api:2.3.1")

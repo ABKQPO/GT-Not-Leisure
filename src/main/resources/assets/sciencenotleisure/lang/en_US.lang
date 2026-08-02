@@ -3982,3 +3982,25 @@ gtnl.stellar_iris.upgrade.prestige_amplifier.desc=+5% prestige points per level 
 gtnl.stellar_iris.upgrade.decay_resistance.desc=+3% decay resistance per level (max 10 levels)
 gtnl.stellar_iris.upgrade.growth_catalyst.desc=+3% growth speed per level (max 10 levels)
 gtnl.stellar_iris.upgrade.void_attunement.desc=+2% bonus from void effects per level (max 10 levels)
+
+tile.MultiEssentiaJar.name=Multi-Essentia Jar
+Tooltip_MultiEssentiaJar_Capacity=Shared capacity: %s essentia
+Tooltip_MultiEssentiaJar_Transport=Connect essentia tubes to the top
+Tooltip_MultiEssentiaJar_Stored=Stored: %s essentia in %s types
+Tooltip_MultiEssentiaJar_More=... and %s more types
+Info_MultiEssentiaJar_Empty=The jar is empty. Capacity: %s
+Info_MultiEssentiaJar_ItemActive=Held jar active aspect: %s
+Info_MultiEssentiaJar_Status=Active: %s; total: %s/%s; types: %s
+
+tile.MultiEssentiaTube.name=Multi-Essentia Buffer Tube
+Tooltip_MultiEssentiaTube_Capacity=Shared cache capacity: %s essentia
+Tooltip_MultiEssentiaTube_Mixed=Can cache and transport several essentia types at once
+Tooltip_MultiEssentiaTube_Wand=Use a wand to toggle sides; sneak-use it to adjust side suction
+GTNL.gui.multi_essentia_jar.title=Select Active Aspect
+GTNL.gui.multi_essentia_jar.aspect=%s (%s): %s essentia
+GTNL.gui.multi_essentia_jar.aspect_unknown=Unknown aspect: %s essentia
+Tooltip_MultiEssentiaJar_Cycle=Sneak-right-click for the next aspect; sneak-left-click for the previous aspect
+Tooltip_MultiEssentiaJar_Select=Hold or look at a placed jar, then press the pick block key to open the aspect selection GUI
+Info_MultiEssentiaJar_Cleared=Cleared the Multi-Essentia Jar, voiding %s essentia.
+Info_MultiEssentiaJar_AlreadyEmpty=The Multi-Essentia Jar is already empty.
+Tooltip_MultiEssentiaJar_Clear=Sneak-right-click with a wand, sceptre, or staff to void all essentia

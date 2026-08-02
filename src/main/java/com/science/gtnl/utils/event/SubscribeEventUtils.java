@@ -55,7 +55,10 @@ import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.items.wands.ItemWandCasting;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -482,6 +485,71 @@ public class SubscribeEventUtils {
                 }
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMultiEssentiaJarWandClear(PlayerInteractEvent event) {
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
+
+        EntityPlayer player = event.entityPlayer;
+        if (player == null
+            || player.worldObj == null
+            || !player.isSneaking()) {
+            return;
+        }
+
+        ItemStack heldStack = player.getHeldItem();
+        if (heldStack == null
+            || !(heldStack.getItem() instanceof ItemWandCasting)) {
+            return;
+        }
+
+        TileEntity tile = player.worldObj.getTileEntity(
+            event.x,
+            event.y,
+            event.z);
+
+        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) {
+            return;
+        }
+
+        if (!player.canPlayerEdit(
+            event.x,
+            event.y,
+            event.z,
+            event.face,
+            heldStack)) {
+            return;
+        }
+
+        /*
+         * 客户端不能取消事件，否则右键数据包不会发送到服务器。
+         */
+        if (player.worldObj.isRemote) {
+            return;
+        }
+
+        /*
+         * 只在服务器端取消法杖的后续行为。
+         */
+        event.setCanceled(true);
+
+        int clearedAmount = jar.getTotalAmount();
+
+        if (clearedAmount <= 0) {
+            player.addChatMessage(
+                new ChatComponentTranslation(
+                    "Info_MultiEssentiaJar_AlreadyEmpty"));
+            return;
+        }
+
+        jar.setAspects(new AspectList());
+        player.swingItem();
+
+        player.addChatMessage(
+            new ChatComponentTranslation(
+                "Info_MultiEssentiaJar_Cleared",
+                clearedAmount));
     }
 
     // Botania
