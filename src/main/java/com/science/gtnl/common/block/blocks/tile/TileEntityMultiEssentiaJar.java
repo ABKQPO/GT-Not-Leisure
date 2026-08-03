@@ -37,7 +37,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
     private static final String ACTIVE_ASPECT_KEY = "ActiveAspect";
     private static final String FACING_KEY = "facing";
-    private static final int TRANSFER_INTERVAL = 5;
+    private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
     private static final int SUCTION = 32;
 

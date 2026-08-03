@@ -3986,7 +3986,6 @@ gtnl.stellar_iris.upgrade.void_attunement.desc=每级虚空效果加成提高 2%
 tile.MultiEssentiaJar.name=复合源质罐
 Tooltip_MultiEssentiaJar_Capacity=共享容量：%s 点源质
 Tooltip_MultiEssentiaJar_Transport=源质管道仅能连接顶部
-Tooltip_MultiEssentiaJar_Cycle=空手潜行右击切换当前输出源质
 Tooltip_MultiEssentiaJar_Stored=已储存：%s 点源质，共 %s 种
 Tooltip_MultiEssentiaJar_More=……以及另外 %s 种源质
 Info_MultiEssentiaJar_Empty=罐子为空，容量：%s
@@ -3998,7 +3997,6 @@ Tooltip_MultiEssentiaTube_Capacity=共享缓存容量：%s 点源质
 Tooltip_MultiEssentiaTube_Mixed=可同时缓存并输送多种源质
 Tooltip_MultiEssentiaTube_Wand=使用魔杖开关各面连接，潜行使用魔杖调整吸力
 
-Tooltip_MultiEssentiaJar_Select=按下选取方块键打开源质选择界面
 GTNL.gui.multi_essentia_jar.title=选择当前源质
 GTNL.gui.multi_essentia_jar.aspect=%s（%s）：%s 点
 GTNL.gui.multi_essentia_jar.aspect_unknown=未知要素：%s 点

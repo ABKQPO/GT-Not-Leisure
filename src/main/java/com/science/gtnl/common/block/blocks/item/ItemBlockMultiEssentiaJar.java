@@ -160,6 +160,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Transport"));
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Cycle"));
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Select"));
+        tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Clear"));
 
         AspectList storedAspects =
             TileEntityMultiEssentiaJar.getStoredAspects(stack);
