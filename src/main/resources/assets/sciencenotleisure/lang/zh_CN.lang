@@ -3266,7 +3266,7 @@ Tooltip_Digester_Casing=任意强化钨钢机械方块
 
 NameIncubator=培养缸
 IncubatorRecipeType=细菌培养缸
-Tooltip_Incubator_00=不再需要保持输出仓半满！
+Tooltip_Incubator_00=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
 Tooltip_Incubator_01=固定并行为4
 Tooltip_Incubator_02=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
 Tooltip_Incubator_RadioHatch=放射仓
@@ -3276,7 +3276,7 @@ NameLargeIncubator=大型培养缸
 LargeIncubatorRecipeType=细菌培养缸
 Tooltip_LargeIncubator_00=比相同电压的单方块机器快400%
 Tooltip_LargeIncubator_01=只需要使用配方要求功率的60%
-Tooltip_LargeIncubator_02=不再需要保持输出仓半满
+Tooltip_LargeIncubator_02=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
 Tooltip_LargeIncubator_03=无视玻璃等级要求和精确剂量要求
 Tooltip_LargeIncubator_04=并行数：4 * 培养皿数量 + 2 * 电压等级 * 玻璃等级
 Tooltip_LargeIncubator_RadioHatch=放射仓
@@ -3286,7 +3286,7 @@ NameMicroorganismMaster=微生物之主
 gtnl.recipe.MicroorganismMasterRecipes=微生物之主
 MicroorganismMasterRecipeType=细菌培养缸
 Tooltip_MicroorganismMaster_00=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-Tooltip_MicroorganismMaster_01=不再需要保持输出仓半满
+Tooltip_MicroorganismMaster_01=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
 Tooltip_MicroorganismMaster_02=无视玻璃等级要求和剂量要求
 Tooltip_MicroorganismMaster_Casing=任意化学惰性机械方块
 

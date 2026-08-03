@@ -24,7 +24,7 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.science.gtnl.common.gui.modularui.FOGModuleGui;
+import com.science.gtnl.common.gui.modularui.FOGExtractorModuleGui;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -275,7 +275,7 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
-        return new FOGModuleGui(this);
+        return new FOGExtractorModuleGui(this);
     }
 
     @Override
