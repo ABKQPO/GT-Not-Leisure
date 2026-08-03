@@ -38,6 +38,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     private static final String ACTIVE_ASPECT_KEY = "ActiveAspect";
     private static final String FACING_KEY = "facing";
     private static final int TRANSFER_INTERVAL = 5;
+    private static final int TRANSFER_PER_TICK = 16;
     private static final int SUCTION = 32;
 
     public static final int MAX_CAPACITY = 4096;
@@ -95,7 +96,13 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         Aspect sourceAspect = source.getEssentiaType(sourceSide);
         if (sourceAspect == null || !doesContainerAccept(sourceAspect)) return;
 
-        int taken = source.takeEssentia(sourceAspect, 1, sourceSide);
+        int requested = Math.min(
+            TRANSFER_PER_TICK,
+            Math.min(
+                MAX_CAPACITY - getTotalAmount(),
+                source.getEssentiaAmount(sourceSide)));
+
+        int taken = source.takeEssentia(sourceAspect, requested, sourceSide);
         if (taken > 0) {
             addEssentia(sourceAspect, taken, ForgeDirection.UP);
         }

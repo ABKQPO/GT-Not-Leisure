@@ -15,7 +15,8 @@ import thaumcraft.common.tiles.TileTubeBuffer;
 /** A larger essentia buffer tube that can keep several aspect types in one shared cache. */
 public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
-    private static final int TRANSFER_INTERVAL = 5;
+    private static final int TRANSFER_INTERVAL = 1;
+    private static final int TRANSFER_PER_TICK = 16;
     private static final int BELLOWS_CHECK_INTERVAL = 20;
 
     public static final int MAX_CAPACITY = 64;
@@ -154,7 +155,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             bellowsInitialized = true;
         }
         if (!worldObj.isRemote && transferTick % TRANSFER_INTERVAL == 0 && getTotalAmount() < MAX_CAPACITY) {
-            fillCache();
+            fillCache(TRANSFER_PER_TICK);
         }
     }
 
@@ -170,28 +171,42 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         return getStoredAspectsSorted().length;
     }
 
-    private void fillCache() {
+    private int fillCache(int maxTransfer) {
+        int transferred = 0;
+        int remainingBudget = Math.min(maxTransfer, MAX_CAPACITY - getTotalAmount());
+
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+            if (remainingBudget <= 0) break;
             if (!canInputFrom(direction)) continue;
 
-            TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, direction);
+            TileEntity tile = ThaumcraftApiHelper
+                .getConnectableTile(worldObj, xCoord, yCoord, zCoord, direction);
             if (!(tile instanceof IEssentiaTransport source)) continue;
 
             ForgeDirection sourceSide = direction.getOpposite();
-            if (!source.canOutputTo(sourceSide) || source.getEssentiaAmount(sourceSide) <= 0) continue;
+            if (!source.canOutputTo(sourceSide) || source.getEssentiaAmount(sourceSide) <= 0) {
+                continue;
+            }
 
             int suction = getSuctionAmount(direction);
-            if (source.getSuctionAmount(sourceSide) >= suction || suction < source.getMinimumSuction()) continue;
+            if (source.getSuctionAmount(sourceSide) >= suction || suction < source.getMinimumSuction()) {
+                continue;
+            }
 
             Aspect sourceAspect = source.getEssentiaType(sourceSide);
             if (sourceAspect == null || !doesContainerAccept(sourceAspect)) continue;
 
-            int taken = source.takeEssentia(sourceAspect, 1, sourceSide);
+            int requested = Math.min(remainingBudget, source.getEssentiaAmount(sourceSide));
+            int taken = source.takeEssentia(sourceAspect, requested, sourceSide);
+
             if (taken > 0) {
-                addEssentia(sourceAspect, taken, direction);
-                return;
+                int accepted = addEssentia(sourceAspect, taken, direction);
+                transferred += accepted;
+                remainingBudget -= accepted;
             }
         }
+
+        return transferred;
     }
 
     private void removeInvalidAspects() {
