@@ -1786,7 +1786,7 @@ AssemblerMatrix_Mode_2=Operating Mode
 NameFuelRefiningComplex=Fuel Refining Complex
 FuelRefiningComplexRecipeType=Fuel Refining Complex
 gtnl.recipe.FuelRefiningComplexRecipes=Fuel Refining Complex
-FuelRefiningMetadata=Requires %s tier coils
+FuelRefiningMetadata=Requires %s tier field restriction coil
 
 NameAtomicEnergyExcitationPlant=Atomic Energy Excitation Plant
 AtomicEnergyExcitationPlantRecipeType=Fuel Refining Complex

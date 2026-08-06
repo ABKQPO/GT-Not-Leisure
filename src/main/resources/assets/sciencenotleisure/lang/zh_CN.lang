@@ -1786,7 +1786,7 @@ AssemblerMatrix_Mode_2=运行模式
 NameFuelRefiningComplex=燃料精炼复合体
 FuelRefiningComplexRecipeType=燃料精炼复合体
 gtnl.recipe.FuelRefiningComplexRecipes=燃料精炼复合体
-FuelRefiningMetadata=需要%s级线圈
+FuelRefiningMetadata=需要%s级力场约束线圈
 
 NameAtomicEnergyExcitationPlant=原子能激发工厂
 AtomicEnergyExcitationPlantRecipeType=燃料精炼复合体
