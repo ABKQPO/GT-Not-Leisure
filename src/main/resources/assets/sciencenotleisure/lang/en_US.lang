@@ -3239,46 +3239,16 @@ tile.CompressedStargateTier7.name=Compressed Stargate - Tier 7
 tile.CompressedStargateTier8.name=Compressed Stargate - Tier 8
 tile.CompressedStargateTier9.name=Compressed Stargate - Tier 9
 
-tile.EnderElevatorBlock.name=Ender Elevator (Block)
-tile.EnderElevatorSlab.name=Ender Elevator (Slab)
-tile.EnderElevatorCarpet.name=Ender Elevator (Carpet)
-Tooltip_EnderElevator_00=Allows entities to teleport up or down between the nearest elevators of the same color
-Tooltip_EnderElevator_01=Maximum range: 256 blocks vertically and 64 blocks horizontally. Cannot teleport at the same height
-Tooltip_EnderElevator_02=Jump to go up, sneak to go down
-Tooltip_EnderElevator_03=Right-click with dye to change the elevator color to the dye color
-Tooltip_EnderElevator_04=Right-click with a block to disguise the elevator. Sneak-right-click with an empty hand to remove the disguise
-
-tile.SearedLadder.name=Seared Ladder
-Tooltip_SearedLadder_00=§o"Climbable smeltery building material."
-Tooltip_SearedLadder_01=Added by Circulation_
-
-tile.WaterCandle.name=Water Candle
-gtnl.potion.battle=Battle
-
-tile.CardboardBox.name=Cardboard Box
-Tooltip_CardBoardBox_00_Yes=Block Data: Yes
-Tooltip_CardBoardBox_00_No=Block Data: No
-Tooltip_CardBoardBox_01=Block: 
-Tooltip_CardBoardBox_02=Meta: 
-Tooltip_CardBoardBox_03=TileEntity: 
-
 tile.LaserBeacon.name=Laser Beacon
 Tooltip_LaserBeacon=Generates high-precision laser using powerful electric current
+
+tile.PlayerLeash.name=Leash Barrier
+entity.sciencenotleisure.PlayerLeashKnot.name=Leash Barrier
+Tooltip_PlayerLeash_00=Creates a powerful leash field that allows the placer to fly
 
 tile.RealArtificialStarRenderer.name=True Annihilation Generator Renderer
 tile.NanoPhagocytosisPlantRenderer.name=Nano Phagocytosis Plant Renderer
 tile.EternalGregTechWorkshopRenderer.name=Eternal GregTech Workshop Renderer
-
-tile.lootgames.sdk_activator.name=Sudoku
-tile.lootgames.sdk_master.name=Sudoku
-Info_Sudoku_00=Renaming: %d
-Info_Sudoku_01=Last Click Time: %d
-
-tile.EssentiaHatch.name=Essentia Input Hatch
-Tooltip_EssentiaHatch_00=You can right click it with an Essentia Jar to set Essentia Filter
-Tooltip_EssentiaHatch_01=Right click it with empty hands to clear the Filter.
-Info_EssentiaHatch_00=Successfully locked to %s.
-Info_EssentiaHatch_01=Cleared.
 
 tile.PlayerDoll.name=Player Model
 Tooltip_PlayerDoll_00=Set the official player name
@@ -3294,17 +3264,45 @@ Waila_TileEntityPlayerDoll_03_Off=Render Off Cape / Elytra
 Waila_TileEntityPlayerDoll_03_Cape=Render Cape
 Waila_TileEntityPlayerDoll_03_Elytra=Render Elytra
 
-tile.blockGiantBrickuoiaSapling.name=§cGiant Brickuoia Sapling
-Tooltip_GiantBrickuoiaSapling_00=§oYour scientists were so preoccupied with whether they could,
-Tooltip_GiantBrickuoiaSapling_01=§othey didn’t stop to think if they should
-Tooltip_GiantBrickuoiaSapling_02=§r§fAuthor: High§7Pres§8sure§dRaven
+tile.CardboardBox.name=Cardboard Box
+Tooltip_CardBoardBox_00_Yes=Block Data: Yes
+Tooltip_CardBoardBox_00_No=Block Data: No
+Tooltip_CardBoardBox_01=Block:
+Tooltip_CardBoardBox_02=Meta:
+Tooltip_CardBoardBox_03=TileEntity:
 
-tile.PlayerLeash.name=Leash Barrier
-entity.sciencenotleisure.PlayerLeashKnot.name=Leash Barrier
-Tooltip_PlayerLeash_00=Creates a powerful leash field that allows the placer to fly
+tile.WaterCandle.name=Water Candle
+gtnl.potion.battle=Battle
+
+tile.SearedLadder.name=Seared Ladder
+Tooltip_SearedLadder_00=§o"Climbable smeltery building material."
+Tooltip_SearedLadder_01=Added by Circulation_
 
 tile.DirePatternEncoder.name=Dire Pattern Encoder
 container.DirePatternEncoder=Dire Pattern Encoder
+
+tile.MEChisel.name=ME Chisel
+container.MEChisel=ME Chisel
+text.me_chisel.gui.parallel=Set Pattern Parallel
+
+tile.DimensionRespawnAnchor.name=Dimension Respawn Anchor
+Info_DimensionRespawnAnchor_NoBedOrAnchor=You have no home bed or respawn anchor, or it was obstructed
+Info_DimensionRespawnAnchor_SetSpawn=Respawn point set
+
+tile.EssentiaHatch.name=Essentia Input Hatch
+Tooltip_EssentiaHatch_00=You can right click it with an Essentia Jar to set Essentia Filter
+Tooltip_EssentiaHatch_01=Right click it with empty hands to clear the Filter.
+Info_EssentiaHatch_00=Successfully locked to %s.
+Info_EssentiaHatch_01=Cleared.
+
+tile.EnderElevatorBlock.name=Ender Elevator (Block)
+tile.EnderElevatorSlab.name=Ender Elevator (Slab)
+tile.EnderElevatorCarpet.name=Ender Elevator (Carpet)
+Tooltip_EnderElevator_00=Allows entities to teleport up or down between the nearest elevators of the same color
+Tooltip_EnderElevator_01=Maximum range: 256 blocks vertically and 64 blocks horizontally. Cannot teleport at the same height
+Tooltip_EnderElevator_02=Jump to go up, sneak to go down
+Tooltip_EnderElevator_03=Right-click with dye to change the elevator color to the dye color
+Tooltip_EnderElevator_04=Right-click with a block to disguise the elevator. Sneak-right-click with an empty hand to remove the disguise
 
 item.PartSuperInterface.name=Super ME Interface
 tile.SuperInterface.name=Super ME Interface
@@ -3321,17 +3319,10 @@ text.beam_former.show=Showing beam.
 
 tile.BeamFormer.name=ME Beam Former
 
-tile.MEChisel.name=ME Chisel
-container.MEChisel=ME Chisel
-text.me_chisel.gui.parallel=Set Pattern Parallel
-
-tile.DimensionRespawnAnchor.name=Dimension Respawn Anchor
-Info_DimensionRespawnAnchor_NoBedOrAnchor=You have no home bed or respawn anchor, or it was obstructed
-Info_DimensionRespawnAnchor_SetSpawn=Respawn point set
-
-item.ElectricProspectorTool.0.name=Mana Teleport Prospector Tool
-item.ElectricProspectorTool.1.name=Debug Teleport Prospector Tool
-Info_DetravScanner_TP=Teleport to vein: %s (%s, %s)
+tile.blockGiantBrickuoiaSapling.name=§cGiant Brickuoia Sapling
+Tooltip_GiantBrickuoiaSapling_00=§oYour scientists were so preoccupied with whether they could,
+Tooltip_GiantBrickuoiaSapling_01=§othey didn’t stop to think if they should
+Tooltip_GiantBrickuoiaSapling_02=§r§fAuthor: High§7Pres§8sure§dRaven
 
 item.MetaItem.0.name=Troll Face
 Tooltip_TrollFace_00=Never Gonna Give You Up~
@@ -3522,17 +3513,19 @@ item.MetaItem.135.name=Essentia Upgrade: SPIRIT
 item.MetaItem.136.name=Essentia Upgrade: RADIATION
 item.MetaItem.137.name=Essentia Upgrade: ELECTRIC
 
-item.SuspiciousStew.name=Suspicious Stew
-
-item.DireCraftPattern.name=Dire Craft Pattern
-
 item.SteamRocket.name=Steam Rocket
 Tooltip_SteamRocket_00=Requires Molten Compressed Steam as fuel
 Tooltip_SteamRocket_01=Capable of interplanetary travel.
 entity.GalacticraftCore.SteamRocket.name=Steam Rocket
 schematic.rocketSteam.name=Rocket (Steam)
 
-item.DebugItem.name=Debug Item
+item.NullPointerException.name=java.lang.NullPointerException
+
+item.FakeItemSiren.name=Siren
+
+item.NetherTeleporter.name=Nether Teleporter Tool
+Info_NetherTeleporter_Cooldown=Remaining cooldown:
+Info_NetherTeleporter_Warning=No safe landing spot!
 
 item.TestItem.name=Test Item
 Tooltip_Testitem_00=If you see this Tooltip
@@ -3550,13 +3543,75 @@ Tooltip_Testitem_11=§f§lIf you encounter any issues or want to make suggestion
 Tooltip_Testitem_12=The machines added by this mod start from meta value 21000
 Tooltip_Testitem_13=§c§lAlso reminder: Do not right-click with this item!
 
+item.DebugItem.name=Debug Item
+
+item.KFCFamily.name=Family Bucket
+Tooltip_KFCFamily_00=§oA bucket full of fried chicken.
+gtnl.potion.perfect_physique=Perfect Physique
+
+item.TwilightSword.name=§6Twilight
+Tooltip_TwilightSword_00=§6§oPowerful weapon forged from the essence of Twilight.
+Tooltip_TwilightSword_01=§b§oBalances the forces of Judgement Bird, Big Bird, and Punishing Bird.
+Tooltip_TwilightSword_02=§c§oCapable of protecting the peace of the Black Forest.
+Tooltip_TwilightSword_03=§r§oRequires mastery to wield effectively.
+Tooltip_TwilightSword_04=§r§oAnd those who can master all three can also bring peace.
+Tooltip_TwilightSword_05=§r§cALEPH§r§o level E.G.O. weapon
+Tooltip_TwilightSword_06=§rReceives multiple attack buffs simultaneously
+Tooltip_TwilightSword_07=§rBase damage doubles when health is below 10
+Tooltip_TwilightSword_08=§rAttacks entities with four powerful attacks in rotation
+Tooltip_TwilightSword_09=§rHold right-click to trigger a special attack
+Tooltip_TwilightSword_10=§oModel by IceyArk
+entity.sciencenotleisure.ArrowCustom.name=Twilight Arrow
+
+item.CircuitIntegratedPlus.name=Circuit Integrated Plus
+
+item.TimeStopPocketWatch.name=Time Stop Pocket Watch
+
+item.record.sus.desc=AU - Software Update Services
+item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
+item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
+
+item.InfinityTorch.name=Infinity Torch
+item.InfinityWaterBucket.name=Infinity Water Bucket
+item.InfinityLavaBucket.name=Infinity Lava Bucket
+item.InfinityHoneyBucket.name=Infinity Honey Bucket
+item.InfinityShimmerBucket.name=Infinity Shimmer Bucket
+item.SuperstrongSponge.name=Superstrong Sponge
+
+item.InfinityFuelRodDepleted.name=Depleted Fuel Rod (Infinite)
+item.InfinityFuelRod.name=Fuel Rod (Infinite)
+Tooltip_FuelRod_00=Durability: %d/%d
+Tooltip_FuelRod_01=Has MOX properties | MOX Coefficient: %d
+Tooltip_FuelRod_02=Base Heat Output (heta/s): %d/%d/%d
+Tooltip_FuelRod_03=Base Power Output (EU/t): %d/%d/%d
+
+item.HoneyBucket.name=Honey Bucket
+tile.honey.name=Honey
+fluid.honey=Honey
+
+item.ShimmerBucket.name=Shimmer Bucket
+tile.shimmer.name=Shimmer
+fluid.shimmer=Shimmer
+gtnl.potion.shimmering=Shimmering
+gtnl.recipe.ShimmerRecipes=Shimmer Transformation
+
+gtnl.potion.ghostly_shape=Ghostly Shape
+Info_GhostlyShape_Cancel=One of your actions canceled the Ghostly Shape effect
+
+item.InfinityCell.name=ME Infinity %s Storage Cell
+item.InfinityCell.unknown=Unknown ME Infinity Storage Cell
+InfinityCell.dye.name=dye
+InfinityCell.dye.fluid.name=fluid dye
+InfinityCell.stone.name=stone
+Tooltip_InfinityCell_Contents=Contains Item:
+
+item.DireCraftPattern.name=Dire Craft Pattern
+
 item.WirelessUpgradeChip.name=Wireless Upgrade Chip
 Tooltip_WirelessUpgradeChip_00=Enables wireless grid mode for certain machines
 Tooltip_WirelessUpgradeChip_01=Not effective on machines that already have this upgrade installed
 
-item.Stick.name=Stick
-Tooltip_Stick_00=§5§oLook closely, %s is a replica made of cardboard.
-Tooltip_Stick_01=§5§oLook closely, %s is a replica made of enchanted cardboard.
+item.SuspiciousStew.name=Suspicious Stew
 
 item.PortableItem.0.name=Portable Workbench
 item.PortableItem.1.name=Advanced Portable Workbench
@@ -3577,93 +3632,34 @@ item.PortableItem.15.name=Portable Obsidian Chest
 item.PortableItem.16.name=Portable Netherite Chest
 item.PortableItem.17.name=Portable Dark Steel Chest
 
+item.ElectricProspectorTool.0.name=Mana Teleport Prospector Tool
+item.ElectricProspectorTool.1.name=Debug Teleport Prospector Tool
+Info_DetravScanner_TP=Teleport to vein: %s (%s, %s)
+
+item.SlimeSaddle.name=Slime Saddle
+entity.sciencenotleisure.SaddleSlime.name=Royal Slime
+
+item.SuperReachRing.name=Super Reach Ring
+item.SatietyRing.name=Ring of Satiety
+item.RejectionRing.name=Ring of Rejection
+Tooltip_RejectionRing_00=Don't touch me... you'll regret it...
+
+item.PhysicsCape.name=Physics Cape
+Tooltip_PhysicsCape_00=Generate electricity by harnessing powerful magnetic flux cutting!
+item.RoyalGel.name=Royal Gel
+item.LuckyHorseshoe.name=Lucky Horseshoe
+item.WyvernProjectionNecklace.name=Wyvern Projection Necklace
+item.DraconicProjectionNecklace.name=Draconic Projection Necklace
+
+item.Stick.name=Stick
+Tooltip_Stick_00=§5§oLook closely, %s is a replica made of cardboard.
+Tooltip_Stick_01=§5§oLook closely, %s is a replica made of enchanted cardboard.
+
 item.VeinMiningPickaxe.name=Vein Mining Pickaxe
 Tooltip_VeinMiningPickaxe_00=Max Block Gap: %s
 Tooltip_VeinMiningPickaxe_01=Max Vein Count: %s
 Tooltip_VeinMiningPickaxe_PreciseMode_On=§aPrecise Mode Enabled
 Tooltip_VeinMiningPickaxe_PreciseMode_Off=§rPrecise Mode Disabled
-
-item.NetherTeleporter.name=Nether Teleporter Tool
-Info_NetherTeleporter_Cooldown=Remaining cooldown: 
-Info_NetherTeleporter_Warning=No safe landing spot!
-
-item.CircuitIntegratedPlus.name=Circuit Integrated Plus
-
-item.NullPointerException.name=java.lang.NullPointerException
-
-item.KFCFamily.name=Family Bucket
-Tooltip_KFCFamily_00=§oA bucket full of fried chicken.
-gtnl.potion.perfect_physique=Perfect Physique
-
-item.SlimeSaddle.name=Slime Saddle
-entity.sciencenotleisure.SaddleSlime.name=Royal Slime
-
-item.InfinityTorch.name=Infinity Torch
-item.InfinityWaterBucket.name=Infinity Water Bucket
-item.InfinityLavaBucket.name=Infinity Lava Bucket
-item.InfinityHoneyBucket.name=Infinity Honey Bucket
-item.InfinityShimmerBucket.name=Infinity Shimmer Bucket
-item.SuperstrongSponge.name=Superstrong Sponge
-
-item.HoneyBucket.name=Honey Bucket
-tile.honey.name=Honey
-fluid.honey=Honey
-
-item.ShimmerBucket.name=Shimmer Bucket
-tile.shimmer.name=Shimmer
-fluid.shimmer=Shimmer
-gtnl.potion.shimmering=Shimmering
-gtnl.recipe.ShimmerRecipes=Shimmer Transformation
-
-gtnl.potion.ghostly_shape=Ghostly Shape
-Info_GhostlyShape_Cancel=One of your actions canceled the Ghostly Shape effect
-
-item.SatietyRing.name=Ring of Satiety
-item.SuperReachRing.name=Super Reach Ring
-item.RejectionRing.name=Ring of Rejection
-Tooltip_RejectionRing_00=Don't touch me... you'll regret it...
-item.WyvernProjectionNecklace.name=Wyvern Projection Necklace
-item.DraconicProjectionNecklace.name=Draconic Projection Necklace
-item.RoyalGel.name=Royal Gel
-item.LuckyHorseshoe.name=Lucky Horseshoe
-item.PhysicsCape.name=Physics Cape
-Tooltip_PhysicsCape_00=Generate electricity by harnessing powerful magnetic flux cutting!
-
-item.InfinityFuelRod.name=Fuel Rod (Infinite)
-item.InfinityFuelRodDepleted.name=Depleted Fuel Rod (Infinite)
-Tooltip_FuelRod_00=Durability: %d/%d
-Tooltip_FuelRod_01=Has MOX properties | MOX Coefficient: %d
-Tooltip_FuelRod_02=Base Heat Output (heta/s): %d/%d/%d
-Tooltip_FuelRod_03=Base Power Output (EU/t): %d/%d/%d
-
-item.FakeItemSiren.name=Siren
-
-item.TwilightSword.name=§6Twilight
-Tooltip_TwilightSword_00=§6§oPowerful weapon forged from the essence of Twilight.
-Tooltip_TwilightSword_01=§b§oBalances the forces of Judgement Bird, Big Bird, and Punishing Bird.
-Tooltip_TwilightSword_02=§c§oCapable of protecting the peace of the Black Forest.
-Tooltip_TwilightSword_03=§r§oRequires mastery to wield effectively.
-Tooltip_TwilightSword_04=§r§oAnd those who can master all three can also bring peace.
-Tooltip_TwilightSword_05=§r§cALEPH§r§o level E.G.O. weapon
-Tooltip_TwilightSword_06=§rReceives multiple attack buffs simultaneously
-Tooltip_TwilightSword_07=§rBase damage doubles when health is below 10
-Tooltip_TwilightSword_08=§rAttacks entities with four powerful attacks in rotation
-Tooltip_TwilightSword_09=§rHold right-click to trigger a special attack
-Tooltip_TwilightSword_10=§oModel by IceyArk
-entity.sciencenotleisure.ArrowCustom.name=Twilight Arrow
-
-item.TimeStopPocketWatch.name=Time Stop Pocket Watch
-
-item.record.sus.desc=AU - Software Update Services
-item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
-item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
-
-item.InfinityCell.name=ME Infinity %s Storage Cell
-item.InfinityCell.unknown=Unknown ME Infinity Storage Cell
-InfinityCell.dye.name=dye
-InfinityCell.dye.fluid.name=fluid dye
-InfinityCell.stone.name=stone
-Tooltip_InfinityCell_Contents=Contains Item:
 
 item.milledNaquadahEnriched.name=Milled Enriched Naquadah
 item.FrothNaquadahenrichedflotation=Enriched Naquadah Flotation Froth Cell

@@ -3239,46 +3239,16 @@ tile.CompressedStargateTier7.name=压缩星门-七重
 tile.CompressedStargateTier8.name=压缩星门-八重
 tile.CompressedStargateTier9.name=压缩星门-九重
 
-tile.EnderElevatorBlock.name=末影电梯 (方块)
-tile.EnderElevatorSlab.name=末影电梯 (台阶)
-tile.EnderElevatorCarpet.name=末影电梯 (地毯)
-Tooltip_EnderElevator_00=让实体在距离最近的两个相同颜色电梯之间上下传送
-Tooltip_EnderElevator_01=传送最高256格，水平64格，不可同高度平移
-Tooltip_EnderElevator_02=跳跃向上，潜行向下
-Tooltip_EnderElevator_03=手持染料对其右键点击可以改变电梯颜色为染料颜色
-Tooltip_EnderElevator_04=手持伪装方块对电梯右击可以伪装电梯。空手时潜行右击移除伪装
-
-tile.SearedLadder.name=焦黑梯子
-Tooltip_SearedLadder_00=§o“可供攀爬的冶炼炉建材。”
-Tooltip_SearedLadder_01=由Circulation_添加
-
-tile.WaterCandle.name=水蜡烛
-gtnl.potion.battle=战斗
-
-tile.CardboardBox.name=纸箱
-Tooltip_CardBoardBox_00_Yes=方块数据：是
-Tooltip_CardBoardBox_00_No=方块数据：否
-Tooltip_CardBoardBox_01=方块：
-Tooltip_CardBoardBox_02=元数据：
-Tooltip_CardBoardBox_03=方块实体：
-
 tile.LaserBeacon.name=激光诱导信标
 Tooltip_LaserBeacon=利用强大的电流产生高精度激光
+
+tile.PlayerLeash.name=拴绳结界
+entity.sciencenotleisure.PlayerLeashKnot.name=拴绳结界
+Tooltip_PlayerLeash_00=创造一个强大的拴绳立场，允许放置其方块的玩家在一定范围内飞行
 
 tile.RealArtificialStarRenderer.name=真·湮灭发电机渲染器
 tile.NanoPhagocytosisPlantRenderer.name=纳米吞噬厂渲染器
 tile.EternalGregTechWorkshopRenderer.name=永恒格雷工坊渲染器
-
-tile.lootgames.sdk_activator.name=数独
-tile.lootgames.sdk_master.name=数独
-Info_Sudoku_00=剩余：%d
-Info_Sudoku_01=上次点击时间：%d
-
-tile.EssentiaHatch.name=源质输入仓
-Tooltip_EssentiaHatch_00=手持源质罐子右键以设置过滤
-Tooltip_EssentiaHatch_01=空手Shift右键以重置过滤
-Info_EssentiaHatch_00=成功锁定为 %s
-Info_EssentiaHatch_01=已清除
 
 tile.PlayerDoll.name=玩偶
 Tooltip_PlayerDoll_00=设置正版玩家名
@@ -3294,17 +3264,45 @@ Waila_TileEntityPlayerDoll_03_Off=不渲染披风/鞘翅
 Waila_TileEntityPlayerDoll_03_Cape=渲染披风
 Waila_TileEntityPlayerDoll_03_Elytra=渲染鞘翅
 
-tile.blockGiantBrickuoiaSapling.name=§c巨型红砖树苗
-Tooltip_GiantBrickuoiaSapling_00=§o你们的科学家过于专注于‘能不能做到’，
-Tooltip_GiantBrickuoiaSapling_01=§o而没有停下来思考‘是否应该去做’
-Tooltip_GiantBrickuoiaSapling_02=§r§f作者：High§7Pres§8sure§dRaven
+tile.CardboardBox.name=纸箱
+Tooltip_CardBoardBox_00_Yes=方块数据：是
+Tooltip_CardBoardBox_00_No=方块数据：否
+Tooltip_CardBoardBox_01=方块：
+Tooltip_CardBoardBox_02=元数据：
+Tooltip_CardBoardBox_03=方块实体：
 
-tile.PlayerLeash.name=拴绳结界
-entity.sciencenotleisure.PlayerLeashKnot.name=拴绳结界
-Tooltip_PlayerLeash_00=创造一个强大的拴绳立场，允许放置其方块的玩家在一定范围内飞行
+tile.WaterCandle.name=水蜡烛
+gtnl.potion.battle=战斗
+
+tile.SearedLadder.name=焦黑梯子
+Tooltip_SearedLadder_00=§o“可供攀爬的冶炼炉建材。”
+Tooltip_SearedLadder_01=由Circulation_添加
 
 tile.DirePatternEncoder.name=终极样板编码台
 container.DirePatternEncoder=终极样板编码台
+
+tile.MEChisel.name=ME雕凿机
+container.MEChisel=ME雕凿机
+text.me_chisel.gui.parallel=设置样板并行
+
+tile.DimensionRespawnAnchor.name=维度重生锚
+Info_DimensionRespawnAnchor_NoBedOrAnchor=你的床或已充能的重生锚不存在或已被阻挡
+Info_DimensionRespawnAnchor_SetSpawn=重生点已设置
+
+tile.EssentiaHatch.name=源质输入仓
+Tooltip_EssentiaHatch_00=手持源质罐子右键以设置过滤
+Tooltip_EssentiaHatch_01=空手Shift右键以重置过滤
+Info_EssentiaHatch_00=成功锁定为 %s
+Info_EssentiaHatch_01=已清除
+
+tile.EnderElevatorBlock.name=末影电梯 (方块)
+tile.EnderElevatorSlab.name=末影电梯 (台阶)
+tile.EnderElevatorCarpet.name=末影电梯 (地毯)
+Tooltip_EnderElevator_00=让实体在距离最近的两个相同颜色电梯之间上下传送
+Tooltip_EnderElevator_01=传送最高256格，水平64格，不可同高度平移
+Tooltip_EnderElevator_02=跳跃向上，潜行向下
+Tooltip_EnderElevator_03=手持染料对其右键点击可以改变电梯颜色为染料颜色
+Tooltip_EnderElevator_04=手持伪装方块对电梯右击可以伪装电梯。空手时潜行右击移除伪装
 
 item.PartSuperInterface.name=超级ME接口
 tile.SuperInterface.name=超级ME接口
@@ -3321,17 +3319,10 @@ text.beam_former.show=已显示光束。
 
 tile.BeamFormer.name=ME光束成型器
 
-tile.MEChisel.name=ME雕凿机
-container.MEChisel=ME雕凿机
-text.me_chisel.gui.parallel=设置样板并行
-
-tile.DimensionRespawnAnchor.name=维度重生锚
-Info_DimensionRespawnAnchor_NoBedOrAnchor=你的床或已充能的重生锚不存在或已被阻挡
-Info_DimensionRespawnAnchor_SetSpawn=重生点已设置
-
-item.ElectricProspectorTool.0.name=魔力传送探矿仪
-item.ElectricProspectorTool.1.name=Debug传送探矿仪
-Info_DetravScanner_TP=传送至矿脉：%s (%s，%s)
+tile.blockGiantBrickuoiaSapling.name=§c巨型红砖树苗
+Tooltip_GiantBrickuoiaSapling_00=§o你们的科学家过于专注于‘能不能做到’，
+Tooltip_GiantBrickuoiaSapling_01=§o而没有停下来思考‘是否应该去做’
+Tooltip_GiantBrickuoiaSapling_02=§r§f作者：High§7Pres§8sure§dRaven
 
 item.MetaItem.0.name=愚人脸
 Tooltip_TrollFace_00=Never Gonna Give You Up~
@@ -3522,17 +3513,19 @@ item.MetaItem.135.name=源质升级：SPIRIT
 item.MetaItem.136.name=源质升级：RADIATION
 item.MetaItem.137.name=源质升级：ELECTRIC
 
-item.SuspiciousStew.name=迷之炖菜
-
-item.DireCraftPattern.name=终极合成样板
-
 item.SteamRocket.name=蒸汽火箭
 Tooltip_SteamRocket_00=需要熔融压缩蒸汽作为燃料
 Tooltip_SteamRocket_01=你就是玩缺氧玩的！
 entity.GalacticraftCore.SteamRocket.name=蒸汽火箭
 schematic.rocketSteam.name=火箭(蒸汽)
 
-item.DebugItem.name=调试物品 (Debug)
+item.NullPointerException.name=java.lang.NullPointerException
+
+item.FakeItemSiren.name=警报器
+
+item.NetherTeleporter.name=下界传送仪
+Info_NetherTeleporter_Cooldown=剩余冷却时间：
+Info_NetherTeleporter_Warning=没有安全的落脚点！
 
 item.TestItem.name=测试物品
 Tooltip_Testitem_00=如果你看到了这个Tooltip
@@ -3550,13 +3543,75 @@ Tooltip_Testitem_11=§f§l如果你遇到了什么问题或者想提出意见，
 Tooltip_Testitem_12=本模组添加的机器meta值从21000开始
 Tooltip_Testitem_13=§c§l另外提醒：不要拿着这个物品右键！
 
+item.DebugItem.name=调试物品 (Debug)
+
+item.KFCFamily.name=疯狂星期四
+Tooltip_KFCFamily_00=§o疯狂星期四，v我50！
+gtnl.potion.perfect_physique=完美体魄
+
+item.TwilightSword.name=§6薄暝
+Tooltip_TwilightSword_00=§6§o大鸟那永不闭合的眼睛
+Tooltip_TwilightSword_01=§b§o高鸟那能衡量一切的罪恶的天平
+Tooltip_TwilightSword_02=§c§o小鸟那能吞噬一切的巨口
+Tooltip_TwilightSword_03=§r§o这三者守护着黑森林的和平。
+Tooltip_TwilightSword_04=§r§o而那些能够同时驾驭这三者的人也能带来和平。
+Tooltip_TwilightSword_05=§r§cALEPH§r级E.G.O.武器
+Tooltip_TwilightSword_06=§r同时受到多种攻击增益
+Tooltip_TwilightSword_07=§r生命值低于10时基础伤害翻倍
+Tooltip_TwilightSword_08=§r攻击实体轮流使用四种强力的攻击
+Tooltip_TwilightSword_09=§r长按右键触发特殊攻击
+Tooltip_TwilightSword_10=§oModel by IceyArk
+entity.sciencenotleisure.ArrowCustom.name=薄暝之箭
+
+item.CircuitIntegratedPlus.name=突破编程电路
+
+item.TimeStopPocketWatch.name=岁月静滞怀表
+
+item.record.sus.desc=AU - Software Update Services
+item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
+item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
+
+item.InfinityTorch.name=无尽火把
+item.InfinityWaterBucket.name=无底水桶
+item.InfinityLavaBucket.name=无底岩浆桶
+item.InfinityHoneyBucket.name=无底蜂蜜桶
+item.InfinityShimmerBucket.name=无底微光桶
+item.SuperstrongSponge.name=超强吸收棉
+
+item.InfinityFuelRodDepleted.name=枯竭燃料棒(无尽)
+item.InfinityFuelRod.name=燃料棒(无尽)
+Tooltip_FuelRod_00=耐久：%d/%d
+Tooltip_FuelRod_01=具有MOX特性 | MOX系数：%d
+Tooltip_FuelRod_02=基础产热(heta/s)：%d/%d/%d
+Tooltip_FuelRod_03=基础发电功率(EU/t)：%d/%d/%d
+
+item.HoneyBucket.name=蜂蜜桶
+tile.honey.name=蜂蜜
+fluid.honey=蜂蜜
+
+item.ShimmerBucket.name=微光桶
+tile.shimmer.name=微光
+fluid.shimmer=微光
+gtnl.potion.shimmering=微光闪烁
+gtnl.recipe.ShimmerRecipes=微光嬗变
+
+gtnl.potion.ghostly_shape=幽灵形态
+Info_GhostlyShape_Cancel=你的某个行为使你退出了幽灵形态
+
+item.InfinityCell.name=ME无限%s存储元件
+item.InfinityCell.unknown=未知的ME无限存储元件
+InfinityCell.dye.name=染料
+InfinityCell.dye.fluid.name=流体染料
+InfinityCell.stone.name=石材
+Tooltip_InfinityCell_Contents=内含物品：
+
+item.DireCraftPattern.name=终极合成样板
+
 item.WirelessUpgradeChip.name=无线升级芯片
 Tooltip_WirelessUpgradeChip_00=为部分机器开启无线电网模式
 Tooltip_WirelessUpgradeChip_01=对已经安装升级的机器无效
 
-item.Stick.name=纸板
-Tooltip_Stick_00=§5§o仔细检查，%s是一个由纸板做的假东西，希望你能得到一张收据
-Tooltip_Stick_01=§5§o仔细检查，%s是一个由附魔的纸板做的假东西，希望你能得到一张收据
+item.SuspiciousStew.name=迷之炖菜
 
 item.PortableItem.0.name=便携工作台
 item.PortableItem.1.name=高级便携工作台
@@ -3577,93 +3632,34 @@ item.PortableItem.15.name=便携黑曜石箱子
 item.PortableItem.16.name=便携下界合金箱子
 item.PortableItem.17.name=便携玄钢箱子
 
+item.ElectricProspectorTool.0.name=魔力传送探矿仪
+item.ElectricProspectorTool.1.name=Debug传送探矿仪
+Info_DetravScanner_TP=传送至矿脉：%s (%s，%s)
+
+item.SlimeSaddle.name=粘鞍
+entity.sciencenotleisure.SaddleSlime.name=皇家史莱姆
+
+item.SuperReachRing.name=超级触物指环
+item.SatietyRing.name=饱食指环
+item.RejectionRing.name=排斥指环
+Tooltip_RejectionRing_00=不要碰我……你会后悔的……
+
+item.PhysicsCape.name=物理学披风
+Tooltip_PhysicsCape_00=利用强大的切割磁感线进行发电！
+item.RoyalGel.name=皇家凝胶
+item.LuckyHorseshoe.name=幸运马掌
+item.WyvernProjectionNecklace.name=双足飞龙伪装项链
+item.DraconicProjectionNecklace.name=神龙伪装项链
+
+item.Stick.name=纸板
+Tooltip_Stick_00=§5§o仔细检查，%s是一个由纸板做的假东西，希望你能得到一张收据
+Tooltip_Stick_01=§5§o仔细检查，%s是一个由附魔的纸板做的假东西，希望你能得到一张收据
+
 item.VeinMiningPickaxe.name=矿脉挖掘镐
 Tooltip_VeinMiningPickaxe_00=最大方块间隔：%s
 Tooltip_VeinMiningPickaxe_01=最大连锁数量：%s
 Tooltip_VeinMiningPickaxe_PreciseMode_On=§a精确模式已开启
 Tooltip_VeinMiningPickaxe_PreciseMode_Off=§r精确模式已关闭
-
-item.NetherTeleporter.name=下界传送仪
-Info_NetherTeleporter_Cooldown=剩余冷却时间：
-Info_NetherTeleporter_Warning=没有安全的落脚点！
-
-item.CircuitIntegratedPlus.name=突破编程电路
-
-item.NullPointerException.name=java.lang.NullPointerException
-
-item.KFCFamily.name=疯狂星期四
-Tooltip_KFCFamily_00=§o疯狂星期四，v我50！
-gtnl.potion.perfect_physique=完美体魄
-
-item.SlimeSaddle.name=粘鞍
-entity.sciencenotleisure.SaddleSlime.name=皇家史莱姆
-
-item.InfinityTorch.name=无尽火把
-item.InfinityWaterBucket.name=无底水桶
-item.InfinityLavaBucket.name=无底岩浆桶
-item.InfinityHoneyBucket.name=无底蜂蜜桶
-item.InfinityShimmerBucket.name=无底微光桶
-item.SuperstrongSponge.name=超强吸收棉
-
-item.HoneyBucket.name=蜂蜜桶
-tile.honey.name=蜂蜜
-fluid.honey=蜂蜜
-
-item.ShimmerBucket.name=微光桶
-tile.shimmer.name=微光
-fluid.shimmer=微光
-gtnl.potion.shimmering=微光闪烁
-gtnl.recipe.ShimmerRecipes=微光嬗变
-
-gtnl.potion.ghostly_shape=幽灵形态
-Info_GhostlyShape_Cancel=你的某个行为使你退出了幽灵形态
-
-item.SatietyRing.name=饱食指环
-item.SuperReachRing.name=超级触物指环
-item.RejectionRing.name=排斥指环
-Tooltip_RejectionRing_00=不要碰我……你会后悔的……
-item.WyvernProjectionNecklace.name=双足飞龙伪装项链
-item.DraconicProjectionNecklace.name=神龙伪装项链
-item.RoyalGel.name=皇家凝胶
-item.LuckyHorseshoe.name=幸运马掌
-item.PhysicsCape.name=物理学披风
-Tooltip_PhysicsCape_00=利用强大的切割磁感线进行发电！
-
-item.InfinityFuelRod.name=燃料棒(无尽)
-item.InfinityFuelRodDepleted.name=枯竭燃料棒(无尽)
-Tooltip_FuelRod_00=耐久：%d/%d
-Tooltip_FuelRod_01=具有MOX特性 | MOX系数：%d
-Tooltip_FuelRod_02=基础产热(heta/s)：%d/%d/%d
-Tooltip_FuelRod_03=基础发电功率(EU/t)：%d/%d/%d
-
-item.FakeItemSiren.name=警报器
-
-item.TwilightSword.name=§6薄暝
-Tooltip_TwilightSword_00=§6§o大鸟那永不闭合的眼睛
-Tooltip_TwilightSword_01=§b§o高鸟那能衡量一切的罪恶的天平
-Tooltip_TwilightSword_02=§c§o小鸟那能吞噬一切的巨口
-Tooltip_TwilightSword_03=§r§o这三者守护着黑森林的和平。
-Tooltip_TwilightSword_04=§r§o而那些能够同时驾驭这三者的人也能带来和平。
-Tooltip_TwilightSword_05=§r§cALEPH§r级E.G.O.武器
-Tooltip_TwilightSword_06=§r同时受到多种攻击增益
-Tooltip_TwilightSword_07=§r生命值低于10时基础伤害翻倍
-Tooltip_TwilightSword_08=§r攻击实体轮流使用四种强力的攻击
-Tooltip_TwilightSword_09=§r长按右键触发特殊攻击
-Tooltip_TwilightSword_10=§oModel by IceyArk
-entity.sciencenotleisure.ArrowCustom.name=薄暝之箭
-
-item.TimeStopPocketWatch.name=岁月静滞怀表
-
-item.record.sus.desc=AU - Software Update Services
-item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
-item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
-
-item.InfinityCell.name=ME无限%s存储元件
-item.InfinityCell.unknown=未知的ME无限存储元件
-InfinityCell.dye.name=染料
-InfinityCell.dye.fluid.name=流体染料
-InfinityCell.stone.name=石材
-Tooltip_InfinityCell_Contents=内含物品：
 
 item.milledNaquadahEnriched.name=研磨富集硅岩矿
 item.FrothNaquadahenrichedflotation=富集硅岩浮选泡沫单元
