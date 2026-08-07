@@ -35,6 +35,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerFrontend;
@@ -55,10 +56,7 @@ import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
-import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.items.wands.ItemWandCasting;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -73,6 +71,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 import tectech.thing.casing.TTCasingsContainer;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.common.items.wands.ItemWandCasting;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.IManaDissolvable;
 import vazkii.botania.api.mana.IManaItem;
@@ -492,33 +492,22 @@ public class SubscribeEventUtils {
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
 
         EntityPlayer player = event.entityPlayer;
-        if (player == null
-            || player.worldObj == null
-            || !player.isSneaking()) {
+        if (player == null || player.worldObj == null || !player.isSneaking()) {
             return;
         }
 
         ItemStack heldStack = player.getHeldItem();
-        if (heldStack == null
-            || !(heldStack.getItem() instanceof ItemWandCasting)) {
+        if (heldStack == null || !(heldStack.getItem() instanceof ItemWandCasting)) {
             return;
         }
 
-        TileEntity tile = player.worldObj.getTileEntity(
-            event.x,
-            event.y,
-            event.z);
+        TileEntity tile = player.worldObj.getTileEntity(event.x, event.y, event.z);
 
         if (!(tile instanceof TileEntityMultiEssentiaJar jar)) {
             return;
         }
 
-        if (!player.canPlayerEdit(
-            event.x,
-            event.y,
-            event.z,
-            event.face,
-            heldStack)) {
+        if (!player.canPlayerEdit(event.x, event.y, event.z, event.face, heldStack)) {
             return;
         }
 
@@ -537,19 +526,14 @@ public class SubscribeEventUtils {
         int clearedAmount = jar.getTotalAmount();
 
         if (clearedAmount <= 0) {
-            player.addChatMessage(
-                new ChatComponentTranslation(
-                    "Info_MultiEssentiaJar_AlreadyEmpty"));
+            player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_AlreadyEmpty"));
             return;
         }
 
         jar.setAspects(new AspectList());
         player.swingItem();
 
-        player.addChatMessage(
-            new ChatComponentTranslation(
-                "Info_MultiEssentiaJar_Cleared",
-                clearedAmount));
+        player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_Cleared", clearedAmount));
     }
 
     // Botania

@@ -179,8 +179,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             if (remainingBudget <= 0) break;
             if (!canInputFrom(direction)) continue;
 
-            TileEntity tile = ThaumcraftApiHelper
-                .getConnectableTile(worldObj, xCoord, yCoord, zCoord, direction);
+            TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, direction);
             if (!(tile instanceof IEssentiaTransport source)) continue;
 
             ForgeDirection sourceSide = direction.getOpposite();

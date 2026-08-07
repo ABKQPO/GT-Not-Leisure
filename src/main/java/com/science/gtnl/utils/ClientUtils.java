@@ -22,11 +22,12 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
+import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
 import com.science.gtnl.common.packet.RequestGameProfilePacket;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.item.IPickBlockHandler;
@@ -70,29 +71,20 @@ public class ClientUtils {
     }
 
     private static boolean tryOpenMultiEssentiaJarBlock(World world) {
-        MovingObjectPosition target =
-            Minecraft.getMinecraft().objectMouseOver;
+        MovingObjectPosition target = Minecraft.getMinecraft().objectMouseOver;
 
-        if (target == null
-            || target.typeOfHit
-            != MovingObjectPosition.MovingObjectType.BLOCK) {
+        if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return false;
         }
 
-        TileEntity tile = world.getTileEntity(
-            target.blockX,
-            target.blockY,
-            target.blockZ);
+        TileEntity tile = world.getTileEntity(target.blockX, target.blockY, target.blockZ);
 
         if (!(tile instanceof TileEntityMultiEssentiaJar)) {
             return false;
         }
 
-        ScienceNotLeisure.network.sendToServer(
-            OpenMultiEssentiaJarGuiPacket.openBlockGui(
-                target.blockX,
-                target.blockY,
-                target.blockZ));
+        ScienceNotLeisure.network
+            .sendToServer(OpenMultiEssentiaJarGuiPacket.openBlockGui(target.blockX, target.blockY, target.blockZ));
 
         return true;
     }

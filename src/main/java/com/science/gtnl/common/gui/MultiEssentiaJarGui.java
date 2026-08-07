@@ -8,13 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
-
-import com.gtnewhorizons.aspectrecipeindex.ModItems;
-import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.cleanroommc.modularui.api.MCHelper;
-
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.gtnewhorizons.aspectrecipeindex.ModItems;
+import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
@@ -94,7 +92,10 @@ public class MultiEssentiaJarGui {
         }
 
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setString(ItemBlockMultiEssentiaJar.SELECTED_ASPECT_PACKET_KEY, aspects.get(selected).getTag());
+        tag.setString(
+            ItemBlockMultiEssentiaJar.SELECTED_ASPECT_PACKET_KEY,
+            aspects.get(selected)
+                .getTag());
         GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
     }
 
@@ -116,9 +117,7 @@ public class MultiEssentiaJarGui {
         String unknownName = StatCollector.translateToLocal("tc.aspect.unknown");
 
         if (unknownName.equals(ariDisplayName)) {
-            return StatCollector.translateToLocalFormatted(
-                "GTNL.gui.multi_essentia_jar.aspect_unknown",
-                amount);
+            return StatCollector.translateToLocalFormatted("GTNL.gui.multi_essentia_jar.aspect_unknown", amount);
         }
 
         return StatCollector.translateToLocalFormatted(

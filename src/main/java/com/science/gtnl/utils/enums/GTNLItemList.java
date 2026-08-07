@@ -482,6 +482,7 @@ public enum GTNLItemList implements IItemContainer {
     StellarIrisController,
     MultiEssentiaJar,
     MultiEssentiaTube,
+    SmallInfusionMatrix,
     EternalGregTechWorkshop,
     EGTWFusionModule,
     ETGWEyeOfHarmonyModule,

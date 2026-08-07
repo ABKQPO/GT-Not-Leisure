@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
+
 import com.cleanroommc.modularui.factory.GuiFactories;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
@@ -57,7 +58,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, net.minecraft.entity.EntityLivingBase entity,
-                                ItemStack stack) {
+        ItemStack stack) {
         super.onBlockPlacedBy(world, x, y, z, entity, stack);
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityMultiEssentiaJar jar) {
@@ -89,7 +90,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
-                                    float hitY, float hitZ) {
+        float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (!(tile instanceof TileEntityMultiEssentiaJar jar)) return false;
 
@@ -127,33 +128,27 @@ public class BlockMultiEssentiaJar extends BlockJar {
         return emptyPhialIntoJar(world, x, y, z, player, jar, phialItem, heldStack);
     }
 
-    public static void sendActiveAspectStatus(
-        EntityPlayer player,
-        TileEntityMultiEssentiaJar jar,
+    public static void sendActiveAspectStatus(EntityPlayer player, TileEntityMultiEssentiaJar jar,
         Aspect activeAspect) {
 
         if (activeAspect == null) {
             player.addChatMessage(
-                new ChatComponentTranslation(
-                    "Info_MultiEssentiaJar_Empty",
-                    TileEntityMultiEssentiaJar.MAX_CAPACITY));
+                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
             return;
         }
 
         player.addChatMessage(
             new ChatComponentTranslation(
                 "Info_MultiEssentiaJar_Status",
-                ItemBlockMultiEssentiaJar.createServerAspectDisplay(
-                    player,
-                    activeAspect,
-                    jar.containerContains(activeAspect)),
+                ItemBlockMultiEssentiaJar
+                    .createServerAspectDisplay(player, activeAspect, jar.containerContains(activeAspect)),
                 jar.getTotalAmount(),
                 TileEntityMultiEssentiaJar.MAX_CAPACITY,
                 jar.getStoredTypeCount()));
     }
 
     private boolean fillPhialFromJar(World world, int x, int y, int z, EntityPlayer player,
-                                     TileEntityMultiEssentiaJar jar, ItemEssence phialItem) {
+        TileEntityMultiEssentiaJar jar, ItemEssence phialItem) {
         if (world.isRemote) {
             player.swingItem();
             return true;
@@ -171,7 +166,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
     }
 
     private boolean emptyPhialIntoJar(World world, int x, int y, int z, EntityPlayer player,
-                                      TileEntityMultiEssentiaJar jar, ItemEssence phialItem, ItemStack heldStack) {
+        TileEntityMultiEssentiaJar jar, ItemEssence phialItem, ItemStack heldStack) {
         AspectList phialAspects = phialItem.getAspects(heldStack);
         if (phialAspects == null || phialAspects.size() != 1) return false;
 
@@ -192,8 +187,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
         return true;
     }
 
-    private static void exchangeHeldItem(World world, int x, int y, int z, EntityPlayer player,
-                                         ItemStack replacement) {
+    private static void exchangeHeldItem(World world, int x, int y, int z, EntityPlayer player, ItemStack replacement) {
         if (player.capabilities.isCreativeMode) return;
 
         ItemStack heldStack = player.getHeldItem();

@@ -3992,15 +3992,19 @@ Info_MultiEssentiaJar_Empty=The jar is empty. Capacity: %s
 Info_MultiEssentiaJar_ItemActive=Held jar active aspect: %s
 Info_MultiEssentiaJar_Status=Active: %s; total: %s/%s; types: %s
 
-tile.MultiEssentiaTube.name=Multi-Essentia Buffer Tube
-Tooltip_MultiEssentiaTube_Capacity=Shared cache capacity: %s essentia
-Tooltip_MultiEssentiaTube_Mixed=Can cache and transport several essentia types at once
-Tooltip_MultiEssentiaTube_Wand=Use a wand to toggle sides; sneak-use it to adjust side suction
 GTNL.gui.multi_essentia_jar.title=Select Active Aspect
 GTNL.gui.multi_essentia_jar.aspect=%s (%s): %s essentia
 GTNL.gui.multi_essentia_jar.aspect_unknown=Unknown aspect: %s essentia
-Tooltip_MultiEssentiaJar_Cycle=Sneak-right-click for the next aspect; sneak-left-click for the previous aspect
+Tooltip_MultiEssentiaJar_Cycle=Sneak and right click for the next aspect; sneak-left-click for the previous aspect
 Tooltip_MultiEssentiaJar_Select=Press the pick block key while holding the jar to open its GUI; empty-hand right-click a placed jar to open its GUI
-Info_MultiEssentiaJar_Cleared=Cleared the Multi-Essentia Jar, voiding %s essentia.
-Info_MultiEssentiaJar_AlreadyEmpty=The Multi-Essentia Jar is already empty.
+Info_MultiEssentiaJar_Cleared=Cleared the Multi Essentia Jar, voiding %s essentia.
+Info_MultiEssentiaJar_AlreadyEmpty=The Multi Essentia Jar is already empty.
 Tooltip_MultiEssentiaJar_Clear=Sneak-right-click with a wand, sceptre, or staff to void all essentia
+
+tile.MultiEssentiaTube.name=Multi Essentia Buffer Tube
+Tooltip_MultiEssentiaTube_Capacity=Shared cache capacity: %s essentia
+Tooltip_MultiEssentiaTube_Mixed=Can cache and transport several essentia types at once
+Tooltip_MultiEssentiaTube_Wand=Use a wand to toggle sides; sneak-use it to adjust side suction
+
+GT5U.gui.text.recipe_result.missing_infusion_research=Required infusion research has not been completed
+GT5U.gui.text.recipe_result.insufficient_essentia=Not enough essentia in the Essentia Hatches

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.block.blocks.item;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -14,16 +13,15 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import com.gtnewhorizons.aspectrecipeindex.ModItems;
-import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 
-import thaumcraft.api.ThaumcraftApiHelper;
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizons.aspectrecipeindex.ModItems;
+import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.gui.MultiEssentiaJarGui;
@@ -35,6 +33,7 @@ import gregtech.api.interfaces.INetworkUpdatableItem;
 import gregtech.api.interfaces.item.IPickBlockHandler;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -45,20 +44,13 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
     public static final String SELECTED_ASPECT_PACKET_KEY = "SelectedAspect";
 
-    public static ChatComponentTranslation createServerAspectDisplay(
-        EntityPlayer player,
-        Aspect aspect,
-        int amount) {
+    public static ChatComponentTranslation createServerAspectDisplay(EntityPlayer player, Aspect aspect, int amount) {
 
         boolean discovered = aspect != null
-            && ThaumcraftApiHelper.hasDiscoveredAspect(
-            player.getCommandSenderName(),
-            aspect);
+            && ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), aspect);
 
         if (!discovered) {
-            return new ChatComponentTranslation(
-                "GTNL.gui.multi_essentia_jar.aspect_unknown",
-                amount);
+            return new ChatComponentTranslation("GTNL.gui.multi_essentia_jar.aspect_unknown", amount);
         }
 
         return new ChatComponentTranslation(
@@ -93,9 +85,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         if (TileEntityMultiEssentiaJar.getStoredAspects(stack)
             .visSize() <= 0) {
             player.addChatMessage(
-                new ChatComponentTranslation(
-                    "Info_MultiEssentiaJar_Empty",
-                    TileEntityMultiEssentiaJar.MAX_CAPACITY));
+                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
             return true;
         }
 
@@ -103,29 +93,20 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         return true;
     }
 
-    public static void sendActiveAspectStatus(
-        EntityPlayer player,
-        ItemStack stack,
-        Aspect activeAspect) {
+    public static void sendActiveAspectStatus(EntityPlayer player, ItemStack stack, Aspect activeAspect) {
 
         if (activeAspect == null) {
             player.addChatMessage(
-                new ChatComponentTranslation(
-                    "Info_MultiEssentiaJar_Empty",
-                    TileEntityMultiEssentiaJar.MAX_CAPACITY));
+                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
             return;
         }
 
-        AspectList storedAspects =
-            TileEntityMultiEssentiaJar.getStoredAspects(stack);
+        AspectList storedAspects = TileEntityMultiEssentiaJar.getStoredAspects(stack);
 
         player.addChatMessage(
             new ChatComponentTranslation(
                 "Info_MultiEssentiaJar_ItemActive",
-                createServerAspectDisplay(
-                    player,
-                    activeAspect,
-                    storedAspects.getAmount(activeAspect))));
+                createServerAspectDisplay(player, activeAspect, storedAspects.getAmount(activeAspect))));
     }
 
     @Override
@@ -162,17 +143,13 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Select"));
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Clear"));
 
-        AspectList storedAspects =
-            TileEntityMultiEssentiaJar.getStoredAspects(stack);
+        AspectList storedAspects = TileEntityMultiEssentiaJar.getStoredAspects(stack);
 
-        Aspect activeAspect =
-            TileEntityMultiEssentiaJar.getActiveAspect(stack);
+        Aspect activeAspect = TileEntityMultiEssentiaJar.getActiveAspect(stack);
 
         Aspect[] aspects = storedAspects.aspects.keySet()
             .stream()
-            .filter(
-                aspect -> aspect != null
-                    && storedAspects.getAmount(aspect) > 0)
+            .filter(aspect -> aspect != null && storedAspects.getAmount(aspect) > 0)
             .sorted((first, second) -> {
                 if (first == second) return 0;
 
@@ -181,9 +158,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
                 if (second == activeAspect) return 1;
 
                 // 其余源质按照数量从多到少排列
-                int amountComparison = Integer.compare(
-                    storedAspects.getAmount(second),
-                    storedAspects.getAmount(first));
+                int amountComparison = Integer.compare(storedAspects.getAmount(second), storedAspects.getAmount(first));
 
                 if (amountComparison != 0) {
                     return amountComparison;
@@ -201,7 +176,6 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
             .mapToInt(storedAspects::getAmount)
             .sum();
         tooltip.add(StatCollector.translateToLocalFormatted("Tooltip_MultiEssentiaJar_Stored", total, aspects.length));
-
 
         for (int i = 0; i < Math.min(aspects.length, MAX_DISPLAYED_ASPECTS); i++) {
             Aspect aspect = aspects[i];
@@ -228,9 +202,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         String unknownName = StatCollector.translateToLocal("tc.aspect.unknown");
 
         if (unknownName.equals(ariDisplayName)) {
-            return StatCollector.translateToLocalFormatted(
-                "GTNL.gui.multi_essentia_jar.aspect_unknown",
-                amount);
+            return StatCollector.translateToLocalFormatted("GTNL.gui.multi_essentia_jar.aspect_unknown", amount);
         }
 
         return StatCollector.translateToLocalFormatted(

@@ -29,8 +29,10 @@ import thaumcraft.common.tiles.TileJarFillable;
 /**
  * A jar that stores several essentia types in one shared 4096-point pool.
  *
- * <p>The inherited single-aspect fields are only kept in sync for Thaumcraft's standard jar renderer. All storage,
- * persistence, and transport behaviour is implemented by this class.</p>
+ * <p>
+ * The inherited single-aspect fields are only kept in sync for Thaumcraft's standard jar renderer. All storage,
+ * persistence, and transport behaviour is implemented by this class.
+ * </p>
  */
 public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiHolder<GuiData> {
 
@@ -78,13 +80,13 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public void updateEntity() {
-        if (worldObj == null || worldObj.isRemote || ++transferTick % TRANSFER_INTERVAL != 0
+        if (worldObj == null || worldObj.isRemote
+            || ++transferTick % TRANSFER_INTERVAL != 0
             || getTotalAmount() >= MAX_CAPACITY) {
             return;
         }
 
-        TileEntity tile = ThaumcraftApiHelper
-            .getConnectableTile(worldObj, xCoord, yCoord, zCoord, ForgeDirection.UP);
+        TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, ForgeDirection.UP);
         if (!(tile instanceof IEssentiaTransport source)) return;
 
         ForgeDirection sourceSide = ForgeDirection.DOWN;
@@ -96,11 +98,8 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         Aspect sourceAspect = source.getEssentiaType(sourceSide);
         if (sourceAspect == null || !doesContainerAccept(sourceAspect)) return;
 
-        int requested = Math.min(
-            TRANSFER_PER_TICK,
-            Math.min(
-                MAX_CAPACITY - getTotalAmount(),
-                source.getEssentiaAmount(sourceSide)));
+        int requested = Math
+            .min(TRANSFER_PER_TICK, Math.min(MAX_CAPACITY - getTotalAmount(), source.getEssentiaAmount(sourceSide)));
 
         int taken = source.takeEssentia(sourceAspect, requested, sourceSide);
         if (taken > 0) {
@@ -346,18 +345,21 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     public static AspectList getStoredAspects(ItemStack stack) {
         AspectList result = new AspectList();
-        if (stack != null && stack.hasTagCompound() && stack.getTagCompound()
-            .hasKey(STORED_ASPECTS_KEY)) {
-            result.readFromNBT(stack.getTagCompound()
-                .getCompoundTag(STORED_ASPECTS_KEY));
+        if (stack != null && stack.hasTagCompound()
+            && stack.getTagCompound()
+                .hasKey(STORED_ASPECTS_KEY)) {
+            result.readFromNBT(
+                stack.getTagCompound()
+                    .getCompoundTag(STORED_ASPECTS_KEY));
         }
         return result;
     }
 
     public static Aspect getActiveAspect(ItemStack stack) {
         if (stack == null || !stack.hasTagCompound()) return null;
-        return Aspect.getAspect(stack.getTagCompound()
-            .getString(ACTIVE_ASPECT_KEY));
+        return Aspect.getAspect(
+            stack.getTagCompound()
+                .getString(ACTIVE_ASPECT_KEY));
     }
 
     public static Aspect cycleActiveAspect(ItemStack stack) {

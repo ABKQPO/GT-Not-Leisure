@@ -9,14 +9,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import thaumcraft.api.TileThaumcraft;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.common.tiles.TileAlembic;
 import thaumcraft.common.tiles.TileAlchemyFurnace;
+import thaumcraft.common.tiles.TileAlembic;
 
 @Mixin(value = TileAlchemyFurnace.class, remap = false)
 public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
@@ -45,10 +46,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
 
     @Redirect(
         method = "updateEntity",
-        at = @At(
-            value = "INVOKE",
-            target = "Lthaumcraft/api/aspects/AspectList;size()I",
-            ordinal = 0))
+        at = @At(value = "INVOKE", target = "Lthaumcraft/api/aspects/AspectList;size()I", ordinal = 0))
     private int gtnl$suppressVanillaAlembicDistribution(AspectList ignoredAspects) {
         return 0;
     }
@@ -113,9 +111,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
         AspectList stored = alembic.getAspects();
         if (alembic.aspectFilter != null) {
             return stored.getAmount(alembic.aspectFilter) > 0 && aspects.getAmount(alembic.aspectFilter) > 0
-                && alembic.doesContainerAccept(alembic.aspectFilter)
-                ? alembic.aspectFilter
-                : null;
+                && alembic.doesContainerAccept(alembic.aspectFilter) ? alembic.aspectFilter : null;
         }
 
         for (Aspect storedAspect : gtnl$getSortedAspects(stored)) {
@@ -130,10 +126,9 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
     private Aspect gtnl$findNewAspect(TileAlembic alembic) {
         if (alembic.aspectFilter != null) {
             Aspect filter = alembic.aspectFilter;
-            return alembic.getAspects().getAmount(filter) <= 0 && aspects.getAmount(filter) > 0
-                && alembic.doesContainerAccept(filter)
-                ? filter
-                : null;
+            return alembic.getAspects()
+                .getAmount(filter) <= 0 && aspects.getAmount(filter) > 0
+                && alembic.doesContainerAccept(filter) ? filter : null;
         }
 
         AspectList stored = alembic.getAspects();

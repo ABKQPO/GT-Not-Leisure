@@ -159,8 +159,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
     @Inject(method = "takeFromContainer(Lthaumcraft/api/aspects/Aspect;I)Z", at = @At("HEAD"), cancellable = true)
     private void gtnl$takeFromContainer(Aspect takenAspect, int takenAmount, CallbackInfoReturnable<Boolean> cir) {
         gtnl$reconcileLegacyState();
-        if (takenAspect == null || takenAmount <= 0
-            || gtnl$getStoredAspects().getAmount(takenAspect) < takenAmount) {
+        if (takenAspect == null || takenAmount <= 0 || gtnl$getStoredAspects().getAmount(takenAspect) < takenAmount) {
             cir.setReturnValue(false);
             return;
         }
@@ -173,10 +172,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
         cir.setReturnValue(true);
     }
 
-    @Inject(
-        method = "takeFromContainer(Lthaumcraft/api/aspects/AspectList;)Z",
-        at = @At("HEAD"),
-        cancellable = true)
+    @Inject(method = "takeFromContainer(Lthaumcraft/api/aspects/AspectList;)Z", at = @At("HEAD"), cancellable = true)
     private void gtnl$takeAspectList(AspectList requestedAspects, CallbackInfoReturnable<Boolean> cir) {
         gtnl$reconcileLegacyState();
         if (!gtnl$containsAll(requestedAspects)) {
@@ -198,9 +194,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
     }
 
     @Inject(method = "doesContainerContainAmount", at = @At("HEAD"), cancellable = true)
-    private void gtnl$doesContainerContainAmount(
-        Aspect requestedAspect,
-        int requestedAmount,
+    private void gtnl$doesContainerContainAmount(Aspect requestedAspect, int requestedAmount,
         CallbackInfoReturnable<Boolean> cir) {
         gtnl$reconcileLegacyState();
         cir.setReturnValue(
@@ -237,10 +231,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
     }
 
     @Inject(method = "takeEssentia", at = @At("HEAD"), cancellable = true)
-    private void gtnl$takeEssentia(
-        Aspect requestedAspect,
-        int requestedAmount,
-        ForgeDirection face,
+    private void gtnl$takeEssentia(Aspect requestedAspect, int requestedAmount, ForgeDirection face,
         CallbackInfoReturnable<Integer> cir) {
         gtnl$reconcileLegacyState();
         if (!gtnl$canOutputTo(face) || requestedAspect == null || requestedAmount <= 0) {
@@ -250,9 +241,8 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
 
         gtnl$resetOutputBudgetIfNeeded();
         int remainingBudget = GTNL_OUTPUT_PER_TICK - gtnl$outputThisTick;
-        int taken = Math.min(
-            Math.min(requestedAmount, remainingBudget),
-            gtnl$getStoredAspects().getAmount(requestedAspect));
+        int taken = Math
+            .min(Math.min(requestedAmount, remainingBudget), gtnl$getStoredAspects().getAmount(requestedAspect));
         if (taken <= 0) {
             cir.setReturnValue(0);
             return;

@@ -39,8 +39,6 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -48,7 +46,7 @@ import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
-
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
@@ -191,15 +189,17 @@ public class SubscribeEventClientUtils {
     }
 
     private boolean handlePreviousMultiEssentiaJarAspect(Minecraft minecraft, EntityPlayer player, MouseEvent event) {
-        if (event.button != 0 || !event.buttonstate || !player.isSneaking() || minecraft.currentScreen != null
+        if (event.button != 0 || !event.buttonstate
+            || !player.isSneaking()
+            || minecraft.currentScreen != null
             || minecraft.theWorld == null) {
             return false;
         }
 
         MovingObjectPosition target = minecraft.objectMouseOver;
         if (target != null && target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-            && minecraft.theWorld.getTileEntity(target.blockX, target.blockY, target.blockZ)
-            instanceof TileEntityMultiEssentiaJar) {
+            && minecraft.theWorld
+                .getTileEntity(target.blockX, target.blockY, target.blockZ) instanceof TileEntityMultiEssentiaJar) {
             network.sendToServer(
                 OpenMultiEssentiaJarGuiPacket.previousBlockAspect(target.blockX, target.blockY, target.blockZ));
             player.swingItem();
@@ -501,19 +501,19 @@ public class SubscribeEventClientUtils {
     private ItemStack getProjectedArmorStack(DraconicArmorProjectionType projectionType, int slot) {
         return switch (projectionType) {
             case WYVERN -> switch (slot) {
-                case 0 -> getWyvernHelmetProjection();
-                case 1 -> getWyvernChestProjection();
-                case 2 -> getWyvernLegsProjection();
-                case 3 -> getWyvernBootsProjection();
-                default -> null;
-            };
+                    case 0 -> getWyvernHelmetProjection();
+                    case 1 -> getWyvernChestProjection();
+                    case 2 -> getWyvernLegsProjection();
+                    case 3 -> getWyvernBootsProjection();
+                    default -> null;
+                };
             case DRACONIC -> switch (slot) {
-                case 0 -> getDraconicHelmetProjection();
-                case 1 -> getDraconicChestProjection();
-                case 2 -> getDraconicLegsProjection();
-                case 3 -> getDraconicBootsProjection();
-                default -> null;
-            };
+                    case 0 -> getDraconicHelmetProjection();
+                    case 1 -> getDraconicChestProjection();
+                    case 2 -> getDraconicLegsProjection();
+                    case 3 -> getDraconicBootsProjection();
+                    default -> null;
+                };
         };
     }
 
