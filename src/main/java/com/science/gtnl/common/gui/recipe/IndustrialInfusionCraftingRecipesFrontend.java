@@ -49,8 +49,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
         int inputAreaHeight = yOrigin + getItemRowCount() * 18;
         int aspectAreaHeight = ASPECT_TOP_PADDING + ASPECT_ROWS * ASPECT_SPACING + 4;
 
-        return neiPropertiesBuilder.recipeBackgroundSize(
-            new Size(170, inputAreaHeight + aspectAreaHeight));
+        return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, inputAreaHeight + aspectAreaHeight));
     }
 
     @Override
@@ -91,7 +90,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
     @Override
     public void drawNEIOverlays(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
         if (expandedRecipes.add(neiCachedRecipe)
-            && neiCachedRecipe.mRecipe.mSpecialItems instanceof ItemStack[] aspectStacks) {
+            && neiCachedRecipe.mRecipe.mSpecialItems instanceof ItemStack[]aspectStacks) {
 
             int aspectYOrigin = yOrigin + itemRowCount * 18 + ASPECT_TOP_PADDING;
 

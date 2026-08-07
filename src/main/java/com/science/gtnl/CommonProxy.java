@@ -10,6 +10,7 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
@@ -168,6 +169,10 @@ public class CommonProxy implements IGuiHandler {
             .addAspectContainerTileToInjectPermissions(
                 TileEntityEssentiaHatch.class,
                 TileEntityEssentiaHatch.MAX_STORED);
+        api.transportPermissions()
+            .addAspectContainerTileToInjectPermissions(
+                TileEntityMultiEssentiaInputHatch.class,
+                TileEntityMultiEssentiaInputHatch.MAX_CAPACITY);
         api.transportPermissions()
             .addAspectContainerTileToInjectPermissions(
                 TileEntityMultiEssentiaJar.class,

@@ -1,28 +1,18 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_ASPECTS;
+import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
-import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
-import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-
-import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.recipe.check.CheckRecipeResult;
-import gregtech.api.recipe.check.CheckRecipeResultRegistry;
-import gregtech.api.recipe.check.SimpleCheckRecipeResult;
-import gregtech.api.util.GTRecipe;
-
-import thaumcraft.api.ThaumcraftApiHelper;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
-import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_ASPECTS;
-import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -32,6 +22,8 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.loader.Loaders;
@@ -40,15 +32,22 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import thaumcraft.api.ThaumcraftApiHelper;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 
 @IMetaTileEntity.SkipGenerateDescription
-public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
-    implements ISurvivalConstructable {
+public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_infusion_matrix";
@@ -97,8 +96,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
     }
 
     @Override
-    public void checkMachine(IGregTechTileEntity baseMetaTileEntity, ItemStack stack,
-                             List<StructureError> errors) {
+    public void checkMachine(IGregTechTileEntity baseMetaTileEntity, ItemStack stack, List<StructureError> errors) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFFSET, VERTICAL_OFFSET, DEPTH_OFFSET, errors)) return;
 
         setupParameters();
@@ -164,21 +162,15 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
                 String research = recipe.getMetadataOrDefault(INFUSION_RESEARCH, "");
 
                 if (!research.isEmpty()
-                    && !ThaumcraftApiHelper.isResearchComplete(
-                    getBaseMetaTileEntity().getOwnerName(),
-                    research)) {
+                    && !ThaumcraftApiHelper.isResearchComplete(getBaseMetaTileEntity().getOwnerName(), research)) {
 
-                    return SimpleCheckRecipeResult.ofFailure(
-                        "missing_infusion_research");
+                    return SimpleCheckRecipeResult.ofFailure("missing_infusion_research");
                 }
 
-                AspectList requiredAspects = recipe.getMetadataOrDefault(
-                    INFUSION_ASPECTS,
-                    new AspectList());
+                AspectList requiredAspects = recipe.getMetadataOrDefault(INFUSION_ASPECTS, new AspectList());
 
                 if (!hasRequiredEssentia(requiredAspects, 1)) {
-                    return SimpleCheckRecipeResult.ofFailure(
-                        "insufficient_essentia");
+                    return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
                 return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -187,15 +179,12 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
             @NotNull
             @Override
             public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                AspectList requiredAspects = recipe.getMetadataOrDefault(
-                    INFUSION_ASPECTS,
-                    new AspectList());
+                AspectList requiredAspects = recipe.getMetadataOrDefault(INFUSION_ASPECTS, new AspectList());
 
                 int crafts = Math.max(1, calculatedParallels);
 
                 if (!hasRequiredEssentia(requiredAspects, crafts)) {
-                    return SimpleCheckRecipeResult.ofFailure(
-                        "insufficient_essentia");
+                    return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
                 consumeEssentia(requiredAspects, crafts);
@@ -204,11 +193,9 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
 
             @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(
-                @NotNull GTRecipe recipe) {
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
 
-                return super.createOverclockCalculator(recipe)
-                    .setExtraDurationModifier(mConfigSpeedBoost)
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
                     .setMachineHeat(getMachineHeat())
                     .setHeatDiscount(getHeatDiscount())
@@ -222,9 +209,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
-    private boolean hasRequiredEssentia(
-        AspectList requiredAspects,
-        int crafts) {
+    private boolean hasRequiredEssentia(AspectList requiredAspects, int crafts) {
 
         if (requiredAspects == null || crafts <= 0) {
             return true;
@@ -258,9 +243,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
         return true;
     }
 
-    private void consumeEssentia(
-        AspectList requiredAspects,
-        int crafts) {
+    private void consumeEssentia(AspectList requiredAspects, int crafts) {
 
         if (requiredAspects == null || crafts <= 0) {
             return;
@@ -271,8 +254,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
                 continue;
             }
 
-            long remaining =
-                (long) requiredAspects.getAmount(aspect) * crafts;
+            long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
 
             for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
                 if (remaining <= 0) {
@@ -286,8 +268,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
                 int available = hatch.containerContains(aspect);
                 int removed = (int) Math.min(remaining, available);
 
-                if (removed > 0
-                    && hatch.reduceStoredEssentia(aspect, removed)) {
+                if (removed > 0 && hatch.reduceStoredEssentia(aspect, removed)) {
 
                     remaining -= removed;
                 }
@@ -306,8 +287,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix>
     }
 
     @Override
-    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side,
-                                 ForgeDirection facing, int colorIndex, boolean active, boolean redstoneLevel) {
+    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing,
+        int colorIndex, boolean active, boolean redstoneLevel) {
         if (side == facing) {
             if (active) {
                 return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),

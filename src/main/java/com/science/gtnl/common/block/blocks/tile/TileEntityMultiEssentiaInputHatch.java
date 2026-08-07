@@ -10,53 +10,68 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
-import thaumcraft.common.tiles.TileTubeBuffer;
 
-/** A larger essentia buffer tube that can keep several aspect types in one shared cache. */
-public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
+/** An essentia input hatch with one shared multi-aspect cache. */
+public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
+    private static final String STORED_ASPECTS_KEY = "StoredAspects";
     private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
-    private static final int BELLOWS_CHECK_INTERVAL = 20;
+    private static final int SUCTION = 128;
 
-    public static final int MAX_CAPACITY = 64;
-    private static final int BASE_SUCTION = 64;
-    private static final int MAX_SUCTION = 127;
+    public static final int MAX_CAPACITY = 4096;
 
-    private boolean bellowsInitialized;
+    private final AspectList storedAspects = new AspectList();
     private int transferTick;
 
     @Override
-    public void readCustomNBT(NBTTagCompound tag) {
-        super.readCustomNBT(tag);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        storedAspects.aspects.clear();
+        if (tag.hasKey(STORED_ASPECTS_KEY)) {
+            storedAspects.readFromNBT(tag.getCompoundTag(STORED_ASPECTS_KEY));
+        }
         removeInvalidAspects();
         trimToCapacity();
     }
 
     @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        NBTTagCompound storedTag = new NBTTagCompound();
+        storedAspects.writeToNBT(storedTag);
+        tag.setTag(STORED_ASPECTS_KEY, storedTag);
+    }
+
+    @Override
     public AspectList getAspects() {
         AspectList copy = new AspectList();
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            copy.add(storedAspect, aspects.getAmount(storedAspect));
+        for (Aspect aspect : getStoredAspectsSorted()) {
+            copy.add(aspect, storedAspects.getAmount(aspect));
         }
         return copy;
     }
 
     @Override
-    public void setAspects(AspectList newAspects) {
-        aspects.aspects.clear();
-        if (newAspects != null) {
+    public void setAspects(AspectList aspects) {
+        storedAspects.aspects.clear();
+        if (aspects != null) {
             int remaining = MAX_CAPACITY;
-            for (Aspect storedAspect : getSortedAspects(newAspects)) {
-                int accepted = Math.min(newAspects.getAmount(storedAspect), remaining);
+            for (Aspect aspect : getSortedAspects(aspects)) {
+                int accepted = Math.min(aspects.getAmount(aspect), remaining);
                 if (accepted <= 0) continue;
 
-                aspects.add(storedAspect, accepted);
+                storedAspects.add(aspect, accepted);
                 remaining -= accepted;
                 if (remaining == 0) break;
             }
         }
         markEssentiaChanged();
+    }
+
+    @Override
+    public boolean doesContainerAccept(Aspect aspect) {
+        return aspect != null && getTotalAmount() < MAX_CAPACITY;
     }
 
     @Override
@@ -66,7 +81,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         int accepted = Math.min(amount, MAX_CAPACITY - getTotalAmount());
         if (accepted <= 0) return amount;
 
-        aspects.add(aspect, accepted);
+        storedAspects.add(aspect, accepted);
         markEssentiaChanged();
         return amount - accepted;
     }
@@ -75,18 +90,18 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     public boolean takeFromContainer(Aspect aspect, int amount) {
         if (!doesContainerContainAmount(aspect, amount)) return false;
 
-        aspects.remove(aspect, amount);
+        storedAspects.remove(aspect, amount);
         markEssentiaChanged();
         return true;
     }
 
     @Deprecated
     @Override
-    public boolean takeFromContainer(AspectList requestedAspects) {
-        if (!doesContainerContain(requestedAspects)) return false;
+    public boolean takeFromContainer(AspectList aspects) {
+        if (!doesContainerContain(aspects)) return false;
 
-        for (Aspect requestedAspect : getSortedAspects(requestedAspects)) {
-            aspects.remove(requestedAspect, requestedAspects.getAmount(requestedAspect));
+        for (Aspect aspect : getSortedAspects(aspects)) {
+            storedAspects.remove(aspect, aspects.getAmount(aspect));
         }
         markEssentiaChanged();
         return true;
@@ -94,58 +109,66 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     @Override
     public boolean doesContainerContainAmount(Aspect aspect, int amount) {
-        return aspect != null && amount >= 0 && aspects.getAmount(aspect) >= amount;
+        return aspect != null && amount >= 0 && storedAspects.getAmount(aspect) >= amount;
     }
 
     @Deprecated
     @Override
-    public boolean doesContainerContain(AspectList requestedAspects) {
-        if (requestedAspects == null) return false;
+    public boolean doesContainerContain(AspectList aspects) {
+        if (aspects == null) return false;
 
-        for (Aspect requestedAspect : getSortedAspects(requestedAspects)) {
-            if (!doesContainerContainAmount(requestedAspect, requestedAspects.getAmount(requestedAspect))) {
-                return false;
-            }
+        for (Aspect aspect : getSortedAspects(aspects)) {
+            if (!doesContainerContainAmount(aspect, aspects.getAmount(aspect))) return false;
         }
         return true;
     }
 
     @Override
-    public boolean doesContainerAccept(Aspect aspect) {
-        return aspect != null && getTotalAmount() < MAX_CAPACITY;
+    public int containerContains(Aspect aspect) {
+        return aspect == null ? 0 : storedAspects.getAmount(aspect);
+    }
+
+    @Override
+    public boolean reduceStoredEssentia(Aspect aspect, int amount) {
+        return takeFromContainer(aspect, amount);
     }
 
     @Override
     public boolean isConnectable(ForgeDirection face) {
-        return isValidFace(face) && super.isConnectable(face);
+        return isValidFace(face);
     }
 
     @Override
     public boolean canInputFrom(ForgeDirection face) {
-        return isValidFace(face) && super.canInputFrom(face);
+        return isValidFace(face);
     }
 
     @Override
     public boolean canOutputTo(ForgeDirection face) {
-        return isValidFace(face) && super.canOutputTo(face);
+        return false;
+    }
+
+    @Override
+    public void setSuction(Aspect aspect, int amount) {}
+
+    @Override
+    public Aspect getSuctionType(ForgeDirection face) {
+        return null;
     }
 
     @Override
     public int getSuctionAmount(ForgeDirection face) {
-        if (!isValidFace(face) || !super.isConnectable(face) || getTotalAmount() >= MAX_CAPACITY) {
-            return 0;
-        }
+        return canInputFrom(face) && getTotalAmount() < MAX_CAPACITY ? SUCTION : 0;
+    }
 
-        int originalSuction = super.getSuctionAmount(face);
+    @Override
+    public int takeEssentia(Aspect aspect, int amount, ForgeDirection face) {
+        return 0;
+    }
 
-        // 保留原版缓冲管的关闭面和节流面行为
-        if (chokedSides[face.ordinal()] != 0) {
-            return originalSuction;
-        }
-
-        // 确保能从吸力为 32 的罐子抽取，
-        // 同时保持低于输入仓的 128 吸力
-        return Math.min(MAX_SUCTION, Math.max(BASE_SUCTION, originalSuction));
+    @Override
+    public int addEssentia(Aspect aspect, int amount, ForgeDirection face) {
+        return canInputFrom(face) ? amount - addToContainer(aspect, amount) : 0;
     }
 
     @Override
@@ -156,28 +179,35 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     @Override
     public int getEssentiaAmount(ForgeDirection face) {
-        Aspect offeredAspect = getEssentiaType(face);
-        return offeredAspect == null ? 0 : aspects.getAmount(offeredAspect);
+        Aspect aspect = getEssentiaType(face);
+        return aspect == null ? 0 : storedAspects.getAmount(aspect);
+    }
+
+    @Override
+    public int getMinimumSuction() {
+        return 0;
+    }
+
+    @Override
+    public boolean renderExtendedTube() {
+        return false;
     }
 
     @Override
     public void updateEntity() {
-        if (worldObj == null) return;
+        if (worldObj == null || worldObj.isRemote
+            || ++transferTick % TRANSFER_INTERVAL != 0
+            || getTotalAmount() >= MAX_CAPACITY) {
+            return;
+        }
 
-        transferTick++;
-        if (!bellowsInitialized || transferTick % BELLOWS_CHECK_INTERVAL == 0) {
-            getBellows();
-            bellowsInitialized = true;
-        }
-        if (!worldObj.isRemote && transferTick % TRANSFER_INTERVAL == 0 && getTotalAmount() < MAX_CAPACITY) {
-            fillCache(TRANSFER_PER_TICK);
-        }
+        fillCache(TRANSFER_PER_TICK);
     }
 
     public int getTotalAmount() {
         int total = 0;
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            total += aspects.getAmount(storedAspect);
+        for (Aspect aspect : getStoredAspectsSorted()) {
+            total += storedAspects.getAmount(aspect);
         }
         return total;
     }
@@ -198,60 +228,55 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             if (!(tile instanceof IEssentiaTransport source)) continue;
 
             ForgeDirection sourceSide = direction.getOpposite();
-            if (!source.canOutputTo(sourceSide) || source.getEssentiaAmount(sourceSide) <= 0) {
-                continue;
-            }
+            if (!source.canOutputTo(sourceSide) || source.getEssentiaAmount(sourceSide) <= 0) continue;
 
             int suction = getSuctionAmount(direction);
-            if (source.getSuctionAmount(sourceSide) >= suction || suction < source.getMinimumSuction()) {
-                continue;
-            }
+            if (source.getSuctionAmount(sourceSide) >= suction || suction < source.getMinimumSuction()) continue;
 
             Aspect sourceAspect = source.getEssentiaType(sourceSide);
             if (sourceAspect == null || !doesContainerAccept(sourceAspect)) continue;
 
             int requested = Math.min(remainingBudget, source.getEssentiaAmount(sourceSide));
             int taken = source.takeEssentia(sourceAspect, requested, sourceSide);
+            if (taken <= 0) continue;
 
-            if (taken > 0) {
-                int accepted = addEssentia(sourceAspect, taken, direction);
-                transferred += accepted;
-                remainingBudget -= accepted;
-            }
+            int accepted = addEssentia(sourceAspect, taken, direction);
+            transferred += accepted;
+            remainingBudget -= accepted;
         }
 
         return transferred;
     }
 
     private void removeInvalidAspects() {
-        aspects.aspects.entrySet()
+        storedAspects.aspects.entrySet()
             .removeIf(entry -> entry.getKey() == null || entry.getValue() == null || entry.getValue() <= 0);
     }
 
     private void trimToCapacity() {
         int remaining = MAX_CAPACITY;
         AspectList trimmed = new AspectList();
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            int accepted = Math.min(aspects.getAmount(storedAspect), remaining);
+        for (Aspect aspect : getStoredAspectsSorted()) {
+            int accepted = Math.min(storedAspects.getAmount(aspect), remaining);
             if (accepted > 0) {
-                trimmed.add(storedAspect, accepted);
+                trimmed.add(aspect, accepted);
                 remaining -= accepted;
             }
             if (remaining == 0) break;
         }
 
-        aspects.aspects.clear();
-        for (Aspect storedAspect : getSortedAspects(trimmed)) {
-            aspects.add(storedAspect, trimmed.getAmount(storedAspect));
+        storedAspects.aspects.clear();
+        for (Aspect aspect : getSortedAspects(trimmed)) {
+            storedAspects.add(aspect, trimmed.getAmount(aspect));
         }
     }
 
     private Aspect[] getStoredAspectsSorted() {
-        return getSortedAspects(aspects);
+        return getSortedAspects(storedAspects);
     }
 
-    private static Aspect[] getSortedAspects(AspectList aspectList) {
-        return aspectList.aspects.entrySet()
+    private static Aspect[] getSortedAspects(AspectList aspects) {
+        return aspects.aspects.entrySet()
             .stream()
             .filter(entry -> entry.getKey() != null && entry.getValue() != null && entry.getValue() > 0)
             .map(entry -> entry.getKey())

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import thaumcraft.api.aspects.AspectList;
+
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
@@ -15,16 +15,18 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
-import gregtech.api.recipe.RecipeMetadataKey;
-import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
+
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.items.LudicrousItems;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.recipe.RecipeMetadataKey;
+import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import gregtech.api.util.GTModHandler;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 
 public class InfusionCraftingRecipes implements IRecipePool {
 
@@ -112,9 +114,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
             }
 
             if (Mods.Gadomancy.isModLoaded()) {
-                Item itemEtherealFamiliar = GameRegistry.findItem(
-                    Mods.Gadomancy.ID,
-                    "ItemEtherealFamiliar");
+                Item itemEtherealFamiliar = GameRegistry.findItem(Mods.Gadomancy.ID, "ItemEtherealFamiliar");
 
                 if (null != itemEtherealFamiliar) {
                     skips.add(itemEtherealFamiliar);
@@ -136,10 +136,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
         for (int i = 0; i < aspects.length; i++) {
             Aspect aspect = aspects[i];
 
-            ItemStack stack = new ItemStack(
-                ModItems.itemAspect,
-                aspectList.getAmount(aspect),
-                1);
+            ItemStack stack = new ItemStack(ModItems.itemAspect, aspectList.getAmount(aspect), 1);
 
             ItemAspect.setAspect(stack, aspect);
             stacks[i] = stack;
@@ -173,9 +170,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
                     INFUSION_ASPECTS,
                     Recipe.getInputAspects()
                         .copy())
-                .metadata(
-                    INFUSION_RESEARCH,
-                    Recipe.getResearch())
+                .metadata(INFUSION_RESEARCH, Recipe.getResearch())
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IIC);

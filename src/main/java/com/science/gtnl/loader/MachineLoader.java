@@ -8,7 +8,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
 import com.google.common.collect.ImmutableSet;
 import com.science.gtnl.ScienceNotLeisure;
@@ -113,6 +112,7 @@ import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 import com.science.gtnl.common.machine.multiblock.ResourceCollectionModule;
 import com.science.gtnl.common.machine.multiblock.ShallowChemicalCoupling;
 import com.science.gtnl.common.machine.multiblock.SingularityDataHub;
+import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.science.gtnl.common.machine.multiblock.SpaceAssembler;
 import com.science.gtnl.common.machine.multiblock.SuperSpaceElevator;
 import com.science.gtnl.common.machine.multiblock.SupercomputingCenter;

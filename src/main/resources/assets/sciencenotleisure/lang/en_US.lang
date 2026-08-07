@@ -4008,3 +4008,9 @@ Tooltip_MultiEssentiaTube_Wand=Use a wand to toggle sides; sneak-use it to adjus
 
 GT5U.gui.text.recipe_result.missing_infusion_research=Required infusion research has not been completed
 GT5U.gui.text.recipe_result.insufficient_essentia=Not enough essentia in the Essentia Hatches
+
+tile.MultiEssentiaInputHatch.name=Multi-Essentia Input Hatch
+Tooltip_MultiEssentiaInputHatch_Capacity=Shared capacity: %s essentia; stores multiple aspect types
+Tooltip_MultiEssentiaInputHatch_Transport=Automatically pulls from adjacent jars or tubes for multiblock machines
+Tooltip_MultiEssentiaInputHatch_Clear=Sneak-right-click with an empty hand to void all essentia
+Info_MultiEssentiaInputHatch_Cleared=Cleared the Multi-Essentia Input Hatch, voiding %s essentia

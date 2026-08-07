@@ -4008,3 +4008,9 @@ Tooltip_MultiEssentiaTube_Wand=使用魔杖开关各面连接，潜行使用魔�
 
 GT5U.gui.text.recipe_result.missing_infusion_research=尚未解锁此注魔研究
 GT5U.gui.text.recipe_result.insufficient_essentia=源质仓内的源质不足
+
+tile.MultiEssentiaInputHatch.name=复合源质输入仓
+Tooltip_MultiEssentiaInputHatch_Capacity=共享容量：%s 点源质，可同时缓存多种源质
+Tooltip_MultiEssentiaInputHatch_Transport=从相邻源质罐或源质管道自动吸取，供多方块机器使用
+Tooltip_MultiEssentiaInputHatch_Clear=空手潜行右击以清空全部源质
+Info_MultiEssentiaInputHatch_Cleared=已清空复合源质输入仓，共销毁 %s 点源质
