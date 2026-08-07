@@ -79,10 +79,12 @@ public class MultiEssentiaJarGui {
                 widget -> widget.tooltipBuilder(
                     tooltip -> tooltip.clearText()
                         .add(getTooltip(currentSelected))))
-            .setChoiceWidgetCustomizer(
-                (index, widget) -> widget.tooltipBuilder(
+            .setChoiceWidgetCustomizer((index, widget) -> {
+                widget.playClickSound(false);
+                widget.tooltipBuilder(
                     tooltip -> tooltip.clearText()
-                        .add(getTooltip(index))))
+                        .add(getTooltip(index)));
+            })
             .build();
     }
 
