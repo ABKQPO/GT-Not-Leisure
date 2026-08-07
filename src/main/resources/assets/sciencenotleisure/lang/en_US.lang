@@ -4000,6 +4000,9 @@ Tooltip_MultiEssentiaJar_Select=Press the pick block key while holding the jar t
 Info_MultiEssentiaJar_Cleared=Cleared the Multi Essentia Jar, voiding %s essentia.
 Info_MultiEssentiaJar_AlreadyEmpty=The Multi Essentia Jar is already empty.
 Tooltip_MultiEssentiaJar_Clear=Sneak-right-click with a wand, sceptre, or staff to void all essentia
+GTNL.gui.multi_essentia_jar.filter_title=Select Filter Aspect
+GTNL.gui.multi_essentia_jar.filter_aspect=%s (%s)
+Tooltip_MultiEssentiaJar_Filter=Empty-hand right-click an empty jar to select a filter; sneak-right-click its label to remove it
 
 tile.MultiEssentiaTube.name=Multi Essentia Buffer Tube
 Tooltip_MultiEssentiaTube_Capacity=Shared cache capacity: %s essentia

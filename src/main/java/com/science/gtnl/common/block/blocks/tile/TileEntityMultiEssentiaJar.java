@@ -38,10 +38,12 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
     private static final String ACTIVE_ASPECT_KEY = "ActiveAspect";
+    private static final String FILTER_ASPECT_KEY = "AspectFilter";
     private static final String FACING_KEY = "facing";
     private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
-    private static final int SUCTION = 32;
+    private static final int UNFILTERED_SUCTION = 32;
+    private static final int FILTERED_SUCTION = 64;
 
     public static final int MAX_CAPACITY = 4096;
 
@@ -62,6 +64,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         }
 
         activeAspect = Aspect.getAspect(tag.getString(ACTIVE_ASPECT_KEY));
+        aspectFilter = Aspect.getAspect(tag.getString(FILTER_ASPECT_KEY));
         facing = tag.getByte(FACING_KEY);
         removeInvalidAspects();
         trimToCapacity();
@@ -75,6 +78,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         storedAspects.writeToNBT(storedTag);
         tag.setTag(STORED_ASPECTS_KEY, storedTag);
         tag.setString(ACTIVE_ASPECT_KEY, activeAspect == null ? "" : activeAspect.getTag());
+        tag.setString(FILTER_ASPECT_KEY, aspectFilter == null ? "" : aspectFilter.getTag());
         tag.setByte(FACING_KEY, (byte) facing);
     }
 
@@ -125,6 +129,8 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
             int remaining = MAX_CAPACITY;
             Aspect[] sorted = getSortedAspects(aspects);
             for (Aspect storedAspect : sorted) {
+                if (aspectFilter != null && storedAspect != aspectFilter) continue;
+
                 int accepted = Math.min(aspects.getAmount(storedAspect), remaining);
                 if (accepted <= 0) continue;
 
@@ -140,12 +146,12 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public boolean doesContainerAccept(Aspect aspect) {
-        return aspect != null && getTotalAmount() < MAX_CAPACITY;
+        return aspect != null && getTotalAmount() < MAX_CAPACITY && (aspectFilter == null || aspectFilter == aspect);
     }
 
     @Override
     public int addToContainer(Aspect aspect, int amount) {
-        if (aspect == null || amount <= 0) return amount;
+        if (aspect == null || amount <= 0 || !doesContainerAccept(aspect)) return amount;
 
         int accepted = Math.min(amount, MAX_CAPACITY - getTotalAmount());
         if (accepted <= 0) return amount;
@@ -223,12 +229,18 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public Aspect getSuctionType(ForgeDirection face) {
-        return null;
+        return aspectFilter;
     }
 
     @Override
     public int getSuctionAmount(ForgeDirection face) {
-        return canInputFrom(face) && getTotalAmount() < MAX_CAPACITY ? SUCTION : 0;
+        if (!canInputFrom(face) || getTotalAmount() >= MAX_CAPACITY) return 0;
+        return aspectFilter == null ? UNFILTERED_SUCTION : FILTERED_SUCTION;
+    }
+
+    @Override
+    public int getMinimumSuction() {
+        return aspectFilter == null ? UNFILTERED_SUCTION : FILTERED_SUCTION;
     }
 
     @Override
@@ -257,11 +269,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     @Override
-    public int getMinimumSuction() {
-        return 0;
-    }
-
-    @Override
     public boolean renderExtendedTube() {
         return true;
     }
@@ -276,6 +283,45 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     public int getStoredTypeCount() {
         return getStoredAspectsSorted().length;
+    }
+
+    public int clearAllEssentia() {
+        int clearedAmount = getTotalAmount();
+        if (clearedAmount <= 0) return 0;
+
+        storedAspects.aspects.clear();
+        activeAspect = null;
+
+        markEssentiaChanged();
+
+        return clearedAmount;
+    }
+
+    public boolean hasFilterLabel() {
+        return aspectFilter != null;
+    }
+
+    public Aspect getFilterAspect() {
+        return aspectFilter;
+    }
+
+    public boolean installFilterLabel(Aspect filterAspect) {
+        // 只有空罐可以安装或更换标签
+        if (filterAspect == null || getTotalAmount() > 0) return false;
+
+        if (aspectFilter == filterAspect) return false;
+
+        aspectFilter = filterAspect;
+        markEssentiaChanged();
+        return true;
+    }
+
+    public boolean removeFilterLabel() {
+        if (aspectFilter == null) return false;
+
+        aspectFilter = null;
+        markEssentiaChanged();
+        return true;
     }
 
     public Aspect getActiveAspect() {
@@ -322,7 +368,9 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     public boolean setActiveAspect(Aspect selectedAspect) {
-        if (selectedAspect == null || storedAspects.getAmount(selectedAspect) <= 0) return false;
+        if (selectedAspect == null || storedAspects.getAmount(selectedAspect) <= 0 || selectedAspect == activeAspect) {
+            return false;
+        }
 
         activeAspect = selectedAspect;
         markEssentiaChanged();
@@ -392,11 +440,24 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
         AspectList storedAspects = getStoredAspects(stack);
         if (storedAspects.getAmount(selectedAspect) <= 0) return false;
+        if (getActiveAspect(stack) == selectedAspect) return false;
 
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+
         stack.getTagCompound()
             .setString(ACTIVE_ASPECT_KEY, selectedAspect.getTag());
+
         return true;
+    }
+
+    public static Aspect getFilterAspect(ItemStack stack) {
+        if (stack == null || !stack.hasTagCompound()) return null;
+
+        return Aspect.getAspect(
+            stack.getTagCompound()
+                .getString(FILTER_ASPECT_KEY));
     }
 
     @Override
@@ -407,7 +468,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public ModularPanel buildUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new MultiEssentiaJarGui(this).build();
+        return new MultiEssentiaJarGui(this, data.getPlayer()).build();
     }
 
     private void removeInvalidAspects() {
@@ -457,7 +518,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         maxAmount = MAX_CAPACITY;
         amount = getTotalAmount();
         aspect = activeAspect;
-        aspectFilter = null;
     }
 
     private void markEssentiaChanged() {

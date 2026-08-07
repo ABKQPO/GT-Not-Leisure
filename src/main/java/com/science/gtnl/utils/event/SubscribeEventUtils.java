@@ -35,6 +35,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
@@ -71,7 +72,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 import tectech.thing.casing.TTCasingsContainer;
-import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.IManaDissolvable;
@@ -511,26 +511,22 @@ public class SubscribeEventUtils {
             return;
         }
 
-        /*
-         * 客户端不能取消事件，否则右键数据包不会发送到服务器。
-         */
+        // 声音、清空和聊天消息全部由服务器处理
         if (player.worldObj.isRemote) {
             return;
         }
 
-        /*
-         * 只在服务器端取消法杖的后续行为。
-         */
         event.setCanceled(true);
 
-        int clearedAmount = jar.getTotalAmount();
+        int clearedAmount = jar.clearAllEssentia();
 
         if (clearedAmount <= 0) {
             player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_AlreadyEmpty"));
             return;
         }
 
-        jar.setAspects(new AspectList());
+        BlockMultiEssentiaJar.playEssentiaSlosh(player.worldObj, event.x, event.y, event.z);
+
         player.swingItem();
 
         player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_Cleared", clearedAmount));

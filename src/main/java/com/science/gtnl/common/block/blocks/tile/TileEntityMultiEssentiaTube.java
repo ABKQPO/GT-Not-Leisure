@@ -18,10 +18,10 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
     private static final int BELLOWS_CHECK_INTERVAL = 20;
+    private static final int BASE_SUCTION = 63;
+    private static final int MAX_SUCTION = 127;
 
     public static final int MAX_CAPACITY = 64;
-    private static final int BASE_SUCTION = 64;
-    private static final int MAX_SUCTION = 127;
 
     private boolean bellowsInitialized;
     private int transferTick;
@@ -137,19 +137,45 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
 
         int originalSuction = super.getSuctionAmount(face);
-
-        // 保留原版缓冲管的关闭面和节流面行为
         if (chokedSides[face.ordinal()] != 0) {
             return originalSuction;
         }
 
-        // 确保能从吸力为 32 的罐子抽取，
-        // 同时保持低于输入仓的 128 吸力
         return Math.min(MAX_SUCTION, Math.max(BASE_SUCTION, originalSuction));
     }
 
     @Override
     public Aspect getEssentiaType(ForgeDirection face) {
+        if (!isValidFace(face) || !canOutputTo(face)) return null;
+
+        /*
+         * 查询这个方向相邻设备请求的源质。
+         * 例如标签罐的 getSuctionType() 会返回标签要素，
+         * 管道便在这个方向提供对应要素。
+         */
+        if (worldObj != null) {
+            TileEntity adjacent = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, face);
+
+            if (adjacent instanceof IEssentiaTransport target) {
+                ForgeDirection targetSide = face.getOpposite();
+
+                if (target.canInputFrom(targetSide)) {
+                    Aspect requestedAspect = target.getSuctionType(targetSide);
+
+                    /*
+                     * 相邻设备明确请求了一种源质。
+                     */
+                    if (requestedAspect != null) {
+                        return aspects.getAmount(requestedAspect) > 0 ? requestedAspect : null;
+                    }
+                }
+            }
+        }
+
+        /*
+         * 相邻设备没有指定源质，例如无过滤输入仓。
+         * 此时继续提供排序后的第一种源质。
+         */
         Aspect[] sorted = getStoredAspectsSorted();
         return sorted.length == 0 ? null : sorted[0];
     }
@@ -165,10 +191,12 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         if (worldObj == null) return;
 
         transferTick++;
+
         if (!bellowsInitialized || transferTick % BELLOWS_CHECK_INTERVAL == 0) {
             getBellows();
             bellowsInitialized = true;
         }
+
         if (!worldObj.isRemote && transferTick % TRANSFER_INTERVAL == 0 && getTotalAmount() < MAX_CAPACITY) {
             fillCache(TRANSFER_PER_TICK);
         }
@@ -211,10 +239,12 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             if (sourceAspect == null || !doesContainerAccept(sourceAspect)) continue;
 
             int requested = Math.min(remainingBudget, source.getEssentiaAmount(sourceSide));
+
             int taken = source.takeEssentia(sourceAspect, requested, sourceSide);
 
             if (taken > 0) {
                 int accepted = addEssentia(sourceAspect, taken, direction);
+
                 transferred += accepted;
                 remainingBudget -= accepted;
             }
@@ -231,12 +261,15 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     private void trimToCapacity() {
         int remaining = MAX_CAPACITY;
         AspectList trimmed = new AspectList();
+
         for (Aspect storedAspect : getStoredAspectsSorted()) {
             int accepted = Math.min(aspects.getAmount(storedAspect), remaining);
+
             if (accepted > 0) {
                 trimmed.add(storedAspect, accepted);
                 remaining -= accepted;
             }
+
             if (remaining == 0) break;
         }
 
@@ -265,6 +298,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     private void markEssentiaChanged() {
         markDirty();
+
         if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }

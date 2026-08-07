@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -22,6 +23,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.modularui2.GTGuis;
 import gregtech.api.net.GTPacketUpdateItem;
 import gregtech.common.modularui2.factory.SelectItemGuiBuilder;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -35,21 +37,25 @@ public class MultiEssentiaJarGui {
     private final int blockX;
     private final int blockY;
     private final int blockZ;
+    private final boolean filterMode;
 
     public MultiEssentiaJarGui(ItemStack jarStack) {
-        this(jarStack, false, 0, 0, 0);
+        this(jarStack, false, false, null, 0, 0, 0);
     }
 
-    public MultiEssentiaJarGui(TileEntityMultiEssentiaJar jar) {
-        this(createJarStack(jar), true, jar.xCoord, jar.yCoord, jar.zCoord);
+    public MultiEssentiaJarGui(TileEntityMultiEssentiaJar jar, EntityPlayer viewer) {
+        this(createJarStack(jar), true, jar.getTotalAmount() == 0, viewer, jar.xCoord, jar.yCoord, jar.zCoord);
     }
 
-    private MultiEssentiaJarGui(ItemStack jarStack, boolean placedJar, int blockX, int blockY, int blockZ) {
+    private MultiEssentiaJarGui(ItemStack jarStack, boolean placedJar, boolean filterMode, EntityPlayer viewer,
+        int blockX, int blockY, int blockZ) {
+
         this.jarStack = jarStack;
         this.storedAspects = TileEntityMultiEssentiaJar.getStoredAspects(jarStack);
-        this.aspects = getSortedAspects(storedAspects);
+        this.aspects = filterMode ? getAllKnownSortedAspects(viewer) : getSortedAspects(storedAspects);
         this.selections = createSelections(aspects);
         this.placedJar = placedJar;
+        this.filterMode = filterMode;
         this.blockX = blockX;
         this.blockY = blockY;
         this.blockZ = blockZ;
@@ -60,7 +66,10 @@ public class MultiEssentiaJarGui {
 
         return new SelectItemGuiBuilder(GTGuis.createPopUpPanel("multi_essentia_jar"), selections)
             .setHeaderItem(jarStack)
-            .setTitle(IKey.lang("GTNL.gui.multi_essentia_jar.title"))
+            .setTitle(
+                IKey.lang(
+                    filterMode ? "GTNL.gui.multi_essentia_jar.filter_title" : "GTNL.gui.multi_essentia_jar.title"))
+            .setAllowDeselected(filterMode)
             .setSelected(currentSelected)
             .setOnSelectedClientAction((selected, $) -> {
                 selectAspect(selected);
@@ -80,60 +89,84 @@ public class MultiEssentiaJarGui {
     private void selectAspect(int selected) {
         if (selected < 0 || selected >= aspects.size()) return;
 
+        Aspect selectedAspect = aspects.get(selected);
+
         if (placedJar) {
             ScienceNotLeisure.network.sendToServer(
-                OpenMultiEssentiaJarGuiPacket.selectBlockAspect(
-                    blockX,
-                    blockY,
-                    blockZ,
-                    aspects.get(selected)
-                        .getTag()));
+                filterMode
+                    ? OpenMultiEssentiaJarGuiPacket.selectBlockFilter(blockX, blockY, blockZ, selectedAspect.getTag())
+                    : OpenMultiEssentiaJarGuiPacket.selectBlockAspect(blockX, blockY, blockZ, selectedAspect.getTag()));
             return;
         }
 
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setString(
-            ItemBlockMultiEssentiaJar.SELECTED_ASPECT_PACKET_KEY,
-            aspects.get(selected)
-                .getTag());
+        tag.setString(ItemBlockMultiEssentiaJar.SELECTED_ASPECT_PACKET_KEY, selectedAspect.getTag());
         GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
     }
 
     private int getCurrentSelected() {
-        Aspect activeAspect = TileEntityMultiEssentiaJar.getActiveAspect(jarStack);
-        int selected = aspects.indexOf(activeAspect);
-        return selected >= 0 ? selected : 0;
+        Aspect selectedAspect = filterMode ? TileEntityMultiEssentiaJar.getFilterAspect(jarStack)
+            : TileEntityMultiEssentiaJar.getActiveAspect(jarStack);
+
+        int selected = aspects.indexOf(selectedAspect);
+        return selected >= 0 ? selected : SelectItemGuiBuilder.DESELECTED;
     }
 
     private String getTooltip(int index) {
         if (index < 0 || index >= aspects.size()) return "";
 
         Aspect aspect = aspects.get(index);
-        ItemStack ariAspectStack = selections.get(index);
-        int amount = storedAspects.getAmount(aspect);
+        ItemStack selection = selections.get(index);
 
-        // 这里会调用 ARI 的 ItemAspect.getItemStackDisplayName()
-        String ariDisplayName = ariAspectStack.getDisplayName();
-        String unknownName = StatCollector.translateToLocal("tc.aspect.unknown");
+        EntityPlayer player = MCHelper.getPlayer();
+        boolean discovered = player != null
+            && ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), aspect);
 
-        if (unknownName.equals(ariDisplayName)) {
-            return StatCollector.translateToLocalFormatted("GTNL.gui.multi_essentia_jar.aspect_unknown", amount);
+        if (!discovered) {
+            return selection.getDisplayName();
+        }
+
+        if (filterMode) {
+            return StatCollector.translateToLocalFormatted(
+                "GTNL.gui.multi_essentia_jar.filter_aspect",
+                aspect.getLocalizedDescription(),
+                aspect.getTag());
         }
 
         return StatCollector.translateToLocalFormatted(
             "GTNL.gui.multi_essentia_jar.aspect",
             aspect.getLocalizedDescription(),
-            ariDisplayName,
-            amount);
+            aspect.getTag(),
+            storedAspects.getAmount(aspect));
     }
 
     private static List<Aspect> getSortedAspects(AspectList storedAspects) {
         List<Aspect> result = new ArrayList<>();
+
+        if (storedAspects == null) return result;
+
         for (Aspect aspect : storedAspects.getAspects()) {
             if (aspect != null && storedAspects.getAmount(aspect) > 0) {
                 result.add(aspect);
             }
         }
+
+        result.sort(Comparator.comparing(Aspect::getTag));
+        return result;
+    }
+
+    private static List<Aspect> getAllKnownSortedAspects(EntityPlayer viewer) {
+        List<Aspect> result = new ArrayList<>();
+        if (viewer == null) return result;
+
+        String playerName = viewer.getCommandSenderName();
+
+        for (Aspect aspect : Aspect.aspects.values()) {
+            if (aspect != null && ThaumcraftApiHelper.hasDiscoveredAspect(playerName, aspect)) {
+                result.add(aspect);
+            }
+        }
+
         result.sort(Comparator.comparing(Aspect::getTag));
         return result;
     }

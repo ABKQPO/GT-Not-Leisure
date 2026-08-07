@@ -3991,6 +3991,9 @@ Tooltip_MultiEssentiaJar_More=……以及另外 %s 种源质
 Info_MultiEssentiaJar_Empty=罐子为空，容量：%s
 Info_MultiEssentiaJar_ItemActive=手持罐当前源质：%s
 Info_MultiEssentiaJar_Status=当前源质：%s；总量：%s/%s；种类：%s
+GTNL.gui.multi_essentia_jar.filter_title=选择过滤要素
+GTNL.gui.multi_essentia_jar.filter_aspect=%s（%s）
+Tooltip_MultiEssentiaJar_Filter=对准空罐空手右击选择过滤标签；对准标签潜行右击可移除标签
 
 GTNL.gui.multi_essentia_jar.title=选择当前源质
 GTNL.gui.multi_essentia_jar.aspect=%s（%s）：%s 点

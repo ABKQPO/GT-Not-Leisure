@@ -16,6 +16,7 @@ import com.science.gtnl.common.packet.base.ServerboundPacket;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import gregtech.crossmod.backhand.Backhand;
 import io.netty.buffer.ByteBuf;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 
 public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
@@ -25,6 +26,7 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
     private static final byte PREVIOUS_BLOCK_ASPECT = 2;
     private static final byte SELECT_BLOCK_ASPECT = 3;
     private static final byte PREVIOUS_HELD_ASPECT = 4;
+    private static final byte SELECT_BLOCK_FILTER = 5;
     private static final double MAX_INTERACTION_DISTANCE_SQUARED = 64.0D;
 
     private byte action = OPEN_HELD_GUI;
@@ -59,6 +61,10 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
         return new OpenMultiEssentiaJarGuiPacket(PREVIOUS_HELD_ASPECT, 0, 0, 0, "");
     }
 
+    public static OpenMultiEssentiaJarGuiPacket selectBlockFilter(int x, int y, int z, String aspectTag) {
+        return new OpenMultiEssentiaJarGuiPacket(SELECT_BLOCK_FILTER, x, y, z, aspectTag);
+    }
+
     @Override
     protected void read(ByteBuf buf) {
         action = buf.readByte();
@@ -87,13 +93,16 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
             openHeldGui(player);
             return;
         }
+
         if (action == PREVIOUS_HELD_ASPECT) {
             handlePreviousHeldAspect(player);
             return;
         }
-        if (action < OPEN_BLOCK_GUI || action > SELECT_BLOCK_ASPECT) return;
+
+        if (action < OPEN_BLOCK_GUI || action > SELECT_BLOCK_FILTER) return;
 
         World world = player.worldObj;
+
         if (!world.blockExists(x, y, z)
             || player.getDistanceSq(x + 0.5D, y + 0.5D, z + 0.5D) > MAX_INTERACTION_DISTANCE_SQUARED) {
             return;
@@ -104,6 +113,11 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
 
         switch (action) {
             case OPEN_BLOCK_GUI -> {
+                // 已有标签时禁止打开当前源质选择 GUI
+                if (jar.hasFilterLabel()) return;
+
+                // 选取方块键仍不允许打开空罐 GUI
+                // 空罐过滤 GUI 由空手右击打开
                 if (jar.getStoredTypeCount() <= 0) {
                     player.addChatMessage(
                         new ChatComponentTranslation(
@@ -111,12 +125,43 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
                             TileEntityMultiEssentiaJar.MAX_CAPACITY));
                     return;
                 }
+
                 GuiFactories.tileEntity()
                     .open(player, x, y, z);
             }
-            case PREVIOUS_BLOCK_ASPECT -> BlockMultiEssentiaJar
-                .sendActiveAspectStatus(player, jar, jar.cyclePreviousActiveAspect());
-            case SELECT_BLOCK_ASPECT -> jar.setActiveAspect(Aspect.getAspect(aspectTag));
+
+            case PREVIOUS_BLOCK_ASPECT -> {
+                if (!jar.hasFilterLabel()) {
+                    Aspect previousAspect = jar.getActiveAspect();
+                    Aspect activeAspect = jar.cyclePreviousActiveAspect();
+
+                    if (activeAspect != null && activeAspect != previousAspect) {
+                        BlockMultiEssentiaJar.playEssentiaSlosh(world, x, y, z);
+                    }
+
+                    BlockMultiEssentiaJar.sendActiveAspectStatus(player, jar, activeAspect);
+                }
+            }
+            case SELECT_BLOCK_ASPECT -> {
+                if (!jar.hasFilterLabel() && jar.setActiveAspect(Aspect.getAspect(aspectTag))) {
+
+                    BlockMultiEssentiaJar.playEssentiaSlosh(world, x, y, z);
+                }
+            }
+
+            case SELECT_BLOCK_FILTER -> {
+                Aspect selectedFilter = Aspect.getAspect(aspectTag);
+
+                if (selectedFilter == null
+                    || !ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), selectedFilter)) {
+                    return;
+                }
+
+                if (jar.installFilterLabel(selectedFilter)) {
+                    world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "thaumcraft:jar", 0.4F, 1.0F);
+                }
+            }
+
             default -> {}
         }
     }
@@ -143,9 +188,18 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
         }
         if (!isMultiEssentiaJar(stack)) return;
 
+        Aspect previousAspect = TileEntityMultiEssentiaJar.getActiveAspect(stack);
         Aspect activeAspect = TileEntityMultiEssentiaJar.cyclePreviousActiveAspect(stack);
+
+        if (activeAspect != null && activeAspect != previousAspect) {
+            BlockMultiEssentiaJar.playEssentiaSlosh(player);
+        }
+
         ItemBlockMultiEssentiaJar.sendActiveAspectStatus(player, stack, activeAspect);
-        if (activeAspect != null) player.inventoryContainer.detectAndSendChanges();
+
+        if (activeAspect != null) {
+            player.inventoryContainer.detectAndSendChanges();
+        }
     }
 
     private static boolean isSelectableJar(ItemStack stack) {

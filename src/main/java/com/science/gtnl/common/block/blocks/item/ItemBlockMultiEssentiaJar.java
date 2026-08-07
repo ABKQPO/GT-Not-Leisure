@@ -23,6 +23,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.gui.MultiEssentiaJarGui;
 import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
@@ -70,8 +71,15 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         if (!player.isSneaking()) return stack;
 
         if (!world.isRemote) {
+            Aspect previousAspect = TileEntityMultiEssentiaJar.getActiveAspect(stack);
             Aspect activeAspect = TileEntityMultiEssentiaJar.cycleActiveAspect(stack);
+
+            if (activeAspect != null && activeAspect != previousAspect) {
+                BlockMultiEssentiaJar.playEssentiaSlosh(player);
+            }
+
             sendActiveAspectStatus(player, stack, activeAspect);
+
             if (activeAspect != null) {
                 player.inventoryContainer.detectAndSendChanges();
             }
@@ -115,6 +123,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
         Aspect selectedAspect = Aspect.getAspect(tag.getString(SELECTED_ASPECT_PACKET_KEY));
         if (TileEntityMultiEssentiaJar.setActiveAspect(stack, selectedAspect)) {
+            BlockMultiEssentiaJar.playEssentiaSlosh(player);
             player.inventoryContainer.detectAndSendChanges();
         }
         return true;
@@ -142,6 +151,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Cycle"));
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Select"));
         tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Clear"));
+        tooltip.add(StatCollector.translateToLocal("Tooltip_MultiEssentiaJar_Filter"));
 
         AspectList storedAspects = TileEntityMultiEssentiaJar.getStoredAspects(stack);
 

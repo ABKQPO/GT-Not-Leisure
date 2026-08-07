@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +74,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
         if (!(tile instanceof TileEntityMultiEssentiaJar jar)) return drops;
 
         ItemStack drop = new ItemStack(this);
-        if (jar.getTotalAmount() > 0) {
+        if (jar.getTotalAmount() > 0 || jar.hasFilterLabel()) {
             jar.writeToItemStack(drop);
         }
 
@@ -91,40 +92,83 @@ public class BlockMultiEssentiaJar extends BlockJar {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
         float hitY, float hitZ) {
+
         TileEntity tile = world.getTileEntity(x, y, z);
         if (!(tile instanceof TileEntityMultiEssentiaJar jar)) return false;
 
         ItemStack heldStack = player.getHeldItem();
+
         if (heldStack == null) {
             if (world.isRemote) return true;
 
+            /*
+             * 对准标签正面潜行右击：
+             * 移除标签，并且不掉落标签物品。
+             */
+            if (jar.hasFilterLabel() && player.isSneaking() && side == jar.facing) {
+                if (jar.removeFilterLabel()) {
+                    world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "thaumcraft:jar", 0.4F, 1.0F);
+                }
+                return true;
+            }
+
+            /*
+             * 有标签且有源质：
+             * 禁止空手右击打开选择 GUI。
+             */
+            if (jar.hasFilterLabel() && jar.getTotalAmount() > 0) {
+                return true;
+            }
+
+            /*
+             * 空罐，不论是否已经有标签：
+             * 打开过滤标签 GUI。
+             */
+            if (jar.getStoredTypeCount() <= 0) {
+                if (player instanceof EntityPlayerMP playerMP) {
+                    GuiFactories.tileEntity()
+                        .open(playerMP, x, y, z);
+                }
+                return true;
+            }
+
+            /*
+             * 无标签且有源质：
+             * 潜行右击切换下一个当前源质。
+             */
             if (player.isSneaking()) {
-                // 空手潜行右键：切换到下一个源质
+                Aspect previousAspect = jar.getActiveAspect();
                 Aspect activeAspect = jar.cycleActiveAspect();
+
+                if (activeAspect != null && activeAspect != previousAspect) {
+                    playEssentiaSlosh(world, x, y, z);
+                }
+
                 sendActiveAspectStatus(player, jar, activeAspect);
                 return true;
             }
 
-            // 空手普通右键：打开选择 GUI
-            if (jar.getStoredTypeCount() <= 0) {
-                player.addChatMessage(
-                    new ChatComponentTranslation(
-                        "Info_MultiEssentiaJar_Empty",
-                        TileEntityMultiEssentiaJar.MAX_CAPACITY));
-                return true;
+            /*
+             * 无标签且有源质：
+             * 普通右击打开当前源质选择 GUI。
+             */
+            if (player instanceof EntityPlayerMP playerMP) {
+                GuiFactories.tileEntity()
+                    .open(playerMP, x, y, z);
             }
 
-            GuiFactories.tileEntity()
-                .open(player, x, y, z);
             return true;
         }
 
+        // 安瓿交互
         if (heldStack.getItem() != ConfigItems.itemEssence) return false;
+
         ItemEssence phialItem = (ItemEssence) ConfigItems.itemEssence;
 
         if (heldStack.getItemDamage() == 0) {
             return fillPhialFromJar(world, x, y, z, player, jar, phialItem);
         }
+
         return emptyPhialIntoJar(world, x, y, z, player, jar, phialItem, heldStack);
     }
 
@@ -205,5 +249,22 @@ public class BlockMultiEssentiaJar extends BlockJar {
     private static void playTransferEffects(World world, EntityPlayer player) {
         player.swingItem();
         world.playSoundAtEntity(player, "game.neutral.swim", 0.25F, 1.0F);
+    }
+
+    public static void playEssentiaSlosh(World world, int x, int y, int z) {
+        if (world == null || world.isRemote) return;
+
+        float pitch = 1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+
+        world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "game.neutral.swim", 0.5F, pitch);
+    }
+
+    public static void playEssentiaSlosh(EntityPlayer player) {
+        if (player == null || player.worldObj == null || player.worldObj.isRemote) return;
+
+        World world = player.worldObj;
+        float pitch = 1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+
+        world.playSoundAtEntity(player, "game.neutral.swim", 0.5F, pitch);
     }
 }
