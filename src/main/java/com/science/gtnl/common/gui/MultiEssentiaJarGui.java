@@ -73,18 +73,25 @@ public class MultiEssentiaJarGui {
             .setSelected(currentSelected)
             .setOnSelectedClientAction((selected, $) -> {
                 selectAspect(selected);
+
+                EntityPlayer player = MCHelper.getPlayer();
+                if (player != null) {
+                    player
+                        .playSound(filterMode ? "thaumcraft:jar" : "game.neutral.swim", filterMode ? 0.4F : 0.5F, 1.0F);
+                }
+
                 MCHelper.closeScreen();
             })
             .setCurrentItemWidgetCustomizer(
                 widget -> widget.tooltipBuilder(
                     tooltip -> tooltip.clearText()
                         .add(getTooltip(currentSelected))))
-            .setChoiceWidgetCustomizer((index, widget) -> {
-                widget.playClickSound(false);
-                widget.tooltipBuilder(
-                    tooltip -> tooltip.clearText()
-                        .add(getTooltip(index)));
-            })
+            .setChoiceWidgetCustomizer(
+                (index, widget) -> {
+                    widget.tooltipBuilder(
+                        tooltip -> tooltip.clearText()
+                            .add(getTooltip(index)));
+                })
             .build();
     }
 
@@ -189,6 +196,42 @@ public class MultiEssentiaJarGui {
         ItemStack stack = new ItemStack(jar.getBlockType(), 1, jar.getBlockMetadata());
         jar.writeToItemStack(stack);
         return stack;
+    }
+
+    private void playSelectionSound(int selected) {
+        if (selected < 0 || selected >= aspects.size()) return;
+
+        Aspect selectedAspect = aspects.get(selected);
+        Aspect currentAspect = filterMode ? TileEntityMultiEssentiaJar.getFilterAspect(jarStack)
+            : TileEntityMultiEssentiaJar.getActiveAspect(jarStack);
+
+        // 选择当前已有的源质或标签时不播放
+        if (selectedAspect == currentAspect) return;
+
+        EntityPlayer player = MCHelper.getPlayer();
+        if (player == null || player.worldObj == null || !player.worldObj.isRemote) {
+            return;
+        }
+
+        String soundName;
+        float volume;
+        float pitch;
+
+        if (filterMode) {
+            soundName = "thaumcraft:jar";
+            volume = 0.4F;
+            pitch = 1.0F;
+        } else {
+            soundName = "game.neutral.swim";
+            volume = 0.5F;
+            pitch = 1.0F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.3F;
+        }
+
+        if (placedJar) {
+            player.worldObj.playSound(blockX + 0.5D, blockY + 0.5D, blockZ + 0.5D, soundName, volume, pitch, false);
+        } else {
+            player.playSound(soundName, volume, pitch);
+        }
     }
 
 }

@@ -123,7 +123,6 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
         Aspect selectedAspect = Aspect.getAspect(tag.getString(SELECTED_ASPECT_PACKET_KEY));
         if (TileEntityMultiEssentiaJar.setActiveAspect(stack, selectedAspect)) {
-            BlockMultiEssentiaJar.playEssentiaSlosh(player);
             player.inventoryContainer.detectAndSendChanges();
         }
         return true;

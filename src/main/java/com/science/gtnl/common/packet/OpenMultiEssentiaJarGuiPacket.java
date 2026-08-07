@@ -143,9 +143,8 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
                 }
             }
             case SELECT_BLOCK_ASPECT -> {
-                if (!jar.hasFilterLabel() && jar.setActiveAspect(Aspect.getAspect(aspectTag))) {
-
-                    BlockMultiEssentiaJar.playEssentiaSlosh(world, x, y, z);
+                if (!jar.hasFilterLabel()) {
+                    jar.setActiveAspect(Aspect.getAspect(aspectTag));
                 }
             }
 
@@ -157,9 +156,7 @@ public class OpenMultiEssentiaJarGuiPacket extends ServerboundPacket {
                     return;
                 }
 
-                if (jar.installFilterLabel(selectedFilter)) {
-                    world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "thaumcraft:jar", 0.4F, 1.0F);
-                }
+                jar.installFilterLabel(selectedFilter);
             }
 
             default -> {}
