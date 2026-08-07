@@ -73,13 +73,7 @@ public class MultiEssentiaJarGui {
             .setSelected(currentSelected)
             .setOnSelectedClientAction((selected, $) -> {
                 selectAspect(selected);
-
-                EntityPlayer player = MCHelper.getPlayer();
-                if (player != null) {
-                    player
-                        .playSound(filterMode ? "thaumcraft:jar" : "game.neutral.swim", filterMode ? 0.4F : 0.5F, 1.0F);
-                }
-
+                playSelectionSound(selected);
                 MCHelper.closeScreen();
             })
             .setCurrentItemWidgetCustomizer(
@@ -88,6 +82,7 @@ public class MultiEssentiaJarGui {
                         .add(getTooltip(currentSelected))))
             .setChoiceWidgetCustomizer(
                 (index, widget) -> {
+                    widget.playClickSound(false);
                     widget.tooltipBuilder(
                         tooltip -> tooltip.clearText()
                             .add(getTooltip(index)));
