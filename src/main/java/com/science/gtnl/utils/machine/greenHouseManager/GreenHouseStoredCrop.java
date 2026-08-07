@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
+import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.util.GTUtility;
 import lombok.Getter;
@@ -85,25 +86,29 @@ public class GreenHouseStoredCrop {
     public NBTTagCompound save() {
         NBTTagCompound tag = new NBTTagCompound();
         if (CropsNHUtils.isStackValid(seedStack)) {
-            NBTTagCompound seedTag = new NBTTagCompound();
-            seedStack.writeToNBT(seedTag);
-            tag.setTag(NBT_SEED, seedTag);
+            tag.setTag(NBT_SEED, ItemUtils.writeItemStackToNBT(seedStack));
         }
         if (CropsNHUtils.isStackValid(blockUnderStack)) {
-            NBTTagCompound blockTag = new NBTTagCompound();
-            blockUnderStack.writeToNBT(blockTag);
-            tag.setTag(NBT_BLOCK_UNDER, blockTag);
+            tag.setTag(NBT_BLOCK_UNDER, ItemUtils.writeItemStackToNBT(blockUnderStack));
         }
         return tag;
     }
 
     public static GreenHouseStoredCrop load(NBTTagCompound tag) {
-        ItemStack seed = tag.hasKey(NBT_SEED, TAG_COMPOUND)
-            ? ItemStack.loadItemStackFromNBT(tag.getCompoundTag(NBT_SEED))
-            : null;
-        ItemStack blockUnder = tag.hasKey(NBT_BLOCK_UNDER, TAG_COMPOUND)
-            ? ItemStack.loadItemStackFromNBT(tag.getCompoundTag(NBT_BLOCK_UNDER))
-            : null;
+        ItemStack seed = readStoredStack(tag, NBT_SEED);
+        ItemStack blockUnder = readStoredStack(tag, NBT_BLOCK_UNDER);
         return new GreenHouseStoredCrop(seed, blockUnder);
+    }
+
+    private static ItemStack readStoredStack(NBTTagCompound tag, String key) {
+        if (!tag.hasKey(key, TAG_COMPOUND)) return null;
+
+        NBTTagCompound stackTag = tag.getCompoundTag(key);
+        ItemStack stack = ItemUtils.readItemStackFromNBT(stackTag);
+        if (stack != null && !stackTag.hasKey("IntCount") && stack.stackSize <= 0) {
+            int legacyStackSize = Byte.toUnsignedInt((byte) stack.stackSize);
+            stack.stackSize = legacyStackSize == 0 ? 256 : legacyStackSize;
+        }
+        return stack;
     }
 }
