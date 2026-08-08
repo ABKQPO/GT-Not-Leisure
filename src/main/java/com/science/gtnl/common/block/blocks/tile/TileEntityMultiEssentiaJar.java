@@ -50,6 +50,8 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     private final AspectList storedAspects = new AspectList();
     private Aspect activeAspect;
     private int transferTick;
+    private Aspect[] cachedSortedAspects;
+    private boolean sortedCacheDirty = true;
 
     public TileEntityMultiEssentiaJar() {
         maxAmount = MAX_CAPACITY;
@@ -66,6 +68,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         activeAspect = Aspect.getAspect(tag.getString(ACTIVE_ASPECT_KEY));
         aspectFilter = Aspect.getAspect(tag.getString(FILTER_ASPECT_KEY));
         facing = tag.getByte(FACING_KEY);
+        sortedCacheDirty = true;
         removeInvalidAspects();
         trimToCapacity();
         ensureActiveAspect();
@@ -502,7 +505,11 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     private Aspect[] getStoredAspectsSorted() {
-        return getSortedAspects(storedAspects);
+        if (sortedCacheDirty) {
+            cachedSortedAspects = getSortedAspects(storedAspects);
+            sortedCacheDirty = false;
+        }
+        return cachedSortedAspects;
     }
 
     private static Aspect[] getSortedAspects(AspectList aspects) {
@@ -521,6 +528,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     private void markEssentiaChanged() {
+        sortedCacheDirty = true;
         ensureActiveAspect();
         syncRenderState();
         markDirty();

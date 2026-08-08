@@ -39,8 +39,9 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
     private void gtnl$transferToAlembicsEveryTick(CallbackInfo ci) {
         if (worldObj == null || worldObj.isRemote || aspects == null || aspects.size() == 0) return;
 
+        Aspect[] sortedAspects = gtnl$getSortedAspects(aspects);
         for (int transferred = 0; transferred < GTNL_TRANSFER_PER_TICK; transferred++) {
-            if (!gtnl$distributeOne()) break;
+            if (!gtnl$distributeOne(sortedAspects)) break;
         }
     }
 
@@ -52,7 +53,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
     }
 
     @Unique
-    private boolean gtnl$distributeOne() {
+    private boolean gtnl$distributeOne(Aspect[] sortedAspects) {
         TileAlembic[] alembics = gtnl$getAlembics();
 
         // 优先处理贴有源质标签的蒸馏器
@@ -62,7 +63,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
 
             Aspect filteredAspect = gtnl$findExistingAspect(alembic);
             if (filteredAspect == null) {
-                filteredAspect = gtnl$findNewAspect(alembic);
+                filteredAspect = gtnl$findNewAspect(alembic, sortedAspects);
             }
 
             if (filteredAspect != null && gtnl$transferOne(alembic, filteredAspect)) {
@@ -75,7 +76,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
             if (alembic == null) break;
             if (alembic.aspectFilter != null) continue;
 
-            Aspect newAspect = gtnl$findNewAspect(alembic);
+            Aspect newAspect = gtnl$findNewAspect(alembic, sortedAspects);
             if (newAspect != null && gtnl$transferOne(alembic, newAspect)) {
                 return true;
             }
@@ -123,7 +124,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
     }
 
     @Unique
-    private Aspect gtnl$findNewAspect(TileAlembic alembic) {
+    private Aspect gtnl$findNewAspect(TileAlembic alembic, Aspect[] sortedAspects) {
         if (alembic.aspectFilter != null) {
             Aspect filter = alembic.aspectFilter;
             return alembic.getAspects()
@@ -132,7 +133,7 @@ public abstract class MixinTileAlchemyFurnace extends TileThaumcraft {
         }
 
         AspectList stored = alembic.getAspects();
-        for (Aspect availableAspect : gtnl$getSortedAspects(aspects)) {
+        for (Aspect availableAspect : sortedAspects) {
             if (stored.getAmount(availableAspect) <= 0 && alembic.doesContainerAccept(availableAspect)) {
                 return availableAspect;
             }

@@ -25,10 +25,13 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     private boolean bellowsInitialized;
     private int transferTick;
+    private Aspect[] cachedSortedAspects;
+    private boolean sortedCacheDirty = true;
 
     @Override
     public void readCustomNBT(NBTTagCompound tag) {
         super.readCustomNBT(tag);
+        sortedCacheDirty = true;
         removeInvalidAspects();
         trimToCapacity();
     }
@@ -280,7 +283,11 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     }
 
     private Aspect[] getStoredAspectsSorted() {
-        return getSortedAspects(aspects);
+        if (sortedCacheDirty) {
+            cachedSortedAspects = getSortedAspects(aspects);
+            sortedCacheDirty = false;
+        }
+        return cachedSortedAspects;
     }
 
     private static Aspect[] getSortedAspects(AspectList aspectList) {
@@ -297,6 +304,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     }
 
     private void markEssentiaChanged() {
+        sortedCacheDirty = true;
         markDirty();
 
         if (worldObj != null) {

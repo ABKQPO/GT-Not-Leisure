@@ -23,6 +23,8 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     private final AspectList storedAspects = new AspectList();
     private int transferTick;
+    private Aspect[] cachedSortedAspects;
+    private boolean sortedCacheDirty = true;
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
@@ -31,6 +33,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
         if (tag.hasKey(STORED_ASPECTS_KEY)) {
             storedAspects.readFromNBT(tag.getCompoundTag(STORED_ASPECTS_KEY));
         }
+        sortedCacheDirty = true;
         removeInvalidAspects();
         trimToCapacity();
     }
@@ -272,7 +275,11 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
     }
 
     private Aspect[] getStoredAspectsSorted() {
-        return getSortedAspects(storedAspects);
+        if (sortedCacheDirty) {
+            cachedSortedAspects = getSortedAspects(storedAspects);
+            sortedCacheDirty = false;
+        }
+        return cachedSortedAspects;
     }
 
     private static Aspect[] getSortedAspects(AspectList aspects) {
@@ -289,6 +296,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
     }
 
     private void markEssentiaChanged() {
+        sortedCacheDirty = true;
         markDirty();
         if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
