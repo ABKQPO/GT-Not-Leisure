@@ -40,7 +40,7 @@ import thaumcraft.common.config.ConfigItems;
 
 public class TCResearches {
 
-    private static final String ROOT_RESEARCH = "gtnl.welcome";
+    public static final String ROOT_RESEARCH = "gtnl.welcome";
 
     public static final ResourceLocation BACKGROUND = Mods.ThaumicInsurgence.isModLoaded()
         ? new ResourceLocation(Mods.ThaumicInsurgence.ID, "textures/gui/eldritch_bg.png")
@@ -543,7 +543,7 @@ public class TCResearches {
                 .registerResearchItem();
     }
 
-    private static String existingParentOrRoot(String researchKey) {
+    public static String existingParentOrRoot(String researchKey) {
         return ResearchCategories.getResearch(researchKey) == null ? ROOT_RESEARCH : researchKey;
     }
 }
