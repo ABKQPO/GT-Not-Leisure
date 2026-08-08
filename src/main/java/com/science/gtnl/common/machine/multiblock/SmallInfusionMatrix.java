@@ -5,7 +5,9 @@ import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSI
 import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -42,9 +44,10 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.research.ResearchCategories;
+import thaumcraft.common.lib.research.ResearchManager;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> implements ISurvivalConstructable {
@@ -59,6 +62,9 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     private static final int CASING_TEXTURE_ID = 1536;
 
     public final List<TileEntityEssentiaHatch> mEssentiaHatches = new ArrayList<>();
+
+    private static final int RESEARCH_REFRESH_INTERVAL = 100;
+    private final Set<String> cachedResearch = new HashSet<>();
 
     public SmallInfusionMatrix(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
@@ -102,6 +108,34 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
         setupParameters();
         checkHatch(errors);
         checkCasingMin(errors, mCountCasing, 4);
+    }
+
+    @Override
+    public void onPreTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
+        super.onPreTick(baseMetaTileEntity, tick);
+
+        if (baseMetaTileEntity.isServerSide() && tick % RESEARCH_REFRESH_INTERVAL == 0) {
+            refreshResearchCache();
+        }
+    }
+
+    private boolean isResearchCached(String research) {
+        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
+            return false;
+        }
+        return cachedResearch.contains(research);
+    }
+
+    private void refreshResearchCache() {
+        cachedResearch.clear();
+
+        String ownerName = getBaseMetaTileEntity().getOwnerName();
+        if (ownerName == null || ownerName.isEmpty()) return;
+
+        ArrayList<String> list = ResearchManager.getResearchForPlayerSafe(ownerName);
+        if (list != null) {
+            cachedResearch.addAll(list);
+        }
     }
 
     @Override
@@ -161,9 +195,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
 
                 String research = recipe.getMetadataOrDefault(INFUSION_RESEARCH, "");
 
-                if (!research.isEmpty()
-                    && !ThaumcraftApiHelper.isResearchComplete(getBaseMetaTileEntity().getOwnerName(), research)) {
-
+                if (!research.isEmpty() && !isResearchCached(research)) {
                     return SimpleCheckRecipeResult.ofFailure("missing_infusion_research");
                 }
 
