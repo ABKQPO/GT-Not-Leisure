@@ -12,7 +12,6 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumcraft.common.tiles.TileTubeBuffer;
 
-/** A larger essentia buffer tube that can keep several aspect types in one shared cache. */
 public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     private static final int TRANSFER_INTERVAL = 1;
@@ -151,11 +150,9 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     public Aspect getEssentiaType(ForgeDirection face) {
         if (!isValidFace(face) || !canOutputTo(face)) return null;
 
-        /*
-         * 查询这个方向相邻设备请求的源质。
-         * 例如标签罐的 getSuctionType() 会返回标签要素，
-         * 管道便在这个方向提供对应要素。
-         */
+        // 查询这个方向相邻设备请求的源质。
+        // 例如标签罐的 getSuctionType() 会返回标签要素，
+        // 管道便在这个方向提供对应要素。
         if (worldObj != null) {
             TileEntity adjacent = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, face);
 
@@ -165,9 +162,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
                 if (target.canInputFrom(targetSide)) {
                     Aspect requestedAspect = target.getSuctionType(targetSide);
 
-                    /*
-                     * 相邻设备明确请求了一种源质。
-                     */
+                    // 相邻设备明确请求了一种源质。
                     if (requestedAspect != null) {
                         return aspects.getAmount(requestedAspect) > 0 ? requestedAspect : null;
                     }
@@ -175,10 +170,8 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             }
         }
 
-        /*
-         * 相邻设备没有指定源质，例如无过滤输入仓。
-         * 此时继续提供排序后的第一种源质。
-         */
+        // 相邻设备没有指定源质，例如无过滤输入仓。
+        // 此时继续提供排序后的第一种源质。
         Aspect[] sorted = getStoredAspectsSorted();
         return sorted.length == 0 ? null : sorted[0];
     }

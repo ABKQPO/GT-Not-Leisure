@@ -21,10 +21,10 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
+import com.cleanroommc.modularui.factory.GuiFactories;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
-import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
 import com.science.gtnl.common.packet.RequestGameProfilePacket;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -89,8 +89,9 @@ public class ClientUtils {
             return false;
         }
 
-        ScienceNotLeisure.network
-            .sendToServer(OpenMultiEssentiaJarGuiPacket.openBlockGui(target.blockX, target.blockY, target.blockZ));
+        // 请求服务端打开方块罐 GUI，MUI2 自带该客户端→服务端打开机制
+        GuiFactories.tileEntity()
+            .openClient(target.blockX, target.blockY, target.blockZ);
 
         return true;
     }

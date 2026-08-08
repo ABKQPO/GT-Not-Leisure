@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
+import com.cleanroommc.modularui.factory.GuiFactories;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
@@ -22,11 +23,9 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.gui.MultiEssentiaJarGui;
-import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,6 +33,7 @@ import gregtech.api.interfaces.INetworkUpdatableItem;
 import gregtech.api.interfaces.item.IPickBlockHandler;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
+import gregtech.crossmod.backhand.Backhand;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -43,10 +43,14 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
     private static final int MAX_DISPLAYED_ASPECTS = 8;
 
-    public static final String SELECTED_ASPECT_PACKET_KEY = "SelectedAspect";
+    public static final String CYCLE_PREVIOUS_ASPECT_PACKET_KEY = "CyclePreviousAspect";
+
+    public ItemBlockMultiEssentiaJar(Block block) {
+        super(block);
+        setMaxStackSize(1);
+    }
 
     public static ChatComponentTranslation createServerAspectDisplay(EntityPlayer player, Aspect aspect, int amount) {
-
         boolean discovered = aspect != null
             && ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), aspect);
 
@@ -61,34 +65,19 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
             amount);
     }
 
-    public ItemBlockMultiEssentiaJar(Block block) {
-        super(block);
-        setMaxStackSize(1);
-    }
-
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!player.isSneaking()) return stack;
 
         if (!world.isRemote) {
-            Aspect previousAspect = TileEntityMultiEssentiaJar.getActiveAspect(stack);
-            Aspect activeAspect = TileEntityMultiEssentiaJar.cycleActiveAspect(stack);
-
-            if (activeAspect != null && activeAspect != previousAspect) {
-                BlockMultiEssentiaJar.playEssentiaSlosh(player);
-            }
-
-            sendActiveAspectStatus(player, stack, activeAspect);
-
-            if (activeAspect != null) {
-                player.inventoryContainer.detectAndSendChanges();
-            }
+            cycleHeldAspect(stack, player, false);
         }
         player.swingItem();
         return stack;
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean onPickBlock(ItemStack stack, EntityPlayer player) {
         if (TileEntityMultiEssentiaJar.getStoredAspects(stack)
             .visSize() <= 0) {
@@ -97,12 +86,44 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
             return true;
         }
 
-        ScienceNotLeisure.network.sendToServer(new OpenMultiEssentiaJarGuiPacket());
+        // 通过 MUI2 自带的客户端→服务端打开机制请求打开手持罐 GUI
+        GuiFactories.playerInventory()
+            .openFromPlayerInventoryClient(getUsedSlot(player, stack));
         return true;
     }
 
-    public static void sendActiveAspectStatus(EntityPlayer player, ItemStack stack, Aspect activeAspect) {
+    @SideOnly(Side.CLIENT)
+    private static int getUsedSlot(EntityPlayer player, ItemStack stack) {
+        if (player.getCurrentEquippedItem() == stack) return player.inventory.currentItem;
+        if (Backhand.getOffhandItem(player) == stack) return Backhand.getOffhandSlot(player);
+        return player.inventory.currentItem;
+    }
 
+    @Override
+    public boolean receive(ItemStack stack, EntityPlayerMP player, NBTTagCompound tag) {
+        if (tag == null || !tag.hasKey(CYCLE_PREVIOUS_ASPECT_PACKET_KEY, Constants.NBT.TAG_BYTE)) return true;
+
+        cycleHeldAspect(stack, player, true);
+        return true;
+    }
+
+    private static void cycleHeldAspect(ItemStack stack, EntityPlayer player, boolean previous) {
+        Aspect previousAspect = TileEntityMultiEssentiaJar.getActiveAspect(stack);
+        Aspect activeAspect = previous ? TileEntityMultiEssentiaJar.cyclePreviousActiveAspect(stack)
+            : TileEntityMultiEssentiaJar.cycleActiveAspect(stack);
+
+        if (activeAspect != null && activeAspect != previousAspect) {
+            BlockMultiEssentiaJar.playEssentiaSlosh(player);
+        }
+
+        sendActiveAspectStatus(player, stack, activeAspect);
+
+        if (activeAspect != null) {
+            player.inventoryContainer.detectAndSendChanges();
+        }
+    }
+
+    private static void sendActiveAspectStatus(EntityPlayer player, ItemStack stack, Aspect activeAspect) {
         if (activeAspect == null) {
             player.addChatMessage(
                 new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
@@ -118,17 +139,6 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
     }
 
     @Override
-    public boolean receive(ItemStack stack, EntityPlayerMP player, NBTTagCompound tag) {
-        if (tag == null || !tag.hasKey(SELECTED_ASPECT_PACKET_KEY, Constants.NBT.TAG_STRING)) return true;
-
-        Aspect selectedAspect = Aspect.getAspect(tag.getString(SELECTED_ASPECT_PACKET_KEY));
-        if (TileEntityMultiEssentiaJar.setActiveAspect(stack, selectedAspect)) {
-            player.inventoryContainer.detectAndSendChanges();
-        }
-        return true;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
         return new GTModularScreen(mainPanel, GTGuiThemes.STANDARD);
@@ -136,7 +146,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new MultiEssentiaJarGui(data.getUsedItemStack()).build();
+        return new MultiEssentiaJarGui(data.getUsedItemStack(), syncManager).build();
     }
 
     @Override

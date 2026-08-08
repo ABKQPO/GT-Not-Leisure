@@ -26,14 +26,9 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import thaumcraft.common.tiles.TileJarFillable;
 
-/**
- * A jar that stores several essentia types in one shared 4096-point pool.
- *
- * <p>
- * The inherited single-aspect fields are only kept in sync for Thaumcraft's standard jar renderer. All storage,
- * persistence, and transport behaviour is implemented by this class.
- * </p>
- */
+// 一个使用共享 4096 点容量池、可储存多种源质的罐子。
+// 继承自原版罐子的单一源质字段仅用于与 Thaumcraft 标准罐渲染器保持同步。所有储存、
+// 持久化和传输行为都由本类实现。
 public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiHolder<GuiData> {
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
@@ -475,7 +470,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public ModularPanel buildUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new MultiEssentiaJarGui(this, data.getPlayer()).build();
+        return new MultiEssentiaJarGui(this, data.getPlayer(), syncManager).build();
     }
 
     private void removeInvalidAspects() {

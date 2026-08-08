@@ -68,8 +68,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
 
             // 标签默认贴在南面，放置时按玩家朝向旋转，使标签面朝玩家
             if (entity != null) {
-                int playerFacing = MathHelper
-                    .floor_double((entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                int playerFacing = MathHelper.floor_double((entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 // playerFacing: 0=南 1=西 2=北 3=东 -> 对应标签朝向的 facing 值
                 jar.setFacing(new int[] { 2, 5, 3, 4 }[playerFacing]);
                 world.markBlockForUpdate(x, y, z);
@@ -111,10 +110,8 @@ public class BlockMultiEssentiaJar extends BlockJar {
         if (heldStack == null) {
             if (world.isRemote) return true;
 
-            /*
-             * 对准标签正面潜行右击：
-             * 移除标签，并且不掉落标签物品。
-             */
+            // 对准标签正面潜行右击：
+            // 移除标签，并且不掉落标签物品。
             if (jar.hasFilterLabel() && player.isSneaking() && side == jar.facing) {
                 if (jar.removeFilterLabel()) {
                     world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "thaumcraft:jar", 0.4F, 1.0F);
@@ -122,18 +119,14 @@ public class BlockMultiEssentiaJar extends BlockJar {
                 return true;
             }
 
-            /*
-             * 有标签且有源质：
-             * 禁止空手右击打开选择 GUI。
-             */
+            // 有标签且有源质：
+            // 禁止空手右击打开选择 GUI。
             if (jar.hasFilterLabel() && jar.getTotalAmount() > 0) {
                 return true;
             }
 
-            /*
-             * 空罐，不论是否已经有标签：
-             * 打开过滤标签 GUI。
-             */
+            // 空罐，不论是否已经有标签：
+            // 打开过滤标签 GUI。
             if (jar.getStoredTypeCount() <= 0) {
                 if (player instanceof EntityPlayerMP playerMP) {
                     GuiFactories.tileEntity()
@@ -142,10 +135,8 @@ public class BlockMultiEssentiaJar extends BlockJar {
                 return true;
             }
 
-            /*
-             * 无标签且有源质：
-             * 潜行右击切换下一个当前源质。
-             */
+            // 无标签且有源质：
+            // 潜行右击切换下一个当前源质。
             if (player.isSneaking()) {
                 Aspect previousAspect = jar.getActiveAspect();
                 Aspect activeAspect = jar.cycleActiveAspect();
@@ -158,10 +149,8 @@ public class BlockMultiEssentiaJar extends BlockJar {
                 return true;
             }
 
-            /*
-             * 无标签且有源质：
-             * 普通右击打开当前源质选择 GUI。
-             */
+            // 无标签且有源质：
+            // 普通右击打开当前源质选择 GUI。
             if (player instanceof EntityPlayerMP playerMP) {
                 GuiFactories.tileEntity()
                     .open(playerMP, x, y, z);

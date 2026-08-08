@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
@@ -46,7 +45,6 @@ import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
-import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
@@ -54,7 +52,6 @@ import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffec
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
 import com.science.gtnl.common.packet.NBTUpdatePacket;
-import com.science.gtnl.common.packet.OpenMultiEssentiaJarGuiPacket;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
@@ -68,6 +65,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.GTValues;
+import gregtech.api.net.GTPacketUpdateItem;
 import gregtech.client.ElectricJukeboxSound;
 import gregtech.crossmod.backhand.Backhand;
 
@@ -196,22 +195,14 @@ public class SubscribeEventClientUtils {
             return false;
         }
 
-        MovingObjectPosition target = minecraft.objectMouseOver;
-        if (target != null && target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-            && minecraft.theWorld
-                .getTileEntity(target.blockX, target.blockY, target.blockZ) instanceof TileEntityMultiEssentiaJar) {
-            network.sendToServer(
-                OpenMultiEssentiaJarGuiPacket.previousBlockAspect(target.blockX, target.blockY, target.blockZ));
-            player.swingItem();
-            event.setCanceled(true);
-            return true;
-        }
-
         ItemStack mainHand = player.getCurrentEquippedItem();
         ItemStack offHand = Backhand.getOffhandItem(player);
         if (!isMultiEssentiaJar(mainHand) && !isMultiEssentiaJar(offHand)) return false;
 
-        network.sendToServer(OpenMultiEssentiaJarGuiPacket.previousHeldAspect());
+        // 通过 GT 现有的 GTPacketUpdateItem 请求服务端循环上一个源质
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setByte(ItemBlockMultiEssentiaJar.CYCLE_PREVIOUS_ASPECT_PACKET_KEY, (byte) 1);
+        GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
         player.swingItem();
         event.setCanceled(true);
         return true;

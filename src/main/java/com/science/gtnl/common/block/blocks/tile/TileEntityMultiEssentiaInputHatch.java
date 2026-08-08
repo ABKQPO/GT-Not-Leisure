@@ -11,7 +11,6 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
 
-/** An essentia input hatch with one shared multi-aspect cache. */
 public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
