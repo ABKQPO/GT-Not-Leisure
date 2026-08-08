@@ -79,7 +79,13 @@ public class ClientUtils {
 
         TileEntity tile = world.getTileEntity(target.blockX, target.blockY, target.blockZ);
 
-        if (!(tile instanceof TileEntityMultiEssentiaJar)) {
+        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) {
+            return false;
+        }
+
+        // 与服务器端 OPEN_BLOCK_GUI 分支保持一致：
+        // 有标签或空罐时不拦截，放行原版 pick block。
+        if (jar.hasFilterLabel() || jar.getStoredTypeCount() <= 0) {
             return false;
         }
 
