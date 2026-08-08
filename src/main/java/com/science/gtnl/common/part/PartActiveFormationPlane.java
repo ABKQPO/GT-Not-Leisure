@@ -26,10 +26,10 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class PartActiveFormationPlane extends PartFormationPlane implements IGridTickable, ICustomGui {
 
@@ -136,9 +136,9 @@ public class PartActiveFormationPlane extends PartFormationPlane implements IGri
     public List<IAEItemStack> getFilterList() {
         List<IAEItemStack> list = new ArrayList<>();
         for (int i = 0; i < this.Config.getSizeInventory(); i++) {
-            ItemStack is = this.Config.getStackInSlot(i);
-            if (is != null) {
-                list.add(AEItemStack.create(is));
+            IAEStack<?> stack = this.Config.getAEStackInSlot(i);
+            if (stack instanceof IAEItemStack itemStack) {
+                list.add(itemStack);
             }
         }
         return list;
