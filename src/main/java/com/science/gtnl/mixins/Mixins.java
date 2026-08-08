@@ -168,7 +168,8 @@ public enum Mixins implements IMixins {
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
-            "appliedEnergistics.assembler.MixinGuiPatternTerm")
+            "appliedEnergistics.assembler.MixinGuiPatternTerm",
+            "thaumcraft.MixinTileJarRenderer")
         .setPhase(Phase.LATE)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")

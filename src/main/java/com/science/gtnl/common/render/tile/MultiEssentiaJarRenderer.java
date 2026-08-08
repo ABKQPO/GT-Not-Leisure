@@ -17,9 +17,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.client.lib.UtilsFX;
 import thaumcraft.client.renderers.tile.TileJarRenderer;
 import thaumcraft.common.blocks.BlockJar;
+import thaumcraft.common.config.Config;
 import thaumcraft.common.config.ConfigBlocks;
+import thaumcraft.common.tiles.TileJar;
 import thaumcraft.common.tiles.TileJarFillable;
 
 @SideOnly(Side.CLIENT)
@@ -30,6 +33,64 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
     private static final double LIQUID_MIN_XZ = 0.25D;
     private static final double LIQUID_MAX_XZ = 0.75D;
     private static final double MIN_VISIBLE_LAYER_HEIGHT = 0.015625D;
+
+    @Override
+    public void renderTileEntityAt(TileJar tile, double x, double y, double z, float partialTicks) {
+        if (!(tile instanceof TileEntityMultiEssentiaJar)) {
+            super.renderTileEntityAt(tile, x, y, z, partialTicks);
+            return;
+        }
+
+        GL11.glPushMatrix();
+        GL11.glDisable(2884);
+        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.01F, (float) z + 0.5F);
+        GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        TileJarFillable fillable = (TileJarFillable) tile;
+        if (fillable.amount > 0) {
+            renderLiquid(fillable, x, y, z, partialTicks);
+        }
+
+        if (fillable.aspectFilter != null) {
+            renderLabel(fillable);
+        }
+
+        bindTexture(tile.getTexture());
+        GL11.glEnable(2884);
+        GL11.glPopMatrix();
+    }
+
+    private void renderLabel(TileJarFillable tile) {
+        GL11.glPushMatrix();
+        switch (tile.facing) {
+            case 3 -> GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+            case 4 -> GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
+            case 5 -> GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+            default -> {}
+        }
+
+        float rot = (float) ((tile.aspectFilter.getTag()
+            .hashCode() + tile.xCoord + tile.facing) % 4 - 2);
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, -0.4F, 0.315F);
+        if (Config.crooked) {
+            GL11.glRotatef(rot, 0.0F, 0.0F, 1.0F);
+        }
+        UtilsFX.renderQuadCenteredFromTexture("textures/models/label.png", 0.5F, 1.0F, 1.0F, 1.0F, -99, 771, 1.0F);
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0.0F, -0.4F, 0.316F);
+        if (Config.crooked) {
+            GL11.glRotatef(rot, 0.0F, 0.0F, 1.0F);
+        }
+        GL11.glScaled(0.021D, 0.021D, 0.021D);
+        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+        UtilsFX.drawTag(-8, -8, tile.aspectFilter, 0.0F, 0, 0.0D);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+    }
 
     @Override
     public void renderLiquid(TileJarFillable tile, double x, double y, double z, float partialTicks) {
