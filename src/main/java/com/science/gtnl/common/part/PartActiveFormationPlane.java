@@ -28,7 +28,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartFormationPlane;
-import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -136,9 +135,8 @@ public class PartActiveFormationPlane extends PartFormationPlane implements IGri
 
     public List<IAEItemStack> getFilterList() {
         List<IAEItemStack> list = new ArrayList<>();
-        AppEngInternalAEInventory config = (AppEngInternalAEInventory) this.getInventoryByName("config");
-        for (int i = 0; i < config.getSizeInventory(); i++) {
-            ItemStack is = config.getStackInSlot(i);
+        for (int i = 0; i < this.Config.getSizeInventory(); i++) {
+            ItemStack is = this.Config.getStackInSlot(i);
             if (is != null) {
                 list.add(AEItemStack.create(is));
             }
