@@ -203,7 +203,7 @@ public class MultiEssentiaJarGui {
         if (selectedAspect == currentAspect) return;
 
         EntityPlayer player = MCHelper.getPlayer();
-        if (player == null || player.worldObj == null || !player.worldObj.isRemote) {
+        if (player == null || player.worldObj == null) {
             return;
         }
 
