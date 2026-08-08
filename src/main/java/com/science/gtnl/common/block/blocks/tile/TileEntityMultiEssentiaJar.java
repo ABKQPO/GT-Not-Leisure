@@ -85,6 +85,10 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         tag.setByte(FACING_KEY, (byte) facing);
     }
 
+    public void setFacing(int facing) {
+        this.facing = facing;
+    }
+
     @Override
     public void updateEntity() {
         if (worldObj == null || worldObj.isRemote

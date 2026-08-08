@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
@@ -64,6 +65,15 @@ public class BlockMultiEssentiaJar extends BlockJar {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityMultiEssentiaJar jar) {
             jar.readFromItemStack(stack);
+
+            // 标签默认贴在南面，放置时按玩家朝向旋转，使标签面朝玩家
+            if (entity != null) {
+                int playerFacing = MathHelper
+                    .floor_double((entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                // playerFacing: 0=南 1=西 2=北 3=东 -> 对应标签朝向的 facing 值
+                jar.setFacing(new int[] { 2, 5, 3, 4 }[playerFacing]);
+                world.markBlockForUpdate(x, y, z);
+            }
         }
     }
 
