@@ -59,6 +59,10 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
     private long gtnl$lastOutputTick = Long.MIN_VALUE;
     @Unique
     private int gtnl$outputThisTick;
+    @Unique
+    private Aspect[] gtnl$sortedCache;
+    @Unique
+    private boolean gtnl$sortedCacheDirty = true;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void gtnl$initialize(CallbackInfo ci) {
@@ -84,6 +88,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
         gtnl$trimToLimits();
         gtnl$ensureActiveAspect();
         gtnl$syncLegacyState();
+        gtnl$sortedCacheDirty = true;
     }
 
     @Inject(method = "writeCustomNBT", at = @At("HEAD"))
@@ -383,6 +388,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
         gtnl$trimToLimits();
         gtnl$ensureActiveAspect();
         gtnl$syncLegacyState();
+        gtnl$sortedCacheDirty = true;
     }
 
     @Unique
@@ -397,6 +403,7 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
 
     @Unique
     private void gtnl$markEssentiaChanged() {
+        gtnl$sortedCacheDirty = true;
         gtnl$removeInvalidAspects();
         gtnl$ensureActiveAspect();
         gtnl$syncLegacyState();
@@ -406,7 +413,11 @@ public abstract class MixinTileAlembic extends TileThaumcraft {
 
     @Unique
     private Aspect[] gtnl$getStoredAspectsSorted() {
-        return gtnl$getSortedAspects(gtnl$getStoredAspects());
+        if (gtnl$sortedCacheDirty) {
+            gtnl$sortedCache = gtnl$getSortedAspects(gtnl$getStoredAspects());
+            gtnl$sortedCacheDirty = false;
+        }
+        return gtnl$sortedCache;
     }
 
     @Unique
