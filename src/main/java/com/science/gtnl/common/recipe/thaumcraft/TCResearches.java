@@ -40,6 +40,8 @@ import thaumcraft.common.config.ConfigItems;
 
 public class TCResearches {
 
+    private static final String ROOT_RESEARCH = "gtnl.welcome";
+
     public static final ResourceLocation BACKGROUND = Mods.ThaumicInsurgence.isModLoaded()
         ? new ResourceLocation(Mods.ThaumicInsurgence.ID, "textures/gui/eldritch_bg.png")
         : new ResourceLocation(Mods.Thaumcraft.ID, "textures/gui/gui_researchback.png");
@@ -148,7 +150,7 @@ public class TCResearches {
                             Mods.Computronics.isModLoaded()
                                 ? GTModHandler.getModItem(Mods.Computronics.ID, "computronics.ocSpecialParts", 1)
                                 : new ItemStack(Items.feather) })))
-                .setParents("gtnl.welcome")
+                .setParents(existingParentOrRoot("gtnl.welcome"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -197,7 +199,7 @@ public class TCResearches {
                     new ResearchPage("tc.research_text.gtnl.largeEssentiaGenerator.1"),
                     new ResearchPage("tc.research_text.gtnl.largeEssentiaGenerator.2"),
                     new ResearchPage("tc.research_text.gtnl.largeEssentiaGenerator.3"))
-                .setParents("gtnl.welcome")
+                .setParents(existingParentOrRoot("gtnl.welcome"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -242,7 +244,7 @@ public class TCResearches {
                             NHItemList.ArcaneSlate.get(1),
                             'I',
                             GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.PulsatingIron, 1))))
-                .setParents("gtnl.largeEssentiaGenerator")
+                .setParents(existingParentOrRoot("gtnl.largeEssentiaGenerator"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -275,7 +277,7 @@ public class TCResearches {
                                 WerkstoffLoader.Neon.get(OrePrefixes.cell, 1),
                                 WerkstoffLoader.Krypton.get(OrePrefixes.cell, 1) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeAir.1"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -305,7 +307,7 @@ public class TCResearches {
                                 new ItemStack(ConfigItems.itemResource, 1, 0) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeThermal.1"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeThermal.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -338,7 +340,7 @@ public class TCResearches {
                                 Ic2Items.industrialTnt, ItemList.Field_Generator_MV.get(1) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeUnstable.1"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeUnstable.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -372,7 +374,7 @@ public class TCResearches {
                                 new ItemStack(ConfigBlocks.blockMetalDevice, 1, 8) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeVictus.1"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeVictus.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -407,7 +409,7 @@ public class TCResearches {
                                 new ItemStack(Blocks.beacon, 1) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeTainted.2"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeTainted.3"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -439,7 +441,7 @@ public class TCResearches {
                                 ItemList.Electric_Motor_IV.get(1), ItemList.Electric_Pump_IV.get(1) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeMechanics.1"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeMechanics.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -474,7 +476,7 @@ public class TCResearches {
                                 ItemList.Machine_EV_Scanner.get(1) })),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeSpirit.1"),
                     new ResearchPage("tc.research_text.gtnl.essentiaUpgradeSpirit.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -501,7 +503,7 @@ public class TCResearches {
                             Ic2Items.UranFuel, Ic2Items.MOXFuel, WerkstoffLoader.Tiberium.get(OrePrefixes.gem, 1) })),
                 new ResearchPage("tc.research_text.gtnl.essentiaUpgradeRadiation.1"),
                 new ResearchPage("tc.research_text.gtnl.essentiaUpgradeRadiation.2"))
-                .setParents("gtnl.essentiaUpgradeEmpty")
+                .setParents(existingParentOrRoot("gtnl.essentiaUpgradeEmpty"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -530,14 +532,18 @@ public class TCResearches {
                             GTOreDictUnificator.get(OrePrefixes.wireGt01, Materials.SuperconductorZPM, 1) })),
                 new ResearchPage("tc.research_text.gtnl.essentiaUpgradeElectric.1"))
                 .setParents(
-                    "gtnl.essentiaUpgradeAir",
-                    "gtnl.essentiaUpgradeThermal",
-                    "gtnl.essentiaUpgradeUnstable",
-                    "gtnl.essentiaUpgradeVictus",
-                    "gtnl.essentiaUpgradeTainted",
-                    "gtnl.essentiaUpgradeMechanics",
-                    "gtnl.essentiaUpgradeSpirit",
-                    "gtnl.essentiaUpgradeRadiation")
+                    existingParentOrRoot("gtnl.essentiaUpgradeAir"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeThermal"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeUnstable"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeVictus"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeTainted"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeMechanics"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeSpirit"),
+                    existingParentOrRoot("gtnl.essentiaUpgradeRadiation"))
                 .registerResearchItem();
+    }
+
+    private static String existingParentOrRoot(String researchKey) {
+        return ResearchCategories.getResearch(researchKey) == null ? ROOT_RESEARCH : researchKey;
     }
 }
