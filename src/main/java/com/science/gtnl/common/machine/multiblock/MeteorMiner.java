@@ -644,11 +644,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         Collection<ItemStack> drops = target.getDrops(w, x, y, z, meta, 0);
 
         if (GTUtility.isOre(target, meta)) {
-            try {
-                itemDrop.addAll(getOutputByDrops(drops));
-            } catch (Exception e) {
-                ScienceNotLeisure.LOG.error("GTNL Meteor Miner: GT Ore Error [{},{},{}]", x, y, z, e);
-            }
+            itemDrop.addAll(getOutputByDrops(drops));
         } else {
             itemDrop.addAll(drops);
         }
