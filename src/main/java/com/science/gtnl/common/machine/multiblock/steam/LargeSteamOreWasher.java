@@ -51,7 +51,7 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
     private static final int MACHINEMODE_SIMPLEWASH = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_ore_washer";
-    private static final int HORIZONTAL_OFF_SET = 4;
+    private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
@@ -68,8 +68,9 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
     public IStructureDefinition<LargeSteamOreWasher> getStructureDefinition() {
         return StructureDefinition.<LargeSteamOreWasher>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
             .addElement(
-                'A',
+                'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofChain(
                         buildSteamWirelessInput(LargeSteamOreWasher.class).casingIndex(getCasingTextureID())
@@ -103,7 +104,7 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
                                         (t, m) -> t.tierMachineCasing = m,
                                         t -> t.tierMachineCasing))))))
             .addElement(
-                'B',
+                'C',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
                         LargeSteamOreWasher::getTierPipeCasing,
@@ -112,7 +113,16 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
                         -1,
                         (t, m) -> t.tierPipeCasing = m,
                         t -> t.tierPipeCasing)))
-            .addElement('C', GTStructureUtility.chainAllGlasses())
+            .addElement(
+                'D',
+                GTStructureChannels.TIER_MACHINE_CASING.use(
+                    StructureUtility.ofBlocksTiered(
+                        LargeSteamOreWasher::getTierFrameCasing,
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockFrames, 300), Pair.of(GregTechAPI.sBlockFrames, 305)),
+                        -1,
+                        (t, m) -> t.tierFrameCasing = m,
+                        t -> t.tierFrameCasing)))
             .build();
     }
 
@@ -147,9 +157,9 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
         checkHatch(errors);
         checkMachineTier(
             errors,
-            100,
-            tierPipeCasing == 1 && tierMachineCasing == 1,
-            tierPipeCasing == 2 && tierMachineCasing == 2);
+            53,
+            tierPipeCasing == 1 && tierMachineCasing == 1 && tierFrameCasing == 1,
+            tierPipeCasing == 2 && tierMachineCasing == 2 && tierFrameCasing == 2);
     }
 
     @Override

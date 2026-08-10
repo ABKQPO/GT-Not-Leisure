@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 
 import java.util.List;
 
@@ -40,8 +39,8 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_crusher";
-    private static final int HORIZONTAL_OFF_SET = 3;
-    private static final int VERTICAL_OFF_SET = 6;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSC_STRUCTURE_FILE_PATH);
 
@@ -103,21 +102,22 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
                 'C',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
+                        LargeSteamCrusher::getTierPipeCasing,
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockCasings2, 12), Pair.of(GregTechAPI.sBlockCasings2, 13)),
+                        -1,
+                        (t, m) -> t.tierPipeCasing = m,
+                        t -> t.tierPipeCasing)))
+            .addElement(
+                'D',
+                GTStructureChannels.TIER_MACHINE_CASING.use(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamCrusher::getTierFrameCasing,
                         ImmutableList
                             .of(Pair.of(GregTechAPI.sBlockFrames, 300), Pair.of(GregTechAPI.sBlockFrames, 305)),
                         -1,
                         (t, m) -> t.tierFrameCasing = m,
                         t -> t.tierFrameCasing)))
-            .addElement(
-                'D',
-                GTStructureChannels.TIER_MACHINE_CASING.use(
-                    StructureUtility.ofBlocksTiered(
-                        LargeSteamCrusher::getTierPlatedCasing,
-                        ImmutableList.of(Pair.of(blockCustomMachineCasings, 0), Pair.of(GregTechAPI.sBlockCasings2, 0)),
-                        -1,
-                        (t, m) -> t.tierPlatedCasing = m,
-                        t -> t.tierPlatedCasing)))
             .addElement(
                 'E',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -162,14 +162,14 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
         checkHatch(errors);
         checkMachineTier(
             errors,
-            100,
+            34,
             tierGearCasing == 1 && tierMachineCasing == 1
+                && tierPipeCasing == 1
                 && tierFrameCasing == 1
-                && tierPlatedCasing == 1
                 && tierBrickCasing == 1,
             tierGearCasing == 2 && tierMachineCasing == 2
+                && tierPipeCasing == 2
                 && tierFrameCasing == 2
-                && tierPlatedCasing == 2
                 && tierBrickCasing == 2);
     }
 

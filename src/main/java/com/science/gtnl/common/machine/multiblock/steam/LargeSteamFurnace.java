@@ -2,12 +2,10 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -51,9 +49,9 @@ import gregtech.common.misc.GTStructureChannels;
 @IMetaTileEntity.SkipGenerateDescription
 public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> implements ISurvivalConstructable {
 
-    private static final int HORIZONTAL_OFF_SET = 7;
-    private static final int VERTICAL_OFF_SET = 6;
-    private static final int DEPTH_OFF_SET = 1;
+    private static final int HORIZONTAL_OFF_SET = 3;
+    private static final int VERTICAL_OFF_SET = 5;
+    private static final int DEPTH_OFF_SET = 0;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSF_STRUCTURE_FILE_PATH);
@@ -136,24 +134,14 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                 'E',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
-                        LargeSteamFurnace::getTierPlatedCasing,
-                        ImmutableList.of(Pair.of(blockCustomMachineCasings, 0), Pair.of(GregTechAPI.sBlockCasings2, 0)),
-                        -1,
-                        (t, m) -> t.tierPlatedCasing = m,
-                        t -> t.tierPlatedCasing)))
-            .addElement(
-                'F',
-                GTStructureChannels.TIER_MACHINE_CASING.use(
-                    StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierBrickCasing,
                         ImmutableList
                             .of(Pair.of(BlockLoader.metaBlockColumn, 0), Pair.of(BlockLoader.metaBlockColumn, 1)),
                         -1,
                         (t, m) -> t.tierBrickCasing = m,
                         t -> t.tierBrickCasing)))
-            .addElement('G', StructureUtility.ofBlock(Blocks.stonebrick, 0))
             .addElement(
-                'H',
+                'F',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
                         LargeSteamFurnace::getTierIndustrialCasing,
@@ -195,16 +183,14 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
         checkHatch(errors);
         checkMachineTier(
             errors,
-            50,
+            29,
             tierPipeCasing == 1 && tierMachineCasing == 1
                 && tierFrameCasing == 1
-                && tierPlatedCasing == 1
                 && tierBrickCasing == 1
                 && tierFireboxCasing == 1
                 && tierIndustrialCasing == 1,
             tierPipeCasing == 2 && tierMachineCasing == 2
                 && tierFrameCasing == 2
-                && tierPlatedCasing == 2
                 && tierBrickCasing == 2
                 && tierFireboxCasing == 2
                 && tierIndustrialCasing == 2);
