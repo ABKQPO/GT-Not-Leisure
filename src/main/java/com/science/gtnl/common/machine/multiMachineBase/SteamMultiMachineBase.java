@@ -638,38 +638,50 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public boolean depleteInput(FluidStack aLiquid) {
+        return depleteInput(aLiquid, false);
+    }
+
+    public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
         if (aLiquid == null) return false;
+        return depleteInputQuantity(aLiquid, simulate) >= aLiquid.amount;
+    }
+
+    /**
+     * Returns the amount of fluid drained from the steam input hatches.
+     *
+     * @param aLiquid  The fluid to drain. This stack is not modified.
+     * @param simulate Whether to simulate the drain.
+     * @return The amount of fluid drained.
+     */
+    public int depleteInputQuantity(FluidStack aLiquid, boolean simulate) {
+        if (aLiquid == null) return 0;
+
+        FluidStack remaining = aLiquid.copy();
         for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             FluidStack tLiquid = tHatch.getFluid();
             if (tLiquid != null && tLiquid.isFluidEqual(aLiquid)) {
-                tLiquid = tHatch.drain(aLiquid.amount, false);
-                if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                    tLiquid = tHatch.drain(aLiquid.amount, true);
-                    return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-                }
+                FluidStack drained = tHatch.drain(remaining.amount, !simulate);
+                if (drained != null) remaining.amount -= drained.amount;
+                if (remaining.amount <= 0) return aLiquid.amount;
             }
         }
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamBigInputFluids)) {
             FluidStack tLiquid = tHatch.getFluid();
             if (tLiquid != null && tLiquid.isFluidEqual(aLiquid)) {
-                tLiquid = tHatch.drain(aLiquid.amount, false);
-                if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                    tLiquid = tHatch.drain(aLiquid.amount, true);
-                    return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-                }
+                FluidStack drained = tHatch.drain(remaining.amount, !simulate);
+                if (drained != null) remaining.amount -= drained.amount;
+                if (remaining.amount <= 0) return aLiquid.amount;
             }
         }
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamWirelessInputFluids)) {
             FluidStack tLiquid = tHatch.getFluid();
             if (tLiquid != null && tLiquid.isFluidEqual(aLiquid)) {
-                tLiquid = tHatch.drain(aLiquid.amount, false);
-                if (tLiquid != null && tLiquid.amount >= aLiquid.amount) {
-                    tLiquid = tHatch.drain(aLiquid.amount, true);
-                    return tLiquid != null && tLiquid.amount >= aLiquid.amount;
-                }
+                FluidStack drained = tHatch.drain(remaining.amount, !simulate);
+                if (drained != null) remaining.amount -= drained.amount;
+                if (remaining.amount <= 0) return aLiquid.amount;
             }
         }
-        return false;
+        return aLiquid.amount - remaining.amount;
     }
 
     @Override
@@ -930,6 +942,10 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         return aFluids;
     }
 
+    /**
+     * Note: this cannot retrieve the precise ME input amount. Use {@link #depleteInputQuantity(FluidStack, boolean)}
+     * to determine the available amount.
+     */
     @Override
     public ArrayList<FluidStack> getStoredFluids() {
         ArrayList<FluidStack> rList = new ArrayList<>();
@@ -1352,6 +1368,10 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         }
     }
 
+    /**
+     * Note: this cannot retrieve the precise ME input amount. Use {@link #depleteInputQuantity(FluidStack, boolean)}
+     * to determine the available amount.
+     */
     @Override
     public ArrayList<FluidStack> getStoredFluidsForColor(Optional<Byte> color) {
         ArrayList<FluidStack> rList = new ArrayList<>();
