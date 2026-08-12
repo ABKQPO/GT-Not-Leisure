@@ -153,6 +153,16 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     public void setUpgradeConsumed(boolean upgradeConsumed) {}
 
     @Override
+    public int getUpgradeProgress() {
+        return machineTier;
+    }
+
+    @Override
+    public void setUpgradeProgress(int progress) {
+        machineTier = Math.clamp(progress, 1, REQUIRED_ITEMS.length + 1);
+    }
+
+    @Override
     public boolean tryConsumeItems() {
         boolean result = IControllerUpgrade.super.tryConsumeItems();
         if (result && machineTier < 4) machineTier++;
@@ -176,8 +186,8 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        loadUpgradeNBTData(aNBT);
         if (aNBT.hasKey("machineTier")) machineTier = aNBT.getInteger("machineTier");
+        loadUpgradeNBTData(aNBT);
     }
 
     @Override
@@ -199,6 +209,33 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
     @Override
     public int getMaxPreviewUpgradeLevel() {
         return Math.max(0, REQUIRED_ITEMS.length - machineTier);
+    }
+
+    @Override
+    public int getMaximumUpgradePreviewLevel() {
+        return REQUIRED_ITEMS.length - 1;
+    }
+
+    @Override
+    public int getUpgradeDisplayPageCount() {
+        return REQUIRED_ITEMS.length;
+    }
+
+    @Override
+    public int getCurrentUpgradeDisplayPage() {
+        return Math.clamp(machineTier - 1, 0, REQUIRED_ITEMS.length - 1);
+    }
+
+    @Override
+    public ItemStack[] getUpgradeDisplayItems(int displayPage) {
+        if (displayPage < 0 || displayPage >= REQUIRED_ITEMS.length) return new ItemStack[0];
+        return REQUIRED_ITEMS[displayPage];
+    }
+
+    @Override
+    public int[] getUpgradeDisplayPaidCosts(int displayPage) {
+        if (displayPage < 0 || displayPage >= upgradePaidCosts.length) return new int[0];
+        return upgradePaidCosts[displayPage];
     }
 
     @Override

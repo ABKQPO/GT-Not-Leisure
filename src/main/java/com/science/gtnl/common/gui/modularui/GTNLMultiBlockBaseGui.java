@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
@@ -20,6 +22,14 @@ public class GTNLMultiBlockBaseGui<T extends MTEMultiBlockBase> extends MTEMulti
 
     public GTNLMultiBlockBaseGui(T multiblock) {
         super(multiblock);
+    }
+
+    @Override
+    public ModularPanel build(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
+        if (multiblock instanceof IControllerUpgrade) {
+            uiSettings.customContainer(ControllerUpgradeModularContainer::new);
+        }
+        return super.build(guiData, syncManager, uiSettings);
     }
 
     @Override

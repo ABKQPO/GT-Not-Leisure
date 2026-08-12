@@ -45,6 +45,12 @@ public interface IControllerUpgrade {
 
     void setUpgradeConsumed(boolean consumed);
 
+    default int getUpgradeProgress() {
+        return 0;
+    }
+
+    default void setUpgradeProgress(int progress) {}
+
     default void dropStoredUpgradeItems(IGregTechTileEntity gtTE) {
         if (gtTE == null) return;
         if (gtTE.isClientSide()) return;
@@ -225,6 +231,35 @@ public interface IControllerUpgrade {
             maxLevel = level;
         }
         return maxLevel;
+    }
+
+    default int getMaximumUpgradePreviewLevel() {
+        return getMaxPreviewUpgradeLevel();
+    }
+
+    default int getUpgradeDisplayPageCount() {
+        return getMaximumUpgradePreviewLevel() + 1;
+    }
+
+    default int getCurrentUpgradeDisplayPage() {
+        return 0;
+    }
+
+    default ItemStack[] getUpgradeDisplayItems(int displayPage) {
+        return displayPage == 0 ? getUpgradeRequiredItems() : getPreviewUpgradeRequiredItems(displayPage);
+    }
+
+    default int[] getUpgradeDisplayPaidCosts(int displayPage) {
+        return displayPage == 0 ? getUpgradePaidCosts() : getPreviewUpgradePaidCosts(displayPage);
+    }
+
+    default int getMaxUpgradeRequiredItemCount() {
+        int maxItemCount = 0;
+        for (int displayPage = 0; displayPage < getUpgradeDisplayPageCount(); displayPage++) {
+            ItemStack[] upgradeItems = getUpgradeDisplayItems(displayPage);
+            if (upgradeItems != null) maxItemCount = Math.max(maxItemCount, upgradeItems.length);
+        }
+        return maxItemCount;
     }
 
     default boolean hasPreviewUpgradeWindow() {
