@@ -519,13 +519,15 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
         return modifiers;
     }
 
-    public static class TreeDiagramParallelHelper extends GTNLParallelHelper {
+    private static class TreeDiagramParallelHelper extends GTNLParallelHelper {
 
-        public final TreeDiagram treeDiagram;
-        public NaniteOutputModifiers naniteOutputModifiers;
+        private final TreeDiagram treeDiagram;
+        private final boolean hasNaniteOutputEffects;
+        private NaniteOutputModifiers naniteOutputModifiers;
 
         private TreeDiagramParallelHelper(TreeDiagram treeDiagram) {
             this.treeDiagram = treeDiagram;
+            hasNaniteOutputEffects = treeDiagram.failureBonus > 0 || treeDiagram.outputCoefficient > 0;
         }
 
         @Override
@@ -577,7 +579,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
                 (int) (outputChance * chanceMultiplier),
                 currentParallel);
             long amount = (long) outputAmount * outputMultiplier;
-            if (amount == 0 || (treeDiagram.failureBonus <= 0 && treeDiagram.outputCoefficient <= 0)) return amount;
+            if (amount == 0 || !hasNaniteOutputEffects) return amount;
 
             NaniteOutputModifiers modifiers = getNaniteOutputModifiers();
             if (modifiers.failedParallels() == 0 && modifiers.bonusParallels() == 0) return amount;
@@ -587,7 +589,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
             return amount - failedOutputReduction + bonusOutputIncrease;
         }
 
-        public NaniteOutputModifiers getNaniteOutputModifiers() {
+        private NaniteOutputModifiers getNaniteOutputModifiers() {
             if (naniteOutputModifiers == null) {
                 naniteOutputModifiers = new NaniteOutputModifiers(
                     treeDiagram.sampleNaniteEffect(currentParallel, treeDiagram.failureBonus),
@@ -597,5 +599,5 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
         }
     }
 
-    public record NaniteOutputModifiers(int failedParallels, int bonusParallels) {}
+    private record NaniteOutputModifiers(int failedParallels, int bonusParallels) {}
 }
