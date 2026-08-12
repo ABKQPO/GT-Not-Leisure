@@ -44,8 +44,7 @@ public class ControllerUpgradeModularContainer extends ModularContainer {
     }
 
     private boolean isUpgradePanelOpen() {
-        IPanelHandler upgradePanel = getSyncManager()
-            .getMainPSM()
+        IPanelHandler upgradePanel = getSyncManager().getMainPSM()
             .findPanelHandlerNullable(GTNLControllerUpgradePanels.UPGRADE_CURRENT_PANEL_KEY);
         return upgradePanel != null && upgradePanel.isPanelOpen();
     }
@@ -57,7 +56,9 @@ public class ControllerUpgradeModularContainer extends ModularContainer {
             ItemStack targetStack = targetSlot.getStack();
             if (targetStack == null || !targetStack.isItemEqual(stack)
                 || targetStack.hasTagCompound() != stack.hasTagCompound()
-                || targetStack.hasTagCompound() && !targetStack.getTagCompound().equals(stack.getTagCompound())) continue;
+                || targetStack.hasTagCompound() && !targetStack.getTagCompound()
+                    .equals(stack.getTagCompound()))
+                continue;
 
             int acceptedAmount = Math.min(stack.stackSize, targetSlot.getItemStackLimit(stack) - targetStack.stackSize);
             if (acceptedAmount <= 0) continue;
@@ -70,7 +71,8 @@ public class ControllerUpgradeModularContainer extends ModularContainer {
         }
 
         for (ModularSlot targetSlot : getShiftClickSlots()) {
-            if (!isUpgradeInputSlot(targetSlot) || !targetSlot.isItemValid(stack) || targetSlot.getStack() != null) continue;
+            if (!isUpgradeInputSlot(targetSlot) || !targetSlot.isItemValid(stack) || targetSlot.getStack() != null)
+                continue;
 
             int acceptedAmount = Math.min(stack.stackSize, targetSlot.getItemStackLimit(stack));
             if (acceptedAmount <= 0) continue;

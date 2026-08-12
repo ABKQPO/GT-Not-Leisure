@@ -72,7 +72,8 @@ public class GTNLControllerUpgradePanels {
             syncManager.syncedPanel(
                 UPGRADE_CURRENT_PANEL_KEY,
                 true,
-                (panelSyncManager, panelHandler) -> createUpgradePanel(parent, syncManager, panelSyncManager, true, 0)));
+                (panelSyncManager,
+                    panelHandler) -> createUpgradePanel(parent, syncManager, panelSyncManager, true, 0)));
 
         for (int displayPage = 0; displayPage < controllerUpgrade.getUpgradeDisplayPageCount(); displayPage++) {
             int page = displayPage;
@@ -137,7 +138,8 @@ public class GTNLControllerUpgradePanels {
             1,
             (int) Math.ceil(
                 controllerUpgrade.getUpgradeInputSlotHandler()
-                    .getSlots() / (double) inputColumns)) : 0;
+                    .getSlots() / (double) inputColumns))
+            : 0;
         int width = Math.max(
             BUTTON_SIZE * 2 + PANEL_MARGIN * 2 + 160,
             costColumns * COST_CELL_WIDTH + controllerUpgrade.getUpgradeCostItemsPerRow() * ItemSlot.SIZE);
@@ -152,7 +154,8 @@ public class GTNLControllerUpgradePanels {
             .setDraggable(true);
 
         panel.child(ButtonWidget.panelCloseButton());
-        panel.child(createCostGrid(rootSyncManager, currentPanel, displayPage, costColumns, costRows).pos(PANEL_MARGIN, 6));
+        panel.child(
+            createCostGrid(rootSyncManager, currentPanel, displayPage, costColumns, costRows).pos(PANEL_MARGIN, 6));
 
         if (currentPanel) {
             transferStoredItemsToInputHandler();
@@ -168,12 +171,14 @@ public class GTNLControllerUpgradePanels {
         panel.child(createPreviousButton(currentPanel, displayPage).pos(PANEL_MARGIN, 6 + costGridHeight));
 
         panel.child(
-            createNextButton(currentPanel, displayPage).pos(PANEL_MARGIN + costGridWidth - BUTTON_SIZE, 6 + costGridHeight));
+            createNextButton(currentPanel, displayPage)
+                .pos(PANEL_MARGIN + costGridWidth - BUTTON_SIZE, 6 + costGridHeight));
 
         return panel;
     }
 
-    private Grid createCostGrid(PanelSyncManager syncManager, boolean currentPanel, int displayPage, int columns, int rows) {
+    private Grid createCostGrid(PanelSyncManager syncManager, boolean currentPanel, int displayPage, int columns,
+        int rows) {
         NBTTagSyncHandler paidCostsSyncer = getPaidCostsSyncer(syncManager, currentPanel, displayPage);
         return new Grid().coverChildren()
             .gridOfWidthHeight(columns, rows, (x, y, index) -> {
@@ -271,8 +276,7 @@ public class GTNLControllerUpgradePanels {
     private void notifyPaidCostsUpdated(PanelSyncManager syncManager, NBTTagSyncHandler currentPaidCostsSyncer) {
         currentPaidCostsSyncer.notifyUpdate();
         for (int displayPage = 0; displayPage < controllerUpgrade.getUpgradeDisplayPageCount(); displayPage++) {
-            getPaidCostsSyncer(syncManager, false, displayPage)
-                .notifyUpdate();
+            getPaidCostsSyncer(syncManager, false, displayPage).notifyUpdate();
         }
     }
 
