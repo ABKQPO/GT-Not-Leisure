@@ -30,12 +30,11 @@ public class CircuitNanitesDataRecipes implements IRecipePool {
                 CircuitNanitesRecipeData.getOrCreate(
                     GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Carbon, 1),
                     worldSeed,
+                    14,
                     0.1,
                     2.0,
                     0.8,
                     1.5,
-                    1,
-                    2,
                     0.1,
                     0.2,
                     64,
