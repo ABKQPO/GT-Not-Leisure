@@ -18,11 +18,13 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.api.UpOrDown;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
+import com.science.gtnl.api.stellar.StellarIrisNodeDisplay;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeBranch;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
@@ -121,6 +123,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         renderCentralCore(width / 2.0F, height / 2.0F);
         renderNodes();
         endRectangleBatch();
+        renderNodeDisplays(context, widgetTheme);
         renderNodeLabels();
         renderHeader(width);
         renderDetails(width, height);
@@ -479,6 +482,10 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             if (position == null) {
                 continue;
             }
+            StellarIrisNodeDisplay nodeDisplay = definition.getNodeDisplay();
+            if (nodeDisplay != null && !nodeDisplay.isText()) {
+                continue;
+            }
             int level = snapshot.getLevel(definition.getId());
             boolean owned = level > 0;
             boolean tierLocked = snapshot.getTier() < getRequiredTier(definition);
@@ -487,9 +494,11 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             float stateAlpha = owned ? 1.0F
                 : available ? definition.getId()
                     .equals(hoveredUpgradeId) ? 0.9F : 0.6F : tierLocked ? 0.25F : 0.4F;
-            String label = owned ? "\u2713"
-                : tierLocked ? "T" + getRequiredTier(definition)
-                    : Integer.toString(definition.getCostForLevel(level + 1));
+            String label = nodeDisplay == null
+                ? owned ? "\u2713"
+                    : tierLocked ? "T" + getRequiredTier(definition)
+                        : Integer.toString(definition.getCostForLevel(level + 1))
+                : nodeDisplay.getText();
             int textColor = owned ? 0xFFFFFF : tierLocked ? 0x505050 : available ? 0xFFCC44 : 0x606060;
             font.drawString(
                 label,
@@ -497,6 +506,35 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
                 (int) position.y - (owned ? 4 : 3),
                 alphaColor(textColor, fadeAlpha * stateAlpha));
         }
+    }
+
+    private void renderNodeDisplays(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        for (StellarIrisUpgradeDefinition definition : definitions) {
+            StellarIrisNodeDisplay nodeDisplay = definition.getNodeDisplay();
+            NodePosition position = nodePositions.get(definition.getId());
+            if (nodeDisplay == null || nodeDisplay.isText() || position == null) {
+                continue;
+            }
+            IDrawable icon = nodeDisplay.getIcon();
+            if (icon == null) {
+                continue;
+            }
+            int level = snapshot.getLevel(definition.getId());
+            boolean tierLocked = snapshot.getTier() < getRequiredTier(definition);
+            boolean available = StellarIrisUpgradeManager.canUnlock(snapshot, definition)
+                && snapshot.getSpendablePoints() >= definition.getCostForLevel(level + 1);
+            float stateAlpha = level > 0 ? 1.0F : available ? 0.7F : tierLocked ? 0.25F : 0.4F;
+            int size = Math.max(8, Math.min(16, (int) getNodeRadius(definition)));
+            int x = (int) position.x - size / 2;
+            int y = (int) position.y - size / 2;
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, fadeAlpha * stateAlpha);
+            icon.draw(context, x, y, size, size, widgetTheme.getTheme());
+        }
+        GL11.glPopAttrib();
     }
 
     private void renderHeader(int width) {

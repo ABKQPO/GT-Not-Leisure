@@ -361,6 +361,7 @@ Tooltip_PipelessSteamCover_03=Stores steam globally in a network, up to 2^(2^31)
 Tooltip_PipelessSteamCover_04=Does not connect to pipes. This cover withdraws Steam from the network.
 Info_PipelessSteamCover_00=Switch to %s
 Info_PipelessSteamCover_01=Steam Type
+Info_PipelessSteamCover_02=Selected
 
 Waila_OutputMEProxy_Linked=§aThe device is linked§r
 Waila_OutputMEProxy_Unlinked=§cThe device is unlinked§r

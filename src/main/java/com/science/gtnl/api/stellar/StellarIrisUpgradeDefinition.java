@@ -7,6 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+
 import lombok.Getter;
 
 public class StellarIrisUpgradeDefinition {
@@ -25,6 +30,8 @@ public class StellarIrisUpgradeDefinition {
     private final String translationKey;
     @Getter
     private final String descriptionKey;
+    @Getter
+    private final StellarIrisNodeDisplay nodeDisplay;
     @Getter
     private final Set<String> prerequisiteIds;
     @Getter
@@ -48,6 +55,7 @@ public class StellarIrisUpgradeDefinition {
         this.translationKey = builder.translationKey == null ? "gtnl.stellar_iris.upgrade." + id
             : builder.translationKey;
         this.descriptionKey = builder.descriptionKey == null ? translationKey + ".desc" : builder.descriptionKey;
+        this.nodeDisplay = builder.nodeDisplay;
         this.prerequisiteIds = Collections.unmodifiableSet(new LinkedHashSet<>(builder.prerequisiteIds));
         this.effects = List.copyOf(builder.effects);
     }
@@ -77,6 +85,7 @@ public class StellarIrisUpgradeDefinition {
         private int maxLevel = 1;
         private String translationKey;
         private String descriptionKey;
+        private StellarIrisNodeDisplay nodeDisplay;
         private final Set<String> prerequisiteIds = new LinkedHashSet<>();
         private final List<IStellarIrisUpgradeEffect> effects = new ArrayList<>();
 
@@ -111,6 +120,26 @@ public class StellarIrisUpgradeDefinition {
 
         public Builder descriptionKey(String descriptionKey) {
             this.descriptionKey = descriptionKey;
+            return this;
+        }
+
+        public Builder nodeDisplay(String text) {
+            nodeDisplay = StellarIrisNodeDisplay.text(text);
+            return this;
+        }
+
+        public Builder nodeDisplay(ItemStack itemStack) {
+            nodeDisplay = StellarIrisNodeDisplay.item(itemStack);
+            return this;
+        }
+
+        public Builder nodeDisplay(FluidStack fluidStack) {
+            nodeDisplay = StellarIrisNodeDisplay.fluid(fluidStack);
+            return this;
+        }
+
+        public Builder nodeDisplay(IDrawable icon) {
+            nodeDisplay = StellarIrisNodeDisplay.icon(icon);
             return this;
         }
 

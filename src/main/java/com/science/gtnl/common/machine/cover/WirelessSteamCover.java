@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.cover;
 
+import java.math.BigInteger;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,11 +61,17 @@ public class WirelessSteamCover extends CoverLegacyData {
             }
             int capacity = commonMetaTile.getCapacity();
             int fluidAmount = fluid != null ? commonMetaTile.getFluidAmount() : 0;
-            int availableSteam = SteamWirelessNetworkManager.getUserSteamInt(Utils.getOwner(tileEntity));
-            int current = Math.max(0, Math.min(availableSteam, capacity - fluidAmount));
+            SteamTypes steamType = getSteamMode();
+            BigInteger availableSteam = SteamWirelessNetworkManager.getUserSteam(Utils.getOwner(tileEntity));
+            int current = availableSteam.divide(BigInteger.valueOf(steamType.efficiencyFactor))
+                .min(BigInteger.valueOf(capacity - fluidAmount))
+                .intValue();
 
-            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(Utils.getOwner(tileEntity), -current)) return;
-            commonMetaTile.fill(new FluidStack(getSteamMode().fluid, current), true);
+            if (current <= 0) return;
+
+            long steamCost = (long) current * steamType.efficiencyFactor;
+            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(Utils.getOwner(tileEntity), -steamCost)) return;
+            commonMetaTile.fill(new FluidStack(steamType.fluid, current), true);
         }
     }
 

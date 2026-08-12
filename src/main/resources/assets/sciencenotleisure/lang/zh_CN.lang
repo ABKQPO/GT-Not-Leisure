@@ -361,6 +361,7 @@ Tooltip_PipelessSteamCover_03=将蒸汽存储于全局网络中，上限为2^(2^
 Tooltip_PipelessSteamCover_04=不连接管道，此覆盖板可以从网络中抽取蒸汽.
 Info_PipelessSteamCover_00=切换到 %s
 Info_PipelessSteamCover_01=蒸汽类型
+Info_PipelessSteamCover_02=当前选中
 
 Waila_OutputMEProxy_Linked=§a设备已链接§r
 Waila_OutputMEProxy_Unlinked=§c设备未链接§r
