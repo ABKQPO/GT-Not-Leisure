@@ -37,6 +37,7 @@ public class WirelessSteamEnergyHatchGui extends CustomFluidHatchGui {
         Flow steamSelector = new EnumRowBuilder<>(SteamTypes.class).value(steamModeSyncValue)
             .overlay(createSteamOverlays())
             .build();
+        steamSelector.childPadding(0);
         for (int index = 0; index < SteamTypes.VALUES.length; index++) {
             SteamTypes steamType = SteamTypes.VALUES[index];
             ToggleButton selectorButton = (ToggleButton) steamSelector.getChildren()

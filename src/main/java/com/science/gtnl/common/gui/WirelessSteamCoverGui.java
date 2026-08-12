@@ -45,6 +45,7 @@ public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
         Flow steamButtons = new EnumRowBuilder<>(SteamTypes.class).value(steamModeSyncValue)
             .overlay(createSteamOverlays())
             .build();
+        steamButtons.childPadding(0);
         for (int index = 0; index < SteamTypes.VALUES.length; index++) {
             SteamTypes steamType = SteamTypes.VALUES[index];
             ToggleButton selectorButton = (ToggleButton) steamButtons.getChildren()
