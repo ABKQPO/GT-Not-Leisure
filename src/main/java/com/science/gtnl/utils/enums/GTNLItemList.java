@@ -1198,6 +1198,7 @@ public enum GTNLItemList implements IItemContainer {
     SteamTurbineHV,
     SteamAssemblerBronze,
     SteamAssemblerSteel,
+    HydraulicSuperBuffer,
     ManaTank,
     BigSteamInputHatch,
     SuperDataAccessHatch,
