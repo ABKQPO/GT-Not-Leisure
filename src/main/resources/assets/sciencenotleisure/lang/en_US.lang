@@ -2526,6 +2526,15 @@ SteamAssemblerBronze=Steam Assembler
 SteamAssemblerSteel=High-Pressure Steam Assembler
 Tooltip_SteamAssembler_00=Assembles components using steam pressure
 
+HydraulicSuperBuffer=Hydraulic Super Buffer
+Tooltip_HydraulicSuperBuffer_00=Can buffer up to 256 item stacks
+Tooltip_HydraulicSuperBuffer_01=Use screwdriver right-click to calibrate output amount
+Tooltip_HydraulicSuperBuffer_02=Outputs 16 stacks of 64 items every 1/20 second
+Tooltip_HydraulicSuperBuffer_03=§7Voltage IN: §e0§7 (§eSteam§7)
+Tooltip_HydraulicSuperBuffer_04=§7Voltage OUT: §e0§7 (§eSteam§7)
+Tooltip_HydraulicSuperBuffer_05=§7Amperage: §b0§7
+Tooltip_HydraulicSuperBuffer_06=§7Capacity: §9No power transfer function!§7
+
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire
 gt.blockmachines.wire.stargate.04.name=4x Stargate Wire
