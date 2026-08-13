@@ -2526,6 +2526,15 @@ SteamAssemblerBronze=蒸汽组装机
 SteamAssemblerSteel=高压蒸汽组装机
 Tooltip_SteamAssembler_00=复仇者们，集结！ 
 
+HydraulicSuperBuffer=液压超级缓存器
+Tooltip_HydraulicSuperBuffer_00=可以缓存至多256组物品
+Tooltip_HydraulicSuperBuffer_01=用螺丝刀右键以校准输出数目
+Tooltip_HydraulicSuperBuffer_02=每隔1/20秒输出16组64个物品
+Tooltip_HydraulicSuperBuffer_03=§7电压输入: §e0§7 (§e蒸汽§7)
+Tooltip_HydraulicSuperBuffer_04=§7电压输出: §e0§7 (§e蒸汽§7)
+Tooltip_HydraulicSuperBuffer_05=§7安培数：§b0§7
+Tooltip_HydraulicSuperBuffer_06=§7容量: §9没有输送电量功能！§7
+
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线
 gt.blockmachines.wire.stargate.04.name=4x%material导线
@@ -2571,15 +2580,6 @@ Tooltip_ManaTank_02=转换比例为1： 1
 Tooltip_ManaTank_03=使用螺丝刀右键来切换模式
 Mode_ManaTank_00=从魔力池抽取魔力到魔力缸
 Mode_ManaTank_01=从魔力缸抽取魔力到魔力池
-
-HydraulicSuperBuffer=液压超级缓存器
-Tooltip_HydraulicSuperBuffer_00=可以缓存至多256组物品
-Tooltip_HydraulicSuperBuffer_01=用螺丝刀右键以校准输出数目
-Tooltip_HydraulicSuperBuffer_02=每隔1/20秒输出16组64个物品
-Tooltip_HydraulicSuperBuffer_03=§7电压输入: §e0§7 (§e蒸汽§7)
-Tooltip_HydraulicSuperBuffer_04=§7电压输出: §e0§7 (§e蒸汽§7)
-Tooltip_HydraulicSuperBuffer_05=§7安培数：§b0§7
-Tooltip_HydraulicSuperBuffer_06=§7容量: §9没有输送电量功能！§7
 
 ManaDynamoHatchLV=稀释魔力动力仓
 ManaDynamoHatchHV=魔力动力仓

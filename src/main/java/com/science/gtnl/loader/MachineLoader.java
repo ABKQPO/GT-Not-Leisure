@@ -5073,10 +5073,6 @@ public class MachineLoader {
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.SteamAssemblerSteel.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
-        GTNLItemList.ManaTank
-            .set(new ManaTank(GTNLMachineID.MANA_TANK.ID, "ManaTank", StatCollector.translateToLocal("ManaTank")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaTank.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
         GTNLItemList.HydraulicSuperBuffer.set(
             new HydraulicSuperBuffer(
                 GTNLMachineID.HYDRAULIC_SUPER_BUFFER.ID,
@@ -5085,6 +5081,10 @@ public class MachineLoader {
                 1));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.HydraulicSuperBuffer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.ManaTank
+            .set(new ManaTank(GTNLMachineID.MANA_TANK.ID, "ManaTank", StatCollector.translateToLocal("ManaTank")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaTank.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         for (GasCollectorTier tier : GasCollectorTier.values()) {
             IMetaTileEntity mte = new MTEBasicMachineWithRecipe(
