@@ -22,14 +22,17 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.science.gtnl.common.gui.modularui.HydraulicSuperBufferGui;
+import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 
 import gregtech.api.enums.Dyes;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBuffer;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.render.TextureFactory;
+import gregtech.common.gui.modularui.singleblock.base.MTEBufferBaseGui;
 
 public class HydraulicSuperBuffer extends MTEBuffer {
 
@@ -130,7 +133,34 @@ public class HydraulicSuperBuffer extends MTEBuffer {
 
     @Override
     public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new HydraulicSuperBufferGui(this).build(guiData, syncManager, uiSettings);
+        return new MTEBufferBaseGui<HydraulicSuperBuffer>(this) {
+
+            @Override
+            protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {
+                return super.createContentSection(panel, syncManager).child(
+                    GTGuiTextures.PICTURE_SUPER_BUFFER.asWidget()
+                        .size(54)
+                        .horizontalCenter());
+            }
+
+            @Override
+            protected Flow createBottomLeftCornerFlow(ModularPanel panel, PanelSyncManager syncManager) {
+                return super.createBottomLeftCornerFlow(panel, syncManager).child(
+                    GTGuiTextures.PICTURE_ARROW_22_RED.asWidget()
+                        .size(50, 22)
+                        .marginLeft(11));
+            }
+
+            @Override
+            protected int getBasePanelHeight() {
+                return super.getBasePanelHeight() + 4;
+            }
+
+            @Override
+            protected boolean supportsEmitEnergy() {
+                return false;
+            }
+        }.build(guiData, syncManager, uiSettings);
     }
 
     @Override
