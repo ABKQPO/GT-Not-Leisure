@@ -1364,8 +1364,7 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                ItemList.Machine_IV_Canner.get(1),
-                ItemList.Machine_IV_FluidCanner.get(1),
+                ItemList.Machine_IV_Canner.get(2),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.TungstenSteel, 4L),
                 ItemList.Electric_Piston_IV.get(4),
