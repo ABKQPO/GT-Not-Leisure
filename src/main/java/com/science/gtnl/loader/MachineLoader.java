@@ -16,6 +16,7 @@ import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
 import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
 import com.science.gtnl.common.machine.basicMachine.GasTurbine;
+import com.science.gtnl.common.machine.basicMachine.HydraulicSuperBuffer;
 import com.science.gtnl.common.machine.basicMachine.LootBagRedemption;
 import com.science.gtnl.common.machine.basicMachine.ManaTank;
 import com.science.gtnl.common.machine.basicMachine.Replicator;
@@ -5071,6 +5072,15 @@ public class MachineLoader {
                 StatCollector.translateToLocal("SteamAssemblerSteel")));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.SteamAssemblerSteel.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.HydraulicSuperBuffer.set(
+            new HydraulicSuperBuffer(
+                GTNLMachineID.HYDRAULIC_SUPER_BUFFER.ID,
+                "HydraulicSuperBuffer",
+                StatCollector.translateToLocal("HydraulicSuperBuffer"),
+                1));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.HydraulicSuperBuffer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.ManaTank
             .set(new ManaTank(GTNLMachineID.MANA_TANK.ID, "ManaTank", StatCollector.translateToLocal("ManaTank")));

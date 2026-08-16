@@ -135,6 +135,11 @@ public class CraftingTableRecipes implements IRecipePool {
                 ItemList.Hull_Bronze.get(1), 'E', GTNLMaterials.Breel.get(OrePrefixes.pipeTiny, 1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.HydraulicSuperBuffer.get(1),
+            new Object[] { "DMV", "DDD", 'M', ItemList.Hull_Bronze.get(1), 'V', GTNLItemList.HydraulicConveyor.get(1),
+                'D', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Wood, 1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeCircuitAssembler.get(1),
             new Object[] { "ABA", "CDC", "EBE", 'A', ItemList.Robot_Arm_EV.get(1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Aluminium, 1L), 'C',
