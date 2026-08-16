@@ -35,6 +35,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerFrontend;
@@ -70,6 +72,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 import tectech.thing.casing.TTCasingsContainer;
+import thaumcraft.common.items.wands.ItemWandCasting;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.IManaDissolvable;
 import vazkii.botania.api.mana.IManaItem;
@@ -482,6 +485,51 @@ public class SubscribeEventUtils {
                 }
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMultiEssentiaJarWandClear(PlayerInteractEvent event) {
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
+
+        EntityPlayer player = event.entityPlayer;
+        if (player == null || player.worldObj == null || !player.isSneaking()) {
+            return;
+        }
+
+        ItemStack heldStack = player.getHeldItem();
+        if (heldStack == null || !(heldStack.getItem() instanceof ItemWandCasting)) {
+            return;
+        }
+
+        TileEntity tile = player.worldObj.getTileEntity(event.x, event.y, event.z);
+
+        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) {
+            return;
+        }
+
+        if (!player.canPlayerEdit(event.x, event.y, event.z, event.face, heldStack)) {
+            return;
+        }
+
+        // 声音、清空和聊天消息全部由服务器处理
+        if (player.worldObj.isRemote) {
+            return;
+        }
+
+        event.setCanceled(true);
+
+        int clearedAmount = jar.clearAllEssentia();
+
+        if (clearedAmount <= 0) {
+            player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_AlreadyEmpty"));
+            return;
+        }
+
+        BlockMultiEssentiaJar.playEssentiaSlosh(player.worldObj, event.x, event.y, event.z);
+
+        player.swingItem();
+
+        player.addChatMessage(new ChatComponentTranslation("Info_MultiEssentiaJar_Cleared", clearedAmount));
     }
 
     // Botania

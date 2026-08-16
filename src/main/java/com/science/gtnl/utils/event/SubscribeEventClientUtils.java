@@ -44,6 +44,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
@@ -64,7 +65,10 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.GTValues;
+import gregtech.api.net.GTPacketUpdateItem;
 import gregtech.client.ElectricJukeboxSound;
+import gregtech.crossmod.backhand.Backhand;
 
 public class SubscribeEventClientUtils {
 
@@ -117,8 +121,11 @@ public class SubscribeEventClientUtils {
 
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        EntityPlayer player = minecraft.thePlayer;
         if (player == null) return;
+
+        if (handlePreviousMultiEssentiaJarAspect(minecraft, player, event)) return;
 
         ItemStack held = player.getCurrentEquippedItem();
         if (held == null) return;
@@ -178,6 +185,31 @@ public class SubscribeEventClientUtils {
                 event.setCanceled(true);
             }
         }
+    }
+
+    private boolean handlePreviousMultiEssentiaJarAspect(Minecraft minecraft, EntityPlayer player, MouseEvent event) {
+        if (event.button != 0 || !event.buttonstate
+            || !player.isSneaking()
+            || minecraft.currentScreen != null
+            || minecraft.theWorld == null) {
+            return false;
+        }
+
+        ItemStack mainHand = player.getCurrentEquippedItem();
+        ItemStack offHand = Backhand.getOffhandItem(player);
+        if (!isMultiEssentiaJar(mainHand) && !isMultiEssentiaJar(offHand)) return false;
+
+        // 通过 GT 现有的 GTPacketUpdateItem 请求服务端循环上一个源质
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setByte(ItemBlockMultiEssentiaJar.CYCLE_PREVIOUS_ASPECT_PACKET_KEY, (byte) 1);
+        GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
+        player.swingItem();
+        event.setCanceled(true);
+        return true;
+    }
+
+    private static boolean isMultiEssentiaJar(ItemStack stack) {
+        return stack != null && stack.getItem() instanceof ItemBlockMultiEssentiaJar;
     }
 
     @SubscribeEvent

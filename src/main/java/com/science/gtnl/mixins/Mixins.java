@@ -161,12 +161,15 @@ public enum Mixins implements IMixins {
             "tecTech.MixinMTEResearchStation",
             "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
+            "thaumcraft.MixinTileAlembic",
+            "thaumcraft.MixinTileAlchemyFurnace",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
-            "appliedEnergistics.assembler.MixinGuiPatternTerm")
+            "appliedEnergistics.assembler.MixinGuiPatternTerm",
+            "thaumcraft.MixinTileJarRenderer")
         .setPhase(Phase.LATE)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")

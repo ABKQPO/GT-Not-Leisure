@@ -21,7 +21,9 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
+import com.cleanroommc.modularui.factory.GuiFactories;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
 import com.science.gtnl.common.packet.RequestGameProfilePacket;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -48,6 +50,9 @@ public class ClientUtils {
     }
 
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
+        if (tryOpenMultiEssentiaJarBlock(world)) {
+            return true;
+        }
         if (tryHandlePickBlockHandler(playerMP)) {
             return true;
         }
@@ -63,6 +68,32 @@ public class ClientUtils {
             }
         }
         return false;
+    }
+
+    private static boolean tryOpenMultiEssentiaJarBlock(World world) {
+        MovingObjectPosition target = Minecraft.getMinecraft().objectMouseOver;
+
+        if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return false;
+        }
+
+        TileEntity tile = world.getTileEntity(target.blockX, target.blockY, target.blockZ);
+
+        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) {
+            return false;
+        }
+
+        // 与服务器端 OPEN_BLOCK_GUI 分支保持一致：
+        // 有标签或空罐时不拦截，放行原版 pick block。
+        if (jar.hasFilterLabel() || jar.getStoredTypeCount() <= 0) {
+            return false;
+        }
+
+        // 请求服务端打开方块罐 GUI，MUI2 自带该客户端→服务端打开机制
+        GuiFactories.tileEntity()
+            .openClient(target.blockX, target.blockY, target.blockZ);
+
+        return true;
     }
 
     private static boolean tryHandlePickBlockHandler(EntityPlayer player) {

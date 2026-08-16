@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 
 import lombok.Getter;
 import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
@@ -65,7 +67,9 @@ public class TCRecipeTools {
                 InfusionCraftingRecipe y = new InfusionCraftingRecipe(
                     recipe.getRecipeInput(),
                     recipe.getRecipeOutput(),
-                    recipe.getComponents());
+                    recipe.getComponents(),
+                    recipe.getAspects(),
+                    recipe.getResearch());
                 ICR.add(y);
             }
         }
@@ -108,29 +112,61 @@ public class TCRecipeTools {
 
         private final ItemStack InputItem;
         private final ItemStack OutputItem;
-        @Getter
         private final ItemStack[] Components;
+        private final AspectList InputAspects;
+        private final String Research;
 
-        public InfusionCraftingRecipe(ItemStack InputItem, Object OutputItem, ItemStack[] Components) {
-            this.InputItem = InputItem;
-            this.OutputItem = (ItemStack) OutputItem;
-            this.Components = Components;
+        public InfusionCraftingRecipe(ItemStack inputItem, Object outputItem, ItemStack[] components,
+            AspectList inputAspects, String research) {
+
+            this.InputItem = inputItem;
+            this.OutputItem = (ItemStack) outputItem;
+            this.Components = components;
+            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.Research = research == null ? "" : research;
         }
 
         public ItemStack[] getInputItem() {
-            ItemStack[] Input = new ItemStack[Components.length + 1];
-            Input[0] = InputItem;
-            int index = 1;
-            for (ItemStack itemStack : Components) {
-                Input[index] = itemStack;
-                index++;
+            ItemStack[] input = new ItemStack[Components.length + 1];
+            input[0] = InputItem;
+
+            for (int index = 0; index < Components.length; index++) {
+                input[index + 1] = Components[index];
             }
-            return Input;
+
+            return input;
         }
 
         public ItemStack getOutput() {
             return OutputItem;
         }
 
+        public ItemStack[] getComponents() {
+            return Components;
+        }
+
+        public AspectList getInputAspects() {
+            return InputAspects;
+        }
+
+        public String getResearch() {
+            return Research;
+        }
+
+        public int getAspectAmount(Aspect aspect) {
+            return aspect == null ? 0 : InputAspects.getAmount(aspect);
+        }
+
+        public int getAspectAmount() {
+            int total = 0;
+
+            for (Aspect aspect : InputAspects.getAspects()) {
+                if (aspect != null) {
+                    total += InputAspects.getAmount(aspect);
+                }
+            }
+
+            return total;
+        }
     }
 }

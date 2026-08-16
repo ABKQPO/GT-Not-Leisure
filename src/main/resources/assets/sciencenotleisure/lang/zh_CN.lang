@@ -3992,3 +3992,38 @@ gtnl.stellar_iris.upgrade.prestige_amplifier.desc=每级声望点数提高 5%，
 gtnl.stellar_iris.upgrade.decay_resistance.desc=每级衰减抗性提高 3%，最高 10 级
 gtnl.stellar_iris.upgrade.growth_catalyst.desc=每级成长速度提高 3%，最高 10 级
 gtnl.stellar_iris.upgrade.void_attunement.desc=每级虚空效果加成提高 2%，最高 10 级
+
+tile.MultiEssentiaJar.name=复合源质罐
+Tooltip_MultiEssentiaJar_Capacity=共享容量：%s 点源质
+Tooltip_MultiEssentiaJar_Transport=源质管道仅能连接顶部
+Tooltip_MultiEssentiaJar_Stored=已储存：%s 点源质，共 %s 种
+Tooltip_MultiEssentiaJar_More=……以及另外 %s 种源质
+Info_MultiEssentiaJar_Empty=罐子为空，容量：%s
+Info_MultiEssentiaJar_ItemActive=手持罐当前源质：%s
+Info_MultiEssentiaJar_Status=当前源质：%s；总量：%s/%s；种类：%s
+GTNL.gui.multi_essentia_jar.filter_title=选择过滤要素
+GTNL.gui.multi_essentia_jar.filter_aspect=%s（%s）
+Tooltip_MultiEssentiaJar_Filter=对准空罐空手右击选择过滤标签；对准标签潜行右击可移除标签
+
+GTNL.gui.multi_essentia_jar.title=选择当前源质
+GTNL.gui.multi_essentia_jar.aspect=%s（%s）：%s 点
+GTNL.gui.multi_essentia_jar.aspect_unknown=未知要素：%s 点
+Tooltip_MultiEssentiaJar_Cycle=潜行右击切换到下一个源质；潜行左击切换到上一个源质
+Tooltip_MultiEssentiaJar_Select=手持罐时按选取方块键打开手持罐界面；空手右击已放置的罐子打开罐子界面
+Info_MultiEssentiaJar_Cleared=已清空复合源质罐，共销毁 %s 点源质。
+Info_MultiEssentiaJar_AlreadyEmpty=复合源质罐已经是空的。
+Tooltip_MultiEssentiaJar_Clear=手持法杖、权杖或手杖潜行右击：清空全部源质
+
+tile.MultiEssentiaTube.name=复合源质管道
+Tooltip_MultiEssentiaTube_Capacity=共享缓存容量：%s 点源质
+Tooltip_MultiEssentiaTube_Mixed=可同时缓存并输送多种源质
+Tooltip_MultiEssentiaTube_Wand=使用魔杖开关各面连接，潜行使用魔杖调整吸力
+
+GT5U.gui.text.recipe_result.missing_infusion_research=尚未解锁此注魔研究
+GT5U.gui.text.recipe_result.insufficient_essentia=源质仓内的源质不足
+
+tile.MultiEssentiaInputHatch.name=复合源质输入仓
+Tooltip_MultiEssentiaInputHatch_Capacity=共享容量：%s 点源质，可同时缓存多种源质
+Tooltip_MultiEssentiaInputHatch_Transport=从相邻源质罐或源质管道自动吸取，供多方块机器使用
+Tooltip_MultiEssentiaInputHatch_Clear=空手潜行右击以清空全部源质
+Info_MultiEssentiaInputHatch_Cleared=已清空复合源质输入仓，共销毁 %s 点源质

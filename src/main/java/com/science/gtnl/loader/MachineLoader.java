@@ -113,6 +113,7 @@ import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 import com.science.gtnl.common.machine.multiblock.ResourceCollectionModule;
 import com.science.gtnl.common.machine.multiblock.ShallowChemicalCoupling;
 import com.science.gtnl.common.machine.multiblock.SingularityDataHub;
+import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.science.gtnl.common.machine.multiblock.SpaceAssembler;
 import com.science.gtnl.common.machine.multiblock.SuperSpaceElevator;
 import com.science.gtnl.common.machine.multiblock.SupercomputingCenter;
@@ -558,6 +559,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("NameIndustrialArcaneAssembler")));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SmallInfusionMatrix.set(
+            new SmallInfusionMatrix(
+                GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
+                "SmallInfusionMatrix",
+                StatCollector.translateToLocal("NameSmallInfusionMatrix")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.EnergeticPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.EnergeticPhotovoltaicPowerStation(
