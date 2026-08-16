@@ -150,12 +150,6 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             true);
     }
 
-    public int getMultiTier(ItemStack inventory) {
-        if (inventory == null) return 1;
-        if (inventory.isItemEqual(GTNLItemList.BlazeCube.get(1))) return 4;
-        return 1;
-    }
-
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
@@ -176,7 +170,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     @Override
     public void setupParameters() {
         super.setupParameters();
-        this.mMultiTier = getMultiTier(getControllerSlot());
+        this.mMultiTier = GTUtility.areStacksEqual(getControllerSlot(), GTNLItemList.BlazeCube.get(1), true) ? 4 : 1;
         this.mHeatingCapacity = (int) getMCoilLevel().getHeat() + 100 * (BWUtil.getTier(getMaxInputVoltage()) - 2);
     }
 
@@ -408,7 +402,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
     @Override
     public int getMaxParallelRecipes() {
-        return 64 * mMultiTier;
+        return 32 * mMultiTier;
     }
 
     public boolean addFluidBlazeInputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {

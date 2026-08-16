@@ -178,7 +178,8 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         FluidStack currentSteamStack = getFillableStack();
         SteamTypes steamType = currentSteamStack == null ? selectedSteam
             : SteamTypes.fromFluid(currentSteamStack.getFluid());
-        if (steamType == null || currentSteamStack != null && currentSteamStack.amount >= mFluidCapacity) return;
+        if (steamType == null || !steamType.networkConvertible
+            || currentSteamStack != null && currentSteamStack.amount >= mFluidCapacity) return;
 
         int storedAmount = currentSteamStack == null ? 0 : currentSteamStack.amount;
         int capacity = mFluidCapacity - storedAmount;
@@ -214,7 +215,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     }
 
     public void setSteamMode(SteamTypes steamType) {
-        if (steamType == null) return;
+        if (steamType == null || !steamType.networkConvertible) return;
 
         IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
         if (baseMetaTileEntity == null || !baseMetaTileEntity.isServerSide()) {
@@ -250,10 +251,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        int selectedSteamId = aNBT.getInteger("SelectedSteam");
-        if (selectedSteamId >= 0 && selectedSteamId < SteamTypes.VALUES.length) {
-            selectedSteam = SteamTypes.VALUES[selectedSteamId];
-        }
+        selectedSteam = SteamTypes.fromNetworkTypeId(aNBT.getInteger("SelectedSteam"));
         if (aNBT.hasKey("OwnerUUID")) {
             try {
                 ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));

@@ -55,13 +55,12 @@ public class WirelessSteamCover extends CoverLegacyData {
         if (tileEntity instanceof BaseMetaTileEntity baseTile
             && baseTile.getMetaTileEntity() instanceof CommonMetaTileEntity commonMetaTile) {
             FluidStack fluid = commonMetaTile.getFluid();
-            if (fluid != null
-                && !GTUtility.areFluidsEqual(fluid, new FluidStack(SteamTypes.values()[coverData].fluid, 1))) {
+            SteamTypes steamType = getSteamMode();
+            if (fluid != null && !GTUtility.areFluidsEqual(fluid, new FluidStack(steamType.fluid, 1))) {
                 return;
             }
             int capacity = commonMetaTile.getCapacity();
             int fluidAmount = fluid != null ? commonMetaTile.getFluidAmount() : 0;
-            SteamTypes steamType = getSteamMode();
             BigInteger availableSteam = SteamWirelessNetworkManager.getUserSteam(Utils.getOwner(tileEntity));
             int current = availableSteam.divide(BigInteger.valueOf(steamType.efficiencyFactor))
                 .min(BigInteger.valueOf(capacity - fluidAmount))
@@ -81,24 +80,23 @@ public class WirelessSteamCover extends CoverLegacyData {
     }
 
     public SteamTypes getSteamMode() {
-        return SteamTypes.values()[coverData];
+        return SteamTypes.fromNetworkTypeId(coverData);
     }
 
     public void setSteamMode(SteamTypes type) {
+        if (type == null || !type.networkConvertible) return;
         coverData = type.ordinal();
     }
 
     @Override
     public void onCoverScrewdriverClick(EntityPlayer aPlayer, float aX, float aY, float aZ) {
-        coverData = (coverData + (aPlayer.isSneaking() ? -1 : 1)) % SteamTypes.values().length;
+        coverData = (getSteamMode().ordinal() + (aPlayer.isSneaking() ? -1 : 1))
+            % SteamTypes.NETWORK_CONVERTIBLE_TYPES.length;
         if (coverData < 0) {
-            coverData = SteamTypes.values().length - 1;
+            coverData = SteamTypes.NETWORK_CONVERTIBLE_TYPES.length - 1;
         }
 
-        GTUtility.sendChatTrans(
-            aPlayer,
-            "Info_PipelessSteamCover_00",
-            SteamTypes.values()[coverData].fluid.getLocalizedName());
+        GTUtility.sendChatTrans(aPlayer, "Info_PipelessSteamCover_00", getSteamMode().fluid.getLocalizedName());
     }
 
     @Override

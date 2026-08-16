@@ -17,14 +17,17 @@ import gregtech.api.util.GTModHandler;
 
 public enum SteamTypes {
 
-    STEAM("Steam", Materials.Steam.mGas, 1),
+    STEAM("Steam", Materials.Steam.mGas, 1, true),
     SH_STEAM("Superheated Steam", GTModHandler.getSuperHeatedSteam(1)
-        .getFluid(), 10),
-    DSC_STEAM("Dense Supercritical Steam", Materials.DenseSupercriticalSteam.mGas, 50),
+        .getFluid(), 10, true),
+    DSC_STEAM("Dense Supercritical Steam", Materials.DenseSupercriticalSteam.mGas, 50, true),
     CM_STEAM("Compressed Steam", GTNLMaterials.CompressedSteam.getMolten(1)
-        .getFluid(), 1000);
+        .getFluid(), 1000, false);
 
     public static final SteamTypes[] VALUES = values();
+    public static final SteamTypes[] NETWORK_CONVERTIBLE_TYPES = Arrays.stream(VALUES)
+        .filter(steamType -> steamType.networkConvertible)
+        .toArray(SteamTypes[]::new);
     public static final Set<Fluid> SUPPORTED_FLUIDS = createSupportedFluids();
     public static final Map<Fluid, SteamTypes> TYPES_BY_FLUID = createTypesByFluid();
 
@@ -32,12 +35,14 @@ public enum SteamTypes {
     public final Fluid fluid;
     public final int efficiencyFactor;
     public final BigInteger networkSteamPerLiter;
+    public final boolean networkConvertible;
 
-    SteamTypes(String name, Fluid fluid, int efficiency) {
+    SteamTypes(String name, Fluid fluid, int efficiency, boolean networkConvertible) {
         this.displayName = name;
         this.fluid = fluid;
         this.efficiencyFactor = efficiency;
         this.networkSteamPerLiter = BigInteger.valueOf(efficiency);
+        this.networkConvertible = networkConvertible;
     }
 
     public static List<SteamTypes> getSupportedTypes() {
@@ -50,6 +55,10 @@ public enum SteamTypes {
 
     public static SteamTypes fromFluid(Fluid fluid) {
         return fluid == null ? null : TYPES_BY_FLUID.get(fluid);
+    }
+
+    public static SteamTypes fromNetworkTypeId(int id) {
+        return id >= 0 && id < NETWORK_CONVERTIBLE_TYPES.length ? NETWORK_CONVERTIBLE_TYPES[id] : STEAM;
     }
 
     private static Map<Fluid, SteamTypes> createTypesByFluid() {
