@@ -3,6 +3,7 @@ package com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -28,49 +29,88 @@ public abstract class MixinGuiCraftingCPUTable {
         ScienceNotLeisure.MODID,
         "textures/gui/ecalculator_gui_2.png");
 
-    private static final int CPU_CRAFTING_ICON_TEXTURE_X = 32;
-    private static final int CPU_CRAFTING_ICON_TEXTURE_Y = 176;
     private static final int CPU_CRAFTING_ICON_SIZE = 16;
 
     @WrapOperation(
         method = "drawFG",
-        at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawTexturedModalRect(IIIIII)V"),
+        at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawTexturedModalRect(IIIIII)V", ordinal = 0),
         require = 1)
-    private void gtnl$drawQuantumComputerOverlay(final AEBaseGui gui, final int x, final int y, final int textureX,
+    private void gtnl$drawQuantumComputerBackground(final AEBaseGui gui, final int x, final int y, final int textureX,
         final int textureY, final int width, final int height, final Operation<Void> original,
         @Local(name = "cpu") final CraftingCPUStatus cpu) {
         original.call(gui, x, y, textureX, textureY, width, height);
 
         final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
             : EQuantumComputerCPUStatus.NORMAL_CPU;
-        if (cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU
-            && textureX == CPU_CRAFTING_ICON_TEXTURE_X
-            && textureY == CPU_CRAFTING_ICON_TEXTURE_Y
-            && width == CPU_CRAFTING_ICON_SIZE
-            && height == CPU_CRAFTING_ICON_SIZE) {
-            final TextureManager textureManager = Minecraft.getMinecraft().renderEngine;
-            textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
-            gui.drawTexturedModalRect(
-                x,
-                y,
-                cpuType == EQuantumComputerCPUStatus.VIRTUAL_CPU ? 0 : 34,
-                124,
-                CPU_CRAFTING_ICON_SIZE,
-                CPU_CRAFTING_ICON_SIZE);
-            return;
-        }
-
-        if (textureX != GuiCraftingCPUTable.CPU_TABLE_SLOT_XOFF || textureY != GuiCraftingCPUTable.CPU_TABLE_SLOT_YOFF
-            || width != GuiCraftingCPUTable.CPU_TABLE_SLOT_WIDTH
-            || height != GuiCraftingCPUTable.CPU_TABLE_SLOT_HEIGHT
-            || cpuType == EQuantumComputerCPUStatus.NORMAL_CPU) {
+        if (cpuType == EQuantumComputerCPUStatus.NORMAL_CPU) {
             return;
         }
 
         final TextureManager textureManager = Minecraft.getMinecraft().renderEngine;
-        textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
         gui.drawTexturedModalRect(x, y, 1, cpuType == EQuantumComputerCPUStatus.VIRTUAL_CPU ? 1 : 26, 67, 22);
+    }
+
+    @WrapOperation(
+        method = "drawFG",
+        at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawTexturedModalRect(IIIIII)V", ordinal = 1),
+        require = 1)
+    private void gtnl$drawQuantumComputerBusyIcon(final AEBaseGui gui, final int x, final int y, final int textureX,
+        final int textureY, final int width, final int height, final Operation<Void> original,
+        @Local(name = "cpu") final CraftingCPUStatus cpu) {
+        final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
+            : EQuantumComputerCPUStatus.NORMAL_CPU;
+        if (cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU) {
+            gtnl$drawQuantumComputerIcon(gui, x, y, cpuType);
+            return;
+        }
+
+        original.call(gui, x, y, textureX, textureY, width, height);
+    }
+
+    @WrapOperation(
+        method = "drawFG",
+        at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawItem(IILnet/minecraft/item/ItemStack;)V"),
+        require = 1)
+    private void gtnl$drawIdleQuantumComputerIcon(final AEBaseGui gui, final int x, final int y, final ItemStack stack,
+        final Operation<Void> original, @Local(name = "cpu") final CraftingCPUStatus cpu) {
+        final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
+            : EQuantumComputerCPUStatus.NORMAL_CPU;
+        if (!cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU && x == 0 && y == 0) {
+            gtnl$drawQuantumComputerIcon(gui, x, y, cpuType);
+            gui.bindTexture("guis/states.png");
+            return;
+        }
+        if (!cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU && x == 64 && y == 0) {
+            gtnl$drawQuantumComputerParallelIcon(gui, x, y);
+            gui.bindTexture("guis/states.png");
+            return;
+        }
+
+        original.call(gui, x, y, stack);
+    }
+
+    @Unique
+    private static void gtnl$drawQuantumComputerIcon(final AEBaseGui gui, final int x, final int y,
+        final byte cpuType) {
+        final TextureManager textureManager = Minecraft.getMinecraft().renderEngine;
+        textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
+        gui.drawTexturedModalRect(
+            x,
+            y,
+            cpuType == EQuantumComputerCPUStatus.VIRTUAL_CPU ? 0 : 34,
+            124,
+            CPU_CRAFTING_ICON_SIZE,
+            CPU_CRAFTING_ICON_SIZE);
+    }
+
+    @Unique
+    private static void gtnl$drawQuantumComputerParallelIcon(final AEBaseGui gui, final int x, final int y) {
+        final TextureManager textureManager = Minecraft.getMinecraft().renderEngine;
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
+        gui.drawTexturedModalRect(x, y, 17, 124, CPU_CRAFTING_ICON_SIZE, CPU_CRAFTING_ICON_SIZE);
     }
 
     @WrapOperation(
