@@ -109,6 +109,7 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingCPUCluster",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
+            "appliedEnergistics.quamtumComputer.MixinCraftingCPUStatus",
             "bartwork.MixinItemRegistry",
             "bartwork.MixinMultipleMetalLoader",
             "bartwork.MixinSimpleMetalLoader",
@@ -166,7 +167,8 @@ public enum Mixins implements IMixins {
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
-            "appliedEnergistics.assembler.MixinGuiPatternTerm")
+            "appliedEnergistics.assembler.MixinGuiPatternTerm",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")

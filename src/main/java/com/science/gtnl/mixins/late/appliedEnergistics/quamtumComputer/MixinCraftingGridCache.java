@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer;
 
-import java.util.List;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Final;
@@ -36,15 +35,14 @@ public abstract class MixinCraftingGridCache {
     private void injectUpdateCPUClusters(final CallbackInfo ci) {
         for (final IGridNode ecNode : grid.getMachines(QuantumComputer.class)) {
             final var ec = (QuantumComputer) ecNode.getMachine();
-            final List<CraftingCPUCluster> cpus = ec.getCPUs();
-
-            for (CraftingCPUCluster cpu : cpus) {
+            ec.forEachCPU(cpu -> {
                 this.craftingCPUClusters.add(cpu);
 
-                if (cpu.getLastCraftingLink() != null) {
-                    this.addLink((CraftingLink) cpu.getLastCraftingLink());
+                final CraftingLink craftingLink = (CraftingLink) cpu.getLastCraftingLink();
+                if (craftingLink != null) {
+                    this.addLink(craftingLink);
                 }
-            }
+            });
         }
     }
 
