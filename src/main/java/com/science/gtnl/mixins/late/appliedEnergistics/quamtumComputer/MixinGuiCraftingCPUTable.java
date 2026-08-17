@@ -124,7 +124,7 @@ public abstract class MixinGuiCraftingCPUTable {
         final int color, final Operation<Integer> original, @Local(name = "cpu") final CraftingCPUStatus cpu) {
         if (cpu instanceof EQuantumComputerCPUStatus status
             && status.ec$getCPUType() != EQuantumComputerCPUStatus.NORMAL_CPU) {
-            return original.call(font, text, x + 8, y, color);
+            return original.call(font, text, x + 10, y, color);
         }
         return original.call(font, text, x, y, color);
     }
