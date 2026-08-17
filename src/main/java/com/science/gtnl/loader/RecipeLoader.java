@@ -123,7 +123,6 @@ import com.science.gtnl.common.recipe.gtnl.SteamWoodcutterRecipes;
 import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
 import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
-import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
@@ -210,7 +209,6 @@ public class RecipeLoader {
         // loadPlasmaCentrifugeRecipes();
 
         if (Mods.NewHorizonsCoreMod.isModLoaded()) {
-            TCResearches.register();
             new PlasmaForgeRecipes().loadRecipes();
         }
 

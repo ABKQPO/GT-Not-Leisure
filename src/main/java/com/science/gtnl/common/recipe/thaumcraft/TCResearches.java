@@ -46,12 +46,7 @@ public class TCResearches {
         ? new ResourceLocation(Mods.ThaumicInsurgence.ID, "textures/gui/eldritch_bg.png")
         : new ResourceLocation(Mods.Thaumcraft.ID, "textures/gui/gui_researchback.png");
 
-    public static void register() {
-        loadResearchTab();
-        loadResearchesAndRecipes();
-    }
-
-    public static void loadResearchTab() {
+    public static void registerCategory() {
         ResearchCategories.registerCategory(
             "gtnl",
             new ResourceLocation(RESOURCE_ROOT_ID, "textures/items/TestItem.png"),
@@ -70,12 +65,12 @@ public class TCResearches {
         return null;
     }
 
-    public static void loadResearchesAndRecipes() {
-        new ResearchItem("gtnl.welcome", "gtnl", new AspectList(), 0, 0, 0, GTNLItemList.TestItem.get(1))
-            .setAutoUnlock()
-            .registerResearchItem()
+    public static void registerResearches() {
+        new ResearchItem(ROOT_RESEARCH, "gtnl", new AspectList(), 0, 0, 0, GTNLItemList.TestItem.get(1))
             .setPages(new ResearchPage("tc.research_text.gtnl.welcome.1"))
-            .setSpecial();
+            .setSpecial()
+            .setAutoUnlock()
+            .registerResearchItem();
 
         new ResearchItem(
             "gtnl.timeStopPocketWatch",

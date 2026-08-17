@@ -20,6 +20,7 @@ import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
+import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
@@ -149,11 +150,14 @@ public class CommonProxy implements IGuiHandler {
             MinecraftForge.EVENT_BUS.register(new ExtremeExtremeEntityCrusherRecipes());
         }
 
+        TCResearches.registerCategory();
+
         MaterialLoader.loadPostInit();
     }
 
     public void completeInit(FMLLoadCompleteEvent event) {
         MaterialLoader.loadCompleteInit();
+        TCResearches.registerResearches();
         VMTweakHelper.initializeDimensionMappings();
     }
 
