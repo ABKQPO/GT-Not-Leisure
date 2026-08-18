@@ -16,6 +16,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.AEApi;
 import bartworks.system.material.WerkstoffLoader;
+import cpw.mods.fml.common.Optional;
 import fox.spiteful.avaritia.items.LudicrousItems;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.ItemList;
@@ -195,51 +196,6 @@ public class TCResearches {
                     new ResearchPage("tc.research_text.gtnl.largeEssentiaGenerator.2"),
                     new ResearchPage("tc.research_text.gtnl.largeEssentiaGenerator.3"))
                 .setParents(existingParentOrRoot("gtnl.welcome"))
-                .registerResearchItem();
-
-        new ResearchItem(
-            "gtnl.essentiaUpgradeEmpty",
-            "gtnl",
-            new AspectList().add(Aspect.AURA, 10)
-                .add(Aspect.EXCHANGE, 10)
-                .add(Aspect.TOOL, 10)
-                .add(Aspect.ENERGY, 10),
-            -4,
-            4,
-            2,
-            GTNLItemList.EssentiaUpgradeEmpty.get(1))
-                .setPages(
-                    new ResearchPage("tc.research_text.gtnl.essentiaUpgradeEmpty.0"),
-                    new ResearchPage(
-                        ThaumcraftApi.addArcaneCraftingRecipe(
-                            "gtnl.essentiaUpgradeEmpty",
-                            GTNLItemList.EssentiaUpgradeEmpty.get(1),
-                            new AspectList().add(Aspect.AIR, 80)
-                                .add(Aspect.ENTROPY, 50)
-                                .add(Aspect.ORDER, 50)
-                                .add(Aspect.WATER, 80),
-                            "AMB",
-                            "CZD",
-                            "EIF",
-                            'A',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedAir, 1),
-                            'B',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedEarth, 1),
-                            'C',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedFire, 1),
-                            'D',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedWater, 1),
-                            'E',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedOrder, 1),
-                            'F',
-                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedEntropy, 1),
-                            'M',
-                            new ItemStack(ConfigItems.itemResource, 1, 10),
-                            'Z',
-                            NHItemList.ArcaneSlate.get(1),
-                            'I',
-                            GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.PulsatingIron, 1))))
-                .setParents(existingParentOrRoot("gtnl.largeEssentiaGenerator"))
                 .registerResearchItem();
 
         new ResearchItem(
@@ -535,6 +491,56 @@ public class TCResearches {
                     existingParentOrRoot("gtnl.essentiaUpgradeMechanics"),
                     existingParentOrRoot("gtnl.essentiaUpgradeSpirit"),
                     existingParentOrRoot("gtnl.essentiaUpgradeRadiation"))
+                .registerResearchItem();
+
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) loadNHRecipe();
+    }
+
+    @Optional.Method(modid = "dreamcraft")
+    public static void loadNHRecipe() {
+        new ResearchItem(
+            "gtnl.essentiaUpgradeEmpty",
+            "gtnl",
+            new AspectList().add(Aspect.AURA, 10)
+                .add(Aspect.EXCHANGE, 10)
+                .add(Aspect.TOOL, 10)
+                .add(Aspect.ENERGY, 10),
+            -4,
+            4,
+            2,
+            GTNLItemList.EssentiaUpgradeEmpty.get(1))
+                .setPages(
+                    new ResearchPage("tc.research_text.gtnl.essentiaUpgradeEmpty.0"),
+                    new ResearchPage(
+                        ThaumcraftApi.addArcaneCraftingRecipe(
+                            "gtnl.essentiaUpgradeEmpty",
+                            GTNLItemList.EssentiaUpgradeEmpty.get(1),
+                            new AspectList().add(Aspect.AIR, 80)
+                                .add(Aspect.ENTROPY, 50)
+                                .add(Aspect.ORDER, 50)
+                                .add(Aspect.WATER, 80),
+                            "AMB",
+                            "CZD",
+                            "EIF",
+                            'A',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedAir, 1),
+                            'B',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedEarth, 1),
+                            'C',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedFire, 1),
+                            'D',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedWater, 1),
+                            'E',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedOrder, 1),
+                            'F',
+                            GTOreDictUnificator.get(OrePrefixes.screw, Materials.InfusedEntropy, 1),
+                            'M',
+                            new ItemStack(ConfigItems.itemResource, 1, 10),
+                            'Z',
+                            NHItemList.ArcaneSlate.get(1),
+                            'I',
+                            GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.PulsatingIron, 1))))
+                .setParents(existingParentOrRoot("gtnl.largeEssentiaGenerator"))
                 .registerResearchItem();
     }
 

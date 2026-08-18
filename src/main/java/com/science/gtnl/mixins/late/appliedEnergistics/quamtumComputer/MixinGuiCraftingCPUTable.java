@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -34,7 +35,8 @@ public abstract class MixinGuiCraftingCPUTable {
     @WrapOperation(
         method = "drawFG",
         at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawTexturedModalRect(IIIIII)V", ordinal = 0),
-        require = 1)
+        require = 1,
+        remap = true)
     private void gtnl$drawQuantumComputerBackground(final AEBaseGui gui, final int x, final int y, final int textureX,
         final int textureY, final int width, final int height, final Operation<Void> original,
         @Local(name = "cpu") final CraftingCPUStatus cpu) {
@@ -55,7 +57,8 @@ public abstract class MixinGuiCraftingCPUTable {
     @WrapOperation(
         method = "drawFG",
         at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawTexturedModalRect(IIIIII)V", ordinal = 1),
-        require = 1)
+        require = 1,
+        remap = true)
     private void gtnl$drawQuantumComputerBusyIcon(final AEBaseGui gui, final int x, final int y, final int textureX,
         final int textureY, final int width, final int height, final Operation<Void> original,
         @Local(name = "cpu") final CraftingCPUStatus cpu) {
@@ -113,13 +116,25 @@ public abstract class MixinGuiCraftingCPUTable {
         gui.drawTexturedModalRect(x, y, 17, 124, CPU_CRAFTING_ICON_SIZE, CPU_CRAFTING_ICON_SIZE);
     }
 
+    @ModifyArg(
+        method = "drawFG",
+        at = @At(
+            value = "INVOKE",
+            target = "Lappeng/api/storage/data/IAEStack;drawInGui(Lnet/minecraft/client/Minecraft;II)V"),
+        index = 1,
+        require = 1)
+    private int gtnl$offsetCraftingOutputIcon(final int x) {
+        return x - 4;
+    }
+
     @WrapOperation(
         method = "drawFG",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I",
             ordinal = 0),
-        require = 1)
+        require = 1,
+        remap = true)
     private int gtnl$offsetQuantumComputerName(final FontRenderer font, final String text, final int x, final int y,
         final int color, final Operation<Integer> original, @Local(name = "cpu") final CraftingCPUStatus cpu) {
         if (cpu instanceof EQuantumComputerCPUStatus status
