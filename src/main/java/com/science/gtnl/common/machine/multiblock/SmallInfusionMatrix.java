@@ -5,11 +5,12 @@ import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSI
 import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,8 +29,10 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
+import cpw.mods.fml.common.Optional;
 import goodgenerator.loader.Loaders;
 import gregtech.api.enums.HatchElement;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -48,6 +51,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.common.lib.research.ResearchManager;
+import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> implements ISurvivalConstructable {
@@ -62,9 +66,10 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     private static final int CASING_TEXTURE_ID = 1536;
 
     public final List<TileEntityEssentiaHatch> mEssentiaHatches = new ArrayList<>();
+    private final List<TileEntity> mInfusionProviders = new ArrayList<>();
 
     private static final int RESEARCH_REFRESH_INTERVAL = 100;
-    private final Set<String> cachedResearch = new HashSet<>();
+    private ArrayList<String> cachedResearch = new ArrayList<>();
 
     public SmallInfusionMatrix(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
@@ -97,7 +102,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                         SmallInfusionMatrix::addEssentiaHatch,
                         TileEntityEssentiaHatch.class,
                         Loaders.magicCasing,
-                        0)))
+                        0),
+                    StructureUtility.ofTileAdder(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
             .build();
     }
 
@@ -108,6 +114,31 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
         setupParameters();
         checkHatch(errors);
         checkCasingMin(errors, mCountCasing, 4);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound nbt) {
+        NBTTagList list = new NBTTagList();
+        for (String research : cachedResearch) {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("ResearchName", research);
+            list.appendTag(tag);
+        }
+        nbt.setTag("Research", list);
+        super.saveNBTData(nbt);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound nbt) {
+        cachedResearch.clear();
+        NBTTagList list = nbt.getTagList("Research", 10);
+        for (int i = 0; i < list.tagCount(); i++) {
+            NBTTagCompound tag = list.getCompoundTagAt(i);
+            if (tag.hasKey("ResearchName")) {
+                cachedResearch.add(tag.getString("ResearchName"));
+            }
+        }
+        super.loadNBTData(nbt);
     }
 
     @Override
@@ -127,21 +158,20 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     }
 
     private void refreshResearchCache() {
-        cachedResearch.clear();
-
         String ownerName = getBaseMetaTileEntity().getOwnerName();
         if (ownerName == null || ownerName.isEmpty()) return;
 
-        ArrayList<String> list = ResearchManager.getResearchForPlayerSafe(ownerName);
-        if (list != null) {
-            cachedResearch.addAll(list);
+        ArrayList<String> list = ResearchManager.getResearchForPlayer(ownerName);
+        if ((cachedResearch == null && list != null)
+            || (list != null && !list.isEmpty() && cachedResearch.size() != list.size())) {
+            cachedResearch = list;
         }
     }
 
     @Override
     public void checkHatch(List<StructureError> errors) {
         super.checkHatch(errors);
-        if (mEssentiaHatches.isEmpty()) {
+        if (mEssentiaHatches.isEmpty() && mInfusionProviders.isEmpty()) {
             errors.add(GTNLStructureErrors.invalidHatchConfiguration());
         }
     }
@@ -150,10 +180,21 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     public void clearHatches() {
         super.clearHatches();
         mEssentiaHatches.clear();
+        mInfusionProviders.clear();
     }
 
     public boolean addEssentiaHatch(TileEntityEssentiaHatch tileEntity) {
         return mEssentiaHatches.add(tileEntity);
+    }
+
+    public boolean addInfusionProvider(TileEntity tileEntity) {
+        return Mods.ThaumicEnergistics.isModLoaded() && addInfusionProviderCompat(tileEntity);
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    private boolean addInfusionProviderCompat(TileEntity tileEntity) {
+        if (!(tileEntity instanceof TileInfusionProvider)) return false;
+        return mInfusionProviders.add(tileEntity);
     }
 
     @Override
@@ -193,13 +234,16 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     return baseResult;
                 }
 
-                String research = recipe.getMetadataOrDefault(INFUSION_RESEARCH, "");
+                String research = recipe.getMetadata(INFUSION_RESEARCH);
+                AspectList requiredAspects = recipe.getMetadata(INFUSION_ASPECTS);
 
-                if (!research.isEmpty() && !isResearchCached(research)) {
-                    return SimpleCheckRecipeResult.ofFailure("missing_infusion_research");
+                if (research == null || requiredAspects == null) {
+                    return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                AspectList requiredAspects = recipe.getMetadataOrDefault(INFUSION_ASPECTS, new AspectList());
+                if (!isResearchCached(research)) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_infusion_research");
+                }
 
                 if (!hasRequiredEssentia(requiredAspects, 1)) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
@@ -211,7 +255,11 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             @NotNull
             @Override
             public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                AspectList requiredAspects = recipe.getMetadataOrDefault(INFUSION_ASPECTS, new AspectList());
+                AspectList requiredAspects = recipe.getMetadata(INFUSION_ASPECTS);
+
+                if (requiredAspects == null) {
+                    return CheckRecipeResultRegistry.NO_RECIPE;
+                }
 
                 int crafts = Math.max(1, calculatedParallels);
 
@@ -219,7 +267,9 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
-                consumeEssentia(requiredAspects, crafts);
+                if (!consumeEssentia(requiredAspects, crafts)) {
+                    return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
+                }
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
@@ -253,21 +303,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             }
 
             long required = (long) requiredAspects.getAmount(aspect) * crafts;
-            long stored = 0;
-
-            for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
-                if (hatch == null || hatch.isInvalid()) {
-                    continue;
-                }
-
-                stored += hatch.containerContains(aspect);
-
-                if (stored >= required) {
-                    break;
-                }
-            }
-
-            if (stored < required) {
+            long storedInHatches = getStoredEssentiaInHatches(aspect, required);
+            if (storedInHatches < required && getMaximumProviderEssentia(aspect) < required - storedInHatches) {
                 return false;
             }
         }
@@ -275,10 +312,10 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
         return true;
     }
 
-    private void consumeEssentia(AspectList requiredAspects, int crafts) {
+    private boolean consumeEssentia(AspectList requiredAspects, int crafts) {
 
         if (requiredAspects == null || crafts <= 0) {
-            return;
+            return true;
         }
 
         for (Aspect aspect : requiredAspects.getAspects()) {
@@ -287,6 +324,17 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             }
 
             long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
+            long storedInHatches = getStoredEssentiaInHatches(aspect, remaining);
+            long providerAmount = Math.max(0, remaining - storedInHatches);
+
+            if (providerAmount > 0) {
+                TileEntity provider = findInfusionProvider(aspect, providerAmount);
+                if (provider == null || providerAmount > Integer.MAX_VALUE
+                    || !takeFromInfusionProvider(provider, aspect, (int) providerAmount)) {
+                    return false;
+                }
+                remaining -= providerAmount;
+            }
 
             for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
                 if (remaining <= 0) {
@@ -305,7 +353,68 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     remaining -= removed;
                 }
             }
+
+            if (remaining > 0) return false;
         }
+
+        return true;
+    }
+
+    private long getStoredEssentiaInHatches(Aspect aspect, long required) {
+        long stored = 0;
+        for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
+            if (hatch == null || hatch.isInvalid()) continue;
+
+            stored += hatch.containerContains(aspect);
+            if (stored >= required) break;
+        }
+        return stored;
+    }
+
+    private long getMaximumProviderEssentia(Aspect aspect) {
+        long maximum = 0;
+        for (TileEntity provider : mInfusionProviders) {
+            if (provider == null || provider.isInvalid()) continue;
+            maximum = Math.max(maximum, getProviderAspectAmount(provider, aspect));
+        }
+        return maximum;
+    }
+
+    private TileEntity findInfusionProvider(Aspect aspect, long required) {
+        TileEntity selected = null;
+        long maximum = 0;
+        for (TileEntity provider : mInfusionProviders) {
+            if (provider == null || provider.isInvalid()) continue;
+
+            long available = getProviderAspectAmount(provider, aspect);
+            if (available >= required && available > maximum) {
+                selected = provider;
+                maximum = available;
+            }
+        }
+        return selected;
+    }
+
+    private long getProviderAspectAmount(TileEntity provider, Aspect aspect) {
+        if (!Mods.ThaumicEnergistics.isModLoaded()) return 0;
+        return getProviderAspectAmountCompat(provider, aspect);
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    private long getProviderAspectAmountCompat(TileEntity provider, Aspect aspect) {
+        return provider instanceof TileInfusionProvider infusionProvider
+            ? infusionProvider.getAspectAmountInNetwork(aspect)
+            : 0;
+    }
+
+    private boolean takeFromInfusionProvider(TileEntity provider, Aspect aspect, int amount) {
+        return Mods.ThaumicEnergistics.isModLoaded() && takeFromInfusionProviderCompat(provider, aspect, amount);
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    private boolean takeFromInfusionProviderCompat(TileEntity provider, Aspect aspect, int amount) {
+        return provider instanceof TileInfusionProvider infusionProvider
+            && infusionProvider.takeFromContainer(aspect, amount);
     }
 
     @Override

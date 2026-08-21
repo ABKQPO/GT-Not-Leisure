@@ -22,6 +22,7 @@ public class TCRecipeTools {
     public TCRecipeTools() {}
 
     public static void getShapedArcaneCraftingRecipe() {
+        ShapedAR.clear();
         List<Object> craftingRecipes = ThaumcraftApi.getCraftingRecipes();
         for (Object r : craftingRecipes) {
             if (!(r instanceof ShapedArcaneRecipe recipe)) {
@@ -32,13 +33,16 @@ public class TCRecipeTools {
                 .getItem() != null) {
                 ShapedArcaneCraftingRecipe y = new ShapedArcaneCraftingRecipe(
                     recipe.getInput(),
-                    recipe.getRecipeOutput());
+                    recipe.getRecipeOutput(),
+                    recipe.getAspects(),
+                    recipe.getResearch());
                 ShapedAR.add(y);
             }
         }
     }
 
     public static void getShapelessArcaneCraftingRecipe() {
+        ShaplessAR.clear();
         List<Object> craftingRecipes = ThaumcraftApi.getCraftingRecipes();
         for (Object r : craftingRecipes) {
             if (!(r instanceof ShapelessArcaneRecipe recipe)) {
@@ -49,13 +53,16 @@ public class TCRecipeTools {
                 .getItem() != null) {
                 ShapelessArcaneCraftingRecipe y = new ShapelessArcaneCraftingRecipe(
                     recipe.getInput(),
-                    recipe.getRecipeOutput());
+                    recipe.getRecipeOutput(),
+                    recipe.getAspects(),
+                    recipe.getResearch());
                 ShaplessAR.add(y);
             }
         }
     }
 
     public static void getInfusionCraftingRecipe() {
+        ICR.clear();
         for (Object r : ThaumcraftApi.getCraftingRecipes()) {
             if (!(r instanceof InfusionRecipe recipe)) {
                 continue;
@@ -81,30 +88,56 @@ public class TCRecipeTools {
         @Getter
         private final Object[] InputItems;
         private final ItemStack OutputItem;
+        private final AspectList InputAspects;
+        private final String Research;
 
-        public ShapedArcaneCraftingRecipe(Object[] InputItems, ItemStack OutputItem) {
+        public ShapedArcaneCraftingRecipe(Object[] InputItems, ItemStack OutputItem, AspectList inputAspects,
+            String research) {
             this.InputItems = InputItems;
             this.OutputItem = OutputItem;
+            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.Research = research == null ? "" : research;
         }
 
         public ItemStack getOutput() {
             return OutputItem;
+        }
+
+        public AspectList getInputAspects() {
+            return InputAspects;
+        }
+
+        public String getResearch() {
+            return Research;
         }
     }
 
     public static class ShapelessArcaneCraftingRecipe {
 
         @Getter
-        private final ArrayList<ItemStack> InputItems;
+        private final ArrayList<?> InputItems;
         private final ItemStack OutputItem;
+        private final AspectList InputAspects;
+        private final String Research;
 
-        public ShapelessArcaneCraftingRecipe(ArrayList<ItemStack> InputItems, ItemStack OutputItem) {
+        public ShapelessArcaneCraftingRecipe(ArrayList<?> InputItems, ItemStack OutputItem, AspectList inputAspects,
+            String research) {
             this.InputItems = InputItems;
             this.OutputItem = OutputItem;
+            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.Research = research == null ? "" : research;
         }
 
         public ItemStack getOutput() {
             return OutputItem;
+        }
+
+        public AspectList getInputAspects() {
+            return InputAspects;
+        }
+
+        public String getResearch() {
+            return Research;
         }
     }
 

@@ -1,7 +1,10 @@
 package com.science.gtnl.common.recipe.gtnl;
 
+import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
+import static thaumcraft.common.config.ConfigItems.itemEldritchObject;
 import static thaumcraft.common.config.ConfigItems.itemJarNode;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +28,7 @@ import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTUtility;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -35,6 +39,9 @@ public class InfusionCraftingRecipes implements IRecipePool {
     public static final ItemStack BLAST_FURNACE_TEMPLATE = GTModHandler
         .getModItem(Mods.EtFuturumRequiem.ID, "blast_furnace", 1);
 
+    private static final ItemId COSMETIC_SOLID_OUTPUT = ItemId.create(new ItemStack(blockCosmeticSolid));
+    private static final ItemId PRIMORDIAL_PEARL = ItemId.create(new ItemStack(itemEldritchObject, 1, 3));
+    private static final Set<ItemId> PRIMORDIAL_PEARL_RETURN_EXCLUSIONS = new HashSet<>();
     public static final Set<ItemId> UNCONSUMED_ITEMS = new HashSet<>();
     public static final RecipeMetadataKey<AspectList> INFUSION_ASPECTS = SimpleRecipeMetadataKey
         .create(AspectList.class, "gtnl_infusion_aspects");
@@ -64,7 +71,9 @@ public class InfusionCraftingRecipes implements IRecipePool {
 
     @Optional.Method(modid = "Avaritia")
     public static void addAvaritia() {
-        UNCONSUMED_ITEMS.add(ItemId.create(new ItemStack(LudicrousItems.bigPearl)));
+        ItemId bigPearl = ItemId.create(new ItemStack(LudicrousItems.bigPearl));
+        UNCONSUMED_ITEMS.add(bigPearl);
+        PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.add(bigPearl);
         UNCONSUMED_ITEMS.add(ItemId.create(new ItemStack(LudicrousItems.armok_orb)));
     }
 
@@ -98,6 +107,36 @@ public class InfusionCraftingRecipes implements IRecipePool {
         return copy;
     }
 
+    private static ItemStack[] createInputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
+        ItemStack[] inputs = checkInputSpecial(recipe.getInputItem());
+        if (!COSMETIC_SOLID_OUTPUT.equals(ItemId.create(recipe.getOutput()))) {
+            return inputs;
+        }
+
+        ItemStack[] separatedInputs = Arrays.copyOf(inputs, inputs.length + 1);
+        separatedInputs[inputs.length] = GTUtility.getIntegratedCircuit(11);
+        return separatedInputs;
+    }
+
+    private static ItemStack[] createOutputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
+        ItemStack output = recipe.getOutput();
+        if (PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.contains(ItemId.create(output))) {
+            return new ItemStack[] { output };
+        }
+
+        int pearlCount = 0;
+        for (ItemStack component : recipe.getComponents()) {
+            if (component != null && PRIMORDIAL_PEARL.equals(ItemId.create(component))) {
+                pearlCount++;
+            }
+        }
+
+        if (pearlCount == 0) {
+            return new ItemStack[] { output };
+        }
+        return new ItemStack[] { output, new ItemStack(itemEldritchObject, pearlCount, 3) };
+    }
+
     public Set<Item> skips;
 
     public boolean shouldSkip(Item item) {
@@ -125,7 +164,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
         return skips.contains(item);
     }
 
-    private static ItemStack[] createAspectDisplayStacks(AspectList aspectList) {
+    static ItemStack[] createAspectDisplayStacks(AspectList aspectList) {
         if (aspectList == null || aspectList.size() == 0) {
             return new ItemStack[0];
         }
@@ -161,8 +200,8 @@ public class InfusionCraftingRecipes implements IRecipePool {
             RecipeBuilder.builder()
                 .ignoreCollision()
                 .clearInvalid()
-                .itemInputsUnified(checkInputSpecial(Recipe.getInputItem()))
-                .itemOutputs(Recipe.getOutput())
+                .itemInputsUnified(createInputs(Recipe))
+                .itemOutputs(createOutputs(Recipe))
                 .fluidInputs()
                 .fluidOutputs()
                 .special(createAspectDisplayStacks(Recipe.getInputAspects()))

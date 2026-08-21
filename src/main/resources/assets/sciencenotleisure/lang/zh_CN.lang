@@ -852,6 +852,22 @@ Tooltip_IndustrialArcaneAssembler_01=固定并行为2147483647
 Tooltip_IndustrialArcaneAssembler_02=需要在控制器放入水晶缠绕宇宙中子态素法杖来成型！ 
 Tooltip_EnergeticIndustrialArcaneAssembler_Casing=任意压力抑制机械方块
 
+NameSmallArcaneAssembler=小型奥术组装机
+SmallArcaneAssemblerRecipeType=奥术合成
+Tooltip_SmallArcaneAssembler_00=处理有序与无序奥术工作台配方，每次运行一个配方
+Tooltip_SmallArcaneAssembler_01=机器所有者必须完成配方所需研究
+Tooltip_SmallArcaneAssembler_02=在控制器槽放入法杖、权杖或手杖，合成时将消耗其中的魔力
+Tooltip_SmallArcaneAssembler_03=消耗 32 EU/t，每 128 个供电 tick 随机为两种基础要素持续恢复共 1-4 点魔力
+Tooltip_SmallArcaneAssembler_04=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时充能量翻倍，溢出转移率由 25% 提升至 75%
+Tooltip_SmallArcaneAssembler_Casing=任意魔法机械方块
+
+NameSmallInfusionMatrix=小型注魔矩阵
+SmallInfusionMatrixRecipeType=工业注魔
+Tooltip_SmallInfusionMatrix_00=处理机器所有者已解锁的注魔配方
+Tooltip_SmallInfusionMatrix_01=消耗各注魔配方指定的源质
+Tooltip_SmallInfusionMatrix_Casing=任意魔法机械方块
+Tooltip_SmallInfusionMatrix_EssentiaHatch=源质输入仓或神秘能源注魔供应器
+
 NameEnergeticPhotovoltaicPowerStation=充能光伏电站
 NameAdvancedPhotovoltaicPowerStation=高级光伏电站
 NameVibrantPhotovoltaicPowerStation=脉冲光伏电站
@@ -4011,6 +4027,9 @@ Tooltip_MultiEssentiaTube_Wand=使用魔杖开关各面连接，潜行使用魔�
 
 GT5U.gui.text.recipe_result.missing_infusion_research=尚未解锁此注魔研究
 GT5U.gui.text.recipe_result.insufficient_essentia=源质仓内的源质不足
+GT5U.gui.text.recipe_result.missing_arcane_research=尚未解锁此奥术研究
+GT5U.gui.text.recipe_result.missing_arcane_wand=请在控制器槽放入法杖、权杖或手杖
+GT5U.gui.text.recipe_result.insufficient_vis=控制器法杖中的魔力不足
 
 tile.MultiEssentiaInputHatch.name=复合源质输入仓
 Tooltip_MultiEssentiaInputHatch_Capacity=共享容量：%s 点源质，可同时缓存多种源质

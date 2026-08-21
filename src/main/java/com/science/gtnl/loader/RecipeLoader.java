@@ -165,6 +165,10 @@ public class RecipeLoader {
             loadBuffTargetChamberRecipe();
         }
 
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) {
+            TCResearches.register();
+        }
+
         IRecipePool[] recipePools = new IRecipePool[] { new GrandAssemblyLineSpecialRecipes(),
             new BotaniaManaInfusionRecipes(), new ChemicalRecipes(), new ElectrolyzerRecipes(), new MixerRecipes(),
             new AssemblerRecipes(), new AutoclaveRecipes(), new AlloyBlastSmelterRecipes(), new CompressorRecipes(),
@@ -210,7 +214,6 @@ public class RecipeLoader {
         // loadPlasmaCentrifugeRecipes();
 
         if (Mods.NewHorizonsCoreMod.isModLoaded()) {
-            TCResearches.register();
             new PlasmaForgeRecipes().loadRecipes();
         }
 

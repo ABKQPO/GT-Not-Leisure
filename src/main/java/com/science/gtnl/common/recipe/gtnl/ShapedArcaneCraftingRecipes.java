@@ -21,9 +21,17 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.recipe.RecipeMetadataKey;
+import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import gregtech.api.util.GTUtility;
+import thaumcraft.api.aspects.AspectList;
 
 public class ShapedArcaneCraftingRecipes implements IRecipePool {
+
+    public static final RecipeMetadataKey<AspectList> ARCANE_VIS = SimpleRecipeMetadataKey
+        .create(AspectList.class, "gtnl_arcane_vis");
+    public static final RecipeMetadataKey<String> ARCANE_RESEARCH = SimpleRecipeMetadataKey
+        .create(String.class, "gtnl_arcane_research");
 
     public Set<Item> skips;
 
@@ -102,6 +110,12 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                 .clearInvalid()
                 .itemInputsUnified(InfusionCraftingRecipes.checkInputSpecial(inputItems.toArray(new ItemStack[0])))
                 .itemOutputs(output)
+                .special(InfusionCraftingRecipes.createAspectDisplayStacks(recipe.getInputAspects()))
+                .metadata(
+                    ARCANE_VIS,
+                    recipe.getInputAspects()
+                        .copy())
+                .metadata(ARCANE_RESEARCH, recipe.getResearch())
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IAA);
@@ -141,6 +155,12 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                 .clearInvalid()
                 .itemInputsUnified(InfusionCraftingRecipes.checkInputSpecial(inputItems.toArray(new ItemStack[0])))
                 .itemOutputs(output)
+                .special(InfusionCraftingRecipes.createAspectDisplayStacks(recipe.getInputAspects()))
+                .metadata(
+                    ARCANE_VIS,
+                    recipe.getInputAspects()
+                        .copy())
+                .metadata(ARCANE_RESEARCH, recipe.getResearch())
                 .duration(20)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(IAA);

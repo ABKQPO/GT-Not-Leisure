@@ -112,6 +112,7 @@ import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 import com.science.gtnl.common.machine.multiblock.ResourceCollectionModule;
 import com.science.gtnl.common.machine.multiblock.ShallowChemicalCoupling;
 import com.science.gtnl.common.machine.multiblock.SingularityDataHub;
+import com.science.gtnl.common.machine.multiblock.SmallArcaneAssembler;
 import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.science.gtnl.common.machine.multiblock.SpaceAssembler;
 import com.science.gtnl.common.machine.multiblock.SuperSpaceElevator;
@@ -558,6 +559,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("NameIndustrialArcaneAssembler")));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SmallArcaneAssembler.set(
+            new SmallArcaneAssembler(
+                GTNLMachineID.SMALL_ARCANE_ASSEMBLER.ID,
+                "SmallArcaneAssembler",
+                StatCollector.translateToLocal("NameSmallArcaneAssembler")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SmallInfusionMatrix.set(
             new SmallInfusionMatrix(

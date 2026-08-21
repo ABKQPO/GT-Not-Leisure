@@ -852,6 +852,22 @@ Tooltip_IndustrialArcaneAssembler_01=Fixed and behaves as 2147483647
 Tooltip_IndustrialArcaneAssembler_02=Requires a Crystal Studded Cosmic Neutronium Wand in the controller to form!
 Tooltip_EnergeticIndustrialArcaneAssembler_Casing=Any Pressure Suppression Machine Block
 
+NameSmallArcaneAssembler=Small Arcane Assembler
+SmallArcaneAssemblerRecipeType=Arcane Crafting
+Tooltip_SmallArcaneAssembler_00=Processes shaped and shapeless Arcane Workbench recipes at one recipe per operation.
+Tooltip_SmallArcaneAssembler_01=Requires the machine owner to have completed the recipe research.
+Tooltip_SmallArcaneAssembler_02=Place a wand, sceptre, or staff in the controller slot; crafting vis is consumed from it.
+Tooltip_SmallArcaneAssembler_03=Consumes 32 EU/t; two random primal aspects gain 1-4 vis smoothly over every 128 powered ticks.
+Tooltip_SmallArcaneAssembler_04=Each selected aspect uses 0-30 matching CV; at 30 CV its charge is doubled and overflow transfer rises from 25% to 75%.
+Tooltip_SmallArcaneAssembler_Casing=Any Magic Mechanical Block
+
+NameSmallInfusionMatrix=Small Infusion Matrix
+SmallInfusionMatrixRecipeType=Industrial Infusion
+Tooltip_SmallInfusionMatrix_00=Processes infusion recipes unlocked by the machine owner.
+Tooltip_SmallInfusionMatrix_01=Consumes the essentia specified by each infusion recipe.
+Tooltip_SmallInfusionMatrix_Casing=Any Magic Mechanical Block
+Tooltip_SmallInfusionMatrix_EssentiaHatch=Essentia Input Hatch or Thaumic Energistics Infusion Provider
+
 NameEnergeticPhotovoltaicPowerStation=Energetic Photovoltaic Power Station
 NameAdvancedPhotovoltaicPowerStation=Advanced Photovoltaic Power Station
 NameVibrantPhotovoltaicPowerStation=Vibrant Photovoltaic Power Station
@@ -4011,6 +4027,9 @@ Tooltip_MultiEssentiaTube_Wand=Use a wand to toggle sides; sneak-use it to adjus
 
 GT5U.gui.text.recipe_result.missing_infusion_research=Required infusion research has not been completed
 GT5U.gui.text.recipe_result.insufficient_essentia=Not enough essentia in the Essentia Hatches
+GT5U.gui.text.recipe_result.missing_arcane_research=Required arcane research has not been completed
+GT5U.gui.text.recipe_result.missing_arcane_wand=Place a wand, sceptre, or staff in the controller slot
+GT5U.gui.text.recipe_result.insufficient_vis=Not enough vis in the controller wand
 
 tile.MultiEssentiaInputHatch.name=Multi-Essentia Input Hatch
 Tooltip_MultiEssentiaInputHatch_Capacity=Shared capacity: %s essentia; stores multiple aspect types
