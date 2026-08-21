@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -149,8 +150,12 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         if (!(tileEntity instanceof IEssentiaTransport transport)) return false;
 
         ForgeDirection targetSide = outputSide.getOpposite();
-        if (!transport.isConnectable(targetSide) || !transport.canInputFrom(targetSide)) return false;
-        if (transport.getSuctionAmount(targetSide) <= 0) return false;
+        boolean forceMultiJarInput = tileEntity instanceof TileEntityMultiEssentiaJar
+            && targetSide != ForgeDirection.UP;
+        if (!forceMultiJarInput) {
+            if (!transport.isConnectable(targetSide) || !transport.canInputFrom(targetSide)) return false;
+            if (transport.getSuctionAmount(targetSide) <= 0) return false;
+        }
 
         Aspect aspect = transport.getSuctionType(targetSide);
         if (aspect == null) {
@@ -162,7 +167,9 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         int available = outputAspects.getAmount(aspect);
         if (available <= 0) return false;
 
-        int accepted = transport.addEssentia(aspect, available, targetSide);
+        int accepted = forceMultiJarInput
+            ? ((TileEntityMultiEssentiaJar) tileEntity).addEssentiaFromSmeltery(aspect, available, targetSide)
+            : transport.addEssentia(aspect, available, targetSide);
         if (accepted <= 0) return false;
         outputAspects.remove(aspect, Math.min(accepted, available));
         return true;
@@ -208,7 +215,13 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicMachineGui<>(this, getUIProperties()).build(data, syncManager, uiSettings);
+        return new GTNLBasicMachineGui<SmallEssentiaSmeltery>(this, getUIProperties()) {
+
+            @Override
+            protected boolean supportsBottomLeftCornerFlow() {
+                return false;
+            }
+        }.build(data, syncManager, uiSettings);
     }
 
     @Override

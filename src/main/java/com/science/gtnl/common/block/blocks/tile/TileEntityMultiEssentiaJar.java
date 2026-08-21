@@ -258,6 +258,11 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         return canInputFrom(face) ? amount - addToContainer(aspect, amount) : 0;
     }
 
+    public int addEssentiaFromSmeltery(Aspect aspect, int amount, ForgeDirection face) {
+        if (face == null || face == ForgeDirection.UNKNOWN || face == ForgeDirection.UP) return 0;
+        return amount - addToContainer(aspect, amount);
+    }
+
     @Override
     public Aspect getEssentiaType(ForgeDirection face) {
         ensureActiveAspect();
