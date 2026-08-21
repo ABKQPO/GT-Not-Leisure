@@ -161,8 +161,6 @@ public enum Mixins implements IMixins {
             "tecTech.MixinMTEResearchStation",
             "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
-            "thaumcraft.MixinTileAlembic",
-            "thaumcraft.MixinTileAlchemyFurnace",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
             "visualProspecting.AccessorVeinTypeCaching")
