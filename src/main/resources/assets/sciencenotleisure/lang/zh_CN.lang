@@ -857,8 +857,8 @@ SmallArcaneAssemblerRecipeType=奥术合成
 Tooltip_SmallArcaneAssembler_00=处理有序与无序奥术工作台配方，每次运行一个配方
 Tooltip_SmallArcaneAssembler_01=机器所有者必须完成配方所需研究
 Tooltip_SmallArcaneAssembler_02=在控制器槽放入法杖、权杖或手杖，合成时将消耗其中的魔力
-Tooltip_SmallArcaneAssembler_03=消耗 32 EU/t，每 128 个供电 tick 随机为两种基础要素持续恢复共 1-4 点魔力
-Tooltip_SmallArcaneAssembler_04=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时充能量翻倍，溢出转移率由 25% 提升至 75%
+Tooltip_SmallArcaneAssembler_03=消耗 32 EU/t，每 128 ticks 随机为两种基础要素各持续恢复 1-4 点魔力
+Tooltip_SmallArcaneAssembler_04=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时获得 200% 充能加成，溢出转移率由 25% 提升至 75%
 Tooltip_SmallArcaneAssembler_Casing=任意魔法机械方块
 
 NameSmallInfusionMatrix=小型注魔矩阵

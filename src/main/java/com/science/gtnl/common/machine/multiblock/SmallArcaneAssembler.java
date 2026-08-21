@@ -79,7 +79,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final int WAND_CHARGE_MAX_VIS = 4;
     private static final int CENTIVIS_PER_VIS = 100;
     private static final int CV_BOOST_REFERENCE = 30;
-    private static final double MAX_CV_CHARGE_BONUS = 1.00;
+    private static final double MAX_CV_CHARGE_BONUS = 2.00;
     private static final int OVERFLOW_TRANSFER_DENOMINATOR = 60;
     private static final int BASE_OVERFLOW_TRANSFER_NUMERATOR = 15;
     private static final int VIS_EFFECT_RANGE = 8;
