@@ -69,6 +69,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.net.GTPacketUpdateItem;
 import gregtech.client.ElectricJukeboxSound;
 import gregtech.crossmod.backhand.Backhand;
+import xonin.backhand.api.core.BackhandUtils;
 
 public class SubscribeEventClientUtils {
 
@@ -202,8 +203,16 @@ public class SubscribeEventClientUtils {
         // 通过 GT 现有的 GTPacketUpdateItem 请求服务端循环上一个源质
         NBTTagCompound tag = new NBTTagCompound();
         tag.setByte(ItemBlockMultiEssentiaJar.CYCLE_PREVIOUS_ASPECT_PACKET_KEY, (byte) 1);
-        GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
-        player.swingItem();
+        Runnable cyclePrevious = () -> {
+            GTValues.NW.sendToServer(new GTPacketUpdateItem(tag));
+            player.swingItem();
+        };
+
+        if (isMultiEssentiaJar(mainHand)) {
+            cyclePrevious.run();
+        } else {
+            BackhandUtils.useOffhandItem(player, cyclePrevious);
+        }
         event.setCanceled(true);
         return true;
     }

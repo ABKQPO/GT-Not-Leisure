@@ -5,16 +5,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.api.MCHelper;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularPanel;
-import com.cleanroommc.modularui.utils.MouseData;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
@@ -22,45 +19,33 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 
 import gregtech.api.modularui2.GTGuis;
 import gregtech.common.modularui2.factory.SelectItemGuiBuilder;
-import gregtech.common.modularui2.sync.SelectItemServerAction;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
 public class MultiEssentiaJarGui {
 
-    private static final String SELECT_ASPECT_SYNC_KEY = "multiEssentiaJarSelectAspect";
-    private static final double MAX_INTERACTION_DISTANCE_SQUARED = 64.0D;
+    private static final String SELECT_ASPECT_ACTION_KEY = "multiEssentiaJarSelectAspect";
+    private static final int MAX_ASPECT_TAG_BYTES = 64;
 
     private final ItemStack jarStack;
     private final AspectList storedAspects;
     private final List<Aspect> aspects;
     private final List<ItemStack> selections;
-    private final boolean placedJar;
-    private final int blockX;
-    private final int blockY;
-    private final int blockZ;
+    private final TileEntityMultiEssentiaJar placedJar;
     private final boolean filterMode;
     private final PanelSyncManager syncManager;
 
     public MultiEssentiaJarGui(ItemStack jarStack, PanelSyncManager syncManager) {
-        this(jarStack, false, false, null, 0, 0, 0, syncManager);
+        this(jarStack, null, false, null, syncManager);
     }
 
     public MultiEssentiaJarGui(TileEntityMultiEssentiaJar jar, EntityPlayer viewer, PanelSyncManager syncManager) {
-        this(
-            createJarStack(jar),
-            true,
-            jar.getTotalAmount() == 0,
-            viewer,
-            jar.xCoord,
-            jar.yCoord,
-            jar.zCoord,
-            syncManager);
+        this(createJarStack(jar), jar, jar.getTotalAmount() == 0, viewer, syncManager);
     }
 
-    private MultiEssentiaJarGui(ItemStack jarStack, boolean placedJar, boolean filterMode, EntityPlayer viewer,
-        int blockX, int blockY, int blockZ, PanelSyncManager syncManager) {
+    private MultiEssentiaJarGui(ItemStack jarStack, TileEntityMultiEssentiaJar placedJar, boolean filterMode,
+        EntityPlayer viewer, PanelSyncManager syncManager) {
 
         this.jarStack = jarStack;
         this.storedAspects = TileEntityMultiEssentiaJar.getStoredAspects(jarStack);
@@ -68,17 +53,17 @@ public class MultiEssentiaJarGui {
         this.selections = createSelections(aspects);
         this.placedJar = placedJar;
         this.filterMode = filterMode;
-        this.blockX = blockX;
-        this.blockY = blockY;
-        this.blockZ = blockZ;
         this.syncManager = syncManager;
     }
 
     public ModularPanel build() {
         int currentSelected = getCurrentSelected();
 
-        SelectItemServerAction serverAction = new SelectItemServerAction(this::onAspectSelectedOnServer);
-        syncManager.syncValue(SELECT_ASPECT_SYNC_KEY, serverAction);
+        syncManager.registerServerSyncedAction(SELECT_ASPECT_ACTION_KEY, buffer -> {
+            boolean requestedFilterMode = buffer.readBoolean();
+            String aspectTag = NetworkUtils.readStringSafe(buffer);
+            onAspectSelectedOnServer(requestedFilterMode, aspectTag);
+        });
 
         return new SelectItemGuiBuilder(GTGuis.createPopUpPanel("multi_essentia_jar"), selections)
             .setHeaderItem(jarStack)
@@ -87,8 +72,13 @@ public class MultiEssentiaJarGui {
                     filterMode ? "GTNL.gui.multi_essentia_jar.filter_title" : "GTNL.gui.multi_essentia_jar.title"))
             .setAllowDeselected(filterMode)
             .setSelected(currentSelected)
-            .setOnSelectedServerAction(serverAction)
             .setOnSelectedClientAction((selected, $) -> {
+                String aspectTag = selected >= 0 && selected < aspects.size() ? aspects.get(selected)
+                    .getTag() : "";
+                syncManager.callSyncedAction(SELECT_ASPECT_ACTION_KEY, buffer -> {
+                    buffer.writeBoolean(filterMode);
+                    NetworkUtils.writeStringSafe(buffer, aspectTag, MAX_ASPECT_TAG_BYTES, true);
+                });
                 playSelectionSound(selected);
                 MCHelper.closeScreen();
             })
@@ -105,45 +95,32 @@ public class MultiEssentiaJarGui {
             .build();
     }
 
-    private void onAspectSelectedOnServer(int selected, MouseData mouseData) {
-        if (selected < 0 || selected >= aspects.size()) return;
+    private void onAspectSelectedOnServer(boolean requestedFilterMode, String aspectTag) {
+        if (requestedFilterMode != filterMode || aspectTag == null || aspectTag.length() > MAX_ASPECT_TAG_BYTES) return;
 
-        Aspect selectedAspect = aspects.get(selected);
-
-        if (placedJar) {
-            applyBlockSelection(selectedAspect);
-        } else {
-            applyHeldSelection(selectedAspect);
-        }
-    }
-
-    private void applyBlockSelection(Aspect selectedAspect) {
-        EntityPlayer player = syncManager.getPlayer();
-        if (player == null || player.worldObj == null) return;
-
-        World world = player.worldObj;
-        if (!world.blockExists(blockX, blockY, blockZ)
-            || player.getDistanceSq(blockX + 0.5D, blockY + 0.5D, blockZ + 0.5D) > MAX_INTERACTION_DISTANCE_SQUARED) {
+        if (aspectTag.isEmpty()) {
+            if (placedJar != null && filterMode) placedJar.removeFilterLabel();
             return;
         }
 
-        TileEntity tile = world.getTileEntity(blockX, blockY, blockZ);
-        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) return;
+        Aspect selectedAspect = Aspect.getAspect(aspectTag);
+        if (selectedAspect == null) return;
+
+        if (placedJar == null) {
+            if (TileEntityMultiEssentiaJar.setActiveAspect(jarStack, selectedAspect)) {
+                EntityPlayer player = syncManager.getPlayer();
+                if (player != null) player.inventoryContainer.detectAndSendChanges();
+            }
+            return;
+        }
 
         if (filterMode) {
+            EntityPlayer player = syncManager.getPlayer();
+            if (player == null) return;
             if (!ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), selectedAspect)) return;
-            jar.installFilterLabel(selectedAspect);
-        } else {
-            jar.setActiveAspect(selectedAspect);
-        }
-    }
-
-    private void applyHeldSelection(Aspect selectedAspect) {
-        if (!TileEntityMultiEssentiaJar.setActiveAspect(jarStack, selectedAspect)) return;
-
-        EntityPlayer player = syncManager.getPlayer();
-        if (player instanceof EntityPlayerMP playerMP) {
-            playerMP.inventoryContainer.detectAndSendChanges();
+            placedJar.installFilterLabel(selectedAspect);
+        } else if (!placedJar.hasFilterLabel()) {
+            placedJar.setActiveAspect(selectedAspect);
         }
     }
 
@@ -261,8 +238,15 @@ public class MultiEssentiaJarGui {
             pitch = 1.0F + (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.3F;
         }
 
-        if (placedJar) {
-            player.worldObj.playSound(blockX + 0.5D, blockY + 0.5D, blockZ + 0.5D, soundName, volume, pitch, false);
+        if (placedJar != null) {
+            player.worldObj.playSound(
+                placedJar.xCoord + 0.5D,
+                placedJar.yCoord + 0.5D,
+                placedJar.zCoord + 0.5D,
+                soundName,
+                volume,
+                pitch,
+                false);
         } else {
             player.playSound(soundName, volume, pitch);
         }
