@@ -2777,6 +2777,14 @@ Tooltip_DieselGenerator_00=需要液体燃料
 Tooltip_DieselGenerator_01=燃料效率：%s%%
 Tooltip_DieselGenerator_02=流体容量：%sL
 
+SmallEssentiaSmelteryLV=基础电力炼金炉
+SmallEssentiaSmelteryMV=进阶电力炼金炉
+SmallEssentiaSmelteryHV=进阶电力炼金炉 II
+Tooltip_SmallEssentiaSmeltery_00=使用大型源质冶炼炉的方式动态解析物品源质
+Tooltip_SmallEssentiaSmeltery_01=基础耗能为 30 EU/t，每点源质耗时 32 tick，支持标准超频
+Tooltip_SmallEssentiaSmeltery_02=源质从可配置输出面送入相邻的源质容器或管道
+Tooltip_SmallEssentiaSmeltery_03=内部源质缓存：%s
+
 EnergyTransferNode=万用通量传输节点
 Tooltip_EnergyTransferNode_00=§9有源变压器的好帮手！
 Tooltip_EnergyTransferNode_01=将能量进行分流/合流

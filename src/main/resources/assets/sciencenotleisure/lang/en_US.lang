@@ -2777,6 +2777,14 @@ Tooltip_DieselGenerator_00=Requires liquid Fuel
 Tooltip_DieselGenerator_01=Fuel efficiency: %s%%
 Tooltip_DieselGenerator_02=Fluid capacity: %sL
 
+SmallEssentiaSmelteryLV=Basic Electric Alchemical Furnace
+SmallEssentiaSmelteryMV=Advanced Electric Alchemical Furnace
+SmallEssentiaSmelteryHV=Advanced Electric Alchemical Furnace II
+Tooltip_SmallEssentiaSmeltery_00=Dynamically resolves item aspects using the Large Essentia Smeltery behavior
+Tooltip_SmallEssentiaSmeltery_01=Base usage is 30 EU/t and 32 ticks per essentia, with standard overclocking
+Tooltip_SmallEssentiaSmeltery_02=Outputs essentia through the configurable output face into an adjacent transport or container
+Tooltip_SmallEssentiaSmeltery_03=Internal essentia buffer: %s
+
 EnergyTransferNode=Universal Flux Transfer Node
 Tooltip_EnergyTransferNode_00=§9A great helper for Active Transformers!
 Tooltip_EnergyTransferNode_01=Splits or merges energy flows

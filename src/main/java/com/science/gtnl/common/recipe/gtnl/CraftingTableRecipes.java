@@ -29,6 +29,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import thaumcraft.common.config.ConfigBlocks;
 
 public class CraftingTableRecipes implements IRecipePool {
 
@@ -1109,6 +1110,30 @@ public class CraftingTableRecipes implements IRecipePool {
                 OrePrefixes.circuit.get(Materials.HV), 'C', GregtechItemList.GTFluidTank_HV.get(1), 'D',
                 ItemList.Hull_HV.get(1), 'E', ItemList.Electric_Pump_HV, 'F',
                 GTOreDictUnificator.get(OrePrefixes.cableGt08, Materials.Gold, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryLV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_LV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_LV.get(1), 'E', new ItemStack(ConfigBlocks.blockStoneDevice, 1, 0), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Tin, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryMV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_MV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.MV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_MV.get(1), 'E', GTNLItemList.SmallEssentiaSmelteryLV.get(1), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.AnyCopper, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryHV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_HV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.HV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_HV.get(1), 'E', GTNLItemList.SmallEssentiaSmelteryMV.get(1), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.GasTurbineLV.get(1),
