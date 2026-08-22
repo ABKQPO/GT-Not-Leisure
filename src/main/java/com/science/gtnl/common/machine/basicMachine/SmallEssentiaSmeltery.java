@@ -125,9 +125,16 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         AspectList aspects = ThaumcraftCraftingManager.getObjectTags(stack);
         aspects = ThaumcraftCraftingManager.getBonusTags(stack, aspects);
 
-        if (aspects != null && aspects.size() > 0 && aspects.getAspects()[0] != null) {
-            result.add(aspects);
-        } else {
+        // 过滤 null / 非正数条目：TC 解析某些物品标签可能返回 null 要素，
+        // 若混入 AspectList，outputEssentia 排序取到 null 会永久卡死输出。
+        if (aspects != null) {
+            for (Aspect aspect : aspects.getAspects()) {
+                if (aspect == null) continue;
+                int amount = aspects.getAmount(aspect);
+                if (amount > 0) result.add(aspect, amount);
+            }
+        }
+        if (result.size() == 0) {
             result.add(Aspect.ENTROPY, 1);
         }
         return result;
@@ -165,20 +172,29 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         ForgeDirection targetSide = outputSide.getOpposite();
         boolean forceMultiJarInput = tileEntity instanceof TileEntityMultiEssentiaJar
             && targetSide != ForgeDirection.UP;
+        // 忽略目标吸力：吸力报告可能因读档/风箱/缓存恢复时序而失真（报 0 导致整机堵死），
+        // 是否接受由目标的 addEssentia/addToContainer 直接判定。
         if (!forceMultiJarInput) {
             if (!transport.isConnectable(targetSide) || !transport.canInputFrom(targetSide)) return false;
-            if (transport.getSuctionAmount(targetSide) <= 0) return false;
         }
 
-        Aspect aspect = transport.getSuctionType(targetSide);
-        if (aspect == null) {
-            Aspect[] aspects = outputAspects.getAspectsSortedAmount();
-            if (aspects.length == 0) return false;
-            aspect = aspects[0];
+        // 目标明确请求的源质作为首选；但若缓冲里没有该源质，回退到自身缓冲。
+        // 跳过 null / 非正数条目：TC 解析可能混入 null 要素，取到 null 会永久卡死输出。
+        Aspect aspect = null;
+        Aspect preferred = transport.getSuctionType(targetSide);
+        if (preferred != null && outputAspects.getAmount(preferred) > 0) {
+            aspect = preferred;
+        } else {
+            for (Aspect candidate : outputAspects.getAspectsSortedAmount()) {
+                if (candidate != null && outputAspects.getAmount(candidate) > 0) {
+                    aspect = candidate;
+                    break;
+                }
+            }
+            if (aspect == null) return false;
         }
 
         int available = outputAspects.getAmount(aspect);
-        if (available <= 0) return false;
 
         int accepted = forceMultiJarInput
             ? ((TileEntityMultiEssentiaJar) tileEntity).addEssentiaFromSmeltery(aspect, available, targetSide)
