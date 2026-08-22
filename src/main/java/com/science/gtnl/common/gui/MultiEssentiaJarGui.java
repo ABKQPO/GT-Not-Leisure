@@ -136,15 +136,6 @@ public class MultiEssentiaJarGui {
         if (index < 0 || index >= aspects.size()) return "";
 
         Aspect aspect = aspects.get(index);
-        ItemStack selection = selections.get(index);
-
-        EntityPlayer player = MCHelper.getPlayer();
-        boolean discovered = player != null
-            && ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), aspect);
-
-        if (!discovered) {
-            return selection.getDisplayName();
-        }
 
         if (filterMode) {
             return StatCollector.translateToLocalFormatted(
@@ -153,11 +144,7 @@ public class MultiEssentiaJarGui {
                 aspect.getTag());
         }
 
-        return StatCollector.translateToLocalFormatted(
-            "GTNL.gui.multi_essentia_jar.aspect",
-            aspect.getLocalizedDescription(),
-            aspect.getTag(),
-            storedAspects.getAmount(aspect));
+        return AspectGuiUtils.getClientAspectDisplay(aspect, storedAspects.getAmount(aspect));
     }
 
     private static List<Aspect> getSortedAspects(AspectList storedAspects) {

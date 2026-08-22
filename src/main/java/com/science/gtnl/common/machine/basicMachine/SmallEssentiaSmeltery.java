@@ -1,23 +1,39 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import java.util.Map;
+import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.screen.viewport.GuiContext;
+import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.value.sync.StringSyncValue;
+import com.cleanroommc.modularui.widget.ParentWidget;
+import com.gtnewhorizons.aspectrecipeindex.ModItems;
+import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.common.gui.AspectGuiUtils;
 import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IIconContainer;
@@ -217,9 +233,56 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new GTNLBasicMachineGui<SmallEssentiaSmeltery>(this, getUIProperties()) {
 
+            private StringSyncValue inProcessSync;
+
+            private String cachedInProcessRaw = "\u0000";
+            private AspectList cachedInProcess = new AspectList();
+
             @Override
             protected boolean supportsBottomLeftCornerFlow() {
                 return false;
+            }
+
+            @Override
+            protected void registerSyncValues(PanelSyncManager syncManager) {
+                super.registerSyncValues(syncManager);
+                inProcessSync = new StringSyncValue(() -> encodeAspects(getInProcessEssentia()));
+                syncManager.syncValue("smelteryInProcess", inProcessSync);
+            }
+
+            @Override
+            protected ParentWidget<?> createItemOutputSlots() {
+                return new ParentWidget<>().size(3 * SLOT_SIZE, 50)
+                    .child(
+                        new IDrawable.DrawableWidget(new EssentiaPreviewDrawable(this::getInProcessAspects))
+                            .size(54, 50)
+                            .tooltip(this::buildEssentiaTooltip)
+                            .tooltipShowUpTimer(TOOLTIP_DELAY));
+            }
+
+            private AspectList getInProcessAspects() {
+                String raw = inProcessSync.getValue();
+                if (!raw.equals(cachedInProcessRaw)) {
+                    cachedInProcessRaw = raw;
+                    cachedInProcess = decodeAspects(raw);
+                }
+                return cachedInProcess;
+            }
+
+            private void buildEssentiaTooltip(RichTooltip tooltip) {
+                AspectList aspects = getInProcessAspects();
+                if (aspects == null || aspects.size() == 0) return;
+                int lines = 0;
+                for (Aspect aspect : aspects.getAspectsSortedAmount()) {
+                    if (aspect == null) continue;
+                    int amount = aspects.getAmount(aspect);
+                    if (amount <= 0) continue;
+                    if (++lines > 9) {
+                        tooltip.addLine(" ...");
+                        break;
+                    }
+                    tooltip.addLine(" - " + AspectGuiUtils.getClientAspectDisplay(aspect, amount));
+                }
             }
         }.build(data, syncManager, uiSettings);
     }
@@ -236,5 +299,97 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
             new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
                 .setPos(151, 62));
+    }
+
+    private AspectList getInProcessEssentia() {
+        if (mMaxProgresstime > 0) {
+            return pendingAspects.size() > 0 ? pendingAspects : new AspectList();
+        }
+        ItemStack input = getInputAt(0);
+        if (!GTUtility.isStackValid(input)) return new AspectList();
+        return getEssentia(input);
+    }
+
+    private static String encodeAspects(AspectList aspects) {
+        if (aspects == null || aspects.size() == 0) return "";
+        StringBuilder builder = new StringBuilder();
+        for (Aspect aspect : aspects.getAspectsSortedAmount()) {
+            if (aspect == null) continue;
+            int amount = aspects.getAmount(aspect);
+            if (amount <= 0) continue;
+            if (builder.length() > 0) builder.append(',');
+            builder.append(aspect.getTag())
+                .append(':')
+                .append(amount);
+        }
+        return builder.toString();
+    }
+
+    private static AspectList decodeAspects(String encoded) {
+        AspectList result = new AspectList();
+        if (encoded == null || encoded.isEmpty()) return result;
+        for (String entry : encoded.split(",")) {
+            int separator = entry.indexOf(':');
+            if (separator <= 0) continue;
+            try {
+                Aspect aspect = Aspect.getAspect(entry.substring(0, separator));
+                int amount = Integer.parseInt(entry.substring(separator + 1));
+                if (aspect != null && amount > 0) result.add(aspect, amount);
+            } catch (NumberFormatException ignored) {}
+        }
+        return result;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static class EssentiaPreviewDrawable implements IDrawable {
+
+        private static final int ICON_SIZE = 16;
+        private static final int ICON_SPACING = 1;
+        private static final int COLUMNS = 3;
+        private static final int MAX_ICONS = 9;
+
+        private final Supplier<AspectList> supplier;
+
+        private EssentiaPreviewDrawable(Supplier<AspectList> supplier) {
+            this.supplier = supplier;
+        }
+
+        @Override
+        public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
+            AspectList aspects = supplier.get();
+            if (aspects == null || aspects.size() == 0) return;
+
+            Aspect[] sortedAspects = aspects.getAspectsSortedAmount();
+            int iconCount = Math.min(sortedAspects.length, MAX_ICONS);
+            int rows = (iconCount + COLUMNS - 1) / COLUMNS;
+            int gridWidth = COLUMNS * (ICON_SIZE + ICON_SPACING) - ICON_SPACING;
+            int gridHeight = rows * (ICON_SIZE + ICON_SPACING) - ICON_SPACING;
+            int startX = x + (width - gridWidth) / 2;
+            int startY = y + (height - gridHeight) / 2;
+
+            Minecraft mc = Minecraft.getMinecraft();
+            for (int i = 0; i < iconCount; i++) {
+                Aspect aspect = sortedAspects[i];
+                if (aspect == null) continue;
+                int amount = aspects.getAmount(aspect);
+                if (amount <= 0) continue;
+
+                ItemStack icon = new ItemStack(ModItems.itemAspect);
+                ItemAspect.setAspect(icon, aspect);
+
+                int iconX = startX + (i % COLUMNS) * (ICON_SIZE + ICON_SPACING);
+                int iconY = startY + (i / COLUMNS) * (ICON_SIZE + ICON_SPACING);
+
+                applyColor(widgetTheme.getColor());
+                GuiDraw.drawItem(icon, iconX, iconY, ICON_SIZE, ICON_SIZE, context.getCurrentDrawingZ());
+
+                String amountText = String.valueOf(amount);
+                mc.fontRenderer.drawStringWithShadow(
+                    amountText,
+                    iconX + ICON_SIZE - mc.fontRenderer.getStringWidth(amountText),
+                    iconY + ICON_SIZE - 9,
+                    0xFFFFFF);
+            }
+        }
     }
 }
