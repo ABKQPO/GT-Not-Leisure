@@ -23,7 +23,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.common.gui.AspectGuiUtils;
+import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.common.gui.MultiEssentiaJarGui;
 
 import cpw.mods.fml.relauncher.Side;
@@ -200,7 +200,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
             String marker = aspect == activeAspect ? "§e▶ " : "§7  ";
             int amount = storedAspects.getAmount(aspect);
 
-            tooltip.add(marker + AspectGuiUtils.getClientAspectDisplay(aspect, amount));
+            tooltip.add(marker + AspectTooltipUtils.getClientAspectDisplay(aspect, amount));
         }
         if (aspects.length > MAX_DISPLAYED_ASPECTS) {
             tooltip.add(

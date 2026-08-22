@@ -1,4 +1,4 @@
-package com.science.gtnl.common.gui;
+package com.science.gtnl.utils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -10,9 +10,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
 
-public final class AspectGuiUtils {
+public final class AspectTooltipUtils {
 
-    private AspectGuiUtils() {}
+    private AspectTooltipUtils() {}
 
     @SideOnly(Side.CLIENT)
     public static String getClientAspectDisplay(Aspect aspect, int amount) {

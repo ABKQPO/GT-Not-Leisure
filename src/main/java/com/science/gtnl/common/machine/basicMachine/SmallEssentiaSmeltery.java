@@ -28,7 +28,7 @@ import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.common.gui.AspectGuiUtils;
+import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -281,7 +281,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
                         tooltip.addLine(" ...");
                         break;
                     }
-                    tooltip.addLine(" - " + AspectGuiUtils.getClientAspectDisplay(aspect, amount));
+                    tooltip.addLine(" - " + AspectTooltipUtils.getClientAspectDisplay(aspect, amount));
                 }
             }
         }.build(data, syncManager, uiSettings);

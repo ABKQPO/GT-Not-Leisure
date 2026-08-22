@@ -16,6 +16,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.utils.AspectTooltipUtils;
 
 import gregtech.api.modularui2.GTGuis;
 import gregtech.common.modularui2.factory.SelectItemGuiBuilder;
@@ -144,7 +145,7 @@ public class MultiEssentiaJarGui {
                 aspect.getTag());
         }
 
-        return AspectGuiUtils.getClientAspectDisplay(aspect, storedAspects.getAmount(aspect));
+        return AspectTooltipUtils.getClientAspectDisplay(aspect, storedAspects.getAmount(aspect));
     }
 
     private static List<Aspect> getSortedAspects(AspectList storedAspects) {
