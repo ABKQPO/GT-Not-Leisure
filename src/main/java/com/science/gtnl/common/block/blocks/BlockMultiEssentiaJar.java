@@ -18,6 +18,7 @@ import com.cleanroommc.modularui.factory.GuiFactories;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -175,16 +176,14 @@ public class BlockMultiEssentiaJar extends BlockJar {
         Aspect activeAspect) {
 
         if (activeAspect == null) {
-            player.addChatMessage(
-                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
+            AspectTooltipUtils.sendEmptyJarStatus(player, TileEntityMultiEssentiaJar.MAX_CAPACITY);
             return;
         }
 
         player.addChatMessage(
             new ChatComponentTranslation(
                 "Info_MultiEssentiaJar_Status",
-                ItemBlockMultiEssentiaJar
-                    .createServerAspectDisplay(player, activeAspect, jar.containerContains(activeAspect)),
+                AspectTooltipUtils.createServerAspectDisplay(player, activeAspect, jar.containerContains(activeAspect)),
                 jar.getTotalAmount(),
                 TileEntityMultiEssentiaJar.MAX_CAPACITY,
                 jar.getStoredTypeCount()));

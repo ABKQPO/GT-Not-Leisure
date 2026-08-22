@@ -33,7 +33,6 @@ import gregtech.api.interfaces.item.IPickBlockHandler;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
 import gregtech.crossmod.backhand.Backhand;
-import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -47,21 +46,6 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
     public ItemBlockMultiEssentiaJar(Block block) {
         super(block);
         setMaxStackSize(1);
-    }
-
-    public static ChatComponentTranslation createServerAspectDisplay(EntityPlayer player, Aspect aspect, int amount) {
-        boolean discovered = aspect != null
-            && ThaumcraftApiHelper.hasDiscoveredAspect(player.getCommandSenderName(), aspect);
-
-        if (!discovered) {
-            return new ChatComponentTranslation("GTNL.gui.multi_essentia_jar.aspect_unknown", amount);
-        }
-
-        return new ChatComponentTranslation(
-            "GTNL.gui.multi_essentia_jar.aspect",
-            new ChatComponentTranslation("tc.aspect." + aspect.getTag()),
-            aspect.getName(),
-            amount);
     }
 
     @Override
@@ -80,8 +64,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
     public boolean onPickBlock(ItemStack stack, EntityPlayer player) {
         if (TileEntityMultiEssentiaJar.getStoredAspects(stack)
             .visSize() <= 0) {
-            player.addChatMessage(
-                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
+            AspectTooltipUtils.sendEmptyJarStatus(player, TileEntityMultiEssentiaJar.MAX_CAPACITY);
             return true;
         }
 
@@ -124,8 +107,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
 
     private static void sendActiveAspectStatus(EntityPlayer player, ItemStack stack, Aspect activeAspect) {
         if (activeAspect == null) {
-            player.addChatMessage(
-                new ChatComponentTranslation("Info_MultiEssentiaJar_Empty", TileEntityMultiEssentiaJar.MAX_CAPACITY));
+            AspectTooltipUtils.sendEmptyJarStatus(player, TileEntityMultiEssentiaJar.MAX_CAPACITY);
             return;
         }
 
@@ -134,7 +116,7 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         player.addChatMessage(
             new ChatComponentTranslation(
                 "Info_MultiEssentiaJar_ItemActive",
-                createServerAspectDisplay(player, activeAspect, storedAspects.getAmount(activeAspect))));
+                AspectTooltipUtils.createServerAspectDisplay(player, activeAspect, storedAspects.getAmount(activeAspect))));
     }
 
     @Override

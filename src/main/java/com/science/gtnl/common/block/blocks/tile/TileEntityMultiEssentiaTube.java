@@ -12,7 +12,6 @@ import thaumcraft.common.tiles.TileTubeBuffer;
 
 public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
-    private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
     private static final int BELLOWS_CHECK_INTERVAL = 20;
     private static final int BASE_SUCTION = 63;
@@ -157,7 +156,8 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
             bellowsInitialized = true;
         }
 
-        if (!worldObj.isRemote && transferTick % TRANSFER_INTERVAL == 0 && getTotalAmount() < MAX_CAPACITY) {
+        // 每 tick 尝试补充缓存；transferTick 仅用于风箱检查间隔。
+        if (!worldObj.isRemote && getTotalAmount() < MAX_CAPACITY) {
             fillCache(TRANSFER_PER_TICK);
         }
     }
