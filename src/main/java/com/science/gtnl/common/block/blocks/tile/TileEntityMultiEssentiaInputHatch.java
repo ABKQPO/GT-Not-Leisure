@@ -1,7 +1,5 @@
 package com.science.gtnl.common.block.blocks.tile;
 
-import java.util.Comparator;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -20,8 +18,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
     public static final int MAX_CAPACITY = 4096;
 
     private final AspectList storedAspects = new AspectList();
-    private Aspect[] cachedSortedAspects;
-    private boolean sortedCacheDirty = true;
+    private final MultiEssentiaStorage storage = new MultiEssentiaStorage(storedAspects, MAX_CAPACITY);
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
@@ -30,9 +27,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
         if (tag.hasKey(STORED_ASPECTS_KEY)) {
             storedAspects.readFromNBT(tag.getCompoundTag(STORED_ASPECTS_KEY));
         }
-        sortedCacheDirty = true;
-        removeInvalidAspects();
-        trimToCapacity();
+        storage.reload();
     }
 
     @Override
@@ -45,87 +40,56 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     @Override
     public AspectList getAspects() {
-        AspectList copy = new AspectList();
-        for (Aspect aspect : getStoredAspectsSorted()) {
-            copy.add(aspect, storedAspects.getAmount(aspect));
-        }
-        return copy;
+        return storage.copyAspects();
     }
 
     @Override
     public void setAspects(AspectList aspects) {
-        storedAspects.aspects.clear();
-        if (aspects != null) {
-            int remaining = MAX_CAPACITY;
-            for (Aspect aspect : getSortedAspects(aspects)) {
-                int accepted = Math.min(aspects.getAmount(aspect), remaining);
-                if (accepted <= 0) continue;
-
-                storedAspects.add(aspect, accepted);
-                remaining -= accepted;
-                if (remaining == 0) break;
-            }
-        }
+        storage.setAspects(aspects);
         markEssentiaChanged();
     }
 
     @Override
     public boolean doesContainerAccept(Aspect aspect) {
-        return aspect != null && getTotalAmount() < MAX_CAPACITY;
+        return storage.doesContainerAccept(aspect);
     }
 
     @Override
     public int addToContainer(Aspect aspect, int amount) {
-        if (aspect == null || amount <= 0) return amount;
-
-        int accepted = Math.min(amount, MAX_CAPACITY - getTotalAmount());
-        if (accepted <= 0) return amount;
-
-        storedAspects.add(aspect, accepted);
-        markEssentiaChanged();
-        return amount - accepted;
+        int remaining = storage.addToContainer(aspect, amount);
+        if (remaining != amount) markEssentiaChanged();
+        return remaining;
     }
 
     @Override
     public boolean takeFromContainer(Aspect aspect, int amount) {
-        if (!doesContainerContainAmount(aspect, amount)) return false;
-
-        storedAspects.remove(aspect, amount);
-        markEssentiaChanged();
-        return true;
+        boolean taken = storage.takeFromContainer(aspect, amount);
+        if (taken) markEssentiaChanged();
+        return taken;
     }
 
     @Deprecated
     @Override
     public boolean takeFromContainer(AspectList aspects) {
-        if (!doesContainerContain(aspects)) return false;
-
-        for (Aspect aspect : getSortedAspects(aspects)) {
-            storedAspects.remove(aspect, aspects.getAmount(aspect));
-        }
-        markEssentiaChanged();
-        return true;
+        boolean taken = storage.takeFromContainer(aspects);
+        if (taken) markEssentiaChanged();
+        return taken;
     }
 
     @Override
     public boolean doesContainerContainAmount(Aspect aspect, int amount) {
-        return aspect != null && amount >= 0 && storedAspects.getAmount(aspect) >= amount;
+        return storage.doesContainerContainAmount(aspect, amount);
     }
 
     @Deprecated
     @Override
     public boolean doesContainerContain(AspectList aspects) {
-        if (aspects == null) return false;
-
-        for (Aspect aspect : getSortedAspects(aspects)) {
-            if (!doesContainerContainAmount(aspect, aspects.getAmount(aspect))) return false;
-        }
-        return true;
+        return storage.doesContainerContain(aspects);
     }
 
     @Override
     public int containerContains(Aspect aspect) {
-        return aspect == null ? 0 : storedAspects.getAmount(aspect);
+        return storage.getAmount(aspect);
     }
 
     @Override
@@ -173,14 +137,14 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     @Override
     public Aspect getEssentiaType(ForgeDirection face) {
-        Aspect[] sorted = getStoredAspectsSorted();
+        Aspect[] sorted = storage.getStoredAspectsSorted();
         return sorted.length == 0 ? null : sorted[0];
     }
 
     @Override
     public int getEssentiaAmount(ForgeDirection face) {
         Aspect aspect = getEssentiaType(face);
-        return aspect == null ? 0 : storedAspects.getAmount(aspect);
+        return aspect == null ? 0 : storage.getAmount(aspect);
     }
 
     @Override
@@ -204,15 +168,11 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
     }
 
     public int getTotalAmount() {
-        int total = 0;
-        for (Aspect aspect : getStoredAspectsSorted()) {
-            total += storedAspects.getAmount(aspect);
-        }
-        return total;
+        return storage.getTotalAmount();
     }
 
     public int getStoredTypeCount() {
-        return getStoredAspectsSorted().length;
+        return storage.getStoredTypeCount();
     }
 
     private int fillCache(int maxTransfer) {
@@ -247,52 +207,12 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
         return transferred;
     }
 
-    private void removeInvalidAspects() {
-        storedAspects.aspects.entrySet()
-            .removeIf(entry -> entry.getKey() == null || entry.getValue() == null || entry.getValue() <= 0);
-    }
-
-    private void trimToCapacity() {
-        int remaining = MAX_CAPACITY;
-        AspectList trimmed = new AspectList();
-        for (Aspect aspect : getStoredAspectsSorted()) {
-            int accepted = Math.min(storedAspects.getAmount(aspect), remaining);
-            if (accepted > 0) {
-                trimmed.add(aspect, accepted);
-                remaining -= accepted;
-            }
-            if (remaining == 0) break;
-        }
-
-        storedAspects.aspects.clear();
-        for (Aspect aspect : getSortedAspects(trimmed)) {
-            storedAspects.add(aspect, trimmed.getAmount(aspect));
-        }
-    }
-
-    private Aspect[] getStoredAspectsSorted() {
-        if (sortedCacheDirty) {
-            cachedSortedAspects = getSortedAspects(storedAspects);
-            sortedCacheDirty = false;
-        }
-        return cachedSortedAspects;
-    }
-
-    private static Aspect[] getSortedAspects(AspectList aspects) {
-        return aspects.aspects.entrySet()
-            .stream()
-            .filter(entry -> entry.getKey() != null && entry.getValue() != null && entry.getValue() > 0)
-            .map(entry -> entry.getKey())
-            .sorted(Comparator.comparing(Aspect::getTag))
-            .toArray(Aspect[]::new);
-    }
-
     private static boolean isValidFace(ForgeDirection face) {
         return face != null && face != ForgeDirection.UNKNOWN && face.ordinal() < 6;
     }
 
     private void markEssentiaChanged() {
-        sortedCacheDirty = true;
+        storage.markDirty();
         markDirty();
         if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

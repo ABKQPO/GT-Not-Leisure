@@ -1,7 +1,6 @@
 package com.science.gtnl.common.block.blocks.tile;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +27,7 @@ import thaumcraft.common.tiles.TileJarFillable;
 
 // 一个使用共享 4096 点容量池、可储存多种源质的罐子。
 // 继承自原版罐子的单一源质字段仅用于与 Thaumcraft 标准罐渲染器保持同步。所有储存、
-// 持久化和传输行为都由本类实现。
+// 持久化和传输行为都由本类实现。多源质存储细节委托给共享组件 MultiEssentiaStorage。
 public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiHolder<GuiData> {
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
@@ -42,9 +41,8 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     public static final int MAX_CAPACITY = 4096;
 
     private final AspectList storedAspects = new AspectList();
+    private final MultiEssentiaStorage storage = new MultiEssentiaStorage(storedAspects, MAX_CAPACITY);
     private Aspect activeAspect;
-    private Aspect[] cachedSortedAspects;
-    private boolean sortedCacheDirty = true;
 
     public TileEntityMultiEssentiaJar() {
         maxAmount = MAX_CAPACITY;
@@ -61,9 +59,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         activeAspect = Aspect.getAspect(tag.getString(ACTIVE_ASPECT_KEY));
         aspectFilter = Aspect.getAspect(tag.getString(FILTER_ASPECT_KEY));
         facing = tag.getByte(FACING_KEY);
-        sortedCacheDirty = true;
-        removeInvalidAspects();
-        trimToCapacity();
+        storage.reload();
         ensureActiveAspect();
         syncRenderState();
     }
@@ -112,66 +108,54 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public AspectList getAspects() {
-        AspectList copy = new AspectList();
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            copy.add(storedAspect, storedAspects.getAmount(storedAspect));
-        }
-        return copy;
+        return storage.copyAspects();
     }
 
     @Override
     public void setAspects(AspectList aspects) {
-        storedAspects.aspects.clear();
         activeAspect = null;
 
+        AspectList filtered = new AspectList();
         if (aspects != null) {
-            int remaining = MAX_CAPACITY;
-            Aspect[] sorted = getSortedAspects(aspects);
-            for (Aspect storedAspect : sorted) {
+            for (Aspect storedAspect : MultiEssentiaStorage.getSortedAspects(aspects)) {
                 if (aspectFilter != null && storedAspect != aspectFilter) continue;
-
-                int accepted = Math.min(aspects.getAmount(storedAspect), remaining);
-                if (accepted <= 0) continue;
-
-                storedAspects.add(storedAspect, accepted);
-                remaining -= accepted;
-                if (remaining == 0) break;
+                filtered.add(storedAspect, aspects.getAmount(storedAspect));
             }
         }
 
+        storage.setAspects(filtered);
         ensureActiveAspect();
         markEssentiaChanged();
     }
 
     @Override
     public boolean doesContainerAccept(Aspect aspect) {
-        return aspect != null && getTotalAmount() < MAX_CAPACITY && (aspectFilter == null || aspectFilter == aspect);
+        return aspect != null && !storage.isFull() && (aspectFilter == null || aspectFilter == aspect);
     }
 
     @Override
     public int addToContainer(Aspect aspect, int amount) {
         if (aspect == null || amount <= 0 || !doesContainerAccept(aspect)) return amount;
 
-        int accepted = Math.min(amount, MAX_CAPACITY - getTotalAmount());
-        if (accepted <= 0) return amount;
-
-        storedAspects.add(aspect, accepted);
-        if (activeAspect == null) activeAspect = aspect;
-        markEssentiaChanged();
-        return amount - accepted;
+        int remaining = storage.addToContainer(aspect, amount);
+        if (remaining != amount) {
+            if (activeAspect == null) activeAspect = aspect;
+            markEssentiaChanged();
+        }
+        return remaining;
     }
 
     @Override
     public boolean takeFromContainer(Aspect aspect, int amount) {
         if (!doesContainerContainAmount(aspect, amount)) return false;
 
-        storedAspects.remove(aspect, amount);
-        if (storedAspects.getAmount(aspect) <= 0 && aspect == activeAspect) {
+        boolean taken = storage.takeFromContainer(aspect, amount);
+        if (storage.getAmount(aspect) <= 0 && aspect == activeAspect) {
             activeAspect = null;
             ensureActiveAspect();
         }
         markEssentiaChanged();
-        return true;
+        return taken;
     }
 
     @Deprecated
@@ -179,9 +163,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     public boolean takeFromContainer(AspectList aspects) {
         if (!doesContainerContain(aspects)) return false;
 
-        for (Aspect storedAspect : getSortedAspects(aspects)) {
-            storedAspects.remove(storedAspect, aspects.getAmount(storedAspect));
-        }
+        storage.takeFromContainer(aspects);
         ensureActiveAspect();
         markEssentiaChanged();
         return true;
@@ -189,23 +171,18 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public boolean doesContainerContainAmount(Aspect aspect, int amount) {
-        return aspect != null && amount >= 0 && storedAspects.getAmount(aspect) >= amount;
+        return storage.doesContainerContainAmount(aspect, amount);
     }
 
     @Deprecated
     @Override
     public boolean doesContainerContain(AspectList aspects) {
-        if (aspects == null) return false;
-
-        for (Aspect storedAspect : getSortedAspects(aspects)) {
-            if (!doesContainerContainAmount(storedAspect, aspects.getAmount(storedAspect))) return false;
-        }
-        return true;
+        return storage.doesContainerContain(aspects);
     }
 
     @Override
     public int containerContains(Aspect aspect) {
-        return aspect == null ? 0 : storedAspects.getAmount(aspect);
+        return storage.getAmount(aspect);
     }
 
     @Override
@@ -269,7 +246,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     @Override
     public int getEssentiaAmount(ForgeDirection face) {
         ensureActiveAspect();
-        return activeAspect == null ? 0 : storedAspects.getAmount(activeAspect);
+        return activeAspect == null ? 0 : storage.getAmount(activeAspect);
     }
 
     @Override
@@ -278,24 +255,18 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     public int getTotalAmount() {
-        int total = 0;
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            total += storedAspects.getAmount(storedAspect);
-        }
-        return total;
+        return storage.getTotalAmount();
     }
 
     public int getStoredTypeCount() {
-        return getStoredAspectsSorted().length;
+        return storage.getStoredTypeCount();
     }
 
     public int clearAllEssentia() {
-        int clearedAmount = getTotalAmount();
+        int clearedAmount = storage.clearAll();
         if (clearedAmount <= 0) return 0;
 
-        storedAspects.aspects.clear();
         activeAspect = null;
-
         markEssentiaChanged();
 
         return clearedAmount;
@@ -335,10 +306,10 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     public Aspect selectAspectWithAmount(int requiredAmount) {
         ensureActiveAspect();
-        if (activeAspect != null && storedAspects.getAmount(activeAspect) >= requiredAmount) return activeAspect;
+        if (activeAspect != null && storage.getAmount(activeAspect) >= requiredAmount) return activeAspect;
 
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            if (storedAspects.getAmount(storedAspect) >= requiredAmount) {
+        for (Aspect storedAspect : storage.getStoredAspectsSorted()) {
+            if (storage.getAmount(storedAspect) >= requiredAmount) {
                 activeAspect = storedAspect;
                 markEssentiaChanged();
                 return activeAspect;
@@ -356,7 +327,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     private Aspect cycleActiveAspect(int step) {
-        Aspect[] sorted = getStoredAspectsSorted();
+        Aspect[] sorted = storage.getStoredAspectsSorted();
         if (sorted.length == 0) {
             activeAspect = null;
             markEssentiaChanged();
@@ -372,7 +343,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     }
 
     public boolean setActiveAspect(Aspect selectedAspect) {
-        if (selectedAspect == null || storedAspects.getAmount(selectedAspect) <= 0 || selectedAspect == activeAspect) {
+        if (selectedAspect == null || storage.getAmount(selectedAspect) <= 0 || selectedAspect == activeAspect) {
             return false;
         }
 
@@ -424,7 +395,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     private static Aspect cycleActiveAspect(ItemStack stack, int step) {
         AspectList storedAspects = getStoredAspects(stack);
-        Aspect[] sorted = getSortedAspects(storedAspects);
+        Aspect[] sorted = MultiEssentiaStorage.getSortedAspects(storedAspects);
         if (sorted.length == 0) return null;
 
         Aspect activeAspect = getActiveAspect(stack);
@@ -475,61 +446,21 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         return new MultiEssentiaJarGui(this, data.getPlayer(), syncManager).build();
     }
 
-    private void removeInvalidAspects() {
-        storedAspects.aspects.entrySet()
-            .removeIf(entry -> entry.getKey() == null || entry.getValue() == null || entry.getValue() <= 0);
-    }
-
-    private void trimToCapacity() {
-        int remaining = MAX_CAPACITY;
-        AspectList trimmed = new AspectList();
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            int accepted = Math.min(storedAspects.getAmount(storedAspect), remaining);
-            if (accepted > 0) {
-                trimmed.add(storedAspect, accepted);
-                remaining -= accepted;
-            }
-            if (remaining == 0) break;
-        }
-
-        storedAspects.aspects.clear();
-        for (Aspect storedAspect : getSortedAspects(trimmed)) {
-            storedAspects.add(storedAspect, trimmed.getAmount(storedAspect));
-        }
-    }
-
     private void ensureActiveAspect() {
-        if (activeAspect != null && storedAspects.getAmount(activeAspect) > 0) return;
+        if (activeAspect != null && storage.getAmount(activeAspect) > 0) return;
 
-        Aspect[] sorted = getStoredAspectsSorted();
+        Aspect[] sorted = storage.getStoredAspectsSorted();
         activeAspect = sorted.length == 0 ? null : sorted[0];
-    }
-
-    private Aspect[] getStoredAspectsSorted() {
-        if (sortedCacheDirty) {
-            cachedSortedAspects = getSortedAspects(storedAspects);
-            sortedCacheDirty = false;
-        }
-        return cachedSortedAspects;
-    }
-
-    private static Aspect[] getSortedAspects(AspectList aspects) {
-        return aspects.aspects.entrySet()
-            .stream()
-            .filter(entry -> entry.getKey() != null && entry.getValue() != null && entry.getValue() > 0)
-            .map(entry -> entry.getKey())
-            .sorted(Comparator.comparing(Aspect::getTag))
-            .toArray(Aspect[]::new);
     }
 
     private void syncRenderState() {
         maxAmount = MAX_CAPACITY;
-        amount = getTotalAmount();
+        amount = storage.getTotalAmount();
         aspect = activeAspect;
     }
 
     private void markEssentiaChanged() {
-        sortedCacheDirty = true;
+        storage.markDirty();
         ensureActiveAspect();
         syncRenderState();
         markDirty();
