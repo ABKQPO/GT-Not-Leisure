@@ -35,7 +35,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     private static final String ACTIVE_ASPECT_KEY = "ActiveAspect";
     private static final String FILTER_ASPECT_KEY = "AspectFilter";
     private static final String FACING_KEY = "facing";
-    private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
     private static final int UNFILTERED_SUCTION = 32;
     private static final int FILTERED_SUCTION = 64;
@@ -44,7 +43,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     private final AspectList storedAspects = new AspectList();
     private Aspect activeAspect;
-    private int transferTick;
     private Aspect[] cachedSortedAspects;
     private boolean sortedCacheDirty = true;
 
@@ -87,7 +85,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
     @Override
     public void updateEntity() {
         if (worldObj == null || worldObj.isRemote
-            || ++transferTick % TRANSFER_INTERVAL != 0
             || getTotalAmount() >= MAX_CAPACITY) {
             return;
         }

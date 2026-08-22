@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 
 import lombok.Getter;
 import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
@@ -184,22 +183,6 @@ public class TCRecipeTools {
 
         public String getResearch() {
             return Research;
-        }
-
-        public int getAspectAmount(Aspect aspect) {
-            return aspect == null ? 0 : InputAspects.getAmount(aspect);
-        }
-
-        public int getAspectAmount() {
-            int total = 0;
-
-            for (Aspect aspect : InputAspects.getAspects()) {
-                if (aspect != null) {
-                    total += InputAspects.getAmount(aspect);
-                }
-            }
-
-            return total;
         }
     }
 }

@@ -14,14 +14,12 @@ import thaumcraft.api.aspects.IEssentiaTransport;
 public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
-    private static final int TRANSFER_INTERVAL = 1;
     private static final int TRANSFER_PER_TICK = 16;
     private static final int SUCTION = 128;
 
     public static final int MAX_CAPACITY = 4096;
 
     private final AspectList storedAspects = new AspectList();
-    private int transferTick;
     private Aspect[] cachedSortedAspects;
     private boolean sortedCacheDirty = true;
 
@@ -198,7 +196,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
     @Override
     public void updateEntity() {
         if (worldObj == null || worldObj.isRemote
-            || ++transferTick % TRANSFER_INTERVAL != 0
             || getTotalAmount() >= MAX_CAPACITY) {
             return;
         }

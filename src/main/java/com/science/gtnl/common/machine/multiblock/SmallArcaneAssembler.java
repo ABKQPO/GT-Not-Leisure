@@ -83,6 +83,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final int OVERFLOW_TRANSFER_DENOMINATOR = 60;
     private static final int BASE_OVERFLOW_TRANSFER_NUMERATOR = 15;
     private static final int VIS_EFFECT_RANGE = 8;
+    private static final List<Aspect> PRIMAL_ASPECTS = Aspect.getPrimalAspects();
 
     private ArrayList<String> cachedResearch = new ArrayList<>();
     private int chargeCycleTicksRemaining;
@@ -222,7 +223,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         ItemWandCasting wand = (ItemWandCasting) wandStack.getItem();
         int maxVis = wand.getMaxVis(wandStack);
         boolean needsCharge = false;
-        for (Aspect aspect : Aspect.getPrimalAspects()) {
+        for (Aspect aspect : PRIMAL_ASPECTS) {
             if (wand.getVis(wandStack, aspect) < maxVis) {
                 needsCharge = true;
                 break;
@@ -240,7 +241,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
 
     private void beginChargeCycle(IGregTechTileEntity baseMetaTileEntity) {
         clearChargeCycle();
-        ArrayList<Aspect> selectedAspects = new ArrayList<>(Aspect.getPrimalAspects());
+        ArrayList<Aspect> selectedAspects = new ArrayList<>(PRIMAL_ASPECTS);
         ArrayList<TileVisNode> visNodes = getNearbyVisNodes(baseMetaTileEntity);
         boolean connectionEffectStarted = false;
         int aspectCount = Math.min(WAND_CHARGE_ASPECT_COUNT, selectedAspects.size());
@@ -253,8 +254,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
             double cvPercentage = Math.min(1.0, (double) drainedCV / CV_BOOST_REFERENCE);
             int baseVis = WAND_CHARGE_MIN_VIS
                 + baseMetaTileEntity.getWorld().rand.nextInt(WAND_CHARGE_MAX_VIS - WAND_CHARGE_MIN_VIS + 1);
-            int aspectIndex = Aspect.getPrimalAspects()
-                .indexOf(aspect);
+            int aspectIndex = PRIMAL_ASPECTS.indexOf(aspect);
             cycleChargeCV[aspectIndex] = (int) Math
                 .round(baseVis * CENTIVIS_PER_VIS * (1.0 + MAX_CV_CHARGE_BONUS * cvPercentage));
             overflowTransferNumerators[aspectIndex] = BASE_OVERFLOW_TRANSFER_NUMERATOR + drainedCV;
@@ -323,8 +323,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
             int amount = (int) ((long) cycleChargeCV[i] * elapsedTicks / WAND_CHARGE_INTERVAL
                 - (long) cycleChargeCV[i] * (elapsedTicks - 1) / WAND_CHARGE_INTERVAL);
             if (amount <= 0) continue;
-            Aspect aspect = Aspect.getPrimalAspects()
-                .get(i);
+            Aspect aspect = PRIMAL_ASPECTS.get(i);
             int acceptedCV = Math.min(amount, maxVis - wand.getVis(wandStack, aspect));
             if (acceptedCV > 0) {
                 wand.addRealVis(wandStack, aspect, acceptedCV, true);
@@ -350,8 +349,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     }
 
     private boolean beginVisConnectionEffect(IGregTechTileEntity baseMetaTileEntity, Aspect aspect) {
-        int color = Aspect.getPrimalAspects()
-            .indexOf(aspect);
+        int color = PRIMAL_ASPECTS.indexOf(aspect);
         if (color < 0) return false;
 
         visEffectAspect = aspect;
@@ -369,11 +367,9 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     @Override
     public void onValueUpdate(byte value) {
         int color = Byte.toUnsignedInt(value) - 1;
-        if (color >= 0 && color < Aspect.getPrimalAspects()
-            .size()) {
+        if (color >= 0 && color < PRIMAL_ASPECTS.size()) {
             boolean wasActive = visConnectionActive;
-            visEffectAspect = Aspect.getPrimalAspects()
-                .get(color);
+            visEffectAspect = PRIMAL_ASPECTS.get(color);
             visConnectionActive = true;
             if (!wasActive) {
                 clientVisEffectNodes.clear();
@@ -391,8 +387,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     @Override
     public byte getUpdateData() {
         if (!visConnectionActive || visEffectAspect == null) return 0;
-        return (byte) (Aspect.getPrimalAspects()
-            .indexOf(visEffectAspect) + 1);
+        return (byte) (PRIMAL_ASPECTS.indexOf(visEffectAspect) + 1);
     }
 
     private void updateClientVisConnectionBeam(IGregTechTileEntity baseMetaTileEntity, long tick) {
@@ -456,7 +451,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         ArrayList<Aspect> targets = new ArrayList<>();
         ArrayList<Integer> rooms = new ArrayList<>();
         int totalRoom = 0;
-        for (Aspect aspect : Aspect.getPrimalAspects()) {
+        for (Aspect aspect : PRIMAL_ASPECTS) {
             int room = maxVis - wand.getVis(wandStack, aspect);
             if (room <= 0) continue;
 
