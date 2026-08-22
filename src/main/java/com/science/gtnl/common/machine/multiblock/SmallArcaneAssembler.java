@@ -492,9 +492,10 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         }
     }
 
-    private boolean isResearchComplete(String research) {
-        if (research.isEmpty()) return true;
-        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) return false;
+    private boolean isResearchCached(String research) {
+        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
+            return false;
+        }
         return cachedResearch.contains(research);
     }
 
@@ -537,7 +538,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                 AspectList requiredVis = recipe.getMetadata(ARCANE_VIS);
                 if (research == null || requiredVis == null) return CheckRecipeResultRegistry.NO_RECIPE;
 
-                if (!isResearchComplete(research)) {
+                if (!isResearchCached(research)) {
                     return SimpleCheckRecipeResult.ofFailure("missing_arcane_research");
                 }
                 if (getArcaneWand() == null) {

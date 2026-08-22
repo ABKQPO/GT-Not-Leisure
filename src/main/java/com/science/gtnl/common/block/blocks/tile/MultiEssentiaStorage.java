@@ -16,6 +16,10 @@ public class MultiEssentiaStorage {
     private Aspect[] cachedSortedAspects;
     private boolean sortedCacheDirty = true;
 
+    // 运行时总量缓存：所有修改走本组件方法或 reload()，保证与列表一致，
+    // 使每 tick 的 getTotalAmount() 免遍历、免触发排序。
+    private int totalAmount;
+
     public MultiEssentiaStorage(AspectList storedAspects, int capacity) {
         this.storedAspects = storedAspects;
         this.capacity = capacity;
@@ -26,11 +30,7 @@ public class MultiEssentiaStorage {
     }
 
     public int getTotalAmount() {
-        int total = 0;
-        for (Aspect storedAspect : getStoredAspectsSorted()) {
-            total += storedAspects.getAmount(storedAspect);
-        }
-        return total;
+        return totalAmount;
     }
 
     public int getStoredTypeCount() {
@@ -59,8 +59,8 @@ public class MultiEssentiaStorage {
 
     public void setAspects(AspectList aspects) {
         storedAspects.aspects.clear();
+        int remaining = capacity;
         if (aspects != null) {
-            int remaining = capacity;
             for (Aspect storedAspect : getSortedAspects(aspects)) {
                 int accepted = Math.min(aspects.getAmount(storedAspect), remaining);
                 if (accepted <= 0) continue;
@@ -70,6 +70,7 @@ public class MultiEssentiaStorage {
                 if (remaining == 0) break;
             }
         }
+        totalAmount = capacity - remaining;
         sortedCacheDirty = true;
     }
 
@@ -80,10 +81,11 @@ public class MultiEssentiaStorage {
     public int addToContainer(Aspect aspect, int amount) {
         if (aspect == null || amount <= 0) return amount;
 
-        int accepted = Math.min(amount, capacity - getTotalAmount());
+        int accepted = Math.min(amount, capacity - totalAmount);
         if (accepted <= 0) return amount;
 
         storedAspects.add(aspect, accepted);
+        totalAmount += accepted;
         sortedCacheDirty = true;
         return amount - accepted;
     }
@@ -92,6 +94,7 @@ public class MultiEssentiaStorage {
         if (!doesContainerContainAmount(aspect, amount)) return false;
 
         storedAspects.remove(aspect, amount);
+        totalAmount -= amount;
         sortedCacheDirty = true;
         return true;
     }
@@ -101,6 +104,7 @@ public class MultiEssentiaStorage {
 
         for (Aspect requestedAspect : getSortedAspects(requestedAspects)) {
             storedAspects.remove(requestedAspect, requestedAspects.getAmount(requestedAspect));
+            totalAmount -= requestedAspects.getAmount(requestedAspect);
         }
         sortedCacheDirty = true;
         return true;
@@ -122,19 +126,29 @@ public class MultiEssentiaStorage {
     }
 
     public int clearAll() {
-        int clearedAmount = getTotalAmount();
+        int clearedAmount = totalAmount;
         if (clearedAmount <= 0) return 0;
 
         storedAspects.aspects.clear();
+        totalAmount = 0;
         sortedCacheDirty = true;
         return clearedAmount;
     }
 
-    // 外部直接读入 storedAspects 后调用：重置缓存、清理无效项、裁剪到容量。
+    // 外部直接读入 storedAspects 后调用：重置缓存、清理无效项、裁剪到容量并重算总量。
     public void reload() {
         sortedCacheDirty = true;
         removeInvalidAspects();
         trimToCapacity();
+        recomputeTotalAmount();
+    }
+
+    // 重算总量（供 reload 在外部直改列表后恢复一致性）。
+    private void recomputeTotalAmount() {
+        totalAmount = 0;
+        for (Aspect storedAspect : storedAspects.aspects.keySet()) {
+            totalAmount += storedAspects.getAmount(storedAspect);
+        }
     }
 
     // 使排序缓存失效（供 TE 在 markEssentiaChanged 里调用）。
