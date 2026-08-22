@@ -14,10 +14,17 @@ public final class AspectTooltipUtils {
 
     private AspectTooltipUtils() {}
 
+    // 创建一枚携带指定源质（及数量）的 ARI 展示 ItemStack。
+    // 供客户端 tooltip 与服务端配方 special 槽共用，避免两处各自 new stack。
+    public static ItemStack createAspectStack(Aspect aspect, int amount) {
+        ItemStack stack = new ItemStack(ModItems.itemAspect, amount, 1);
+        ItemAspect.setAspect(stack, aspect);
+        return stack;
+    }
+
     @SideOnly(Side.CLIENT)
     public static String getClientAspectDisplay(Aspect aspect, int amount) {
-        ItemStack ariAspectStack = new ItemStack(ModItems.itemAspect);
-        ItemAspect.setAspect(ariAspectStack, aspect);
+        ItemStack ariAspectStack = createAspectStack(aspect, 1);
 
         // 由 ARI 判断并返回要素名或"未知要素"
         String ariDisplayName = ariAspectStack.getDisplayName();
