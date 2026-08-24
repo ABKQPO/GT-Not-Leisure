@@ -269,7 +269,8 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
                     .child(
                         new IDrawable.DrawableWidget(new EssentiaPreviewDrawable(this::getInProcessAspects))
                             .size(54, 50)
-                            .tooltip(this::buildEssentiaTooltip)
+                            .tooltipDynamic(this::buildEssentiaTooltip)
+                            .tooltipAutoUpdate(true)
                             .tooltipShowUpTimer(TOOLTIP_DELAY));
             }
 
@@ -283,6 +284,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
             }
 
             private void buildEssentiaTooltip(RichTooltip tooltip) {
+                tooltip.addLine(StatCollector.translateToLocal("GTNL.gui.small_essentia_smeltery.output"));
                 AspectList aspects = getInProcessAspects();
                 if (aspects == null || aspects.size() == 0) return;
                 int lines = 0;

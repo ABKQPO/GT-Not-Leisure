@@ -4019,6 +4019,7 @@ Info_MultiEssentiaJar_Status=Active: %s; total: %s/%s; types: %s
 GTNL.gui.multi_essentia_jar.title=Select Active Aspect
 GTNL.gui.multi_essentia_jar.aspect=%s (%s): %s essentia
 GTNL.gui.multi_essentia_jar.aspect_unknown=Unknown aspect: %s essentia
+GTNL.gui.small_essentia_smeltery.output=Output Essentia:
 Tooltip_MultiEssentiaJar_Cycle=Sneak and right click for the next aspect; sneak-left-click for the previous aspect
 Tooltip_MultiEssentiaJar_Select=Press the pick block key while holding the jar to open its GUI; empty-hand right-click a placed jar to open its GUI
 Info_MultiEssentiaJar_Cleared=Cleared the Multi Essentia Jar, voiding %s essentia.

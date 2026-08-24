@@ -4022,6 +4022,7 @@ Tooltip_MultiEssentiaJar_Filter=对准空罐空手右击选择过滤标签；对
 GTNL.gui.multi_essentia_jar.title=选择当前源质
 GTNL.gui.multi_essentia_jar.aspect=%s（%s）：%s 点
 GTNL.gui.multi_essentia_jar.aspect_unknown=未知要素：%s 点
+GTNL.gui.small_essentia_smeltery.output=输出源质：
 Tooltip_MultiEssentiaJar_Cycle=潜行右击切换到下一个源质；潜行左击切换到上一个源质
 Tooltip_MultiEssentiaJar_Select=手持罐时按选取方块键打开手持罐界面；空手右击已放置的罐子打开罐子界面
 Info_MultiEssentiaJar_Cleared=已清空复合源质罐，共销毁 %s 点源质。
