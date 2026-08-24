@@ -344,7 +344,6 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         return result;
     }
 
-    @SideOnly(Side.CLIENT)
     private static class EssentiaPreviewDrawable implements IDrawable {
 
         private static final int ICON_SIZE = 16;
@@ -359,6 +358,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
             AspectList aspects = supplier.get();
             if (aspects == null || aspects.size() == 0) return;
