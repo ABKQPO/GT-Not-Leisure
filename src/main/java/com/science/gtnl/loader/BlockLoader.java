@@ -117,6 +117,11 @@ public class BlockLoader {
         multiEssentiaInputHatch = new BlockMultiEssentiaInputHatch();
         multiEssentiaJar = new BlockMultiEssentiaJar();
         multiEssentiaTube = new BlockMultiEssentiaTube();
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaJar.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaTube.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
         enderElevatorBlock = new BlockEnderElevator(0);
         enderElevatorSlab = new BlockEnderElevator(1);
         enderElevatorCarpet = new BlockEnderElevator(2);
