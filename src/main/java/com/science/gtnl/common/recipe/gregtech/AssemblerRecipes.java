@@ -830,7 +830,6 @@ public class AssemblerRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull(),
                 ItemList.Sensor_UIV.get(4),
-                ItemList.Field_Generator_UIV.get(2),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 16),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 4L))
             .fluidInputs(
@@ -857,7 +856,6 @@ public class AssemblerRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull(),
                 ItemList.Emitter_UIV.get(4),
-                ItemList.Field_Generator_UIV.get(2),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 16),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 4L))
             .fluidInputs(
