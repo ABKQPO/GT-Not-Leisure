@@ -242,7 +242,7 @@ public class GTNLRecipeMaps {
 
     public static RecipeMap<RecipeMapBackend> IndustrialInfusionCraftingRecipes = RecipeMapBuilder
         .of("gtnl.recipe.IndustrialInfusionCraftingRecipes")
-        .maxIO(26, 2, 0, 0)
+        .maxIO(26, 1, 0, 0)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(IndustrialInfusionCraftingRecipesFrontend::new)
         .neiTransferRect(100, 45, 18, 72)

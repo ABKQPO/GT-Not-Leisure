@@ -1,8 +1,10 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
+import static thaumcraft.common.config.ConfigItems.itemEldritchObject;
 import static thaumcraft.common.config.ConfigItems.itemJarNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -153,6 +155,29 @@ public class TCRecipeTools {
         }
 
         return stacks;
+    }
+
+    public static ItemStack[] appendPrimordialPearlReturns(ItemStack[] outputs) {
+        if (outputs == null || outputs.length == 0) return outputs;
+
+        ItemId primordialPearl = ItemId.create(new ItemStack(itemEldritchObject, 1, 3));
+        int pearlCount = 0;
+        for (ItemStack output : outputs) {
+            if (output == null || PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.contains(ItemId.create(output))) continue;
+
+            InfusionRecipe recipe = ThaumcraftApi.getInfusionRecipe(output);
+            if (recipe == null || recipe.getComponents() == null) continue;
+
+            for (ItemStack component : recipe.getComponents()) {
+                if (component != null && primordialPearl.equals(ItemId.create(component))) pearlCount++;
+            }
+        }
+
+        if (pearlCount == 0) return outputs;
+
+        ItemStack[] withReturns = Arrays.copyOf(outputs, outputs.length + 1);
+        withReturns[outputs.length] = new ItemStack(itemEldritchObject, pearlCount, 3);
+        return withReturns;
     }
 
     // 统一注册一张携带源质/研究元数据的 TC 配方（奥术合成与注魔通用）。

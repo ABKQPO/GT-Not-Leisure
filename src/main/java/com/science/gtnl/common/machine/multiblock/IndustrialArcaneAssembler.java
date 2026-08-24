@@ -21,6 +21,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -36,6 +37,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
@@ -143,6 +145,16 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
         return Arrays.asList(
             GTNLRecipeMaps.IndustrialShapedArcaneCraftingRecipes,
             GTNLRecipeMaps.IndustrialInfusionCraftingRecipes);
+    }
+
+    @NotNull
+    @Override
+    public CheckRecipeResult checkProcessing() {
+        CheckRecipeResult result = super.checkProcessing();
+        if (result.wasSuccessful() && machineMode == InfusionCrafting) {
+            mOutputItems = TCRecipeTools.appendPrimordialPearlReturns(mOutputItems);
+        }
+        return result;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
-import static thaumcraft.common.config.ConfigItems.itemEldritchObject;
 
 import java.util.Arrays;
 
@@ -22,7 +21,6 @@ import thaumcraft.api.aspects.AspectList;
 public class InfusionCraftingRecipes implements IRecipePool {
 
     private static final ItemId COSMETIC_SOLID_OUTPUT = ItemId.create(new ItemStack(blockCosmeticSolid));
-    private static final ItemId PRIMORDIAL_PEARL = ItemId.create(new ItemStack(itemEldritchObject, 1, 3));
     public static final RecipeMetadataKey<AspectList> INFUSION_ASPECTS = SimpleRecipeMetadataKey
         .create(AspectList.class, "gtnl_infusion_aspects");
 
@@ -38,25 +36,6 @@ public class InfusionCraftingRecipes implements IRecipePool {
         ItemStack[] separatedInputs = Arrays.copyOf(inputs, inputs.length + 1);
         separatedInputs[inputs.length] = GTUtility.getIntegratedCircuit(11);
         return separatedInputs;
-    }
-
-    private static ItemStack[] createOutputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
-        ItemStack output = recipe.getOutput();
-        if (TCRecipeTools.PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.contains(ItemId.create(output))) {
-            return new ItemStack[] { output };
-        }
-
-        int pearlCount = 0;
-        for (ItemStack component : recipe.getComponents()) {
-            if (component != null && PRIMORDIAL_PEARL.equals(ItemId.create(component))) {
-                pearlCount++;
-            }
-        }
-
-        if (pearlCount == 0) {
-            return new ItemStack[] { output };
-        }
-        return new ItemStack[] { output, new ItemStack(itemEldritchObject, pearlCount, 3) };
     }
 
     @Override
@@ -75,7 +54,7 @@ public class InfusionCraftingRecipes implements IRecipePool {
             TCRecipeTools.addArcaneRecipe(
                 IIC,
                 createInputs(Recipe),
-                createOutputs(Recipe),
+                new ItemStack[] { Recipe.getOutput() },
                 Recipe.getInputAspects(),
                 Recipe.getResearch(),
                 INFUSION_ASPECTS,
