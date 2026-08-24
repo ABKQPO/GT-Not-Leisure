@@ -1154,6 +1154,8 @@ public enum GTNLItemList implements IItemContainer {
     BeamlinePipeMirror,
     OutputHatchMEProxy,
     OutputBusMEProxy,
+    WirelessVacuumConveyorInputHatch,
+    WirelessVacuumConveyorOutputHatch,
     AdvancedSuperDualInputHatchME,
     SuperDualInputHatchME,
     TypeFilteredInputBusME,

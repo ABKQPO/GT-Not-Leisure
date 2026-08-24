@@ -3077,6 +3077,20 @@ Tooltip_ConfigurationDroneDownLinkHatch_02=§bMe too!
 StellarIrisController=Stellar Iris Controller
 Tooltip_StellarIrisController_00=Opens the team Stellar Iris upgrade tree
 
+WirelessVacuumConveyorInputHatch=Wireless Vacuum Conveyor Input
+Tooltip_WirelessVacuumConveyorInputHatch_00=Receives§e Circuit Components §7from a linked Wireless Vacuum Conveyor Output
+Tooltip_WirelessVacuumConveyorInputHatch_01=Use data stick to link target Vacuum Conveyor Output
+Tooltip_WirelessVacuumConveyorInputHatch_02=Does not require Vacuum Conveyor Pipes
+
+WirelessVacuumConveyorOutputHatch=Wireless Vacuum Conveyor Output
+Tooltip_WirelessVacuumConveyorOutputHatch_00=Sends§e Circuit Components §7to one linked Wireless Vacuum Conveyor Input
+Tooltip_WirelessVacuumConveyorOutputHatch_01=Use data stick to link target Vacuum Conveyor Input
+Tooltip_WirelessVacuumConveyorOutputHatch_02=Does not require Vacuum Conveyor Pipes
+Chat_WirelessVacuumConveyor_00=Wireless Vacuum Conveyor link established
+Chat_WirelessVacuumConveyor_01=Wireless Vacuum Conveyor link failed
+DataStick_WirelessVacuumConveyor=Wireless Vacuum Conveyor Link Data Configuration
+Info_WirelessVacuumConveyorOutputHatch_00=Linked input: %d, %d, %d
+
 BW_GlasBlocks2.1.name=Shirabon Reinforced Borosilicate Glass Block
 BW_GlasBlocks2.2.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
 
