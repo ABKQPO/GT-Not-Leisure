@@ -80,8 +80,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public void updateEntity() {
-        if (worldObj == null || worldObj.isRemote
-            || getTotalAmount() >= MAX_CAPACITY) {
+        if (worldObj == null || worldObj.isRemote || getTotalAmount() >= MAX_CAPACITY) {
             return;
         }
 

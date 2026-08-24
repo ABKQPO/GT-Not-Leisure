@@ -80,9 +80,8 @@ public class InfusionCraftingRecipes implements IRecipePool {
                 Recipe.getResearch(),
                 INFUSION_ASPECTS,
                 INFUSION_RESEARCH,
-                TCRecipeTools.computeAspectDuration(
-                    Recipe.getInputAspects(),
-                    TCRecipeTools.INFUSION_DURATION_TICKS_PER_ASPECT),
+                TCRecipeTools
+                    .computeAspectDuration(Recipe.getInputAspects(), TCRecipeTools.INFUSION_DURATION_TICKS_PER_ASPECT),
                 TierEU.RECIPE_LV);
         }
     }

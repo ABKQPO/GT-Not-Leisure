@@ -159,8 +159,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch {
 
     @Override
     public void updateEntity() {
-        if (worldObj == null || worldObj.isRemote
-            || getTotalAmount() >= MAX_CAPACITY) {
+        if (worldObj == null || worldObj.isRemote || getTotalAmount() >= MAX_CAPACITY) {
             return;
         }
 

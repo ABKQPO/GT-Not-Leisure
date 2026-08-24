@@ -23,8 +23,8 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.common.gui.MultiEssentiaJarGui;
+import com.science.gtnl.utils.AspectTooltipUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -116,7 +116,8 @@ public class ItemBlockMultiEssentiaJar extends ItemBlock
         player.addChatMessage(
             new ChatComponentTranslation(
                 "Info_MultiEssentiaJar_ItemActive",
-                AspectTooltipUtils.createServerAspectDisplay(player, activeAspect, storedAspects.getAmount(activeAspect))));
+                AspectTooltipUtils
+                    .createServerAspectDisplay(player, activeAspect, storedAspects.getAmount(activeAspect))));
     }
 
     @Override
