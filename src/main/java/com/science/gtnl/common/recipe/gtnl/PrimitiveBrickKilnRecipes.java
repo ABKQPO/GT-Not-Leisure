@@ -23,6 +23,7 @@ import gregtech.api.util.GTUtility;
 public class PrimitiveBrickKilnRecipes implements IRecipePool {
 
     public RecipeMap<?> PBKR = GTNLRecipeMaps.PrimitiveBrickKilnRecipes;
+    public RecipeMap<?> HOR = GTNLRecipeMaps.HardOverrideRecipes;
 
     @Override
     public void loadRecipes() {
@@ -35,7 +36,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .itemOutputs(ItemList.Casing_BronzePlatedBricks.get(1))
             .duration(200)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -45,7 +47,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .itemOutputs(ItemList.Hull_Bronze_Bricks.get(1))
             .duration(200)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -54,7 +57,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .itemOutputs(ItemList.Hull_HP_Bricks.get(1))
             .duration(200)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -64,7 +68,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.BronzeBrickCasing.get(2))
             .duration(200)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -74,7 +79,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.SteelBrickCasing.get(2))
             .duration(200)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -88,7 +94,8 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .fluidInputs(Materials.Water.getFluid(1000))
             .duration(300)
             .eut(16)
-            .addTo(PBKR);
+            .addTo(PBKR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Netherrack, 4))
