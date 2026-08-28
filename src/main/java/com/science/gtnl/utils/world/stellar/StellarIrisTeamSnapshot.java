@@ -1,24 +1,16 @@
 package com.science.gtnl.utils.world.stellar;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 
-import com.cleanroommc.modularui.utils.item.INBTSerializable;
-
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMaps;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import lombok.Getter;
 
-public class StellarIrisTeamSnapshot implements INBTSerializable<NBTTagCompound> {
-
-    private static final String SPENDABLE_POINTS_TAG = "spendablePoints";
-    private static final String LIFETIME_POINTS_TAG = "lifetimePoints";
-    private static final String TIER_TAG = "tier";
-    private static final String LEVELS_TAG = "levels";
-    private static final String LEVEL_ID_TAG = "id";
-    private static final String LEVEL_VALUE_TAG = "level";
+public class StellarIrisTeamSnapshot {
 
     @Getter
     private int spendablePoints;
@@ -26,7 +18,7 @@ public class StellarIrisTeamSnapshot implements INBTSerializable<NBTTagCompound>
     private int lifetimePoints;
     @Getter
     private int tier;
-    private final Map<String, Integer> levels = new LinkedHashMap<>();
+    private final Int2IntMap networkLevels = new Int2IntOpenHashMap();
 
     public StellarIrisTeamSnapshot() {}
 
@@ -34,55 +26,39 @@ public class StellarIrisTeamSnapshot implements INBTSerializable<NBTTagCompound>
         this.spendablePoints = spendablePoints;
         this.lifetimePoints = lifetimePoints;
         this.tier = tier;
-        this.levels.putAll(levels);
+        for (Map.Entry<String, Integer> entry : levels.entrySet()) {
+            StellarIrisUpgradeDefinition definition = StellarIrisUpgradeRegistry.getUpgrade(entry.getKey());
+            if (definition != null && entry.getValue() > 0) {
+                networkLevels.put(
+                    definition.getNetworkId(),
+                    entry.getValue()
+                        .intValue());
+            }
+        }
     }
 
-    public int getLevel(String upgradeId) {
-        return levels.getOrDefault(upgradeId, 0);
+    public static StellarIrisTeamSnapshot fromNetworkLevels(int spendablePoints, int lifetimePoints, int tier,
+        Int2IntMap networkLevels) {
+        StellarIrisTeamSnapshot snapshot = new StellarIrisTeamSnapshot();
+        snapshot.spendablePoints = spendablePoints;
+        snapshot.lifetimePoints = lifetimePoints;
+        snapshot.tier = tier;
+        snapshot.networkLevels.putAll(networkLevels);
+        return snapshot;
     }
 
-    public Map<String, Integer> getLevels() {
-        return Collections.unmodifiableMap(levels);
+    public int getLevel(StellarIrisUpgradeDefinition definition) {
+        return definition == null ? 0 : networkLevels.get(definition.getNetworkId());
+    }
+
+    public Int2IntMap getNetworkLevels() {
+        return Int2IntMaps.unmodifiable(networkLevels);
     }
 
     public boolean sameAs(StellarIrisTeamSnapshot other) {
         return other != null && spendablePoints == other.spendablePoints
             && lifetimePoints == other.lifetimePoints
             && tier == other.tier
-            && levels.equals(other.levels);
-    }
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger(SPENDABLE_POINTS_TAG, spendablePoints);
-        tag.setInteger(LIFETIME_POINTS_TAG, lifetimePoints);
-        tag.setInteger(TIER_TAG, tier);
-        NBTTagList levelTags = new NBTTagList();
-        for (Map.Entry<String, Integer> entry : levels.entrySet()) {
-            NBTTagCompound levelTag = new NBTTagCompound();
-            levelTag.setString(LEVEL_ID_TAG, entry.getKey());
-            levelTag.setInteger(LEVEL_VALUE_TAG, entry.getValue());
-            levelTags.appendTag(levelTag);
-        }
-        tag.setTag(LEVELS_TAG, levelTags);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound tag) {
-        spendablePoints = Math.max(0, tag.getInteger(SPENDABLE_POINTS_TAG));
-        lifetimePoints = Math.max(0, tag.getInteger(LIFETIME_POINTS_TAG));
-        tier = Math.max(0, tag.getInteger(TIER_TAG));
-        levels.clear();
-        NBTTagList levelTags = tag.getTagList(LEVELS_TAG, 10);
-        for (int index = 0; index < levelTags.tagCount(); index++) {
-            NBTTagCompound levelTag = levelTags.getCompoundTagAt(index);
-            String id = levelTag.getString(LEVEL_ID_TAG);
-            int level = levelTag.getInteger(LEVEL_VALUE_TAG);
-            if (!id.isEmpty() && level > 0) {
-                levels.put(id, level);
-            }
-        }
+            && networkLevels.equals(other.networkLevels);
     }
 }

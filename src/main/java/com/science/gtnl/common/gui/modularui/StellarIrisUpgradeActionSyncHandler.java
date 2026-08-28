@@ -6,12 +6,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 
 import com.cleanroommc.modularui.value.sync.SyncHandler;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 
 public class StellarIrisUpgradeActionSyncHandler extends SyncHandler<StellarIrisUpgradeActionSyncHandler> {
 
-    private static final int UNLOCK_PACKET = 1;
-    private static final int MAX_UPGRADE_ID_LENGTH = 128;
+    private static final int UNLOCK_PACKET = 0;
 
     private final EntityPlayer player;
 
@@ -20,11 +21,11 @@ public class StellarIrisUpgradeActionSyncHandler extends SyncHandler<StellarIris
         allowC2S();
     }
 
-    public void requestUnlock(String upgradeId) {
-        if (upgradeId == null || upgradeId.isEmpty() || upgradeId.length() > MAX_UPGRADE_ID_LENGTH) {
+    public void requestUnlock(int upgradeNetworkId) {
+        if (upgradeNetworkId < 0) {
             return;
         }
-        syncToServer(UNLOCK_PACKET, buffer -> buffer.writeStringToBuffer(upgradeId));
+        syncToServer(UNLOCK_PACKET, buffer -> buffer.writeVarIntToBuffer(upgradeNetworkId));
     }
 
     @Override
@@ -35,9 +36,9 @@ public class StellarIrisUpgradeActionSyncHandler extends SyncHandler<StellarIris
         if (packetId != UNLOCK_PACKET) {
             return;
         }
-        String upgradeId = buffer.readStringFromBuffer(MAX_UPGRADE_ID_LENGTH);
-        if (!upgradeId.isEmpty()) {
-            StellarIrisUpgradeManager.tryUnlock(player, upgradeId);
+        StellarIrisUpgradeDefinition definition = StellarIrisUpgradeRegistry.getUpgrade(buffer.readVarIntFromBuffer());
+        if (definition != null) {
+            StellarIrisUpgradeManager.tryUnlock(player, definition);
         }
     }
 }

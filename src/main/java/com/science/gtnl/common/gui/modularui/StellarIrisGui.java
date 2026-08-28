@@ -7,11 +7,9 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.common.machine.basicMachine.StellarIrisController;
-import com.science.gtnl.utils.world.stellar.StellarIrisTeamSnapshot;
 import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 
 import gregtech.common.gui.modularui.singleblock.base.MTETieredMachineBlockBaseGui;
-import gregtech.common.gui.modularui.synchandler.NBTSerializableSyncHandler;
 
 public class StellarIrisGui extends MTETieredMachineBlockBaseGui<StellarIrisController> {
 
@@ -41,15 +39,8 @@ public class StellarIrisGui extends MTETieredMachineBlockBaseGui<StellarIrisCont
         treeWidget.setActionHandler(actionHandler);
         syncManager.syncValue(
             SNAPSHOT_SYNC_KEY,
-            new NBTSerializableSyncHandler<>(
-                StellarIrisTeamSnapshot::new,
+            new StellarIrisUpgradeSnapshotSyncHandler(
                 () -> StellarIrisUpgradeManager.getSnapshot(openingPlayer),
-                treeWidget::setSnapshot).withEqualityFunc((left, right) -> {
-                    StellarIrisTeamSnapshot leftSnapshot = new StellarIrisTeamSnapshot();
-                    StellarIrisTeamSnapshot rightSnapshot = new StellarIrisTeamSnapshot();
-                    leftSnapshot.deserializeNBT(left);
-                    rightSnapshot.deserializeNBT(right);
-                    return leftSnapshot.sameAs(rightSnapshot);
-                }));
+                treeWidget::setSnapshot));
     }
 }
