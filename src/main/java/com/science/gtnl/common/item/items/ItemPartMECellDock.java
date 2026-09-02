@@ -23,27 +23,49 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPartMECellDock extends Item implements IPartItem {
 
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon sideIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyDownIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyUpIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyNorthIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodySouthIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyWestIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon bodyEastIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseDownIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseUpIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseNorthIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseSouthIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseWestIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon baseEastIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalVerticalIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalVerticalEastIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalHorizontalIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalHorizontalDownIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalCenterSideIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalCenterEastIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalCenterFaceIcon;
+    @SideOnly(Side.CLIENT)
     public static IIcon internalCenterDownIcon;
 
     public ItemPartMECellDock() {
