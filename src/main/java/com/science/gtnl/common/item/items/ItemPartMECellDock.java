@@ -31,12 +31,6 @@ public class ItemPartMECellDock extends Item implements IPartItem {
     public static IIcon bodySouthIcon;
     public static IIcon bodyWestIcon;
     public static IIcon bodyEastIcon;
-    public static IIcon slotDownIcon;
-    public static IIcon slotUpIcon;
-    public static IIcon slotNorthIcon;
-    public static IIcon slotSouthIcon;
-    public static IIcon slotWestIcon;
-    public static IIcon slotEastIcon;
     public static IIcon baseDownIcon;
     public static IIcon baseUpIcon;
     public static IIcon baseNorthIcon;
@@ -89,12 +83,6 @@ public class ItemPartMECellDock extends Item implements IPartItem {
         bodySouthIcon = new UVIcon(bodyIcon, 3, 3, 13, 13);
         bodyWestIcon = new UVIcon(bodyIcon, 12, 3, 16, 13);
         bodyEastIcon = new UVIcon(bodyIcon, 0, 3, 4, 13);
-        slotDownIcon = new UVIcon(bodyIcon, 11, 12, 5, 10);
-        slotUpIcon = new UVIcon(bodyIcon, 11, 12, 5, 10);
-        slotNorthIcon = new UVIcon(bodyIcon, 5, 10.05f, 11, 13);
-        slotSouthIcon = slotNorthIcon;
-        slotWestIcon = new UVIcon(bodyIcon, 7, 10.05f, 9, 13);
-        slotEastIcon = slotWestIcon;
         baseDownIcon = new UVIcon(sideIcon, 10, 5, 16, 6);
         baseUpIcon = new UVIcon(sideIcon, 10, 0, 16, 1);
         baseNorthIcon = new UVIcon(sideIcon, 10, 0, 16, 6);
