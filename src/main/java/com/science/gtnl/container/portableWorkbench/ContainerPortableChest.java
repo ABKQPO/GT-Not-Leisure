@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import com.cleanroommc.bogosorter.api.IPosSetter;
 import com.cleanroommc.bogosorter.api.ISortableContainer;
 import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
-import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
+import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
 
 import cpw.mods.fml.common.Optional;
@@ -29,7 +29,7 @@ public class ContainerPortableChest extends Container implements ISortableContai
     public final String portableID;
     private final PortableItem.PortableType type;
 
-    public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, GuiPortableChest.GUI type) {
+    public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, PortableChestType type) {
         this(playerInventory, stack, type.xSize, type.ySize, type.rows, type.cols);
     }
 

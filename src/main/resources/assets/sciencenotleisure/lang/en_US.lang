@@ -3655,6 +3655,8 @@ item.PortableItem.14.name=Portable Crystal Chest
 item.PortableItem.15.name=Portable Obsidian Chest
 item.PortableItem.16.name=Portable Netherite Chest
 item.PortableItem.17.name=Portable Dark Steel Chest
+item.PortableCellWorkbench.name=Portable Cell Workbench
+item.MECellDock.name=ME Cell Dock
 
 item.ElectricProspectorTool.0.name=Mana Teleport Prospector Tool
 item.ElectricProspectorTool.1.name=Debug Teleport Prospector Tool

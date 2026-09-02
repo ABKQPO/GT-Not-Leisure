@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import com.cleanroommc.modularui.utils.item.InvWrapper;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
 import com.science.gtnl.utils.InventoryInfinityChest;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -446,25 +445,25 @@ public class PortableItem extends Item {
         INFINITYCHEST("InfinityChest", GuiType.PortableInfinityChestGUI, PortableItem::getInfinityInventory,
             saveInfinityInventory),
         COPPER("CopperChest", GuiType.PortableCopperChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.COPPER.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.COPPER.getCapacity())),
         IRON("IronChest", GuiType.PortableIronChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.IRON.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.IRON.getCapacity())),
         SILVER("SilverChest", GuiType.PortableSilverChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.SILVER.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.SILVER.getCapacity())),
         STEEL("SteelChest", GuiType.PortableSteelChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.STEEL.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.STEEL.getCapacity())),
         GOLD("GoldenChest", GuiType.PortableGoldenChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.GOLD.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.GOLD.getCapacity())),
         DIAMOND("DiamondChest", GuiType.PortableDiamondChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.DIAMOND.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.DIAMOND.getCapacity())),
         CRYSTAL("CrystalChest", GuiType.PortableCrystalChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.CRYSTAL.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.CRYSTAL.getCapacity())),
         OBSIDIAN("ObsidianChest", GuiType.PortableObsidianChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.OBSIDIAN.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.OBSIDIAN.getCapacity())),
         NETHERITE("NetheriteChest", GuiType.PortableNetheriteChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.NETHERITE.getCapacity())),
+            stack -> PortableItem.getInventory(stack, PortableChestType.NETHERITE.getCapacity())),
         DARKSTEEL("DarkSteelChest", GuiType.PortableDarkSteelChestGUI,
-            stack -> PortableItem.getInventory(stack, GuiPortableChest.GUI.DARKSTEEL.getCapacity()));
+            stack -> PortableItem.getInventory(stack, PortableChestType.DARKSTEEL.getCapacity()));
 
         private final String baseName;
         public final GuiType gui;

@@ -3655,6 +3655,8 @@ item.PortableItem.14.name=便携水晶箱子
 item.PortableItem.15.name=便携黑曜石箱子
 item.PortableItem.16.name=便携下界合金箱子
 item.PortableItem.17.name=便携玄钢箱子
+item.PortableCellWorkbench.name=便携元件工作台
+item.MECellDock.name=ME元件坞
 
 item.ElectricProspectorTool.0.name=魔力传送探矿仪
 item.ElectricProspectorTool.1.name=Debug传送探矿仪

@@ -57,6 +57,7 @@ public enum GTNLItemList implements IItemContainer {
     PartSuperDualInterface,
     PartActiveFormationPlane,
     PartBeamFormer,
+    MECellDock,
     BlockBeamFormer,
 
     BronzeBrickCasing,
@@ -355,6 +356,7 @@ public enum GTNLItemList implements IItemContainer {
     PortableObsidianChest,
     PortableNetheriteChest,
     PortableDarkSteelChest,
+    PortableCellWorkbench,
     Stick,
     WirelessUpgradeChip,
 

@@ -1361,6 +1361,12 @@ public class CraftingTableRecipes implements IRecipePool {
                     .orNull() });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.MECellDock.get(1),
+            new Object[] { "   ", "ICI", " # ", 'I', GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Iron, 1), 'C',
+                GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Copper, 1), '#', aeParts.cableGlass()
+                    .stack(AEColor.Transparent, 1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.EnderElevatorBlock.get(1),
             new Object[] { "ABA", "CDC", "CEC", 'A', new ItemStack(Blocks.wool, 1), 'B',
                 new ItemStack(Blocks.stone_pressure_plate, 1), 'C',
@@ -1441,6 +1447,17 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.dye, 1, 14), 'B',
                 new ItemStack(Items.string, 1), 'C',
                 GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 0) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PortableCellWorkbench.get(1),
+            new Object[] { "ABA", "CDC", "AEA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Iron, 1), 'B',
+                aeMaterials.cell1kPart()
+                    .maybeStack(1)
+                    .orNull(),
+                'C', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 1), 'D', aeBlocks.cellWorkbench()
+                    .maybeStack(1)
+                    .orNull(),
+                'E', ToolDictNames.craftingToolWrench });
 
         if (Mods.NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
