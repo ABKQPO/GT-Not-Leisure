@@ -135,14 +135,13 @@ public class BlockLoader {
         GTNLItemList.CompressedStargateTier8.set(new ItemStack(compressedStargateTier8));
         GTNLItemList.CompressedStargateTier9.set(new ItemStack(compressedStargateTier9));
 
-        honeyFluid = new Fluid("honey").setViscosity(6000)
-            .setDensity(1500);
-        FluidRegistry.registerFluid(honeyFluid);
+        honeyFluid = registerFluid(
+            new Fluid("honey").setViscosity(6000)
+                .setDensity(1500));
         honeyFluidBlock = new BlockHoneyFluid(honeyFluid);
         GTNLItemList.HoneyFluidBlock.set(new ItemStack(honeyFluidBlock));
 
-        shimmerFluid = new Fluid("shimmer").setViscosity(800);
-        FluidRegistry.registerFluid(shimmerFluid);
+        shimmerFluid = registerFluid(new Fluid("shimmer").setViscosity(800));
         shimmerFluidBlock = new BlockShimmerFluid(shimmerFluid);
         GTNLItemList.ShimmerFluidBlock.set(new ItemStack(shimmerFluidBlock));
 
@@ -154,6 +153,14 @@ public class BlockLoader {
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1),
             AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+    }
+
+    private static Fluid registerFluid(Fluid fluid) {
+        if (FluidRegistry.registerFluid(fluid)) {
+            return fluid;
+        }
+        Fluid registeredFluid = FluidRegistry.getFluid(fluid.getName());
+        return registeredFluid == null ? fluid : registeredFluid;
     }
 
     public static void registryBlockContainers() {
