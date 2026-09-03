@@ -24,49 +24,55 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemPartMECellDock extends Item implements IPartItem {
 
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyIcon;
+    public static IIcon frontTexture;
     @SideOnly(Side.CLIENT)
-    public static IIcon sideIcon;
+    public static IIcon sideTexture;
+
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyDownIcon;
+    public static IIcon bodyDown;
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyUpIcon;
+    public static IIcon bodyUp;
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyNorthIcon;
+    public static IIcon bodyNorth;
     @SideOnly(Side.CLIENT)
-    public static IIcon bodySouthIcon;
+    public static IIcon bodySouth;
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyWestIcon;
+    public static IIcon bodyWest;
     @SideOnly(Side.CLIENT)
-    public static IIcon bodyEastIcon;
+    public static IIcon bodyEast;
+
     @SideOnly(Side.CLIENT)
-    public static IIcon baseDownIcon;
+    public static IIcon baseDown;
     @SideOnly(Side.CLIENT)
-    public static IIcon baseUpIcon;
+    public static IIcon baseUp;
     @SideOnly(Side.CLIENT)
-    public static IIcon baseNorthIcon;
+    public static IIcon baseNorth;
     @SideOnly(Side.CLIENT)
-    public static IIcon baseSouthIcon;
+    public static IIcon baseSouth;
     @SideOnly(Side.CLIENT)
-    public static IIcon baseWestIcon;
+    public static IIcon baseWest;
     @SideOnly(Side.CLIENT)
-    public static IIcon baseEastIcon;
+    public static IIcon baseEast;
+
     @SideOnly(Side.CLIENT)
-    public static IIcon internalVerticalIcon;
+    public static IIcon slotUp;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalVerticalEastIcon;
+    public static IIcon slotNorth;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalHorizontalIcon;
+    public static IIcon slotSouth;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalHorizontalDownIcon;
+    public static IIcon slotWest;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalCenterSideIcon;
+    public static IIcon slotEast;
+
     @SideOnly(Side.CLIENT)
-    public static IIcon internalCenterEastIcon;
+    public static IIcon internalsVertical;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalCenterFaceIcon;
+    public static IIcon internalsHorizontal;
     @SideOnly(Side.CLIENT)
-    public static IIcon internalCenterDownIcon;
+    public static IIcon internalsCenterSide;
+    @SideOnly(Side.CLIENT)
+    public static IIcon internalsCenterFace;
 
     public ItemPartMECellDock() {
         setMaxStackSize(64);
@@ -97,29 +103,35 @@ public class ItemPartMECellDock extends Item implements IPartItem {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        bodyIcon = register.registerIcon(RESOURCE_ROOT_ID + ":part/cell_dock");
-        sideIcon = register.registerIcon(RESOURCE_ROOT_ID + ":part/cell_dock_side");
-        bodyDownIcon = new UVIcon(bodyIcon, 13, 16, 3, 12);
-        bodyUpIcon = new UVIcon(bodyIcon, 13, 4, 3, 0);
-        bodyNorthIcon = new UVIcon(sideIcon, 4, 6, 14, 16);
-        bodySouthIcon = new UVIcon(bodyIcon, 3, 3, 13, 13);
-        bodyWestIcon = new UVIcon(bodyIcon, 12, 3, 16, 13);
-        bodyEastIcon = new UVIcon(bodyIcon, 0, 3, 4, 13);
-        baseDownIcon = new UVIcon(sideIcon, 10, 5, 16, 6);
-        baseUpIcon = new UVIcon(sideIcon, 10, 0, 16, 1);
-        baseNorthIcon = new UVIcon(sideIcon, 10, 0, 16, 6);
-        baseSouthIcon = new UVIcon(sideIcon, 10, 0, 16, 6);
-        baseWestIcon = new UVIcon(sideIcon, 10, 0, 11, 6);
-        baseEastIcon = new UVIcon(sideIcon, 15, 0, 16, 6);
-        internalVerticalIcon = new UVIcon(sideIcon, 15, 10, 16, 16);
-        internalVerticalEastIcon = internalVerticalIcon;
-        internalHorizontalIcon = new UVIcon(sideIcon, 15, 10, 16, 16);
-        internalHorizontalDownIcon = internalHorizontalIcon;
-        internalCenterSideIcon = new UVIcon(sideIcon, 14, 1, 15, 5);
-        internalCenterEastIcon = internalCenterSideIcon;
-        internalCenterFaceIcon = internalCenterSideIcon;
-        internalCenterDownIcon = internalCenterSideIcon;
-        itemIcon = bodyIcon;
+        frontTexture = register.registerIcon(RESOURCE_ROOT_ID + ":part/cell_dock");
+        sideTexture = register.registerIcon(RESOURCE_ROOT_ID + ":part/cell_dock_side");
+
+        bodyDown = new MappedIcon(frontTexture, 3, 13, 3, 13, 12, 16, 12, 16);
+        bodyUp = new MappedIcon(frontTexture, 3, 13, 3, 13, 12, 16, 0, 4);
+        bodyNorth = new MappedIcon(sideTexture, 3, 13, 4, 14, 3, 13, 6, 16);
+        bodySouth = new MappedIcon(frontTexture, 3, 13, 3, 13, 3, 13, 3, 13);
+        bodyWest = new MappedIcon(frontTexture, 12, 16, 0, 4, 3, 13, 3, 13);
+        bodyEast = new MappedIcon(frontTexture, 12, 16, 12, 16, 3, 13, 3, 13);
+
+        baseDown = new MappedIcon(sideTexture, 5, 11, 16, 10, 10.99f, 12, 6, 5);
+        baseUp = new MappedIcon(sideTexture, 5, 11, 16, 10, 10.99f, 12, 1, 0);
+        baseNorth = new MappedIcon(sideTexture, 5, 11, 10, 16, 5, 11, 0, 6);
+        baseSouth = new MappedIcon(sideTexture, 5, 11, 10, 16, 5, 11, 0, 6);
+        baseWest = new MappedIcon(sideTexture, 10.99f, 12, 15, 16, 5, 11, 0, 6);
+        baseEast = new MappedIcon(sideTexture, 10.99f, 12, 10, 11, 5, 11, 0, 6);
+
+        slotUp = new MappedIcon(frontTexture, 4.99f, 11.01f, 5, 11, 12.99f, 15.01f, 10, 12);
+        slotNorth = new MappedIcon(frontTexture, 4.99f, 11.01f, 5, 11, 2.99f, 5.99f, 10.05f, 13);
+        slotSouth = new MappedIcon(frontTexture, 4.99f, 11.01f, 5, 11, 2.99f, 5.99f, 10.05f, 13);
+        slotWest = new MappedIcon(frontTexture, 12.99f, 15.01f, 7, 9, 2.99f, 5.99f, 10.05f, 13);
+        slotEast = new MappedIcon(frontTexture, 12.99f, 15.01f, 7, 9, 2.99f, 5.99f, 10.05f, 13);
+
+        internalsVertical = new MappedIcon(sideTexture, 11, 12, 15, 16, 5, 11, 10, 16);
+        internalsHorizontal = new MappedIcon(sideTexture, 0, 16, 15.5f, 15.5f, 0, 16, 10.5f, 10.5f);
+        internalsCenterSide = new MappedIcon(sideTexture, 11, 12, 14, 15, 6.01f, 9.99f, 1, 5);
+        internalsCenterFace = new MappedIcon(sideTexture, 6.01f, 9.99f, 14, 15, 11, 12, 1, 5);
+
+        itemIcon = frontTexture;
     }
 
     @Override
@@ -128,20 +140,36 @@ public class ItemPartMECellDock extends Item implements IPartItem {
         return 0;
     }
 
-    private static class UVIcon implements IIcon {
+    @SideOnly(Side.CLIENT)
+    public static final class MappedIcon implements IIcon {
 
         private final IIcon source;
-        private final float minU;
-        private final float minV;
-        private final float maxU;
-        private final float maxV;
+        private final float aFrom;
+        private final float aTo;
+        private final float uFrom;
+        private final float uTo;
+        private final float bFrom;
+        private final float bTo;
+        private final float vFrom;
+        private final float vTo;
 
-        private UVIcon(IIcon source, float minU, float minV, float maxU, float maxV) {
+        public MappedIcon(IIcon source, float aFrom, float aTo, float uFrom, float uTo, float bFrom, float bTo,
+            float vFrom, float vTo) {
             this.source = source;
-            this.minU = minU;
-            this.minV = minV;
-            this.maxU = maxU;
-            this.maxV = maxV;
+            this.aFrom = aFrom;
+            this.aTo = aTo;
+            this.uFrom = uFrom;
+            this.uTo = uTo;
+            this.bFrom = bFrom;
+            this.bTo = bTo;
+            this.vFrom = vFrom;
+            this.vTo = vTo;
+        }
+
+        private static double remap(double value, float from, float to, float target0, float target1) {
+            double span = to - from;
+            double mapped = span == 0 ? target0 : target0 + (target1 - target0) * (value - from) / span;
+            return mapped < 0 ? 0 : Math.min(mapped, 16);
         }
 
         @Override
@@ -156,40 +184,37 @@ public class ItemPartMECellDock extends Item implements IPartItem {
 
         @Override
         public float getMinU() {
-            return getInterpolatedU(0);
+            return source.getInterpolatedU(Math.min(uFrom, uTo));
         }
 
         @Override
         public float getMaxU() {
-            return getInterpolatedU(16);
+            return source.getInterpolatedU(Math.max(uFrom, uTo));
         }
 
         @Override
         public float getInterpolatedU(double value) {
-            float coordinate = (float) (minU + (maxU - minU) * value / 16);
-            return source.getInterpolatedU(Math.max(0, Math.min(16, coordinate)));
+            return source.getInterpolatedU(remap(value, aFrom, aTo, uFrom, uTo));
         }
 
         @Override
         public float getMinV() {
-            return getInterpolatedV(0);
+            return source.getInterpolatedV(Math.min(vFrom, vTo));
         }
 
         @Override
         public float getMaxV() {
-            return getInterpolatedV(16);
+            return source.getInterpolatedV(Math.max(vFrom, vTo));
         }
 
         @Override
         public float getInterpolatedV(double value) {
-            float coordinate = (float) (minV + (maxV - minV) * value / 16);
-            return source.getInterpolatedV(Math.max(0, Math.min(16, coordinate)));
+            return source.getInterpolatedV(remap(value, bFrom, bTo, vFrom, vTo));
         }
 
         @Override
         public String getIconName() {
             return source.getIconName();
         }
-
     }
 }

@@ -49,6 +49,7 @@ import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
+import appeng.client.render.BusRenderHelper;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -181,7 +182,7 @@ public class PartMECellDock extends PartBasicState
         }
         updateState();
         return cellHandler == null || cellInventoryHandler == null ? 0
-            : cellHandler.getStatusForCell(getCell(), cellInventoryHandler.getInternal());
+            : cellHandler.getStatusForCell(getCell(), cellInventoryHandler);
     }
 
     @Override
@@ -402,77 +403,176 @@ public class PartMECellDock extends PartBasicState
     }
 
     @Override
+    public int cableConnectionRenderTo() {
+        return 5;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void renderStatic(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer) {
-        helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.bodyDownIcon,
-            ItemPartMECellDock.bodyUpIcon,
-            ItemPartMECellDock.bodyNorthIcon,
-            ItemPartMECellDock.bodySouthIcon,
-            ItemPartMECellDock.bodyWestIcon,
-            ItemPartMECellDock.bodyEastIcon);
-        setRotatedBounds(helper, 3, 3, 12, 13, 13, 16);
-        helper.renderBlock(x, y, z, renderer);
-        setBaseTextures(helper);
-        setRotatedBounds(helper, 5, 5, 11, 11, 11, 12);
-        helper.renderBlock(x, y, z, renderer);
-        setInternalVerticalTextures(helper);
-        setRotatedBounds(helper, 7, 5, 12, 9, 11, 12);
-        helper.setFacesToRender(getRotatedWorldFaces(helper, ForgeDirection.EAST, ForgeDirection.WEST));
-        helper.renderBlock(x, y, z, renderer);
-        setInternalHorizontalTextures(helper);
-        setRotatedBounds(helper, 5, 7, 12, 11, 9, 12);
-        helper.setFacesToRender(getRotatedWorldFaces(helper, ForgeDirection.UP, ForgeDirection.DOWN));
-        helper.renderBlock(x, y, z, renderer);
-        setInternalCenterTextures(helper);
-        setRotatedBounds(helper, 6, 6, 12, 10, 10, 12);
-        helper.setFacesToRender(
-            getRotatedWorldFaces(
-                helper,
-                ForgeDirection.EAST,
-                ForgeDirection.WEST,
-                ForgeDirection.UP,
-                ForgeDirection.DOWN));
-        helper.renderBlock(x, y, z, renderer);
-        helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
+        try {
+            int status = getCellStatus(CELL_SLOT);
+            int type = getCellType(CELL_SLOT);
 
-        renderCellDisplay(x, y, z, helper, renderer);
+            helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
+            helper.setTexture(
+                ItemPartMECellDock.bodyDown,
+                ItemPartMECellDock.bodyUp,
+                ItemPartMECellDock.bodyNorth,
+                ItemPartMECellDock.bodySouth,
+                ItemPartMECellDock.bodyWest,
+                ItemPartMECellDock.bodyEast);
+            helper.setBounds(3, 3, 12, 13, 13, 16);
+            helper.renderBlock(x, y, z, renderer);
+
+            helper.setTexture(
+                ItemPartMECellDock.baseDown,
+                ItemPartMECellDock.baseUp,
+                ItemPartMECellDock.baseNorth,
+                ItemPartMECellDock.baseSouth,
+                ItemPartMECellDock.baseWest,
+                ItemPartMECellDock.baseEast);
+            helper.setBounds(5, 5, 10.99f, 11, 11, 12);
+            helper.renderBlock(x, y, z, renderer);
+
+            renderInternals(x, y, z, helper, renderer);
+            renderSlot(x, y, z, helper, renderer, status, type);
+            renderStatusLight(x, y, z, helper, renderer, status);
+        } finally {
+            helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
+            restoreSpin(helper);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderInternals(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer) {
+        helper.setTexture(ItemPartMECellDock.internalsVertical);
+        helper.setBounds(7, 5, 11, 7, 11, 12);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.EAST));
+        helper.renderBlock(x, y, z, renderer);
+        helper.setBounds(9, 5, 11, 9, 11, 12);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.WEST));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(ItemPartMECellDock.internalsHorizontal);
+        helper.setBounds(5, 7, 11, 11, 7, 12);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
+        helper.renderBlock(x, y, z, renderer);
+        helper.setBounds(5, 9, 11, 11, 9, 12);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.DOWN));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(
+            ItemPartMECellDock.internalsCenterFace,
+            ItemPartMECellDock.internalsCenterFace,
+            ItemPartMECellDock.internalsCenterSide,
+            ItemPartMECellDock.internalsCenterSide,
+            ItemPartMECellDock.internalsCenterSide,
+            ItemPartMECellDock.internalsCenterSide);
+        helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
+        helper.setFacesToRender(
+            worldFaces(helper, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN));
+        helper.renderBlock(x, y, z, renderer);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderSlot(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer, int status,
+        int type) {
+        helper.setTexture(status == 0 ? ItemPartMECellDock.slotUp : createCellIcon(type));
+        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 10.01f, 15.01f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(ItemPartMECellDock.slotSouth);
+        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 13.01f, 12.99f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.SOUTH));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(ItemPartMECellDock.slotNorth);
+        helper.setBounds(4.99f, 10.01f, 15.01f, 11.01f, 13.01f, 15.01f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.NORTH));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(ItemPartMECellDock.slotEast);
+        helper.setBounds(4.99f, 10.01f, 12.99f, 4.99f, 13.01f, 15.01f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.EAST));
+        helper.renderBlock(x, y, z, renderer);
+
+        helper.setTexture(ItemPartMECellDock.slotWest);
+        helper.setBounds(11.01f, 10.01f, 12.99f, 11.01f, 13.01f, 15.01f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.WEST));
+        helper.renderBlock(x, y, z, renderer);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderStatusLight(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer, int status) {
+        if (status == 0) {
+            return;
+        }
+
+        helper.normalRendering();
+
+        boolean powered = isPowered();
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.setBrightness(powered ? (15 << 20 | 15 << 4) : 0);
+        tessellator.setColorOpaque_I(powered ? getStatusColor(status) : 0x000000);
+
+        helper.setBounds(11, 5, 16.02f, 12, 6, 16.02f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.SOUTH));
+        helper.renderFace(x, y, z, ExtraBlockTextures.White.getIcon(), ForgeDirection.SOUTH, renderer);
+
+        tessellator.setColorOpaque_I(0xFFFFFF);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(IPartRenderHelper helper, RenderBlocks renderer) {
-        helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.bodyDownIcon,
-            ItemPartMECellDock.bodyUpIcon,
-            ItemPartMECellDock.bodyNorthIcon,
-            ItemPartMECellDock.bodySouthIcon,
-            ItemPartMECellDock.bodyWestIcon,
-            ItemPartMECellDock.bodyEastIcon);
+        helper.setTexture(
+            ItemPartMECellDock.bodyDown,
+            ItemPartMECellDock.bodyUp,
+            ItemPartMECellDock.bodyNorth,
+            ItemPartMECellDock.bodySouth,
+            ItemPartMECellDock.bodyWest,
+            ItemPartMECellDock.bodyEast);
         helper.setBounds(3, 3, 12, 13, 13, 16);
         helper.renderInventoryBox(renderer);
-        setBaseTextures(helper);
-        helper.setBounds(5, 5, 11, 11, 11, 12);
-        helper.renderInventoryBox(renderer);
-        setInternalVerticalTextures(helper);
-        helper.setBounds(7, 5, 12, 9, 11, 12);
-        helper.setFacesToRender(EnumSet.of(ForgeDirection.EAST, ForgeDirection.WEST));
-        helper.renderInventoryBox(renderer);
-        setInternalHorizontalTextures(helper);
-        helper.setBounds(5, 7, 12, 11, 9, 12);
-        helper.setFacesToRender(EnumSet.of(ForgeDirection.UP, ForgeDirection.DOWN));
-        helper.renderInventoryBox(renderer);
-        setInternalCenterTextures(helper);
-        helper.setBounds(6, 6, 12, 10, 10, 12);
-        helper.setFacesToRender(
-            EnumSet.of(ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN));
-        helper.renderInventoryBox(renderer);
-        helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
 
+        helper.setTexture(
+            ItemPartMECellDock.baseDown,
+            ItemPartMECellDock.baseUp,
+            ItemPartMECellDock.baseNorth,
+            ItemPartMECellDock.baseSouth,
+            ItemPartMECellDock.baseWest,
+            ItemPartMECellDock.baseEast);
+        helper.setBounds(5, 5, 10.99f, 11, 11, 12);
+        helper.renderInventoryBox(renderer);
+
+        helper.setBounds(7, 5, 11, 7, 11, 12);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsVertical, ForgeDirection.EAST, renderer);
+        helper.setBounds(9, 5, 11, 9, 11, 12);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsVertical, ForgeDirection.WEST, renderer);
+
+        helper.setBounds(5, 7, 11, 11, 7, 12);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsHorizontal, ForgeDirection.UP, renderer);
+        helper.setBounds(5, 9, 11, 11, 9, 12);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsHorizontal, ForgeDirection.DOWN, renderer);
+
+        helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterSide, ForgeDirection.EAST, renderer);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterSide, ForgeDirection.WEST, renderer);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterFace, ForgeDirection.UP, renderer);
+        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterFace, ForgeDirection.DOWN, renderer);
+
+        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 10.01f, 15.01f);
+        helper.renderInventoryFace(ItemPartMECellDock.slotUp, ForgeDirection.UP, renderer);
+        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 13.01f, 12.99f);
+        helper.renderInventoryFace(ItemPartMECellDock.slotSouth, ForgeDirection.SOUTH, renderer);
+        helper.setBounds(4.99f, 10.01f, 15.01f, 11.01f, 13.01f, 15.01f);
+        helper.renderInventoryFace(ItemPartMECellDock.slotNorth, ForgeDirection.NORTH, renderer);
+        helper.setBounds(4.99f, 10.01f, 12.99f, 4.99f, 13.01f, 15.01f);
+        helper.renderInventoryFace(ItemPartMECellDock.slotEast, ForgeDirection.EAST, renderer);
+        helper.setBounds(11.01f, 10.01f, 12.99f, 11.01f, 13.01f, 15.01f);
+        helper.renderInventoryFace(ItemPartMECellDock.slotWest, ForgeDirection.WEST, renderer);
     }
 
     @MENetworkEventSubscribe
@@ -545,108 +645,6 @@ public class PartMECellDock extends PartBasicState
         } catch (GridAccessException ignored) {}
     }
 
-    @SideOnly(Side.CLIENT)
-    private void setBaseTextures(IPartRenderHelper helper) {
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.baseDownIcon,
-            ItemPartMECellDock.baseUpIcon,
-            ItemPartMECellDock.baseNorthIcon,
-            ItemPartMECellDock.baseSouthIcon,
-            ItemPartMECellDock.baseWestIcon,
-            ItemPartMECellDock.baseEastIcon);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void setInternalVerticalTextures(IPartRenderHelper helper) {
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.internalVerticalIcon,
-            ItemPartMECellDock.internalVerticalEastIcon);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void setInternalHorizontalTextures(IPartRenderHelper helper) {
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.internalHorizontalDownIcon,
-            ItemPartMECellDock.internalHorizontalIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void setInternalCenterTextures(IPartRenderHelper helper) {
-        setRotatedTextures(
-            helper,
-            ItemPartMECellDock.internalCenterDownIcon,
-            ItemPartMECellDock.internalCenterFaceIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.sideIcon,
-            ItemPartMECellDock.internalCenterSideIcon,
-            ItemPartMECellDock.internalCenterEastIcon);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void setRotatedTextures(IPartRenderHelper helper, IIcon down, IIcon up, IIcon north, IIcon south,
-        IIcon west, IIcon east) {
-        int planeRotation = getPlaneRotation(helper);
-        helper.setTexture(
-            getTextureForFace(unrotateLocalFace(ForgeDirection.DOWN, planeRotation), down, up, north, south, west, east),
-            getTextureForFace(unrotateLocalFace(ForgeDirection.UP, planeRotation), down, up, north, south, west, east),
-            getTextureForFace(unrotateLocalFace(ForgeDirection.NORTH, planeRotation), down, up, north, south, west, east),
-            getTextureForFace(unrotateLocalFace(ForgeDirection.SOUTH, planeRotation), down, up, north, south, west, east),
-            getTextureForFace(unrotateLocalFace(ForgeDirection.WEST, planeRotation), down, up, north, south, west, east),
-            getTextureForFace(unrotateLocalFace(ForgeDirection.EAST, planeRotation), down, up, north, south, west, east));
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon getTextureForFace(ForgeDirection face, IIcon down, IIcon up, IIcon north, IIcon south, IIcon west,
-        IIcon east) {
-        return switch (face) {
-            case DOWN -> down;
-            case UP -> up;
-            case NORTH -> north;
-            case SOUTH -> south;
-            case WEST -> west;
-            case EAST -> east;
-            default -> down;
-        };
-    }
-
-    private ForgeDirection unrotateLocalFace(ForgeDirection localFace, int planeRotation) {
-        return switch (planeRotation & 3) {
-            case 1 -> switch (localFace) {
-                case UP -> ForgeDirection.WEST;
-                case EAST -> ForgeDirection.UP;
-                case DOWN -> ForgeDirection.EAST;
-                case WEST -> ForgeDirection.DOWN;
-                default -> localFace;
-            };
-            case 2 -> switch (localFace) {
-                case UP -> ForgeDirection.DOWN;
-                case EAST -> ForgeDirection.WEST;
-                case DOWN -> ForgeDirection.UP;
-                case WEST -> ForgeDirection.EAST;
-                default -> localFace;
-            };
-            case 3 -> switch (localFace) {
-                case UP -> ForgeDirection.EAST;
-                case EAST -> ForgeDirection.DOWN;
-                case DOWN -> ForgeDirection.WEST;
-                case WEST -> ForgeDirection.UP;
-                default -> localFace;
-            };
-            default -> localFace;
-        };
-    }
-
     private void postCellArrayUpdate(ItemStack removedStack, ItemStack newStack) {
         try {
             getProxy().getGrid()
@@ -667,92 +665,18 @@ public class PartMECellDock extends PartBasicState
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderCellDisplay(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer) {
-        int status = getCellStatus(CELL_SLOT);
-        int type = getCellType(CELL_SLOT);
-        int minV = status == 0 ? 13 : 1 + type * 4;
-        int maxV = status == 0 ? 15 : 3 + type * 4;
-        IIcon cellIcon = new AtlasRegionIcon(ExtraBlockTextures.MEStorageCellTextures.getIcon(), 1, minV, 6, maxV);
-
-        Tessellator.instance.setColorOpaque_I(0xFFFFFF);
-        helper.setTexture(cellIcon);
-        setCellBounds(helper);
-        helper.setFacesToRender(EnumSet.of(getRotatedWorldFace(helper, ForgeDirection.UP)));
-        helper.renderBlock(x, y, z, renderer);
-        helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-
-        if (status != 0) {
-            Tessellator.instance.setColorOpaque_I(isPowered() ? getStatusColor(status) : 0x000000);
-            helper.setTexture(ExtraBlockTextures.White.getIcon());
-            setStatusBounds(helper);
-            helper.setFacesToRender(EnumSet.of(getRotatedWorldFace(helper, ForgeDirection.SOUTH)));
-            helper.renderBlock(x, y, z, renderer);
-            helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-        }
-        Tessellator.instance.setColorOpaque_I(0xFFFFFF);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private static class AtlasRegionIcon implements IIcon {
-
-        private final IIcon source;
-        private final float minU;
-        private final float minV;
-        private final float maxU;
-        private final float maxV;
-
-        private AtlasRegionIcon(IIcon source, float minU, float minV, float maxU, float maxV) {
-            this.source = source;
-            this.minU = minU;
-            this.minV = minV;
-            this.maxU = maxU;
-            this.maxV = maxV;
-        }
-
-        @Override
-        public int getIconWidth() {
-            return source.getIconWidth();
-        }
-
-        @Override
-        public int getIconHeight() {
-            return source.getIconHeight();
-        }
-
-        @Override
-        public float getMinU() {
-            return getInterpolatedU(0);
-        }
-
-        @Override
-        public float getMaxU() {
-            return getInterpolatedU(16);
-        }
-
-        @Override
-        public float getInterpolatedU(double value) {
-            return source.getInterpolatedU(minU + (maxU - minU) * value / 16);
-        }
-
-        @Override
-        public float getMinV() {
-            return getInterpolatedV(0);
-        }
-
-        @Override
-        public float getMaxV() {
-            return getInterpolatedV(16);
-        }
-
-        @Override
-        public float getInterpolatedV(double value) {
-            return source.getInterpolatedV(minV + (maxV - minV) * value / 16);
-        }
-
-        @Override
-        public String getIconName() {
-            return source.getIconName();
-        }
+    private IIcon createCellIcon(int type) {
+        float v = 1 + type * 4f;
+        return new ItemPartMECellDock.MappedIcon(
+            ExtraBlockTextures.MEStorageCellTextures.getIcon(),
+            4.99f,
+            11.01f,
+            1,
+            6,
+            12.99f,
+            15.01f,
+            v,
+            v + 2);
     }
 
     private int getStatusColor(int status) {
@@ -769,37 +693,31 @@ public class PartMECellDock extends PartBasicState
         return Platform.isClient() ? clientRotation : rotation;
     }
 
-    private void setCellBounds(IPartRenderHelper helper) {
-        setRotatedBounds(helper, 5, 13, 13, 11, 13, 15);
+    @SideOnly(Side.CLIENT)
+    private void applySpin(IPartRenderHelper helper) {
+        if (!(helper instanceof BusRenderHelper busHelper)) {
+            return;
+        }
+
+        ForgeDirection ax = busHelper.getWorldX();
+        ForgeDirection ay = busHelper.getWorldY();
+        for (int i = getRenderRotation() & 3; i > 0; i--) {
+            ForgeDirection nextX = ay.getOpposite();
+            ay = ax;
+            ax = nextX;
+        }
+        busHelper.setOrientation(ax, ay, busHelper.getWorldZ());
     }
 
-    private void setStatusBounds(IPartRenderHelper helper) {
-        setRotatedBounds(helper, 8, 7, 16, 9, 8, 16);
-    }
-
-    private void setRotatedBounds(IPartRenderHelper helper, float minX, float minY, float minZ, float maxX, float maxY,
-        float maxZ) {
-        switch (getPlaneRotation(helper)) {
-            case 1 -> helper.setBounds(minY, 16 - maxX, minZ, maxY, 16 - minX, maxZ);
-            case 2 -> helper.setBounds(16 - maxX, 16 - maxY, minZ, 16 - minX, 16 - minY, maxZ);
-            case 3 -> helper.setBounds(16 - maxY, minX, minZ, 16 - minY, maxX, maxZ);
-            default -> helper.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
+    @SideOnly(Side.CLIENT)
+    private void restoreSpin(IPartRenderHelper helper) {
+        if (helper instanceof BusRenderHelper busHelper) {
+            busHelper.setOrientation(busHelper.getWorldX(), busHelper.getWorldY(), busHelper.getWorldZ());
         }
     }
 
-    private EnumSet<ForgeDirection> getRotatedWorldFaces(IPartRenderHelper helper, ForgeDirection... localFaces) {
-        EnumSet<ForgeDirection> worldFaces = EnumSet.noneOf(ForgeDirection.class);
-        for (ForgeDirection localFace : localFaces) {
-            worldFaces.add(getRotatedWorldFace(helper, localFace));
-        }
-        return worldFaces;
-    }
-
-    private ForgeDirection getRotatedWorldFace(IPartRenderHelper helper, ForgeDirection localFace) {
-        return getBaseWorldFace(helper, rotateLocalFace(helper, localFace));
-    }
-
-    private ForgeDirection getBaseWorldFace(IPartRenderHelper helper, ForgeDirection localFace) {
+    @SideOnly(Side.CLIENT)
+    private ForgeDirection localToWorld(IPartRenderHelper helper, ForgeDirection localFace) {
         return switch (localFace) {
             case DOWN -> helper.getWorldY()
                 .getOpposite();
@@ -814,88 +732,51 @@ public class PartMECellDock extends PartBasicState
         };
     }
 
-    private ForgeDirection rotateLocalFace(IPartRenderHelper helper, ForgeDirection localFace) {
-        return switch (getPlaneRotation(helper)) {
-            case 1 -> switch (localFace) {
-                    case UP -> ForgeDirection.EAST;
-                    case EAST -> ForgeDirection.DOWN;
-                    case DOWN -> ForgeDirection.WEST;
-                    case WEST -> ForgeDirection.UP;
-                    default -> localFace;
-                };
-            case 2 -> switch (localFace) {
-                    case UP -> ForgeDirection.DOWN;
-                    case EAST -> ForgeDirection.WEST;
-                    case DOWN -> ForgeDirection.UP;
-                    case WEST -> ForgeDirection.EAST;
-                    default -> localFace;
-                };
-            case 3 -> switch (localFace) {
-                    case UP -> ForgeDirection.WEST;
-                    case EAST -> ForgeDirection.UP;
-                    case DOWN -> ForgeDirection.EAST;
-                    case WEST -> ForgeDirection.DOWN;
-                    default -> localFace;
-                };
-            default -> localFace;
-        };
-    }
-
-    private int getPlaneRotation(IPartRenderHelper helper) {
-        ForgeDirection currentUp = getUp();
-        ForgeDirection baseUp = helper.getWorldY();
-        if (currentUp == baseUp) {
-            return 0;
+    @SideOnly(Side.CLIENT)
+    private EnumSet<ForgeDirection> worldFaces(IPartRenderHelper helper, ForgeDirection... localFaces) {
+        EnumSet<ForgeDirection> faces = EnumSet.noneOf(ForgeDirection.class);
+        for (ForgeDirection localFace : localFaces) {
+            faces.add(localToWorld(helper, localFace));
         }
-        if (currentUp == helper.getWorldX()) {
-            return 1;
-        }
-        if (currentUp == baseUp.getOpposite()) {
-            return 2;
-        }
-        return 3;
+        return faces;
     }
 
     private ForgeDirection getUpForRotation(ForgeDirection forward, int currentRotation) {
-        return switch (forward) {
-            case DOWN -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.NORTH;
-                    case 1 -> ForgeDirection.WEST;
-                    case 2 -> ForgeDirection.SOUTH;
-                    default -> ForgeDirection.EAST;
-                };
-            case UP -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.NORTH;
-                    case 1 -> ForgeDirection.EAST;
-                    case 2 -> ForgeDirection.SOUTH;
-                    default -> ForgeDirection.WEST;
-                };
-            case NORTH -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.UP;
-                    case 1 -> ForgeDirection.WEST;
-                    case 2 -> ForgeDirection.DOWN;
-                    default -> ForgeDirection.EAST;
-                };
-            case SOUTH -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.UP;
-                    case 1 -> ForgeDirection.EAST;
-                    case 2 -> ForgeDirection.DOWN;
-                    default -> ForgeDirection.WEST;
-                };
-            case WEST -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.UP;
-                    case 1 -> ForgeDirection.SOUTH;
-                    case 2 -> ForgeDirection.DOWN;
-                    default -> ForgeDirection.NORTH;
-                };
-            case EAST -> switch (currentRotation & 3) {
-                    case 0 -> ForgeDirection.UP;
-                    case 1 -> ForgeDirection.NORTH;
-                    case 2 -> ForgeDirection.DOWN;
-                    default -> ForgeDirection.SOUTH;
-                };
-            default -> ForgeDirection.UP;
-        };
+        ForgeDirection ax;
+        ForgeDirection ay;
+        switch (forward) {
+            case DOWN -> {
+                ax = ForgeDirection.EAST;
+                ay = ForgeDirection.NORTH;
+            }
+            case UP -> {
+                ax = ForgeDirection.EAST;
+                ay = ForgeDirection.SOUTH;
+            }
+            case EAST -> {
+                ax = ForgeDirection.SOUTH;
+                ay = ForgeDirection.UP;
+            }
+            case WEST -> {
+                ax = ForgeDirection.NORTH;
+                ay = ForgeDirection.UP;
+            }
+            case NORTH -> {
+                ax = ForgeDirection.WEST;
+                ay = ForgeDirection.UP;
+            }
+            default -> {
+                ax = ForgeDirection.EAST;
+                ay = ForgeDirection.UP;
+            }
+        }
+
+        for (int i = currentRotation & 3; i > 0; i--) {
+            ForgeDirection nextX = ay.getOpposite();
+            ay = ax;
+            ax = nextX;
+        }
+        return ay;
     }
 
     private class CellNetNotifier implements IMEMonitorHandlerReceiver<IAEStack<?>> {
