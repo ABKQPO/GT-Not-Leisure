@@ -17,7 +17,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -410,98 +409,140 @@ public class PartMECellDock extends PartBasicState
     @Override
     @SideOnly(Side.CLIENT)
     public void renderStatic(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer) {
+        if (!(helper instanceof BusRenderHelper busHelper)) {
+            return;
+        }
+
+        ForgeDirection savedX = busHelper.getWorldX();
+        ForgeDirection savedY = busHelper.getWorldY();
+        ForgeDirection savedZ = busHelper.getWorldZ();
+
         try {
+            applySpin(busHelper);
+
+            ForgeDirection[] axes = { busHelper.getWorldX(), busHelper.getWorldY(), busHelper.getWorldZ() };
             int status = getCellStatus(CELL_SLOT);
             int type = getCellType(CELL_SLOT);
 
-            helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-            helper.setTexture(
+            renderer.flipTexture = false;
+            renderer.field_152631_f = false;
+
+            busHelper.setBounds(3, 3, 12, 13, 13, 16);
+            renderBox(
+                x,
+                y,
+                z,
+                busHelper,
+                renderer,
+                axes,
                 ItemPartMECellDock.bodyDown,
                 ItemPartMECellDock.bodyUp,
                 ItemPartMECellDock.bodyNorth,
                 ItemPartMECellDock.bodySouth,
                 ItemPartMECellDock.bodyWest,
                 ItemPartMECellDock.bodyEast);
-            helper.setBounds(3, 3, 12, 13, 13, 16);
-            helper.renderBlock(x, y, z, renderer);
 
-            helper.setTexture(
+            busHelper.setBounds(5, 5, 10.99f, 11, 11, 12);
+            renderBox(
+                x,
+                y,
+                z,
+                busHelper,
+                renderer,
+                axes,
                 ItemPartMECellDock.baseDown,
                 ItemPartMECellDock.baseUp,
                 ItemPartMECellDock.baseNorth,
                 ItemPartMECellDock.baseSouth,
                 ItemPartMECellDock.baseWest,
                 ItemPartMECellDock.baseEast);
-            helper.setBounds(5, 5, 10.99f, 11, 11, 12);
-            helper.renderBlock(x, y, z, renderer);
 
-            renderInternals(x, y, z, helper, renderer);
-            renderSlot(x, y, z, helper, renderer, status, type);
-            renderStatusLight(x, y, z, helper, renderer, status);
+            renderInternals(x, y, z, busHelper, renderer, axes);
+            renderSlot(x, y, z, busHelper, renderer, axes, status, type);
+            renderStatusLight(x, y, z, busHelper, renderer, status);
         } finally {
-            helper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
-            restoreSpin(helper);
+            clearUvRotation(renderer);
+            busHelper.setFacesToRender(EnumSet.allOf(ForgeDirection.class));
+            busHelper.setOrientation(savedX, savedY, savedZ);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderInternals(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer) {
-        helper.setTexture(ItemPartMECellDock.internalsVertical);
-        helper.setBounds(7, 5, 11, 7, 11, 12);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.EAST));
-        helper.renderBlock(x, y, z, renderer);
-        helper.setBounds(9, 5, 11, 9, 11, 12);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.WEST));
-        helper.renderBlock(x, y, z, renderer);
-
-        helper.setTexture(ItemPartMECellDock.internalsHorizontal);
-        helper.setBounds(5, 7, 11, 11, 7, 12);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
-        helper.renderBlock(x, y, z, renderer);
-        helper.setBounds(5, 9, 11, 11, 9, 12);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.DOWN));
-        helper.renderBlock(x, y, z, renderer);
-
-        helper.setTexture(
-            ItemPartMECellDock.internalsCenterFace,
-            ItemPartMECellDock.internalsCenterFace,
-            ItemPartMECellDock.internalsCenterSide,
-            ItemPartMECellDock.internalsCenterSide,
-            ItemPartMECellDock.internalsCenterSide,
-            ItemPartMECellDock.internalsCenterSide);
-        helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
-        helper.setFacesToRender(
-            worldFaces(helper, ForgeDirection.EAST, ForgeDirection.WEST, ForgeDirection.UP, ForgeDirection.DOWN));
-        helper.renderBlock(x, y, z, renderer);
+    private void renderBox(int x, int y, int z, BusRenderHelper helper, RenderBlocks renderer, ForgeDirection[] axes,
+        ItemPartMECellDock.FaceUV down, ItemPartMECellDock.FaceUV up, ItemPartMECellDock.FaceUV north,
+        ItemPartMECellDock.FaceUV south, ItemPartMECellDock.FaceUV west, ItemPartMECellDock.FaceUV east) {
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.DOWN, down);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.UP, up);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.NORTH, north);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.SOUTH, south);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.WEST, west);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.EAST, east);
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderSlot(int x, int y, int z, IPartRenderHelper helper, RenderBlocks renderer, int status,
-        int type) {
-        helper.setTexture(status == 0 ? ItemPartMECellDock.slotUp : createCellIcon(type));
+    private void renderInternals(int x, int y, int z, BusRenderHelper helper, RenderBlocks renderer,
+        ForgeDirection[] axes) {
+        helper.setBounds(7, 5, 11, 7, 11, 12);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.EAST, ItemPartMECellDock.internalsVerticalEast);
+
+        helper.setBounds(9, 5, 11, 9, 11, 12);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.WEST, ItemPartMECellDock.internalsVerticalWest);
+
+        helper.setBounds(5, 7, 11, 11, 7, 12);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.UP, ItemPartMECellDock.internalsHorizontalUp);
+
+        helper.setBounds(5, 9, 11, 11, 9, 12);
+        helper.prepareBounds(renderer);
+        renderLocalFace(
+            x,
+            y,
+            z,
+            helper,
+            renderer,
+            axes,
+            ForgeDirection.DOWN,
+            ItemPartMECellDock.internalsHorizontalDown);
+
+        helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.EAST, ItemPartMECellDock.internalsCenterEast);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.WEST, ItemPartMECellDock.internalsCenterWest);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.UP, ItemPartMECellDock.internalsCenterUp);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.DOWN, ItemPartMECellDock.internalsCenterDown);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderSlot(int x, int y, int z, BusRenderHelper helper, RenderBlocks renderer, ForgeDirection[] axes,
+        int status, int type) {
         helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 10.01f, 15.01f);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
-        helper.renderBlock(x, y, z, renderer);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.UP, ItemPartMECellDock.slotUp);
 
-        helper.setTexture(ItemPartMECellDock.slotSouth);
         helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 13.01f, 12.99f);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.SOUTH));
-        helper.renderBlock(x, y, z, renderer);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.SOUTH, ItemPartMECellDock.slotSouth);
 
-        helper.setTexture(ItemPartMECellDock.slotNorth);
         helper.setBounds(4.99f, 10.01f, 15.01f, 11.01f, 13.01f, 15.01f);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.NORTH));
-        helper.renderBlock(x, y, z, renderer);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.NORTH, ItemPartMECellDock.slotNorth);
 
-        helper.setTexture(ItemPartMECellDock.slotEast);
         helper.setBounds(4.99f, 10.01f, 12.99f, 4.99f, 13.01f, 15.01f);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.EAST));
-        helper.renderBlock(x, y, z, renderer);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.EAST, ItemPartMECellDock.slotEast);
 
-        helper.setTexture(ItemPartMECellDock.slotWest);
         helper.setBounds(11.01f, 10.01f, 12.99f, 11.01f, 13.01f, 15.01f);
-        helper.setFacesToRender(worldFaces(helper, ForgeDirection.WEST));
-        helper.renderBlock(x, y, z, renderer);
+        helper.prepareBounds(renderer);
+        renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.WEST, ItemPartMECellDock.slotWest);
+
+        if (status != 0) {
+            helper.setBounds(4.99f, 12.99f, 12.99f, 11.01f, 12.99f, 15.01f);
+            helper.prepareBounds(renderer);
+            renderLocalFace(x, y, z, helper, renderer, axes, ForgeDirection.UP, createCellIcon(type));
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -517,6 +558,10 @@ public class PartMECellDock extends PartBasicState
         tessellator.setBrightness(powered ? (15 << 20 | 15 << 4) : 0);
         tessellator.setColorOpaque_I(powered ? getStatusColor(status) : 0x000000);
 
+        helper.setBounds(6.194f, 12.995f, 14, 7.398f, 12.995f, 15.01f);
+        helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
+        helper.renderFace(x, y, z, ExtraBlockTextures.White.getIcon(), ForgeDirection.UP, renderer);
+
         helper.setBounds(11, 5, 16.02f, 12, 6, 16.02f);
         helper.setFacesToRender(worldFaces(helper, ForgeDirection.SOUTH));
         helper.renderFace(x, y, z, ExtraBlockTextures.White.getIcon(), ForgeDirection.SOUTH, renderer);
@@ -527,52 +572,175 @@ public class PartMECellDock extends PartBasicState
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(IPartRenderHelper helper, RenderBlocks renderer) {
-        helper.setTexture(
-            ItemPartMECellDock.bodyDown,
-            ItemPartMECellDock.bodyUp,
-            ItemPartMECellDock.bodyNorth,
-            ItemPartMECellDock.bodySouth,
-            ItemPartMECellDock.bodyWest,
-            ItemPartMECellDock.bodyEast);
-        helper.setBounds(3, 3, 12, 13, 13, 16);
-        helper.renderInventoryBox(renderer);
+        ForgeDirection[] axes = { ForgeDirection.EAST, ForgeDirection.UP, ForgeDirection.SOUTH };
 
-        helper.setTexture(
-            ItemPartMECellDock.baseDown,
-            ItemPartMECellDock.baseUp,
-            ItemPartMECellDock.baseNorth,
-            ItemPartMECellDock.baseSouth,
-            ItemPartMECellDock.baseWest,
-            ItemPartMECellDock.baseEast);
-        helper.setBounds(5, 5, 10.99f, 11, 11, 12);
-        helper.renderInventoryBox(renderer);
+        try {
+            renderer.flipTexture = false;
+            renderer.field_152631_f = false;
 
-        helper.setBounds(7, 5, 11, 7, 11, 12);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsVertical, ForgeDirection.EAST, renderer);
-        helper.setBounds(9, 5, 11, 9, 11, 12);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsVertical, ForgeDirection.WEST, renderer);
+            helper.setBounds(3, 3, 12, 13, 13, 16);
+            renderInventoryBox(
+                helper,
+                renderer,
+                axes,
+                ItemPartMECellDock.bodyDown,
+                ItemPartMECellDock.bodyUp,
+                ItemPartMECellDock.bodyNorth,
+                ItemPartMECellDock.bodySouth,
+                ItemPartMECellDock.bodyWest,
+                ItemPartMECellDock.bodyEast);
 
-        helper.setBounds(5, 7, 11, 11, 7, 12);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsHorizontal, ForgeDirection.UP, renderer);
-        helper.setBounds(5, 9, 11, 11, 9, 12);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsHorizontal, ForgeDirection.DOWN, renderer);
+            helper.setBounds(5, 5, 10.99f, 11, 11, 12);
+            renderInventoryBox(
+                helper,
+                renderer,
+                axes,
+                ItemPartMECellDock.baseDown,
+                ItemPartMECellDock.baseUp,
+                ItemPartMECellDock.baseNorth,
+                ItemPartMECellDock.baseSouth,
+                ItemPartMECellDock.baseWest,
+                ItemPartMECellDock.baseEast);
 
-        helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterSide, ForgeDirection.EAST, renderer);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterSide, ForgeDirection.WEST, renderer);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterFace, ForgeDirection.UP, renderer);
-        helper.renderInventoryFace(ItemPartMECellDock.internalsCenterFace, ForgeDirection.DOWN, renderer);
+            helper.setBounds(7, 5, 11, 7, 11, 12);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.EAST,
+                ItemPartMECellDock.internalsVerticalEast);
 
-        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 10.01f, 15.01f);
-        helper.renderInventoryFace(ItemPartMECellDock.slotUp, ForgeDirection.UP, renderer);
-        helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 13.01f, 12.99f);
-        helper.renderInventoryFace(ItemPartMECellDock.slotSouth, ForgeDirection.SOUTH, renderer);
-        helper.setBounds(4.99f, 10.01f, 15.01f, 11.01f, 13.01f, 15.01f);
-        helper.renderInventoryFace(ItemPartMECellDock.slotNorth, ForgeDirection.NORTH, renderer);
-        helper.setBounds(4.99f, 10.01f, 12.99f, 4.99f, 13.01f, 15.01f);
-        helper.renderInventoryFace(ItemPartMECellDock.slotEast, ForgeDirection.EAST, renderer);
-        helper.setBounds(11.01f, 10.01f, 12.99f, 11.01f, 13.01f, 15.01f);
-        helper.renderInventoryFace(ItemPartMECellDock.slotWest, ForgeDirection.WEST, renderer);
+            helper.setBounds(9, 5, 11, 9, 11, 12);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.WEST,
+                ItemPartMECellDock.internalsVerticalWest);
+
+            helper.setBounds(5, 7, 11, 11, 7, 12);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.UP,
+                ItemPartMECellDock.internalsHorizontalUp);
+
+            helper.setBounds(5, 9, 11, 11, 9, 12);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.DOWN,
+                ItemPartMECellDock.internalsHorizontalDown);
+
+            helper.setBounds(6.01f, 6.01f, 11, 9.99f, 9.99f, 12);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.EAST,
+                ItemPartMECellDock.internalsCenterEast);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.WEST,
+                ItemPartMECellDock.internalsCenterWest);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.UP, ItemPartMECellDock.internalsCenterUp);
+            renderInventoryLocalFace(
+                helper,
+                renderer,
+                axes,
+                ForgeDirection.DOWN,
+                ItemPartMECellDock.internalsCenterDown);
+
+            helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 10.01f, 15.01f);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.UP, ItemPartMECellDock.slotUp);
+
+            helper.setBounds(4.99f, 10.01f, 12.99f, 11.01f, 13.01f, 12.99f);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.SOUTH, ItemPartMECellDock.slotSouth);
+
+            helper.setBounds(4.99f, 10.01f, 15.01f, 11.01f, 13.01f, 15.01f);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.NORTH, ItemPartMECellDock.slotNorth);
+
+            helper.setBounds(4.99f, 10.01f, 12.99f, 4.99f, 13.01f, 15.01f);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.EAST, ItemPartMECellDock.slotEast);
+
+            helper.setBounds(11.01f, 10.01f, 12.99f, 11.01f, 13.01f, 15.01f);
+            renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.WEST, ItemPartMECellDock.slotWest);
+        } finally {
+            clearUvRotation(renderer);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderInventoryBox(IPartRenderHelper helper, RenderBlocks renderer, ForgeDirection[] axes,
+        ItemPartMECellDock.FaceUV down, ItemPartMECellDock.FaceUV up, ItemPartMECellDock.FaceUV north,
+        ItemPartMECellDock.FaceUV south, ItemPartMECellDock.FaceUV west, ItemPartMECellDock.FaceUV east) {
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.DOWN, down);
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.UP, up);
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.NORTH, north);
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.SOUTH, south);
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.WEST, west);
+        renderInventoryLocalFace(helper, renderer, axes, ForgeDirection.EAST, east);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderInventoryLocalFace(IPartRenderHelper helper, RenderBlocks renderer, ForgeDirection[] axes,
+        ForgeDirection localFace, ItemPartMECellDock.FaceUV uv) {
+        ItemPartMECellDock.MappedIcon icon = uv.bake(axes, localFace);
+        setUvRotation(renderer, localFace, icon.getUvRotation());
+        helper.renderInventoryFace(icon, localFace, renderer);
+        setUvRotation(renderer, localFace, 0);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderLocalFace(int x, int y, int z, BusRenderHelper helper, RenderBlocks renderer,
+        ForgeDirection[] axes, ForgeDirection localFace, ItemPartMECellDock.FaceUV uv) {
+        ForgeDirection worldFace = localToWorld(axes, localFace);
+        ItemPartMECellDock.MappedIcon icon = uv.bake(axes, worldFace);
+        helper.setTexture(icon);
+        setUvRotation(renderer, worldFace, icon.getUvRotation());
+        helper.setFacesToRender(EnumSet.of(worldFace));
+        helper.renderBlockCurrentBounds(x, y, z, renderer);
+        setUvRotation(renderer, worldFace, 0);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void setUvRotation(RenderBlocks renderer, ForgeDirection worldFace, int rotation) {
+        switch (worldFace) {
+            case DOWN -> renderer.uvRotateBottom = rotation;
+            case UP -> renderer.uvRotateTop = rotation;
+            case NORTH -> renderer.uvRotateEast = rotation;
+            case SOUTH -> renderer.uvRotateWest = rotation;
+            case WEST -> renderer.uvRotateNorth = rotation;
+            case EAST -> renderer.uvRotateSouth = rotation;
+            default -> {}
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void clearUvRotation(RenderBlocks renderer) {
+        renderer.uvRotateBottom = 0;
+        renderer.uvRotateTop = 0;
+        renderer.uvRotateEast = 0;
+        renderer.uvRotateWest = 0;
+        renderer.uvRotateNorth = 0;
+        renderer.uvRotateSouth = 0;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private ForgeDirection localToWorld(ForgeDirection[] axes, ForgeDirection localFace) {
+        return switch (localFace) {
+            case DOWN -> axes[ItemPartMECellDock.AXIS_Y].getOpposite();
+            case UP -> axes[ItemPartMECellDock.AXIS_Y];
+            case NORTH -> axes[ItemPartMECellDock.AXIS_Z].getOpposite();
+            case SOUTH -> axes[ItemPartMECellDock.AXIS_Z];
+            case EAST -> axes[ItemPartMECellDock.AXIS_X];
+            case WEST -> axes[ItemPartMECellDock.AXIS_X].getOpposite();
+            default -> ForgeDirection.UNKNOWN;
+        };
     }
 
     @MENetworkEventSubscribe
@@ -665,17 +833,19 @@ public class PartMECellDock extends PartBasicState
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon createCellIcon(int type) {
+    private ItemPartMECellDock.FaceUV createCellIcon(int type) {
         float v = 1 + type * 4f;
-        return new ItemPartMECellDock.MappedIcon(
+        return new ItemPartMECellDock.FaceUV(
             ExtraBlockTextures.MEStorageCellTextures.getIcon(),
+            ItemPartMECellDock.AXIS_X,
             4.99f,
-            11.01f,
             1,
+            11.01f,
             6,
+            ItemPartMECellDock.AXIS_Z,
             12.99f,
-            15.01f,
             v,
+            15.01f,
             v + 2);
     }
 
@@ -694,6 +864,13 @@ public class PartMECellDock extends PartBasicState
     }
 
     @SideOnly(Side.CLIENT)
+    private static boolean isRightHanded(ForgeDirection x, ForgeDirection y, ForgeDirection z) {
+        return x.offsetY * y.offsetZ - x.offsetZ * y.offsetY == z.offsetX
+            && x.offsetZ * y.offsetX - x.offsetX * y.offsetZ == z.offsetY
+            && x.offsetX * y.offsetY - x.offsetY * y.offsetX == z.offsetZ;
+    }
+
+    @SideOnly(Side.CLIENT)
     private void applySpin(IPartRenderHelper helper) {
         if (!(helper instanceof BusRenderHelper busHelper)) {
             return;
@@ -701,19 +878,16 @@ public class PartMECellDock extends PartBasicState
 
         ForgeDirection ax = busHelper.getWorldX();
         ForgeDirection ay = busHelper.getWorldY();
+        ForgeDirection az = busHelper.getWorldZ();
+        if (!isRightHanded(ax, ay, az)) {
+            ax = ax.getOpposite();
+        }
         for (int i = getRenderRotation() & 3; i > 0; i--) {
             ForgeDirection nextX = ay.getOpposite();
             ay = ax;
             ax = nextX;
         }
-        busHelper.setOrientation(ax, ay, busHelper.getWorldZ());
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void restoreSpin(IPartRenderHelper helper) {
-        if (helper instanceof BusRenderHelper busHelper) {
-            busHelper.setOrientation(busHelper.getWorldX(), busHelper.getWorldY(), busHelper.getWorldZ());
-        }
+        busHelper.setOrientation(ax, ay, az);
     }
 
     @SideOnly(Side.CLIENT)
