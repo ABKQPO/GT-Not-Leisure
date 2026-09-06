@@ -35,9 +35,7 @@ import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures.BlockIcons;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
-import gregtech.api.interfaces.IOutputHatch;
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
@@ -51,7 +49,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implements ISurvivalConstructable {
@@ -278,45 +275,22 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         return Arrays.asList(RecipeMaps.distillationTowerRecipes, RecipeMaps.distilleryRecipes);
     }
 
-    public boolean addFluidOutputs(@org.jetbrains.annotations.NotNull FluidStack[] outputFluids) {
-        List<IOutputHatch> allHatches = new ArrayList<>();
-        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
-            for (MTEHatchOutput hatch : layer) {
-                if (hatch instanceof IOutputHatch oh && hatch.outputsLiquids()) {
-                    allHatches.add(oh);
-                }
-            }
+    @Override
+    public boolean addFluidOutputs(FluidStack[] outputFluids) {
+        boolean succeed = true;
+        for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
+            final FluidStack fluidStack = outputFluids[i];
+            if (fluidStack == null) continue;
+            FluidStack stack = fluidStack.copy();
+            addOutputPartial(stack, mOutputHatchesByLayer.get(i));
+            if (stack.amount > 0) succeed = false;
         }
-        return addFluidOutputs(outputFluids, allHatches);
+        return succeed;
     }
 
-    public List<? extends IFluidStore> getFluidOutputSlots(FluidStack[] toOutput) {
-        List<IFluidStore> ret = new ArrayList<>();
-        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
-            for (MTEHatchOutput hatch : layer) {
-                if (hatch.outputsLiquids() && hatch instanceof IFluidStore fs) {
-                    ret.add(fs);
-                }
-            }
-        }
-        return ret;
-    }
-
-    public boolean canDumpFluidToME() {
-        for (List<MTEHatchOutput> layerOutputHatches : mOutputHatchesByLayer) {
-            boolean layerAcceptsFluid = false;
-            for (MTEHatchOutput outputHatch : layerOutputHatches) {
-                if (outputHatch instanceof MTEHatchOutputME meOutputHatch
-                    && meOutputHatch.isEmptyAndAcceptsAnyFluid()) {
-                    layerAcceptsFluid = true;
-                    break;
-                }
-            }
-            if (!layerAcceptsFluid) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public boolean canDumpFluidToME(List<GTUtility.FluidId> outputs) {
+        return canDumpFluidToMEByLayer(outputs, mOutputHatchesByLayer);
     }
 
     @Override
