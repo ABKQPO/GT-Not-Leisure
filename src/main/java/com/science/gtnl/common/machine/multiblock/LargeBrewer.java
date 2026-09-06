@@ -170,14 +170,14 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
             .toolTipFinisher();
         return tt;
     }

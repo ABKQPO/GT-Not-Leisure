@@ -383,15 +383,15 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_05"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(7, 6, 7, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addMufflerHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_01"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_01"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("FluidBlazeInputHatch"),
                 StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"),

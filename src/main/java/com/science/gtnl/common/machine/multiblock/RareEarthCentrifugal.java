@@ -88,14 +88,14 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("RareEarthCentrifugalRecipeType"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_RareEarthCentrifugal_Casing"))
             .toolTipFinisher();
         return tt;
     }

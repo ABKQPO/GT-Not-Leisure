@@ -420,8 +420,8 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
             .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_06"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_07"))
             .beginStructureBlock(15, 31, 15, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -505,10 +505,8 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
         String typeName = getTypeName(type);
         info.add(
-            IGregTechDeviceInformation.encode(
-                "Info_SingularityDataHub_TypeUsed",
-                typeName,
-                formatStackAmount(type, getStoredAmount(type))));
+            IGregTechDeviceInformation
+                .encode("Info_SingularityDataHub_TypeUsed", typeName, formatStackAmount(type, getStoredAmount(type))));
         info.add(
             IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_TypeCapacity",
@@ -520,15 +518,11 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                 typeName,
                 formatStackAmount(type, capacityPerStack(type))));
         info.add(
-            IGregTechDeviceInformation.encode(
-                "Info_SingularityDataHub_TypeUsedTypes",
-                typeName,
-                nf.format(stackTypesCount(type))));
+            IGregTechDeviceInformation
+                .encode("Info_SingularityDataHub_TypeUsedTypes", typeName, nf.format(stackTypesCount(type))));
         info.add(
-            IGregTechDeviceInformation.encode(
-                "Info_SingularityDataHub_TypeTotalTypes",
-                typeName,
-                nf.format(maxStackTypes(type))));
+            IGregTechDeviceInformation
+                .encode("Info_SingularityDataHub_TypeTotalTypes", typeName, nf.format(maxStackTypes(type))));
     }
 
     @Override

@@ -153,12 +153,12 @@ public class LargePyrolyseOven extends GTMMultiMachineBase<LargePyrolyseOven> im
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(13, 6, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargePyrolyseOven_Casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

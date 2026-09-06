@@ -683,7 +683,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_04"))
             .beginStructureBlock(35, 43, 35, false)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SteamElevator_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SteamElevator_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

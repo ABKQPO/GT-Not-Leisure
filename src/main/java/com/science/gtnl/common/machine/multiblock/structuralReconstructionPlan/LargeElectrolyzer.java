@@ -143,14 +143,14 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 4, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -312,18 +312,18 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_04"))
             .addPerfectOCInfo()
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(13, 9, 13, false)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("Tooltip_LargeIncubator_RadioHatch"),
                 StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"),
                 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

@@ -78,6 +78,7 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -520,10 +521,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     }
 
     public String describePattern(ICraftingPatternDetails patternDetails) {
-        return Arrays.stream(patternDetails.getCondensedOutputs())
-            .map(
-                aeItemStack -> aeItemStack.getItem()
-                    .getItemStackDisplayName(aeItemStack.getItemStack()))
+        return Arrays.stream(patternDetails.getCondensedAEOutputs())
+            .map(IAEStack::getLocalizedName)
             .collect(Collectors.joining(", "));
     }
 
@@ -1376,9 +1375,9 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
 
             Collections.addAll(inputItems, manualInventory);
 
-            dualInputs.inputItems = inputItems.toArray(new ItemStack[inputItems.size()]);
+            dualInputs.inputItems = inputItems.toArray(new ItemStack[0]);
             dualInputs.inputFluid = inputFluids.isEmpty() ? GTValues.emptyFluidStackArray
-                : inputFluids.toArray(new FluidStack[inputFluids.size()]);
+                : inputFluids.toArray(new FluidStack[0]);
             return dualInputs;
         }
 

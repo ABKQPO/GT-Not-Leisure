@@ -490,11 +490,11 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                     + EnumChatFormatting.RESET);
         }
         tt.beginStructureBlock(29, 29, 29, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
             .toolTipFinisher();
         return tt;
     }

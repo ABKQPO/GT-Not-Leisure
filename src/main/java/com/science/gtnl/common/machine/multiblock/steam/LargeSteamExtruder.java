@@ -250,8 +250,8 @@ public class LargeSteamExtruder extends SteamMultiMachineBase<LargeSteamExtruder
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(5, 8, 5, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtruder_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

@@ -200,8 +200,8 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_02"))
             .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

@@ -268,8 +268,8 @@ public class LargeSteamLathe extends SteamMultiMachineBase<LargeSteamLathe> impl
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(7, 4, 5, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

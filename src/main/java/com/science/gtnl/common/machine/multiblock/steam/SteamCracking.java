@@ -217,8 +217,8 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamCracking_01"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(7, 4, 4, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

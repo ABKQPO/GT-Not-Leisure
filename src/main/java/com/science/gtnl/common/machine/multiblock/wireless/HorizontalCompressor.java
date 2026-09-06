@@ -253,14 +253,14 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_00"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(11, 10, 30, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
             .toolTipFinisher();
         return tt;
     }

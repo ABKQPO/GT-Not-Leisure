@@ -220,8 +220,8 @@ public class LargeSteamBending extends SteamMultiMachineBase<LargeSteamBending> 
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamBending_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(5, 4, 5, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

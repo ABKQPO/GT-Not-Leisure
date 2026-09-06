@@ -300,12 +300,12 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(43, 24, 39, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_TransliminalOasis_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

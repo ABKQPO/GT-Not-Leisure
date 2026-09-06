@@ -266,7 +266,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                                 outputList.add(recipe.mOutputs[i]);
                             }
                         }
-                        mOutputItems = outputList.toArray(new ItemStack[outputList.size()]);
+                        mOutputItems = outputList.toArray(new ItemStack[0]);
 
                         for (MTEHatchMaintenance maintenance : mMaintenanceHatches) {
                             if (maintenance instanceof IConfigurationMaintenance customMaintenance
@@ -330,8 +330,8 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
             .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_05"))
             .beginStructureBlock(11, 5, 3, true)
-            .addDynamoHatch(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
             .toolTipFinisher();
         return tt;
     }

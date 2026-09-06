@@ -207,9 +207,8 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
             info.add(IGregTechDeviceInformation.encode("GT5U.infodata.hatch.output.fluid.locked_to.none"));
         } else {
             info.add(
-                IGregTechDeviceInformation.encode(
-                    "GT5U.infodata.hatch.output.fluid.locked_to",
-                    getLockedFluidsLocalized()));
+                IGregTechDeviceInformation
+                    .encode("GT5U.infodata.hatch.output.fluid.locked_to", getLockedFluidsLocalized()));
         }
 
         return info.toArray(new String[0]);

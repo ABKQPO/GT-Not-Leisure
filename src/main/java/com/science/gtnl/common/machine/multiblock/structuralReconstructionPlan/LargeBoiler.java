@@ -387,9 +387,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerBronze_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
+                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
                 .toolTipFinisher();
             return tt;
         }
@@ -468,9 +468,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerSteel_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
+                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
                 .toolTipFinisher();
             return tt;
         }
@@ -549,9 +549,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerTitanium_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
+                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
                 .toolTipFinisher();
             return tt;
         }
@@ -630,9 +630,9 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerTungstenSteel_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
+                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
                 .toolTipFinisher();
             return tt;
         }

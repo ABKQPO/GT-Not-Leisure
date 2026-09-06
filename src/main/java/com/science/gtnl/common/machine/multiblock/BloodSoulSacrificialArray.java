@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -420,7 +419,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
     }
 
     @Override
@@ -476,8 +475,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_05"))
             .beginStructureBlock(33, 14, 30, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

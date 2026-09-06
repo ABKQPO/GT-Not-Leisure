@@ -221,8 +221,8 @@ public class LargeSteamThermalCentrifuge extends SteamMultiMachineBase<LargeStea
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(7, 5, 7, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

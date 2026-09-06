@@ -947,13 +947,13 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(48, 5, 5, true)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

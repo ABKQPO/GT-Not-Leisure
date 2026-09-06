@@ -236,13 +236,13 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_02"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(5, 5, 5, true)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -187,14 +187,14 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 7, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeChemicalBath_Casing"))
             .toolTipFinisher();
         return tt;
     }

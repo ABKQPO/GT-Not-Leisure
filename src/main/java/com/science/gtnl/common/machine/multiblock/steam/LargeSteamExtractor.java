@@ -218,8 +218,8 @@ public class LargeSteamExtractor extends SteamMultiMachineBase<LargeSteamExtract
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(5, 5, 5, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

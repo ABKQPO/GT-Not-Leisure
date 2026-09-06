@@ -441,14 +441,14 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(19, 18, 17, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
             .toolTipFinisher();
         return tt;
     }

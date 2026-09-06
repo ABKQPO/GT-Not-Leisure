@@ -232,8 +232,8 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(9, 5, 9, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

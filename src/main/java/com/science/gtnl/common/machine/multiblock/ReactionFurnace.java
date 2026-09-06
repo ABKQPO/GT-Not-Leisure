@@ -83,12 +83,12 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ReactionFurnace_01"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(31, 21, 29, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
             .toolTipFinisher();
         return tt;
     }

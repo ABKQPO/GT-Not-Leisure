@@ -200,7 +200,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
             }
         }
         if (outputs.isEmpty()) return CheckRecipeResultRegistry.NO_RECIPE;
-        mOutputItems = outputs.toArray(new ItemStack[outputs.size()]);
+        mOutputItems = outputs.toArray(new ItemStack[0]);
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 

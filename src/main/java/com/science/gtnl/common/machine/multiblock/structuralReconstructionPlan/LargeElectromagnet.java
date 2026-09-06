@@ -164,12 +164,12 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 4, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
             .toolTipFinisher();
         return tt;
     }

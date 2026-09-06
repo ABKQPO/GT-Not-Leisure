@@ -164,13 +164,13 @@ public class MegaCanner extends WirelessEnergyMultiMachineBase<MegaCanner> {
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(9, 18, 15, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaCanner_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

@@ -148,7 +148,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
     @Override
     public ITexture[] getTexturesActive(ITexture aBaseTexture) {
-        return GTMod.gregtechproxy.mRenderIndicatorsOnHatch
+        return GTMod.proxy.mRenderIndicatorsOnHatch
             ? new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
                 TextureFactory.of(Textures.BlockIcons.FLUID_STEAM_IN_SIGN) }
             : new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN) };
@@ -156,7 +156,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
-        return GTMod.gregtechproxy.mRenderIndicatorsOnHatch
+        return GTMod.proxy.mRenderIndicatorsOnHatch
             ? new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN),
                 TextureFactory.of(Textures.BlockIcons.FLUID_STEAM_IN_SIGN) }
             : new ITexture[] { aBaseTexture, TextureFactory.of(Textures.BlockIcons.OVERLAY_PIPE_IN) };

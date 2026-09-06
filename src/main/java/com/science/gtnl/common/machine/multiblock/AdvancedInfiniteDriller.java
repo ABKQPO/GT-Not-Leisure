@@ -321,7 +321,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                 }
             }
         }
-        mOutputFluids = outputFluids.toArray(new FluidStack[outputFluids.size()]);
+        mOutputFluids = outputFluids.toArray(new FluidStack[0]);
         this.mMaxProgresstime = (int) ((((double) 5750000 / excessFuel) - 475) * mConfigSpeedBoost);
         this.lEUt = -needEu;
         return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -414,13 +414,13 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_10"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_11"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_12"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(25, 41, 25, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
             .toolTipFinisher();
         return tt;
     }

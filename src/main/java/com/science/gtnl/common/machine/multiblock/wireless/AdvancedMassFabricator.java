@@ -164,14 +164,14 @@ public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<Advan
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(13, 13, 21, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedMassFabricator_Casing"))
             .toolTipFinisher();
         return tt;
     }

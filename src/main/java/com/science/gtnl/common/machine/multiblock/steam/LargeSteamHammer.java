@@ -221,8 +221,8 @@ public class LargeSteamHammer extends SteamMultiMachineBase<LargeSteamHammer> im
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamHammer_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(7, 13, 7, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamHammer_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamHammer_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamHammer_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamHammer_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

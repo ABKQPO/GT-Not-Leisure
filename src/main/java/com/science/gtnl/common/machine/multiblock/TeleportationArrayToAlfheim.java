@@ -505,14 +505,14 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
             .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_03"))
             .addPerfectOCInfo()
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(23, 18, 23, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("FluidManaInputHatch"),
                 StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"),

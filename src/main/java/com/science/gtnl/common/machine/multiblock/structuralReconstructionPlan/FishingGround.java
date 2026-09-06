@@ -185,12 +185,12 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
             .addPerfectOCInfo()
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(13, 4, 13, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
             .toolTipFinisher();
         return tt;
     }

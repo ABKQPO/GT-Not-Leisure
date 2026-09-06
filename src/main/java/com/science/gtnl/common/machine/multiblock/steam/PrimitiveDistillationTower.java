@@ -74,10 +74,10 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
             .addInfo(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_01"))
             .beginStructureBlock(3, 7, 3, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_02"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_02"), 1)
             .toolTipFinisher();
         return tt;
     }

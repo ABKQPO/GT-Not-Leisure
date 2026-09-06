@@ -187,7 +187,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
             .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(37, 8, 10, false)
             .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_00"))
             .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_01"))
@@ -195,11 +195,11 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
             .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_03"))
             .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_04"))
             .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_05"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("tt.keyword.Structure.DataAccessHatch"),
                 StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"),

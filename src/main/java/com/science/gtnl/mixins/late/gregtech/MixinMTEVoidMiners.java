@@ -105,7 +105,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
 
         if (TIER_MULTIPLIER == 3) tt.addPerfectOCInfo();
 
-        tt.addTecTechHatchInfo()
+        tt.addSupportAny()
             .beginStructureBlock(structureBlock[0], structureBlock[1], structureBlock[2], false);
 
         switch (TIER_MULTIPLIER) {
@@ -127,11 +127,12 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
         }
 
         tt.addEnergyHatch(
+            "0+",
             StatCollector.translateToLocalFormatted("Tooltip_VoidMiner_Casing_00", GTValues.VN[this.getMinTier()]))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_02"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_03"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_02"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_03"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
             .toolTipFinisher();
         return tt;
     }

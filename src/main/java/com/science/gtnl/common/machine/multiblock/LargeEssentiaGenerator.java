@@ -606,9 +606,9 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_06"))
             .beginStructureBlock(9, 3, 9, true)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
-            .addDynamoHatch(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
             .addOtherStructurePart(
                 StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_EssentiaInputHatch"),
                 StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"),

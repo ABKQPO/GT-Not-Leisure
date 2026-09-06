@@ -235,8 +235,8 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(7, 8, 11, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

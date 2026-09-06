@@ -223,9 +223,13 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                .addDynamoHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                .addMaintenanceHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -284,9 +288,11 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
+                .addMaintenanceHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -345,9 +351,11 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
+                .addMaintenanceHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
                 .toolTipFinisher();
             return tt;
         }

@@ -160,15 +160,15 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .addPerfectOCInfo()
             .beginStructureBlock(5, 5, 7, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
             .toolTipFinisher();
         return tt;
     }

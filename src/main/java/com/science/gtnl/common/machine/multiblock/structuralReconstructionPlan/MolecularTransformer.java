@@ -74,12 +74,12 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
         tt.addMachineType(StatCollector.translateToLocal("MolecularTransformerRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(9, 11, 9, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
             .toolTipFinisher();
         return tt;
     }

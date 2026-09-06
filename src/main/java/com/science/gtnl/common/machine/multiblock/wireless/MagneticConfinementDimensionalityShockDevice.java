@@ -219,21 +219,26 @@ public class MagneticConfinementDimensionalityShockDevice
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(23, 23, 32, true)
             .addInputBus(
+                "0+",
                 StatCollector.translateToLocal("Tooltip_MagneticConfinementDimensionalityShockDevice_Casing"),
                 1)
             .addOutputBus(
+                "0+",
                 StatCollector.translateToLocal("Tooltip_MagneticConfinementDimensionalityShockDevice_Casing"),
                 1)
             .addInputHatch(
+                "0+",
                 StatCollector.translateToLocal("Tooltip_MagneticConfinementDimensionalityShockDevice_Casing"),
                 1)
             .addOutputHatch(
+                "0+",
                 StatCollector.translateToLocal("Tooltip_MagneticConfinementDimensionalityShockDevice_Casing"),
                 1)
             .addEnergyHatch(
+                "0+",
                 StatCollector.translateToLocal("Tooltip_MagneticConfinementDimensionalityShockDevice_Casing"),
                 1)
             .toolTipFinisher();

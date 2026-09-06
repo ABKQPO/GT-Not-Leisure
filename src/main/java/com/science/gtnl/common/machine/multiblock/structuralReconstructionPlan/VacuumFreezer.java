@@ -200,12 +200,12 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
             .addInfo(StatCollector.translateToLocal("Tooltip_VacuumFreezer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_VacuumFreezer_02"))
             .beginStructureBlock(11, 7, 6, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumFreezer_Casing"))
             .toolTipFinisher();
         return tt;
     }

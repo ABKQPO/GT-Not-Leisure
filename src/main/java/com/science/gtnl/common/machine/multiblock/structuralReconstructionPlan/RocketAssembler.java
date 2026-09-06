@@ -243,13 +243,13 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
             .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_01"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(17, 24, 16, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
             .toolTipFinisher();
         return tt;
     }

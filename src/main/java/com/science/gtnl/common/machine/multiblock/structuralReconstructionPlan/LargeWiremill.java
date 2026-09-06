@@ -152,12 +152,12 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -149,15 +149,15 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .addPerfectOCInfo()
             .beginStructureBlock(5, 5, 8, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
             .toolTipFinisher();
         return tt;
     }

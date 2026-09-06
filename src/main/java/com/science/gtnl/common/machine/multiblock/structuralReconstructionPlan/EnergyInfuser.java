@@ -392,12 +392,12 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
             .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_05"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
             .toolTipFinisher();
         return tt;
     }

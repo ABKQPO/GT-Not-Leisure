@@ -280,14 +280,14 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SwarmCore_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SwarmCore_02"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(41, 54, 41, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
             .toolTipFinisher();
         return tt;
     }

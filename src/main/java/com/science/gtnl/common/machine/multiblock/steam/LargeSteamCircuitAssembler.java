@@ -199,9 +199,9 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_03"))
             .beginStructureBlock(3, 4, 10, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

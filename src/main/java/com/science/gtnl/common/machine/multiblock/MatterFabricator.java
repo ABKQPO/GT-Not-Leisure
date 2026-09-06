@@ -202,7 +202,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
                 outputItems.add(new ItemStack(outputItem.getItem(), stackSize, outputItem.getItemDamage()));
                 remaining -= stackSize;
             }
-            mOutputItems = outputItems.toArray(new ItemStack[outputItems.size()]);
+            mOutputItems = outputItems.toArray(new ItemStack[0]);
         } else {
             List<FluidStack> outputFluids = new ArrayList<>();
             long fluidAmount = totalOutput * 100000L;
@@ -211,7 +211,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
                 outputFluids.add(new FluidStack(Materials.UUAmplifier.getFluid(1), amount));
                 fluidAmount -= amount;
             }
-            mOutputFluids = outputFluids.toArray(new FluidStack[outputFluids.size()]);
+            mOutputFluids = outputFluids.toArray(new FluidStack[0]);
         }
 
         this.lEUt = -totalOutput * 4L;
@@ -251,12 +251,12 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
         tt.addMachineType(StatCollector.translateToLocal("MatterFabricatorRecipeType"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(15, 5, 6, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
             .toolTipFinisher();
         return tt;
     }

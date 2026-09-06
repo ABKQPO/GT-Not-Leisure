@@ -391,12 +391,12 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_07"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_08"))
             .beginStructureBlock(5, 5, 5, true)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;
@@ -457,7 +457,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.progress",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20) + EnumChatFormatting.RESET),
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
+                    + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.energy",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(storedEnergy) + EnumChatFormatting.RESET,
@@ -468,24 +469,27 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.max_energy_input",
                 EnumChatFormatting.YELLOW
-                    + NumberFormatUtil
-                        .formatNumber(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
+                    + NumberFormatUtil.formatNumber(
+                        ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
                     + EnumChatFormatting.RESET,
-                NumberFormatUtil.formatNumber(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList())),
-                EnumChatFormatting.YELLOW + GTValues.VN[GTUtility
-                    .getTier(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))]
+                NumberFormatUtil
+                    .formatNumber(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList())),
+                EnumChatFormatting.YELLOW
+                    + GTValues.VN[GTUtility
+                        .getTier(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))]
                     + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.problems_efficiency",
-                EnumChatFormatting.RED + (getIdealStatus() - getRepairStatus()) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + mEfficiency / 100.0F + EnumChatFormatting.RESET),
+                "" + EnumChatFormatting.RED + (getIdealStatus() - getRepairStatus()) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW.toString() + mEfficiency / 100.0F + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.processing_array.tier_discount",
-                EnumChatFormatting.GREEN + mTier + EnumChatFormatting.RESET,
-                EnumChatFormatting.GREEN + getEUtDiscount() + EnumChatFormatting.RESET),
+                "" + EnumChatFormatting.GREEN + mTier + EnumChatFormatting.RESET,
+                "" + EnumChatFormatting.GREEN + getEUtDiscount() + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.processing_array.parallel",
-                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(getTrueParallel()) + EnumChatFormatting.RESET) };
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(getTrueParallel())
+                    + EnumChatFormatting.RESET) };
     }
 
     @Override

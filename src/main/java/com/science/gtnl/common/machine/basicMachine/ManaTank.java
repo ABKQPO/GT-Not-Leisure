@@ -180,10 +180,12 @@ public class ManaTank extends MTEDigitalTankBase {
 
         if (mFluid == null) {
             return new String[] { "gtnl.infodata.mana_tank.name", "gtnl.infodata.stored_fluid",
-                "gtnl.infodata.no_fluid", IGregTechDeviceInformation.encode(
+                "gtnl.infodata.no_fluid",
+                IGregTechDeviceInformation.encode(
                     "gtnl.infodata.fluid_amount",
                     EnumChatFormatting.GREEN + "0" + EnumChatFormatting.RESET,
-                    EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getCapacity()) + EnumChatFormatting.RESET) };
+                    EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getCapacity())
+                        + EnumChatFormatting.RESET) };
         }
         return new String[] { "gtnl.infodata.mana_tank.name", "gtnl.infodata.stored_fluid",
             IGregTechDeviceInformation.encode("gtnl.infodata.fluid_name", mFluid.getLocalizedName()),

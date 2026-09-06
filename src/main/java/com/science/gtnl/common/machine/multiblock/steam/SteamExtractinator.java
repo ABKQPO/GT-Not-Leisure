@@ -186,9 +186,9 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_02"))
             .beginStructureBlock(15, 10, 17, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_00"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_01"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_02"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_00"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_01"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_02"))
             .toolTipFinisher();
         return tt;
     }

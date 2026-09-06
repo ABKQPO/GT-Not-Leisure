@@ -235,13 +235,13 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
             .addInfo(StatCollector.translateToLocal("Tooltip_WoodDistillation_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(23, 20, 15, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
             .toolTipFinisher();
         return tt;
     }

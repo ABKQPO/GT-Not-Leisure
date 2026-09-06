@@ -458,11 +458,11 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
             .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_06"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(28, 59, 21, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
             .toolTipFinisher();
         return tt;
     }

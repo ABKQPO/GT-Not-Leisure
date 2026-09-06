@@ -163,10 +163,10 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
             .addInfo(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_10"))
             .beginStructureBlock(9, 5, 7, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ETGWEyeOfHarmonyModule_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -328,15 +328,15 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     }
 
     private long getHydrogenStored() {
-        return validFluidMap.get(Materials.Hydrogen.mGas);
+        return validFluidMap.getLong(Materials.Hydrogen.mGas);
     }
 
     private long getHeliumStored() {
-        return validFluidMap.get(Materials.Helium.mGas);
+        return validFluidMap.getLong(Materials.Helium.mGas);
     }
 
     private long getStellarPlasmaStored() {
-        return validFluidMap.get(Materials.RawStarMatter.mFluid);
+        return validFluidMap.getLong(Materials.RawStarMatter.mFluid);
     }
 
     private void outputFailedChance() {

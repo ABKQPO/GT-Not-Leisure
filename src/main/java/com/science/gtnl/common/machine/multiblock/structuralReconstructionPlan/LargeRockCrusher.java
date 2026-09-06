@@ -175,13 +175,13 @@ public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> impl
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
             .toolTipFinisher();
         return tt;
     }

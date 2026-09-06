@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,7 +206,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 1);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 1);
     }
 
     @Override
@@ -251,15 +250,15 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
             .addInfo(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 9, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
-            .addMufflerHatch(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_01"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
+            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_01"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("FluidIceInputHatch"),
                 StatCollector.translateToLocal("Tooltip_ColdIceFreezer_Casing_00"),

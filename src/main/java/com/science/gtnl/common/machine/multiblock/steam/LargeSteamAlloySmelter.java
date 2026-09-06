@@ -200,8 +200,8 @@ public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAllo
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(3, 4, 3, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

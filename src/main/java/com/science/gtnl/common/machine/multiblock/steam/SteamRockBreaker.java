@@ -233,8 +233,8 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_04"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(11, 6, 11, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

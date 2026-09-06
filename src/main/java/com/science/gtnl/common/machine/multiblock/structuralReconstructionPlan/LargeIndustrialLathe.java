@@ -151,12 +151,12 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(7, 4, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
             .toolTipFinisher();
         return tt;
     }

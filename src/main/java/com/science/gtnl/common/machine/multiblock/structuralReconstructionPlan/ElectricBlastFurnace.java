@@ -257,13 +257,13 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
             .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_05"))
             .beginStructureBlock(5, 6, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addMufflerHatch(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_01"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
+            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_01"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;
@@ -284,7 +284,8 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.progress",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20) + EnumChatFormatting.RESET),
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
+                    + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.energy",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(storedEnergy) + EnumChatFormatting.RESET,
@@ -294,20 +295,21 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
                 EnumChatFormatting.RED + NumberFormatUtil.formatNumber(-lEUt) + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.max_energy_input",
-                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getMaxInputVoltage()) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getMaxInputVoltage())
+                    + EnumChatFormatting.RESET,
                 "2",
                 EnumChatFormatting.YELLOW + GTValues.VN[GTUtility.getTier(getMaxInputVoltage())]
                     + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.problems_efficiency",
-                EnumChatFormatting.RED + (getIdealStatus() - getRepairStatus()) + EnumChatFormatting.RESET,
-                EnumChatFormatting.YELLOW + mEfficiency / 100.0F + EnumChatFormatting.RESET),
+                "" + EnumChatFormatting.RED + (getIdealStatus() - getRepairStatus()) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW.toString() + mEfficiency / 100.0F + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.heat",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mHeatingCapacity) + EnumChatFormatting.RESET),
             IGregTechDeviceInformation.encode(
                 "gtnl.infodata.pollution",
-                EnumChatFormatting.GREEN + getAveragePollutionPercentage() + EnumChatFormatting.RESET) };
+                "" + EnumChatFormatting.GREEN + getAveragePollutionPercentage() + EnumChatFormatting.RESET) };
     }
 
     @SideOnly(Side.CLIENT)

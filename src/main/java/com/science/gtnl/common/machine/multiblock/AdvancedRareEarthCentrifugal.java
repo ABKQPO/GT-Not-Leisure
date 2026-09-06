@@ -159,14 +159,14 @@ public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRa
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(23, 13, 24, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedRareEarthCentrifugal_Casing"))
             .toolTipFinisher();
         return tt;
     }

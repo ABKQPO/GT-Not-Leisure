@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.List;
@@ -91,7 +90,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
                             HatchElement.OutputBus,
                             HatchElement.OutputHatch,
                             HatchElement.Maintenance)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings1, 10))
+                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
                         .hint(1)
                         .buildAndChain(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
@@ -108,7 +107,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
     }
 
     @Override

@@ -310,10 +310,10 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
             .beginStructureBlock(1, 5, 2, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

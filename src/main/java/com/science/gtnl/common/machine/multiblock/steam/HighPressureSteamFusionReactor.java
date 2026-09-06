@@ -164,8 +164,8 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_03"))
             .beginStructureBlock(47, 7, 47, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

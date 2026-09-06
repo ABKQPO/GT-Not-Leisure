@@ -172,12 +172,12 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

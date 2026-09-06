@@ -152,13 +152,13 @@ public class LargeCutter extends GTMMultiMachineBase<LargeCutter> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeCutter_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(7, 4, 4, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
             .toolTipFinisher();
         return tt;
     }

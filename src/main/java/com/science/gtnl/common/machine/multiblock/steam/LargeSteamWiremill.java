@@ -232,8 +232,8 @@ public class LargeSteamWiremill extends SteamMultiMachineBase<LargeSteamWiremill
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamWiremill_02"))
             .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
             .beginStructureBlock(6, 5, 5, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeSteamWiremill_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeSteamWiremill_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamWiremill_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamWiremill_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

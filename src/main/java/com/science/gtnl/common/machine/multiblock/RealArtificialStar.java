@@ -587,24 +587,28 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             + EnumChatFormatting.GREEN
             + (rewardContinuous + 100)
             + "%";
-        ret[origin.length + 1] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_02")
+        ret[origin.length + 1] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_02")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.GREEN
             + outputMultiplier;
-        ret[origin.length + 2] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_03")
+        ret[origin.length + 2] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_03")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierDimensionField;
         ret[origin.length + 3] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode(
             "Info_RealArtificialStar_04") + EnumChatFormatting.RESET + ": " + EnumChatFormatting.YELLOW + tierTimeField;
-        ret[origin.length + 4] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_05")
+        ret[origin.length + 4] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_05")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierStabilisationField;
-        ret[origin.length + 5] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_06")
+        ret[origin.length + 5] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_06")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.AQUA

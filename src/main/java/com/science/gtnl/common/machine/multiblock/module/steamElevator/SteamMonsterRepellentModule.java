@@ -34,7 +34,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
     public void stopMachine(@NotNull ShutDownReason reason) {
         final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
         if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+            GTMod.proxy.spawnEventHandler.removeRepellent(mte);
         }
         super.stopMachine(reason);
     }
@@ -43,7 +43,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
     public void onRemoval() {
         final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
         if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+            GTMod.proxy.spawnEventHandler.removeRepellent(mte);
         }
         super.onRemoval();
     }
@@ -52,7 +52,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
     public void onUnload() {
         final IGregTechTileEntity mte = this.getBaseMetaTileEntity();
         if (mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.removeRepellent(mte);
+            GTMod.proxy.spawnEventHandler.removeRepellent(mte);
         }
         super.onUnload();
     }
@@ -82,7 +82,7 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
         this.mMaxProgresstime = 1000;
         IGregTechTileEntity mte = getBaseMetaTileEntity();
         if (mte.isAllowedToWork() && mte.isServerSide()) {
-            GTMod.gregtechproxy.spawnEventHandler.putRepellent(mte, mRange);
+            GTMod.proxy.spawnEventHandler.putRepellent(mte, mRange);
         }
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }

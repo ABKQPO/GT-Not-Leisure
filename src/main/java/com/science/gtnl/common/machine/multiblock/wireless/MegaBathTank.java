@@ -201,14 +201,14 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(31, 13, 31, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
             .toolTipFinisher();
         return tt;
     }

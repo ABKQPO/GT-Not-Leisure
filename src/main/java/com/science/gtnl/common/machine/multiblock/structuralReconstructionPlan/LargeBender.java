@@ -142,12 +142,12 @@ public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeBender_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 7, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
             .toolTipFinisher();
         return tt;
     }

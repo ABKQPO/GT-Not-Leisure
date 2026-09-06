@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static net.minecraft.util.StatCollector.translateToLocal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,9 +53,9 @@ public class WirelessVacuumConveyorOutputHatch extends MTEHatchVacuumConveyorOut
 
     @Override
     public String[] getDescription() {
-        return new String[] { translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_00"),
-            translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_01"),
-            translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_02") };
+        return new String[] { StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_00"),
+            StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_01"),
+            StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_02") };
     }
 
     @Override

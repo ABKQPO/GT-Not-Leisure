@@ -178,12 +178,12 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
             .addInfo(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_01"))
             .beginStructureBlock(643, 218, 643, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
             .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
             .toolTipFinisher();
         return tt;

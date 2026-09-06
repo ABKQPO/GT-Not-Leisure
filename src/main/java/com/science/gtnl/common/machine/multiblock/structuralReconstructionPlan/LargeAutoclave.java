@@ -138,14 +138,14 @@ public class LargeAutoclave extends GTMMultiMachineBase<LargeAutoclave> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(3, 3, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAutoclave_Casing"))
             .toolTipFinisher();
         return tt;
     }

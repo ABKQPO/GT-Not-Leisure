@@ -144,14 +144,14 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -159,12 +159,12 @@ public class LargeAlloySmelter extends GTMMultiMachineBase<LargeAlloySmelter> im
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAlloySmelter_Casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

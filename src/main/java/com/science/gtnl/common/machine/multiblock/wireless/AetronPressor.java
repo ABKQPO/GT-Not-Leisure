@@ -167,11 +167,11 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(29, 15, 15, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AetronPressor_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

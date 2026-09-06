@@ -398,18 +398,18 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
             .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_02"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, false)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("Tooltip_Incubator_RadioHatch"),
                 StatCollector.translateToLocal("Tooltip_Incubator_Casing"),
                 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

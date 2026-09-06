@@ -384,9 +384,9 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
             .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_04"))
             .beginStructureBlock(3, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
             .toolTipFinisher();
         return tt;
     }

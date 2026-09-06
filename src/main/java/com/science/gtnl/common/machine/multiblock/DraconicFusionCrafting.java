@@ -237,12 +237,12 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
             .addInfo(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(29, 36, 29, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_DraconicFusionCrafting_Casing"))
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

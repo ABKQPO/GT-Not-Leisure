@@ -331,11 +331,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                 .addInfo(
                     StatCollector.translateToLocalFormatted("Tooltip_LargeNaquadahReactor_03", getExtraGas().amount))
                 .beginStructureBlock(25, 25, 9, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -468,11 +468,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                 .addInfo(
                     StatCollector.translateToLocalFormatted("Tooltip_HyperNaquadahReactor_03", getExtraGas().amount))
                 .beginStructureBlock(27, 21, 21, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addEnergyHatch(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -761,11 +761,13 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
                         .translateToLocalFormatted("Tooltip_AdvancedHyperNaquadahReactor_03", getExtraGas().amount))
                 .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_04"))
                 .beginStructureBlock(35, 19, 36, true)
-                .addInputHatch(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addOutputHatch(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addEnergyHatch(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addDynamoHatch(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addMaintenanceHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
                 .toolTipFinisher();
             return tt;
         }

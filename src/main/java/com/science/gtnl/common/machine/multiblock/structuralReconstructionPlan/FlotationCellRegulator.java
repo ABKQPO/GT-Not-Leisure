@@ -173,12 +173,12 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
             .addPerfectOCInfo()
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(9, 5, 7, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

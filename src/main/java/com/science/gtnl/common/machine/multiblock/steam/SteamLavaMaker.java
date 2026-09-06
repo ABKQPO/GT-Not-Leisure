@@ -174,8 +174,8 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_02"))
             .beginStructureBlock(3, 5, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

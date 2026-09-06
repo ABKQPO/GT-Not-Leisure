@@ -17,7 +17,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static tectech.thing.block.TileEntityEyeOfHarmony.OrbitingObject;
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
@@ -403,7 +402,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             if (status.mMachine) {
                 if (status.mMaxProgresstime > 0) {
                     text = text + EnumChatFormatting.GREEN
-                        + IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units.status.online");
+                        + IGregTechDeviceInformation
+                            .encode("GT5U.infodata.purification_plant.linked_units.status.online");
                 } else {
                     text = text + EnumChatFormatting.YELLOW
                         + StatCollector
@@ -411,7 +411,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 }
             } else {
                 text = text + EnumChatFormatting.RED
-                    + IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units.status.incomplete");
+                    + IGregTechDeviceInformation
+                        .encode("GT5U.infodata.purification_plant.linked_units.status.incomplete");
             }
             ret.add(text);
         }
@@ -429,10 +430,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_05"))
             .beginStructureBlock(53, 13, 62, false)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -1316,7 +1317,15 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             float scale = generateRandomFloat(0.3f, 0.6f);
             float rotationSpeed = generateRandomFloat(0.25f, 1f);
             float orbitSpeed = generateRandomFloat(0.5f, 1.5f);
-            orbitingObjects.add(new OrbitingObject(block, distance, rotationSpeed, orbitSpeed, xAngle, zAngle, scale));
+            orbitingObjects.add(
+                new TileEntityEyeOfHarmony.OrbitingObject(
+                    block,
+                    distance,
+                    rotationSpeed,
+                    orbitSpeed,
+                    xAngle,
+                    zAngle,
+                    scale));
         }
     }
 }

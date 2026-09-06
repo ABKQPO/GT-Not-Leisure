@@ -151,12 +151,12 @@ public class LargeForming extends GTMMultiMachineBase<LargeForming> implements I
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeForming_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(7, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeForming_Casing"))
             .toolTipFinisher();
         return tt;
     }

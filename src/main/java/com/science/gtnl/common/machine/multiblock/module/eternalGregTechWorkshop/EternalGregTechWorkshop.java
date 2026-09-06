@@ -327,10 +327,10 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("EternalGregTechWorkshopRecipeType"))
             .beginStructureBlock(75, 96, 75, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
             .toolTipFinisher();
         return tt;

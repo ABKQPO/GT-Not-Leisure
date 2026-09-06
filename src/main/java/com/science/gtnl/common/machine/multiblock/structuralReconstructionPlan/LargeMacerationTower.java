@@ -136,12 +136,12 @@ public class LargeMacerationTower extends GTMMultiMachineBase<LargeMacerationTow
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMacerationTower_Casing"))
             .toolTipFinisher();
         return tt;
     }

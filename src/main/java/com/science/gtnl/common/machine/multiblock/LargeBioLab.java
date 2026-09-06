@@ -147,14 +147,14 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(7, 5, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
             .toolTipFinisher();
         return tt;
     }

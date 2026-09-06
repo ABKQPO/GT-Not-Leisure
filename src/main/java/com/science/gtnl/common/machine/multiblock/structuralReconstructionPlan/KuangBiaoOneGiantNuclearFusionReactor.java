@@ -261,12 +261,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             .addPerfectOCInfo()
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(39, 17, 39, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -855,12 +859,19 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
                 .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-                .addTecTechHatchInfo()
+                .addSupportAny()
                 .beginStructureBlock(39, 17, 39, true)
-                .addInputBus(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-                .addOutputBus(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-                .addEnergyHatch(StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                .addInputBus(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                .addOutputBus(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                .addEnergyHatch(
+                    "0+",
+                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
                 .addMaintenanceHatch(
+                    "0+",
                     StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
                 .toolTipFinisher();
             return tt;

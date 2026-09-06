@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -32,6 +30,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
@@ -64,17 +63,17 @@ public class CrystalBuilder extends WirelessEnergyMultiMachineBase<CrystalBuilde
         return StructureDefinition.<CrystalBuilder>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('B', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
             .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 7))
+            .addElement('E', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 7))
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(CrystalBuilder::setMCoilLevel, CrystalBuilder::getMCoilLevel))))
             .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 2))
-            .addElement('H', StructureUtility.ofBlock(blockCasingsMisc, 5))
+            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
             .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .addElement(
                 'J',
@@ -95,7 +94,7 @@ public class CrystalBuilder extends WirelessEnergyMultiMachineBase<CrystalBuilde
                             StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
             .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('M', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
             .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
             .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 14))
             .addElement('P', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
@@ -200,13 +199,13 @@ public class CrystalBuilder extends WirelessEnergyMultiMachineBase<CrystalBuilde
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(23, 34, 20, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_CrystalBuilder_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

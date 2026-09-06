@@ -274,10 +274,10 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
             .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_03"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(15, 9, 15, true)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("gt.blockmachines.hatch.dataoutass.tier.07.name"),
                 StatCollector.translateToLocal("tt.keyword.Structure.AnyComputerCasing"),

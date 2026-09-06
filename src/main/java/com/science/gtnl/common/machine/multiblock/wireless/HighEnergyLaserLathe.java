@@ -183,12 +183,12 @@ public class HighEnergyLaserLathe extends WirelessEnergyMultiMachineBase<HighEne
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(33, 16, 17, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HighEnergyLaserLathe_Casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

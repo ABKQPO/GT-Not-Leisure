@@ -232,10 +232,10 @@ public class SuperSpaceElevator extends TTMultiblockBase
             .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_06"))
             .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_07"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(65, 53, 65, true)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
-            .addDynamoHatch(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
             .toolTipFinisher();

@@ -144,14 +144,14 @@ public class LargeMixer extends GTMMultiMachineBase<LargeMixer> implements ISurv
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeMixer_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 6, 5, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMixer_Casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -162,12 +162,12 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
             .addInfo(StatCollector.translateToLocal("Tooltip_LargePacker_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(3, 3, 6, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
             .toolTipFinisher();
         return tt;
     }

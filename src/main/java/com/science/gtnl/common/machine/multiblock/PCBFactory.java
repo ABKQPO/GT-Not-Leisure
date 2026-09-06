@@ -364,14 +364,14 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
             .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginVariableStructureBlock(13, 47, 16, 30, 14, 46, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
             .toolTipFinisher();
         return tt;
     }

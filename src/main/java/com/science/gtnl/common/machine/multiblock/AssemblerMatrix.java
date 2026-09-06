@@ -811,7 +811,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_06"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(9, 9, 9, false)
             .toolTipFinisher();
         return tt;
@@ -1125,8 +1125,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
                     recipesDone += usedParallel;
 
-                    patternState
-                        .setCachedOutputItems(preparedOutputs.toArray(new IAEItemStack[preparedOutputs.size()]));
+                    patternState.setCachedOutputItems(preparedOutputs.toArray(new IAEItemStack[0]));
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
                     this.mMaxProgresstime = Math.max(1, 40 >> mCountSpeedCasing);

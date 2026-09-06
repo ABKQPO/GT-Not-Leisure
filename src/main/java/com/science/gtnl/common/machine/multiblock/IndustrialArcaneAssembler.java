@@ -206,11 +206,11 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
             .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_00"))
             .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_02"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(19, 19, 19, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
             .toolTipFinisher();
         return tt;
     }

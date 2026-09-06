@@ -166,14 +166,14 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 3, true)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
             .toolTipFinisher();
         return tt;
     }

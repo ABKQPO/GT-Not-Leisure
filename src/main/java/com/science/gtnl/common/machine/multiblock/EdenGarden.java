@@ -463,13 +463,13 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
             .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_04"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_05"))
             .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_06"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginStructureBlock(6, 43, 10, false)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addInputHatch(StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
             .toolTipFinisher();
         return tt;
     }

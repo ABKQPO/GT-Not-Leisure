@@ -146,12 +146,12 @@ public class LargeExtruder extends GTMMultiMachineBase<LargeExtruder> implements
             .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtruder_01"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addMultiAmpHatchInfo()
+            .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 6, true)
-            .addInputBus(StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
-            .addOutputBus(StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtruder_Casing"))
             .toolTipFinisher();
         return tt;
     }

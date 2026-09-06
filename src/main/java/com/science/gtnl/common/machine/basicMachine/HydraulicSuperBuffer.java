@@ -133,7 +133,7 @@ public class HydraulicSuperBuffer extends MTEBuffer {
 
     @Override
     public ModularPanel buildUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new MTEBufferBaseGui<HydraulicSuperBuffer>(this) {
+        return new MTEBufferBaseGui<>(this) {
 
             @Override
             protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {

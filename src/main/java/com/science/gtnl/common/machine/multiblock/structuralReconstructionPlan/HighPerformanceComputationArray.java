@@ -431,7 +431,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_02"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_03"))
             .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_04"))
-            .addTecTechHatchInfo()
+            .addSupportAny()
             .beginVariableStructureBlock(2, 2, 4, 4, 5, 16, false)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_00"),
@@ -445,8 +445,14 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                 StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_03"),
                 StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_04"),
                 2)
-            .addEnergyHatch(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"), 1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                1)
             .toolTipFinisher();
         return tt;
     }
