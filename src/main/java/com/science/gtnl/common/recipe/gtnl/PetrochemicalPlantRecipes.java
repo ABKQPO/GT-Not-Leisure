@@ -1,5 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
+import bartworks.API.enums.BioCultureEnum;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -121,7 +122,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                Mods.NewHorizonsCoreMod.isModLoaded() ? getBacPetriDish() : new ItemStack(Items.paper, 0),
+                BioCultureEnum.getPetriDish(BioCultureEnum.XenoxeneXenoxsis.bioCulture),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.AntimonyTrioxide, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Osmium, 16))
             .fluidInputs(
@@ -224,11 +225,5 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
             .duration(200)
             .eut(1920)
             .addTo(PPR);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public ItemStack getBacPetriDish() {
-        // CultureSet field removed in NHCoreMod 2.9.5 - return empty slot as fallback
-        return new ItemStack(Items.paper, 0);
     }
 }
