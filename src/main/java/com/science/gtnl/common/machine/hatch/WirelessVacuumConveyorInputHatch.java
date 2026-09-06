@@ -4,6 +4,7 @@ import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +15,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
@@ -28,7 +31,7 @@ import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponen
 
 public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInput {
 
-    private Map<CircuitComponent, Long> persistedContents = Map.of();
+    public Map<CircuitComponent, List<MutablePair<String, Long>>> persistedContents = Map.of();
     private boolean persistedContentsInitialized;
 
     public WirelessVacuumConveyorInputHatch(int aID, String aName, String aNameRegional, int aTier) {
@@ -68,8 +71,8 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
     }
 
     @Override
-    public int tryConsume(ItemStack stack) {
-        int consumed = super.tryConsume(stack);
+    public int tryConsume(ItemStack stack, boolean withName) {
+        int consumed = super.tryConsume(stack, withName);
         if (consumed > 0 || clearEmptyContents()) {
             markDirty();
         }
@@ -103,7 +106,8 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
     }
 
     private boolean hasContentsChanged() {
-        Map<CircuitComponent, Long> currentContents = contents == null ? Map.of() : contents.getComponents();
+        Map<CircuitComponent, List<MutablePair<String, Long>>> currentContents = contents == null ? Map.of()
+            : contents.getComponents();
         if (!persistedContentsInitialized) {
             persistedContents = new HashMap<>(currentContents);
             persistedContentsInitialized = true;

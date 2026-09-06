@@ -488,8 +488,8 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
 
     public static class Inventory implements IDualInputInventory {
 
-        private final ItemStack[] itemInventory;
-        private final FluidStack[] fluidInventory;
+        public ItemStack[] itemInventory;
+        public FluidStack[] fluidInventory;
 
         public Inventory(ItemStack[] items, FluidStack[] fluid) {
             itemInventory = items;

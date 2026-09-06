@@ -2,10 +2,8 @@ package com.science.gtnl.common.render.tile;
 
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
 import java.util.WeakHashMap;

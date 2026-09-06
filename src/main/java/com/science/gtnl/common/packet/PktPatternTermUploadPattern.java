@@ -21,8 +21,6 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
 
-import java.lang.reflect.Method;
-
 public class PktPatternTermUploadPattern extends ServerboundPacket {
 
     @Override
