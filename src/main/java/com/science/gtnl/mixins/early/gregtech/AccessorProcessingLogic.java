@@ -1,5 +1,7 @@
 package com.science.gtnl.mixins.early.gregtech;
 
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,7 @@ import gregtech.api.interfaces.tileentity.IVoidable;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTRecipe;
+import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 
 @Mixin(value = ProcessingLogic.class, remap = false)
 public interface AccessorProcessingLogic {
@@ -64,6 +67,18 @@ public interface AccessorProcessingLogic {
 
     @Accessor("maxParallelSupplier")
     void setMaxParallelSupplier(Supplier<Integer> value);
+
+    @Accessor("euModSupplier")
+    Supplier<Double> getEuModSupplier();
+
+    @Accessor("euModSupplier")
+    void setEuModSupplier(Supplier<Double> value);
+
+    @Accessor("speedBoostSupplier")
+    Supplier<Double> getSpeedBoostSupplier();
+
+    @Accessor("speedBoostSupplier")
+    void setSpeedBoostSupplier(Supplier<Double> value);
 
     @Accessor("batchSize")
     int getBatchSize();
@@ -186,4 +201,16 @@ public interface AccessorProcessingLogic {
 
     @Accessor("lastRecipe")
     void setLastRecipe(GTRecipe value);
+
+    @Accessor("activeDualInv")
+    IDualInputInventoryWithPattern getActiveDualInv();
+
+    @Accessor("activeDualInv")
+    void setActiveDualInv(IDualInputInventoryWithPattern value);
+
+    @Accessor("dualInvWithPatternToRecipeCache")
+    WeakHashMap<IDualInputInventoryWithPattern, Set<GTRecipe>> getDualInvWithPatternToRecipeCache();
+
+    @Accessor("dualInvWithPatternToRecipeCache")
+    void setDualInvWithPatternToRecipeCache(WeakHashMap<IDualInputInventoryWithPattern, Set<GTRecipe>> value);
 }

@@ -33,7 +33,7 @@ public abstract class MixinRecipeGenFluids {
             .itemOutputs(material.getDust(1))
             .fluidInputs(material.getFluidStack(1 * GTRecipeBuilder.INGOTS))
             .duration(1 * GTRecipeBuilder.SECONDS + 12 * GTRecipeBuilder.TICKS)
-            .eut(material.vVoltageMultiplier)
+            .eut(material.voltageMultiplier)
             .addTo(RecipeMaps.fluidSolidifierRecipes);
 
         if (MainConfig.debug.enableDebugMode) ScienceNotLeisure.LOG

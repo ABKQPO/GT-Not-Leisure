@@ -5,12 +5,13 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner.SessionSegment;
 
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.diagnostics.CraftingDiagnosticSessionId;
 
 /**
  * Adapts one private AE diagnostics count segment to the planner's bulk-consumption contract without reflection.
  */
-@Mixin(targets = "appeng.me.cluster.implementations.CraftingCPUCluster$TaskProgress$SessionCraftCount", remap = false)
+@Mixin(value = CraftingCPUCluster.TaskProgress.SessionCraftCount.class, remap = false)
 public interface AccessorSessionCraftCount extends SessionSegment<CraftingDiagnosticSessionId> {
 
     /**

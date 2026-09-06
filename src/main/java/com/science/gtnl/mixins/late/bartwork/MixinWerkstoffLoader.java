@@ -12,7 +12,13 @@ import gregtech.api.enums.OrePrefixes;
 @Mixin(value = WerkstoffLoader.class, remap = false)
 public abstract class MixinWerkstoffLoader {
 
-    @Inject(method = "addItemsForGeneration()V", at = @At("TAIL"))
+    @Inject(
+        method = "addItemsForGeneration()V",
+        at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/HashMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+            ordinal = 40,
+            remap = false))
     private static void injectNaniteItems(CallbackInfo ci) {
         WerkstoffLoader.items.put(OrePrefixes.nanite, new BWMetaGeneratedItems(OrePrefixes.nanite));
     }

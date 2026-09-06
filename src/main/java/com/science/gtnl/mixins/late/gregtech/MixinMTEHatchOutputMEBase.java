@@ -20,7 +20,7 @@ public abstract class MixinMTEHatchOutputMEBase<T extends IAEStack<T>> implement
         boolean[] transferred = { false };
 
         cache.updateAll((stack, amount) -> {
-            long available = targetProvider.getAvailableSpace();
+            long available = targetProvider.getPhysicalSpace();
             if (available <= 0) {
                 return amount;
             }

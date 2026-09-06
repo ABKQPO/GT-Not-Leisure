@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(targets = "appeng.me.cluster.implementations.CraftingCPUCluster$TaskProgress", remap = false)
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+
+@Mixin(value = CraftingCPUCluster.TaskProgress.class, remap = false)
 public interface AccessorTaskProgress {
 
     @Accessor
