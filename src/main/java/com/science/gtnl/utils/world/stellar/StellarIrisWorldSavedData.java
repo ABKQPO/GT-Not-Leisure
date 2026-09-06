@@ -12,6 +12,7 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.DimensionManager;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 public class StellarIrisWorldSavedData extends WorldSavedData {
 
@@ -69,7 +70,7 @@ public class StellarIrisWorldSavedData extends WorldSavedData {
                 UUID leaderId = UUID.fromString(teamTag.getString(LEADER_TAG));
                 StellarIrisTeamState state = new StellarIrisTeamState();
                 state.deserializeNBT(teamTag.getCompoundTag(STATE_TAG));
-                teamStates.put(leaderId, state);
+                teamStates.put(TeamNetworkManager.getTeamId(leaderId), state);
             } catch (IllegalArgumentException exception) {
                 ScienceNotLeisure.LOG.warn("Skipping invalid Stellar Iris team data entry", exception);
             }

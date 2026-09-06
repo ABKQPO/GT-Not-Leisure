@@ -70,6 +70,7 @@ import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
@@ -90,7 +91,6 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gtnhintergalactic.config.IGConfig;
 import gtnhintergalactic.gui.IG_UITextures;
 import gtnhintergalactic.tile.TileEntitySpaceElevatorCable;
@@ -503,7 +503,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide()) {
             if (aTick == 1) {
-                SpaceProjectManager.checkOrCreateTeam(aBaseMetaTileEntity.getOwnerUuid());
+                TeamNetworkManager.getTeamId(aBaseMetaTileEntity.getOwnerUuid());
             }
             if (!aBaseMetaTileEntity.isAllowedToWork()) {
                 // if machine has stopped, stop chunkloading

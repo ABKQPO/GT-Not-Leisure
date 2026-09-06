@@ -10,15 +10,14 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.common.misc.WirelessNetworkManager;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class CommandEnergyNetwork extends CommandBase {
 
@@ -29,7 +28,7 @@ public class CommandEnergyNetwork extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/energy_network <add|set|join|display> [args...]";
+        return "gtnl.command.energy_network.usage";
     }
 
     @Override
@@ -64,16 +63,16 @@ public class CommandEnergyNetwork extends CommandBase {
                 }
 
                 if (args.length != 3) {
-                    throw new WrongUsageException("/energy_network add <username> <EU>");
+                    throw new WrongUsageException("gtnl.command.energy_network.add_usage");
                 }
 
                 String username = args[1];
                 String EU_String = args[2];
                 if (username == null) username = sender.getCommandSenderName();
-                UUID uuid = SpaceProjectManager.getPlayerUUIDFromName(username);
+                UUID uuid = TeamNetworkManager.getPlayerId(username);
 
                 if (uuid == null) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "User not found: " + username);
+                    sendMessage(sender, "gtnl.command.common.player_not_found", username);
                     return;
                 }
 
@@ -81,7 +80,7 @@ public class CommandEnergyNetwork extends CommandBase {
                 try {
                     euAmount = new BigInteger(EU_String);
                 } catch (NumberFormatException e) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "Invalid EU value format: " + EU_String);
+                    sendMessage(sender, "gtnl.command.energy_network.invalid_amount", EU_String);
                     return;
                 }
 
@@ -90,34 +89,25 @@ public class CommandEnergyNetwork extends CommandBase {
                     + EnumChatFormatting.RESET;
 
                 if (WirelessNetworkManager.addEUToGlobalEnergyMap(uuid, euAmount)) {
-                    sendChatMessage(
+                    sendMessage(
                         sender,
-                        new ChatComponentText(
-                            String.format(
-                                "Successfully added %sEU to the global energy network of %s.",
-                                EU_string_formatted,
-                                formatted_username)));
+                        "gtnl.command.energy_network.add_success",
+                        EU_string_formatted,
+                        formatted_username);
                 } else {
-                    sendChatMessage(
+                    sendMessage(
                         sender,
-                        new ChatComponentText(
-                            String.format(
-                                "Failed to add %sEU to the global energy map of %s. Insufficient energy in network.",
-                                EU_string_formatted,
-                                formatted_username)));
+                        "gtnl.command.energy_network.add_failed",
+                        EU_string_formatted,
+                        formatted_username);
                 }
 
-                sendChatMessage(
+                sendMessage(
                     sender,
-                    new ChatComponentText(
-                        String.format(
-                            "%s currently has %sEU in their network.",
-                            formatted_username,
-                            EnumChatFormatting.RED + NumberFormatUtil.formatNumber(
-                                new BigInteger(
-                                    WirelessNetworkManager.getUserEU(uuid)
-                                        .toString()))
-                                + EnumChatFormatting.RESET)));
+                    "gtnl.command.energy_network.balance",
+                    formatted_username,
+                    EnumChatFormatting.RED + NumberFormatUtil.formatNumber(WirelessNetworkManager.getUserEU(uuid))
+                        + EnumChatFormatting.RESET);
                 break;
             }
 
@@ -128,16 +118,16 @@ public class CommandEnergyNetwork extends CommandBase {
                 }
 
                 if (args.length != 3) {
-                    throw new WrongUsageException("/energy_network set <username> <EU>");
+                    throw new WrongUsageException("gtnl.command.energy_network.set_usage");
                 }
 
                 String username = args[1];
                 String EU_String = args[2];
                 if (username == null) username = sender.getCommandSenderName();
-                UUID uuid = SpaceProjectManager.getPlayerUUIDFromName(username);
+                UUID uuid = TeamNetworkManager.getPlayerId(username);
 
                 if (uuid == null) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "User not found: " + username);
+                    sendMessage(sender, "gtnl.command.common.player_not_found", username);
                     return;
                 }
 
@@ -145,14 +135,12 @@ public class CommandEnergyNetwork extends CommandBase {
                 try {
                     euAmount = new BigInteger(EU_String);
                 } catch (NumberFormatException e) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "Invalid EU value format: " + EU_String);
+                    sendMessage(sender, "gtnl.command.energy_network.invalid_amount", EU_String);
                     return;
                 }
 
                 if ((euAmount.compareTo(BigInteger.ZERO)) < 0) {
-                    sendChatMessage(
-                        sender,
-                        new ChatComponentText("Cannot set a user's energy network to a negative value."));
+                    sendMessage(sender, "gtnl.command.energy_network.negative_amount");
                     break;
                 }
 
@@ -162,48 +150,37 @@ public class CommandEnergyNetwork extends CommandBase {
                 String EU_string_formatted = EnumChatFormatting.RED + NumberFormatUtil.formatNumber(euAmount)
                     + EnumChatFormatting.RESET;
 
-                sendChatMessage(
-                    sender,
-                    new ChatComponentText(
-                        String.format(
-                            "Successfully set %s's global energy network to %sEU.",
-                            formatted_username,
-                            EU_string_formatted)));
+                sendMessage(sender, "gtnl.command.energy_network.set_success", formatted_username, EU_string_formatted);
                 break;
             }
             case "join": {
                 if (args.length != 3) {
-                    throw new WrongUsageException("/energy_network join <user joining> <user to join>");
+                    throw new WrongUsageException("gtnl.command.energy_network.join_usage");
                 }
 
                 String usernameSubject = args[1];
                 String usernameTeam = args[2];
 
                 if (usernameSubject == null || usernameTeam == null) {
-                    sendChatMessage(
-                        sender,
-                        EnumChatFormatting.RED
-                            + "Invalid arguments. Usage: /energy_network join <user joining> <user to join>");
+                    sendMessage(sender, "gtnl.command.energy_network.join_usage");
                     break;
                 }
 
-                UUID uuidSubject = SpaceProjectManager.getPlayerUUIDFromName(usernameSubject);
-                UUID uuidTeam = SpaceProjectManager.getPlayerUUIDFromName(usernameTeam);
+                UUID uuidSubject = TeamNetworkManager.getPlayerId(usernameSubject);
+                UUID uuidTeam = TeamNetworkManager.getPlayerId(usernameTeam);
 
                 if (uuidSubject == null) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "User not found: " + usernameSubject);
+                    sendMessage(sender, "gtnl.command.common.player_not_found", usernameSubject);
                     return;
                 }
                 if (uuidTeam == null) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "User not found: " + usernameTeam);
+                    sendMessage(sender, "gtnl.command.common.player_not_found", usernameTeam);
                     return;
                 }
 
-                UUID uuidSender = SpaceProjectManager.getPlayerUUIDFromName(sender.getCommandSenderName());
-                UUID uuidSenderLeader = SpaceProjectManager.getLeader(uuidSender);
-                UUID targetTeamLeader = SpaceProjectManager.getLeader(uuidTeam);
-
-                boolean senderIsLeaderOfTargetTeam = uuidSenderLeader.equals(targetTeamLeader);
+                UUID uuidSender = TeamNetworkManager.getPlayerId(sender.getCommandSenderName());
+                boolean senderIsLeaderOfTargetTeam = TeamNetworkManager.isSameTeam(uuidSender, uuidTeam)
+                    && TeamNetworkManager.isTeamOwner(uuidSender);
 
                 if (!senderIsLeaderOfTargetTeam && !Utils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
@@ -214,98 +191,69 @@ public class CommandEnergyNetwork extends CommandBase {
                 String formattedUsernameTeam = EnumChatFormatting.BLUE + usernameTeam + EnumChatFormatting.RESET;
 
                 if (uuidSubject.equals(uuidTeam)) {
-                    SpaceProjectManager.putInTeam(uuidSubject, uuidSubject);
-                    sendChatMessage(
-                        sender,
-                        new ChatComponentText(
-                            String.format(
-                                "User %s has rejoined their own global energy network.",
-                                formattedUsernameSubject)));
+                    TeamNetworkManager.createPersonalTeam(uuidSubject);
+                    sendMessage(sender, "gtnl.command.energy_network.rejoined", formattedUsernameSubject);
                     break;
                 }
 
-                if (SpaceProjectManager.getLeader(uuidSubject)
-                    .equals(SpaceProjectManager.getLeader(uuidTeam))) {
-                    sendChatMessage(sender, new ChatComponentText("They are already in the same network!"));
+                if (TeamNetworkManager.isSameTeam(uuidSubject, uuidTeam)) {
+                    sendMessage(sender, "gtnl.command.common.already_same_network");
                     break;
                 }
 
-                SpaceProjectManager.putInTeam(uuidSubject, uuidTeam);
+                TeamNetworkManager.joinTeam(uuidSubject, uuidTeam);
 
-                sendChatMessage(
+                sendMessage(
                     sender,
-                    new ChatComponentText(
-                        String.format("Success! %s has joined %s.", formattedUsernameSubject, formattedUsernameTeam)));
-                sendChatMessage(
-                    sender,
-                    new ChatComponentText(
-                        String.format(
-                            "To undo this simply join your own network again with /energy_network join %s %s.",
-                            formattedUsernameSubject,
-                            usernameSubject)));
+                    "gtnl.command.energy_network.join_success",
+                    formattedUsernameSubject,
+                    formattedUsernameTeam);
+                sendMessage(sender, "gtnl.command.energy_network.join_undo", formattedUsernameSubject, usernameSubject);
                 break;
             }
             case "display": {
                 if (args.length != 2) {
-                    throw new WrongUsageException("/energy_network display <username>");
+                    throw new WrongUsageException("gtnl.command.energy_network.display_usage");
                 }
 
                 String username = args[1];
                 if (username == null) username = sender.getCommandSenderName();
-                UUID userUUID = SpaceProjectManager.getPlayerUUIDFromName(username);
+                UUID userUUID = TeamNetworkManager.getPlayerId(username);
 
                 if (userUUID == null) {
-                    sendChatMessage(sender, EnumChatFormatting.RED + "User not found: " + username);
+                    sendMessage(sender, "gtnl.command.common.player_not_found", username);
                     return;
                 }
 
                 String formatted_username = EnumChatFormatting.BLUE + username + EnumChatFormatting.RESET;
 
-                if (!SpaceProjectManager.isInTeam(userUUID)) {
-                    sendChatMessage(
-                        sender,
-                        new ChatComponentText(
-                            String.format("User %s has no global energy network.", formatted_username)));
-                    break;
-                }
-                UUID teamUUID = SpaceProjectManager.getLeader(userUUID);
+                UUID teamUUID = TeamNetworkManager.getTeamId(userUUID);
 
-                sendChatMessage(
+                sendMessage(
                     sender,
-                    new ChatComponentText(
-                        String.format(
-                            "User %s has %sEU in their network.",
-                            formatted_username,
-                            EnumChatFormatting.RED
-                                + NumberFormatUtil.formatNumber(WirelessNetworkManager.getUserEU(userUUID))
-                                + EnumChatFormatting.RESET)));
-                if (!userUUID.equals(teamUUID)) {
-                    sendChatMessage(
+                    "gtnl.command.energy_network.balance",
+                    formatted_username,
+                    EnumChatFormatting.RED + NumberFormatUtil.formatNumber(WirelessNetworkManager.getUserEU(userUUID))
+                        + EnumChatFormatting.RESET);
+                if (!TeamNetworkManager.isTeamOwner(userUUID)) {
+                    sendMessage(
                         sender,
-                        new ChatComponentText(
-                            String.format(
-                                "User %s is currently in network of %s.",
-                                formatted_username,
-                                EnumChatFormatting.BLUE + SpaceProjectManager.getPlayerNameFromUUID(teamUUID)
-                                    + EnumChatFormatting.RESET)));
+                        "gtnl.command.common.network_owner",
+                        formatted_username,
+                        EnumChatFormatting.BLUE + TeamNetworkManager.getTeamName(teamUUID) + EnumChatFormatting.RESET);
                 }
                 break;
             }
 
             default:
-                sender
-                    .addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Invalid command/syntax detected."));
+                sendMessage(sender, "gtnl.command.common.invalid_syntax");
                 printHelp(sender);
                 break;
         }
     }
 
-    private void sendChatMessage(ICommandSender sender, String message) {
-        sender.addChatMessage(new ChatComponentText(message));
-    }
-
-    private void sendChatMessage(ICommandSender sender, ChatComponentText message) {
-        sender.addChatMessage(message);
+    private void sendMessage(ICommandSender sender, String key, Object... arguments) {
+        sender.addChatMessage(new ChatComponentTranslation(key, arguments));
     }
 
     @Override
@@ -343,19 +291,11 @@ public class CommandEnergyNetwork extends CommandBase {
     }
 
     private void printHelp(ICommandSender sender) {
-        sender.addChatMessage(new ChatComponentText("Usage: /energy_network <subcommand> [args...]"));
-        sender.addChatMessage(new ChatComponentText(" Subcommands:"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                "  add <username> <EU> - Add EU to user's energy network (requires permission level 2)"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                "  set <username> <EU> - Set user's energy network EU (requires permission level 2)"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                "  join <user joining> <user to join> - Join energy network (requires permission level 0)"));
-        sender.addChatMessage(
-            new ChatComponentText(
-                "  display <username> - Display user's energy network EU (requires permission level 0)"));
+        sendMessage(sender, "gtnl.command.energy_network.usage");
+        sendMessage(sender, "gtnl.command.energy_network.help_header");
+        sendMessage(sender, "gtnl.command.energy_network.help_add");
+        sendMessage(sender, "gtnl.command.energy_network.help_set");
+        sendMessage(sender, "gtnl.command.energy_network.help_join");
+        sendMessage(sender, "gtnl.command.energy_network.help_display");
     }
 }

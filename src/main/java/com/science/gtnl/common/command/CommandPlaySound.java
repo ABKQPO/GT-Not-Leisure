@@ -8,7 +8,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 
 import com.science.gtnl.common.packet.SoundPacket;
@@ -22,7 +22,7 @@ public class CommandPlaySound extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnl_playsound <MODID>:<sound_resource>/stop [volume] [pitch] [seekMs]";
+        return "gtnl.command.play_sound.usage";
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CommandPlaySound extends CommandBase {
         try {
             soundResource = new ResourceLocation(args[0]);
         } catch (Exception e) {
-            sender.addChatMessage(new ChatComponentText("Invalid sound resource path: " + args[0]));
+            sender.addChatMessage(new ChatComponentTranslation("gtnl.command.play_sound.invalid_resource", args[0]));
             return;
         }
 
@@ -55,8 +55,7 @@ public class CommandPlaySound extends CommandBase {
                 if (volume < 0.0F) volume = 0.0F;
                 if (volume > 1.0F) volume = 1.0F;
             } catch (NumberFormatException e) {
-                sender.addChatMessage(
-                    new ChatComponentText("Invalid sound volume: " + args[1] + ", use default value 1.0"));
+                sender.addChatMessage(new ChatComponentTranslation("gtnl.command.play_sound.invalid_volume", args[1]));
             }
         }
 
@@ -67,8 +66,7 @@ public class CommandPlaySound extends CommandBase {
                 if (pitch < 0.0F) pitch = 0.0F;
                 if (pitch > 1.0F) pitch = 1.0F;
             } catch (NumberFormatException e) {
-                sender.addChatMessage(
-                    new ChatComponentText("Invalid sound pitch: " + args[1] + ", use default value 1.0"));
+                sender.addChatMessage(new ChatComponentTranslation("gtnl.command.play_sound.invalid_pitch", args[1]));
             }
         }
 
@@ -78,13 +76,12 @@ public class CommandPlaySound extends CommandBase {
                 seekMs = Long.parseLong(args[2]);
                 if (seekMs < 0L) seekMs = 0L;
             } catch (NumberFormatException e) {
-                sender.addChatMessage(new ChatComponentText("Invalid seekMs: " + args[2] + ", use default value 0"));
+                sender.addChatMessage(new ChatComponentTranslation("gtnl.command.play_sound.invalid_seek", args[2]));
             }
         }
 
         network.sendTo(new SoundPacket(soundResource, volume, pitch, seekMs), (EntityPlayerMP) sender);
-        sender.addChatMessage(
-            new ChatComponentText("Sent sound effect playback synchronization request: " + soundResource));
+        sender.addChatMessage(new ChatComponentTranslation("gtnl.command.play_sound.sent", soundResource));
 
     }
 

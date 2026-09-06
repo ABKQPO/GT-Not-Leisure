@@ -18,8 +18,7 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 
 import com.science.gtnl.ScienceNotLeisure;
-
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 public class GlobalSteamWorldSavedData extends WorldSavedData {
 
@@ -29,6 +28,8 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     public static final String GLOBAL_STEAM_NBT_TAG = "GregTech_GlobalSteam_MapNBTTag";
     public static final String GLOBAL_STEAM_TEAM_NBT_TAG = "GregTech_GlobalSteamTeam_MapNBTTag";
+    private static final String FORMAT_VERSION_TAG = "formatVersion";
+    private static final int TEAM_ID_FORMAT_VERSION = 2;
 
     public static void loadInstance(World world) {
         GLOBAL_STEAM.clear();
@@ -53,9 +54,24 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
     @Override
     @SuppressWarnings("unchecked")
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        Map<UUID, BigInteger> loadedSteam = readSteam(nbtTagCompound);
+        TeamNetworkManager.mergeLegacyTeams(readLegacyTeams(nbtTagCompound));
+
+        if (nbtTagCompound.getInteger(FORMAT_VERSION_TAG) < TEAM_ID_FORMAT_VERSION) {
+            loadedSteam.forEach(
+                (legacyLeaderId, steam) -> GLOBAL_STEAM
+                    .merge(TeamNetworkManager.getTeamId(legacyLeaderId), steam, BigInteger::add));
+            markDirty();
+        } else {
+            GLOBAL_STEAM.putAll(loadedSteam);
+        }
+    }
+
+    private Map<UUID, BigInteger> readSteam(NBTTagCompound nbtTagCompound) {
+        Map<UUID, BigInteger> loadedSteam = new HashMap<>();
         try {
             byte[] ba = nbtTagCompound.getByteArray(GLOBAL_STEAM_NBT_TAG);
-            if (ba.length == 0) return;
+            if (ba.length == 0) return loadedSteam;
 
             try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ba);
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
@@ -65,7 +81,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
                 for (Map.Entry<Object, BigInteger> entry : hashData.entrySet()) {
                     try {
-                        GLOBAL_STEAM.put(
+                        loadedSteam.put(
                             UUID.fromString(
                                 entry.getKey()
                                     .toString()),
@@ -80,12 +96,17 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
         } catch (IOException | ClassNotFoundException exception) {
             ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} LOAD FAILED", GLOBAL_STEAM_NBT_TAG, exception);
         }
+        return loadedSteam;
+    }
 
+    private Map<UUID, UUID> readLegacyTeams(NBTTagCompound nbtTagCompound) {
+        // TODO: Remove this legacy mapping after the migration support window ends.
+        Map<UUID, UUID> legacyTeams = new HashMap<>();
         try {
-            if (!nbtTagCompound.hasKey(GLOBAL_STEAM_TEAM_NBT_TAG)) return;
+            if (!nbtTagCompound.hasKey(GLOBAL_STEAM_TEAM_NBT_TAG)) return legacyTeams;
 
             byte[] ba = nbtTagCompound.getByteArray(GLOBAL_STEAM_TEAM_NBT_TAG);
-            if (ba.length == 0) return;
+            if (ba.length == 0) return legacyTeams;
 
             try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ba);
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
@@ -95,8 +116,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
                 for (Map.Entry<String, String> entry : oldTeams.entrySet()) {
                     try {
-                        SpaceProjectManager
-                            .putInTeam(UUID.fromString(entry.getKey()), UUID.fromString(entry.getValue()));
+                        legacyTeams.put(UUID.fromString(entry.getKey()), UUID.fromString(entry.getValue()));
                     } catch (RuntimeException ignored) {
                         ScienceNotLeisure.LOG.warn(
                             "[GlobalSteamWorldSavedData] Skipping invalid UUID in team entry: {}",
@@ -108,6 +128,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
             ScienceNotLeisure.LOG
                 .error("[GlobalSteamWorldSavedData] {} LOAD FAILED", GLOBAL_STEAM_TEAM_NBT_TAG, exception);
         }
+        return legacyTeams;
     }
 
     @Override
@@ -119,6 +140,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
             objectOutputStream.flush();
 
             nbtTagCompound.setByteArray(GLOBAL_STEAM_NBT_TAG, byteArrayOutputStream.toByteArray());
+            nbtTagCompound.setInteger(FORMAT_VERSION_TAG, TEAM_ID_FORMAT_VERSION);
 
         } catch (IOException exception) {
             ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} SAVE FAILED", GLOBAL_STEAM_NBT_TAG, exception);

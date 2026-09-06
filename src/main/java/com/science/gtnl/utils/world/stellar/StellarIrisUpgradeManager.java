@@ -10,8 +10,7 @@ import com.science.gtnl.api.stellar.IStellarIrisUpgradeEffect;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeEffectContext;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
-
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 public class StellarIrisUpgradeManager {
 
@@ -202,7 +201,6 @@ public class StellarIrisUpgradeManager {
     }
 
     private static UUID getTeamLeaderId(UUID playerId) {
-        SpaceProjectManager.checkOrCreateTeam(playerId);
-        return SpaceProjectManager.getLeader(playerId);
+        return TeamNetworkManager.getTeamId(playerId);
     }
 }

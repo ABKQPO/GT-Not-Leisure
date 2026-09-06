@@ -1,25 +1,22 @@
 package com.science.gtnl.common.machine.monitor;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
+
 import lombok.Getter;
 
+@Deprecated
 public class WirelessTeam {
 
     public static TeamContext resolveContext(UUID viewerUuid) {
         if (viewerUuid == null) {
             return new TeamContext(null, Set.of());
         }
-        SpaceProjectManager.checkOrCreateTeam(viewerUuid);
-        UUID leader = SpaceProjectManager.getLeader(viewerUuid);
-        Collection<UUID> members = SpaceProjectManager.getTeamMembers(leader);
-        Set<UUID> resolved = new HashSet<>(members);
-        resolved.add(leader);
-        return new TeamContext(leader, resolved);
+        UUID teamId = TeamNetworkManager.getTeamId(viewerUuid);
+        return new TeamContext(teamId, new HashSet<>(TeamNetworkManager.getMembers(viewerUuid)));
     }
 
     public static Set<UUID> resolveMembers(UUID viewerUuid) {
@@ -31,6 +28,7 @@ public class WirelessTeam {
     }
 
     @Getter
+    @Deprecated
     public static class TeamContext {
 
         private final UUID leader;

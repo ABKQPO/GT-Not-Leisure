@@ -68,6 +68,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Textures;
@@ -96,7 +97,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
@@ -165,25 +165,18 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
         ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
 
-        SpaceProjectManager.checkOrCreateTeam(ownerUUID);
-
-        isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
-
-        if (isInTeam) {
-            teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-        }
+        isInTeam = true;
+        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
     }
 
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (aBaseMetaTileEntity.isServerSide()) {
             if (aTick % 200 == 0L) {
-                isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
-                if (isInTeam) {
-                    teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-                    steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-                }
+                isInTeam = true;
+                teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+                steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
             }
         }
         super.onPostTick(aBaseMetaTileEntity, aTick);
@@ -512,7 +505,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         tag.setInteger("tierMachine", tierMachine);
         tag.setInteger("parallel", getTrueParallel());
 
-        tag.setString("SteamNetworkOwner", SpaceProjectManager.getPlayerNameFromUUID(ownerUUID));
+        tag.setString("SteamNetworkOwner", TeamNetworkManager.getPlayerName(ownerUUID));
         tag.setBoolean("isInSteamNetwork", isInTeam);
 
         if (isInTeam) {
@@ -521,8 +514,8 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 steamDisplay.toString()
                     .length() > 10 ? GTUtility.scientificFormat(steamDisplay)
                         : NumberFormatUtil.formatNumber(steamDisplay));
-            if (!ownerUUID.equals(teamUUID)) {
-                tag.setString("SteamNetworkTeam", SpaceProjectManager.getPlayerNameFromUUID(teamUUID));
+            if (!TeamNetworkManager.isTeamOwner(ownerUUID)) {
+                tag.setString("SteamNetworkTeam", TeamNetworkManager.getTeamName(teamUUID));
             }
         }
     }

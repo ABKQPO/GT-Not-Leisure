@@ -9,7 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 
 import com.science.gtnl.common.packet.SudoPacket;
 
@@ -22,13 +22,13 @@ public class CommandSudo extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/sudo <player> <message>";
+        return "gtnl.command.sudo.usage";
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.addChatMessage(new ChatComponentText("Usage: /sudo <player> <message>"));
+            sender.addChatMessage(new ChatComponentTranslation("gtnl.command.sudo.usage_message"));
             return;
         }
 
@@ -36,7 +36,7 @@ public class CommandSudo extends CommandBase {
         try {
             target = getPlayer(sender, args[0]);
         } catch (Exception e) {
-            sender.addChatMessage(new ChatComponentText("Player not found: " + args[0]));
+            sender.addChatMessage(new ChatComponentTranslation("gtnl.command.common.player_not_found", args[0]));
             return;
         }
 
@@ -55,8 +55,9 @@ public class CommandSudo extends CommandBase {
                 .append(" ");
         }
         sender.addChatMessage(
-            new ChatComponentText(
-                "Successfully executed: " + executedCommand.toString()
+            new ChatComponentTranslation(
+                "gtnl.command.sudo.success",
+                executedCommand.toString()
                     .trim()));
     }
 

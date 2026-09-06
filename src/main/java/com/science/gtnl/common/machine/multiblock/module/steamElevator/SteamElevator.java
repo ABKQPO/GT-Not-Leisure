@@ -56,6 +56,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
@@ -77,7 +78,6 @@ import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTEHatchCustomFluidBase;
 import gtnhintergalactic.gui.IG_UITextures;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -131,7 +131,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide()) {
             if (aTick == 1) {
-                SpaceProjectManager.checkOrCreateTeam(aBaseMetaTileEntity.getOwnerUuid());
+                TeamNetworkManager.getTeamId(aBaseMetaTileEntity.getOwnerUuid());
             }
             if (!aBaseMetaTileEntity.isAllowedToWork()) {
                 // if machine has stopped, stop chunkloading

@@ -7,7 +7,6 @@ import java.util.UUID;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
@@ -16,8 +15,7 @@ import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
-
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 public class CommandStellarIris extends CommandBase {
 
@@ -28,7 +26,7 @@ public class CommandStellarIris extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/stellar_iris <points/tier/upgrade> ...";
+        return "gtnl.command.stellar_iris.usage";
     }
 
     @Override
@@ -77,7 +75,7 @@ public class CommandStellarIris extends CommandBase {
         World world = MinecraftServer.getServer()
             .worldServerForDimension(0);
         if (world == null) {
-            sendMessage(sender, "Overworld is unavailable / 主世界不可用");
+            sendMessage(sender, "gtnl.command.stellar_iris.overworld_unavailable");
             return;
         }
         if ("points".equals(arguments[0])) {
@@ -93,7 +91,7 @@ public class CommandStellarIris extends CommandBase {
 
     private void handlePoints(ICommandSender sender, World world, String[] arguments) {
         if (arguments.length != 5 || (!"add".equals(arguments[1]) && !"set".equals(arguments[1]))) {
-            sendMessage(sender, "Usage / 用法: /stellar_iris points <add/set> <player/team> <name> <amount>");
+            sendMessage(sender, "gtnl.command.stellar_iris.points_usage");
             return;
         }
         UUID targetId = resolveTarget(sender, arguments[2], arguments[3]);
@@ -103,23 +101,23 @@ public class CommandStellarIris extends CommandBase {
         }
         if ("set".equals(arguments[1])) {
             if (amount < 0) {
-                sendMessage(sender, "Points cannot be negative / 点数不能为负数");
+                sendMessage(sender, "gtnl.command.stellar_iris.points_negative");
                 return;
             }
             StellarIrisUpgradeManager.setSpendablePoints(world, targetId, amount);
-            sendMessage(sender, "Points updated / 点数已更新: " + amount);
+            sendMessage(sender, "gtnl.command.stellar_iris.points_updated", amount);
             return;
         }
         if (!StellarIrisUpgradeManager.addPoints(world, targetId, amount)) {
-            sendMessage(sender, "Point operation would exceed the valid range / 点数操作超出有效范围");
+            sendMessage(sender, "gtnl.command.stellar_iris.points_range");
             return;
         }
-        sendMessage(sender, "Points adjusted / 点数已调整: " + amount);
+        sendMessage(sender, "gtnl.command.stellar_iris.points_adjusted", amount);
     }
 
     private void handleTier(ICommandSender sender, World world, String[] arguments) {
         if (arguments.length != 5 || !"set".equals(arguments[1])) {
-            sendMessage(sender, "Usage / 用法: /stellar_iris tier set <player/team> <name> <tier>");
+            sendMessage(sender, "gtnl.command.stellar_iris.tier_usage");
             return;
         }
         UUID targetId = resolveTarget(sender, arguments[2], arguments[3]);
@@ -128,19 +126,17 @@ public class CommandStellarIris extends CommandBase {
             return;
         }
         if (tier < 0) {
-            sendMessage(sender, "Tier cannot be negative / 阶级不能为负数");
+            sendMessage(sender, "gtnl.command.stellar_iris.tier_negative");
             return;
         }
         StellarIrisUpgradeManager.setTier(world, targetId, tier);
-        sendMessage(sender, "Tier updated / 阶级已更新: " + tier);
+        sendMessage(sender, "gtnl.command.stellar_iris.tier_updated", tier);
     }
 
     private void handleUpgrade(ICommandSender sender, World world, String[] arguments) {
         if (arguments.length < 5 || arguments.length > 6
             || (!"enable".equals(arguments[1]) && !"disable".equals(arguments[1]))) {
-            sendMessage(
-                sender,
-                "Usage / 用法: /stellar_iris upgrade <enable/disable> <player/team> <name> <upgrade> [level]");
+            sendMessage(sender, "gtnl.command.stellar_iris.upgrade_usage");
             return;
         }
         UUID targetId = resolveTarget(sender, arguments[2], arguments[3]);
@@ -149,7 +145,7 @@ public class CommandStellarIris extends CommandBase {
         }
         StellarIrisUpgradeDefinition definition = StellarIrisUpgradeRegistry.getUpgrade(arguments[4]);
         if (definition == null) {
-            sendMessage(sender, "Unknown upgrade / 未知升级节点: " + arguments[4]);
+            sendMessage(sender, "gtnl.command.stellar_iris.upgrade_unknown", arguments[4]);
             return;
         }
         int level = 0;
@@ -163,39 +159,38 @@ public class CommandStellarIris extends CommandBase {
                 level = requestedLevel;
             }
         } else if (arguments.length == 6) {
-            sendMessage(sender, "Disable does not accept a level / 禁用节点不接受等级参数");
+            sendMessage(sender, "gtnl.command.stellar_iris.disable_level");
             return;
         }
         if (!StellarIrisUpgradeManager.setUpgradeLevel(world, targetId, definition.getId(), level)) {
-            sendMessage(
-                sender,
-                "Level must be between 0 and " + definition.getMaxLevel() + " / 等级必须在 0 到 " + definition.getMaxLevel());
+            sendMessage(sender, "gtnl.command.stellar_iris.level_range", definition.getMaxLevel());
             return;
         }
         sendMessage(
             sender,
-            "Upgrade " + (level == 0 ? "disabled / 已禁用" : "enabled / 已启用") + ": " + definition.getId() + " = " + level);
+            level == 0 ? "gtnl.command.stellar_iris.upgrade_disabled" : "gtnl.command.stellar_iris.upgrade_enabled",
+            definition.getId(),
+            level);
     }
 
     private UUID resolveTarget(ICommandSender sender, String targetType, String targetName) {
         if (!"player".equals(targetType) && !"team".equals(targetType)) {
-            sendMessage(sender, "Target must be player or team / 目标必须是 player 或 team");
+            sendMessage(sender, "gtnl.command.stellar_iris.target_type");
             return null;
         }
-        UUID targetId = SpaceProjectManager.getPlayerUUIDFromName(targetName);
+        UUID targetId = TeamNetworkManager.getPlayerId(targetName);
         if (targetId == null) {
-            sendMessage(sender, "Unknown target / 未知目标: " + targetName);
+            sendMessage(sender, "gtnl.command.stellar_iris.target_unknown", targetName);
             return null;
         }
-        SpaceProjectManager.checkOrCreateTeam(targetId);
-        return "team".equals(targetType) ? SpaceProjectManager.getLeader(targetId) : targetId;
+        return "team".equals(targetType) ? TeamNetworkManager.getTeamId(targetId) : targetId;
     }
 
     private Integer parseInteger(ICommandSender sender, String value) {
         try {
             return Integer.valueOf(value);
         } catch (NumberFormatException exception) {
-            sendMessage(sender, "Expected an integer / 需要整数: " + value);
+            sendMessage(sender, "gtnl.command.stellar_iris.integer_expected", value);
             return null;
         }
     }
@@ -209,11 +204,14 @@ public class CommandStellarIris extends CommandBase {
     }
 
     private void sendUsage(ICommandSender sender) {
-        sendMessage(sender, "Stellar Iris command usage / 星体虹膜命令用法: " + getCommandUsage(sender));
+        sendMessage(sender, "gtnl.command.stellar_iris.usage");
     }
 
-    private void sendMessage(ICommandSender sender, String message) {
-        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.AQUA + message));
+    private void sendMessage(ICommandSender sender, String key, Object... arguments) {
+        ChatComponentTranslation message = new ChatComponentTranslation(key, arguments);
+        message.getChatStyle()
+            .setColor(EnumChatFormatting.AQUA);
+        sender.addChatMessage(message);
     }
 
     @Override

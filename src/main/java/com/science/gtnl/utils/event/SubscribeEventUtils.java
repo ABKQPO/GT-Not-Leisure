@@ -35,7 +35,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerFrontend;
 import com.science.gtnl.common.item.BaubleItem;
@@ -55,6 +54,7 @@ import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -303,9 +303,19 @@ public class SubscribeEventUtils {
             if (chat.getKey()
                 .equals("GTNLEarlyCoreMod.show.clientside")) {
                 event.message = new ChatComponentText("");
-                event.message.appendSibling(CommandTickrate.c("Your Current Client Tickrate: ", 'f', 'l'));
-                event.message
-                    .appendSibling(CommandTickrate.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
+                ChatComponentTranslation currentTickrate = new ChatComponentTranslation(
+                    "gtnl.command.tickrate.current_client");
+                currentTickrate.getChatStyle()
+                    .setColor(EnumChatFormatting.WHITE)
+                    .setBold(true);
+                event.message.appendSibling(currentTickrate);
+                event.message.appendSibling(new ChatComponentText(" "));
+                ChatComponentTranslation ticksPerSecond = new ChatComponentTranslation(
+                    "gtnl.command.tickrate.ticks_per_second",
+                    TickrateAPI.getClientTickrate());
+                ticksPerSecond.getChatStyle()
+                    .setColor(EnumChatFormatting.GREEN);
+                event.message.appendSibling(ticksPerSecond);
             }
         }
     }
@@ -389,6 +399,7 @@ public class SubscribeEventUtils {
             CIRCUIT_NANITES_DATA_LOAD = true;
         }
         if (event.world.provider.dimensionId == 0) {
+            TeamNetworkManager.migrateLegacyTeams(event.world);
             loadInstance(event.world);
         }
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.science.gtnl.utils.render.SpoceEffect;
@@ -24,7 +24,7 @@ public class CommandSpoce extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/spoce test | start [x y z] <radius color alpha lines...> [life] | stop";
+        return "gtnl.command.spoce.usage";
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CommandSpoce extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Usage: " + getCommandUsage(sender)));
+            sendMessage(sender, "gtnl.command.spoce.usage_message", EnumChatFormatting.RED);
             return;
         }
 
@@ -52,14 +52,12 @@ public class CommandSpoce extends CommandBase {
         switch (subCommand) {
             case "stop" -> {
                 SpoceEffect.clearAll();
-                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "All render effects cleared"));
+                sendMessage(sender, "gtnl.command.spoce.cleared", EnumChatFormatting.GREEN);
             }
 
             case "test" -> {
                 if (!(sender instanceof EntityPlayer player)) {
-                    sender.addChatMessage(
-                        new ChatComponentText(
-                            EnumChatFormatting.RED + "This command can only be executed by a player"));
+                    sendMessage(sender, "gtnl.command.spoce.player_only", EnumChatFormatting.RED);
                     return;
                 }
 
@@ -70,8 +68,7 @@ public class CommandSpoce extends CommandBase {
 
                 SpoceEffect.addEffect(testEffect);
 
-                sender.addChatMessage(
-                    new ChatComponentText(EnumChatFormatting.AQUA + "Loaded default Spoce test parameters (3 layers)"));
+                sendMessage(sender, "gtnl.command.spoce.test_loaded", EnumChatFormatting.AQUA);
             }
 
             case "start" -> {
@@ -93,9 +90,7 @@ public class CommandSpoce extends CommandBase {
                         y = player.posY;
                         z = player.posZ;
                     } else {
-                        sender.addChatMessage(
-                            new ChatComponentText(
-                                EnumChatFormatting.RED + "Non-player execution must provide coordinates or use *"));
+                        sendMessage(sender, "gtnl.command.spoce.non_player_coordinates", EnumChatFormatting.RED);
                         return;
                     }
 
@@ -133,10 +128,7 @@ public class CommandSpoce extends CommandBase {
                     }
 
                     if (effect.layers.isEmpty()) {
-                        sender.addChatMessage(
-                            new ChatComponentText(
-                                EnumChatFormatting.YELLOW
-                                    + "Warning: No sphere layers added, using default single layer"));
+                        sendMessage(sender, "gtnl.command.spoce.no_layers", EnumChatFormatting.YELLOW);
                         effect.addLayer(DEF_RADIUS, DEF_COLOR, DEF_LINES);
                     }
 
@@ -146,23 +138,29 @@ public class CommandSpoce extends CommandBase {
 
                     SpoceEffect.addEffect(effect);
 
-                    sender.addChatMessage(
-                        new ChatComponentText(
-                            EnumChatFormatting.AQUA + String.format(
-                                "Spoce started (%.1f %.1f %.1f, Layers: %d, Life: %d)",
-                                x,
-                                y,
-                                z,
-                                effect.layers.size(),
-                                life)));
+                    sendMessage(
+                        sender,
+                        "gtnl.command.spoce.started",
+                        EnumChatFormatting.AQUA,
+                        x,
+                        y,
+                        z,
+                        effect.layers.size(),
+                        life);
 
                 } catch (Exception e) {
-                    sender.addChatMessage(
-                        new ChatComponentText(EnumChatFormatting.RED + "Parameter parsing error: " + e.getMessage()));
+                    sendMessage(sender, "gtnl.command.spoce.parse_error", EnumChatFormatting.RED, e.getMessage());
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void sendMessage(ICommandSender sender, String key, EnumChatFormatting color, Object... arguments) {
+        ChatComponentTranslation message = new ChatComponentTranslation(key, arguments);
+        message.getChatStyle()
+            .setColor(color);
+        sender.addChatMessage(message);
     }
 
     public int parseColor(String s) {

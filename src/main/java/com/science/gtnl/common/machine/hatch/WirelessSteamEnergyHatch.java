@@ -27,6 +27,7 @@ import com.science.gtnl.common.gui.modularui.WirelessSteamEnergyHatchGui;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -34,7 +35,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -134,14 +134,9 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         super.onFirstTick(aBaseMetaTileEntity);
         ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
 
-        SpaceProjectManager.checkOrCreateTeam(ownerUUID);
-
-        isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
-
-        if (isInTeam) {
-            teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-        }
+        isInTeam = true;
+        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
 
         if (!aBaseMetaTileEntity.isServerSide()) return;
         tryFetchingSteam();
@@ -162,12 +157,9 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
             if (ownerUUID == null) {
                 ownerUUID = baseMetaTileEntity.getOwnerUuid();
             }
-            isInTeam = SpaceProjectManager.isInTeam(ownerUUID);
-
-            if (isInTeam) {
-                teamUUID = SpaceProjectManager.getLeader(ownerUUID);
-                steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-            }
+            isInTeam = true;
+            teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
         }
     }
 
@@ -294,7 +286,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         if (ownerUUID == null) {
             return;
         }
-        tag.setString("SteamNetworkOwner", SpaceProjectManager.getPlayerNameFromUUID(ownerUUID));
+        tag.setString("SteamNetworkOwner", TeamNetworkManager.getPlayerName(ownerUUID));
         tag.setBoolean("isInSteamNetwork", isInTeam);
 
         if (isInTeam && steamDisplay != null) {
@@ -303,8 +295,8 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
                 steamDisplay.toString()
                     .length() > 10 ? GTUtility.scientificFormat(steamDisplay)
                         : NumberFormatUtil.formatNumber(steamDisplay));
-            if (teamUUID != null && !ownerUUID.equals(teamUUID)) {
-                tag.setString("SteamNetworkTeam", SpaceProjectManager.getPlayerNameFromUUID(teamUUID));
+            if (teamUUID != null && !TeamNetworkManager.isTeamOwner(ownerUUID)) {
+                tag.setString("SteamNetworkTeam", TeamNetworkManager.getTeamName(teamUUID));
             }
         }
     }
