@@ -148,11 +148,11 @@ public class BlockLoader {
         shimmerFluidBlock = new BlockShimmerFluid(shimmerFluid);
         GTNLItemList.ShimmerFluidBlock.set(new ItemStack(shimmerFluidBlock));
 
-        GTNLItemList.ShirabonReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 1));
+        GTNLItemList.ShirabonReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 6));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1),
             AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
-        GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 2));
+        GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 7));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1),
             AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);

@@ -126,7 +126,7 @@ public class MaterialLoader {
     }
 
     public static void registryOreDictionary() {
-        GlassTier.addCustomGlass(ItemRegistry.bw_realglas2, 1, 13, 1);
+        GlassTier.addCustomGlass(ItemRegistry.bw_realglas2, 6, 13, 1);
         GTOreDictUnificator
             .registerOre("blockGlass" + GTValues.VN[13], GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1));
 
@@ -140,7 +140,7 @@ public class MaterialLoader {
             GTOreDictUnificator.registerOre("blockGlass" + GTValues.VN[14], GTNLItemList.PlayerDoll.get(1));
         }
 
-        GlassTier.addCustomGlass(ItemRegistry.bw_realglas2, 2, 14, 2);
+        GlassTier.addCustomGlass(ItemRegistry.bw_realglas2, 7, 14, 2);
         GTOreDictUnificator.registerOre(
             "blockGlass" + GTValues.VN[14],
             GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1));
