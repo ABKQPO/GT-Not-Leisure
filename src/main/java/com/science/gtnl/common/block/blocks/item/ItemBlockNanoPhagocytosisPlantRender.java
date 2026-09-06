@@ -10,6 +10,7 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import gregtech.GTMod;
+import tectech.rendering.EOH.EOHRenderingUtils;
 
 public class ItemBlockNanoPhagocytosisPlantRender extends ItemBlock implements IItemRenderer {
 
@@ -34,6 +35,7 @@ public class ItemBlockNanoPhagocytosisPlantRender extends ItemBlock implements I
 
         enableOpaqueColorInversion();
         renderGORGEStar(
+            EOHRenderingUtils.IDENTITY,
             type,
             GTMod.clientProxy()
                 .getAnimationRenderTicks(),
