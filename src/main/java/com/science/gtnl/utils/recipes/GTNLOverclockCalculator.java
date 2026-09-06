@@ -593,6 +593,5 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
         return this;
     }
 
-    public record ResultLaserOCs(int regularOverclocks, int laserOverclocks, double eutOverclock) {
-    }
+    public record ResultLaserOCs(int regularOverclocks, int laserOverclocks, double eutOverclock) {}
 }
