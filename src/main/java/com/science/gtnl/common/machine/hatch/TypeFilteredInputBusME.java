@@ -17,7 +17,6 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
@@ -157,8 +156,9 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
         return sb.toString();
     }
 
+    @NotNull
     @Override
-    public @NotNull AENetworkProxy getProxy() {
+    public AENetworkProxy getProxy() {
         if (gridProxy == null) {
             if (getBaseMetaTileEntity() instanceof IGridProxyable gridProxyable) {
                 gridProxy = new AENetworkProxy(
@@ -234,20 +234,6 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
                     .setSize(70, 18)
                     .setPos(3, 58)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                .setPos(3, 88)
-                .setSize(60, 14))
-            .widget(
-                new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
-                    .setTextureGetter(
-                        state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
-                            : GTUITextures.OVERLAY_BUTTON_CROSS)
-                    .setBackground(GTUITextures.BUTTON_STANDARD)
-                    .setPos(53, 87)
-                    .setSize(16, 16)
-                    .addTooltip(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
 
         builder.widget(
             TextWidget.localised("Info_TypeFilteredInputBusME_ModID")

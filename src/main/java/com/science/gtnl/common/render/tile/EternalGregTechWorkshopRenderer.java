@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
 import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
+import com.gtnewhorizon.gtnhlib.client.renderer.vertex.DefaultVertexFormat;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshop;
@@ -41,7 +42,7 @@ public class EternalGregTechWorkshopRenderer extends TileEntitySpecialRenderer {
             .addMapping('W', TTCasingsContainer.sBlockCasingsBA0, 11);
 
         ring = ringStructure.assignStructure(EternalGregTechWorkshop.shapeExtra)
-            .build();
+            .build(DefaultVertexFormat.POSITION_TEXTURE);
 
         fadeBypassProgram = new ShaderProgram(
             Reference.MODID,

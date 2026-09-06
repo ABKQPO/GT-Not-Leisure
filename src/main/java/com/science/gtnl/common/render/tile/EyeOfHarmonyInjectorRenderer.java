@@ -1,18 +1,19 @@
 package com.science.gtnl.common.render.tile;
 
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.client.IItemRenderer;
 
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.common.machine.multiblock.EyeOfHarmonyInjector;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tectech.rendering.EOH.EOHRenderingUtils;
-import tectech.thing.block.TileEntityEyeOfHarmony;
 
 @SideOnly(Side.CLIENT)
 public class EyeOfHarmonyInjectorRenderer {
@@ -33,52 +34,30 @@ public class EyeOfHarmonyInjectorRenderer {
         GL11.glDisable(GL11.GL_BLEND);
 
         // Space shell.
-        renderOuterSpaceShell();
+        Matrix4f model = new Matrix4f()
+            .translate((float) (x + pos.posX + 0.5), (float) (y + pos.posY + 0.5), (float) (z + pos.posZ + 0.5));
+        EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
+        EOHRenderingUtils.renderOuterSpaceShell(model, player.getDistance(x + pos.posX, y + pos.posY, z + pos.posZ));
 
         // Render the planets.
-        renderOrbitObjects(machine);
+        renderOrbitObjects(machine, model);
 
         // Render the star itself.
-        EOHRenderingUtils.renderEOHStar(IItemRenderer.ItemRenderType.INVENTORY, partialTicks, 2);
+        EOHRenderingUtils.renderEOHStar(model, IItemRenderer.ItemRenderType.INVENTORY, partialTicks, 2);
         GL11.glPopAttrib();
 
         GL11.glPopMatrix();
     }
 
-    public static void renderOrbitObjects(EyeOfHarmonyInjector machine) {
+    private static void renderOrbitObjects(EyeOfHarmonyInjector machine, Matrix4fc model) {
         if (machine.orbitingObjects != null) {
 
             if (machine.orbitingObjects.isEmpty()) {
                 machine.generateImportantInfo();
             }
 
-            for (TileEntityEyeOfHarmony.OrbitingObject t : machine.orbitingObjects) {
-                renderOrbit(machine, t);
-            }
+            EOHRenderingUtils.renderOrbits(model, machine.orbitingObjects, machine.angle, 2, 0.1f, STAR_RESCALE);
         }
-    }
-
-    public static void renderOrbit(EyeOfHarmonyInjector machine, TileEntityEyeOfHarmony.OrbitingObject orbitingObject) {
-        // Render orbiting body.
-        GL11.glPushMatrix();
-
-        GL11.glRotatef(orbitingObject.zAngle, 0, 0, 1);
-        GL11.glRotatef(orbitingObject.xAngle, 1, 0, 0);
-        GL11.glRotatef((orbitingObject.rotationSpeed * 0.1f * machine.angle) % 360.0f, 0F, 1F, 0F);
-        GL11.glTranslated(-0.5 - orbitingObject.distance - STAR_RESCALE, 0, 0);
-        GL11.glRotatef((orbitingObject.orbitSpeed * 0.1f * machine.angle) % 360.0f, 0F, 1F, 0F);
-
-        FMLClientHandler.instance()
-            .getClient()
-            .getTextureManager()
-            .bindTexture(TextureMap.locationBlocksTexture);
-        EOHRenderingUtils.renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
-
-        GL11.glPopMatrix();
-    }
-
-    public static void renderOuterSpaceShell() {
-        EOHRenderingUtils.renderOuterSpaceShell(0);
     }
 
 }

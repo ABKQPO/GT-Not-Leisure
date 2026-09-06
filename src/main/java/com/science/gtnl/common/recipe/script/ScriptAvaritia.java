@@ -13,7 +13,6 @@ import com.dreammaster.scripts.IScriptLoader;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
 import cpw.mods.fml.common.Optional;
@@ -36,16 +35,15 @@ public class ScriptAvaritia implements IScriptLoader {
     }
 
     @Override
-    public List<String> getDependencies() {
+    public List<Mods> getDependencies() {
         return Arrays.asList(
-            Mods.AppliedEnergistics2.ID,
-            Mods.EnderIO.ID,
-            Mods.SGCraft.ID,
-            Mods.TecTech.ID,
-            Mods.AE2FluidCraft.ID,
-            Mods.GregTech.ID,
-            Mods.NewHorizonsCoreMod.ID,
-            ModList.ScienceNotLeisure.ID);
+            Mods.AppliedEnergistics2,
+            Mods.EnderIO,
+            Mods.SGCraft,
+            Mods.TecTech,
+            Mods.AE2FluidCraft,
+            Mods.GregTech,
+            Mods.NewHorizonsCoreMod);
     }
 
     @Override

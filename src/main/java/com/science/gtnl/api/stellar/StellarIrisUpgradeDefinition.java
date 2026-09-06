@@ -75,14 +75,14 @@ public class StellarIrisUpgradeDefinition {
         return tree.isRepeatable();
     }
 
-    void assignNetworkId(int networkId) {
+    public void assignNetworkId(int networkId) {
         if (networkId < 0 || this.networkId >= 0) {
             throw new IllegalStateException("Upgrade network ID can only be assigned once");
         }
         this.networkId = networkId;
     }
 
-    void assignTree(StellarIrisUpgradeTree tree) {
+    public void assignTree(StellarIrisUpgradeTree tree) {
         if (tree == null || this.tree != null) {
             throw new IllegalStateException("Upgrade tree can only be assigned once");
         }

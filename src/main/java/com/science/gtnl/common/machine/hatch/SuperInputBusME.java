@@ -31,7 +31,6 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
@@ -237,7 +236,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
             if (nbt.hasKey("refreshTime")) {
                 autoPullRefreshTime = nbt.getInteger("refreshTime");
             }
-            expediteRecipeCheck = nbt.getBoolean("expediteRecipeCheck");
         }
 
         NBTTagList list = nbt.getTagList("storedStackSizes", 10);
@@ -400,12 +398,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                     ItemStack itemstack = GTUtility.copyAmount(
                         storedStackSizes[index] == Integer.MAX_VALUE ? 1 : storedStackSizes[index],
                         currItem.getItemStack());
-                    if (expediteRecipeCheck) {
-                        ItemStack previous = this.mInventory[index];
-                        if (itemstack != null) {
-                            justHadNewItems = !ItemStack.areItemStacksEqual(itemstack, previous);
-                        }
-                    }
                     this.mInventory[index] = itemstack;
                     index++;
                 }
@@ -497,14 +489,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                     request.setStackSize(storedStackSizes[aIndex]);
                     IAEItemStack result = sg.extractItems(request, Actionable.SIMULATE, getRequestSource());
                     ItemStack s = (result != null) ? result.getItemStack() : null;
-                    // We want to track changes in any ItemStack to notify any connected controllers to make a recipe
-                    // check early
-                    if (expediteRecipeCheck) {
-                        ItemStack previous = getStackInSlot(aIndex + SIDE_SLOT_COUNT);
-                        if (s != null) {
-                            justHadNewItems = !ItemStack.areItemStacksEqual(s, previous);
-                        }
-                    }
                     setInventorySlotContents(aIndex + SIDE_SLOT_COUNT, s);
                     return s;
                 } catch (final GridAccessException ignored) {}
@@ -936,19 +920,6 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                     .setSize(70, 18)
                     .setPos(3, 58)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                .setPos(3, 88)
-                .setSize(50, 14))
-            .widget(
-                new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
-                    .setTextureGetter(
-                        state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
-                            : GTUITextures.OVERLAY_BUTTON_CROSS)
-                    .setBackground(GTUITextures.BUTTON_STANDARD)
-                    .setPos(53, 87)
-                    .setSize(16, 16)
-                    .addTooltip(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
         return builder.build();
     }
 

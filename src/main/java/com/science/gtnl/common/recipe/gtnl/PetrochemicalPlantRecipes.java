@@ -1,19 +1,14 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.mixins.early.nhCoreMod.AccessorBacteriaRegistry;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import bartworks.common.loaders.BioItemList;
-import cpw.mods.fml.common.Optional;
+import bartworks.API.enums.BioCultureEnum;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
@@ -123,7 +118,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                Mods.NewHorizonsCoreMod.isModLoaded() ? getBacPetriDish() : new ItemStack(Items.paper, 0),
+                BioCultureEnum.getPetriDish(BioCultureEnum.XenoxeneXenoxsis.bioCulture),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.AntimonyTrioxide, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Osmium, 16))
             .fluidInputs(
@@ -226,14 +221,5 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
             .duration(200)
             .eut(1920)
             .addTo(PPR);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public ItemStack getBacPetriDish() {
-        return GTUtility.copyAmount(
-            0,
-            BioItemList.getPetriDish(
-                AccessorBacteriaRegistry.getCultureSet()
-                    .get("CombinedBac")));
     }
 }

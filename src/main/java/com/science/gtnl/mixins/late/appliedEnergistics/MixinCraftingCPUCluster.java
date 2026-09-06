@@ -211,7 +211,7 @@ public abstract class MixinCraftingCPUCluster {
         at = @At(
             value = "INVOKE",
             target = "Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;access$300(Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;)Lappeng/me/diagnostics/CraftingDiagnosticSessionId;"),
-        require = 1)
+        require = 0)
     private CraftingDiagnosticSessionId gtnl$consumeBatchSessions(@Coerce Object taskProgress,
         Operation<CraftingDiagnosticSessionId> original,
         @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {

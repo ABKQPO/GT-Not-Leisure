@@ -8,12 +8,12 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.FluidSlotSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Grid;
@@ -42,7 +42,7 @@ public class SuperVoidHatchGui extends MTEHatchBaseGui<SuperVoidHatch> {
             .doesAddGregTechLogo(false)
             .build()
             .child(createFilterScroll())
-            .child(createLogo());
+            .child(makeLogoWidget());
     }
 
     private IWidget createFilterScroll() {
@@ -74,13 +74,8 @@ public class SuperVoidHatchGui extends MTEHatchBaseGui<SuperVoidHatch> {
     }
 
     @Override
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
-    }
-
-    @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE);
     }
 
     private FluidStack getFluidStack(int index) {

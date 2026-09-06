@@ -74,7 +74,7 @@ public interface IOutputME {
 
     default void gtnl$flushCachedStack() {}
 
-    default MTEHatchOutputMEBase<?, ?, ?> getOutputProvider() {
+    default MTEHatchOutputMEBase<?> getOutputProvider() {
         return null;
     }
 }

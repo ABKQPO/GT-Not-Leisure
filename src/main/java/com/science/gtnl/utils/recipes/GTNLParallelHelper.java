@@ -448,8 +448,8 @@ public class GTNLParallelHelper extends ParallelHelper {
             result = CheckRecipeResultRegistry.insufficientPower(tRecipeEUt);
             return;
         }
-        if (!calculator.getAllowedTierSkip()) {
-            result = CheckRecipeResultRegistry.insufficientVoltage(tRecipeEUt);
+        if (recipe.mEUt > calculator.getMaxAllowedRecipeEUt()) {
+            result = CheckRecipeResultRegistry.insufficientVoltage(recipe.mEUt);
             return;
         }
 

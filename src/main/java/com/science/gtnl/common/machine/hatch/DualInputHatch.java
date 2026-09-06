@@ -167,11 +167,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
-    public boolean justUpdated() {
-        return false;
-    }
-
-    @Override
     public Iterator<? extends IDualInputInventory> inventories() {
         return Arrays.stream(new Inventory[] { inventory })
             .filter(Objects::nonNull)
@@ -493,8 +488,8 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
 
     public static class Inventory implements IDualInputInventory {
 
-        private final ItemStack[] itemInventory;
-        private final FluidStack[] fluidInventory;
+        public ItemStack[] itemInventory;
+        public FluidStack[] fluidInventory;
 
         public Inventory(ItemStack[] items, FluidStack[] fluid) {
             itemInventory = items;

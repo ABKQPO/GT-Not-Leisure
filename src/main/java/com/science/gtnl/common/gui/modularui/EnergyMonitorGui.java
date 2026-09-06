@@ -15,7 +15,6 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -24,6 +23,7 @@ import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
@@ -90,7 +90,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .build()
             .child(createTerminal(syncManager))
             .child(createPlayerInventory())
-            .child(createLogo());
+            .child(makeLogoWidget());
     }
 
     @Override
@@ -316,14 +316,9 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
     }
 
     @Override
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(LOGO_SIZE)
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(LOGO_SIZE)
             .pos(TERMINAL_X + TERMINAL_WIDTH - LOGO_SIZE + 8, TERMINAL_Y + TERMINAL_HEIGHT + 4);
-    }
-
-    @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     private IWidget createModeButton(IntSyncValue modeSyncer, boolean wrapWithParentheses) {

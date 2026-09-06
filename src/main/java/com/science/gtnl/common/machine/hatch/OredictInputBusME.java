@@ -32,7 +32,6 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
@@ -203,25 +202,14 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                 if (currItem.getStackSize() >= minAutoPullStackSize) {
                     ItemStack itemstack = GTUtility.copyAmount(1, currItem.getItemStack());
                     if (isSuper) {
-                        if (expediteRecipeCheck) {
-                            ItemStack previous = this.mInventory[index];
-                            if (itemstack != null) {
-                                justHadNewItems = !ItemStack.areItemStacksEqual(itemstack, previous);
-                            }
-                        }
                         this.mInventory[index] = itemstack;
                         this.mInventory[index + SIDE_SLOT_COUNT] = copyInformationStack(currItem);
                     } else {
-                        Slot previousSlot = slots[index];
-                        ItemStack previous = previousSlot == null ? null : previousSlot.extracted;
                         setSlotConfig(index, itemstack);
                         Slot newSlot = slots[index];
                         if (newSlot != null) {
                             newSlot.extracted = currItem.getItemStack();
                             newSlot.extractedAmount = newSlot.extracted == null ? 0 : newSlot.extracted.stackSize;
-                        }
-                        if (expediteRecipeCheck && itemstack != null) {
-                            justHadNewItems = !ItemStack.areItemStacksEqual(itemstack, previous);
                         }
                     }
                     index++;
@@ -302,14 +290,6 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                     request.setStackSize(Integer.MAX_VALUE);
                     IAEItemStack result = sg.extractItems(request, Actionable.SIMULATE, getRequestSource());
                     ItemStack s = (result != null) ? result.getItemStack() : null;
-                    // We want to track changes in any ItemStack to notify any connected controllers to make a recipe
-                    // check early
-                    if (expediteRecipeCheck) {
-                        ItemStack previous = getStackInSlot(aIndex + SIDE_SLOT_COUNT);
-                        if (s != null) {
-                            justHadNewItems = !ItemStack.areItemStacksEqual(s, previous);
-                        }
-                    }
                     setInventorySlotContents(aIndex + SIDE_SLOT_COUNT, s);
                     return s;
                 } catch (final GridAccessException ignored) {}
@@ -884,19 +864,6 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                     .setSize(70, 18)
                     .setPos(3, 58)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                .setPos(3, 88)
-                .setSize(50, 14))
-            .widget(
-                new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
-                    .setTextureGetter(
-                        state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
-                            : GTUITextures.OVERLAY_BUTTON_CROSS)
-                    .setBackground(GTUITextures.BUTTON_STANDARD)
-                    .setPos(53, 87)
-                    .setSize(16, 16)
-                    .addTooltip(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
         builder.widget(
             TextWidget.localised("Info_OredictInputBusME_Oredict")
                 .setPos(3, 120)

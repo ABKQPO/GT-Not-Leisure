@@ -41,7 +41,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -117,14 +116,14 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return machineMode == MACHINEMODE_CENTRIFUGE ? GTPPRecipeMaps.centrifugeNonCellRecipes
+        return machineMode == MACHINEMODE_CENTRIFUGE ? RecipeMaps.centrifugeNonCellRecipes
             : RecipeMaps.thermalCentrifugeRecipes;
     }
 
     @NotNull
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
-        return Arrays.asList(GTPPRecipeMaps.centrifugeNonCellRecipes, RecipeMaps.thermalCentrifugeRecipes);
+        return Arrays.asList(RecipeMaps.centrifugeNonCellRecipes, RecipeMaps.thermalCentrifugeRecipes);
     }
 
     @Override

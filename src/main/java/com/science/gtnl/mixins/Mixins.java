@@ -33,10 +33,6 @@ public enum Mixins implements IMixins {
             .setPhase(Phase.EARLY)
             .addExcludedMod(ModList.NHUtilities)),
 
-    NH_CORE_MOD_EARLY(new MixinBuilder().addCommonMixins("nhCoreMod.AccessorBacteriaRegistry")
-        .setPhase(Phase.EARLY)
-        .addRequiredMod(ModList.NewHorizonsCoreMod)),
-
     MINECRAFT_COMMON(Side.COMMON, "minecraft.AccessorStringTranslate", "minecraft.AccessorContainerRepair",
         "minecraft.AccessorEntityLivingBase", "minecraft.AccessorTessellator", "minecraft.AccessorFoodStats",
         "minecraft.AccessorMinecraft", "minecraft.MixinCommandTeleport", "minecraft.MixinEntity",
@@ -160,7 +156,6 @@ public enum Mixins implements IMixins {
             "tecTech.MixinMTEEyeOfHarmony",
             "tecTech.AccessorMTEResearchStation",
             "tecTech.MixinMTEResearchStation",
-            "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
@@ -170,6 +165,17 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
+
+    BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
+        .addCommonMixins(
+            "bartwork.MixinItemRegistry",
+            "bartwork.MixinMultipleMetalLoader",
+            "bartwork.MixinSimpleMetalLoader",
+            "bartwork.MixinWerkstoff",
+            "bartwork.MixinWerkstoffLoader",
+            "bartwork.MixinMoltenCellLoader")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.BartWorks)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")
         .addCommonMixins(

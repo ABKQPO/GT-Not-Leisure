@@ -22,7 +22,7 @@ public class MixinItemRegistry {
         method = "<clinit>",
         at = @At(
             value = "INVOKE",
-            target = "Lbartworks/common/blocks/BWBlocksGlass2;<init>(Ljava/lang/String;[Ljava/lang/String;[[SLnet/minecraft/creativetab/CreativeTabs;ZZ)V",
+            target = "Lbartworks/common/blocks/BWBlocksGlass2;<init>(Ljava/lang/String;[Ljava/lang/String;Lnet/minecraft/creativetab/CreativeTabs;)V",
             ordinal = 0))
     private static void modifyRealGlass2Textures(Args args) {
         String[] originalTextures = args.get(1);
@@ -32,7 +32,6 @@ public class MixinItemRegistry {
         newTextures[originalTextures.length + 1] = ModList.ScienceNotLeisure.ID
             + ":QuarkGluonPlasmaReinforcedBoronSilicateGlassBlock";
         args.set(1, newTextures);
-
         short[][] originalColors = args.get(2);
         short[][] newColors = Arrays.copyOf(originalColors, originalColors.length + 2);
 

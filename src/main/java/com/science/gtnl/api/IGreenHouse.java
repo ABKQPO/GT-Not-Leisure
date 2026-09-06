@@ -30,7 +30,7 @@ import com.gtnewhorizon.cropsnh.blocks.BlockFertilizerUnit;
 import com.gtnewhorizon.cropsnh.blocks.BlockGrowthAccelerationUnit;
 import com.gtnewhorizon.cropsnh.blocks.BlockSeedBed;
 import com.gtnewhorizon.cropsnh.farming.registries.HydrationRegistry;
-import com.gtnewhorizon.cropsnh.farming.requirements.BlockUnderRequirement;
+import com.gtnewhorizon.cropsnh.farming.requirements.SubSoilRequirement;
 import com.gtnewhorizon.cropsnh.tileentity.TileEntityCropSticks;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
@@ -192,7 +192,7 @@ public interface IGreenHouse extends IVoidable {
     default int getEffectiveStoredCropCount() {
         int count = 0;
         for (GreenHouseStoredCrop crop : getStoredCrops()) {
-            ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            ISeedData seedData = CropsNHUtils.getSeedData(crop.getSeedStack(), false, true);
             count += getEffectiveStoredCropCount(crop, seedData);
         }
         return count;
@@ -219,7 +219,7 @@ public interface IGreenHouse extends IVoidable {
     default int getMissingBlockUnderCount() {
         int missing = 0;
         for (GreenHouseStoredCrop crop : getStoredCrops()) {
-            ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            ISeedData seedData = CropsNHUtils.getSeedData(crop.getSeedStack(), false, true);
             if (seedData == null || !needsBlockUnder(seedData)) continue;
             int blockCount = CropsNHUtils.isStackValid(crop.getBlockUnderStack()) ? crop.getBlockUnderStack().stackSize
                 : 0;
@@ -275,7 +275,7 @@ public interface IGreenHouse extends IVoidable {
     }
 
     default CheckRecipeResult tryAddCropStack(ItemStack input, boolean simulate) {
-        ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(input);
+        ISeedData seedData = CropsNHUtils.getSeedData(input, false, true);
         if (seedData == null) return CheckRecipeResultRegistry.NO_RECIPE;
         if (seedData.getCrop()
             .getMinSeedBedTier() > getIndustrialFarmTier()) return SEED_BED_TIER_TOO_LOW;
@@ -330,7 +330,7 @@ public interface IGreenHouse extends IVoidable {
         boolean inserted = false;
         for (GreenHouseStoredCrop crop : getStoredCrops()) {
             if (remaining <= 0) break;
-            ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            ISeedData seedData = CropsNHUtils.getSeedData(crop.getSeedStack(), false, true);
             if (seedData == null || !needsBlockUnder(seedData)) continue;
             int missing = getMissingBlockUnderCount(crop);
             if (missing <= 0) continue;
@@ -369,7 +369,7 @@ public interface IGreenHouse extends IVoidable {
         return seedData.getCrop()
             .getGrowthRequirements()
             .stream()
-            .anyMatch(BlockUnderRequirement.class::isInstance);
+            .anyMatch(SubSoilRequirement.class::isInstance);
     }
 
     default int getMissingBlockUnderCount(GreenHouseStoredCrop crop) {
@@ -382,8 +382,8 @@ public interface IGreenHouse extends IVoidable {
         if (CropsNHUtils.isStackInvalid(blockUnder)) return false;
         for (IGrowthRequirement requirement : seedData.getCrop()
             .getGrowthRequirements()) {
-            if (requirement instanceof BlockUnderRequirement blockUnderRequirement
-                && blockUnderRequirement.isValidBlockUnder(blockUnder)) {
+            if (requirement instanceof SubSoilRequirement subSoilRequirement
+                && subSoilRequirement.isValidSubSoil(blockUnder)) {
                 return true;
             }
         }
@@ -393,9 +393,9 @@ public interface IGreenHouse extends IVoidable {
     default ItemStack findRequiredBlockUnder(ISeedData seedData) {
         for (IGrowthRequirement requirement : seedData.getCrop()
             .getGrowthRequirements()) {
-            if (!(requirement instanceof BlockUnderRequirement blockUnderRequirement)) continue;
+            if (!(requirement instanceof SubSoilRequirement subSoilRequirement)) continue;
             for (ItemStack input : getStoredInputs()) {
-                if (blockUnderRequirement.isValidBlockUnder(input)) {
+                if (subSoilRequirement.isValidSubSoil(input)) {
                     ItemStack result = input.copy();
                     result.stackSize = 0;
                     return result;
@@ -586,7 +586,7 @@ public interface IGreenHouse extends IVoidable {
     void setGreenHouseOutputItems(ItemStack[] outputs);
 
     default ISeedData createRuntimeSeedData(ItemStack seedStack) {
-        return CropsNHUtils.getAnalyzedSeedData(seedStack);
+        return CropsNHUtils.getSeedData(seedStack, false, true);
     }
 
     default CheckRecipeResult validateCanGrow(ISeedData seedData, GreenHouseStoredCrop crop) {
@@ -601,7 +601,7 @@ public interface IGreenHouse extends IVoidable {
             .getGrowthRequirements()) {
             if (requirement instanceof IMachineGrowthRequirement machineGrowthRequirement
                 && !machineGrowthRequirement.canGrow(seedData, getBaseMetaTileEntity(), catalysts)) {
-                if (requirement instanceof BlockUnderRequirement) return BLOCK_UNDER_MISMATCH_FARM;
+                if (requirement instanceof SubSoilRequirement) return BLOCK_UNDER_MISMATCH_FARM;
                 return CANNOT_GROW;
             }
         }

@@ -41,7 +41,7 @@ public class TreeDiagramGui extends GTNLMultiBlockBaseGui<TreeDiagram> {
     }
 
     @Override
-    public IWidget createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
+    public ButtonWidget<?> createPowerPanelButton(PanelSyncManager syncManager, ModularPanel parent) {
         IPanelHandler powerPanel = syncManager.syncedPanel(
             POWER_PANEL_KEY,
             true,

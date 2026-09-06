@@ -43,6 +43,7 @@ import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -57,53 +58,57 @@ import cpw.mods.fml.common.FMLCommonHandler;
 @Mixin(value = Minecraft.class, remap = true)
 public abstract class MixinMinecraft {
 
-    @Shadow
-    public boolean isGamePaused;
     @Final
     @Shadow
-    public Profiler mcProfiler;
+    public Profiler mcProfiler; // mcProfiler
     @Shadow
-    public int rightClickDelayTimer;
+    public int rightClickDelayTimer; // rightClickDelayTimer
     @Shadow
-    public GuiIngame ingameGUI;
+    public GuiIngame ingameGUI; // ingameGUI
     @Shadow
-    public EntityRenderer entityRenderer;
+    public EntityRenderer entityRenderer; // entityRenderer
     @Shadow
-    public WorldClient theWorld;
+    public WorldClient theWorld; // theWorld
     @Shadow
-    public PlayerControllerMP playerController;
+    public PlayerControllerMP playerController; // playerController
     @Shadow
-    public TextureManager renderEngine;
+    public TextureManager renderEngine; // renderEngine
     @Shadow
-    public GuiScreen currentScreen;
+    public GuiScreen currentScreen; // currentScreen
     @Shadow
-    public EntityClientPlayerMP thePlayer;
+    public EntityClientPlayerMP thePlayer; // thePlayer
     @Shadow
-    public int leftClickCounter;
+    public int leftClickCounter; // leftClickCounter
     @Shadow
-    public long systemTime;
+    public long systemTime; // systemTime
     @Shadow
-    public GameSettings gameSettings;
+    public GameSettings gameSettings; // gameSettings
     @Shadow
-    public boolean inGameHasFocus;
+    public boolean inGameHasFocus; // inGameHasFocus
     @Shadow
-    public long field_83002_am;
+    public long field_83002_am; // debugKey (F3)
     @Shadow
-    public int joinPlayerCounter;
+    public int joinPlayerCounter; // joinPlayerCounter
     @Shadow
-    public RenderGlobal renderGlobal;
+    public RenderGlobal renderGlobal; // renderGlobal
     @Shadow
-    public MusicTicker mcMusicTicker;
+    public MusicTicker mcMusicTicker; // mcMusicTicker
     @Shadow
-    public SoundHandler mcSoundHandler;
+    public SoundHandler mcSoundHandler; // mcSoundHandler
     @Shadow
-    public EffectRenderer effectRenderer;
+    public EffectRenderer effectRenderer; // effectRenderer
     @Shadow
-    public NetworkManager myNetworkManager;
+    public NetworkManager myNetworkManager; // myNetworkManager
     @Shadow
-    public Timer timer;
+    public Timer timer; // timer
     @Shadow
-    public boolean refreshTexturePacksScheduled;
+    public boolean refreshTexturePacksScheduled; // refreshTexturePacksScheduled
+
+    // MC 1.7.10 does not have an isGamePaused field, so compute it manually.
+    @Unique
+    private boolean gtnl$isGamePaused() {
+        return this.theWorld == null || (this.currentScreen != null && this.currentScreen.doesGuiPauseGame());
+    }
 
     @Redirect(
         method = "startGame",
@@ -122,7 +127,6 @@ public abstract class MixinMinecraft {
             ci.cancel();
         }
         this.mcProfiler.startSection("scheduledExecutables");
-
         this.mcProfiler.endSection();
 
         if (this.rightClickDelayTimer > 0) {
@@ -134,7 +138,7 @@ public abstract class MixinMinecraft {
 
         this.mcProfiler.startSection("gui");
 
-        if (!this.isGamePaused) {
+        if (!this.gtnl$isGamePaused()) {
             this.ingameGUI.updateTick();
         }
 
@@ -142,22 +146,21 @@ public abstract class MixinMinecraft {
         this.entityRenderer.getMouseOver(1.0F);
         this.mcProfiler.endStartSection("gameMode");
 
-        if (!this.isGamePaused && this.theWorld != null) {
+        if (!this.gtnl$isGamePaused() && this.theWorld != null) {
             this.playerController.updateController();
         }
 
         this.mcProfiler.endStartSection("textures");
 
-        if (!this.isGamePaused) {
+        if (!this.gtnl$isGamePaused()) {
             if (!isStop) {
                 this.renderEngine.tick();
             } else {
-                // Keep the player's own inventory animations ticking.
-                ItemStack[] itemStacks = ((Minecraft) ((Object) this)).thePlayer.inventory.mainInventory;
+                ItemStack[] itemStacks = this.thePlayer.inventory.mainInventory;
                 for (int i = 0; i < itemStacks.length; i++) {
                     ItemStack stack = itemStacks[i];
                     if (stack == null) continue;
-                    stack.updateAnimation(theWorld, thePlayer, i, thePlayer.inventory.currentItem == i);
+                    stack.updateAnimation(this.theWorld, this.thePlayer, i, this.thePlayer.inventory.currentItem == i);
                 }
             }
         }
@@ -189,7 +192,7 @@ public abstract class MixinMinecraft {
                 crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
 
                     public String call() {
-                        return ((Minecraft) ((Object) this)).currentScreen.getClass()
+                        return MixinMinecraft.this.currentScreen.getClass()
                             .getCanonicalName();
                     }
                 });
@@ -205,7 +208,7 @@ public abstract class MixinMinecraft {
                     crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
 
                         public String call() {
-                            return ((Minecraft) ((Object) this)).currentScreen.getClass()
+                            return MixinMinecraft.this.currentScreen.getClass()
                                 .getCanonicalName();
                         }
                     });
@@ -237,14 +240,8 @@ public abstract class MixinMinecraft {
                         this.thePlayer.inventory.changeCurrentItem(i);
 
                         if (this.gameSettings.noclip) {
-                            if (i > 0) {
-                                i = 1;
-                            }
-
-                            if (i < 0) {
-                                i = -1;
-                            }
-
+                            if (i > 0) i = 1;
+                            if (i < 0) i = -1;
                             this.gameSettings.noclipRate += (float) i * 0.25F;
                         }
                     }
@@ -253,7 +250,7 @@ public abstract class MixinMinecraft {
                         if (!this.inGameHasFocus && Mouse.getEventButtonState()) {
                             ((Minecraft) ((Object) this)).setIngameFocus();
                         }
-                    } else if (this.currentScreen != null) {
+                    } else {
                         this.currentScreen.handleMouseInput();
                     }
                 }
@@ -315,7 +312,7 @@ public abstract class MixinMinecraft {
                         }
 
                         if (Keyboard.getEventKey() == 30 && Keyboard.isKeyDown(61)) {
-                            ((Minecraft) ((Object) this)).renderGlobal.loadRenderers();
+                            this.renderGlobal.loadRenderers();
                         }
 
                         if (Keyboard.getEventKey() == 35 && Keyboard.isKeyDown(61)) {
@@ -343,7 +340,6 @@ public abstract class MixinMinecraft {
 
                         if (this.gameSettings.keyBindTogglePerspective.isPressed()) {
                             ++this.gameSettings.thirdPersonView;
-
                             if (this.gameSettings.thirdPersonView > 2) {
                                 this.gameSettings.thirdPersonView = 0;
                             }
@@ -358,7 +354,6 @@ public abstract class MixinMinecraft {
                         if (Keyboard.getEventKey() == 11) {
                             ((Minecraft) ((Object) this)).updateDebugProfilerName(0);
                         }
-
                         for (j = 0; j < 9; ++j) {
                             if (Keyboard.getEventKey() == 2 + j) {
                                 ((Minecraft) ((Object) this)).updateDebugProfilerName(j + 1);
@@ -405,20 +400,11 @@ public abstract class MixinMinecraft {
                 if (!this.gameSettings.keyBindUseItem.getIsKeyPressed()) {
                     this.playerController.onStoppedUsingItem(this.thePlayer);
                 }
-
-                label391:
-
-                while (true) {
+                label391: while (true) {
                     if (!this.gameSettings.keyBindAttack.isPressed()) {
-                        while (this.gameSettings.keyBindUseItem.isPressed()) {
-
-                        }
-
+                        while (this.gameSettings.keyBindUseItem.isPressed()) {}
                         while (true) {
-                            if (this.gameSettings.keyBindPickBlock.isPressed()) {
-                                continue;
-                            }
-
+                            if (!this.gameSettings.keyBindPickBlock.isPressed()) continue;
                             break label391;
                         }
                     }
@@ -427,11 +413,9 @@ public abstract class MixinMinecraft {
                 while (this.gameSettings.keyBindAttack.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147116_af();
                 }
-
                 while (this.gameSettings.keyBindUseItem.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147121_ag();
                 }
-
                 while (this.gameSettings.keyBindPickBlock.isPressed()) {
                     ((Minecraft) ((Object) this)).func_147112_ai();
                 }
@@ -449,7 +433,6 @@ public abstract class MixinMinecraft {
         if (this.theWorld != null) {
             if (this.thePlayer != null) {
                 ++this.joinPlayerCounter;
-
                 if (this.joinPlayerCounter == 30) {
                     this.joinPlayerCounter = 0;
                     this.theWorld.joinEntityInSurroundings(this.thePlayer);
@@ -457,35 +440,31 @@ public abstract class MixinMinecraft {
             }
 
             this.mcProfiler.endStartSection("gameRenderer");
-
-            if (!this.isGamePaused) {
+            if (!this.gtnl$isGamePaused()) {
                 this.entityRenderer.updateRenderer();
             }
 
             this.mcProfiler.endStartSection("levelRenderer");
-
-            if (!this.isGamePaused) {
+            if (!this.gtnl$isGamePaused()) {
                 if (!isStop) this.renderGlobal.updateClouds();
             }
 
             this.mcProfiler.endStartSection("level");
-
-            if (!this.isGamePaused) {
+            if (!this.gtnl$isGamePaused()) {
                 if (this.theWorld.lastLightningBolt > 0) {
                     if (!isStop) --this.theWorld.lastLightningBolt;
                 }
-
                 this.theWorld.updateEntities();
             }
         }
 
-        if (!this.isGamePaused) {
+        if (!this.gtnl$isGamePaused()) {
             if (!isStop) this.mcMusicTicker.update();
             if (!isStop) this.mcSoundHandler.update();
         }
 
         if (this.theWorld != null) {
-            if (!this.isGamePaused) {
+            if (!this.gtnl$isGamePaused()) {
                 if (!isStop) this.theWorld
                     .setAllowedSpawnTypes(this.theWorld.difficultySetting != EnumDifficulty.PEACEFUL, true);
 
@@ -493,21 +472,18 @@ public abstract class MixinMinecraft {
                     if (!isStop) this.theWorld.tick();
                 } catch (Throwable throwable2) {
                     crashreport = CrashReport.makeCrashReport(throwable2, "Exception in world tick");
-
                     if (this.theWorld == null) {
                         crashreportcategory = crashreport.makeCategory("Affected level");
                         crashreportcategory.addCrashSection("Problem", "Level is null!");
                     } else {
                         this.theWorld.addWorldInfoToCrashReport(crashreport);
                     }
-
                     throw new ReportedException(crashreport);
                 }
             }
 
             this.mcProfiler.endStartSection("animateTick");
-
-            if (!this.isGamePaused && this.theWorld != null) {
+            if (!this.gtnl$isGamePaused() && this.theWorld != null) {
                 if (!isStop) this.theWorld.doVoidFogParticles(
                     MathHelper.floor_double(this.thePlayer.posX),
                     MathHelper.floor_double(this.thePlayer.posY),
@@ -515,8 +491,7 @@ public abstract class MixinMinecraft {
             }
 
             this.mcProfiler.endStartSection("particles");
-
-            if (!this.isGamePaused) {
+            if (!this.gtnl$isGamePaused()) {
                 if (!isStop) this.effectRenderer.updateEffects();
             }
         } else if (this.myNetworkManager != null) {
@@ -526,7 +501,6 @@ public abstract class MixinMinecraft {
 
         FMLCommonHandler.instance()
             .onPostClientTick();
-
         this.mcProfiler.endSection();
         this.systemTime = Minecraft.getSystemTime();
     }
@@ -544,7 +518,7 @@ public abstract class MixinMinecraft {
             ((Minecraft) ((Object) this)).shutdown();
         }
 
-        if (this.isGamePaused && this.theWorld != null) {
+        if (this.gtnl$isGamePaused() && this.theWorld != null) {
             float f = this.timer.renderPartialTicks;
             this.timer.updateTimer();
             this.timer.renderPartialTicks = f;
@@ -605,7 +579,6 @@ public abstract class MixinMinecraft {
             if (!this.mcProfiler.profilingEnabled) {
                 this.mcProfiler.clearProfiling();
             }
-
             this.mcProfiler.profilingEnabled = true;
             ((Minecraft) ((Object) this)).displayDebugInfo(k);
         } else {
@@ -635,9 +608,6 @@ public abstract class MixinMinecraft {
         this.mcProfiler.endSection();
         ((Minecraft) ((Object) this)).checkGLError("Post render");
         ++((Minecraft) ((Object) this)).fpsCounter;
-        this.isGamePaused = ((Minecraft) ((Object) this)).isSingleplayer() && this.currentScreen != null
-            && this.currentScreen.doesGuiPauseGame()
-            && !((Minecraft) ((Object) this)).theIntegratedServer.getPublic();
 
         while (Minecraft.getSystemTime() >= ((Minecraft) ((Object) this)).debugUpdateTime + 1000L) {
             Minecraft.debugFPS = ((Minecraft) ((Object) this)).fpsCounter;

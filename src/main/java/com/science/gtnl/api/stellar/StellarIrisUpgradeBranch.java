@@ -26,5 +26,4 @@ public class StellarIrisUpgradeBranch extends StellarIrisUpgradeTree {
         }
         this.translationKey = translationKey;
     }
-
 }

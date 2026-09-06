@@ -1,7 +1,7 @@
 package com.science.gtnl.common.gui.modularui;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -13,10 +13,10 @@ import com.science.gtnl.common.machine.hatch.SuperDataAccessHatch;
 import gregtech.api.enums.ItemList;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
-import gregtech.common.gui.modularui.hatch.MTEHatchDataAccessGUI;
+import gregtech.common.gui.modularui.hatch.MTEHatchDataAccessGui;
 import gregtech.common.modularui2.widget.builder.ItemSlotGridBuilder;
 
-public class SuperDataAccessHatchGui extends MTEHatchDataAccessGUI {
+public class SuperDataAccessHatchGui extends MTEHatchDataAccessGui {
 
     public SuperDataAccessHatchGui(SuperDataAccessHatch hatch) {
         super(hatch);
@@ -30,7 +30,9 @@ public class SuperDataAccessHatchGui extends MTEHatchDataAccessGUI {
             .doesAddGregTechLogo(false)
             .build()
             .child(createDataStickGrid(syncManager))
-            .child(createLogo());
+            .child(
+                new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(18, 18)
+                    .pos(170, 66));
     }
 
     public IWidget createDataStickGrid(PanelSyncManager syncManager) {
@@ -44,8 +46,4 @@ public class SuperDataAccessHatchGui extends MTEHatchDataAccessGUI {
             .pos(43, 18);
     }
 
-    @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
-    }
 }

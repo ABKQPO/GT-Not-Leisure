@@ -200,7 +200,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
                 steamApiary.supportsTerminalLeftCornerColumn(),
                 () -> createTerminalLeftCornerColumn(panel, syncManager))
             .setEnabledIf(unused -> !inventoryViewSyncer.getBoolValue());
-        return new ParentWidget<>().size(getTerminalWidgetWidth(), TERMINAL_HEIGHT)
+        return new ParentWidget<>().size(getTerminalWidgetWidth(), getTerminalWidgetHeight())
             .child(statusParent)
             .child(beeInventoryWidget);
     }

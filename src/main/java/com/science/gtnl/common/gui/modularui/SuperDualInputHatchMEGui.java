@@ -1,12 +1,11 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
-
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -84,7 +83,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
     public static final String MIN_FLUID_SYNC_KEY = "minAutoPullFluidAmount";
     public static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
     public static final String INT_MAX_SCALE_SYNC_KEY = "intMaxScale";
-    public static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
     public static final String ACTIVE_SYNC_KEY = "isActive";
     public static final String POWERED_SYNC_KEY = "isPowered";
     public static final String BOOTING_SYNC_KEY = "isBooting";
@@ -128,7 +126,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
         panel.child(createPages(panel, syncManager, controller))
             .child(createPageButtons(controller))
             .child(createStatusText(syncManager))
-            .child(createLogo());
+            .child(makeLogoWidget());
         return panel;
     }
 
@@ -151,9 +149,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
         syncManager.syncValue(
             INT_MAX_SCALE_SYNC_KEY,
             new IntSyncValue(machine::getIntMaxScaleForGui, machine::setIntMaxScaleForGui).allowC2S());
-        syncManager.syncValue(
-            EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck).allowC2S());
         syncManager.syncValue(ACTIVE_SYNC_KEY, new BooleanSyncValue(machine::isActive));
         syncManager.syncValue(POWERED_SYNC_KEY, new BooleanSyncValue(machine::isPowered));
         syncManager.syncValue(BOOTING_SYNC_KEY, new BooleanSyncValue(machine::isBooting));
@@ -294,7 +289,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     }
 
                     @Override
-                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                    public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
                         return false;
                     }
 
@@ -474,8 +469,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
         LongSyncValue minFluidSyncer = syncManager.findSyncHandler(MIN_FLUID_SYNC_KEY, LongSyncValue.class);
         IntSyncValue refreshSyncer = syncManager.findSyncHandler(AUTO_PULL_REFRESH_SYNC_KEY, IntSyncValue.class);
         IntSyncValue intMaxSyncer = syncManager.findSyncHandler(INT_MAX_SCALE_SYNC_KEY, IntSyncValue.class);
-        BooleanSyncValue recipeCheckSyncer = syncManager
-            .findSyncHandler(EXPEDITE_RECIPE_SYNC_KEY, BooleanSyncValue.class);
 
         return new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT)
             .child(
@@ -487,8 +480,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     104,
                     6))
             .child(createConfigField("Info_SuperDualInputHatchME_03", createLongField(minItemSyncer), 198, 6))
-            .child(createConfigField("Info_SuperDualInputHatchME_04", createLongField(minFluidSyncer), 292, 6))
-            .child(createRecipeCheckRow(recipeCheckSyncer));
+            .child(createConfigField("Info_SuperDualInputHatchME_04", createLongField(minFluidSyncer), 292, 6));
     }
 
     public Widget<?> createConfigField(String labelKey, TextFieldWidget field, int x, int y) {
@@ -517,7 +509,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
             .setEnabledIf(button -> machine.allowAuto)
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"));
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"));
     }
 
     public Widget<?> createCenterControls(PanelSyncManager syncManager) {
@@ -529,25 +521,6 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     .size(12)
                     .pos(CENTER_ARROW_X - CENTER_CONTROL_X, CENTER_ARROW_Y))
             .child(createCircuitSlot(syncManager).pos(CENTER_CIRCUIT_X - CENTER_CONTROL_X, CENTER_CIRCUIT_Y));
-    }
-
-    public Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
-        return Flow.row()
-            .coverChildren()
-            .childPadding(4)
-            .pos(10, 48)
-            .child(
-                new ToggleButton().value(recipeCheckSyncer)
-                    .size(16)
-                    .background(true, GTGuiTextures.BUTTON_STANDARD)
-                    .background(false, GTGuiTextures.BUTTON_STANDARD)
-                    .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
-                    .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")))
-            .child(
-                IKey.lang("GT5U.machines.stocking_bus.force_check")
-                    .asWidget()
-                    .maxWidth(150));
     }
 
     public ModularPanel createStoredStackSizePanel(String key, ModularPanel parent, PanelSyncManager syncManager,
@@ -563,7 +536,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 IKey.lang(titleKey)
                     .asWidget())
             .child(
-                IKey.str(translate("Info_SuperDualInputHatchME_02") + slot)
+                IKey.str(StatCollector.translateToLocal("Info_SuperDualInputHatchME_02") + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(
@@ -620,8 +593,8 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             boolean powered = poweredSyncer.getBoolValue();
             String state = WailaText.getPowerState(active, powered, bootingSyncer.getBoolValue());
             if (active && powered) {
-                String workState = translate(
-                    machine.isAllowedToWork() ? "GT5U.gui.text.enabled" : "GT5U.gui.text.disabled");
+                String workState = StatCollector
+                    .translateToLocal(machine.isAllowedToWork() ? "GT5U.gui.text.enabled" : "GT5U.gui.text.disabled");
                 return MessageFormat.format("{0}{1}§f ({2})", EnumChatFormatting.GREEN, state, workState);
             }
             return EnumChatFormatting.DARK_RED + state;
@@ -634,14 +607,9 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
     }
 
     @Override
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE)
             .pos(367, 81);
-    }
-
-    @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     public UITexture createTabBackground(int pageIndex, boolean selected) {

@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
+import tectech.rendering.EOH.EOHRenderingUtils;
 
 @SideOnly(Side.CLIENT)
 public class AprilFoolMachineRender implements IItemRenderer {
@@ -38,6 +39,7 @@ public class AprilFoolMachineRender implements IItemRenderer {
         GL11.glPushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         renderGORGEStar(
+            EOHRenderingUtils.IDENTITY,
             type,
             GTMod.clientProxy()
                 .getAnimationRenderTicks(),

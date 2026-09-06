@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import net.minecraft.item.ItemStack;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,7 +17,7 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.RestartableTask;
 import codechicken.nei.api.ItemFilter;
 
-@Mixin(targets = "codechicken.nei.ItemList$3", remap = false)
+@Mixin(targets = "codechicken.nei.ItemListLoader$6", remap = false)
 public class MixinItemListUpdateFilter {
 
     @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
@@ -26,7 +28,7 @@ public class MixinItemListUpdateFilter {
         }
 
         ItemFilter filter = ItemList.getItemListFilter();
-        ArrayList<net.minecraft.item.ItemStack> filtered;
+        ArrayList<ItemStack> filtered;
 
         try {
             // NEI worker threads can race legacy class resolution on newer JVMs.
@@ -45,7 +47,10 @@ public class MixinItemListUpdateFilter {
             return;
         }
 
-        filtered.sort(Comparator.comparingInt(AccessorItemList.getOrdering()::get));
+        filtered.sort(
+            Comparator.comparingInt(
+                a -> AccessorItemList.getItems()
+                    .indexOf(a)));
 
         if (((RestartableTask) (Object) this).interrupted()) {
             ci.cancel();

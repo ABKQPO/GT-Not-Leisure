@@ -10,15 +10,15 @@ import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class ChemicalDehydratorRecipes implements IRecipePool {
 
-    public RecipeMap<?> CDR = GTPPRecipeMaps.chemicalDehydratorRecipes;
-    public RecipeMap<?> CDNCR = GTPPRecipeMaps.chemicalDehydratorNonCellRecipes;
+    public RecipeMap<?> CDR = RecipeMaps.chemicalDehydratorRecipes;
+    public RecipeMap<?> CDNCR = RecipeMaps.chemicalDehydratorNonCellRecipes;
 
     @Override
     public void loadRecipes() {

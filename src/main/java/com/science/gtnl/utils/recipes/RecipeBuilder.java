@@ -20,6 +20,7 @@ import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipe;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeBuilder;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeWithAlt;
 
+import gregtech.GTLoggers;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
 import gregtech.api.interfaces.IRecipeMap;
@@ -30,7 +31,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.IRecipeMetadataStorage;
 import gregtech.api.recipe.metadata.RecipeMetadataStorage;
-import gregtech.api.util.GTLog;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeBuilder;
@@ -172,7 +172,7 @@ public class RecipeBuilder {
                 altOreIds[i] = OreDictionary.getOreID(oreDictItemStack.mOreName);
                 ArrayList<ItemStack> ores = GTOreDictUnificator.getOres(oreDictItemStack.mOreName);
                 if (ores.isEmpty()) {
-                    GTLog.err.println(
+                    GTLoggers.GT_FML_LOGGER.error(
                         "Warning: OreDict entry \"" + oreDictItemStack.mOreName
                             + "\" is empty; recipe will be skipped.");
                     result = GTValues.emptyItemStackArray;
@@ -191,7 +191,8 @@ public class RecipeBuilder {
                 altOreIds[i] = OreDictionary.getOreID(arr[0].toString());
                 ArrayList<ItemStack> ores = GTOreDictUnificator.getOres(arr[0]);
                 if (ores.isEmpty()) {
-                    GTLog.err.println("Warning: OreDict entry \"" + arr[0] + "\" is empty; recipe will be skipped.");
+                    GTLoggers.GT_FML_LOGGER
+                        .error("Warning: OreDict entry \"{}\" is empty; recipe will be skipped.", arr[0]);
                     result = GTValues.emptyItemStackArray;
                 } else {
                     int size = ((Number) arr[1]).intValue();
@@ -612,10 +613,10 @@ public class RecipeBuilder {
         int specialValue = 0;
         if (getMetadataOrDefault(GTRecipeConstants.LOW_GRAVITY, false)) specialValue -= 100;
         if (getMetadataOrDefault(GTRecipeConstants.CLEANROOM, false)) specialValue -= 200;
-        for (RecipeMetadataKey<Integer> ident : SPECIAL_VALUE_ALIASES) {
-            Integer metadata = getMetadataOrDefault(ident, null);
+        for (RecipeMetadataKey<? extends Number> ident : SPECIAL_VALUE_ALIASES) {
+            Number metadata = getMetadataOrDefault(ident, null);
             if (metadata != null) {
-                specialValue = metadata;
+                specialValue = metadata.intValue();
                 break;
             }
         }
@@ -703,9 +704,8 @@ public class RecipeBuilder {
 
     public static void handleNullRecipeComponents(String componentType) {
         // place a breakpoint here to catch all these issues
-        GTLog.err.print("null detected in ");
-        GTLog.err.println(componentType);
-        new NullPointerException().printStackTrace(GTLog.err);
+        GTLoggers.GT_FML_LOGGER.error("null detected in {}", componentType);
+        new NullPointerException().printStackTrace();
         if (PANIC_MODE_NULL) {
             throw new IllegalArgumentException("null in argument");
         }

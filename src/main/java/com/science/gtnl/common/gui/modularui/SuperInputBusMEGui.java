@@ -1,19 +1,18 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
-
 import java.text.MessageFormat;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
+import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -57,7 +56,6 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
     public static final String AUTO_PULL_SYNC_KEY = "autoPullItemList";
     public static final String MIN_AUTO_PULL_SYNC_KEY = "minAutoPullStackSize";
     public static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
-    public static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
     public static final String ACTIVE_SYNC_KEY = "isActive";
     public static final String POWERED_SYNC_KEY = "isPowered";
     public static final String BOOTING_SYNC_KEY = "isBooting";
@@ -101,7 +99,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .child(createAutoPullButton(panel, syncManager))
             .child(createManualSlotButton(panel, syncManager))
             .child(createStatusText(syncManager))
-            .child(createLogo());
+            .child(makeLogoWidget());
         return panel;
     }
 
@@ -116,9 +114,6 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
         syncManager.syncValue(
             AUTO_PULL_REFRESH_SYNC_KEY,
             new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime).allowC2S());
-        syncManager.syncValue(
-            EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck).allowC2S());
         syncManager.syncValue(ACTIVE_SYNC_KEY, new BooleanSyncValue(machine::isActive));
         syncManager.syncValue(POWERED_SYNC_KEY, new BooleanSyncValue(machine::isPowered));
         syncManager.syncValue(BOOTING_SYNC_KEY, new BooleanSyncValue(machine::isBooting));
@@ -169,7 +164,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                     }
 
                     @Override
-                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                    public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
                         return false;
                     }
 
@@ -226,8 +221,8 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
             .setEnabledIf(button -> machine.autoPullAvailable)
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.2"));
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.2"));
     }
 
     public Widget<?> createManualSlotButton(ModularPanel parent, PanelSyncManager syncManager) {
@@ -279,7 +274,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                 IKey.lang("Info_SuperInputHatchME_00")
                     .asWidget())
             .child(
-                IKey.str(translate("Info_SuperInputHatchME_01") + slot)
+                IKey.str(StatCollector.translateToLocal("Info_SuperInputHatchME_01") + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(createIntegerField(stackSizeSyncer).size(106, 18));
@@ -300,9 +295,6 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             machine::setMinAutoPullStackSize).allowC2S();
         IntSyncValue refreshSyncer = new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime)
             .allowC2S();
-        BooleanSyncValue recipeCheckSyncer = new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck)
-            .allowC2S();
-
         Flow mainColumn = Flow.column()
             .coverChildren()
             .marginTop(15)
@@ -316,8 +308,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
                     .asWidget()
                     .maxWidth(72)
                     .textAlign(Alignment.Center))
-            .child(createIntegerField(refreshSyncer))
-            .child(createRecipeCheckRow(recipeCheckSyncer));
+            .child(createIntegerField(refreshSyncer));
 
         Dialog<?> panel = createDialog(CONFIG_PANEL_KEY, parent);
         panel.coverChildren()
@@ -350,24 +341,6 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .size(72, 18);
     }
 
-    public Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
-        return Flow.row()
-            .coverChildren()
-            .childPadding(4)
-            .child(
-                IKey.lang("GT5U.machines.stocking_bus.force_check")
-                    .asWidget()
-                    .maxWidth(50))
-            .child(
-                new ToggleButton().value(recipeCheckSyncer)
-                    .size(16)
-                    .background(true, GTGuiTextures.BUTTON_STANDARD)
-                    .background(false, GTGuiTextures.BUTTON_STANDARD)
-                    .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
-                    .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")));
-    }
-
     public TextWidget<?> createStatusText(PanelSyncManager syncManager) {
         BooleanSyncValue activeSyncer = syncManager.findSyncHandler(ACTIVE_SYNC_KEY, BooleanSyncValue.class);
         BooleanSyncValue poweredSyncer = syncManager.findSyncHandler(POWERED_SYNC_KEY, BooleanSyncValue.class);
@@ -390,14 +363,9 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
     }
 
     @Override
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE)
             .pos(LOGO_X, LOGO_Y);
-    }
-
-    @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     public static class StoredStackSizeSlot extends StockingSlot {

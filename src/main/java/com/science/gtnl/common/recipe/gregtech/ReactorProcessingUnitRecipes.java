@@ -10,14 +10,14 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsElements;
 
 public class ReactorProcessingUnitRecipes implements IRecipePool {
 
-    public RecipeMap<?> RPU = GTPPRecipeMaps.reactorProcessingUnitRecipes;
+    public RecipeMap<?> RPU = RecipeMaps.reactorProcessingUnitRecipes;
 
     @Override
     public void loadRecipes() {

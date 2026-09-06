@@ -1,6 +1,7 @@
 package com.science.gtnl.common.gui.modularui;
 
-import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.widget.Widget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.basicMachine.ManaTank;
 
@@ -13,7 +14,7 @@ public class ManaTankGui extends MTEDigitalTankBaseGui<ManaTank> {
     }
 
     @Override
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE);
     }
 }

@@ -63,7 +63,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.tileentities.machines.multi.compressor.MTEHeatSensor;
+import gregtech.common.tileentities.machines.MTEHeatSensor;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -170,7 +170,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         }
 
         for (MTEHeatSensor hatch : sensorHatches) {
-            hatch.updateRedstoneOutput((float) percent);
+            hatch.setHeatValue((float) percent);
         }
 
         endRecipeProcessing();

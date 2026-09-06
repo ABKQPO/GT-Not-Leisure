@@ -38,13 +38,13 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -152,7 +152,7 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
         } else if (machineMode == MACHINEMODE_NEUTRON) {
             return GTNLRecipeMaps.ElectricNeutronActivatorRecipes;
         } else {
-            return GTPPRecipeMaps.cyclotronRecipes;
+            return RecipeMaps.cyclotronRecipes;
         }
     }
 
@@ -162,7 +162,7 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
         return Arrays.asList(
             GTNLRecipeMaps.DecayHastenerRecipes,
             GTNLRecipeMaps.ElectricNeutronActivatorRecipes,
-            GTPPRecipeMaps.cyclotronRecipes);
+            RecipeMaps.cyclotronRecipes);
     }
 
     @Override

@@ -132,7 +132,7 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
 
     @Override
     public GUITextureSet getGUITextureSet() {
-        return GUITextureSet.STEAM.apply(getSteamVariant());
+        return GUITextureSet.STEAM.apply(getTieredVariant());
     }
 
     @Override

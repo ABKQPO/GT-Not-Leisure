@@ -158,8 +158,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         MAX_PATTERN_COUNT);
 
     public boolean needPatternSync = true;
-    public boolean justHadNewItems = false;
-
     public String customName = "";
     public boolean supportFluids;
     public boolean additionalConnection = false;
@@ -960,7 +958,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             .insertItemsAndFluids(table)) {
             return false;
         }
-        justHadNewItems = true;
         return true;
     }
 
@@ -989,13 +986,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                 slot.refund(getProxy(), getRequest(), shouldDrop);
             } catch (GridAccessException ignored) {}
         }
-    }
-
-    @Override
-    public boolean justUpdated() {
-        boolean ret = justHadNewItems;
-        justHadNewItems = false;
-        return ret;
     }
 
     @Override

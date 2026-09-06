@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,21 +46,6 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     public double extraSpeedBoost = 1.0;
     public int maxOverclocks = Integer.MAX_VALUE;
 
-    /**
-     * The {@link IDualInputInventoryWithPattern} that has any possible recipe found in the last call of
-     * {@link #tryCachePossibleRecipesFromPattern(IDualInputInventoryWithPattern)}.
-     */
-    public IDualInputInventoryWithPattern activeDualInv;
-    /**
-     * The cache keyed by the {@link IDualInputInventoryWithPattern}, storing the possible recipes of the inv.
-     * <p>
-     * The entries can be removed by {@link #removeInventoryRecipeCache(IDualInputInventoryWithPattern)}, and it
-     * requires the hatches to actively call it when the inventory is changed (like the pattern is changed).
-     * <p>
-     * It will also be fully cleared when the {@link #getCurrentRecipeMap()} is not same to the last.
-     */
-    public Map<IDualInputInventoryWithPattern, Set<GTRecipe>> dualInvWithPatternToRecipeCache = new WeakHashMap<>();
-
     public GTNLProcessingLogic() {}
 
     public GTNLProcessingLogic(ProcessingLogic logic) {
@@ -76,6 +59,8 @@ public class GTNLProcessingLogic extends ProcessingLogic {
         this.specialSlotItem = processingLogic.getSpecialSlotItem();
         this.maxParallel = processingLogic.getMaxParallel();
         this.maxParallelSupplier = processingLogic.getMaxParallelSupplier();
+        this.euModSupplier = processingLogic.getEuModSupplier();
+        this.speedBoostSupplier = processingLogic.getSpeedBoostSupplier();
         this.batchSize = processingLogic.getBatchSize();
         this.recipeMapSupplier = processingLogic.getRecipeMapSupplier();
         this.euModifier = processingLogic.getEuModifier();
@@ -88,6 +73,9 @@ public class GTNLProcessingLogic extends ProcessingLogic {
         this.overClockTimeReduction = processingLogic.getOverClockTimeReduction();
         this.overClockPowerIncrease = processingLogic.getOverClockPowerIncrease();
         this.amperageOC = processingLogic.getAmperageOC();
+        this.recipeCaching = processingLogic.getRecipeCaching();
+        this.activeDualInv = processingLogic.getActiveDualInv();
+        this.dualInvWithPatternToRecipeCache = processingLogic.getDualInvWithPatternToRecipeCache();
 
         this.outputItems = processingLogic.getOutputItems();
         this.outputFluids = processingLogic.getOutputFluids();
@@ -247,8 +235,20 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     }
 
     @Override
+    public GTNLProcessingLogic setEuModifierSupplier(Supplier<Double> supplier) {
+        this.euModSupplier = supplier;
+        return this;
+    }
+
+    @Override
     public GTNLProcessingLogic setSpeedBonus(double speedModifier) {
         this.speedBoost = speedModifier;
+        return this;
+    }
+
+    @Override
+    public GTNLProcessingLogic setSpeedBonusSupplier(Supplier<Double> supplier) {
+        this.speedBoostSupplier = supplier;
         return this;
     }
 
@@ -332,6 +332,12 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     @Override
     public GTNLProcessingLogic setAmperageOC(boolean amperageOC) {
         this.amperageOC = amperageOC;
+        return this;
+    }
+
+    @Override
+    public GTNLProcessingLogic noRecipeCaching() {
+        this.recipeCaching = false;
         return this;
     }
 

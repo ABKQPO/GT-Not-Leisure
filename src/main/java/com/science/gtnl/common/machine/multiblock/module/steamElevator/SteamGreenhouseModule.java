@@ -199,7 +199,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         for (GreenHouseStoredCrop crop : storedCrops) {
             if (remaining <= 0) break;
 
-            ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            ISeedData seedData = CropsNHUtils.getSeedData(crop.getSeedStack(), false, true);
             if (seedData == null || !needsBlockUnder(seedData)) continue;
             int missing = getMissingBlockUnderCount(crop);
             if (missing <= 0) continue;

@@ -1,6 +1,8 @@
 package com.science.gtnl.common.gui.modularui;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.widget.Widget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 
 import gregtech.api.metatileentity.implementations.MTEBasicGenerator;
@@ -20,7 +22,7 @@ public class GTNLBasicGeneratorGui<T extends MTEBasicGenerator> extends MTEBasic
     }
 
     @Override
-    protected UITexture getLogoTexture() {
-        return logoTexture;
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(logoTexture).size(18, 18);
     }
 }
