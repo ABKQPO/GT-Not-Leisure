@@ -1459,6 +1459,15 @@ public class CraftingTableRecipes implements IRecipePool {
                     .orNull(),
                 'E', ToolDictNames.craftingToolWrench });
 
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SuperDenseEnergyCell.get(1),
+            new Object[] { "AAA", "ABA", "AAA", 'A', aeBlocks.energyCellDense()
+                .maybeStack(1)
+                .orNull(), 'B',
+                aeMaterials.engProcessor()
+                    .maybeStack(1)
+                    .orNull() });
+
         if (Mods.NewHorizonsCoreMod.isModLoaded()) {
             loadNHRecipe();
             if (MainConfig.recipe.enableSomethingRecipe) loadExtraRecipe();

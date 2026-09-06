@@ -23,6 +23,7 @@ import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
 import com.science.gtnl.common.block.blocks.BlockSaplingBrickuoia;
 import com.science.gtnl.common.block.blocks.BlockSearedLadder;
 import com.science.gtnl.common.block.blocks.BlockShimmerFluid;
+import com.science.gtnl.common.block.blocks.BlockSuperDenseEnergyCell;
 import com.science.gtnl.common.block.blocks.BlockSuperDualInterface;
 import com.science.gtnl.common.block.blocks.BlockSuperInterface;
 import com.science.gtnl.common.block.blocks.BlockWaterCandle;
@@ -61,6 +62,7 @@ public class BlockLoader {
     public static BlockMEChisel meChisel;
     public static BlockSuperInterface superInterface;
     public static BlockSuperDualInterface superDualInterface;
+    public static BlockSuperDenseEnergyCell superDenseEnergyCell;
     public static BlockBeamFormer beamFormer;
     public static BlockNanoPhagocytosisPlantRender nanoPhagocytosisPlantRender;
     public static BlockEternalGregTechWorkshopRender eternalGregTechWorkshopRender;
@@ -98,6 +100,7 @@ public class BlockLoader {
         meChisel = new BlockMEChisel();
         superInterface = new BlockSuperInterface();
         superDualInterface = new BlockSuperDualInterface();
+        superDenseEnergyCell = new BlockSuperDenseEnergyCell();
         beamFormer = new BlockBeamFormer();
         cardboardBox = new BlockCardboardBox();
         eternalGregTechWorkshopRender = new BlockEternalGregTechWorkshopRender();

@@ -3442,6 +3442,8 @@ container.SuperDualInterface=超级二合一ME接口
 
 item.PartActiveFormationPlane.name=ME主动成型面板
 
+tile.SuperDenseEnergyCell.name=超致密能源元件
+
 item.PartBeamFormer.name=ME光束成型器
 text.beam_former.hide=已隐藏光束。
 text.beam_former.show=已显示光束。

@@ -3440,6 +3440,8 @@ container.SuperDualInterface=Super Dual ME Interface
 
 item.PartActiveFormationPlane.name=ME Active Formation Plane
 
+tile.SuperDenseEnergyCell.name=Super Dense Energy Cell
+
 item.PartBeamFormer.name=ME Beam Former
 text.beam_former.hide=Hiding beam.
 text.beam_former.show=Showing beam.
