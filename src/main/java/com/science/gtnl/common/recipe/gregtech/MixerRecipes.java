@@ -28,7 +28,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsAlloy;
@@ -38,7 +37,7 @@ import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class MixerRecipes implements IRecipePool {
 
-    public RecipeMap<?> MNCR = GTPPRecipeMaps.mixerNonCellRecipes;
+    public RecipeMap<?> MNCR = RecipeMaps.mixerNonCellRecipes;
     public RecipeMap<?> MCR = RecipeMaps.mixerRecipes;
 
     @Override

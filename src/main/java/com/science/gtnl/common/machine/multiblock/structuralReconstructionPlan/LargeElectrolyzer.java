@@ -26,10 +26,10 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import gtnhlanth.common.register.LanthItemList;
 
@@ -104,7 +104,7 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.electrolyzerNonCellRecipes;
+        return RecipeMaps.electrolyzerNonCellRecipes;
     }
 
     @Override

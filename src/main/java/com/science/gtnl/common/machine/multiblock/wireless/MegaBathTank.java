@@ -43,7 +43,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
@@ -146,7 +145,7 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     public RecipeMap<?> getRecipeMap() {
         switch (machineMode) {
             case MACHINEMODE_SIMPLEWASH -> {
-                return GTPPRecipeMaps.simpleWasherRecipes;
+                return RecipeMaps.simpleWasherRecipes;
             }
             case MACHINEMODE_CHEMBATH -> {
                 return RecipeMaps.chemicalBathRecipes;
@@ -161,7 +160,7 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays
-            .asList(RecipeMaps.oreWasherRecipes, GTPPRecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
+            .asList(RecipeMaps.oreWasherRecipes, RecipeMaps.simpleWasherRecipes, RecipeMaps.chemicalBathRecipes);
     }
 
     @Override

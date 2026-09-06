@@ -12,14 +12,14 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsElements;
 
 public class AlloyBlastSmelterRecipes implements IRecipePool {
 
-    public RecipeMap<?> aBS = GTPPRecipeMaps.alloyBlastSmelterRecipes;
+    public RecipeMap<?> aBS = RecipeMaps.alloyBlastSmelterRecipes;
 
     @Override
     public void loadRecipes() {

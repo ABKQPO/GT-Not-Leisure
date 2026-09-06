@@ -21,8 +21,8 @@ public class ScriptTinkersConstruct implements IScriptLoader {
     }
 
     @Override
-    public List<String> getDependencies() {
-        return Arrays.asList(Mods.TinkerConstruct.ID, Mods.GregTech.ID);
+    public List<Mods> getDependencies() {
+        return Arrays.asList(Mods.TinkerConstruct, Mods.GregTech);
     }
 
     @Override

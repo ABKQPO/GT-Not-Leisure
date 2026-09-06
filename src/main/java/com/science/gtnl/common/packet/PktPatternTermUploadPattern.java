@@ -21,6 +21,8 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
 
+import java.lang.reflect.Method;
+
 public class PktPatternTermUploadPattern extends ServerboundPacket {
 
     @Override
@@ -37,12 +39,7 @@ public class PktPatternTermUploadPattern extends ServerboundPacket {
             patternSlotOUT = ((AccessorContainerPatternTerm) term).getPatternSlotOUT();
             patternStack = patternSlotOUT.getStack();
             if (patternStack == null) {
-                // encode() is now private, use reflection
-                try {
-                    java.lang.reflect.Method encode = ContainerPatternTerm.class.getDeclaredMethod("encode");
-                    encode.setAccessible(true);
-                    encode.invoke(term);
-                } catch (Exception ignored) {}
+                term.encode();
                 patternStack = patternSlotOUT.getStack();
                 if (patternStack == null) return;
             }

@@ -213,12 +213,6 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         return false;
     }
 
-    public boolean justUpdated() {
-        if (getMasterSuper() != null) return getMasterSuper().justUpdated();
-        if (getCraftingMaster() != null) return false;
-        return false;
-    }
-
     @Override
     public ItemStack[] getSharedItems() {
         if (getMasterSuper() != null) {

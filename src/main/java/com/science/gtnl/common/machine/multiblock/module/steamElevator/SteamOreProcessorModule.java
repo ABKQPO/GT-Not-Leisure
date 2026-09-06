@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import static gtPlusPlus.api.recipe.GTPPRecipeMaps.simpleWasherRecipes;
+import static gregtech.api.recipe.RecipeMaps.simpleWasherRecipes;
 
 import java.util.ArrayList;
 import java.util.List;

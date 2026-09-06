@@ -11,8 +11,8 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
@@ -20,7 +20,7 @@ import gtnhlanth.common.register.WerkstoffMaterialPool;
 
 public class ElectrolyzerRecipes implements IRecipePool {
 
-    public RecipeMap<?> ENCR = GTPPRecipeMaps.electrolyzerNonCellRecipes;
+    public RecipeMap<?> ENCR = RecipeMaps.electrolyzerNonCellRecipes;
 
     @Override
     public void loadRecipes() {

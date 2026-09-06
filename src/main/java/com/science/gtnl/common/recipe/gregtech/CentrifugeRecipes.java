@@ -13,15 +13,15 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.fluids.GTPPFluids;
 
 public class CentrifugeRecipes implements IRecipePool {
 
-    public RecipeMap<?> CNCR = GTPPRecipeMaps.centrifugeNonCellRecipes;
+    public RecipeMap<?> CNCR = RecipeMaps.centrifugeNonCellRecipes;
 
     @Override
     public void loadRecipes() {

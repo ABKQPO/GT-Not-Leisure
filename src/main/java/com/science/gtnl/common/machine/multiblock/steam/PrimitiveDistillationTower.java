@@ -38,6 +38,7 @@ import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import org.jetbrains.annotations.NotNull;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveDistillationTower>
@@ -302,7 +303,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         return ret;
     }
 
-    public boolean addFluidOutputs(@org.jetbrains.annotations.NotNull FluidStack[] outputFluids) {
+    public boolean addFluidOutputs(@NotNull FluidStack[] outputFluids) {
         List<IOutputHatch> allHatches = new ArrayList<>();
         for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
             for (MTEHatchOutput hatch : layer) {

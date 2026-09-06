@@ -35,6 +35,7 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
@@ -42,7 +43,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.casing.BlockGTCasingsTT;
@@ -238,10 +238,10 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     @Override
     public RecipeMap<?> getRecipeMap() {
         return switch (machineMode) {
-            case MACHINEMODE_DEHYDRATOR -> GTPPRecipeMaps.chemicalDehydratorNonCellRecipes;
-            case MACHINEMODE_COLD_TRAP -> GTPPRecipeMaps.coldTrapRecipes;
-            case MACHINEMODE_NUCLEAR_SALT -> GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes;
-            default -> GTPPRecipeMaps.vacuumFurnaceRecipes;
+            case MACHINEMODE_DEHYDRATOR -> RecipeMaps.chemicalDehydratorNonCellRecipes;
+            case MACHINEMODE_COLD_TRAP -> RecipeMaps.coldTrapRecipes;
+            case MACHINEMODE_NUCLEAR_SALT -> RecipeMaps.nuclearSaltProcessingPlantRecipes;
+            default -> RecipeMaps.vacuumFurnaceRecipes;
         };
     }
 
@@ -280,10 +280,10 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     @Override
     public Collection<RecipeMap<?>> getAvailableRecipeMaps() {
         return Arrays.asList(
-            GTPPRecipeMaps.chemicalDehydratorNonCellRecipes,
-            GTPPRecipeMaps.vacuumFurnaceRecipes,
-            GTPPRecipeMaps.coldTrapRecipes,
-            GTPPRecipeMaps.nuclearSaltProcessingPlantRecipes);
+            RecipeMaps.chemicalDehydratorNonCellRecipes,
+            RecipeMaps.vacuumFurnaceRecipes,
+            RecipeMaps.coldTrapRecipes,
+            RecipeMaps.nuclearSaltProcessingPlantRecipes);
     }
 
 }

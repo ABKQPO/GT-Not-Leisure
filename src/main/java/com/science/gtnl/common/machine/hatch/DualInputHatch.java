@@ -166,10 +166,6 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             && (disableLimited || limitedAllowPutStack(aIndex, aStack));
     }
 
-    public boolean justUpdated() {
-        return false;
-    }
-
     @Override
     public Iterator<? extends IDualInputInventory> inventories() {
         return Arrays.stream(new Inventory[] { inventory })

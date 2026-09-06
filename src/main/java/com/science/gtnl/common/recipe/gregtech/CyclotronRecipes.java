@@ -11,13 +11,13 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.Particle;
 
 public class CyclotronRecipes implements IRecipePool {
 
-    public RecipeMap<?> CR = GTPPRecipeMaps.cyclotronRecipes;
+    public RecipeMap<?> CR = RecipeMaps.cyclotronRecipes;
 
     @Override
     public void loadRecipes() {

@@ -173,7 +173,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public boolean allowAuto;
     public boolean autoPullItemList;
     public boolean expediteRecipeCheck = false;
-    public boolean justHadNewItems = false;
     public boolean recipe;
     public boolean off;
     boolean additionalConnection;
@@ -289,12 +288,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     result.setStackSize(g.stackSize());
                 }
                 i_client[aIndex] = result == null ? 0 : result.getStackSize();
-                if (expediteRecipeCheck) {
-                    ItemStack previous = this.i_mark[aIndex];
-                    if (s != null) {
-                        justHadNewItems = !ItemStack.areItemStacksEqual(s, previous);
-                    }
-                }
                 inventoryHandlerDisplay.setStackInSlot(aIndex, s);
                 return s;
             } catch (GridAccessException ignored) {}
@@ -337,12 +330,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             }
             FluidStack resultFluid = (result != null) ? result.getFluidStack() : null;
             f_client[aIndex] = result == null ? 0 : result.getStackSize();
-            if (expediteRecipeCheck) {
-                FluidStack previous = f_mark[aIndex];
-                if (resultFluid != null) {
-                    justHadNewItems = !resultFluid.isFluidEqual(previous);
-                }
-            }
             f_display[aIndex] = resultFluid;
         } catch (GridAccessException ignored) {}
 
@@ -386,25 +373,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         return expediteRecipeCheck;
     }
 
-    public boolean justUpdated() {
-        if (expediteRecipeCheck && isAllowedToWork()) {
-            boolean ret = justHadNewItems;
-            justHadNewItems = false;
-            return ret;
-        }
-        return false;
-    }
-
     public void setRecipeCheck(boolean value) {
         expediteRecipeCheck = value;
-    }
-
-    @Override
-    public void setInventorySlotContents(int aIndex, ItemStack aStack) {
-        if (expediteRecipeCheck && aStack != null) {
-            justHadNewItems = true;
-        }
-        super.setInventorySlotContents(aIndex, aStack);
     }
 
     public boolean isAllowedToWork() {
@@ -1279,13 +1249,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     ItemStack itemstack = GTUtility.copyAmount(
                         i_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, i_stored[index]),
                         currItem.getItemStack());
-                    if (expediteRecipeCheck) {
-                        ItemStack previous = this.mInventory[index];
-                        if (itemstack != null) {
-                            justHadNewItems = !ItemStack.areItemStacksEqual(itemstack, previous);
-                        }
-                    }
-
                     this.i_mark[index] = itemstack;
                     index++;
                 }
@@ -1317,13 +1280,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     FluidStack fluidstack = GTUtility.copyAmount(
                         f_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, f_stored[index]),
                         currItem.getFluidStack());
-                    if (expediteRecipeCheck) {
-                        FluidStack previous = this.f_mark[index];
-                        if (fluidstack != null) {
-                            justHadNewItems = !fluidstack.isFluidEqual(previous);
-                        }
-                    }
-
                     this.f_mark[index] = fluidstack;
                     index++;
                 }
@@ -2027,9 +1983,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Override
     public void onEnableWorking() {
-        if (expediteRecipeCheck) {
-            justHadNewItems = true;
-        }
     }
 
     @Override

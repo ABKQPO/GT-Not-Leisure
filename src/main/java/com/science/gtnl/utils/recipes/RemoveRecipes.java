@@ -31,7 +31,6 @@ import gregtech.api.recipe.RecipeMapBackend;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -43,14 +42,14 @@ public class RemoveRecipes {
 
         RecipeMapBackend autoClaveRecipe = RecipeMaps.autoclaveRecipes.getBackend();
         RecipeMapBackend formingPressRecipe = RecipeMaps.formingPressRecipes.getBackend();
-        RecipeMapBackend vacuumFurnaceRecipe = GTPPRecipeMaps.vacuumFurnaceRecipes.getBackend();
+        RecipeMapBackend vacuumFurnaceRecipe = RecipeMaps.vacuumFurnaceRecipes.getBackend();
         RecipeMapBackend blastFurnaceRecipe = RecipeMaps.blastFurnaceRecipes.getBackend();
-        RecipeMapBackend alloyBlastSmelterRecipe = GTPPRecipeMaps.alloyBlastSmelterRecipes.getBackend();
+        RecipeMapBackend alloyBlastSmelterRecipe = RecipeMaps.alloyBlastSmelterRecipes.getBackend();
         RecipeMapBackend vacuumFreezerRecipe = RecipeMaps.vacuumFreezerRecipes.getBackend();
         RecipeMapBackend chemicalBathRecipe = RecipeMaps.chemicalBathRecipes.getBackend();
-        RecipeMapBackend chemicalPlantRecipe = GTPPRecipeMaps.chemicalPlantRecipes.getBackend();
+        RecipeMapBackend chemicalPlantRecipe = RecipeMaps.chemicalPlantRecipes.getBackend();
         RecipeMapBackend mixerRecipe = RecipeMaps.mixerRecipes.getBackend();
-        RecipeMapBackend mixerNonCellRecipe = GTPPRecipeMaps.mixerNonCellRecipes.getBackend();
+        RecipeMapBackend mixerNonCellRecipe = RecipeMaps.mixerNonCellRecipes.getBackend();
         RecipeMapBackend circuitAssemblerRecipe = RecipeMaps.circuitAssemblerRecipes.getBackend();
         RecipeMapBackend circuitAssemblyLineRecipe = BartWorksRecipeMaps.circuitAssemblyLineRecipes.getBackend();
         Object2IntMap<String> removedRecipeCounts = new Object2IntOpenHashMap<>();

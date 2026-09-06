@@ -6,26 +6,21 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.science.gtnl.common.gui.recipe.ExtendQFTFrontend;
 
-import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMapBuilder;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
-import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import gregtech.api.recipe.RecipeMapFrontend;
+import gregtech.api.recipe.RecipeMaps;
 
-@Mixin(value = GTPPRecipeMaps.class, remap = false)
+@Mixin(value = RecipeMaps.class, remap = false)
 public class MixinGTPPRecipeMaps {
 
     @Redirect(
         method = "<clinit>",
         at = @At(
             value = "INVOKE",
-            target = "Lgregtech/api/recipe/RecipeMapBuilder;build()Lgregtech/api/recipe/RecipeMap;",
-            ordinal = 3))
-    private static RecipeMap<?> redirectBuild(RecipeMapBuilder<?> instance) {
-        return instance.frontend(ExtendQFTFrontend::new)
-            .maxIO(16, 16, 8, 8)
-            .neiHandlerInfo(
-                builder -> builder.setDisplayStack(GregtechItemList.QuantumForceTransformer.get(1))
-                    .setMaxRecipesPerPage(1))
-            .build();
+            target = "Lgregtech/api/recipe/RecipeMapBuilder;frontend(Lgregtech/api/recipe/RecipeMapFrontend$FrontendCreator;)Lgregtech/api/recipe/RecipeMapBuilder;",
+            ordinal = 25))
+    private static RecipeMapBuilder<?> redirectFrontend(RecipeMapBuilder<?> instance,
+        RecipeMapFrontend.FrontendCreator frontendCreator) {
+        return instance.frontend(ExtendQFTFrontend::new);
     }
 }

@@ -12,9 +12,9 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
+import gregtech.api.recipe.maps.QuantumForceTransformerFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
-import gtPlusPlus.api.recipe.QuantumForceTransformerFrontend;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

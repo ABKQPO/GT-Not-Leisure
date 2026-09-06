@@ -7,7 +7,6 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.mixins.early.nhCoreMod.AccessorBacteriaRegistry;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;

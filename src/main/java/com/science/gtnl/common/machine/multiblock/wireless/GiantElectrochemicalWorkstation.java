@@ -26,12 +26,12 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
@@ -149,7 +149,7 @@ public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineB
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.electrolyzerNonCellRecipes;
+        return RecipeMaps.electrolyzerNonCellRecipes;
     }
 
     @Override

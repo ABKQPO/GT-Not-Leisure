@@ -26,11 +26,11 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -131,7 +131,7 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.centrifugeNonCellRecipes;
+        return RecipeMaps.centrifugeNonCellRecipes;
     }
 
     @Override

@@ -35,13 +35,13 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -154,7 +154,7 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.alloyBlastSmelterRecipes;
+        return RecipeMaps.alloyBlastSmelterRecipes;
     }
 
     @Override

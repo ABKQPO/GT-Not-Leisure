@@ -38,13 +38,13 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.render.IMTERenderer;
-import gtPlusPlus.api.recipe.GTPPRecipeMaps;
 import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtnhlanth.common.register.LanthItemList;
@@ -315,7 +315,7 @@ public class KerrNewmanHomogenizer extends WirelessEnergyMultiMachineBase<KerrNe
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        return GTPPRecipeMaps.mixerNonCellRecipes;
+        return RecipeMaps.mixerNonCellRecipes;
     }
 
     @Override
