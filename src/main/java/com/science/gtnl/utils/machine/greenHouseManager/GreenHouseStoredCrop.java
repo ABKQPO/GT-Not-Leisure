@@ -48,7 +48,7 @@ public class GreenHouseStoredCrop {
     }
 
     public boolean isValid() {
-        ISeedData seedData = CropsNHUtils.getAnalyzedSeedData(seedStack);
+        ISeedData seedData = CropsNHUtils.getSeedData(seedStack, false, true);
         return seedData != null && getSeedCount() > 0;
     }
 

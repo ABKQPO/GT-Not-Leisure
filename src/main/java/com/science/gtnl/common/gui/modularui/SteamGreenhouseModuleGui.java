@@ -680,7 +680,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
             ItemStack seed = crop.getSeedStack()
                 .copy();
             boolean needsBlockUnder = false;
-            var seedData = CropsNHUtils.getAnalyzedSeedData(crop.getSeedStack());
+            var seedData = CropsNHUtils.getSeedData(crop.getSeedStack(), false, true);
             if (seedData != null) {
                 needsBlockUnder = multiblock.needsBlockUnder(seedData);
             }

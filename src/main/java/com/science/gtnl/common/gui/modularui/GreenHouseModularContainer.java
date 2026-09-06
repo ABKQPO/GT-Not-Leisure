@@ -94,7 +94,8 @@ public class GreenHouseModularContainer extends ModularContainer {
             return isPotentialBlockUnder(stack);
         }
         if (viewMode == GreenHouseViewMode.SEEDS) {
-            return CropsNHUtils.getAnalyzedSeedData(stack) != null || fixedBlockSlot && isPotentialBlockUnder(stack);
+            return CropsNHUtils.getSeedData(stack, false, true) != null
+                || fixedBlockSlot && isPotentialBlockUnder(stack);
         }
         return false;
     }

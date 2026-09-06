@@ -31,7 +31,7 @@ public class GreenHouseIC2Bucket extends GreenHouseBucket {
 
         @Override
         public GreenHouseBucket tryCreateBucket(IGreenHouse greenhouse, ItemStack input) {
-            if (CropsNHUtils.getAnalyzedSeedData(input) == null) return null;
+            if (CropsNHUtils.getSeedData(input, false, true) == null) return null;
             if (!input.hasTagCompound()) return null;
 
             CropCard cc = Crops.instance.getCropCard(input);

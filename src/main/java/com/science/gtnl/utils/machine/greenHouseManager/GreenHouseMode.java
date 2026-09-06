@@ -24,12 +24,12 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.GTLoggers;
 import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import kubatech.kubatech;
 
 public abstract class GreenHouseMode {
 
@@ -111,7 +111,7 @@ public abstract class GreenHouseMode {
     private void dealWithDuplicateFactoryId(String factoryId) {
         if (this.factories.containsKey(factoryId)) {
             // TODO: Check with devs to see if they want a throw instead.
-            kubatech.error("Duplicate EIG bucket index detected!!!: " + factoryId);
+            GTLoggers.GT_FML_LOGGER.error("Duplicate EIG bucket index detected: {}", factoryId);
             // remove duplicate from ordered list
             this.orderedFactories.remove(this.factories.get(factoryId));
         }
@@ -155,18 +155,18 @@ public abstract class GreenHouseMode {
             // validate nbt
             NBTTagCompound bucketNBT = bucketNBTList.getCompoundTagAt(i);
             if (bucketNBT.hasNoTags()) {
-                kubatech.error("Empty nbt bucket found in EIG nbt.");
+                GTLoggers.GT_FML_LOGGER.error("Empty NBT bucket found in EIG NBT.");
                 continue;
             }
             if (!bucketNBT.hasKey("type", 8)) {
-                kubatech.error("Failed to identify bucket type in EIG nbt.");
+                GTLoggers.GT_FML_LOGGER.error("Failed to identify bucket type in EIG NBT.");
                 continue;
             }
             // identify bucket type
             String bucketType = bucketNBT.getString("type");
             IGreenHouseBucketFactory factory = factories.getOrDefault(bucketType, null);
             if (factory == null) {
-                kubatech.error("failed to find EIG bucket factory for type: " + bucketType);
+                GTLoggers.GT_FML_LOGGER.error("Failed to find EIG bucket factory for type: {}", bucketType);
                 continue;
             }
             // restore bucket
