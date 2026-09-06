@@ -17,7 +17,6 @@ import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.DynamicDrawable;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -91,7 +90,7 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
                     .pos(190, 30))
             .child(createAutoPullButton(panel, syncManager))
             .child(createStatusText(syncManager))
-            .child(createLogo());
+            .child(makeLogoWidget());
         return panel;
     }
 
@@ -365,13 +364,10 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
     }
 
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
+    @Override
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE)
             .pos(367, 81);
-    }
-
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     public class ConfigFluidTank implements IFluidTank {

@@ -126,7 +126,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
         panel.child(createPages(panel, syncManager, controller))
             .child(createPageButtons(controller))
             .child(createStatusText(syncManager))
-            .child(createLogo());
+            .child(makeLogoWidget());
         return panel;
     }
 
@@ -606,13 +606,10 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
     }
 
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE)
+    @Override
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE)
             .pos(367, 81);
-    }
-
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
     }
 
     public UITexture createTabBackground(int pageIndex, boolean selected) {

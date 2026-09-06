@@ -1,6 +1,7 @@
 package com.science.gtnl.common.gui.modularui;
 
-import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.widget.Widget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 
@@ -12,7 +13,8 @@ public class WirelessSteamDynamoHatchGui extends MTEHatchOutputGui {
         super(hatch);
     }
 
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO;
+    @Override
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_STEAM_LOGO).size(SLOT_SIZE);
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.util.StatCollector;
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
@@ -100,7 +99,7 @@ public class GTNLCustomDroneDownLinkHatchGui extends MTEHatchBaseGui<CustomDrone
     }
 
     private IWidget createGTNLLogo() {
-        return getLogoTexture().asWidget()
+        return GTNLMui2Textures.PICTURE_GTNL_LOGO.asWidget()
             .size(18)
             .pos(125, machine.isConfiguration() ? 72 : 27);
     }
@@ -181,7 +180,4 @@ public class GTNLCustomDroneDownLinkHatchGui extends MTEHatchBaseGui<CustomDrone
             new IntSyncValue(machine::getConfigTime, machine::setConfigTimeFromGui).allowC2S());
     }
 
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
-    }
 }

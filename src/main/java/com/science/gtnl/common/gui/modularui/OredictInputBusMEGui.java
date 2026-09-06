@@ -15,7 +15,6 @@ import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
@@ -25,6 +24,7 @@ import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
@@ -466,11 +466,8 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .noneMatch(slot -> GTUtility.areStacksEqual(slot.config, stack));
     }
 
-    protected IDrawable.DrawableWidget createLogo() {
-        return new IDrawable.DrawableWidget(getLogoTexture()).size(SLOT_SIZE);
-    }
-
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
+    @Override
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE);
     }
 }

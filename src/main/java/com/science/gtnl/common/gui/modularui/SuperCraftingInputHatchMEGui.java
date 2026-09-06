@@ -5,14 +5,15 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.Interactable;
-import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.InteractionSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.Dialog;
@@ -59,8 +60,9 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
         return machine.getGUIHeight();
     }
 
-    protected UITexture getLogoTexture() {
-        return GTNLMui2Textures.PICTURE_GTNL_LOGO;
+    @Override
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE);
     }
 
     @Override

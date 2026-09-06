@@ -99,7 +99,7 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .child(createAutoPullButton(panel, syncManager))
             .child(createManualSlotButton(panel, syncManager))
             .child(createStatusText(syncManager))
-            .child(createLogo());
+            .child(makeLogoWidget());
         return panel;
     }
 
@@ -362,7 +362,8 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .widgetTheme(GTWidgetThemes.DISPLAY_TEXT_WHITE);
     }
 
-    protected IDrawable.DrawableWidget createLogo() {
+    @Override
+    protected Widget<?> makeLogoWidget() {
         return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE)
             .pos(LOGO_X, LOGO_Y);
     }

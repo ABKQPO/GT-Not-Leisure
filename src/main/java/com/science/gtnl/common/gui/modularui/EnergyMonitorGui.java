@@ -90,11 +90,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .build()
             .child(createTerminal(syncManager))
             .child(createPlayerInventory())
-            .child(createLogo());
-    }
-
-    protected IDrawable.DrawableWidget createLogo() {
-        return null;
+            .child(makeLogoWidget());
     }
 
     @Override

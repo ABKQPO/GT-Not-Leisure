@@ -2,10 +2,12 @@ package com.science.gtnl.common.gui.modularui;
 
 import net.minecraft.util.StatCollector;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.value.sync.FluidSlotSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
@@ -79,9 +81,8 @@ public class HumongousDualInputHatchGui extends MTEHatchBaseGui<HumongousDualInp
     }
 
     @Override
-    protected com.cleanroommc.modularui.widget.Widget<?> makeLogoWidget() {
-        return new com.cleanroommc.modularui.api.drawable.IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO)
-            .size(SLOT_SIZE);
+    protected Widget<?> makeLogoWidget() {
+        return new IDrawable.DrawableWidget(GTNLMui2Textures.PICTURE_GTNL_LOGO).size(SLOT_SIZE);
     }
 
     public ButtonWidget<?> createRefundButton(PanelSyncManager syncManager) {
