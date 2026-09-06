@@ -310,6 +310,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         if (!checkPiece("cap", 1, 2, ++offset, structureErrors)) return;
         if (!checkPiece("back", 1, 2, --offset, structureErrors)) return;
 
+        structureErrors.clear();
         totalLens--;
         eCertainMode = (byte) Math.min(totalLens / 3, 5);
         for (MTEHatchRack rack : getValidRackHatches()) {
