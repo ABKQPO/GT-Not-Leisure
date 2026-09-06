@@ -68,7 +68,6 @@ import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
@@ -172,7 +171,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public boolean allowAuto;
     public boolean autoPullItemList;
-    public boolean expediteRecipeCheck = false;
     public boolean recipe;
     public boolean off;
     boolean additionalConnection;
@@ -367,14 +365,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             fluidTanks.add(createTankForFluidStack(fluidStacks, slotIndex, capacity));
         }
         return fluidTanks;
-    }
-
-    public boolean doFastRecipeCheck() {
-        return expediteRecipeCheck;
-    }
-
-    public void setRecipeCheck(boolean value) {
-        expediteRecipeCheck = value;
     }
 
     public boolean isAllowedToWork() {
@@ -933,21 +923,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
                             .setEnabledForce(allowAuto)
                             .setSize(16, 16)
-                            .setPos(157, 4))
-                        .addChild(
-                            TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                                .setPos(177, 44)
-                                .setSize(50, 14))
-                        .addChild(
-                            new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
-                                .setTextureGetter(
-                                    state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
-                                        : GTUITextures.OVERLAY_BUTTON_CROSS)
-                                .setBackground(GTUITextures.BUTTON_STANDARD)
-                                .setPos(157, 44)
-                                .setSize(16, 16)
-                                .addTooltip(
-                                    StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")))));
+                            .setPos(157, 4))));
 
         builder.widget(
             new FakeSyncWidget.BooleanSyncer(() -> autoPullItemList, SuperDualInputHatchME.this::setAutoPullItemList)
@@ -1598,7 +1574,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public void saveNBTData(NBTTagCompound aNBT) {
         aNBT.setBoolean("additionalConnection", additionalConnection);
         aNBT.setBoolean("allowAuto", allowAuto);
-        aNBT.setBoolean("expediteRecipeCheck", expediteRecipeCheck);
         getProxy().writeToNBT(aNBT);
         super.saveNBTData(aNBT);
 
@@ -1685,7 +1660,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         allowAuto = aNBT.getBoolean("allowAuto");
         minAutoPullItemAmount = aNBT.getLong("itemMinAmount");
         minAutoPullFluidAmount = aNBT.getLong("fluidMinAmount");
-        expediteRecipeCheck = aNBT.getBoolean("expediteRecipeCheck");
         getProxy().readFromNBT(aNBT);
         super.loadNBTData(aNBT);
 
@@ -1982,8 +1956,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     }
 
     @Override
-    public void onEnableWorking() {
-    }
+    public void onEnableWorking() {}
 
     @Override
     public void onColorChangeServer(byte aColor) {
@@ -2075,7 +2048,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             if (aNBT.hasKey("refreshTime")) {
                 autoPullRefreshTime = aNBT.getInteger("refreshTime");
             }
-            expediteRecipeCheck = aNBT.getBoolean("expediteRecipeCheck");
         }
 
         additionalConnection = aNBT.getBoolean("additionalConnection");
@@ -2108,7 +2080,6 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         aNBT.setLong("fluidMinStackSize", minAutoPullFluidAmount);
         aNBT.setBoolean("additionalConnection", additionalConnection);
         aNBT.setInteger("refreshTime", autoPullRefreshTime);
-        aNBT.setBoolean("expediteRecipeCheck", expediteRecipeCheck);
         aNBT.setByte("color", this.getColor());
 
         NBTTagList storedList = new NBTTagList();

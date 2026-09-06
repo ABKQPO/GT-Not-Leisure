@@ -1,6 +1,7 @@
 package com.science.gtnl.common.gui.modularui;
 
 import net.minecraft.util.StatCollector;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-
 import java.text.MessageFormat;
 
 import net.minecraft.item.ItemStack;
@@ -60,7 +59,6 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
     public static final String AUTO_PULL_SYNC_KEY = "autoPullFluidList";
     public static final String MIN_AUTO_PULL_SYNC_KEY = "minAutoPullAmount";
     public static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
-    public static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
     public static final String ACTIVE_SYNC_KEY = "isActive";
     public static final String POWERED_SYNC_KEY = "isPowered";
     public static final String BOOTING_SYNC_KEY = "isBooting";
@@ -108,9 +106,6 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
         syncManager.syncValue(
             AUTO_PULL_REFRESH_SYNC_KEY,
             new IntSyncValue(machine::getAutoPullRefreshTimeForGui, machine::setAutoPullRefreshTimeForGui).allowC2S());
-        syncManager.syncValue(
-            EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck).allowC2S());
         syncManager.syncValue(ACTIVE_SYNC_KEY, new BooleanSyncValue(machine::isActive));
         syncManager.syncValue(POWERED_SYNC_KEY, new BooleanSyncValue(machine::isPowered));
         syncManager.syncValue(BOOTING_SYNC_KEY, new BooleanSyncValue(machine::isBooting));
@@ -303,9 +298,6 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
         IntSyncValue refreshSyncer = new IntSyncValue(
             machine::getAutoPullRefreshTimeForGui,
             machine::setAutoPullRefreshTimeForGui).allowC2S();
-        BooleanSyncValue recipeCheckSyncer = new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck)
-            .allowC2S();
-
         Flow mainColumn = Flow.column()
             .coverChildren()
             .marginTop(15)
@@ -319,8 +311,7 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
                     .asWidget()
                     .maxWidth(72)
                     .textAlign(Alignment.Center))
-            .child(createIntegerField(refreshSyncer))
-            .child(createRecipeCheckRow(recipeCheckSyncer));
+            .child(createIntegerField(refreshSyncer));
 
         Dialog<?> panel = createDialog(CONFIG_PANEL_KEY, parent);
         panel.coverChildren()
@@ -351,24 +342,6 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
             .size(72, 18);
-    }
-
-    public Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
-        return Flow.row()
-            .coverChildren()
-            .childPadding(4)
-            .child(
-                IKey.lang("GT5U.machines.stocking_bus.force_check")
-                    .asWidget()
-                    .maxWidth(50))
-            .child(
-                new ToggleButton().value(recipeCheckSyncer)
-                    .size(16)
-                    .background(true, GTGuiTextures.BUTTON_STANDARD)
-                    .background(false, GTGuiTextures.BUTTON_STANDARD)
-                    .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
-                    .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
     public TextWidget<?> createStatusText(PanelSyncManager syncManager) {

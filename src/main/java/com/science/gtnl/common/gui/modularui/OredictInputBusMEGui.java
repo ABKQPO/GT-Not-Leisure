@@ -1,18 +1,17 @@
 package com.science.gtnl.common.gui.modularui;
 
-
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.cleanroommc.modularui.api.UpOrDown;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-
 import net.minecraft.util.StatCollector;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
+import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
@@ -59,7 +58,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
     protected static final String AUTO_PULL_SYNC_KEY = "autoPullItemList";
     protected static final String MIN_AUTO_PULL_SYNC_KEY = "minAutoPullStackSize";
     protected static final String AUTO_PULL_REFRESH_SYNC_KEY = "autoPullRefreshTime";
-    protected static final String EXPEDITE_RECIPE_SYNC_KEY = "expediteRecipeCheck";
     protected static final String ORE_DICT_SYNC_KEY = "oreDict";
     protected static final String ACTIVE_SYNC_KEY = "isActive";
     protected static final String POWERED_SYNC_KEY = "isPowered";
@@ -101,9 +99,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
         syncManager.syncValue(
             AUTO_PULL_REFRESH_SYNC_KEY,
             new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime).allowC2S());
-        syncManager.syncValue(
-            EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(oredictHatch::doFastRecipeCheck, oredictHatch::setRecipeCheck).allowC2S());
         syncManager.syncValue(
             ORE_DICT_SYNC_KEY,
             new StringSyncValue(oredictHatch::getOreDictForGui, oredictHatch::setOreDict).allowC2S());
@@ -357,8 +352,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
     protected ModularPanel createStackSizeConfigurationPanel(ModularPanel parent, PanelSyncManager syncManager) {
         IntSyncValue minStackSyncer = syncManager.findSyncHandler(MIN_AUTO_PULL_SYNC_KEY, IntSyncValue.class);
         IntSyncValue refreshSyncer = syncManager.findSyncHandler(AUTO_PULL_REFRESH_SYNC_KEY, IntSyncValue.class);
-        BooleanSyncValue recipeCheckSyncer = syncManager
-            .findSyncHandler(EXPEDITE_RECIPE_SYNC_KEY, BooleanSyncValue.class);
         StringSyncValue oreDictSyncer = syncManager.findSyncHandler(ORE_DICT_SYNC_KEY, StringSyncValue.class);
 
         Flow mainColumn = Flow.column()
@@ -375,7 +368,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                     .maxWidth(72)
                     .textAlign(Alignment.Center))
             .child(createIntegerField(refreshSyncer))
-            .child(createRecipeCheckRow(recipeCheckSyncer))
             .child(
                 IKey.lang("Info_OredictInputBusME_Oredict")
                     .asWidget()
@@ -417,24 +409,6 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
             .size(72, 18);
-    }
-
-    protected Flow createRecipeCheckRow(BooleanSyncValue recipeCheckSyncer) {
-        return Flow.row()
-            .coverChildren()
-            .childPadding(4)
-            .child(
-                IKey.lang("GT5U.machines.stocking_bus.force_check")
-                    .asWidget()
-                    .maxWidth(50))
-            .child(
-                new ToggleButton().value(recipeCheckSyncer)
-                    .size(16)
-                    .background(true, GTGuiTextures.BUTTON_STANDARD)
-                    .background(false, GTGuiTextures.BUTTON_STANDARD)
-                    .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
-                    .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
     protected IItemHandlerModifiable createConfigItemHandler() {

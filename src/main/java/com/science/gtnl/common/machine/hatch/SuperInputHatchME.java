@@ -32,7 +32,6 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.api.widget.Interactable;
 import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
@@ -95,8 +94,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     public boolean autoPullAvailable;
     public int autoPullRefreshTime = 100;
-    public boolean justHadNewFluids = false;
-    public boolean expediteRecipeCheck = false;
 
     public SuperInputHatchME(int aID, boolean autoPullAvailable, String aName, String aNameRegional) {
         super(aID, autoPullAvailable, aName, aNameRegional);
@@ -171,12 +168,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
                     FluidStack fluidStack = GTUtility.copyAmount(
                         storedStackSizes[index] == Integer.MAX_VALUE ? 1 : storedStackSizes[index],
                         currItem.getFluidStack());
-                    if (expediteRecipeCheck) {
-                        FluidStack previous = storedFluids[index];
-                        if (fluidStack != null && previous != null) {
-                            justHadNewFluids = !fluidStack.isFluidEqual(previous);
-                        }
-                    }
                     storedFluids[index] = fluidStack;
                     index++;
                 }
@@ -233,15 +224,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         }
 
         return shadowStoredFluids;
-    }
-
-    public boolean justUpdated() {
-        if (expediteRecipeCheck && isAllowedToWork()) {
-            boolean ret = justHadNewFluids;
-            justHadNewFluids = false;
-            return ret;
-        }
-        return false;
     }
 
     @Override
@@ -394,16 +376,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         updateAllInformationSlots();
     }
 
-    @Override
-    public boolean doFastRecipeCheck() {
-        return expediteRecipeCheck;
-    }
-
-    @Override
-    public void setRecipeCheck(boolean value) {
-        expediteRecipeCheck = value;
-    }
-
     public void updateAllInformationSlots() {
         for (int index = 0; index < SLOT_COUNT; index++) {
             updateInformationSlot(index);
@@ -440,14 +412,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
             request.setStackSize(storedStackSizes[index]);
             IAEFluidStack result = sg.extractItems(request, Actionable.SIMULATE, getRequestSource());
             FluidStack resultFluid = (result != null) ? result.getFluidStack() : null;
-            // We want to track if any FluidStack is modified to notify any connected controllers to make a recipe check
-            // early
-            if (expediteRecipeCheck) {
-                FluidStack previous = storedInformationFluids[index];
-                if (resultFluid != null) {
-                    justHadNewFluids = !resultFluid.isFluidEqual(previous);
-                }
-            }
             storedInformationFluids[index] = resultFluid;
         } catch (final GridAccessException ignored) {}
     }
@@ -583,7 +547,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         aNBT.setTag("storedFluids", nbtTagList);
         aNBT.setInteger("refreshTime", autoPullRefreshTime);
         aNBT.setBoolean("additionalConnection", additionalConnection);
-        aNBT.setBoolean("expediteRecipeCheck", expediteRecipeCheck);
         getProxy().writeToNBT(aNBT);
     }
 
@@ -619,7 +582,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         }
 
         additionalConnection = aNBT.getBoolean("additionalConnection");
-        expediteRecipeCheck = aNBT.getBoolean("expediteRecipeCheck");
         if (aNBT.hasKey("refreshTime")) {
             autoPullRefreshTime = aNBT.getInteger("refreshTime");
         }
@@ -649,7 +611,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
             setAutoPullFluidList(aNBT.getBoolean("autoPull"));
             minAutoPullAmount = aNBT.getInteger("minAmount");
             autoPullRefreshTime = aNBT.getInteger("refreshTime");
-            expediteRecipeCheck = aNBT.getBoolean("expediteRecipeCheck");
         }
         additionalConnection = aNBT.getBoolean("additionalConnection");
 
@@ -685,7 +646,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         aNBT.setInteger("minAmount", minAutoPullAmount);
         aNBT.setBoolean("additionalConnection", additionalConnection);
         aNBT.setInteger("refreshTime", autoPullRefreshTime);
-        aNBT.setBoolean("expediteRecipeCheck", expediteRecipeCheck);
         aNBT.setByte("color", this.getColor());
 
         NBTTagList stackSizeList = new NBTTagList();
@@ -1067,19 +1027,6 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
                     .setSize(70, 18)
                     .setPos(3, 58)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
-        builder.widget(
-            TextWidget.localised("GT5U.machines.stocking_bus.force_check")
-                .setPos(3, 88)
-                .setSize(50, 14))
-            .widget(
-                new CycleButtonWidget().setToggle(() -> expediteRecipeCheck, this::setRecipeCheck)
-                    .setTextureGetter(
-                        state -> expediteRecipeCheck ? GTUITextures.OVERLAY_BUTTON_CHECKMARK
-                            : GTUITextures.OVERLAY_BUTTON_CROSS)
-                    .setBackground(GTUITextures.BUTTON_STANDARD)
-                    .setPos(53, 87)
-                    .setSize(16, 16)
-                    .addTooltip(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
         return builder.build();
     }
 

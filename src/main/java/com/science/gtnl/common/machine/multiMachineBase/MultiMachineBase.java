@@ -90,7 +90,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     implements IConstructable, ISurvivalConstructable, IControllerInfo {
 
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
-    public static final int CHECK_INTERVAL = 100; // 空闲机器的配方轮询间隔 / Recipe polling interval for idle machines
 
     @SuppressWarnings("unchecked")
     public static Optional<Byte>[] createHatchColorOptions() {
@@ -108,8 +107,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public final ArrayList<ItemStack> recipeSearchItemInputs = new ArrayList<>();
     public final ArrayList<FluidStack> recipeSearchFluidInputs = new ArrayList<>();
     public List<SlotWidget> slotWidgets = new ArrayList<>(1);
-    public int randomTickOffset = (int) (Math.random() * CHECK_INTERVAL + 1);
-
     public int mCountCasing = -1;
     public int mGlassTier = -1;
     public int mParallelTier = 0;
@@ -252,23 +249,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             && (aBaseMetaTileEntity.hasWorkJustBeenEnabled() || aBaseMetaTileEntity.hasInventoryBeenModified())) {
             return true;
         }
-        long timeElapsed = mTotalRunTime - mLastWorkingTick;
-        if (timeElapsed >= CHECK_INTERVAL) return (mTotalRunTime + randomTickOffset) % CHECK_INTERVAL == 0;
-        if (!isBatchModeEnabled()) {
-            return timeElapsed == 5 || timeElapsed == 12
-                || timeElapsed == 20
-                || timeElapsed == 30
-                || timeElapsed == 40
-                || timeElapsed == 55
-                || timeElapsed == 70
-                || timeElapsed == 85;
-        }
-        return false;
+        return super.shouldCheckRecipeThisTick(aTick);
     }
-
-    // Note: The justUpdated() method and mSmartInputHatches direct access were removed from the API.
-    // Use scheduleRecipeCheckImmediate() from IHatchWatcher interface instead for recipe re-checks.
-    // This method is no longer needed as the parent class handles this via scheduleRecipeCheckImmediate().
 
     public boolean clearRecipeMapForAllInputHatches() {
         return resetRecipeMapForAllInputHatches(null);

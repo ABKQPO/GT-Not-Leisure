@@ -4,7 +4,6 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
-import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.value.sync.StringSyncValue;
@@ -48,8 +47,6 @@ public class TypeFilteredInputBusMEGui extends OredictInputBusMEGui {
     protected ModularPanel createStackSizeConfigurationPanel(ModularPanel parent, PanelSyncManager syncManager) {
         IntSyncValue minStackSyncer = syncManager.findSyncHandler(MIN_AUTO_PULL_SYNC_KEY, IntSyncValue.class);
         IntSyncValue refreshSyncer = syncManager.findSyncHandler(AUTO_PULL_REFRESH_SYNC_KEY, IntSyncValue.class);
-        BooleanSyncValue recipeCheckSyncer = syncManager
-            .findSyncHandler(EXPEDITE_RECIPE_SYNC_KEY, BooleanSyncValue.class);
         StringSyncValue modIdSyncer = syncManager.findSyncHandler(MOD_ID_SYNC_KEY, StringSyncValue.class);
         StringSyncValue itemNameSyncer = syncManager.findSyncHandler(ITEM_NAME_SYNC_KEY, StringSyncValue.class);
         IntSyncValue itemMetaSyncer = syncManager.findSyncHandler(ITEM_META_SYNC_KEY, IntSyncValue.class);
@@ -60,7 +57,6 @@ public class TypeFilteredInputBusMEGui extends OredictInputBusMEGui {
             .childPadding(3)
             .child(createLabelledIntegerField("GT5U.machines.stocking_bus.min_stack_size", minStackSyncer))
             .child(createLabelledIntegerField("GT5U.machines.stocking_bus.refresh_time", refreshSyncer))
-            .child(createRecipeCheckRow(recipeCheckSyncer))
             .child(createLabelledStringField("Info_TypeFilteredInputBusME_ModID", modIdSyncer))
             .child(createLabelledStringField("Info_TypeFilteredInputBusME_ItemName", itemNameSyncer))
             .child(createLabelledMetaField(itemMetaSyncer));
