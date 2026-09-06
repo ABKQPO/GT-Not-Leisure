@@ -38,6 +38,7 @@ dependencies {
     compileOnlyApi("com.github.GTNewHorizons:EnhancedLootBags:1.3.4:dev")
     compileOnlyApi("com.github.GTNewHorizons:Chisel:2.17.32-GTNH:dev")
     compileOnlyApi("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.2.21-GTNH-daily") { transitive = false }
+    compileOnly("com.github.GTNewHorizons:ForgeMultipart:1.7.12:dev") { transitive = false }
 
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughEnergistics:1.7.41:dev")
 

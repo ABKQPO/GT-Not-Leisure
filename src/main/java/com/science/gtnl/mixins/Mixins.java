@@ -173,8 +173,7 @@ public enum Mixins implements IMixins {
             "bartwork.MixinWerkstoff",
             "bartwork.MixinWerkstoffLoader",
             "bartwork.MixinMoltenCellLoader")
-        .setPhase(Phase.LATE)
-        .addRequiredMod(ModList.BartWorks)),
+        .setPhase(Phase.LATE)),
 
     VOID_MINER_TWEAK(new MixinBuilder("Void Miner Tweak compatibility mixins")
         .addCommonMixins(

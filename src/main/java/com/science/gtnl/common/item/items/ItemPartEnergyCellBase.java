@@ -1,6 +1,9 @@
 package com.science.gtnl.common.item.items;
 
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,16 +11,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartEnergyCellBase;
 
 import appeng.api.AEApi;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartItem;
+import appeng.core.localization.GuiText;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -58,11 +61,7 @@ public abstract class ItemPartEnergyCellBase extends Item implements IPartItem {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advancedTooltips) {
-        tooltip.add(
-            StatCollector.translateToLocalFormatted(
-                "Tooltip_PartEnergyCell_00",
-                NumberFormatUtil.formatNumber(getStoredPower(stack)),
-                NumberFormatUtil.formatNumber(getMaximumPower())));
+        tooltip.add(formatPartTooltip(getStoredPower(stack), getMaximumPower()));
     }
 
     @Override
@@ -76,5 +75,15 @@ public abstract class ItemPartEnergyCellBase extends Item implements IPartItem {
     @SideOnly(Side.CLIENT)
     public int getSpriteNumber() {
         return 0;
+    }
+
+    protected static String formatPartTooltip(double currentPower, double maximumPower) {
+        double percent = maximumPower <= 0.0 ? 0.0 : currentPower / maximumPower;
+        return GuiText.StoredEnergy.getLocal() + ": "
+            + NumberFormat.getNumberInstance(Locale.US)
+                .format(currentPower)
+            + PowerUnits.AE.getLocal()
+            + " - "
+            + MessageFormat.format(" {0,number,#.##%} ", percent);
     }
 }

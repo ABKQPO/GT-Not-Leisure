@@ -4941,4 +4941,3 @@ gtnl.command.tickrate.player_not_found=Player not found.
 item.PartEnergyCell.name=ME Energy Cell
 item.PartDenseEnergyCell.name=ME Dense Energy Cell
 item.PartSuperDenseEnergyCell.name=ME Super Dense Energy Cell
-Tooltip_PartEnergyCell_00=Stored Energy: %s / %s AE

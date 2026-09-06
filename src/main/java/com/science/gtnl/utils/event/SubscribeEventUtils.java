@@ -2,7 +2,6 @@ package com.science.gtnl.utils.event;
 
 import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.loadInstance;
 
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -67,7 +66,6 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 import tectech.thing.casing.TTCasingsContainer;
 import vazkii.botania.api.BotaniaAPI;
@@ -78,14 +76,6 @@ import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
 
 public class SubscribeEventUtils {
-
-    public static final ModList[] MOD_LIST_VALUES = ModList.values();
-    public static final Set<String> MOD_BLACKLIST = new ObjectOpenHashSet<>(
-        new String[] { ModList.QzMiner.ID, ModList.Baubles.ID, ModList.ReAvaritia.ID, ModList.ScienceNotLeisure.ID,
-            ModList.Sudoku.ID, ModList.GiveCount.ID, ModList.ChromaticTooltips.ID, ModList.ChromaticTooltipsCompat.ID,
-            ModList.NewHorizonsCoreMod.ID, ModList.GalaxySpace.ID, ModList.EnhancedLootBags.ID,
-            ModList.NotEnoughEnergistics.ID, ModList.NEICustomDiagrams.ID, ModList.AvaritiaAddons.ID,
-            ModList.EtFuturumRequiem.ID, ModList.NotEnoughItems.ID });
 
     public static final Object2IntMap<UUID> FOOD_TICK_TIMERS = new Object2IntOpenHashMap<>();
 
@@ -122,8 +112,8 @@ public class SubscribeEventUtils {
             if (MainConfig.message.enableShowJoinMessage || MainConfig.debug.enableDebugMode) {
 
                 if (MainConfig.message.enableShowAddMods) {
-                    for (ModList mod : MOD_LIST_VALUES) {
-                        if (mod.isModLoaded() && !MOD_BLACKLIST.contains(mod.getID())) {
+                    for (ModList mod : ModList.VALUES) {
+                        if (mod.isModLoaded() && mod.showInModList) {
                             String translatedPrefix = StatCollector.translateToLocal("Welcome_GTNL_ModInstall");
                             player.addChatMessage(
                                 new ChatComponentText(mod.displayName + translatedPrefix)
@@ -608,8 +598,8 @@ public class SubscribeEventUtils {
     }
 
     public static boolean shouldGrantAllCommunityModAchievement() {
-        for (ModList mod : MOD_LIST_VALUES) {
-            if (!MOD_BLACKLIST.contains(mod.getID()) && !mod.isModLoaded()) {
+        for (ModList mod : ModList.VALUES) {
+            if (mod.showInModList && !mod.isModLoaded()) {
                 return false;
             }
         }
