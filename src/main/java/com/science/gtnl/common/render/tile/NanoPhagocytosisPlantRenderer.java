@@ -6,6 +6,7 @@ import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
 
 import java.nio.FloatBuffer;
 
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +22,7 @@ import org.lwjgl.opengl.GL20;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
 import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
+import com.gtnewhorizon.gtnhlib.client.renderer.vertex.DefaultVertexFormat;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
@@ -31,7 +33,6 @@ import goodgenerator.loader.Loaders;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
 import tectech.Reference;
-import tectech.rendering.EOH.EOHRenderingUtils;
 import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.util.StructureVBO;
 import tectech.util.TextureUpdateRequester;
@@ -86,11 +87,11 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
             .addMapping('Y', Loaders.compactFusionCoil, 0);
 
         ringOne = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingOne)
-            .build();
+            .build(DefaultVertexFormat.POSITION_TEXTURE);
         ringTwo = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingTwo)
-            .build();
+            .build(DefaultVertexFormat.POSITION_TEXTURE);
         ringThree = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingThree)
-            .build();
+            .build(DefaultVertexFormat.POSITION_TEXTURE);
 
         fadeBypassProgram = new ShaderProgram(
             Reference.MODID,
@@ -112,9 +113,35 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         matrixBuffer.clear();
         GL20.glUniformMatrix4(u_ModelMatrix, false, starModelMatrix.get(matrixBuffer));
         GL20.glUniform4f(u_Color, color.x, color.y, color.z, color.w);
-        EOHRenderingUtils.renderTessellatedSphere(128, 128, 1);
+        renderTessellatedSphere(128, 128, 1);
 
         starModelMatrix.popMatrix();
+    }
+
+    private static void renderTessellatedSphere(int slices, int stacks, float radius) {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        for (int stack = 0; stack < stacks; stack++) {
+            double v0 = (double) stack / stacks;
+            double v1 = (double) (stack + 1) / stacks;
+            double phi0 = Math.PI * (0.5 - v0);
+            double phi1 = Math.PI * (0.5 - v1);
+            double y0 = Math.sin(phi0) * radius;
+            double y1 = Math.sin(phi1) * radius;
+            double ring0 = Math.cos(phi0) * radius;
+            double ring1 = Math.cos(phi1) * radius;
+            for (int slice = 0; slice < slices; slice++) {
+                double u0 = (double) slice / slices;
+                double u1 = (double) (slice + 1) / slices;
+                double theta0 = Math.PI * 2 * u0;
+                double theta1 = Math.PI * 2 * u1;
+                tessellator.addVertexWithUV(Math.cos(theta0) * ring0, y0, Math.sin(theta0) * ring0, u0, v0);
+                tessellator.addVertexWithUV(Math.cos(theta0) * ring1, y1, Math.sin(theta0) * ring1, u0, v1);
+                tessellator.addVertexWithUV(Math.cos(theta1) * ring1, y1, Math.sin(theta1) * ring1, u1, v1);
+                tessellator.addVertexWithUV(Math.cos(theta1) * ring0, y0, Math.sin(theta1) * ring0, u1, v0);
+            }
+        }
+        tessellator.draw();
     }
 
     public void RenderEntireStar(TileEntityNanoPhagocytosisPlant tile, double x, double y, double z, float timer) {

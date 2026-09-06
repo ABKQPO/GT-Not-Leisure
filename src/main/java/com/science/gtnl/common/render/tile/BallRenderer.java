@@ -5,6 +5,7 @@ import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Random;
 import java.util.WeakHashMap;
@@ -13,16 +14,16 @@ import java.util.stream.IntStream;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.api.IRenderAngle;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -66,9 +67,16 @@ public class BallRenderer {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glDisable(GL11.GL_LIGHTING);
 
-        renderOuterSpaceShell();
-        renderOrbitObjects((float) ((IRenderAngle) metaTile).getRenderAngle());
-        renderStar(IItemRenderer.ItemRenderType.INVENTORY, 1);
+        Matrix4f model = new Matrix4f()
+            .translate(
+                (float) (x + 0.5 + state.offsetX),
+                (float) (y + 0.5 + state.offsetY),
+                (float) (z + 0.5 + state.offsetZ))
+            .rotateY((float) Math.toRadians(state.rotation))
+            .scale(0.05f);
+        EOHRenderingUtils.renderOuterSpaceShell(model, 0);
+        renderOrbitObjects(model, (float) ((IRenderAngle) metaTile).getRenderAngle());
+        EOHRenderingUtils.renderEOHStar(model, IItemRenderer.ItemRenderType.INVENTORY, 0, 1);
 
         GL11.glPopAttrib();
         GL11.glPopMatrix();
@@ -219,50 +227,9 @@ public class BallRenderer {
         }
     }
 
-    public static void renderStar(IItemRenderer.ItemRenderType type, Color color, int size) {
-        GL11.glPushMatrix();
-        GL11.glScalef(0.05f, 0.05f, 0.05f);
-
-        if (type == IItemRenderer.ItemRenderType.INVENTORY) GL11.glRotated(180, 0, 1, 0);
-
-        EOHRenderingUtils.renderEOHStar(type, 0, size);
-
-        GL11.glPopMatrix();
-    }
-
-    public static void renderStar(IItemRenderer.ItemRenderType type, int size) {
-        renderStar(type, new Color(1.0f, 0.4f, 0.05f, 1.0f), size);
-    }
-
-    public static void renderOuterSpaceShell() {
-        EOHRenderingUtils.renderOuterSpaceShell(0);
-    }
-
-    public static void renderOrbitObjects(float angle) {
+    private static void renderOrbitObjects(Matrix4fc model, float angle) {
         if (orbitingObjects.isEmpty()) generateImportantInfo();
-        for (TileEntityEyeOfHarmony.OrbitingObject t : orbitingObjects) {
-            renderOrbit(t, angle);
-        }
-    }
-
-    public static void renderOrbit(final TileEntityEyeOfHarmony.OrbitingObject orbitingObject, float angle) {
-        GL11.glPushMatrix();
-        GL11.glScalef(0.05f, 0.05f, 0.05f);
-
-        GL11.glRotatef(orbitingObject.zAngle, 0, 0, 1);
-        GL11.glRotatef(orbitingObject.xAngle, 1, 0, 0);
-        GL11.glRotatef((orbitingObject.rotationSpeed * angle) % 360, 0, 1, 0);
-
-        GL11.glTranslated(-orbitingObject.distance, 0, 0);
-
-        FMLClientHandler.instance()
-            .getClient()
-            .getTextureManager()
-            .bindTexture(TextureMap.locationBlocksTexture);
-
-        EOHRenderingUtils.renderBlockInWorld(orbitingObject.block, 0, orbitingObject.scale);
-
-        GL11.glPopMatrix();
+        EOHRenderingUtils.renderOrbits(model, orbitingObjects, angle, 1, 1, 0.2f);
     }
 
     public static void generateImportantInfo() {
