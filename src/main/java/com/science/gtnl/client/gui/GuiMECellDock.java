@@ -12,7 +12,7 @@ import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
-import appeng.core.localization.GuiColors;
+import appeng.core.localization.ColorUtils;
 import appeng.core.localization.GuiText;
 
 public class GuiMECellDock extends AEBaseGui {
@@ -49,9 +49,9 @@ public class GuiMECellDock extends AEBaseGui {
             getGuiDisplayName(StatCollector.translateToLocal("item.MECellDock.name")),
             8,
             6,
-            GuiColors.GuiTextColorGray.getColor());
+            ColorUtils.guiTextColorGray.getColor());
         fontRendererObj
-            .drawString(GuiText.inventory.getLocal(), 8, ySize - 96 + 3, GuiColors.GuiTextColorGray.getColor());
+            .drawString(GuiText.inventory.getLocal(), 8, ySize - 96 + 3, ColorUtils.guiTextColorGray.getColor());
     }
 
     @Override
