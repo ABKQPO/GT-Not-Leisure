@@ -88,7 +88,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import kubatech.api.DynamicInventory;
-import kubatech.api.gui.KubaTechUITextures;
 import kubatech.api.utils.ItemUtils;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -434,13 +433,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 .setPos(4, 4)
                 .setSize(190, 85)
                 .setEnabled(w -> !isInInventory));
-
-        final int backgroundPadding = INVENTORY_BORDER_WIDTH * 2;
-        builder.widget(
-            new DrawableWidget().setDrawable(KubaTechUITextures.APIARY_INVENTORY_BACKGROUND)
-                .setPos(INVENTORY_X - INVENTORY_BORDER_WIDTH, INVENTORY_Y - INVENTORY_BORDER_WIDTH)
-                .setSize(INVENTORY_WIDTH + backgroundPadding, INVENTORY_HEIGHT + backgroundPadding)
-                .setEnabled(w -> isInInventory));
 
         builder.widget(
             dynamicInventory.asWidget(builder, buildContext)
