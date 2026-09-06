@@ -493,15 +493,8 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         }
 
         if (hatch instanceof MTEHatchInput tHatch && tHatch.isValid()) {
-            if (tHatch instanceof MTEHatchInputME meHatch) {
-                meHatch.startRecipeProcessing();
-                FluidStack drained = meHatch.drain(ForgeDirection.UNKNOWN, fluid, doDrain);
-                meHatch.endRecipeProcessing(this);
-                return drained != null ? Math.min(drained.amount, fluid.amount) : 0;
-            } else {
-                FluidStack drained = tHatch.drain(ForgeDirection.UNKNOWN, fluid, doDrain);
-                return drained != null ? Math.min(drained.amount, fluid.amount) : 0;
-            }
+            FluidStack drained = tHatch.drain(ForgeDirection.UNKNOWN, fluid, doDrain);
+            return drained != null ? Math.min(drained.amount, fluid.amount) : 0;
         }
 
         return 0;
