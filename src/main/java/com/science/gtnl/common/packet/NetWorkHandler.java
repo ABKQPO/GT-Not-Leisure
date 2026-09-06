@@ -44,6 +44,7 @@ public class NetWorkHandler {
         registerServerbound(RequestGameProfilePacket.class);
         registerServerbound(SwitchToCustomGuiPacket.class);
         registerServerbound(SwitchSuperDualInterfaceGuiPacket.class);
+        registerServerbound(OpenPortableCellWorkbenchSubGuiPacket.class);
         registerClientbound(SuperDualInterfaceFluidSyncPacket.class);
         if (Mods.EtFuturumRequiem.isModLoaded()) registerServerbound(ElytraBoostPacket.class);
     }

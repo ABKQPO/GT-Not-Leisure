@@ -16,6 +16,7 @@ import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
 import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
 import com.science.gtnl.common.machine.basicMachine.GasTurbine;
+import com.science.gtnl.common.machine.basicMachine.HydraulicSuperBuffer;
 import com.science.gtnl.common.machine.basicMachine.LootBagRedemption;
 import com.science.gtnl.common.machine.basicMachine.ManaTank;
 import com.science.gtnl.common.machine.basicMachine.Replicator;
@@ -62,6 +63,8 @@ import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.hatch.WirelessMultiDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
+import com.science.gtnl.common.machine.hatch.WirelessVacuumConveyorInputHatch;
+import com.science.gtnl.common.machine.hatch.WirelessVacuumConveyorOutputHatch;
 import com.science.gtnl.common.machine.multiblock.AdvancedInfiniteDriller;
 import com.science.gtnl.common.machine.multiblock.AdvancedRareEarthCentrifugal;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
@@ -5072,6 +5075,15 @@ public class MachineLoader {
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.SteamAssemblerSteel.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
+        GTNLItemList.HydraulicSuperBuffer.set(
+            new HydraulicSuperBuffer(
+                GTNLMachineID.HYDRAULIC_SUPER_BUFFER.ID,
+                "HydraulicSuperBuffer",
+                StatCollector.translateToLocal("HydraulicSuperBuffer"),
+                1));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.HydraulicSuperBuffer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
         GTNLItemList.ManaTank
             .set(new ManaTank(GTNLMachineID.MANA_TANK.ID, "ManaTank", StatCollector.translateToLocal("ManaTank")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaTank.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
@@ -5200,6 +5212,24 @@ public class MachineLoader {
                 "OutputHatchMEProxy",
                 StatCollector.translateToLocal("OutputHatchMEProxy")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OutputHatchMEProxy.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.WirelessVacuumConveyorInputHatch.set(
+            new WirelessVacuumConveyorInputHatch(
+                GTNLMachineID.WIRELESS_VACUUM_CONVEYOR_INPUT_HATCH.ID,
+                "WirelessVacuumConveyorInputHatch",
+                StatCollector.translateToLocal("WirelessVacuumConveyorInputHatch"),
+                11));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.WirelessVacuumConveyorOutputHatch.set(
+            new WirelessVacuumConveyorOutputHatch(
+                GTNLMachineID.WIRELESS_VACUUM_CONVEYOR_OUTPUT_HATCH.ID,
+                "WirelessVacuumConveyorOutputHatch",
+                StatCollector.translateToLocal("WirelessVacuumConveyorOutputHatch"),
+                11));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorOutputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
     }
 
     public static void registerWireAndPipe() {

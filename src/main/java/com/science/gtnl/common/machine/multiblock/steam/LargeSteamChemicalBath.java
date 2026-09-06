@@ -19,10 +19,8 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -42,8 +40,8 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSCB_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/large_steam_chemical_bath";
-    private static final int HORIZONTAL_OFF_SET = 4;
-    private static final int VERTICAL_OFF_SET = 2;
+    private static final int HORIZONTAL_OFF_SET = 2;
+    private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSCB_STRUCTURE_FILE_PATH);
 
@@ -59,7 +57,7 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
     public IStructureDefinition<LargeSteamChemicalBath> getStructureDefinition() {
         return StructureDefinition.<LargeSteamChemicalBath>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GameRegistry.findBlock(Mods.GTPlusPlus.ID, "blockBlockPotin"), 0))
+            .addElement('A', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -99,13 +97,22 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
                 'C',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
+                        LargeSteamChemicalBath::getTierPipeCasing,
+                        ImmutableList
+                            .of(Pair.of(GregTechAPI.sBlockCasings2, 12), Pair.of(GregTechAPI.sBlockCasings2, 13)),
+                        -1,
+                        (t, m) -> t.tierPipeCasing = m,
+                        t -> t.tierPipeCasing)))
+            .addElement(
+                'D',
+                GTStructureChannels.TIER_MACHINE_CASING.use(
+                    StructureUtility.ofBlocksTiered(
                         LargeSteamChemicalBath::getTierFrameCasing,
                         ImmutableList
                             .of(Pair.of(GregTechAPI.sBlockFrames, 300), Pair.of(GregTechAPI.sBlockFrames, 305)),
                         -1,
                         (t, m) -> t.tierFrameCasing = m,
                         t -> t.tierFrameCasing)))
-            .addElement('D', GTStructureUtility.chainAllGlasses())
             .build();
     }
 
@@ -140,9 +147,9 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
         checkHatch(errors);
         checkMachineTier(
             errors,
-            150,
-            tierMachineCasing == 1 && tierFrameCasing == 1,
-            tierMachineCasing == 2 && tierFrameCasing == 2);
+            43,
+            tierMachineCasing == 1 && tierPipeCasing == 1 && tierFrameCasing == 1,
+            tierMachineCasing == 2 && tierPipeCasing == 2 && tierFrameCasing == 2);
     }
 
     @Override

@@ -816,6 +816,58 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
+                ItemList.Hatch_VacuumConveyor_Input.get(1),
+                aeMaterials.singularity()
+                    .maybeStack(1)
+                    .orNull(),
+                aeMaterials.wireless()
+                    .maybeStack(16)
+                    .orNull(),
+                aeBlocks.quantumRing()
+                    .maybeStack(8)
+                    .orNull(),
+                aeBlocks.quantumLink()
+                    .maybeStack(1)
+                    .orNull(),
+                ItemList.Sensor_UIV.get(4),
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 16),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 4L))
+            .fluidInputs(
+                GTNLMaterials.SuperMutatedLivingSolder.getFluidOrGas(2304),
+                Materials.Neutronium.getMolten(576))
+            .itemOutputs(GTNLItemList.WirelessVacuumConveyorInputHatch.get(1))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_UIV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                ItemList.Hatch_VacuumConveyor_Output.get(1),
+                aeMaterials.singularity()
+                    .maybeStack(1)
+                    .orNull(),
+                aeMaterials.wireless()
+                    .maybeStack(16)
+                    .orNull(),
+                aeBlocks.quantumRing()
+                    .maybeStack(8)
+                    .orNull(),
+                aeBlocks.quantumLink()
+                    .maybeStack(1)
+                    .orNull(),
+                ItemList.Emitter_UIV.get(4),
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 16),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UIV, 4L))
+            .fluidInputs(
+                GTNLMaterials.SuperMutatedLivingSolder.getFluidOrGas(2304),
+                Materials.Neutronium.getMolten(576))
+            .itemOutputs(GTNLItemList.WirelessVacuumConveyorOutputHatch.get(1))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_UIV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
                 ItemList.Hatch_Output_Bus_ME.get(1L),
                 aeBlocks.quantumRing()
                     .maybeStack(2)
@@ -865,7 +917,8 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(ItemList.Hatch_Input_ME_Advanced.get(1))
             .duration(300)
             .eut(7680)
-            .addTo(As);
+            .addTo(As)
+            .addTo(HOR);;
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -880,7 +933,8 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(ItemList.Hatch_Input_Bus_ME_Advanced.get(1))
             .duration(300)
             .eut(7680)
-            .addTo(As);
+            .addTo(As)
+            .addTo(HOR);;
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -1364,8 +1418,7 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                ItemList.Machine_IV_Canner.get(1),
-                ItemList.Machine_IV_FluidCanner.get(1),
+                ItemList.Machine_IV_Canner.get(2),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 4L),
                 GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.TungstenSteel, 4L),
                 ItemList.Electric_Piston_IV.get(4),
@@ -2044,7 +2097,8 @@ public class AssemblerRecipes implements IRecipePool {
             .fluidInputs(SubstituteFluidStack.soldering(576))
             .duration(300)
             .eut(TierEU.EV)
-            .addTo(As);
+            .addTo(As)
+            .addTo(HOR);;
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -2072,7 +2126,8 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(ItemList.Hatch_Input_ME.get(1))
             .duration(300)
             .eut(TierEU.HV)
-            .addTo(As);
+            .addTo(As)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(

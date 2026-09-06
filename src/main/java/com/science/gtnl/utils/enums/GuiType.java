@@ -27,7 +27,11 @@ public enum GuiType {
     CustomPriorityGUI(22),
     ActiveFormationPlaneGUI(23),
     SuperDualInterfaceGUI(24),
-    SuperDualInterfaceFluidGUI(25);
+    SuperDualInterfaceFluidGUI(25),
+    PortableCellWorkbenchGUI(26),
+    PortableCellWorkbenchOreFilterGUI(27),
+    PortableCellWorkbenchRestrictionGUI(28),
+    MECellDockGUI(29);
 
     private final int id;
 

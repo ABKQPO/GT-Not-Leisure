@@ -25,20 +25,17 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.WirelessSteamDynamoHatchGui;
-import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
-import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
@@ -47,7 +44,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -63,24 +59,12 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
 
     public WirelessSteamDynamoHatch(final int aID, final String aName, final String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
-        this.mLockedFluids = ImmutableSet.of(
-            Materials.Steam.mGas,
-            GTModHandler.getSuperHeatedSteam(1)
-                .getFluid(),
-            Materials.DenseSupercriticalSteam.mGas,
-            GTNLMaterials.CompressedSteam.getMolten(1)
-                .getFluid());
+        this.mLockedFluids = SteamTypes.getSupportedFluids();
     }
 
     public WirelessSteamDynamoHatch(final String aName, int aTier, final ITexture[][][] aTextures, Set<Fluid> aFluid) {
         super(aName, aTier, 3, new String[] { "" }, aTextures);
-        this.mLockedFluids = ImmutableSet.of(
-            Materials.Steam.mGas,
-            GTModHandler.getSuperHeatedSteam(1)
-                .getFluid(),
-            Materials.DenseSupercriticalSteam.mGas,
-            GTNLMaterials.CompressedSteam.getMolten(1)
-                .getFluid());
+        this.mLockedFluids = SteamTypes.getSupportedFluids();
     }
 
     @Override
@@ -233,8 +217,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
-        if (!aBaseMetaTileEntity.isServerSide()) return;
-
         ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
 
         SpaceProjectManager.checkOrCreateTeam(ownerUUID);
@@ -246,6 +228,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
         }
 
+        if (!aBaseMetaTileEntity.isServerSide()) return;
         tryFetchingSteam();
     }
 
@@ -277,13 +260,7 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
             int rawAmount = currentSteamStack.amount;
             Fluid fluidType = currentSteamStack.getFluid();
 
-            SteamTypes matchedSteamType = null;
-            for (SteamTypes steamType : SteamTypes.VALUES) {
-                if (steamType.fluid != null && steamType.fluid.equals(fluidType)) {
-                    matchedSteamType = steamType;
-                    break;
-                }
-            }
+            SteamTypes matchedSteamType = SteamTypes.fromFluid(fluidType);
 
             if (matchedSteamType != null) {
                 long convertedAmount = (long) rawAmount * (long) matchedSteamType.efficiencyFactor;
@@ -300,12 +277,17 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
-        aNBT.setString("OwnerUUID", ownerUUID.toString());
+        if (ownerUUID != null) {
+            aNBT.setString("OwnerUUID", ownerUUID.toString());
+        }
     }
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
+        if (!aNBT.hasKey("OwnerUUID")) {
+            return;
+        }
         try {
             ownerUUID = UUID.fromString(aNBT.getString("OwnerUUID"));
         } catch (IllegalArgumentException e) {
@@ -343,16 +325,19 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        if (ownerUUID == null) {
+            return;
+        }
         tag.setString("SteamNetworkOwner", SpaceProjectManager.getPlayerNameFromUUID(ownerUUID));
         tag.setBoolean("isInSteamNetwork", isInTeam);
 
-        if (isInTeam) {
+        if (isInTeam && steamDisplay != null) {
             tag.setString(
                 "SteamNetworkDisplay",
                 steamDisplay.toString()
                     .length() > 10 ? GTUtility.scientificFormat(steamDisplay)
                         : NumberFormatUtil.formatNumber(steamDisplay));
-            if (!ownerUUID.equals(teamUUID)) {
+            if (teamUUID != null && !ownerUUID.equals(teamUUID)) {
                 tag.setString("SteamNetworkTeam", SpaceProjectManager.getPlayerNameFromUUID(teamUUID));
             }
         }

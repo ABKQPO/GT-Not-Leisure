@@ -39,6 +39,16 @@ public class SwitchToCustomGuiPacket extends ServerboundPacket {
 
     @Override
     public void handleServer(EntityPlayerMP player) {
+        GuiType[] guiTypes = GuiType.values();
+        if (guiID < 0 || guiID >= guiTypes.length) {
+            return;
+        }
+
+        ForgeDirection[] directions = ForgeDirection.values();
+        if (sideOrdinal < 0 || sideOrdinal >= directions.length) {
+            return;
+        }
+
         Container c = player.openContainer;
 
         if (c instanceof AEBaseContainer bc) {
@@ -48,8 +58,8 @@ public class SwitchToCustomGuiPacket extends ServerboundPacket {
                 if (te != null) {
                     CommonProxy.openGui(
                         player,
-                        GuiType.values()[guiID],
-                        ForgeDirection.getOrientation(sideOrdinal),
+                        guiTypes[guiID],
+                        directions[sideOrdinal],
                         te.getWorldObj(),
                         te.xCoord,
                         te.yCoord,

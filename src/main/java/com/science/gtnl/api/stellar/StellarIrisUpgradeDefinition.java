@@ -7,6 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+
 import lombok.Getter;
 
 public class StellarIrisUpgradeDefinition {
@@ -14,7 +19,13 @@ public class StellarIrisUpgradeDefinition {
     @Getter
     private final String id;
     @Getter
+    private int networkId = -1;
+    @Getter
     private final String branchId;
+    @Getter
+    private final String treeId;
+    @Getter
+    private StellarIrisUpgradeTree tree;
     @Getter
     private final int row;
     @Getter
@@ -26,6 +37,10 @@ public class StellarIrisUpgradeDefinition {
     @Getter
     private final String descriptionKey;
     @Getter
+    private final StellarIrisNodeDisplay nodeDisplay;
+    @Getter
+    private final Integer colorOverride;
+    @Getter
     private final Set<String> prerequisiteIds;
     @Getter
     private final List<IStellarIrisUpgradeEffect> effects;
@@ -34,27 +49,44 @@ public class StellarIrisUpgradeDefinition {
         if (builder.id == null || builder.id.isEmpty()) {
             throw new IllegalArgumentException("Upgrade ID must not be empty");
         }
-        if (builder.branchId == null || builder.branchId.isEmpty()) {
-            throw new IllegalArgumentException("Upgrade branch ID must not be empty");
+        if ((builder.treeId == null || builder.treeId.isEmpty())
+            && (builder.branchId == null || builder.branchId.isEmpty())) {
+            throw new IllegalArgumentException("Upgrade tree ID must not be empty");
         }
         if (builder.row < 0 || builder.baseCost < 0 || builder.maxLevel < 1) {
             throw new IllegalArgumentException("Upgrade values are outside their valid range");
         }
         this.id = builder.id;
         this.branchId = builder.branchId;
+        this.treeId = builder.treeId == null ? builder.branchId : builder.treeId;
         this.row = builder.row;
         this.baseCost = builder.baseCost;
         this.maxLevel = builder.maxLevel;
         this.translationKey = builder.translationKey == null ? "gtnl.stellar_iris.upgrade." + id
             : builder.translationKey;
         this.descriptionKey = builder.descriptionKey == null ? translationKey + ".desc" : builder.descriptionKey;
+        this.nodeDisplay = builder.nodeDisplay;
+        this.colorOverride = builder.colorOverride;
         this.prerequisiteIds = Collections.unmodifiableSet(new LinkedHashSet<>(builder.prerequisiteIds));
         this.effects = List.copyOf(builder.effects);
     }
 
     public boolean isRepeatable() {
-        StellarIrisUpgradeBranch branch = StellarIrisUpgradeRegistry.getBranch(branchId);
-        return branch != null && branch.isRepeatable();
+        return tree.isRepeatable();
+    }
+
+    void assignNetworkId(int networkId) {
+        if (networkId < 0 || this.networkId >= 0) {
+            throw new IllegalStateException("Upgrade network ID can only be assigned once");
+        }
+        this.networkId = networkId;
+    }
+
+    void assignTree(StellarIrisUpgradeTree tree) {
+        if (tree == null || this.tree != null) {
+            throw new IllegalStateException("Upgrade tree can only be assigned once");
+        }
+        this.tree = tree;
     }
 
     public int getCostForLevel(int level) {
@@ -72,11 +104,14 @@ public class StellarIrisUpgradeDefinition {
 
         private final String id;
         private String branchId;
+        private String treeId;
         private int row;
         private int baseCost;
         private int maxLevel = 1;
         private String translationKey;
         private String descriptionKey;
+        private StellarIrisNodeDisplay nodeDisplay;
+        private Integer colorOverride;
         private final Set<String> prerequisiteIds = new LinkedHashSet<>();
         private final List<IStellarIrisUpgradeEffect> effects = new ArrayList<>();
 
@@ -86,6 +121,22 @@ public class StellarIrisUpgradeDefinition {
 
         public Builder branch(String branchId) {
             this.branchId = branchId;
+            if (treeId == null) {
+                treeId = branchId;
+            }
+            return this;
+        }
+
+        public Builder tree(String treeId) {
+            this.treeId = treeId;
+            return this;
+        }
+
+        public Builder color(int rgb) {
+            if (rgb < 0 || rgb > 0xFFFFFF) {
+                throw new IllegalArgumentException("Node color must be an RGB value");
+            }
+            colorOverride = rgb;
             return this;
         }
 
@@ -111,6 +162,26 @@ public class StellarIrisUpgradeDefinition {
 
         public Builder descriptionKey(String descriptionKey) {
             this.descriptionKey = descriptionKey;
+            return this;
+        }
+
+        public Builder nodeDisplay(String text) {
+            nodeDisplay = StellarIrisNodeDisplay.text(text);
+            return this;
+        }
+
+        public Builder nodeDisplay(ItemStack itemStack) {
+            nodeDisplay = StellarIrisNodeDisplay.item(itemStack);
+            return this;
+        }
+
+        public Builder nodeDisplay(FluidStack fluidStack) {
+            nodeDisplay = StellarIrisNodeDisplay.fluid(fluidStack);
+            return this;
+        }
+
+        public Builder nodeDisplay(IDrawable icon) {
+            nodeDisplay = StellarIrisNodeDisplay.icon(icon);
             return this;
         }
 

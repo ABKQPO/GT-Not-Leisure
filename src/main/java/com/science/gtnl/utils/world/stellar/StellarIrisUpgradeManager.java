@@ -95,11 +95,18 @@ public class StellarIrisUpgradeManager {
         if (definition == null) {
             return false;
         }
+        return tryUnlock(player, definition);
+    }
+
+    public static boolean tryUnlock(EntityPlayer player, StellarIrisUpgradeDefinition definition) {
+        if (definition == null) {
+            return false;
+        }
         World world = player.worldObj;
         UUID teamLeaderId = getTeamLeaderId(player.getUniqueID());
         StellarIrisWorldSavedData data = StellarIrisWorldSavedData.get(world);
         StellarIrisTeamState state = data.getOrCreateTeamState(teamLeaderId);
-        int currentLevel = state.getLevel(upgradeId);
+        int currentLevel = state.getLevel(definition.getId());
         if (!canUnlock(state, definition, currentLevel)) {
             return false;
         }
@@ -108,7 +115,7 @@ public class StellarIrisUpgradeManager {
             return false;
         }
         state.setSpendablePoints(state.getSpendablePoints() - cost);
-        state.setLevel(upgradeId, currentLevel + 1);
+        state.setLevel(definition.getId(), currentLevel + 1);
         data.markDirty();
         StellarIrisUpgradeEffectContext context = new StellarIrisUpgradeEffectContext(world, teamLeaderId, definition);
         for (IStellarIrisUpgradeEffect effect : StellarIrisUpgradeRegistry.getEffects(definition.getId())) {
@@ -118,8 +125,38 @@ public class StellarIrisUpgradeManager {
     }
 
     public static boolean canUnlock(StellarIrisTeamSnapshot snapshot, StellarIrisUpgradeDefinition definition) {
-        return snapshot != null && definition != null
-            && canUnlock(snapshot.getTier(), snapshot.getLevels(), definition, snapshot.getLevel(definition.getId()));
+        return snapshot != null && definition != null && canUnlock(snapshot, definition, snapshot.getLevel(definition));
+    }
+
+    private static boolean canUnlock(StellarIrisTeamSnapshot snapshot, StellarIrisUpgradeDefinition definition,
+        int currentLevel) {
+        if (currentLevel >= definition.getMaxLevel()) {
+            return false;
+        }
+        if (definition.isRepeatable()) {
+            return true;
+        }
+        if (snapshot.getTier() < Math.max(0, definition.getRow() - 1)) {
+            return false;
+        }
+        if (definition.getPrerequisiteIds()
+            .isEmpty()) {
+            return true;
+        }
+        if (definition.getRow() <= 2) {
+            for (String prerequisiteId : definition.getPrerequisiteIds()) {
+                if (snapshot.getLevel(StellarIrisUpgradeRegistry.getUpgrade(prerequisiteId)) > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        for (String prerequisiteId : definition.getPrerequisiteIds()) {
+            if (snapshot.getLevel(StellarIrisUpgradeRegistry.getUpgrade(prerequisiteId)) <= 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static boolean canUnlock(StellarIrisTeamState state, StellarIrisUpgradeDefinition definition,

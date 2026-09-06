@@ -7,6 +7,10 @@ on:
     branches: [ master, main, release/**, dev-* ]
   workflow_dispatch:
 
+concurrency:
+  group: dev-release-build
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -68,6 +72,7 @@ jobs:
           name: Dev Build
           body: Dynamic action build of branch ${{ github.ref_name }}
           tag_name: dev-build
-          prerelease: true
+          prerelease: false
+          make_latest: true
           files: |
             build/libs/*.jar

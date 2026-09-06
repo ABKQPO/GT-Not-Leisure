@@ -6,26 +6,32 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.entity.EntityParticleBeam;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchContainer;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
+import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
+import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
+import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
 import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.container.ContainerCustomPriority;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
+import com.science.gtnl.container.ContainerMECellDock;
 import com.science.gtnl.container.ContainerMEChisel;
 import com.science.gtnl.container.ContainerSuperDualInterfaceFluid;
 import com.science.gtnl.container.ContainerSuperInterface;
@@ -38,6 +44,7 @@ import com.science.gtnl.container.portableWorkbench.ContainerPortableEnchanting;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableEnderChest;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableFurnace;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
+import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -149,11 +156,14 @@ public class CommonProxy implements IGuiHandler {
             MinecraftForge.EVENT_BUS.register(new ExtremeExtremeEntityCrusherRecipes());
         }
 
+        TCResearches.registerCategory();
+
         MaterialLoader.loadPostInit();
     }
 
     public void completeInit(FMLLoadCompleteEvent event) {
         MaterialLoader.loadCompleteInit();
+        TCResearches.registerResearches();
         VMTweakHelper.initializeDimensionMappings();
     }
 
@@ -195,43 +205,46 @@ public class CommonProxy implements IGuiHandler {
             case PortableCopperChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.COPPER);
+                PortableChestType.COPPER);
             case PortableIronChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.IRON);
+                PortableChestType.IRON);
             case PortableSilverChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.SILVER);
+                PortableChestType.SILVER);
             case PortableSteelChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.STEEL);
+                PortableChestType.STEEL);
             case PortableGoldenChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.GOLD);
+                PortableChestType.GOLD);
             case PortableDiamondChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.DIAMOND);
+                PortableChestType.DIAMOND);
             case PortableCrystalChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.CRYSTAL);
+                PortableChestType.CRYSTAL);
             case PortableObsidianChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.OBSIDIAN);
+                PortableChestType.OBSIDIAN);
             case PortableNetheriteChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.NETHERITE);
+                PortableChestType.NETHERITE);
             case PortableDarkSteelChestGUI -> new ContainerPortableChest(
                 player.inventory,
                 player.getHeldItem(),
-                GuiPortableChest.GUI.DARKSTEEL);
+                PortableChestType.DARKSTEEL);
+            case PortableCellWorkbenchGUI -> createPortableCellWorkbenchContainer(player, x);
+            case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilter(player, x);
+            case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestriction(player, x);
             case DirePatternEncoderGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityDirePatternEncoder d) {
@@ -350,6 +363,24 @@ public class CommonProxy implements IGuiHandler {
                 }
                 yield null;
             }
+            case MECellDockGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host) {
+                    IPart part = host.getPart(side);
+                    if (part instanceof PartMECellDock dock) {
+                        var container = new ContainerMECellDock(player.inventory, dock);
+                        ContainerOpenContext ctx = new ContainerOpenContext(dock);
+                        ctx.setWorld(world);
+                        ctx.setX(x);
+                        ctx.setY(y);
+                        ctx.setZ(z);
+                        ctx.setSide(side);
+                        container.setOpenContext(ctx);
+                        yield container;
+                    }
+                }
+                yield null;
+            }
             case CustomPriorityGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 IPriorityHost priorityHost = null;
@@ -365,6 +396,8 @@ public class CommonProxy implements IGuiHandler {
                         priorityHost = si;
                     } else if (part instanceof PartActiveFormationPlane si) {
                         priorityHost = si;
+                    } else if (part instanceof PartMECellDock dock) {
+                        priorityHost = dock;
                     }
                 }
                 if (priorityHost != null) {
@@ -410,5 +443,34 @@ public class CommonProxy implements IGuiHandler {
         int fullID = (type.getID() << 3) | (side.ordinal() & 7);
 
         player.openGui(ScienceNotLeisure.instance, fullID, world, x, y, z);
+    }
+
+    private Object createPortableCellWorkbenchContainer(EntityPlayer player, int inventorySlot) {
+        if (!isPortableCellWorkbenchSlot(player, inventorySlot)) return null;
+        return new PortableCellWorkbenchContainer(
+            player.inventory,
+            new PortableCellWorkbenchHost(player.inventory, ItemLoader.portableCellWorkbenchItem, inventorySlot));
+    }
+
+    private Object createPortableCellWorkbenchOreFilter(EntityPlayer player, int inventorySlot) {
+        PortableCellWorkbenchHost host = createPortableCellWorkbenchHost(player, inventorySlot);
+        return host == null ? null : PortableCellWorkbenchGuiFactory.createOreFilter(player.inventory, host);
+    }
+
+    private Object createPortableCellWorkbenchRestriction(EntityPlayer player, int inventorySlot) {
+        PortableCellWorkbenchHost host = createPortableCellWorkbenchHost(player, inventorySlot);
+        return host == null ? null : PortableCellWorkbenchGuiFactory.createCellRestriction(player.inventory, host);
+    }
+
+    private PortableCellWorkbenchHost createPortableCellWorkbenchHost(EntityPlayer player, int inventorySlot) {
+        if (!isPortableCellWorkbenchSlot(player, inventorySlot)) return null;
+        return new PortableCellWorkbenchHost(player.inventory, ItemLoader.portableCellWorkbenchItem, inventorySlot);
+    }
+
+    private boolean isPortableCellWorkbenchSlot(EntityPlayer player, int inventorySlot) {
+        return inventorySlot >= 0 && inventorySlot < player.inventory.getSizeInventory()
+            && player.inventory.getStackInSlot(inventorySlot) != null
+            && player.inventory.getStackInSlot(inventorySlot)
+                .getItem() == ItemLoader.portableCellWorkbenchItem;
     }
 }

@@ -19,6 +19,7 @@ import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
+import com.science.gtnl.client.gui.GuiMECellDock;
 import com.science.gtnl.client.gui.GuiMEChisel;
 import com.science.gtnl.client.gui.GuiSuperDualInterface;
 import com.science.gtnl.client.gui.GuiSuperDualInterfaceFluid;
@@ -26,6 +27,7 @@ import com.science.gtnl.client.gui.GuiSuperInterface;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAnvil;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableBasicWorkbench;
+import com.science.gtnl.client.gui.portableWorkbench.GuiPortableCellWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableEnchanting;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableEnderChest;
@@ -51,7 +53,10 @@ import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
+import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
+import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.render.SpoceRenderHandler;
@@ -81,8 +86,11 @@ import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 import Forge.NullPointerException;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.client.gui.implementations.GuiCellRestriction;
+import appeng.client.gui.implementations.GuiOreFilter;
 import appeng.client.render.ItemRenderer;
 import appeng.client.render.TESRWrapper;
+import appeng.container.AEBaseContainer;
 import appeng.helpers.IPriorityHost;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -258,6 +266,9 @@ public class ClientProxy extends CommonProxy {
                 yield null;
             }
             case PortableDarkSteelChestGUI -> new GuiPortableChest.DarkSteel(player.inventory, player.getHeldItem());
+            case PortableCellWorkbenchGUI -> createPortableCellWorkbenchGui(player, x);
+            case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilterGui(player, x);
+            case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestrictionGui(player, x);
             case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityMEChisel d) {
@@ -311,6 +322,16 @@ public class ClientProxy extends CommonProxy {
                 }
                 yield null;
             }
+            case MECellDockGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host) {
+                    IPart part = host.getPart(side);
+                    if (part instanceof PartMECellDock dock) {
+                        yield new GuiMECellDock(player.inventory, dock);
+                    }
+                }
+                yield null;
+            }
             case CustomPriorityGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 IPriorityHost priorityHost = null;
@@ -333,6 +354,9 @@ public class ClientProxy extends CommonProxy {
                     } else if (part instanceof PartActiveFormationPlane si) {
                         priorityHost = si;
                         type = GuiType.ActiveFormationPlaneGUI;
+                    } else if (part instanceof PartMECellDock dock) {
+                        priorityHost = dock;
+                        type = GuiType.MECellDockGUI;
                     }
                 }
 
@@ -347,6 +371,36 @@ public class ClientProxy extends CommonProxy {
     @Override
     public EntityPlayer getEntityPlayerFromContext(MessageContext ctx) {
         return Minecraft.getMinecraft().thePlayer;
+    }
+
+    private Object createPortableCellWorkbenchGui(EntityPlayer player, int inventorySlot) {
+        PortableCellWorkbenchHost host = createPortableCellWorkbenchHost(player, inventorySlot);
+        return host == null ? null : new GuiPortableCellWorkbench(player.inventory, host);
+    }
+
+    private Object createPortableCellWorkbenchOreFilterGui(EntityPlayer player, int inventorySlot) {
+        PortableCellWorkbenchHost host = createPortableCellWorkbenchHost(player, inventorySlot);
+        if (host == null) return null;
+
+        GuiOreFilter gui = new GuiOreFilter(player.inventory, host);
+        PortableCellWorkbenchGuiFactory.configureSubGui((AEBaseContainer) gui.inventorySlots, host);
+        return gui;
+    }
+
+    private Object createPortableCellWorkbenchRestrictionGui(EntityPlayer player, int inventorySlot) {
+        PortableCellWorkbenchHost host = createPortableCellWorkbenchHost(player, inventorySlot);
+        if (host == null) return null;
+
+        GuiCellRestriction gui = new GuiCellRestriction(player.inventory, host);
+        PortableCellWorkbenchGuiFactory.configureSubGui((AEBaseContainer) gui.inventorySlots, host);
+        return gui;
+    }
+
+    private PortableCellWorkbenchHost createPortableCellWorkbenchHost(EntityPlayer player, int inventorySlot) {
+        if (inventorySlot < 0 || inventorySlot >= player.inventory.getSizeInventory()) return null;
+        if (player.inventory.getStackInSlot(inventorySlot) == null || player.inventory.getStackInSlot(inventorySlot)
+            .getItem() != ItemLoader.portableCellWorkbenchItem) return null;
+        return new PortableCellWorkbenchHost(player.inventory, ItemLoader.portableCellWorkbenchItem, inventorySlot);
     }
 
     @Override

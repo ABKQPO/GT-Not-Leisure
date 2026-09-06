@@ -1,5 +1,6 @@
 package com.science.gtnl.api.stellar;
 
+import net.minecraft.util.EnumChatFormatting;
 public class StellarIrisUpgradeCatalog {
 
     public static boolean defaultsRegistered;
@@ -19,15 +20,45 @@ public class StellarIrisUpgradeCatalog {
 
     public static void registerBranches() {
         StellarIrisUpgradeRegistry.registerBranch(
-            new StellarIrisUpgradeBranch("ignition", "gtnl.stellar_iris.branch.ignition", -2.3561945F, false));
+            new StellarIrisUpgradeBranch(
+                "ignition",
+                "gtnl.stellar_iris.branch.ignition",
+                -2.3561945F,
+                false,
+                0xFF783C,
+                EnumChatFormatting.GOLD));
         StellarIrisUpgradeRegistry.registerBranch(
-            new StellarIrisUpgradeBranch("fusion", "gtnl.stellar_iris.branch.fusion", -0.7853982F, false));
+            new StellarIrisUpgradeBranch(
+                "fusion",
+                "gtnl.stellar_iris.branch.fusion",
+                -0.7853982F,
+                false,
+                0x50B4FF,
+                EnumChatFormatting.AQUA));
         StellarIrisUpgradeRegistry.registerBranch(
-            new StellarIrisUpgradeBranch("collapse", "gtnl.stellar_iris.branch.collapse", 2.3561945F, false));
-        StellarIrisUpgradeRegistry
-            .registerBranch(new StellarIrisUpgradeBranch("void", "gtnl.stellar_iris.branch.void", 0.7853982F, false));
+            new StellarIrisUpgradeBranch(
+                "collapse",
+                "gtnl.stellar_iris.branch.collapse",
+                2.3561945F,
+                false,
+                0xB450DC,
+                EnumChatFormatting.LIGHT_PURPLE));
         StellarIrisUpgradeRegistry.registerBranch(
-            new StellarIrisUpgradeBranch("repeatable", "gtnl.stellar_iris.branch.repeatable", -1.5707964F, true));
+            new StellarIrisUpgradeBranch(
+                "void",
+                "gtnl.stellar_iris.branch.void",
+                0.7853982F,
+                false,
+                0x50FFB4,
+                EnumChatFormatting.GREEN));
+        StellarIrisUpgradeRegistry.registerBranch(
+            new StellarIrisUpgradeBranch(
+                "repeatable",
+                "gtnl.stellar_iris.branch.repeatable",
+                -1.5707964F,
+                true,
+                0xDCC878,
+                EnumChatFormatting.YELLOW));
     }
 
     public static void registerIgnition() {

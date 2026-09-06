@@ -779,6 +779,35 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     }
 
+    @Override
+    public boolean depleteInput(FluidStack aLiquid, boolean simulate) {
+        return depleteInputQuantity(aLiquid, simulate) >= aLiquid.amount;
+    }
+
+    /**
+     * Returns the amount of fluid drained from the input hatches.
+     *
+     * @param aLiquid  The fluid to drain. This stack is not modified.
+     * @param simulate Whether to simulate the drain.
+     * @return The amount of fluid drained.
+     */
+    public int depleteInputQuantity(FluidStack aLiquid, boolean simulate) {
+        if (aLiquid == null) return 0;
+
+        FluidStack remaining = aLiquid.copy();
+        for (MTEHatchInput inputHatch : GTUtility.validMTEList(mInputHatches)) {
+            setHatchRecipeMap(inputHatch);
+            FluidStack drained = inputHatch.drain(ForgeDirection.UNKNOWN, remaining, !simulate);
+            if (drained == null || drained.getFluid() != aLiquid.getFluid()) continue;
+
+            if (drained.amount >= remaining.amount) {
+                return aLiquid.amount - remaining.amount + drained.amount;
+            }
+            remaining.amount -= drained.amount;
+        }
+        return aLiquid.amount - remaining.amount;
+    }
+
     /**
      * 执行配方检查并在成功时写入运行态数据。
      * Checks recipes and prepares machine runtime state when a recipe is found.

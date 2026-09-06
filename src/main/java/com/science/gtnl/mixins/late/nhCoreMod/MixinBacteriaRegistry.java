@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.nHCoreMod;
+package com.science.gtnl.mixins.late.nhCoreMod;
 
 import java.util.LinkedHashMap;
 

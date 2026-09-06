@@ -57,6 +57,7 @@ public enum GTNLItemList implements IItemContainer {
     PartSuperDualInterface,
     PartActiveFormationPlane,
     PartBeamFormer,
+    MECellDock,
     BlockBeamFormer,
 
     BronzeBrickCasing,
@@ -355,6 +356,7 @@ public enum GTNLItemList implements IItemContainer {
     PortableObsidianChest,
     PortableNetheriteChest,
     PortableDarkSteelChest,
+    PortableCellWorkbench,
     Stick,
     WirelessUpgradeChip,
 
@@ -1154,6 +1156,8 @@ public enum GTNLItemList implements IItemContainer {
     BeamlinePipeMirror,
     OutputHatchMEProxy,
     OutputBusMEProxy,
+    WirelessVacuumConveyorInputHatch,
+    WirelessVacuumConveyorOutputHatch,
     AdvancedSuperDualInputHatchME,
     SuperDualInputHatchME,
     TypeFilteredInputBusME,
@@ -1198,6 +1202,7 @@ public enum GTNLItemList implements IItemContainer {
     SteamTurbineHV,
     SteamAssemblerBronze,
     SteamAssemblerSteel,
+    HydraulicSuperBuffer,
     ManaTank,
     BigSteamInputHatch,
     SuperDataAccessHatch,

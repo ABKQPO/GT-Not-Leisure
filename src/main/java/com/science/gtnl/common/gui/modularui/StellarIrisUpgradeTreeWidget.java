@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
@@ -18,14 +17,16 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.api.UpOrDown;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
-import com.science.gtnl.api.stellar.StellarIrisUpgradeBranch;
+import com.science.gtnl.api.stellar.StellarIrisNodeDisplay;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
+import com.science.gtnl.api.stellar.StellarIrisUpgradeTree;
 import com.science.gtnl.utils.world.stellar.StellarIrisTeamSnapshot;
 import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 
@@ -44,8 +45,8 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
     private final List<CosmicParticle> particles = new ArrayList<>();
     private final Map<String, NodePosition> nodePositions = new HashMap<>();
     private final Map<String, NodePosition> baseNodeOffsets = new HashMap<>();
-    private final Map<String, List<StellarIrisUpgradeDefinition>> definitionsByBranch = new HashMap<>();
-    private final Map<String, List<StellarIrisUpgradeDefinition>> definitionsByBranchAndRow = new HashMap<>();
+    private final Map<StellarIrisUpgradeTree, List<StellarIrisUpgradeDefinition>> definitionsByTree = new HashMap<>();
+    private final Map<StellarIrisUpgradeTree, Map<Integer, List<StellarIrisUpgradeDefinition>>> definitionsByTreeAndRow = new HashMap<>();
     private final Random random = new Random();
 
     private List<StellarIrisUpgradeDefinition> definitions = new ArrayList<>();
@@ -121,6 +122,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         renderCentralCore(width / 2.0F, height / 2.0F);
         renderNodes();
         endRectangleBatch();
+        renderNodeDisplays(context, widgetTheme);
         renderNodeLabels();
         renderHeader(width);
         renderDetails(width, height);
@@ -297,15 +299,15 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             return;
         }
         definitions = new ArrayList<>(StellarIrisUpgradeRegistry.getUpgrades());
-        definitionsByBranch.clear();
-        definitionsByBranchAndRow.clear();
+        definitionsByTree.clear();
+        definitionsByTreeAndRow.clear();
         baseNodeOffsets.clear();
         for (StellarIrisUpgradeDefinition definition : definitions) {
-            String branchId = definition.getBranchId();
-            definitionsByBranch.computeIfAbsent(branchId, key -> new ArrayList<>())
+            StellarIrisUpgradeTree tree = definition.getTree();
+            definitionsByTree.computeIfAbsent(tree, ignored -> new ArrayList<>())
                 .add(definition);
-            definitionsByBranchAndRow
-                .computeIfAbsent(getNodeGroupKey(branchId, definition.getRow()), key -> new ArrayList<>())
+            definitionsByTreeAndRow.computeIfAbsent(tree, ignored -> new HashMap<>())
+                .computeIfAbsent(definition.getRow(), ignored -> new ArrayList<>())
                 .add(definition);
         }
         for (StellarIrisUpgradeDefinition definition : definitions) {
@@ -323,11 +325,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         int mouseY = getContext().getAbsMouseY() - getArea().y;
         for (StellarIrisUpgradeDefinition definition : definitions) {
             NodePosition baseOffset = baseNodeOffsets.get(definition.getId());
-            NodePosition position = nodePositions.get(definition.getId());
-            if (position == null) {
-                position = new NodePosition();
-                nodePositions.put(definition.getId(), position);
-            }
+            NodePosition position = nodePositions.computeIfAbsent(definition.getId(), k -> new NodePosition());
             position.set(
                 baseOffset.x * zoom + centerX + getCameraOffsetX(),
                 baseOffset.y * zoom + centerY + getCameraOffsetY());
@@ -339,20 +337,20 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
     }
 
     private NodePosition calculateBaseNodeOffset(StellarIrisUpgradeDefinition definition) {
-        StellarIrisUpgradeBranch branch = StellarIrisUpgradeRegistry.getBranch(definition.getBranchId());
-        List<StellarIrisUpgradeDefinition> matchingDefinitions = branch.isRepeatable()
-            ? definitionsByBranch.get(definition.getBranchId())
-            : definitionsByBranchAndRow.get(getNodeGroupKey(definition.getBranchId(), definition.getRow()));
+        StellarIrisUpgradeTree tree = definition.getTree();
+        List<StellarIrisUpgradeDefinition> matchingDefinitions = tree.isRepeatable() ? definitionsByTree.get(tree)
+            : definitionsByTreeAndRow.get(tree)
+                .get(definition.getRow());
         int index = matchingDefinitions.indexOf(definition);
         int count = matchingDefinitions.size();
         float baseX;
         float baseY;
-        if (branch.isRepeatable()) {
+        if (tree.isRepeatable()) {
             float angle = index * ((float) Math.PI * 2.0F / count) - (float) Math.PI / 2.0F;
             baseX = MathHelper.cos(angle) * 55.0F;
             baseY = MathHelper.sin(angle) * 55.0F;
         } else {
-            float angle = branch.getTreeAngle() + definition.getRow() * 0.05F;
+            float angle = tree.getTreeAngle() + definition.getRow() * 0.05F;
             if (count > 1) {
                 angle += (index - (count - 1) / 2.0F) * 0.38F;
             }
@@ -374,11 +372,12 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
                 if (start == null) {
                     continue;
                 }
-                boolean prerequisiteOwned = snapshot.getLevel(prerequisiteId) > 0;
-                boolean bothOwned = prerequisiteOwned && snapshot.getLevel(definition.getId()) > 0;
+                boolean prerequisiteOwned = snapshot.getLevel(StellarIrisUpgradeRegistry.getUpgrade(prerequisiteId))
+                    > 0;
+                boolean bothOwned = prerequisiteOwned && snapshot.getLevel(definition) > 0;
                 int alpha = bothOwned ? (int) (fadeAlpha * 180.0F)
                     : prerequisiteOwned ? (int) (fadeAlpha * 80.0F) : (int) (fadeAlpha * 30.0F);
-                drawConnection(start, end, alphaColor(getBranchColor(definition), alpha / 255.0F), bothOwned);
+                drawConnection(start, end, alphaColor(getNodeColor(definition), alpha / 255.0F), bothOwned);
             }
         }
     }
@@ -414,7 +413,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             if (position == null) {
                 continue;
             }
-            int level = snapshot.getLevel(definition.getId());
+            int level = snapshot.getLevel(definition);
             boolean owned = level > 0;
             boolean tierLocked = snapshot.getTier() < getRequiredTier(definition);
             boolean available = StellarIrisUpgradeManager.canUnlock(snapshot, definition)
@@ -429,7 +428,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
                     .hashCode())
                 * 0.12F : 1.0F;
             int radius = (int) (getNodeRadius(definition) * pulse);
-            int branchColor = getBranchColor(definition);
+            int branchColor = getNodeColor(definition);
             if (owned || available || selected) {
                 for (int glowRadius = radius + 14; glowRadius > radius; glowRadius -= 3) {
                     float progress = (glowRadius - radius) / 14.0F;
@@ -479,7 +478,11 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             if (position == null) {
                 continue;
             }
-            int level = snapshot.getLevel(definition.getId());
+            StellarIrisNodeDisplay nodeDisplay = definition.getNodeDisplay();
+            if (nodeDisplay != null && !nodeDisplay.isText()) {
+                continue;
+            }
+            int level = snapshot.getLevel(definition);
             boolean owned = level > 0;
             boolean tierLocked = snapshot.getTier() < getRequiredTier(definition);
             boolean available = StellarIrisUpgradeManager.canUnlock(snapshot, definition)
@@ -487,9 +490,11 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
             float stateAlpha = owned ? 1.0F
                 : available ? definition.getId()
                     .equals(hoveredUpgradeId) ? 0.9F : 0.6F : tierLocked ? 0.25F : 0.4F;
-            String label = owned ? "\u2713"
-                : tierLocked ? "T" + getRequiredTier(definition)
-                    : Integer.toString(definition.getCostForLevel(level + 1));
+            String label = nodeDisplay == null
+                ? owned ? "\u2713"
+                    : tierLocked ? "T" + getRequiredTier(definition)
+                        : Integer.toString(definition.getCostForLevel(level + 1))
+                : nodeDisplay.getText();
             int textColor = owned ? 0xFFFFFF : tierLocked ? 0x505050 : available ? 0xFFCC44 : 0x606060;
             font.drawString(
                 label,
@@ -497,6 +502,35 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
                 (int) position.y - (owned ? 4 : 3),
                 alphaColor(textColor, fadeAlpha * stateAlpha));
         }
+    }
+
+    private void renderNodeDisplays(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        for (StellarIrisUpgradeDefinition definition : definitions) {
+            StellarIrisNodeDisplay nodeDisplay = definition.getNodeDisplay();
+            NodePosition position = nodePositions.get(definition.getId());
+            if (nodeDisplay == null || nodeDisplay.isText() || position == null) {
+                continue;
+            }
+            IDrawable icon = nodeDisplay.getIcon();
+            if (icon == null) {
+                continue;
+            }
+            int level = snapshot.getLevel(definition);
+            boolean tierLocked = snapshot.getTier() < getRequiredTier(definition);
+            boolean available = StellarIrisUpgradeManager.canUnlock(snapshot, definition)
+                && snapshot.getSpendablePoints() >= definition.getCostForLevel(level + 1);
+            float stateAlpha = level > 0 ? 1.0F : available ? 0.7F : tierLocked ? 0.25F : 0.4F;
+            int size = Math.max(8, Math.min(16, (int) getNodeRadius(definition)));
+            int x = (int) position.x - size / 2;
+            int y = (int) position.y - size / 2;
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, fadeAlpha * stateAlpha);
+            icon.draw(context, x, y, size, size, widgetTheme.getTheme());
+        }
+        GL11.glPopAttrib();
     }
 
     private void renderHeader(int width) {
@@ -522,7 +556,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         int panelHeight = 172;
         int panelX = width - (int) (panelSlide * (panelWidth + 15));
         int panelY = (height - panelHeight) / 2;
-        int branchColor = getBranchColor(definition);
+        int branchColor = getNodeColor(definition);
         Gui.drawRect(
             panelX,
             panelY,
@@ -535,7 +569,7 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         int textY = panelY + 10;
         String name = StatCollector.translateToLocal(definition.getTranslationKey());
         font.drawString(name, textX, textY, alphaColor(branchColor, fadeAlpha * panelSlide));
-        int level = snapshot.getLevel(definition.getId());
+        int level = snapshot.getLevel(definition);
         String description = StatCollector.translateToLocal(definition.getDescriptionKey());
         int infoY = panelY + 34;
         if (!description.equals(definition.getDescriptionKey()) && !description.isEmpty()) {
@@ -627,11 +661,11 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         if (definition == null || actionHandler == null || !StellarIrisUpgradeManager.canUnlock(snapshot, definition)) {
             return false;
         }
-        int level = snapshot.getLevel(upgradeId);
+        int level = snapshot.getLevel(definition);
         if (snapshot.getSpendablePoints() < definition.getCostForLevel(level + 1)) {
             return false;
         }
-        actionHandler.requestUnlock(upgradeId);
+        actionHandler.requestUnlock(definition.getNetworkId());
         return true;
     }
 
@@ -641,7 +675,10 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         }
         StellarIrisUpgradeDefinition definition = StellarIrisUpgradeRegistry.getUpgrade(hoveredUpgradeId);
         if (definition != null) {
-            tooltip.add(getTooltipColor(definition) + StatCollector.translateToLocal(definition.getTranslationKey()));
+            tooltip.textColor(
+                0xFF000000 | definition.getTree()
+                    .getTooltipColor())
+                .add(StatCollector.translateToLocal(definition.getTranslationKey()));
         }
     }
 
@@ -699,42 +736,13 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         return definition.isRepeatable() ? 0 : Math.max(0, definition.getRow() - 1);
     }
 
-    private String getNodeGroupKey(String branchId, int row) {
-        return branchId + ':' + row;
-    }
-
-    private int getBranchColor(StellarIrisUpgradeDefinition definition) {
-        String branchId = definition.getBranchId();
-        if ("ignition".equals(branchId)) {
-            return 0xFF783C;
+    private int getNodeColor(StellarIrisUpgradeDefinition definition) {
+        Integer colorOverride = definition.getColorOverride();
+        if (colorOverride != null) {
+            return colorOverride;
         }
-        if ("fusion".equals(branchId)) {
-            return 0x50B4FF;
-        }
-        if ("collapse".equals(branchId)) {
-            return 0xB450DC;
-        }
-        if ("void".equals(branchId)) {
-            return 0x50FFB4;
-        }
-        return 0xDCC878;
-    }
-
-    private EnumChatFormatting getTooltipColor(StellarIrisUpgradeDefinition definition) {
-        String branchId = definition.getBranchId();
-        if ("ignition".equals(branchId)) {
-            return EnumChatFormatting.GOLD;
-        }
-        if ("fusion".equals(branchId)) {
-            return EnumChatFormatting.AQUA;
-        }
-        if ("collapse".equals(branchId)) {
-            return EnumChatFormatting.LIGHT_PURPLE;
-        }
-        if ("void".equals(branchId)) {
-            return EnumChatFormatting.GREEN;
-        }
-        return EnumChatFormatting.YELLOW;
+        return definition.getTree()
+            .getDefaultColor();
     }
 
     private int darken(int color, float factor) {

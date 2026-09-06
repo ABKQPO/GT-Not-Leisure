@@ -335,6 +335,7 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public void onBlockDestroyed() {
         Arrays.fill(mInventory, null);
+        Arrays.fill(itemInventory.inventory, null);
         clearRecipeSnapshots();
         super.onBlockDestroyed();
     }

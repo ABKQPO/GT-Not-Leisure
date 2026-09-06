@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.early.energymonitor;
+package com.science.gtnl.mixins.early.energyMonitor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,25 +9,17 @@ import com.science.gtnl.common.machine.monitor.EnergyMonitorRegistry;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseMetaTileEntity;
+import gregtech.api.metatileentity.CommonBaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 
-@Mixin(value = BaseMetaTileEntity.class, remap = false)
-public class MixinBaseMetaTileEntityEnergyMonitor {
+@Mixin(value = CommonBaseMetaTileEntity.class, remap = false)
+public class MixinCommonMetaTileEntityEnergyMonitor {
 
-    @Inject(method = "invalidate", at = @At("HEAD"))
-    private void gtnl$unregisterEnergyMonitorEntry(CallbackInfo callbackInfo) {
+    @Inject(method = "handleFirstTick", at = @At("TAIL"))
+    private void gtnl$registerEnergyMonitorEntry(boolean isServerSide, CallbackInfo callbackInfo) {
         MetaTileEntity metaTileEntity = gtnl$resolveTrackedMetaTileEntity();
         if (metaTileEntity != null) {
-            EnergyMonitorRegistry.unregister(metaTileEntity);
-        }
-    }
-
-    @Inject(method = "onUnload", at = @At("HEAD"))
-    private void gtnl$unregisterEnergyMonitorEntryOnUnload(CallbackInfo callbackInfo) {
-        MetaTileEntity metaTileEntity = gtnl$resolveTrackedMetaTileEntity();
-        if (metaTileEntity != null) {
-            EnergyMonitorRegistry.unregister(metaTileEntity);
+            EnergyMonitorRegistry.register(metaTileEntity);
         }
     }
 

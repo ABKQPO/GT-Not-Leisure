@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -726,8 +728,11 @@ public class DisassemblerHelper {
                 describeFluidStack(fluid));
             return null;
         }
-        String fluidName = fluid.getFluid()
-            .getName();
+        Fluid fluidType = fluid.getFluid();
+        String fluidName = FluidRegistry.getDefaultFluidName(fluidType);
+        if (fluidName == null || fluidName.isEmpty()) {
+            fluidName = fluidType.getName();
+        }
         if (fluidName == null || fluidName.isEmpty()) {
             ScienceNotLeisure.LOG.warn(
                 "Skipping fluid packet with empty fluid name while generating Shimmer recipe from {}: {}",
@@ -736,7 +741,17 @@ public class DisassemblerHelper {
             return null;
         }
         try {
-            return ItemFluidPacket.newStack(fluid);
+            Fluid registeredFluid = FluidRegistry.getFluid(fluidName);
+            if (registeredFluid == null) {
+                ScienceNotLeisure.LOG.warn(
+                    "Skipping fluid packet with unregistered fluid while generating Shimmer recipe from {}: {}",
+                    source,
+                    describeFluidStack(fluid));
+                return null;
+            }
+            FluidStack registeredStack = registeredFluid == fluidType ? fluid
+                : new FluidStack(registeredFluid, fluid.amount);
+            return ItemFluidPacket.newStack(registeredStack);
         } catch (IllegalArgumentException e) {
             ScienceNotLeisure.LOG.warn(
                 "Skipping invalid fluid packet while generating Shimmer recipe from {}: {}",

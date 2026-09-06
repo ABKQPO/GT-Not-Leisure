@@ -207,7 +207,6 @@ public class MixerRecipes implements IRecipePool {
             .fluidOutputs(GTNLMaterials.UraniumFuel.getFluidOrGas(1440))
             .duration(15 * SECONDS)
             .eut(TierEU.RECIPE_IV)
-            .addTo(MCR)
             .addTo(MNCR);
 
         // 海晶石溶液 工业HF降价为HF

@@ -28,11 +28,13 @@ import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
+import com.science.gtnl.common.item.items.ItemPartMECellDock;
 import com.science.gtnl.common.item.items.ItemPartSuperDualInterface;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
+import com.science.gtnl.common.item.items.PortableCellWorkbenchItem;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.item.items.SlimeSaddle;
 import com.science.gtnl.common.item.items.SteamRocket;
@@ -138,6 +140,7 @@ public class ItemLoader {
     public static WirelessUpgradeChip wirelessUpgradeChip = new WirelessUpgradeChip();
     public static SuspiciousStew suspiciousStew = new SuspiciousStew();
     public static PortableItem portableItem = new PortableItem();
+    public static PortableCellWorkbenchItem portableCellWorkbenchItem = new PortableCellWorkbenchItem();
     public static ElectricProspectorTool electricProspectorTool = new ElectricProspectorTool();
 
     public static SlimeSaddle slimeSaddle = new SlimeSaddle();
@@ -166,6 +169,7 @@ public class ItemLoader {
     public static ItemPartSuperDualInterface superDualInterface = new ItemPartSuperDualInterface();
     public static ItemPartActiveFormationPlane activeFormationPlane = new ItemPartActiveFormationPlane();
     public static ItemPartBeamFormer beamFormer = new ItemPartBeamFormer();
+    public static ItemPartMECellDock meCellDock = new ItemPartMECellDock();
 
     public static ItemStack infinityDyeCell;
     public static ItemStack infinityDyeFluidCell;

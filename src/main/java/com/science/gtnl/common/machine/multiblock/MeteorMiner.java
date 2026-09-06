@@ -43,7 +43,6 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
-import bartworks.system.material.TileEntityMetaGeneratedBlock;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -77,7 +76,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
-import gregtech.common.blocks.TileEntityOres;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
@@ -646,14 +644,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         Collection<ItemStack> drops = target.getDrops(w, x, y, z, meta, 0);
 
         if (GTUtility.isOre(target, meta)) {
-            try {
-                TileEntity te = w.getTileEntity(x, y, z);
-                if (te instanceof TileEntityOres || te instanceof TileEntityMetaGeneratedBlock) {
-                    itemDrop.addAll(getOutputByDrops(drops));
-                }
-            } catch (Exception e) {
-                ScienceNotLeisure.LOG.error("GTNL Meteor Miner: GT Ore Error [{},{},{}]", x, y, z, e);
-            }
+            itemDrop.addAll(getOutputByDrops(drops));
         } else {
             itemDrop.addAll(drops);
         }

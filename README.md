@@ -208,6 +208,7 @@ We gratefully acknowledge the use of code and assets from the open-source commun
 | **Programmable-Hatches-Mod** | [zyf051520](https://github.com/reobf/Programmable-Hatches-Mod)   | [MIT](https://www.gnu.org/licenses/gpl-3.0.html)                      |
 | **NAE2**                     | [Neeve](https://github.com/AE2-UEL/NAE2)                         | [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html)                  |
 | **CosmicCore**               | [Ghostipedia](https://github.com/Frontiers-PackForge/CosmicCore) | [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html)                  |
+| **MEGACells Textures**       | [62832](https://github.com/62832/MEGACells)                      | [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) |
 
 Thanks to the following developers for their contributions to GT-Not-Leisure:
 

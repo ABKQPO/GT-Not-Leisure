@@ -21,8 +21,8 @@ public enum Mixins implements IMixins {
         "gregtech.AccessorMetaTileEntity", "gregtech.AccessorMTEHatch", "gregtech.AccessorProcessingLogic",
         "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinMTEBasicMachine", "gregtech.MixinBaseMetaTileEntity",
         "gregtech.assLineRemover.MixinGTMod", "gregtech.assLineRemover.MixinGTRecipeBuilder",
-        "gregtech.assLineRemover.MixinTTRecipeAdder", "energymonitor.MixinBaseMetaTileEntityEnergyMonitor",
-        "energymonitor.MixinCommonMetaTileEntityEnergyMonitor"),
+        "gregtech.assLineRemover.MixinTTRecipeAdder", "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor",
+        "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
 
     GREGTECH_CLIENT_EARLY(
         new MixinBuilder("Gregtech early client safety mixins").addClientMixins("gregtech.MixinGTLanguageManager")
@@ -32,6 +32,10 @@ public enum Mixins implements IMixins {
         new MixinBuilder("Early Mixins when NHUtilities is absent").addCommonMixins("noNHU.MixinBaseMetaTileEntity")
             .setPhase(Phase.EARLY)
             .addExcludedMod(ModList.NHUtilities)),
+
+    NH_CORE_MOD_EARLY(new MixinBuilder().addCommonMixins("nhCoreMod.AccessorBacteriaRegistry")
+        .setPhase(Phase.EARLY)
+        .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
     MINECRAFT_COMMON(Side.COMMON, "minecraft.AccessorStringTranslate", "minecraft.AccessorContainerRepair",
         "minecraft.AccessorEntityLivingBase", "minecraft.AccessorTessellator", "minecraft.AccessorFoodStats",
@@ -87,7 +91,7 @@ public enum Mixins implements IMixins {
 
     LATE_COMMON(new MixinBuilder("General Late Mixins")
         .addCommonMixins(
-            "aEFluidCraft.MixinItemFluidPacket",
+            "aeFluidCraft.MixinItemFluidPacket",
             "appliedEnergistics.AccessorAEBaseItemBlock",
             "appliedEnergistics.AccessorContainerUpgradeable",
             "appliedEnergistics.AccessorPartInterface",
@@ -105,6 +109,13 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingCPUCluster",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
+             "appliedEnergistics.quamtumComputer.MixinCraftingCPUStatus",
+             "bartwork.MixinItemRegistry",
+             "bartwork.MixinMultipleMetalLoader",
+             "bartwork.MixinSimpleMetalLoader",
+             "bartwork.MixinWerkstoff",
+             "bartwork.MixinWerkstoffLoader",
+             "bartwork.MixinMoltenCellLoader",
             "botania.AccessorEntityDoppleganger",
             "draconicEvolution.AccessorCustomArmorHandler",
             "draconicEvolution.MixinCustomArmorHandler",
@@ -156,7 +167,8 @@ public enum Mixins implements IMixins {
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
-            "appliedEnergistics.assembler.MixinGuiPatternTerm")
+            "appliedEnergistics.assembler.MixinGuiPatternTerm",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
@@ -187,7 +199,7 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.GalaxySpace)),
 
-    NH_CORE_MOD(new MixinBuilder("NH Core Mod Mixin").addCommonMixins("nHCoreMod.MixinBacteriaRegistry")
+    NH_CORE_MOD(new MixinBuilder("NH Core Mod Mixin").addCommonMixins("nhCoreMod.MixinBacteriaRegistry")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.NewHorizonsCoreMod)),
 
@@ -207,7 +219,7 @@ public enum Mixins implements IMixins {
         .addRequiredMod(ModList.NotEnoughItems)),
 
     NEI_CUSTOM_DIAGRAM(new MixinBuilder("NEI Custom Diagram Mixin")
-        .addCommonMixins("nEICustomDiagram.AccessorNeiCustomDiagram", "nEICustomDiagram.MixinNeiCustomDiagram")
+        .addCommonMixins("neiCustomDiagram.AccessorNeiCustomDiagram", "neiCustomDiagram.MixinNeiCustomDiagram")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.NEICustomDiagrams)),
 

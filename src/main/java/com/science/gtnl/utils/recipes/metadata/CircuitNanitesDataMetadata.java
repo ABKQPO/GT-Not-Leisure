@@ -40,7 +40,7 @@ public class CircuitNanitesDataMetadata extends RecipeMetadataKey<CircuitNanites
             10);
         recipeInfo
             .drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.4") + data.parallelCount, 28, 10);
-        recipeInfo.drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.5") + data.maxTierSkips, 28, 10);
+        recipeInfo.drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.5") + data.nantiesTier, 28, 10);
     }
 
 }

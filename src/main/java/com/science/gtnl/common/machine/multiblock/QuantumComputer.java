@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -76,7 +77,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -930,6 +930,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             cluster.readFromNBT(clusterTag);
             cpus.add(cluster);
         }
+        updateCPUNames();
     }
 
     @Override
@@ -1125,9 +1126,21 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     public void setCustomName(String name) {
         customName = name;
+        updateCPUNames();
+        if (virtualCPU != null || !cpus.isEmpty()) {
+            postCPUClusterChangeEvent();
+        }
+    }
+
+    public void updateCPUNames() {
+        final String parentName = hasCustomName() ? customName : "";
         if (virtualCPU != null) {
             ECPUCluster.from(virtualCPU)
-                .ec$setName(customName);
+                .ec$setName(parentName);
+        }
+        for (int index = 0; index < cpus.size(); index++) {
+            ECPUCluster.from(cpus.get(index))
+                .ec$setName(parentName.isEmpty() ? "" : parentName + " #" + (index + 1));
         }
     }
 
@@ -1169,20 +1182,17 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         return virtualCPU == cluster;
     }
 
-    public List<CraftingCPUCluster> getCPUs() {
-        if (!isActive()) return ObjectLists.emptyList();
+    public void forEachCPU(final Consumer<CraftingCPUCluster> consumer) {
+        if (!isActive()) return;
 
-        if (cpus.isEmpty()) {
-            return virtualCPU != null ? ObjectLists.singleton(virtualCPU) : ObjectLists.emptyList();
+        for (final CraftingCPUCluster cpu : cpus) {
+            consumer.accept(cpu);
         }
-
-        final List<CraftingCPUCluster> clusters = new ReferenceArrayList<>(cpus);
         if (virtualCPU != null) {
             ECPUCluster.from(virtualCPU)
                 .ec$setVirtualCPUOwner(this);
-            clusters.add(virtualCPU);
+            consumer.accept(virtualCPU);
         }
-        return clusters;
     }
 
     public void onVirtualCPUSubmitJob(final long usedBytes) {
@@ -1198,8 +1208,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
         ECPUCluster ecpuCluster = ECPUCluster.from(virtualCPU);
         ecpuCluster.ec$setAvailableStorage(usedBytes);
-        ecpuCluster.ec$setName("");
         virtualCPU = null;
+        updateCPUNames();
         createVirtualCPU();
     }
 
@@ -1210,16 +1220,20 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public long getUsedBytes() {
         if (enabledSingularityCore) return 0;
-        usedStorage = cpus.stream()
-            .mapToLong(CraftingCPUCluster::getAvailableStorage)
-            .sum();
+        long storage = 0;
+        for (final CraftingCPUCluster cpu : cpus) {
+            storage += cpu.getAvailableStorage();
+        }
+        usedStorage = storage;
         return usedStorage;
     }
 
     public int getUsedParallel() {
-        usedParallel = cpus.stream()
-            .mapToInt(CraftingCPUCluster::getCoProcessors)
-            .sum();
+        int parallel = 0;
+        for (final CraftingCPUCluster cpu : cpus) {
+            parallel += cpu.getCoProcessors();
+        }
+        usedParallel = parallel;
         return usedParallel;
     }
 
@@ -1281,6 +1295,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
 
     public void onCPUDestroyed(final CraftingCPUCluster cluster) {
         cpus.remove(cluster);
+        updateCPUNames();
         createVirtualCPU();
         postCPUClusterChangeEvent();
         if (cpus.isEmpty()) {

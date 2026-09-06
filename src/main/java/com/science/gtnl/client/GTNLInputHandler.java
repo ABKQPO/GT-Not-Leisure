@@ -24,9 +24,9 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.container.implementations.ContainerMEMonitorable;
 import codechicken.nei.BookmarkPanel;
 import codechicken.nei.ItemPanel;
 import codechicken.nei.LayoutManager;
@@ -161,8 +161,11 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
             if (!(focused instanceof BookmarkPanel || focused instanceof ItemPanel)) return false;
             final GuiScreen currentGui = MC.currentScreen;
-            ScienceNotLeisure.network
-                .sendToServer(new KeyBindingHandler(keyBinding.getKey(), item, currentGui instanceof GuiMEMonitorable));
+            ScienceNotLeisure.network.sendToServer(
+                new KeyBindingHandler(
+                    keyBinding.getKey(),
+                    item,
+                    MC.thePlayer.openContainer instanceof ContainerMEMonitorable));
             if (AE_START_CRAFT_KEY.equals(keyBinding.getKey())) {
                 var player = MC.thePlayer;
                 if (player.openContainer instanceof ContainerCraftAmount

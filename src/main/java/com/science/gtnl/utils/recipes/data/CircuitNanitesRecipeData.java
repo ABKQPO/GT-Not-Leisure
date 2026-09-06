@@ -19,10 +19,9 @@ public class CircuitNanitesRecipeData implements Comparable<CircuitNanitesRecipe
 
     public ItemId stack;
     public double speedBoost = 1.0, euModifier = 1.0, failedChance = 0, outputMultiplier = 1.0;
-    public int parallelCount = 1, maxTierSkips = 1;
+    public int parallelCount = 1, nantiesTier;
     public double speedBoostMin = 0, speedBoostMax = 1;
     public double euModifierMin = 0, euModifierMax = 1;
-    public int maxTierSkipsMin = 0, maxTierSkipsMax = 1;
     public double failedChanceMin = 0, failedChanceMax = 1;
     public int parallelCountMin = 0, parallelCountMax = 1;
     public double outputMultiplierMin = 0, outputMultiplierMax = 1;
@@ -30,19 +29,18 @@ public class CircuitNanitesRecipeData implements Comparable<CircuitNanitesRecipe
 
     public CircuitNanitesRecipeData() {}
 
-    public CircuitNanitesRecipeData(ItemStack stack, long worldSeed, double speedBoostMin, double speedBoostMax,
-        double euModifierMin, double euModifierMax, int maxTierSkipsMin, int maxTierSkipsMax, double failedChanceMin,
+    public CircuitNanitesRecipeData(ItemStack stack, long worldSeed, int nantiesTier, double speedBoostMin,
+        double speedBoostMax, double euModifierMin, double euModifierMax, double failedChanceMin,
         double failedChanceMax, int parallelCountMin, int parallelCountMax, double outputMultiplierMin,
         double outputMultiplierMax) {
         this.stack = ItemId.createWithoutNBT(stack);
         this.worldSeed = worldSeed;
+        this.nantiesTier = nantiesTier;
         setRangeParams(
             speedBoostMin,
             speedBoostMax,
             euModifierMin,
             euModifierMax,
-            maxTierSkipsMin,
-            maxTierSkipsMax,
             failedChanceMin,
             failedChanceMax,
             parallelCountMin,
@@ -53,10 +51,10 @@ public class CircuitNanitesRecipeData implements Comparable<CircuitNanitesRecipe
         recipeDataMap.put(this.stack, this);
     }
 
-    public static CircuitNanitesRecipeData getOrCreate(ItemStack stack, long worldSeed, double speedBoostMin,
-        double speedBoostMax, double euModifierMin, double euModifierMax, int maxTierSkipsMin, int maxTierSkipsMax,
-        double failedChanceMin, double failedChanceMax, int parallelCountMin, int parallelCountMax,
-        double outputMultiplierMin, double outputMultiplierMax) {
+    public static CircuitNanitesRecipeData getOrCreate(ItemStack stack, long worldSeed, int nantiesTier,
+        double speedBoostMin, double speedBoostMax, double euModifierMin, double euModifierMax, double failedChanceMin,
+        double failedChanceMax, int parallelCountMin, int parallelCountMax, double outputMultiplierMin,
+        double outputMultiplierMax) {
 
         CircuitNanitesRecipeData existing = recipeDataMap.get(ItemId.createWithoutNBT(stack));
         if (existing != null) {
@@ -66,13 +64,12 @@ public class CircuitNanitesRecipeData implements Comparable<CircuitNanitesRecipe
         CircuitNanitesRecipeData data = new CircuitNanitesRecipeData();
         data.stack = ItemId.createWithoutNBT(stack);
         data.worldSeed = worldSeed;
+        data.nantiesTier = nantiesTier;
         data.setRangeParams(
             speedBoostMin,
             speedBoostMax,
             euModifierMin,
             euModifierMax,
-            maxTierSkipsMin,
-            maxTierSkipsMax,
             failedChanceMin,
             failedChanceMax,
             parallelCountMin,
@@ -88,24 +85,20 @@ public class CircuitNanitesRecipeData implements Comparable<CircuitNanitesRecipe
         Random random = new Random(worldSeed);
         this.speedBoost = randomDoubleInRange(random, speedBoostMin, speedBoostMax);
         this.euModifier = randomDoubleInRange(random, euModifierMin, euModifierMax);
-        this.maxTierSkips = randomIntInRange(random, maxTierSkipsMin, maxTierSkipsMax);
         this.failedChance = randomDoubleInRange(random, failedChanceMin, failedChanceMax);
         this.parallelCount = randomIntInRange(random, parallelCountMin, parallelCountMax);
         this.outputMultiplier = randomDoubleInRange(random, outputMultiplierMin, outputMultiplierMax);
     }
 
     public void setRangeParams(double speedBoostMin, double speedBoostMax, double euModifierMin, double euModifierMax,
-        int maxTierSkipsMin, int maxTierSkipsMax, double failedChanceMin, double failedChanceMax, int parallelCountMin,
-        int parallelCountMax, double outputMultiplierMin, double outputMultiplierMax) {
+        double failedChanceMin, double failedChanceMax, int parallelCountMin, int parallelCountMax,
+        double outputMultiplierMin, double outputMultiplierMax) {
 
         this.speedBoostMin = speedBoostMin;
         this.speedBoostMax = speedBoostMax;
 
         this.euModifierMin = euModifierMin;
         this.euModifierMax = euModifierMax;
-
-        this.maxTierSkipsMin = maxTierSkipsMin;
-        this.maxTierSkipsMax = maxTierSkipsMax;
 
         this.failedChanceMin = failedChanceMin;
         this.failedChanceMax = failedChanceMax;
