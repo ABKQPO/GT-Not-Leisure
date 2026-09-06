@@ -47,6 +47,7 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
@@ -580,30 +581,30 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 6];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_01")
+        ret[origin.length] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_01")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.GREEN
             + (rewardContinuous + 100)
             + "%";
-        ret[origin.length + 1] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_02")
+        ret[origin.length + 1] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_02")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.GREEN
             + outputMultiplier;
-        ret[origin.length + 2] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_03")
+        ret[origin.length + 2] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_03")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierDimensionField;
-        ret[origin.length + 3] = EnumChatFormatting.GOLD + StatCollector.translateToLocal(
+        ret[origin.length + 3] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode(
             "Info_RealArtificialStar_04") + EnumChatFormatting.RESET + ": " + EnumChatFormatting.YELLOW + tierTimeField;
-        ret[origin.length + 4] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_05")
+        ret[origin.length + 4] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_05")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierStabilisationField;
-        ret[origin.length + 5] = EnumChatFormatting.GOLD + StatCollector.translateToLocal("Info_RealArtificialStar_06")
+        ret[origin.length + 5] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_06")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.AQUA

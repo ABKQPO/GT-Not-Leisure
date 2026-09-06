@@ -53,6 +53,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -443,10 +444,11 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public String[] getInfoData() {
         String[] info = super.getInfoData();
-        info[4] = StatCollector.translateToLocal("BloodSoulSacrificialArray.LPNetwork") + EnumChatFormatting.RED
-            + NumberFormatUtil.formatNumber(Math.abs(currentEssence))
-            + EnumChatFormatting.RESET
-            + " LP";
+        info[4] = IGregTechDeviceInformation.encode(
+            "BloodSoulSacrificialArray.LPNetwork.fmt",
+            EnumChatFormatting.RED,
+            NumberFormatUtil.formatNumber(Math.abs(currentEssence)),
+            EnumChatFormatting.RESET);
         return info;
     }
 

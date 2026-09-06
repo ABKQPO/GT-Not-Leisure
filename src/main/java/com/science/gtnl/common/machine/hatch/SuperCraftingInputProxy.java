@@ -25,6 +25,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
@@ -151,24 +152,19 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         var ret = new ArrayList<String>();
         if (getMasterSuper() != null) {
             ret.add(
-                StatCollector.translateToLocal("Chat_SuperCraftingInputProxy_00_00") + masterSuperX
-                    + ", "
-                    + masterSuperY
-                    + ", "
-                    + masterSuperZ
-                    + ".");
+                IGregTechDeviceInformation
+                    .encode("Chat_SuperCraftingInputProxy_00_00.fmt", masterSuperX, masterSuperY, masterSuperZ));
             ret.addAll(Arrays.asList(getMasterSuper().getInfoData()));
         } else if (getCraftingMaster() != null) {
             ret.add(
-                StatCollector.translateToLocal("Chat_SuperCraftingInputProxy_00_01") + craftingMasterX
-                    + ", "
-                    + craftingMasterY
-                    + ", "
-                    + craftingMasterZ
-                    + ".");
+                IGregTechDeviceInformation.encode(
+                    "Chat_SuperCraftingInputProxy_00_01.fmt",
+                    craftingMasterX,
+                    craftingMasterY,
+                    craftingMasterZ));
             ret.addAll(Arrays.asList(getCraftingMaster().getInfoData()));
         } else {
-            ret.add(StatCollector.translateToLocal("Chat_SuperCraftingInputProxy_01"));
+            ret.add("Chat_SuperCraftingInputProxy_01");
         }
         return ret.toArray(new String[0]);
     }

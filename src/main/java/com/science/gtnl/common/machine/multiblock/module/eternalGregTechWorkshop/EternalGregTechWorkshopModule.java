@@ -53,6 +53,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -253,33 +254,33 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     public String[] getInfoData() {
         ArrayList<String> str = new ArrayList<>();
         str.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
                 EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
                     + EnumChatFormatting.RESET));
         str.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.currently_using",
                 EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
                     + EnumChatFormatting.RESET));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.max_parallel",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(Integer.MAX_VALUE)));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(Integer.MAX_VALUE)));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.parallel.current",
-                EnumChatFormatting.RESET
+                EnumChatFormatting.YELLOW
                     + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.capacity.heat",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(mHeatingCapacity)));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mHeatingCapacity)));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.multiplier.recipe_time",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(mSpeedBoost)));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mSpeedBoost)));
         return str.toArray(new String[0]);
     }
 

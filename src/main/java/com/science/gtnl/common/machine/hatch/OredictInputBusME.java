@@ -64,6 +64,7 @@ import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
@@ -894,14 +895,13 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
 
     @Override
     public String[] getInfoData() {
-        String busStatusKey = getProxy() != null && getProxy().isActive()
-            ? StatCollector.translateToLocal("Info_OredictInputBusME_Online")
-            : StatCollector.translateToLocalFormatted("Info_OredictInputBusME_Offline", getAEDiagnostics());
-        String oreDictStatusKey = hasFilter()
-            ? StatCollector.translateToLocalFormatted("Info_OredictInputBusME_Oredict_Set", oreDict)
-            : StatCollector.translateToLocal("Info_OredictInputBusME_Oredict_Unset");
-        return new String[] { busStatusKey,
-            StatCollector.translateToLocal("Info_OredictInputBusME_Oredict") + oreDictStatusKey };
+        String busStatusKey = getProxy() != null && getProxy().isActive() ? "Info_OredictInputBusME_Online"
+            : IGregTechDeviceInformation.encode("Info_OredictInputBusME_Offline", getAEDiagnostics());
+        return new String[] { busStatusKey, hasFilter() ? IGregTechDeviceInformation
+            .encode("Info_OredictInputBusME_Oredict.fmt", EnumChatFormatting.GREEN + oreDict + EnumChatFormatting.RESET)
+            : IGregTechDeviceInformation.encode(
+                "Info_OredictInputBusME_Oredict.fmt",
+                IGregTechDeviceInformation.translatable("Info_OredictInputBusME_Oredict_Unset")) };
     }
 
 }

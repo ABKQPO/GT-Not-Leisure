@@ -118,6 +118,7 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IMEConnectable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -1190,27 +1191,27 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public String[] getInfoData() {
         List<String> info = new ObjectArrayList<>(super.getInfoData());
         info.add(
-            StatCollector.translateToLocal("kubatech.infodata.running_mode") + " "
+            IGregTechDeviceInformation.encode("kubatech.infodata.running_mode") + " "
                 + EnumChatFormatting.GOLD
-                + (machineMode == 0 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.input")
-                    : (machineMode == 1 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.output")
-                        : StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.operating.normal"))));
+                + (machineMode == 0 ? IGregTechDeviceInformation.encode("kubatech.infodata.mia.running_mode.input")
+                    : (machineMode == 1 ? IGregTechDeviceInformation.encode("kubatech.infodata.mia.running_mode.output")
+                        : IGregTechDeviceInformation.encode("kubatech.infodata.mia.running_mode.operating.normal"))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_AssemblerMatrix_00",
                 "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
                 (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
                     : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
-        info.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+        info.add(IGregTechDeviceInformation.encode("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
         info.add(
-            StatCollector.translateToLocal("GT5U.multiblock.recipesDone") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.recipesDone") + ": "
                 + EnumChatFormatting.GREEN
                 + NumberFormatUtil.formatNumber(recipesDone)
                 + EnumChatFormatting.RESET);
         if (wirelessMode) {
-            info.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            info.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
             info.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

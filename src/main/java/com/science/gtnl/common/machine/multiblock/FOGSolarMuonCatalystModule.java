@@ -15,6 +15,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.metadata.SolorMuonCatalystMetadata;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.RecipeMap;
@@ -143,37 +144,37 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
     public String[] getInfoData() {
         ArrayList<String> str = new ArrayList<>();
         str.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
                 EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
                     + EnumChatFormatting.RESET));
         str.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.currently_using",
                 EnumChatFormatting.RED + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(EUt) : "0")
                     + EnumChatFormatting.RESET));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.max_parallel",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getActualParallel())));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getActualParallel())));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.parallel.current",
-                EnumChatFormatting.RESET
+                EnumChatFormatting.YELLOW
                     + (getBaseMetaTileEntity().isActive() ? NumberFormatUtil.formatNumber(currentParallel) : "0")));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.multiplier.recipe_time",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getSpeedBonus())));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getSpeedBonus())));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.multiplier.energy",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getEnergyDiscount())));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getEnergyDiscount())));
         str.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "tt.infodata.multi.divisor.recipe_time.non_perfect_oc",
-                EnumChatFormatting.RESET + NumberFormatUtil.formatNumber(getOverclockTimeFactor())));
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getOverclockTimeFactor())));
         return str.toArray(new String[0]);
     }
 

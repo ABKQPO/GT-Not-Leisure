@@ -70,6 +70,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -463,17 +464,17 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
 
         ll.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SingularityDataHub_OperationalData")
+            EnumChatFormatting.YELLOW + IGregTechDeviceInformation.encode("Info_SingularityDataHub_OperationalData")
                 + EnumChatFormatting.RESET);
 
         for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
             addOperationalTypeInfo(ll, type);
         }
 
-        ll.add(StatCollector.translateToLocalFormatted("Info_SingularityDataHub_RunningCost", getActualEnergyUsage()));
-        ll.add(StatCollector.translateToLocalFormatted("Info_SingularityDataHub_AutoVoiding", doVoidExcess));
+        ll.add(IGregTechDeviceInformation.encode("Info_SingularityDataHub_RunningCost", getActualEnergyUsage()));
+        ll.add(IGregTechDeviceInformation.encode("Info_SingularityDataHub_AutoVoiding", doVoidExcess));
         if (wirelessMode)
-            ll.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ll.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
         ll.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
 
         return ll.toArray(new String[0]);
@@ -483,7 +484,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         IItemList<?> store) {
         info.add(
             EnumChatFormatting.YELLOW
-                + StatCollector.translateToLocalFormatted("Info_SingularityDataHub_StoredStacks", getTypeName(type))
+                + IGregTechDeviceInformation.encode("Info_SingularityDataHub_StoredStacks", getTypeName(type))
                 + EnumChatFormatting.RESET);
 
         int index = 0;
@@ -504,27 +505,27 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
         String typeName = getTypeName(type);
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_TypeUsed",
                 typeName,
                 formatStackAmount(type, getStoredAmount(type))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_TypeCapacity",
                 typeName,
                 formatStackAmount(type, maxTotalCapacity(type))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_PerTypeCapacity",
                 typeName,
                 formatStackAmount(type, capacityPerStack(type))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_TypeUsedTypes",
                 typeName,
                 nf.format(stackTypesCount(type))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SingularityDataHub_TypeTotalTypes",
                 typeName,
                 nf.format(maxStackTypes(type))));

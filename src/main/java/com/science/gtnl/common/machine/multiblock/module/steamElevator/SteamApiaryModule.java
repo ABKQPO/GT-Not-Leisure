@@ -75,6 +75,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
@@ -245,14 +246,16 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     @Override
     public String[] getInfoData() {
         ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        String modeKey = mPrimaryMode == 0 ? "kubatech.infodata.mia.running_mode.input"
+            : mPrimaryMode == 1 ? "kubatech.infodata.mia.running_mode.output"
+                : "kubatech.infodata.mia.running_mode.operating.normal";
         info.add(
-            StatCollector.translateToLocal("kubatech.infodata.running_mode") + " "
-                + EnumChatFormatting.GOLD
-                + (mPrimaryMode == 0 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.input")
-                    : (mPrimaryMode == 1 ? StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.output")
-                        : StatCollector.translateToLocal("kubatech.infodata.mia.running_mode.operating.normal"))));
+            IGregTechDeviceInformation.encode(
+                "kubatech.infodata.running_mode.fmt",
+                EnumChatFormatting.GOLD,
+                IGregTechDeviceInformation.translatable(modeKey)));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "kubatech.infodata.mia.running_mode.bee_storage",
                 "" + EnumChatFormatting.GOLD + mStorage.size() + EnumChatFormatting.RESET,
                 (mStorage.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()

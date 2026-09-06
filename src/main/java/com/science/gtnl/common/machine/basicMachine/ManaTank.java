@@ -34,6 +34,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -178,26 +179,18 @@ public class ManaTank extends MTEDigitalTankBase {
     public String[] getInfoData() {
 
         if (mFluid == null) {
-            return new String[] { EnumChatFormatting.BLUE + "Mana Tank" + EnumChatFormatting.RESET, "Stored Fluid:",
-                EnumChatFormatting.GOLD + "No Fluid" + EnumChatFormatting.RESET,
-                EnumChatFormatting.GREEN + "0 L"
-                    + EnumChatFormatting.RESET
-                    + " "
-                    + EnumChatFormatting.YELLOW
-                    + NumberFormatUtil.formatNumber(getCapacity())
-                    + " L"
-                    + EnumChatFormatting.RESET };
+            return new String[] { "gtnl.infodata.mana_tank.name", "gtnl.infodata.stored_fluid",
+                "gtnl.infodata.no_fluid", IGregTechDeviceInformation.encode(
+                    "gtnl.infodata.fluid_amount",
+                    EnumChatFormatting.GREEN + "0" + EnumChatFormatting.RESET,
+                    EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getCapacity()) + EnumChatFormatting.RESET) };
         }
-        return new String[] { EnumChatFormatting.BLUE + "Mana Tank" + EnumChatFormatting.RESET, "Stored Fluid:",
-            EnumChatFormatting.GOLD + mFluid.getLocalizedName() + EnumChatFormatting.RESET,
-            EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mFluid.amount)
-                + " L"
-                + EnumChatFormatting.RESET
-                + " "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(getCapacity())
-                + " L"
-                + EnumChatFormatting.RESET };
+        return new String[] { "gtnl.infodata.mana_tank.name", "gtnl.infodata.stored_fluid",
+            IGregTechDeviceInformation.encode("gtnl.infodata.fluid_name", mFluid.getLocalizedName()),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.fluid_amount",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mFluid.amount) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(getCapacity()) + EnumChatFormatting.RESET) };
     }
 
     @Override

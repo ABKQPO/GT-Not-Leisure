@@ -17,6 +17,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
@@ -99,14 +100,13 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         int capacity = getCapacity();
 
         if (currentMana == 0) return new String[] {};
-        return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
-            + EnumChatFormatting.RESET
-            + EnumChatFormatting.GREEN
-            + NumberFormatUtil.formatNumber(currentMana)
-            + EnumChatFormatting.RESET
-            + " / "
-            + EnumChatFormatting.YELLOW
-            + NumberFormatUtil.formatNumber(capacity) };
+        return new String[] { IGregTechDeviceInformation.encode(
+            "Info_ManaEnergyHatch_00",
+            EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(currentMana)
+                + EnumChatFormatting.RESET
+                + " / "
+                + EnumChatFormatting.YELLOW
+                + NumberFormatUtil.formatNumber(capacity)) };
     }
 
     @Override

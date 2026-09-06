@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ import appeng.me.helpers.IGridProxyable;
 import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTRecipeBuilder;
@@ -74,20 +76,21 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
 
     @Override
     public String[] getInfoData() {
-        String busStatusKey = getProxy() != null && getProxy().isActive()
-            ? StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Online")
-            : StatCollector.translateToLocalFormatted("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
-
-        String filterInfo = hasFilter()
-            ? StatCollector.translateToLocalFormatted(
-                "Info_TypeFilteredInputBusME_Filtered_Set",
-                modid != null ? modid : "*",
-                name != null ? name : "*",
-                meta != GTRecipeBuilder.WILDCARD ? meta : "*")
-            : StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered_Unset");
-
+        String busStatusKey = getProxy() != null && getProxy().isActive() ? "Info_TypeFilteredInputBusME_Online"
+            : IGregTechDeviceInformation.encode("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
         return new String[] { busStatusKey,
-            StatCollector.translateToLocal("Info_TypeFilteredInputBusME_Filtered") + filterInfo };
+            hasFilter()
+                ? IGregTechDeviceInformation.encode(
+                    "Info_TypeFilteredInputBusME_Filtered.fmt",
+                    EnumChatFormatting.GREEN + (modid != null ? modid : "*")
+                        + ":"
+                        + (name != null ? name : "*")
+                        + "@"
+                        + (meta != GTRecipeBuilder.WILDCARD ? meta : "*")
+                        + EnumChatFormatting.RESET)
+                : IGregTechDeviceInformation.encode(
+                    "Info_TypeFilteredInputBusME_Filtered.fmt",
+                    IGregTechDeviceInformation.translatable("Info_TypeFilteredInputBusME_Filtered_Unset")) };
     }
 
     @Override

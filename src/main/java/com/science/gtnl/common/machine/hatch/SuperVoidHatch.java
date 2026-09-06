@@ -33,6 +33,7 @@ import com.science.gtnl.utils.machine.FluidsLockWidget;
 
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoid;
@@ -181,14 +182,14 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
         List<String> info = new ArrayList<>();
 
         info.add(
-            EnumChatFormatting.BLUE + StatCollector.translateToLocal("GT5U.infodata.hatch.output")
+            EnumChatFormatting.BLUE + IGregTechDeviceInformation.encode("GT5U.infodata.hatch.output")
                 + EnumChatFormatting.RESET);
 
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.hatch.output.fluid",
                 EnumChatFormatting.GOLD
-                    + (mFluid == null ? StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.none")
+                    + (mFluid == null ? IGregTechDeviceInformation.encode("GT5U.infodata.hatch.output.fluid.none")
                         : mFluid.getLocalizedName())
                     + EnumChatFormatting.RESET));
 
@@ -203,10 +204,10 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
                 + EnumChatFormatting.RESET);
 
         if (!isFluidsLocked() || lockedFluidNames == null || lockedFluidNames.length == 0) {
-            info.add(StatCollector.translateToLocal("GT5U.infodata.hatch.output.fluid.locked_to.none"));
+            info.add(IGregTechDeviceInformation.encode("GT5U.infodata.hatch.output.fluid.locked_to.none"));
         } else {
             info.add(
-                StatCollector.translateToLocalFormatted(
+                IGregTechDeviceInformation.encode(
                     "GT5U.infodata.hatch.output.fluid.locked_to",
                     getLockedFluidsLocalized()));
         }

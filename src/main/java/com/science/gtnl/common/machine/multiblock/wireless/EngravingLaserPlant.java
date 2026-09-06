@@ -48,6 +48,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -336,8 +337,10 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = StatCollector.translateToLocal("scanner.info.CASS.tier")
-            + (mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1] : "None!");
+        ret[origin.length] = IGregTechDeviceInformation.encode(
+            "scanner.info.CASS.tier",
+            mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1]
+                : IGregTechDeviceInformation.translatable("scanner.info.CASS.tier.none"));
         return ret;
     }
 

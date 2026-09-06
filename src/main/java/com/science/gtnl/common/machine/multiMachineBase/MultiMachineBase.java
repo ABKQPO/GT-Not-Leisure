@@ -52,6 +52,7 @@ import gregtech.api.enums.HeatingCoilLevel;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
@@ -1130,16 +1131,15 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 3];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = EnumChatFormatting.AQUA + StatCollector.translateToLocal("MachineInfoData.Parallels")
-            + ": "
-            + EnumChatFormatting.GOLD
-            + this.getTrueParallel();
-        ret[origin.length + 1] = EnumChatFormatting.AQUA + StatCollector
-            .translateToLocal("MachineInfoData.SpeedMultiplier") + ": " + EnumChatFormatting.GOLD + dSpeed;
-        ret[origin.length + 2] = EnumChatFormatting.AQUA + StatCollector.translateToLocal("MachineInfoData.EuModifier")
-            + ": "
-            + EnumChatFormatting.GOLD
-            + dEUMod;
+        ret[origin.length] = IGregTechDeviceInformation.encode(
+            "MachineInfoData.Parallels.fmt",
+            EnumChatFormatting.AQUA,
+            EnumChatFormatting.GOLD,
+            getTrueParallel());
+        ret[origin.length + 1] = IGregTechDeviceInformation
+            .encode("MachineInfoData.SpeedMultiplier.fmt", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dSpeed);
+        ret[origin.length + 2] = IGregTechDeviceInformation
+            .encode("MachineInfoData.EuModifier.fmt", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dEUMod);
         return ret;
     }
 

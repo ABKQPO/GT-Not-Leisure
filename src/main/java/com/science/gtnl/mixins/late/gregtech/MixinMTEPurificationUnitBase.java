@@ -43,6 +43,7 @@ import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -560,15 +561,15 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     @Inject(method = "getInfoData", at = @At("TAIL"))
     public void getInfoData(CallbackInfoReturnable<String[]> cir, @Local(name = "ret") ArrayList<String> ret) {
         ret.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "GT5U.infodata.parallel.current",
                 "" + EnumChatFormatting.YELLOW
                     + (this.gtnl$wirelessMode ? this.gtnl$effectiveParallelLong : this.effectiveParallel)
                     + "(Long)"));
         if (gtnl$wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
             ret.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

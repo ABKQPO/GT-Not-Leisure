@@ -79,6 +79,7 @@ import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ISecondaryDescribable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.GTChunkManager;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -206,15 +207,15 @@ public class SuperSpaceElevator extends TTMultiblockBase
     public String[] getInfoData() {
         List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
             ret.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + costingEUText
-                    + EnumChatFormatting.RESET
-                    + " EU");
+                IGregTechDeviceInformation.encode(
+                    "Waila_CurrentEuCost.fmt",
+                    EnumChatFormatting.AQUA,
+                    EnumChatFormatting.RESET,
+                    EnumChatFormatting.GOLD,
+                    costingEUText,
+                    EnumChatFormatting.RESET));
         }
         return ret.toArray(new String[0]);
     }

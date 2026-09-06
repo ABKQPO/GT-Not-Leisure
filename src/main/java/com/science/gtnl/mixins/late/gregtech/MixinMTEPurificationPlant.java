@@ -27,6 +27,7 @@ import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.utils.Utils;
 
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
 import gregtech.common.tileentities.machines.multi.purification.LinkedPurificationUnit;
@@ -148,15 +149,15 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     public String[] getInfoData() {
         List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (gtnl$wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            ret.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
             ret.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + gtnl$costingEUText
-                    + EnumChatFormatting.RESET
-                    + " EU");
+                IGregTechDeviceInformation.encode(
+                    "Waila_CurrentEuCost.fmt",
+                    EnumChatFormatting.AQUA,
+                    EnumChatFormatting.RESET,
+                    EnumChatFormatting.GOLD,
+                    gtnl$costingEUText,
+                    EnumChatFormatting.RESET));
         }
         return ret.toArray(new String[0]);
     }

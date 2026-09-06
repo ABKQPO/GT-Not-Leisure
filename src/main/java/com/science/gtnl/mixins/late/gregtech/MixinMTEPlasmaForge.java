@@ -85,7 +85,7 @@ public abstract class MixinMTEPlasmaForge extends MTEExtendedPowerMultiBlockBase
         String[] original = super.getInfoData();
         if (!gtnl$lockRuntime) return original;
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        list.add("Info_PlasmaForge_00");
         return list.toArray(new String[0]);
     }
 

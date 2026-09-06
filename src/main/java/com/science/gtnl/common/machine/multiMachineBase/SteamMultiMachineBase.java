@@ -76,6 +76,7 @@ import gregtech.api.interfaces.IIconContainer;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.metatileentity.IItemLockable;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -462,8 +463,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     public String[] getInfoData() {
         ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        info.add(StatCollector.translateToLocal("MachineTierTooltip") + EnumChatFormatting.YELLOW + tierMachine);
-        info.add(StatCollector.translateToLocal("ParallelTooltip") + EnumChatFormatting.YELLOW + getTrueParallel());
+        info.add(IGregTechDeviceInformation.encode("MachineTierTooltip.fmt", EnumChatFormatting.YELLOW, tierMachine));
+        info.add(
+            IGregTechDeviceInformation.encode("ParallelTooltip.fmt", EnumChatFormatting.YELLOW, getTrueParallel()));
         return info.toArray(new String[0]);
     }
 

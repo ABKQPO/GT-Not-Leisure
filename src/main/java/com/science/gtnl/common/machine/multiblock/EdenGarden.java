@@ -71,6 +71,7 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -477,17 +478,19 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     public String[] getInfoData() {
         List<String> info = new ArrayList<>(
             Arrays.asList(
-                StatCollector.translateToLocalFormatted(
+                IGregTechDeviceInformation.encode(
                     "Info_EdenGarden_01",
-                    EnumChatFormatting.GREEN + getMachineModeName() + EnumChatFormatting.RESET),
+                    EnumChatFormatting.GREEN,
+                    IGregTechDeviceInformation.translatable(getMachineModeNameKey()),
+                    EnumChatFormatting.RESET),
 
-                StatCollector.translateToLocalFormatted(
+                IGregTechDeviceInformation.encode(
                     "Info_EdenGarden_04",
                     EnumChatFormatting.GREEN,
                     this.maxSeedCount,
                     EnumChatFormatting.RESET),
 
-                StatCollector.translateToLocalFormatted(
+                IGregTechDeviceInformation.encode(
                     "Info_EdenGarden_05",
                     ((this.getTotalStoredCropCount() > maxSeedCount) ? EnumChatFormatting.RED
                         : EnumChatFormatting.GREEN),
@@ -495,8 +498,8 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
         if (this.getTotalStoredCropCount() > this.maxSeedCount) {
             info.add(
-                EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("Info_EdenGarden_07")
-                    + EnumChatFormatting.RESET);
+                IGregTechDeviceInformation
+                    .encode("Info_EdenGarden_07.fmt", EnumChatFormatting.DARK_RED, EnumChatFormatting.RESET));
         }
 
         info.addAll(Arrays.asList(super.getInfoData()));

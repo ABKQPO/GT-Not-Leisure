@@ -20,6 +20,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
@@ -149,14 +150,13 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         int capacity = getCapacity();
 
         if (currentMana != 0) {
-            return new String[] { EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
-                + EnumChatFormatting.RESET
-                + EnumChatFormatting.GREEN
-                + NumberFormatUtil.formatNumber(currentMana)
-                + EnumChatFormatting.RESET
-                + " / "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(capacity) };
+            return new String[] { IGregTechDeviceInformation.encode(
+                "Info_ManaDynamoHatch_00",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(currentMana)
+                    + EnumChatFormatting.RESET
+                    + " / "
+                    + EnumChatFormatting.YELLOW
+                    + NumberFormatUtil.formatNumber(capacity)) };
         }
 
         return new String[] {};

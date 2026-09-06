@@ -26,6 +26,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -215,15 +216,15 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public String[] getInfoData() {
         List<String> infoData = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
-            infoData.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            infoData.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
             infoData.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
-                    + EnumChatFormatting.RESET
-                    + ": "
-                    + EnumChatFormatting.GOLD
-                    + costingEUText
-                    + EnumChatFormatting.RESET
-                    + " EU");
+                IGregTechDeviceInformation.encode(
+                    "Waila_CurrentEuCost.fmt",
+                    EnumChatFormatting.AQUA,
+                    EnumChatFormatting.RESET,
+                    EnumChatFormatting.GOLD,
+                    costingEUText,
+                    EnumChatFormatting.RESET));
         }
         return infoData.toArray(new String[0]);
     }

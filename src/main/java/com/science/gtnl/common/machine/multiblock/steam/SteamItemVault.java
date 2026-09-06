@@ -58,6 +58,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
@@ -386,7 +387,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     public String[] getInfoData() {
         ArrayList<String> info = new ArrayList<>();
         info.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SteamItemVault_StoredItems")
+            EnumChatFormatting.YELLOW + IGregTechDeviceInformation.encode("Info_SteamItemVault_StoredItems")
                 + EnumChatFormatting.RESET);
 
         int index = 0;
@@ -403,23 +404,23 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
         }
 
         info.add(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_SteamItemVault_OperationalData")
+            EnumChatFormatting.YELLOW + IGregTechDeviceInformation.encode("Info_SteamItemVault_OperationalData")
                 + EnumChatFormatting.RESET);
         info.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemUsed", NF.format(getItemStoredAmount())));
-        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_ItemTotal", NF.format(capacityItem)));
+            IGregTechDeviceInformation.encode("Info_SteamItemVault_ItemUsed", NF.format(getItemStoredAmount())));
+        info.add(IGregTechDeviceInformation.encode("Info_SteamItemVault_ItemTotal", NF.format(capacityItem)));
         info.add(
-            StatCollector.translateToLocalFormatted("Info_SteamItemVault_PerItemCapacity", NF.format(capacityPerItem)));
+            IGregTechDeviceInformation.encode("Info_SteamItemVault_PerItemCapacity", NF.format(capacityPerItem)));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SteamItemVault_ItemUsedTypes",
                 NF.format(stackTypesCount(ITEM_STACK_TYPE))));
         info.add(
-            StatCollector.translateToLocalFormatted(
+            IGregTechDeviceInformation.encode(
                 "Info_SteamItemVault_ItemTotalTypes",
                 NF.format(maxStackTypes(ITEM_STACK_TYPE))));
-        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_RunningCost", getActualEnergyUsage()));
-        info.add(StatCollector.translateToLocalFormatted("Info_SteamItemVault_AutoVoiding", doVoidExcess));
+        info.add(IGregTechDeviceInformation.encode("Info_SteamItemVault_RunningCost", getActualEnergyUsage()));
+        info.add(IGregTechDeviceInformation.encode("Info_SteamItemVault_AutoVoiding", doVoidExcess));
         info.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
         return info.toArray(new String[0]);
     }

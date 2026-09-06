@@ -39,6 +39,7 @@ import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -316,7 +317,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
         }
 
         return new String[] {
-            StatCollector.translateToLocal("GT5U.multiblock.Progress") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.Progress") + ": "
                 + EnumChatFormatting.GREEN
                 + NumberFormatUtil.formatNumber(mProgresstime / 20)
                 + EnumChatFormatting.RESET
@@ -325,7 +326,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                 + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
                 + EnumChatFormatting.RESET
                 + " s",
-            StatCollector.translateToLocal("GT5U.multiblock.energy") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.energy") + ": "
                 + EnumChatFormatting.GREEN
                 + NumberFormatUtil.formatNumber(storedEnergy)
                 + EnumChatFormatting.RESET
@@ -334,38 +335,38 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                 + NumberFormatUtil.formatNumber(maxEnergy)
                 + EnumChatFormatting.RESET
                 + " EU",
-            StatCollector.translateToLocal("GT5U.multiblock.usage") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.usage") + ": "
                 + EnumChatFormatting.RED
                 + NumberFormatUtil.formatNumber(-lEUt)
                 + EnumChatFormatting.RESET
                 + " EU/t",
-            StatCollector.translateToLocal("GT5U.multiblock.mei") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.mei") + ": "
                 + EnumChatFormatting.YELLOW
                 + NumberFormatUtil.formatNumber(getMaxInputVoltage())
                 + EnumChatFormatting.RESET
                 + " EU/t(*2A) "
-                + StatCollector.translateToLocal("GT5U.machines.tier")
+                + IGregTechDeviceInformation.encode("GT5U.machines.tier")
                 + ": "
                 + EnumChatFormatting.YELLOW
                 + GTValues.VN[GTUtility.getTier(getMaxInputVoltage())]
                 + EnumChatFormatting.RESET,
-            StatCollector.translateToLocal("GT5U.multiblock.problems") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.problems") + ": "
                 + EnumChatFormatting.RED
                 + (getIdealStatus() - getRepairStatus())
                 + EnumChatFormatting.RESET
                 + " "
-                + StatCollector.translateToLocal("GT5U.multiblock.efficiency")
+                + IGregTechDeviceInformation.encode("GT5U.multiblock.efficiency")
                 + ": "
                 + EnumChatFormatting.YELLOW
                 + mEfficiency / 100.0F
                 + EnumChatFormatting.RESET
                 + " %",
-            StatCollector.translateToLocal("GT5U.EBF.heat") + ": "
+            IGregTechDeviceInformation.encode("GT5U.EBF.heat") + ": "
                 + EnumChatFormatting.GREEN
                 + NumberFormatUtil.formatNumber(mHeatingCapacity)
                 + EnumChatFormatting.RESET
                 + " K",
-            StatCollector.translateToLocal("GT5U.multiblock.pollution") + ": "
+            IGregTechDeviceInformation.encode("GT5U.multiblock.pollution") + ": "
                 + EnumChatFormatting.GREEN
                 + getAveragePollutionPercentage()
                 + EnumChatFormatting.RESET

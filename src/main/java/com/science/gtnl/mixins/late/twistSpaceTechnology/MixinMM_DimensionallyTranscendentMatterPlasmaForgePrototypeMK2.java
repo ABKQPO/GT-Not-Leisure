@@ -25,6 +25,7 @@ import com.Nxer.TwistSpaceTechnology.common.modularizedMachine.MM_DimensionallyT
 import com.Nxer.TwistSpaceTechnology.common.modularizedMachine.ModularizedMachineLogic.MultiExecutionCoreMachineSupportAllModuleBase;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReason;
@@ -91,7 +92,7 @@ public abstract class MixinMM_DimensionallyTranscendentMatterPlasmaForgePrototyp
         if (!gtnl$lockRuntime) return;
         String[] original = cir.getReturnValue();
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        list.add(IGregTechDeviceInformation.encode("Info_PlasmaForge_00"));
         cir.setReturnValue(list.toArray(new String[0]));
     }
 

@@ -380,7 +380,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         if (!enableMnemonic) return super.getInfoData();
         String[] original = super.getInfoData();
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        list.add("Info_PlasmaForge_00");
         return list.toArray(new String[0]);
     }
 

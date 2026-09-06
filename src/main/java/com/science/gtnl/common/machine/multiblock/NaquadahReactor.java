@@ -50,6 +50,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
@@ -240,10 +241,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
     @Override
     public String[] getInfoData() {
         String[] info = super.getInfoData();
-        info[4] = StatCollector.translateToLocal("NaquadahReactor.Generates") + EnumChatFormatting.RED
-            + NumberFormatUtil.formatNumber(Math.abs(this.lEUt))
-            + EnumChatFormatting.RESET
-            + " EU/t";
+        info[4] = IGregTechDeviceInformation.encode(
+            "NaquadahReactor.Generates.fmt",
+            EnumChatFormatting.RED,
+            NumberFormatUtil.formatNumber(Math.abs(this.lEUt)),
+            EnumChatFormatting.RESET);
         return info;
     }
 

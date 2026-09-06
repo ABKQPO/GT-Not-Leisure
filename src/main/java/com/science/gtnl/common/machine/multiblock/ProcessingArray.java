@@ -38,6 +38,7 @@ import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
@@ -453,70 +454,38 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
         }
 
         return new String[] {
-            StatCollector.translateToLocal("GT5U.multiblock.Progress") + ": "
-                + EnumChatFormatting.GREEN
-                + NumberFormatUtil.formatNumber(mProgresstime / 20)
-                + EnumChatFormatting.RESET
-                + " s / "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(mMaxProgresstime / 20)
-                + EnumChatFormatting.RESET
-                + " s",
-            StatCollector.translateToLocal("GT5U.multiblock.energy") + ": "
-                + EnumChatFormatting.GREEN
-                + NumberFormatUtil.formatNumber(storedEnergy)
-                + EnumChatFormatting.RESET
-                + " EU / "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(maxEnergy)
-                + EnumChatFormatting.RESET
-                + " EU",
-            StatCollector.translateToLocal("GT5U.multiblock.usage") + ": "
-                + EnumChatFormatting.RED
-                + NumberFormatUtil.formatNumber(-lEUt)
-                + EnumChatFormatting.RESET
-                + " EU/t",
-            StatCollector.translateToLocal("GT5U.multiblock.mei") + ": "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil
-                    .formatNumber(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
-                + EnumChatFormatting.RESET
-                + " EU/t(*"
-                + NumberFormatUtil
-                    .formatNumber(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList()))
-                + "A) "
-                + StatCollector.translateToLocal("GT5U.machines.tier")
-                + ": "
-                + EnumChatFormatting.YELLOW
-                + GTValues.VN[GTUtility
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.progress",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(mProgresstime / 20) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(mMaxProgresstime / 20) + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.energy",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(storedEnergy) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + NumberFormatUtil.formatNumber(maxEnergy) + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.usage",
+                EnumChatFormatting.RED + NumberFormatUtil.formatNumber(-lEUt) + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.max_energy_input",
+                EnumChatFormatting.YELLOW
+                    + NumberFormatUtil
+                        .formatNumber(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))
+                    + EnumChatFormatting.RESET,
+                NumberFormatUtil.formatNumber(ExoticEnergyInputHelper.getMaxInputAmpsMulti(getExoticAndNormalEnergyHatchList())),
+                EnumChatFormatting.YELLOW + GTValues.VN[GTUtility
                     .getTier(ExoticEnergyInputHelper.getMaxInputVoltageMulti(getExoticAndNormalEnergyHatchList()))]
-                + EnumChatFormatting.RESET,
-            StatCollector.translateToLocal("GT5U.multiblock.problems") + ": "
-                + EnumChatFormatting.RED
-                + (getIdealStatus() - getRepairStatus())
-                + EnumChatFormatting.RESET
-                + " "
-                + StatCollector.translateToLocal("GT5U.multiblock.efficiency")
-                + ": "
-                + EnumChatFormatting.YELLOW
-                + mEfficiency / 100.0F
-                + EnumChatFormatting.RESET
-                + " %",
-            StatCollector.translateToLocal("GT5U.PA.machinetier") + ": "
-                + EnumChatFormatting.GREEN
-                + mTier
-                + EnumChatFormatting.RESET
-                + " "
-                + StatCollector.translateToLocal("GT5U.PA.discount")
-                + ": "
-                + EnumChatFormatting.GREEN
-                + getEUtDiscount()
-                + EnumChatFormatting.RESET
-                + " x",
-            StatCollector.translateToLocal("GT5U.PA.parallel") + ": "
-                + EnumChatFormatting.GREEN
-                + NumberFormatUtil.formatNumber(getTrueParallel())
-                + EnumChatFormatting.RESET };
+                    + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.problems_efficiency",
+                EnumChatFormatting.RED + (getIdealStatus() - getRepairStatus()) + EnumChatFormatting.RESET,
+                EnumChatFormatting.YELLOW + mEfficiency / 100.0F + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.processing_array.tier_discount",
+                EnumChatFormatting.GREEN + mTier + EnumChatFormatting.RESET,
+                EnumChatFormatting.GREEN + getEUtDiscount() + EnumChatFormatting.RESET),
+            IGregTechDeviceInformation.encode(
+                "gtnl.infodata.processing_array.parallel",
+                EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(getTrueParallel()) + EnumChatFormatting.RESET) };
     }
 
     @Override

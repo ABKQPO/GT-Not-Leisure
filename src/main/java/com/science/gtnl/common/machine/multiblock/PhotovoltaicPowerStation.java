@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -31,6 +30,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -201,16 +201,8 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     @Override
     public String[] getInfoData() {
         return new String[] {
-            StatCollector.translateToLocal("GT5U.engine.output") + ": "
-                + EnumChatFormatting.RED
-                + NumberFormatUtil.formatNumber(lEUt)
-                + EnumChatFormatting.RESET
-                + " EU/t",
-            StatCollector.translateToLocal("GT5U.engine.consumption") + ": "
-                + EnumChatFormatting.YELLOW
-                + NumberFormatUtil.formatNumber(lEUt / 4)
-                + EnumChatFormatting.RESET
-                + " L/t" };
+            IGregTechDeviceInformation.encode("GT5U.engine.output.fmt", NumberFormatUtil.formatNumber(lEUt)),
+            IGregTechDeviceInformation.encode("GT5U.engine.consumption.fmt", NumberFormatUtil.formatNumber(lEUt / 4)) };
     }
 
     @IMetaTileEntity.SkipGenerateDescription

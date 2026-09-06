@@ -54,6 +54,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
@@ -499,16 +500,16 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
 
         return new String[] {
-            StatCollector.translateToLocal("scanner.info.UX.0") + ": "
+            IGregTechDeviceInformation.encode("scanner.info.UX.0") + ": "
                 + EnumChatFormatting.LIGHT_PURPLE
                 + NumberFormatUtil.formatNumber(getTrueParallel())
                 + EnumChatFormatting.RESET,
-            StatCollector.translateToLocal("GT5U.fusion.req") + ": "
+            IGregTechDeviceInformation.encode("GT5U.fusion.req") + ": "
                 + EnumChatFormatting.RED
                 + NumberFormatUtil.formatNumber(-lEUt)
                 + EnumChatFormatting.RESET
                 + "EU/t",
-            StatCollector.translateToLocal("GT5U.fusion.plasma") + ": "
+            IGregTechDeviceInformation.encode("GT5U.fusion.plasma") + ": "
                 + EnumChatFormatting.YELLOW
                 + NumberFormatUtil.formatNumber(plasmaOut)
                 + EnumChatFormatting.RESET
@@ -928,9 +929,9 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public String[] getInfoData() {
             List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
             if (wirelessMode) {
-                ret.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+                ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
                 ret.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
                         + EnumChatFormatting.RESET
                         + ": "
                         + EnumChatFormatting.GOLD

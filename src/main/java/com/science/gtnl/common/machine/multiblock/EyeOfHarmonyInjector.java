@@ -90,6 +90,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
@@ -395,14 +396,14 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     public String[] getInfoData() {
         var ret = new ArrayList<String>();
         // Show linked purification units and their status
-        ret.add(StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units"));
+        ret.add(IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units"));
         for (LinkedEyeOfHarmonyUnit unit : this.mLinkedUnits) {
             String text = EnumChatFormatting.AQUA + unit.mMetaTileEntity.getLocalName() + ": ";
             MTEEyeOfHarmony status = unit.mMetaTileEntity;
             if (status.mMachine) {
                 if (status.mMaxProgresstime > 0) {
                     text = text + EnumChatFormatting.GREEN
-                        + StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units.status.online");
+                        + IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units.status.online");
                 } else {
                     text = text + EnumChatFormatting.YELLOW
                         + StatCollector
@@ -410,7 +411,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 }
             } else {
                 text = text + EnumChatFormatting.RED
-                    + StatCollector.translateToLocal("GT5U.infodata.purification_plant.linked_units.status.incomplete");
+                    + IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units.status.incomplete");
             }
             ret.add(text);
         }
