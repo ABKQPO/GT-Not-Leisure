@@ -34,7 +34,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.QuantumComputerGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.ECPUCluster;
+import com.science.gtnl.utils.ECraftingCPUCluster;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -138,8 +138,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public int usedParallel = 0;
     public boolean enabledSingularityCore = false;
     public String customName = "";
-    public CraftingCPUCluster virtualCPU = null;
-    public final List<CraftingCPUCluster> cpus = new ReferenceArrayList<>();
+    public ECraftingCPUCluster virtualCPU = null;
+    public final List<ECraftingCPUCluster> cpus = new ReferenceArrayList<>();
 
     private AENetworkProxy gridProxy;
     private boolean wasActive = false;
@@ -905,7 +905,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public void writeCPUNBT(final NBTTagCompound compound) {
         final NBTTagList clustersTag = new NBTTagList();
         cpus.forEach(cluster -> {
-            ECPUCluster eCluster = ECPUCluster.from(cluster);
             NBTTagCompound clusterTag = new NBTTagCompound();
             cluster.writeToNBT(clusterTag);
             clusterTag.setLong("availableStorage", cluster.getAvailableStorage());
@@ -923,10 +922,9 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             NBTTagCompound clusterTag = clustersTag.getCompoundTagAt(i);
 
             WorldCoord coord = getWorldCoord();
-            CraftingCPUCluster cluster = new CraftingCPUCluster(coord, coord);
-            ECPUCluster eCluster = ECPUCluster.from(cluster);
-            eCluster.ec$setVirtualCPUOwner(this);
-            eCluster.ec$setAvailableStorage(clusterTag.getLong("availableStorage"));
+            ECraftingCPUCluster cluster = new ECraftingCPUCluster(coord, coord);
+            cluster.setVirtualCPUOwner(this);
+            cluster.setAvailableStorage(clusterTag.getLong("availableStorage"));
             cluster.readFromNBT(clusterTag);
             cpus.add(cluster);
         }
@@ -1135,12 +1133,11 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public void updateCPUNames() {
         final String parentName = hasCustomName() ? customName : "";
         if (virtualCPU != null) {
-            ECPUCluster.from(virtualCPU)
-                .ec$setName(parentName);
+            virtualCPU.setName(parentName);
         }
         for (int index = 0; index < cpus.size(); index++) {
-            ECPUCluster.from(cpus.get(index))
-                .ec$setName(parentName.isEmpty() ? "" : parentName + " #" + (index + 1));
+            cpus.get(index)
+                .setName(parentName.isEmpty() ? "" : parentName + " #" + (index + 1));
         }
     }
 
@@ -1189,8 +1186,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             consumer.accept(cpu);
         }
         if (virtualCPU != null) {
-            ECPUCluster.from(virtualCPU)
-                .ec$setVirtualCPUOwner(this);
+            virtualCPU.setVirtualCPUOwner(this);
             consumer.accept(virtualCPU);
         }
     }
@@ -1198,16 +1194,14 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public void onVirtualCPUSubmitJob(final long usedBytes) {
         final boolean prevEmpty = cpus.isEmpty();
 
-        ECPUCluster.from(virtualCPU)
-            .ec$setVirtualCPUOwner(this);
+        virtualCPU.setVirtualCPUOwner(this);
         cpus.add(virtualCPU);
 
         if (prevEmpty) {
             markDirty();
         }
 
-        ECPUCluster ecpuCluster = ECPUCluster.from(virtualCPU);
-        ecpuCluster.ec$setAvailableStorage(usedBytes);
+        virtualCPU.setAvailableStorage(usedBytes);
         virtualCPU = null;
         updateCPUNames();
         createVirtualCPU();
@@ -1240,19 +1234,17 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     public void createVirtualCPU() {
         final long availableBytes = getAvailableBytes();
         if (virtualCPU != null) {
-            ECPUCluster eCluster = ECPUCluster.from(virtualCPU);
-            eCluster.ec$setAvailableStorage(availableBytes);
-            eCluster.ec$setAccelerators(maximumParallel);
+            virtualCPU.setAvailableStorage(availableBytes);
+            virtualCPU.setAccelerators(maximumParallel);
             return;
         }
 
         WorldCoord pos = getWorldCoord();
-        virtualCPU = new CraftingCPUCluster(pos, pos);
-        ECPUCluster eCluster = ECPUCluster.from(virtualCPU);
-        eCluster.ec$setVirtualCPUOwner(this);
-        eCluster.ec$setAvailableStorage(availableBytes);
-        eCluster.ec$setAccelerators(maximumParallel);
-        if (hasCustomName()) eCluster.ec$setName(customName);
+        virtualCPU = new ECraftingCPUCluster(pos, pos);
+        virtualCPU.setVirtualCPUOwner(this);
+        virtualCPU.setAvailableStorage(availableBytes);
+        virtualCPU.setAccelerators(maximumParallel);
+        if (hasCustomName()) virtualCPU.setName(customName);
 
         postCPUClusterChangeEvent();
     }
@@ -1280,8 +1272,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     itemInventory.injectItems(stack, Actionable.MODULATE, s);
                 }
             }
-            ECPUCluster.from(cpu)
-                .ec$markDestroyed();
+            cpu.markDestroyed();
         }
         cpus.clear();
     }
@@ -1293,7 +1284,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             getBaseMetaTileEntity().getZCoord());
     }
 
-    public void onCPUDestroyed(final CraftingCPUCluster cluster) {
+    public void onCPUDestroyed(final ECraftingCPUCluster cluster) {
         cpus.remove(cluster);
         updateCPUNames();
         createVirtualCPU();
