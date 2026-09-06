@@ -28,7 +28,10 @@ import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
+import com.science.gtnl.common.item.items.ItemPartDenseEnergyCell;
+import com.science.gtnl.common.item.items.ItemPartEnergyCell;
 import com.science.gtnl.common.item.items.ItemPartMECellDock;
+import com.science.gtnl.common.item.items.ItemPartSuperDenseEnergyCell;
 import com.science.gtnl.common.item.items.ItemPartSuperDualInterface;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.KFCFamily;
@@ -170,6 +173,9 @@ public class ItemLoader {
     public static ItemPartActiveFormationPlane activeFormationPlane = new ItemPartActiveFormationPlane();
     public static ItemPartBeamFormer beamFormer = new ItemPartBeamFormer();
     public static ItemPartMECellDock meCellDock = new ItemPartMECellDock();
+    public static ItemPartEnergyCell energyCell = new ItemPartEnergyCell();
+    public static ItemPartDenseEnergyCell denseEnergyCell = new ItemPartDenseEnergyCell();
+    public static ItemPartSuperDenseEnergyCell superDenseEnergyCell = new ItemPartSuperDenseEnergyCell();
 
     public static ItemStack infinityDyeCell;
     public static ItemStack infinityDyeFluidCell;

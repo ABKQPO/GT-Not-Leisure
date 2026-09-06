@@ -4940,3 +4940,7 @@ gtnl.command.tickrate.period=。
 gtnl.command.tickrate.freeze=Tickrate 已冻结！
 gtnl.command.tickrate.unfreeze=Tickrate 已解除冻结！
 gtnl.command.tickrate.player_not_found=未找到玩家。
+item.PartEnergyCell.name=ME能源元件
+item.PartDenseEnergyCell.name=ME致密能源元件
+item.PartSuperDenseEnergyCell.name=ME超致密能源元件
+Tooltip_PartEnergyCell_00=存储能量：%s / %s AE

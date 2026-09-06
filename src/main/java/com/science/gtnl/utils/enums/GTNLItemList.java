@@ -58,6 +58,9 @@ public enum GTNLItemList implements IItemContainer {
     PartActiveFormationPlane,
     PartBeamFormer,
     MECellDock,
+    PartEnergyCell,
+    PartDenseEnergyCell,
+    PartSuperDenseEnergyCell,
     SuperDenseEnergyCell,
     BlockBeamFormer,
 

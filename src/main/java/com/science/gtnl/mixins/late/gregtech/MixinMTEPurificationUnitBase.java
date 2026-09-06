@@ -579,10 +579,9 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
         }
     }
 
-    @Inject(method = "getWailaBody", at = @At("HEAD"))
-    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config, CallbackInfo ci) {
-        NBTTagCompound tag = accessor.getNBTData();
+    @Inject(method = "getExtraWailaBody", at = @At("HEAD"))
+    public void getExtraWailaBody(ItemStack itemStack, List<String> currenttip, NBTTagCompound tag,
+        IWailaDataAccessor accessor, IWailaConfigHandler config, CallbackInfo ci) {
         if (tag.getBoolean("wirelessMode")) {
             currenttip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
             currenttip.add(
@@ -596,8 +595,8 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
         }
     }
 
-    @Inject(method = "getWailaNBTData", at = @At("HEAD"))
-    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
+    @Inject(method = "getExtraWailaNBT", at = @At("HEAD"))
+    public void getExtraWailaNBT(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z, CallbackInfo ci) {
         if (getBaseMetaTileEntity() != null) {
             tag.setBoolean("wirelessMode", gtnl$wirelessMode);

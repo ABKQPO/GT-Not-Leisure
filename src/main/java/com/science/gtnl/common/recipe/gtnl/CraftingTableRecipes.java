@@ -29,6 +29,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import tectech.thing.CustomItemList;
 
 public class CraftingTableRecipes implements IRecipePool {
 
@@ -1391,6 +1392,38 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { GTNLItemList.PartSuperDualInterface.get(1) });
 
         GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.PartEnergyCell.get(1),
+            new Object[] { aeBlocks.energyCell()
+                .maybeStack(1)
+                .orNull() });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            aeBlocks.energyCell()
+                .maybeStack(1)
+                .orNull(),
+            new Object[] { GTNLItemList.PartEnergyCell.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.PartDenseEnergyCell.get(1),
+            new Object[] { aeBlocks.energyCellDense()
+                .maybeStack(1)
+                .orNull() });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            aeBlocks.energyCellDense()
+                .maybeStack(1)
+                .orNull(),
+            new Object[] { GTNLItemList.PartDenseEnergyCell.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.PartSuperDenseEnergyCell.get(1),
+            new Object[] { GTNLItemList.SuperDenseEnergyCell.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.SuperDenseEnergyCell.get(1),
+            new Object[] { GTNLItemList.PartSuperDenseEnergyCell.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.EnderElevatorSlab.get(1),
             new Object[] { GTNLItemList.EnderElevatorBlock.get(1), ToolDictNames.craftingToolSaw });
 
@@ -1512,13 +1545,13 @@ public class CraftingTableRecipes implements IRecipePool {
                 ItemList.Hatch_Maintenance.get(2),
                 ItemList.Robot_Arm_HV.get(2),
                 ItemList.Hull_HV.get(1L))
-            .itemOutputs(tectech.thing.CustomItemList.hatch_CreativeMaintenance.get(1))
+            .itemOutputs(CustomItemList.hatch_CreativeMaintenance.get(1))
             .duration(0)
             .eut(0)
             .addTo(HOR);
 
         GTModHandler.addCraftingRecipe(
-            tectech.thing.CustomItemList.hatch_CreativeMaintenance.get(1),
+            CustomItemList.hatch_CreativeMaintenance.get(1),
             recipeFlags,
             new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
                 ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
