@@ -35,7 +35,7 @@ import com.science.gtnl.api.mixinHelper.ISkipStackSizeCheck;
 import com.science.gtnl.common.gui.modularui.HumongousDualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import gregtech.GTMod;
+import gregtech.GTLoggers;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -208,7 +208,7 @@ public class HumongousDualInputHatch extends DualInputHatch
             if (delta == 0) continue;
 
             if (delta < 0) {
-                GTMod.GT_FML_LOGGER.error(
+                GTLoggers.GT_FML_LOGGER.error(
                     "Humongous dual input hatch has more recipe items than it started with; cancelling recipe (slot={}, original={}, contained={}, delta={})",
                     slotIndex,
                     original,
@@ -221,7 +221,7 @@ public class HumongousDualInputHatch extends DualInputHatch
 
             ItemStack stored = mInventory[slotIndex];
             if (stored == null || delta > stored.stackSize) {
-                GTMod.GT_FML_LOGGER.error(
+                GTLoggers.GT_FML_LOGGER.error(
                     "Humongous dual input hatch consumed more items than available; cancelling recipe (slot={}, original={}, contained={}, delta={})",
                     slotIndex,
                     original,
@@ -335,7 +335,8 @@ public class HumongousDualInputHatch extends DualInputHatch
     @Override
     public void onBlockDestroyed() {
         Arrays.fill(mInventory, null);
-        Arrays.fill(itemInventory.inventory, null);
+        Arrays.fill(inventory.itemInventory, null);
+        Arrays.fill(inventory.fluidInventory, null);
         clearRecipeSnapshots();
         super.onBlockDestroyed();
     }
@@ -542,14 +543,12 @@ public class HumongousDualInputHatch extends DualInputHatch
 
     @Override
     protected ItemSource getItemSource(ForgeDirection side) {
-        IGregTechTileEntity base = getBaseMetaTileEntity();
-        return base != null && side == base.getFrontFacing() ? null : null;
+        return null;
     }
 
     @Override
     protected ItemSink getItemSink(ForgeDirection side) {
-        IGregTechTileEntity base = getBaseMetaTileEntity();
-        return base != null && side == base.getFrontFacing() ? null : null;
+        return null;
     }
 
     private void clearRecipeSnapshots() {
@@ -581,30 +580,5 @@ public class HumongousDualInputHatch extends DualInputHatch
     private ItemStack getArrayStack(ItemStack[] array, int index) {
         if (array == null || index < 0 || index >= array.length) return null;
         return array[index];
-    }
-
-    private ItemStack[] getVisibleItemInputs() {
-        ItemStack[] storageInputs = processing > 0 ? containedStacks
-            : Arrays.copyOf(mInventory, getItemStorageSlotCount());
-        ItemStack circuit = mInventory[getCircuitSlot()];
-        if (circuit == null) {
-            return Arrays.stream(storageInputs)
-                .filter(java.util.Objects::nonNull)
-                .toArray(ItemStack[]::new);
-        }
-
-        ItemStack[] nonNullInputs = Arrays.stream(storageInputs)
-            .filter(java.util.Objects::nonNull)
-            .toArray(ItemStack[]::new);
-        ItemStack[] inputs = Arrays.copyOf(nonNullInputs, nonNullInputs.length + 1);
-        inputs[inputs.length - 1] = circuit;
-        return inputs;
-    }
-
-    public boolean isItemStorageEmpty() {
-        for (int i = 0; i < getItemStorageSlotCount(); i++) {
-            if (mInventory[i] != null && mInventory[i].stackSize > 0) return false;
-        }
-        return true;
     }
 }
