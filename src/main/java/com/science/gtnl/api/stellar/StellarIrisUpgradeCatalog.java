@@ -1,6 +1,7 @@
 package com.science.gtnl.api.stellar;
 
 import net.minecraft.util.EnumChatFormatting;
+
 public class StellarIrisUpgradeCatalog {
 
     public static boolean defaultsRegistered;
