@@ -1,7 +1,6 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
-
+import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
@@ -148,8 +147,8 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
             .background(true, GTGuiTextures.BUTTON_STANDARD_PRESSED)
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_PATTERN_OPTIMIZE)
-            .addTooltip(true, translate("Button_Tooltip_SuperCraftingInputHatchME_02_01"))
-            .addTooltip(false, translate("Button_Tooltip_SuperCraftingInputHatchME_02_00"));
+            .addTooltip(true, StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_02_01"))
+            .addTooltip(false, StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_02_00"));
     }
 
     private ToggleButton createShowPatternButton(PanelSyncManager syncManager) {
@@ -160,8 +159,8 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_WHITELIST)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_BLACKLIST)
-            .addTooltip(true, translate("Info_ShowPattern_Enabled"))
-            .addTooltip(false, translate("Info_ShowPattern_Disabled"));
+            .addTooltip(true, StatCollector.translateToLocal("Info_ShowPattern_Enabled"))
+            .addTooltip(false, StatCollector.translateToLocal("Info_ShowPattern_Disabled"));
     }
 
     private ButtonWidget<?> createExportButton() {
@@ -172,7 +171,7 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
         }))
             .background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_EXPORT)
-            .addTooltipLine(translate("Button_Tooltip_SuperCraftingInputHatchME_01"));
+            .addTooltipLine(StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_01"));
     }
 
     private ButtonWidget<?> createDoublePatternButton() {
@@ -187,7 +186,7 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
         }))
             .background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_X2)
-            .addTooltipLine(translate("gui.tooltips.appliedenergistics2.DoublePatterns"));
+            .addTooltipLine(StatCollector.translateToLocal("gui.tooltips.appliedenergistics2.DoublePatterns"));
     }
 
     private ButtonWidget<?> createManualItemsButton(ModularPanel panel, PanelSyncManager syncManager) {
@@ -196,7 +195,7 @@ public class SuperCraftingInputHatchMEGui extends MTEHatchBaseGui<SuperCraftingI
 
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE)
-            .addTooltipLine(translate("Button_Tooltip_SuperCraftingInputHatchME_00"))
+            .addTooltipLine(StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_00"))
             .onMousePressed(mouseButton -> {
                 if (mouseButton == 0) {
                     manualPanel.togglePanel();

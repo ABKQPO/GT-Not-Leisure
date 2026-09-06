@@ -1,11 +1,11 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
 
 import java.text.MessageFormat;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -261,8 +261,8 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
             .setEnabledIf(button -> machine.autoPullAvailable)
-            .addTooltipLine(translate("GT5U.machines.stocking_hatch.auto_pull.tooltip.1"))
-            .addTooltipLine(translate("GT5U.machines.stocking_hatch.auto_pull.tooltip.2"));
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_hatch.auto_pull.tooltip.1"))
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_hatch.auto_pull.tooltip.2"));
     }
 
     public ModularPanel createStoredStackSizePanel(ModularPanel parent, PanelSyncManager syncManager, int slot) {
@@ -279,7 +279,7 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
                 IKey.lang("Info_SuperInputHatchME_00")
                     .asWidget())
             .child(
-                IKey.str(translate("Info_SuperInputHatchME_01") + slot)
+                IKey.str(StatCollector.translateToLocal("Info_SuperInputHatchME_01") + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(
@@ -368,7 +368,7 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
                     .background(false, GTGuiTextures.BUTTON_STANDARD)
                     .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
                     .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")));
+                    .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
     public TextWidget<?> createStatusText(PanelSyncManager syncManager) {

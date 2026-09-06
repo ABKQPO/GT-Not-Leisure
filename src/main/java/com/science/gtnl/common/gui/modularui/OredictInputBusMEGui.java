@@ -1,13 +1,14 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
 
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.cleanroommc.modularui.api.UpOrDown;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,7 +103,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             new IntSyncValue(machine::getAutoPullRefreshTime, machine::setAutoPullRefreshTime).allowC2S());
         syncManager.syncValue(
             EXPEDITE_RECIPE_SYNC_KEY,
-            new BooleanSyncValue(machine::doFastRecipeCheck, machine::setRecipeCheck).allowC2S());
+            new BooleanSyncValue(oredictHatch::doFastRecipeCheck, oredictHatch::setRecipeCheck).allowC2S());
         syncManager.syncValue(
             ORE_DICT_SYNC_KEY,
             new StringSyncValue(oredictHatch::getOreDictForGui, oredictHatch::setOreDict).allowC2S());
@@ -185,7 +186,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                     }
 
                     @Override
-                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                    public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
                         return false;
                     }
 
@@ -235,10 +236,10 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                 new ItemSlot()
                     .slot(new ModularSlot(machine.inventoryHandler, oredictHatch.getManualSlot()).slotGroup("item_inv"))
                     .tooltip(t -> {
-                        t.addLine(GTUtility.translate("GT5U.machines.stocking_bus.manual_slot.tooltip.1"));
+                        t.addLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.manual_slot.tooltip.1"));
                         t.addLine(
                             EnumChatFormatting.GRAY
-                                + GTUtility.translate("GT5U.machines.stocking_bus.manual_slot.tooltip.2")
+                                + StatCollector.translateToLocal("GT5U.machines.stocking_bus.manual_slot.tooltip.2")
                                 + EnumChatFormatting.RESET);
                     }))
             .child(
@@ -274,8 +275,8 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                 .margin(1)
                 .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
                 .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
-                .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
-                .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.2")));
+                .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
+                .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.2")));
     }
 
     protected IWidget createAutoPullButton(ModularPanel parent, PanelSyncManager syncManager) {
@@ -311,8 +312,8 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
             .background(false, GTGuiTextures.BUTTON_STANDARD)
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.2"));
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"))
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.2"));
     }
 
     protected IWidget createManualSlotButton(ModularPanel parent, PanelSyncManager syncManager) {
@@ -433,7 +434,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                     .background(false, GTGuiTextures.BUTTON_STANDARD)
                     .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
                     .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")));
+                    .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")));
     }
 
     protected IItemHandlerModifiable createConfigItemHandler() {

@@ -1,12 +1,11 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static gregtech.api.util.GTUtility.translate;
-
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -294,7 +293,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     }
 
                     @Override
-                    public boolean onMouseScroll(com.cleanroommc.modularui.api.UpOrDown scrollDirection, int amount) {
+                    public boolean onMouseScroll(UpOrDown scrollDirection, int amount) {
                         return false;
                     }
 
@@ -517,7 +516,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             .overlay(true, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME)
             .overlay(false, GTGuiTextures.OVERLAY_BUTTON_AUTOPULL_ME_DISABLED)
             .setEnabledIf(button -> machine.allowAuto)
-            .addTooltipLine(translate("GT5U.machines.stocking_bus.auto_pull.tooltip.1"));
+            .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.auto_pull.tooltip.1"));
     }
 
     public Widget<?> createCenterControls(PanelSyncManager syncManager) {
@@ -543,7 +542,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     .background(false, GTGuiTextures.BUTTON_STANDARD)
                     .overlay(true, GTGuiTextures.OVERLAY_BUTTON_CHECKMARK)
                     .overlay(false, GTGuiTextures.OVERLAY_BUTTON_CROSS)
-                    .addTooltipLine(translate("GT5U.machines.stocking_bus.hatch_warning")))
+                    .addTooltipLine(StatCollector.translateToLocal("GT5U.machines.stocking_bus.hatch_warning")))
             .child(
                 IKey.lang("GT5U.machines.stocking_bus.force_check")
                     .asWidget()
@@ -563,7 +562,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 IKey.lang(titleKey)
                     .asWidget())
             .child(
-                IKey.str(translate("Info_SuperDualInputHatchME_02") + slot)
+                IKey.str(StatCollector.translateToLocal("Info_SuperDualInputHatchME_02") + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(
@@ -620,7 +619,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
             boolean powered = poweredSyncer.getBoolValue();
             String state = WailaText.getPowerState(active, powered, bootingSyncer.getBoolValue());
             if (active && powered) {
-                String workState = translate(
+                String workState = StatCollector.translateToLocal(
                     machine.isAllowedToWork() ? "GT5U.gui.text.enabled" : "GT5U.gui.text.disabled");
                 return MessageFormat.format("{0}{1}§f ({2})", EnumChatFormatting.GREEN, state, workState);
             }

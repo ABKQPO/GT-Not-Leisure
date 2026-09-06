@@ -776,7 +776,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
         @Override
         public String getDisplayName() {
-            return GTUtility.translate(name);
+            return StatCollector.translateToLocal(name);
         }
 
         public IGTHatchAdder<? super PCBFactory> adder() {
