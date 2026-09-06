@@ -42,7 +42,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
 
     @Override
     public List<IAEFluidStack> getFluidCache() {
-        return (List<IAEFluidStack>) (List<?>) getProvider().getCacheList();
+        return (List<IAEFluidStack>) getProvider().getCacheList();
     }
 
     @Override

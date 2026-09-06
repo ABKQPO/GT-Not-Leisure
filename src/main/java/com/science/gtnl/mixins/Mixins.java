@@ -194,10 +194,6 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.GalaxySpace)),
 
-    NH_CORE_MOD(new MixinBuilder("NH Core Mod Mixin").addCommonMixins("nhCoreMod.MixinBacteriaRegistry")
-        .setPhase(Phase.LATE)
-        .addRequiredMod(ModList.NewHorizonsCoreMod)),
-
     ENHANCED_LOOT_BAGS(
         new MixinBuilder("Enhanced Loot Bags Mixin").addCommonMixins("enhancedLootBags.AccessorItemLootBag")
             .setPhase(Phase.LATE)

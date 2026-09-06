@@ -204,15 +204,15 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     /**
-     * Consumes diagnostics counts by session segments instead of invoking AE's synthetic one-craft accessor N times.
+     * Consumes diagnostics counts by session segments instead of invoking AE's one-craft session method repeatedly.
      */
     @WrapOperation(
         method = "executeCrafting",
         at = @At(
             value = "INVOKE",
-            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;access$300(Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;)Lappeng/me/diagnostics/CraftingDiagnosticSessionId;"),
-        require = 0)
-    private CraftingDiagnosticSessionId gtnl$consumeBatchSessions(@Coerce Object taskProgress,
+            target = "Lappeng/me/cluster/implementations/CraftingCPUCluster$TaskProgress;consumeCraftSession()Lappeng/me/diagnostics/CraftingDiagnosticSessionId;"),
+        require = 1)
+    private CraftingDiagnosticSessionId gtnl$consumeBatchSessions(CraftingCPUCluster.TaskProgress taskProgress,
         Operation<CraftingDiagnosticSessionId> original,
         @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
         BatchDispatchContext context = contextRef.get();
@@ -305,7 +305,7 @@ public abstract class MixinCraftingCPUCluster {
     }
 
     @Unique
-    private static final class BatchDispatchContext {
+    private static class BatchDispatchContext {
 
         private final ICraftingPatternDetails details;
         private final AccessorTaskProgress taskProgress;

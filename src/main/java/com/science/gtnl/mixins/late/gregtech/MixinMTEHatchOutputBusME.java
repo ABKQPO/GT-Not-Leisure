@@ -41,7 +41,7 @@ public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus impleme
 
     @Override
     public List<IAEItemStack> getItemCache() {
-        return (List<IAEItemStack>) (List<?>) getProvider().getCacheList();
+        return (List<IAEItemStack>) getProvider().getCacheList();
     }
 
     @Override

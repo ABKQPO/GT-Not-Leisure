@@ -109,7 +109,13 @@ public class TeamNetworkManager {
             return;
         }
 
-        mergeLegacyTeams(readLegacyTeams(world));
+        LegacyTeamReadResult legacyTeams = readLegacyTeams(world);
+        if (!legacyTeams.readSuccessfully()) {
+            ScienceNotLeisure.LOG.warn("Legacy team migration is pending until its source data can be read");
+            return;
+        }
+
+        mergeLegacyTeams(legacyTeams.teams());
         migrationData.markComplete();
     }
 
@@ -125,42 +131,54 @@ public class TeamNetworkManager {
         }
     }
 
-    private static Map<UUID, UUID> readLegacyTeams(World world) {
+    private static LegacyTeamReadResult readLegacyTeams(World world) {
         File worldDirectory = world.getSaveHandler()
             .getWorldDirectory();
-        Map<UUID, UUID> teams = readLegacyTeamsFromDataFile(
+        LegacyTeamReadResult dataFileTeams = readLegacyTeamsFromDataFile(
             new File(worldDirectory, "data" + File.separator + LEGACY_DATA_FILE));
-        if (!teams.isEmpty()) {
-            return teams;
+        if (dataFileTeams.readSuccessfully() && !dataFileTeams.teams()
+            .isEmpty()) {
+            return dataFileTeams;
         }
-        return readLegacyTeamsFromJson(new File(worldDirectory, LEGACY_TEAMS_FILE));
+
+        LegacyTeamReadResult jsonTeams = readLegacyTeamsFromJson(new File(worldDirectory, LEGACY_TEAMS_FILE));
+        if (jsonTeams.readSuccessfully() && !jsonTeams.teams()
+            .isEmpty()) {
+            return jsonTeams;
+        }
+
+        return new LegacyTeamReadResult(
+            new HashMap<>(),
+            dataFileTeams.readSuccessfully() && jsonTeams.readSuccessfully());
     }
 
-    private static Map<UUID, UUID> readLegacyTeamsFromDataFile(File dataFile) {
+    private static LegacyTeamReadResult readLegacyTeamsFromDataFile(File dataFile) {
         if (!dataFile.isFile()) {
-            return new HashMap<>();
+            return new LegacyTeamReadResult(new HashMap<>(), true);
         }
         try {
             NBTTagCompound rootTag = CompressedStreamTools.read(dataFile);
             NBTTagCompound dataTag = rootTag.hasKey("data") ? rootTag.getCompoundTag("data") : rootTag;
-            return parseLegacyTeams(dataTag.getString(LEGACY_TEAMS_TAG));
-        } catch (IOException exception) {
-            ScienceNotLeisure.LOG.warn("Unable to read legacy team data", exception);
-            return new HashMap<>();
+            return new LegacyTeamReadResult(parseLegacyTeams(dataTag.getString(LEGACY_TEAMS_TAG)), true);
+        } catch (IOException | RuntimeException exception) {
+            ScienceNotLeisure.LOG.warn("Unable to read legacy team data from {}", dataFile);
+            return new LegacyTeamReadResult(new HashMap<>(), false);
         }
     }
 
-    private static Map<UUID, UUID> readLegacyTeamsFromJson(File teamsFile) {
+    private static LegacyTeamReadResult readLegacyTeamsFromJson(File teamsFile) {
         if (!teamsFile.isFile()) {
-            return new HashMap<>();
+            return new LegacyTeamReadResult(new HashMap<>(), true);
         }
         try (BufferedReader reader = Files.newBufferedReader(teamsFile.toPath(), StandardCharsets.UTF_8)) {
-            return parseLegacyTeams(
-                new JsonParser().parse(reader)
-                    .toString());
-        } catch (Exception exception) {
-            ScienceNotLeisure.LOG.warn("Unable to read legacy team JSON", exception);
-            return new HashMap<>();
+            return new LegacyTeamReadResult(
+                parseLegacyTeams(
+                    new JsonParser().parse(reader)
+                        .toString()),
+                true);
+        } catch (IOException | RuntimeException exception) {
+            ScienceNotLeisure.LOG.warn("Unable to read legacy team JSON from {}", teamsFile);
+            return new LegacyTeamReadResult(new HashMap<>(), false);
         }
     }
 
@@ -169,22 +187,20 @@ public class TeamNetworkManager {
         if (encodedTeams == null || encodedTeams.isEmpty()) {
             return teams;
         }
-        try {
-            JsonArray entries = new JsonParser().parse(encodedTeams)
-                .getAsJsonArray();
-            for (JsonElement entry : entries) {
-                JsonObject team = entry.getAsJsonObject();
-                teams.put(
-                    UUID.fromString(
-                        team.get(MEMBER_UUID_TAG)
-                            .getAsString()),
-                    UUID.fromString(
-                        team.get(LEADER_UUID_TAG)
-                            .getAsString()));
-            }
-        } catch (Exception exception) {
-            ScienceNotLeisure.LOG.warn("Unable to parse legacy team data", exception);
+        JsonArray entries = new JsonParser().parse(encodedTeams)
+            .getAsJsonArray();
+        for (JsonElement entry : entries) {
+            JsonObject team = entry.getAsJsonObject();
+            teams.put(
+                UUID.fromString(
+                    team.get(MEMBER_UUID_TAG)
+                        .getAsString()),
+                UUID.fromString(
+                    team.get(LEADER_UUID_TAG)
+                        .getAsString()));
         }
         return teams;
     }
+
+    private record LegacyTeamReadResult(Map<UUID, UUID> teams, boolean readSuccessfully) {}
 }

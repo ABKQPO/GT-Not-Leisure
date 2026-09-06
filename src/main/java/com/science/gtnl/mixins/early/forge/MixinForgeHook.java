@@ -15,6 +15,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.world.BlockEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -56,7 +57,7 @@ public class MixinForgeHook {
                     .copy();
             }
 
-            net.minecraftforge.event.world.BlockEvent.PlaceEvent placeEvent = null;
+            BlockEvent.PlaceEvent placeEvent = null;
             List<BlockSnapshot> blockSnapshots = (List<BlockSnapshot>) world.capturedBlockSnapshots.clone();
             world.capturedBlockSnapshots.clear();
 

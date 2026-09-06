@@ -15,6 +15,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.ForgeModContainer;
 
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -83,7 +84,7 @@ public abstract class MixinWorld {
 
                     if (ForgeModContainer.removeErroringEntities) {
                         FMLLog.getLogger()
-                            .log(org.apache.logging.log4j.Level.ERROR, crashreport.getCompleteReport());
+                            .log(Level.ERROR, crashreport.getCompleteReport());
                         ((World) ((Object) this)).removeEntity(entity);
                     } else {
                         throw new ReportedException(crashreport);
@@ -144,7 +145,7 @@ public abstract class MixinWorld {
 
                     if (ForgeModContainer.removeErroringEntities) {
                         FMLLog.getLogger()
-                            .log(org.apache.logging.log4j.Level.ERROR, crashreport.getCompleteReport());
+                            .log(Level.ERROR, crashreport.getCompleteReport());
                         ((World) ((Object) this)).removeEntity(entity);
                     } else {
                         throw new ReportedException(crashreport);
@@ -189,7 +190,7 @@ public abstract class MixinWorld {
                         tileentity.func_145828_a(crashreportcategory);
                         if (ForgeModContainer.removeErroringTileEntities) {
                             FMLLog.getLogger()
-                                .log(org.apache.logging.log4j.Level.ERROR, crashreport.getCompleteReport());
+                                .log(Level.ERROR, crashreport.getCompleteReport());
                             tileentity.invalidate();
                             ((World) ((Object) this))
                                 .setBlockToAir(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord);

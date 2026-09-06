@@ -14,10 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.glodblock.github.inventory.IDualHost;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
 import com.science.gtnl.config.MainConfig;
@@ -140,15 +138,6 @@ public abstract class MixinDualityInterface implements IDualityInterface {
 
     @Invoker("updatePlan")
     public abstract void gtnl$updatePlan(int slot);
-
-    // Fuck you
-    @Deprecated
-    @Redirect(
-        method = "<init>",
-        at = @At(value = "CONSTANT", args = "classValue=com/glodblock/github/common/tile/TileFluidInterface"))
-    public boolean isFluidInterface(Object instance, Class<?> type) {
-        return instance instanceof IDualHost;
-    }
 
     @Inject(
         method = "getRawTermName",
