@@ -50,7 +50,7 @@ public class PartEnergyAcceptor extends AEBasePart
 
     @Override
     public int cableConnectionRenderTo() {
-        return 3;
+        return 1;
     }
 
     @Override
