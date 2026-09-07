@@ -4938,6 +4938,7 @@ gtnl.command.tickrate.period=.
 gtnl.command.tickrate.freeze=Tickrate Freeze!
 gtnl.command.tickrate.unfreeze=Tickrate Unfreeze!
 gtnl.command.tickrate.player_not_found=Player not found.
+item.PartEnergyAcceptor.name=ME Energy Acceptor
 item.PartEnergyCell.name=ME Energy Cell
 item.PartDenseEnergyCell.name=ME Dense Energy Cell
 item.PartSuperDenseEnergyCell.name=ME Super Dense Energy Cell

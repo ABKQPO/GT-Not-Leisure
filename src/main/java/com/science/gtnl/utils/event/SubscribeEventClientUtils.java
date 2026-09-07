@@ -15,6 +15,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -91,7 +92,7 @@ public class SubscribeEventClientUtils {
     private static ItemStack draconicLegsProjection;
     private static ItemStack draconicBootsProjection;
 
-    public static void registerAllIcons(net.minecraft.client.renderer.texture.IIconRegister ir) {
+    public static void registerAllIcons(IIconRegister ir) {
         haloNoiseIcon = ir.registerIcon(HALO_NOISE_ICON_TEXTURE);
         cheatWrenchIcon = ir.registerIcon(CHEAT_WRENCH_ICON_TEXTURE);
     }

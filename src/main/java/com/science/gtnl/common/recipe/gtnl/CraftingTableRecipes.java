@@ -1392,6 +1392,18 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { GTNLItemList.PartSuperDualInterface.get(1) });
 
         GTModHandler.addShapelessCraftingRecipe(
+            GTNLItemList.PartEnergyAcceptor.get(1),
+            new Object[] { aeBlocks.energyAcceptor()
+                .maybeStack(1)
+                .orNull() });
+
+        GTModHandler.addShapelessCraftingRecipe(
+            aeBlocks.energyAcceptor()
+                .maybeStack(1)
+                .orNull(),
+            new Object[] { GTNLItemList.PartEnergyAcceptor.get(1) });
+
+        GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.PartEnergyCell.get(1),
             new Object[] { aeBlocks.energyCell()
                 .maybeStack(1)
