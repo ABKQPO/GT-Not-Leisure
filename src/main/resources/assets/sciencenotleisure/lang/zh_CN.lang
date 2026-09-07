@@ -1567,10 +1567,10 @@ Tooltip_MagneticEnergyReactionFurnace_Casing=任意电弧炉机械方块
 
 NameNanitesIntegratedProcessingCenter=纳米集成加工中心
 gtnl.recipe.NanitesIntegratedProcessingRecipes=纳米统合工坊
+NanitesIntegratedProcessingCenterRecipeType=纳米统合工坊
 NanitesIntegratedProcessingMetadata.0=需要生物工程模块
 NanitesIntegratedProcessingMetadata.1=需要矿石萃取模块
 NanitesIntegratedProcessingMetadata.2=需要聚合物扭曲模块
-NanitesIntegratedProcessingCenterRecipeType=纳米统合工坊
 Tooltip_NanitesIntegratedProcessingCenter_00=我们先进的纳米蜂群生产技术已经完全超越了老式的化工产线
 Tooltip_NanitesIntegratedProcessingCenter_01=安装对应模块解锁对应配方
 Tooltip_NanitesIntegratedProcessingCenter_02=每级线圈等级额外提供10%的加速和耗电减免(乘算叠加)
@@ -2519,14 +2519,6 @@ Tooltip_AutoConfigurationMaintenanceHatch_01=它能掌控一切，除了自己.
 Tooltip_AutoConfigurationMaintenanceHatch_02=§b无私奉献！
 Info_ConfigurationMaintenanceHatch_00=配置机器处理耗时，单位：%%
 
-SteamTurbineLV=基础蒸汽轮机
-SteamTurbineMV=进阶蒸汽轮机
-SteamTurbineHV=进阶蒸汽轮机 II
-Tooltip_SteamTurbine_00=将蒸汽转换为EU
-Tooltip_SteamTurbine_01=基础效率：2L蒸汽/EU
-Tooltip_SteamTurbine_02=燃料效率：%s%%
-Tooltip_SteamTurbine_03=流体容量：%sL
-
 SteamAssemblerBronze=蒸汽组装机
 SteamAssemblerSteel=高压蒸汽组装机
 Tooltip_SteamAssembler_00=复仇者们，集结！ 
@@ -3089,17 +3081,13 @@ Tooltip_WirelessVacuumConveyorInputHatch_00=从已连接的无线真空传送带
 Tooltip_WirelessVacuumConveyorInputHatch_01=使用闪存链接到目标无线真空传送输出端口
 Tooltip_WirelessVacuumConveyorInputHatch_02=无需真空传送管道
 
-
-
-
-
-
-
-
-
-
-
-
+SteamTurbineLV=基础蒸汽轮机
+SteamTurbineMV=进阶蒸汽轮机
+SteamTurbineHV=进阶蒸汽轮机 II
+Tooltip_SteamTurbine_00=将蒸汽转换为EU
+Tooltip_SteamTurbine_01=基础效率：2L蒸汽/EU
+Tooltip_SteamTurbine_02=燃料效率：%s%%
+Tooltip_SteamTurbine_03=流体容量：%sL
 
 WirelessVacuumConveyorOutputHatch=无线真空传送输出端口
 Tooltip_WirelessVacuumConveyorOutputHatch_00=将§e电路组件§7发送到一个已连接的无线真空传送带输入端口
@@ -3357,6 +3345,11 @@ container.SuperDualInterface=超级二合一ME接口
 item.PartActiveFormationPlane.name=ME主动成型面板
 
 tile.SuperDenseEnergyCell.name=超致密能源元件
+
+item.PartEnergyAcceptor.name=能源接收器
+item.PartEnergyCell.name=ME能源元件
+item.PartDenseEnergyCell.name=ME致密能源元件
+item.PartSuperDenseEnergyCell.name=ME超致密能源元件
 
 item.PartBeamFormer.name=ME光束成型器
 text.beam_former.hide=已隐藏光束。
@@ -3830,61 +3823,6 @@ Tooltip_FOGModule_Casing_02= 海珀珍线圈方块
 Tooltip_FOGModule_Casing_03= 天体物质引导机械方块
 Tooltip_FOGModule_Casing_04= 恒星能量抽取机械方块
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 gui.AssemblerMatrix.button.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
 text.AssemblerMatrix.tooltip.0=网络已有类似的合成样板,已跳过上传并返还空白样板！
 
@@ -4235,7 +4173,3 @@ gtnl.command.tickrate.period=。
 gtnl.command.tickrate.freeze=Tickrate 已冻结！
 gtnl.command.tickrate.unfreeze=Tickrate 已解除冻结！
 gtnl.command.tickrate.player_not_found=未找到玩家。
-item.PartEnergyAcceptor.name=能源接收器
-item.PartEnergyCell.name=ME能源元件
-item.PartDenseEnergyCell.name=ME致密能源元件
-item.PartSuperDenseEnergyCell.name=ME超致密能源元件

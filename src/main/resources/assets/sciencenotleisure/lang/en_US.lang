@@ -1043,8 +1043,8 @@ Tooltip_EnergyInfuser_02=Provides UU-Matter to repair items.
 Tooltip_EnergyInfuser_03=Store inside the machine during charging
 Tooltip_EnergyInfuser_04=Right-click with the screwdriver to immediately output all items
 Tooltip_EnergyInfuser_05=If no energy hatch is installed, it will automatically enter wireless mode
-Info_EnergyInfuser_00=Immediately output all items
 Tooltip_EnergyInfuser_Casing=Any Molecular Machine Block
+Info_EnergyInfuser_00=Immediately output all items
 
 NameLargeCanning=Large Canning Machine
 LargeCanningRecipeType=Canning Machine
@@ -2519,7 +2519,6 @@ Tooltip_AutoConfigurationMaintenanceHatch_01=Does control everything but itself.
 Tooltip_AutoConfigurationMaintenanceHatch_02=§bSelfless dedication!
 Info_ConfigurationMaintenanceHatch_00=Configuration machine processing time, unit: %%
 
-
 SteamAssemblerBronze=Steam Assembler
 SteamAssemblerSteel=High-Pressure Steam Assembler
 Tooltip_SteamAssembler_00=Assembles components using steam pressure
@@ -3082,9 +3081,6 @@ Tooltip_WirelessVacuumConveyorInputHatch_00=Receives§e Circuit Components §7fr
 Tooltip_WirelessVacuumConveyorInputHatch_01=Use data stick to link target Vacuum Conveyor Output
 Tooltip_WirelessVacuumConveyorInputHatch_02=Does not require Vacuum Conveyor Pipes
 
-
-
-
 SteamTurbineLV=Basic Steam Turbine
 SteamTurbineMV=Advanced Steam Turbine
 SteamTurbineHV=Advanced Steam Turbine II
@@ -3093,11 +3089,6 @@ Tooltip_SteamTurbine_01=Base efficiency: 2L steam/EU
 Tooltip_SteamTurbine_02=Fuel efficiency: %s%%
 Tooltip_SteamTurbine_03=Fluid capacity: %sL
 
-
-
-
-
- 
 WirelessVacuumConveyorOutputHatch=Wireless Vacuum Conveyor Output
 Tooltip_WirelessVacuumConveyorOutputHatch_00=Sends§e Circuit Components §7to one linked Wireless Vacuum Conveyor Input
 Tooltip_WirelessVacuumConveyorOutputHatch_01=Use data stick to link target Vacuum Conveyor Input
@@ -3106,9 +3097,6 @@ Chat_WirelessVacuumConveyor_00=Wireless Vacuum Conveyor link established
 Chat_WirelessVacuumConveyor_01=Wireless Vacuum Conveyor link failed
 DataStick_WirelessVacuumConveyor=Wireless Vacuum Conveyor Link Data Configuration
 Info_WirelessVacuumConveyorOutputHatch_00=Linked input: %d, %d, %d
-
-
-
 
 BW_GlasBlocks2.1.name=Shirabon Reinforced Borosilicate Glass Block
 BW_GlasBlocks2.2.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
@@ -3357,6 +3345,11 @@ container.SuperDualInterface=Super Dual ME Interface
 item.PartActiveFormationPlane.name=ME Active Formation Plane
 
 tile.SuperDenseEnergyCell.name=Super Dense Energy Cell
+
+item.PartEnergyAcceptor.name=ME Energy Acceptor
+item.PartEnergyCell.name=ME Energy Cell
+item.PartDenseEnergyCell.name=ME Dense Energy Cell
+item.PartSuperDenseEnergyCell.name=ME Super Dense Energy Cell
 
 item.PartBeamFormer.name=ME Beam Former
 text.beam_former.hide=Hiding beam.
@@ -3830,61 +3823,6 @@ Tooltip_FOGModule_Casing_02= Harmonic Phonon Transmission Conduit
 Tooltip_FOGModule_Casing_03= Celestial Matter Guidance Casing
 Tooltip_FOGModule_Casing_04= Stellar Energy Siphon Casing
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 gui.AssemblerMatrix.button.upload_pattern=Upload pattern to available §9Assembler Matrix§r in current network.
 text.AssemblerMatrix.tooltip.0=A similar pattern exists. Upload skipped and blank pattern returned!
 
@@ -4235,7 +4173,3 @@ gtnl.command.tickrate.period=.
 gtnl.command.tickrate.freeze=Tickrate Freeze!
 gtnl.command.tickrate.unfreeze=Tickrate Unfreeze!
 gtnl.command.tickrate.player_not_found=Player not found.
-item.PartEnergyAcceptor.name=ME Energy Acceptor
-item.PartEnergyCell.name=ME Energy Cell
-item.PartDenseEnergyCell.name=ME Dense Energy Cell
-item.PartSuperDenseEnergyCell.name=ME Super Dense Energy Cell
