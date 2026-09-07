@@ -50,19 +50,22 @@ public class PartEnergyAcceptor extends AEBasePart
 
     @Override
     public int cableConnectionRenderTo() {
-        return 16;
+        return 3;
     }
 
     @Override
     public void getBoxes(IPartCollisionHelper collisionHelper) {
-        collisionHelper.addBox(1, 1, 12, 15, 15, 14);
+        collisionHelper.addBox(5, 5, 14, 11, 11, 15);
+        collisionHelper.addBox(0, 0, 15, 16, 16, 16);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(IPartRenderHelper renderHelper, RenderBlocks renderer) {
         renderHelper.setTexture(getTexture());
-        renderHelper.setBounds(1, 1, 12, 15, 15, 14);
+        renderHelper.setBounds(0, 0, 15, 16, 16, 16);
+        renderHelper.renderInventoryBox(renderer);
+        renderHelper.setBounds(5, 5, 14, 11, 11, 15);
         renderHelper.renderInventoryBox(renderer);
     }
 
@@ -70,7 +73,9 @@ public class PartEnergyAcceptor extends AEBasePart
     @SideOnly(Side.CLIENT)
     public void renderStatic(int x, int y, int z, IPartRenderHelper renderHelper, RenderBlocks renderer) {
         renderHelper.setTexture(getTexture());
-        renderHelper.setBounds(1, 1, 12, 15, 15, 14);
+        renderHelper.setBounds(0, 0, 15, 16, 16, 16);
+        renderHelper.renderBlock(x, y, z, renderer);
+        renderHelper.setBounds(5, 5, 14, 11, 11, 15);
         renderHelper.renderBlock(x, y, z, renderer);
     }
 

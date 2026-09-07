@@ -70,7 +70,7 @@ public abstract class PartEnergyCellBase extends AEBasePart implements IAEPowerS
 
     @Override
     public int cableConnectionRenderTo() {
-        return 16;
+        return 3;
     }
 
     @Override
