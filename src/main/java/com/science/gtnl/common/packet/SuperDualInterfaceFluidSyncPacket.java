@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.client.Minecraft;
+
 import com.science.gtnl.client.gui.GuiSuperDualInterfaceFluid;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
@@ -55,7 +57,7 @@ public class SuperDualInterfaceFluidSyncPacket extends ClientboundPacket {
     }
 
     @Override
-    public void handleClient(net.minecraft.client.Minecraft minecraft) {
+    public void handleClient(Minecraft minecraft) {
         if (minecraft.currentScreen instanceof GuiSuperDualInterfaceFluid gui) {
             for (Map.Entry<Integer, IAEFluidStack> entry : stacks.entrySet()) {
                 gui.update(entry.getKey(), entry.getValue());

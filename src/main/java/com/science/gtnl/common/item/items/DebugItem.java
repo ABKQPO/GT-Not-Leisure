@@ -164,7 +164,7 @@ public class DebugItem extends Item {
                         if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;
                         }
-                    } else if (obj instanceof tectech.thing.CustomItemList itemList && itemList.hasBeenSet()) {
+                    } else if (obj instanceof CustomItemList itemList && itemList.hasBeenSet()) {
                         ItemStack target = itemList.get(1);
                         if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;

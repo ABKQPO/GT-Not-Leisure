@@ -3,6 +3,7 @@ package com.science.gtnl.common.block.blocks.tile;
 import static com.science.gtnl.common.render.PlayerDollRenderManager.fetchUUID;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -79,8 +80,7 @@ public class TileEntityPlayerDoll extends TileEntity {
     }
 
     @Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net,
-        net.minecraft.network.play.server.S35PacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         NBTTagCompound nbt = pkt.func_148857_g();
         this.readFromNBT(nbt);
     }

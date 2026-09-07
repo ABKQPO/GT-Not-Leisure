@@ -47,7 +47,7 @@ public class StellarIrisUpgradeSnapshotSyncHandler extends SyncHandler<StellarIr
         }
     }
 
-    private static void writeSnapshot(PacketBuffer buffer, StellarIrisTeamSnapshot snapshot) throws IOException {
+    private static void writeSnapshot(PacketBuffer buffer, StellarIrisTeamSnapshot snapshot) {
         buffer.writeVarIntToBuffer(snapshot.getSpendablePoints());
         buffer.writeVarIntToBuffer(snapshot.getLifetimePoints());
         buffer.writeVarIntToBuffer(snapshot.getTier());

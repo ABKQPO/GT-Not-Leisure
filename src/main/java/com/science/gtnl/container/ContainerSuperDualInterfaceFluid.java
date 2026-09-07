@@ -11,7 +11,9 @@ import net.minecraft.inventory.Slot;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.glodblock.github.inventory.IDualHost;
 import com.glodblock.github.inventory.slot.OptionalFluidSlotFakeTypeOnly;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.me.dual.SuperDualInterfaceSlots;
+import com.science.gtnl.common.packet.SuperDualInterfaceFluidSyncPacket;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.AEBaseContainer;
@@ -112,9 +114,8 @@ public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements
         }
         for (Object crafter : this.crafters) {
             if (crafter instanceof EntityPlayer) {
-                com.science.gtnl.ScienceNotLeisure.network.sendTo(
-                    new com.science.gtnl.common.packet.SuperDualInterfaceFluidSyncPacket(update),
-                    (EntityPlayerMP) crafter);
+                ScienceNotLeisure.network
+                    .sendTo(new SuperDualInterfaceFluidSyncPacket(update), (EntityPlayerMP) crafter);
             }
         }
     }

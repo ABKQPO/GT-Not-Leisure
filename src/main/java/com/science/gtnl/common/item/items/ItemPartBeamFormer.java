@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.part.PartBeamFormer;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -49,11 +48,11 @@ public class ItemPartBeamFormer extends Item implements IPartItem {
 
     @Override
     public void registerIcons(IIconRegister ir) {
-        iconBase = ir.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":part/beam_former_base");
-        iconStatusOff = ir.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":part/beam_former_status_off");
-        iconStatusOn = ir.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":part/beam_former_status_on");
-        iconStatusBeaming = ir.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":part/beam_former_status_beaming");
-        iconPrism = ir.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":part/beam_former_prism");
+        iconBase = ir.registerIcon(RESOURCE_ROOT_ID + ":part/beam_former_base");
+        iconStatusOff = ir.registerIcon(RESOURCE_ROOT_ID + ":part/beam_former_status_off");
+        iconStatusOn = ir.registerIcon(RESOURCE_ROOT_ID + ":part/beam_former_status_on");
+        iconStatusBeaming = ir.registerIcon(RESOURCE_ROOT_ID + ":part/beam_former_status_beaming");
+        iconPrism = ir.registerIcon(RESOURCE_ROOT_ID + ":part/beam_former_prism");
         super.registerIcons(ir);
     }
 

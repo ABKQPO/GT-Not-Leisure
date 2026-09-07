@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.reavaritia.client.render.CustomEntityRenderer;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -62,8 +61,7 @@ public class TimeStopPocketWatch extends Item {
                 }
             } else {
                 if (!playSound) {
-                    player.worldObj
-                        .playSoundAtEntity(player, ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "time.stop", 1.0F, 1.0F);
+                    player.worldObj.playSoundAtEntity(player, RESOURCE_ROOT_ID + ":" + "time.stop", 1.0F, 1.0F);
                     playSound = true;
                 }
                 nbt.setBoolean(WATCH_ACTIVE_TAG, true);

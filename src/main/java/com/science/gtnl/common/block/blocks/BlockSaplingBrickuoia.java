@@ -7,6 +7,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenBigTree;
 import net.minecraft.world.gen.feature.WorldGenTrees;
+import net.minecraftforge.event.terraingen.TerrainGen;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.world.WorldGenBrickuoia;
@@ -22,7 +23,7 @@ public class BlockSaplingBrickuoia extends SaplingBase {
 
     @Override
     public void func_149878_d(World world, int x, int y, int z, Random rand) {
-        if (!net.minecraftforge.event.terraingen.TerrainGen.saplingGrowTree(world, rand, x, y, z)) return;
+        if (!TerrainGen.saplingGrowTree(world, rand, x, y, z)) return;
         int l = world.getBlockMetadata(x, y, z) & 7;
         rand.nextInt(10);
         new WorldGenBigTree(true);

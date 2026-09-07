@@ -1,9 +1,5 @@
 package com.science.gtnl.common.render.tile;
 
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_0;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_1;
-import static tectech.rendering.EOH.EOHTileEntitySR.STAR_LAYER_2;
-
 import java.nio.FloatBuffer;
 
 import net.minecraft.client.renderer.Tessellator;
@@ -180,7 +176,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         // Render for TRANSPARENT layers
         RenderStarLayer(
             reusableStarColor.set(r, g, b, 0.4f),
-            STAR_LAYER_1,
+            EOHTileEntitySR.STAR_LAYER_1,
             STAR_RADIUS * 1.02f,
             reusableRotationAxis.set(1F, 1F, 0F)
                 .normalize(),
@@ -302,7 +298,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         // Render OPAQUE layer (writes to depth)
         RenderStarLayer(
             reusableStarColor.set(r, g, b, 1f),
-            STAR_LAYER_0,
+            EOHTileEntitySR.STAR_LAYER_0,
             STAR_RADIUS,
             reusableRotationAxis.set(0F, 1F, 1F)
                 .normalize(),
@@ -342,7 +338,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         // Render TRANSPARENT layers last, so they correctly blend over rings when in front
         RenderStarLayer(
             reusableStarColor.set(r, g, b, 0.4f),
-            STAR_LAYER_1,
+            EOHTileEntitySR.STAR_LAYER_1,
             STAR_RADIUS * 1.02f,
             reusableRotationAxis.set(1F, 1F, 0F)
                 .normalize(),
@@ -350,7 +346,7 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
         RenderStarLayer(
             reusableStarColor.set(r, g, b, 0.2f),
-            STAR_LAYER_2,
+            EOHTileEntitySR.STAR_LAYER_2,
             STAR_RADIUS * 1.04f,
             reusableRotationAxis.set(1F, 0F, 1F)
                 .normalize(),

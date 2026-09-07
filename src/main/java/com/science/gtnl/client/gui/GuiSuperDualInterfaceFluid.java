@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.glodblock.github.inventory.IAEFluidTank;
 import com.glodblock.github.inventory.IDualHost;
+import com.glodblock.github.util.RenderUtil;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.SwitchSuperDualInterfaceGuiPacket;
 import com.science.gtnl.common.part.PartSuperDualInterface;
@@ -22,6 +23,7 @@ import com.science.gtnl.utils.enums.GuiType;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
+import appeng.core.localization.GuiText;
 
 public class GuiSuperDualInterfaceFluid extends AEBaseGui {
 
@@ -77,7 +79,7 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
         fontRendererObj.drawString(getGuiDisplayName(I18n.format("container.SuperDualInterface")), 8, 6, 0x404040);
-        fontRendererObj.drawString(appeng.core.localization.GuiText.inventory.getLocal(), 8, ySize - 94, 0x404040);
+        fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, ySize - 94, 0x404040);
         fontRendererObj.drawString(
             StatCollector.translateToLocalFormatted("text.SuperInterface.page", cont.currentPage + 1, cont.maxPage),
             110,
@@ -98,7 +100,7 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
             if (!(cont.getTile() instanceof PartSuperDualInterface)) {
                 fontRendererObj.drawString(String.valueOf(i + 1), TANK_X + i * TANK_X_OFF + 5, 22, 0x404040);
             }
-            com.glodblock.github.util.RenderUtil.renderFluidIntoGui(
+            RenderUtil.renderFluidIntoGui(
                 this,
                 TANK_X + TANK_X_OFF * i,
                 TANK_Y,

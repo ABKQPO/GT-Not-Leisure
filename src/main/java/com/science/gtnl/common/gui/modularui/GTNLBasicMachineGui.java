@@ -1,5 +1,6 @@
 package com.science.gtnl.common.gui.modularui;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.widget.Widget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
@@ -24,6 +25,6 @@ public class GTNLBasicMachineGui<T extends MTEBasicMachine> extends MTEBasicMach
 
     @Override
     protected Widget<?> makeLogoWidget() {
-        return new com.cleanroommc.modularui.api.drawable.IDrawable.DrawableWidget(logoTexture).size(18, 18);
+        return new IDrawable.DrawableWidget(logoTexture).size(18, 18);
     }
 }

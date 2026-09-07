@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.recipe.RecipeMaps.plasmaForgeRecipes;
 import static gregtech.api.util.GTRecipeConstants.COIL_HEAT;
 
 import com.dreammaster.gthandler.DTPFCalculator;
@@ -82,7 +81,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(astral_titanium.getDuration(4))
                 .eut(astral_titanium.getEUt(4))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 4 - Normal
             GTValues.RA.stdBuilder()
@@ -96,7 +95,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(astral_titanium.getDuration(3))
                 .eut(astral_titanium.getEUt(3))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 3 - Normal
             GTValues.RA.stdBuilder()
@@ -110,7 +109,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(astral_titanium.getDuration(2))
                 .eut(astral_titanium.getEUt(2))
                 .metadata(COIL_HEAT, hypogen_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 2 - Normal
             GTValues.RA.stdBuilder()
@@ -124,7 +123,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(astral_titanium.getDuration(1))
                 .eut(astral_titanium.getEUt(1))
                 .metadata(COIL_HEAT, infinity_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 1 - Normal
             GTValues.RA.stdBuilder()
@@ -138,7 +137,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(astral_titanium.getDuration(0))
                 .eut(astral_titanium.getEUt(0))
                 .metadata(COIL_HEAT, awakened_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
         }
 
         {
@@ -168,7 +167,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(celestial_tungsten.getDuration(4))
                 .eut(celestial_tungsten.getEUt(4))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 4 - Normal
             GTValues.RA.stdBuilder()
@@ -182,7 +181,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(celestial_tungsten.getDuration(3))
                 .eut(celestial_tungsten.getEUt(3))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 3 - Normal
             GTValues.RA.stdBuilder()
@@ -196,7 +195,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(celestial_tungsten.getDuration(2))
                 .eut(celestial_tungsten.getEUt(2))
                 .metadata(COIL_HEAT, hypogen_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 2 - Normal
             GTValues.RA.stdBuilder()
@@ -210,7 +209,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(celestial_tungsten.getDuration(1))
                 .eut(celestial_tungsten.getEUt(1))
                 .metadata(COIL_HEAT, infinity_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 1 - Normal
             GTValues.RA.stdBuilder()
@@ -224,7 +223,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(celestial_tungsten.getDuration(0))
                 .eut(celestial_tungsten.getEUt(0))
                 .metadata(COIL_HEAT, awakened_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
         }
 
         {
@@ -254,7 +253,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(advanced_nitinol.getDuration(4))
                 .eut(advanced_nitinol.getEUt(4))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 4 - Normal
             GTValues.RA.stdBuilder()
@@ -268,7 +267,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(advanced_nitinol.getDuration(3))
                 .eut(advanced_nitinol.getEUt(3))
                 .metadata(COIL_HEAT, eternal_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 3 - Normal
             GTValues.RA.stdBuilder()
@@ -282,7 +281,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(advanced_nitinol.getDuration(2))
                 .eut(advanced_nitinol.getEUt(2))
                 .metadata(COIL_HEAT, hypogen_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 2 - Normal
             GTValues.RA.stdBuilder()
@@ -296,7 +295,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(advanced_nitinol.getDuration(1))
                 .eut(advanced_nitinol.getEUt(1))
                 .metadata(COIL_HEAT, infinity_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
 
             // Tier 1 - Normal
             GTValues.RA.stdBuilder()
@@ -310,7 +309,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .duration(advanced_nitinol.getDuration(0))
                 .eut(advanced_nitinol.getEUt(0))
                 .metadata(COIL_HEAT, awakened_heat)
-                .addTo(plasmaForgeRecipes);
+                .addTo(PFR);
         }
     }
 }

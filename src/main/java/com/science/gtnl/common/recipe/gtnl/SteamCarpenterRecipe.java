@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-
 import java.util.ArrayList;
 
 import net.minecraft.init.Blocks;
@@ -35,7 +33,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, Materials.Wood, 4))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Wood, 1))
-            .duration(1 * SECONDS)
+            .duration(1 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(SCR);
 
@@ -44,7 +42,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Wood, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 6))
             .itemOutputs(GTNLItemList.IronReinforcedWood.get(1))
-            .duration(5 * SECONDS)
+            .duration(5 * GTRecipeBuilder.SECONDS)
             .eut(16)
             .addTo(SCR);
 
@@ -53,7 +51,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Wood, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 6))
             .itemOutputs(GTNLItemList.BronzeReinforcedWood.get(1))
-            .duration(5 * SECONDS)
+            .duration(5 * GTRecipeBuilder.SECONDS)
             .eut(16)
             .addTo(SCR);
 
@@ -62,7 +60,7 @@ public class SteamCarpenterRecipe implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Wood, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 6))
             .itemOutputs(GTNLItemList.SteelReinforcedWood.get(1))
-            .duration(5 * SECONDS)
+            .duration(5 * GTRecipeBuilder.SECONDS)
             .eut(16)
             .addTo(SCR);
 

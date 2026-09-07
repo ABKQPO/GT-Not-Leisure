@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.recipe.RecipeMaps.quantumForceTransformerRecipes;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import com.science.gtnl.api.IRecipePool;
@@ -98,7 +97,7 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_UMV)
             .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.AdvancedNaquadahCatalyst.get(0))
             .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 3)
-            .addTo(quantumForceTransformerRecipes);
+            .addTo(QFT);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -114,6 +113,6 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_UV)
             .metadata(GTRecipeConstants.QFT_CATALYST, GregtechItemList.TitaTungstenIndiumCatalyst.get(0))
             .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 1)
-            .addTo(quantumForceTransformerRecipes);
+            .addTo(QFT);
     }
 }

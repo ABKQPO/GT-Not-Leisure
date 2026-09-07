@@ -1,8 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
-import static net.minecraft.util.StatCollector.translateToLocalFormatted;
-
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
@@ -17,6 +14,7 @@ import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 
 import gregtech.api.modularui2.GTGuiTextures;
@@ -86,7 +84,7 @@ public class ResearchCenterGui extends MTEMultiBlockBaseGui<ResearchCenter> {
                         "GT5U.gui.text.research_progress",
                         multiblock.getComputationConsumed(),
                         multiblock.getComputationRequired(),
-                        formatNumber(getComputationProgress())))
+                        NumberFormatUtil.formatNumber(getComputationProgress())))
                     .asWidget()
                     .setEnabledIf(
                         ignored -> multiblock.computationRequired > 0 && !outputsSyncer.getValue()
@@ -94,11 +92,11 @@ public class ResearchCenterGui extends MTEMultiBlockBaseGui<ResearchCenter> {
             .child(IKey.dynamic(() -> {
                 if (multiblock.ticksUntilPacketLossFail >= MTEResearchStation.PACKET_LOSS_DECAY_WINDOW) {
                     return EnumChatFormatting.YELLOW
-                        + translateToLocalFormatted("tt.infodata.multi.connection_health.waiting")
+                        + StatCollector.translateToLocalFormatted("tt.infodata.multi.connection_health.waiting")
                         + EnumChatFormatting.RESET;
                 }
                 return EnumChatFormatting.RED
-                    + translateToLocalFormatted("tt.infodata.multi.connection_health.decoherence")
+                    + StatCollector.translateToLocalFormatted("tt.infodata.multi.connection_health.decoherence")
                     + EnumChatFormatting.RESET;
             })
                 .asWidget()

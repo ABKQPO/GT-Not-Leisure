@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -109,7 +110,7 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, net.minecraft.block.Block block, int meta) {
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         if (world.getTileEntity(x, y, z) instanceof TileEntityBeamFormer te) {
             te.unregisterListener();
             te.disconnect(null);

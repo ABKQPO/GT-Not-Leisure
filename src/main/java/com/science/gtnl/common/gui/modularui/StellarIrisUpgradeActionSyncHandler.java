@@ -1,7 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 
@@ -32,7 +30,7 @@ public class StellarIrisUpgradeActionSyncHandler extends SyncHandler<StellarIris
     public void readOnClient(int packetId, PacketBuffer buffer) {}
 
     @Override
-    public void readOnServer(int packetId, PacketBuffer buffer) throws IOException {
+    public void readOnServer(int packetId, PacketBuffer buffer) {
         if (packetId != UNLOCK_PACKET) {
             return;
         }
