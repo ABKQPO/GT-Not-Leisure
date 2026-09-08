@@ -20,6 +20,19 @@ public abstract class MixinWerkstoffLoader {
             ordinal = 40,
             remap = false))
     private static void injectNaniteItems(CallbackInfo ci) {
+        WerkstoffLoader.items.put(OrePrefixes.plateSuperdense, new BWMetaGeneratedItems(OrePrefixes.plateSuperdense));
+        WerkstoffLoader.items.put(OrePrefixes.nanite, new BWMetaGeneratedItems(OrePrefixes.nanite));
+    }
+
+    @Inject(
+        method = "addItemsForGeneration()V",
+        at = @At(
+            value = "INVOKE",
+            target = "Ljava/util/HashMap;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+            ordinal = 43,
+            remap = false))
+    private static void injectSuperdenseAndNaniteItems(CallbackInfo ci) {
+        WerkstoffLoader.items.put(OrePrefixes.plateSuperdense, new BWMetaGeneratedItems(OrePrefixes.plateSuperdense));
         WerkstoffLoader.items.put(OrePrefixes.nanite, new BWMetaGeneratedItems(OrePrefixes.nanite));
     }
 }
