@@ -49,9 +49,9 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
     private IIcon iconOn;
 
     public ChronarchsClock() {
-        this.setUnlocalizedName("ChronarchsClock");
+        this.setUnlocalizedName("reavaritia.chronarchs_clock");
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "ChronarchsClock");
+        this.setTextureName(RESOURCE_ROOT_ID + ":chronarchs_clock");
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
@@ -68,7 +68,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advanced) {
-        list.add(StatCollector.translateToLocal("Tooltip_ChronarchsClock_00"));
+        list.add(StatCollector.translateToLocal("reavaritia.item.chronarchs_clock.tooltip.00"));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
         long lastUsed = nbt.getLong("LastUsed");
 
         if (world.getTotalWorldTime() - lastUsed < MainConfig.re_avaritia.chronarch_clock.chronarchsClockCooldown) {
-            showSubtitle("Tooltip_ChronarchsClock_01");
+            showSubtitle("reavaritia.item.chronarchs_clock.tooltip.01");
             return stack;
         }
 
@@ -220,8 +220,8 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        this.itemIcon = register.registerIcon(RESOURCE_ROOT_ID + ":ChronarchsClock");
-        this.iconOn = register.registerIcon(RESOURCE_ROOT_ID + ":ChronarchsClock_On");
+        this.itemIcon = register.registerIcon(RESOURCE_ROOT_ID + ":chronarchs_clock");
+        this.iconOn = register.registerIcon(RESOURCE_ROOT_ID + ":chronarchs_clock_on");
     }
 
     @Override

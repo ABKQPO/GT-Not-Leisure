@@ -22,7 +22,7 @@ public class RenderExtremeAnvil extends TileEntitySpecialRenderer implements ISi
     public ExtremeAnvilModel model = new ExtremeAnvilModel();
 
     public static ResourceLocation TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/blocks/ExtremeAnvil.png");
+        RESOURCE_ROOT_ID + ":" + "textures/blocks/extreme_anvil.png");
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {

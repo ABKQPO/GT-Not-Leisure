@@ -17,7 +17,7 @@ public class FakeItemSiren extends Item {
 
     public FakeItemSiren() {
         super();
-        this.setUnlocalizedName("FakeItemSiren");
+        this.setUnlocalizedName("gtnl.fake_item_siren");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "fake_item_siren");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -27,7 +27,7 @@ public class FakeItemSiren extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.fake_item_siren";
+        return "item.gtnl.fake_item_siren";
     }
 
     @Override

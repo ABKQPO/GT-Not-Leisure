@@ -26,7 +26,7 @@ public class RejectionRing extends BaubleItem {
 
     public RejectionRing() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("RejectionRing");
+        this.setUnlocalizedName("gtnl.rejection_ring");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "rejection_ring");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "rejection_ring");
@@ -35,14 +35,14 @@ public class RejectionRing extends BaubleItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.rejection_ring";
+        return "item.gtnl.rejection_ring";
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.rejection_ring.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.rejection_ring.tooltip.0"));
     }
 
     @Override

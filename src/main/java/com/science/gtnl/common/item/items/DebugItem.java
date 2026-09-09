@@ -62,7 +62,7 @@ public class DebugItem extends Item {
 
     public DebugItem() {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "debug_item");
-        this.setUnlocalizedName("DebugItem");
+        this.setUnlocalizedName("gtnl.debug_item");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "debug_item");
         GTNLItemList.DebugItem.set(new ItemStack(this, 1));
@@ -71,7 +71,7 @@ public class DebugItem extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.debug_item";
+        return "item.gtnl.debug_item";
     }
 
     @SubscribeEvent

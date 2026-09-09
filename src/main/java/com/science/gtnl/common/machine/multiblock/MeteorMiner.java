@@ -98,7 +98,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     private static final String[][] shape_t1 = StructureUtils.readStructureFromFile(MMO_STRUCTURE_FILE_PATH);
     private static final String[][] shape_t2 = StructureUtils.readStructureFromFile(MMT_STRUCTURE_FILE_PATH);
 
-    private static final TranslatableText LASER_BEACON_NAME = TranslatableText.lang("gtnl.block.laser_beacon.name");
+    private static final TranslatableText LASER_BEACON_NAME = TranslatableText.lang("tile.gtnl.laser_beacon.name");
 
     public TileEntityLaserBeacon renderer;
     public int xStart, yStart, zStart;

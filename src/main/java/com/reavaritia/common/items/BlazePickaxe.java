@@ -33,10 +33,10 @@ public class BlazePickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     public BlazePickaxe() {
         super(ToolHelper.BLAZE);
-        this.setUnlocalizedName("BlazePickaxe");
+        this.setUnlocalizedName("reavaritia.blaze_pickaxe");
         setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "BlazePickaxe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":blaze_pickaxe");
         this.setMaxDamage(7777);
         ReAvaItemList.BlazePickaxe.set(new ItemStack(this, 1));
     }
@@ -50,7 +50,7 @@ public class BlazePickaxe extends ItemPickaxe implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_BlazePickaxe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.blaze_pickaxe.tooltip.00"));
     }
 
     @Override
@@ -69,8 +69,9 @@ public class BlazePickaxe extends ItemPickaxe implements SubtitleDisplay {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (player.isSneaking()) {
             toggleSmeltingMode(stack);
-            String messageKey = isSmeltingModeActive(stack) ? StatCollector.translateToLocal("Tooltip_Blaze_Smelt_On")
-                : StatCollector.translateToLocal("Tooltip_Blaze_Smelt_Off");
+            String messageKey = isSmeltingModeActive(stack)
+                ? StatCollector.translateToLocal("reavaritia.item.blaze.smelt.on")
+                : StatCollector.translateToLocal("reavaritia.item.blaze.smelt.off");
             if (world.isRemote) {
                 showSubtitle(messageKey);
             }

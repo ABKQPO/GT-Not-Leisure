@@ -31,10 +31,16 @@ public abstract class MetaCasingBase extends Block implements IMetaBlock {
     public Int2ObjectMap<String[]> tooltipsMap = new Int2ObjectOpenHashMap<>(16);
     public Int2ObjectMap<IIcon> iconMap = new Int2ObjectOpenHashMap<>(16);
     public String unlocalizedName;
+    public String textureName;
 
     public MetaCasingBase(String unlocalizedName) {
+        this(unlocalizedName, unlocalizedName);
+    }
+
+    public MetaCasingBase(String unlocalizedName, String textureName) {
         super(Material.iron);
         this.unlocalizedName = unlocalizedName;
+        this.textureName = textureName;
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
     }
 
@@ -82,7 +88,7 @@ public abstract class MetaCasingBase extends Block implements IMetaBlock {
             throw new NullPointerException("Null in " + this.unlocalizedName);
         }
 
-        String root = RESOURCE_ROOT_ID + ":" + this.unlocalizedName + "/";
+        String root = RESOURCE_ROOT_ID + ":" + this.textureName + "/";
 
         this.blockIcon = reg.registerIcon(root + "0");
 

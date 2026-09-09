@@ -36,7 +36,7 @@ public class GTNLItemBucket extends ItemBucket {
         this.fluidName = fluidName;
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setContainerItem(Items.bucket);
-        setUnlocalizedName("gtnl.item." + fluidName + "_bucket");
+        setUnlocalizedName("gtnl." + fluidName + "_bucket");
         setTextureName(RESOURCE_ROOT_ID + ":" + fluidName + "_bucket");
     }
 

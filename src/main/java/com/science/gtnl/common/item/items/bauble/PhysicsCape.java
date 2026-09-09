@@ -41,7 +41,7 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
     private static ModelBiped model;
 
     public PhysicsCape() {
-        this.setUnlocalizedName("PhysicsCape");
+        this.setUnlocalizedName("gtnl.physics_cape");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "physics_cape");
         this.setMaxDamage(2000);
@@ -52,14 +52,14 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.physics_cape";
+        return "item.gtnl.physics_cape";
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.physics_cape.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.physics_cape.tooltip.0"));
     }
 
     @Override

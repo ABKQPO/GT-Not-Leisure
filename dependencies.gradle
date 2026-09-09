@@ -47,6 +47,7 @@ dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.4.9:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:BlockRenderer6343:1.4.21:dev")
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ForestryMC:4.11.37:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:AppleCore:3.3.12:dev")
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:BetterBuildersWands:0.13.12-GTNH:dev') { transitive = false }
     runtimeOnlyNonPublishable(rfg.deobf("curse.maven:spark-361579:4271867"))
 

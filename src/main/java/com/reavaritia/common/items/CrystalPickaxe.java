@@ -32,10 +32,10 @@ public class CrystalPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     public CrystalPickaxe() {
         super(ToolHelper.CRYSTAL);
-        this.setUnlocalizedName("CrystalPickaxe");
+        this.setUnlocalizedName("reavaritia.crystal_pickaxe");
         setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "CrystalPickaxe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":crystal_pickaxe");
         this.setMaxDamage(8888);
         ReAvaItemList.CrystalPickaxe.set(new ItemStack(this, 1));
     }
@@ -49,7 +49,7 @@ public class CrystalPickaxe extends ItemPickaxe implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_CrystalPickaxe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.crystal_pickaxe.tooltip.00"));
     }
 
     @Override
@@ -67,11 +67,11 @@ public class CrystalPickaxe extends ItemPickaxe implements SubtitleDisplay {
             if (enchantments.containsKey(Enchantment.fortune.effectId)) {
                 enchantments.remove(Enchantment.fortune.effectId);
                 enchantments.put(Enchantment.silkTouch.effectId, 1);
-                messageKey = StatCollector.translateToLocal("Tooltip_CrystalPickaxe_Enchant_2");
+                messageKey = StatCollector.translateToLocal("reavaritia.item.crystal_pickaxe.enchant.2");
             } else {
                 enchantments.remove(Enchantment.silkTouch.effectId);
                 enchantments.put(Enchantment.fortune.effectId, 3);
-                messageKey = StatCollector.translateToLocal("Tooltip_CrystalPickaxe_Enchant_1");
+                messageKey = StatCollector.translateToLocal("reavaritia.item.crystal_pickaxe.enchant.1");
             }
 
             EnchantmentHelper.setEnchantments(enchantments, stack);

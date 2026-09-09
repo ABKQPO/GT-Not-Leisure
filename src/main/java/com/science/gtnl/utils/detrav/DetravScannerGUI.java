@@ -105,7 +105,7 @@ public class DetravScannerGUI extends GuiScreen {
         if (canTeleport) {
             network.sendToServer(new TeleportRequestPacket(worldX, worldZ));
             mc.thePlayer.addChatMessage(
-                new ChatComponentTranslation("gtnl.item.detrav_scanner.teleport_to_vein", nameToShow, worldX, worldZ));
+                new ChatComponentTranslation("item.gtnl.detrav_scanner.teleport_to_vein", nameToShow, worldX, worldZ));
             mc.thePlayer.closeScreen();
         }
     }

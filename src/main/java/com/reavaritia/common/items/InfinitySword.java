@@ -89,8 +89,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
 
     public InfinitySword() {
         super(ToolHelper.INFINITY);
-        setUnlocalizedName("InfinitySword");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "InfinitySword");
+        setUnlocalizedName("reavaritia.infinity_sword");
+        setTextureName(RESOURCE_ROOT_ID + ":infinity_sword");
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         this.setMaxDamage(9999);
         MinecraftForge.EVENT_BUS.register(this);
@@ -250,8 +250,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
             if (world.isRemote) {
                 long remainingTime = (COOLDOWN - (System.currentTimeMillis() - lastUsed)) / 1000;
                 showSubtitle(
-                    StatCollector.translateToLocal("Tooltip_InfinitySword_Aura_00") + remainingTime
-                        + StatCollector.translateToLocal("Tooltip_InfinitySword_Aura_01"));
+                    StatCollector.translateToLocal("reavaritia.item.infinity_sword.aura.00") + remainingTime
+                        + StatCollector.translateToLocal("reavaritia.item.infinity_sword.aura.01"));
             }
             return;
         }
@@ -475,9 +475,9 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinitySword_00"));
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinitySword_01"));
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinitySword_02"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_sword.tooltip.00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_sword.tooltip.01"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_sword.tooltip.02"));
     }
 
     @Override
@@ -604,8 +604,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
     public void registerIcons(IIconRegister ir) {
         super.registerIcons(ir);
 
-        this.cosmicMask = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "InfinitySword_Mask");
-        this.pommel = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "InfinitySword_Pommel");
+        this.cosmicMask = ir.registerIcon(RESOURCE_ROOT_ID + ":infinity_sword_mask");
+        this.pommel = ir.registerIcon(RESOURCE_ROOT_ID + ":infinity_sword_pommel");
     }
 
     @Override

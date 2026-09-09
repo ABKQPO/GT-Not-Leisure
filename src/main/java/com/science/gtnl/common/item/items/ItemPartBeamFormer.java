@@ -37,7 +37,7 @@ public class ItemPartBeamFormer extends Item implements IPartItem {
     public ItemPartBeamFormer() {
         this.setMaxStackSize(64);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        this.setUnlocalizedName("PartBeamFormer");
+        this.setUnlocalizedName("gtnl.part_beam_former");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "part_beam_former");
         GameRegistry.registerItem(this, "part_beam_former");
         AEApi.instance()
@@ -48,7 +48,7 @@ public class ItemPartBeamFormer extends Item implements IPartItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.part_beam_former";
+        return "item.gtnl.part_beam_former";
     }
 
     @Override

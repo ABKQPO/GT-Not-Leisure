@@ -29,7 +29,7 @@ public class BlockLaserBeacon extends BlockContainer {
 
     public BlockLaserBeacon() {
         super(Material.iron);
-        this.setBlockName("gtnl.block.laser_beacon");
+        this.setBlockName("gtnl.laser_beacon");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockLaserBeacon.class, "laser_beacon");
         GameRegistry.registerTileEntity(TileEntityLaserBeacon.class, "laser_beacon_tile_entity");

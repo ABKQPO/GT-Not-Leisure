@@ -43,11 +43,11 @@ public class InfinityElytra extends ItemArmorElytra {
 
     public InfinityElytra() {
         super();
-        setUnlocalizedName("InfinityElytra");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityElytra");
+        setUnlocalizedName("reavaritia.infinity_elytra");
+        setTextureName(RESOURCE_ROOT_ID + ":infinity_elytra");
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         setMaxDamage(9999);
-        GameRegistry.registerItem(this, "InfinityElytra");
+        GameRegistry.registerItem(this, "infinity_elytra");
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
@@ -69,7 +69,7 @@ public class InfinityElytra extends ItemArmorElytra {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityElytra_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_elytra.tooltip.00"));
     }
 
     @Override

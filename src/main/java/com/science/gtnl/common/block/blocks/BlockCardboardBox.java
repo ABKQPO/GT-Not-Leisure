@@ -44,7 +44,7 @@ public class BlockCardboardBox extends BlockContainer {
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setHardness(0.5F);
         setResistance(1F);
-        setBlockName("gtnl.block.cardboard_box");
+        setBlockName("gtnl.cardboard_box");
         GameRegistry.registerBlock(this, ItemBlockCardboardBox.class, "cardboard_box");
         GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "cardboard_box_tile_entity");
         GTNLItemList.CardboardBox.set(new ItemStack(this, 1));

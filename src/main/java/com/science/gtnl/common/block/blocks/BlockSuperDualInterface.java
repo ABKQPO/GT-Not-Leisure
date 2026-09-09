@@ -39,7 +39,7 @@ public class BlockSuperDualInterface extends BlockInterface {
         super();
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.block.super_dual_interface");
+        setBlockName("gtnl.super_dual_interface");
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":super_dual_interface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

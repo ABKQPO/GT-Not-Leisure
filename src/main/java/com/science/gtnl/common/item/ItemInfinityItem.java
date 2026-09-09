@@ -89,7 +89,7 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
         this.block = block;
         this.fluid = fluid;
         this.displayNameKey = displayNameKey;
-        this.setUnlocalizedName(registrationName);
+        this.setUnlocalizedName(displayNameKey);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + registrationName);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setMaxStackSize(1);
@@ -103,7 +103,7 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
 
     @Override
     public String getUnlocalizedName() {
-        return displayNameKey;
+        return "item." + displayNameKey;
     }
 
     @Override

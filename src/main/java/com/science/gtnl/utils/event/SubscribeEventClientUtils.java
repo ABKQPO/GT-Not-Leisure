@@ -151,7 +151,7 @@ public class SubscribeEventClientUtils {
 
             if (newRange != oldRange) {
                 nbt.setInteger("range", newRange);
-                ClientUtils.showSubtitle("gtnl.item.vein_mining_pickaxe.max_block_gap", newRange);
+                ClientUtils.showSubtitle("item.gtnl.vein_mining_pickaxe.max_block_gap", newRange);
                 network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
                 event.setCanceled(true);
             }
@@ -174,7 +174,7 @@ public class SubscribeEventClientUtils {
 
             if (newAmount != oldAmount) {
                 nbt.setInteger("amount", newAmount);
-                ClientUtils.showSubtitle("gtnl.item.vein_mining_pickaxe.max_vein_count", newAmount);
+                ClientUtils.showSubtitle("item.gtnl.vein_mining_pickaxe.max_vein_count", newAmount);
                 network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
                 event.setCanceled(true);
             }

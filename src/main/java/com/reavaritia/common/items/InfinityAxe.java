@@ -41,8 +41,8 @@ public class InfinityAxe extends ItemAxe {
 
     public InfinityAxe() {
         super(ToolHelper.INFINITY);
-        setUnlocalizedName("InfinityAxe");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityAxe");
+        setUnlocalizedName("reavaritia.infinity_axe");
+        setTextureName(RESOURCE_ROOT_ID + ":infinity_axe");
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         setMaxDamage(9999);
         ReAvaItemList.InfinityAxe.set(new ItemStack(this, 1));
@@ -57,7 +57,7 @@ public class InfinityAxe extends ItemAxe {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityAxe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_axe.tooltip.00"));
     }
 
     @Override

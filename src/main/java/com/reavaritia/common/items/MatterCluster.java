@@ -48,8 +48,8 @@ public class MatterCluster extends ItemMatterCluster {
 
     public MatterCluster() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("MatterCluster");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "MatterCluster");
+        this.setUnlocalizedName("reavaritia.matter_cluster");
+        this.setTextureName(RESOURCE_ROOT_ID + ":matter_cluster");
         setCreativeTab(CreativeTabs.tabTools);
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         ReAvaItemList.MatterCluster.set(new ItemStack(this, 1));
@@ -60,15 +60,15 @@ public class MatterCluster extends ItemMatterCluster {
     public void registerIcons(IIconRegister ir) {
         super.registerIcons(ir);
 
-        this.cosmicIcon = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "MatterCluster_Mask");
+        this.cosmicIcon = ir.registerIcon(RESOURCE_ROOT_ID + ":matter_cluster_mask");
 
-        this.iconFull = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "MatterCluster_Full");
-        this.cosmicIconFull = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "MatterCluster_Full_Mask");
+        this.iconFull = ir.registerIcon(RESOURCE_ROOT_ID + ":matter_cluster_full");
+        this.cosmicIconFull = ir.registerIcon(RESOURCE_ROOT_ID + ":matter_cluster_full_mask");
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean debug) {
-        tooltip.add(StatCollector.translateToLocal("Tooltip_MatterCluster_00"));
+        tooltip.add(StatCollector.translateToLocal("reavaritia.item.matter_cluster.tooltip.00"));
         if (!stack.hasTagCompound() || !stack.getTagCompound()
             .hasKey(MAINTAG)) {
             return;
@@ -80,7 +80,7 @@ public class MatterCluster extends ItemMatterCluster {
             clustertag.getInteger(MAINCOUNTTAG) + "/"
                 + CAPACITY
                 + " "
-                + StatCollector.translateToLocal("Tooltip_MatterCluster_Counter"));
+                + StatCollector.translateToLocal("reavaritia.item.matter_cluster.counter"));
         tooltip.add("");
 
         if (GuiScreen.isShiftKeyDown()) {
@@ -101,7 +101,7 @@ public class MatterCluster extends ItemMatterCluster {
                 }
             }
         } else {
-            tooltip.add(StatCollector.translateToLocal("Tooltip_MatterCluster_01"));
+            tooltip.add(StatCollector.translateToLocal("reavaritia.item.matter_cluster.tooltip.01"));
         }
     }
 

@@ -29,7 +29,7 @@ public class LuckyHorseshoe extends BaubleItem {
 
     public LuckyHorseshoe() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("LuckyHorseshoe");
+        this.setUnlocalizedName("gtnl.lucky_horseshoe");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "lucky_horseshoe");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "lucky_horseshoe");
@@ -39,7 +39,7 @@ public class LuckyHorseshoe extends BaubleItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.lucky_horseshoe";
+        return "item.gtnl.lucky_horseshoe";
     }
 
     @Override

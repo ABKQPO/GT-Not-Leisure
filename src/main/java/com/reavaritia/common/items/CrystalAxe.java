@@ -28,11 +28,11 @@ public class CrystalAxe extends ItemAxe {
 
     public CrystalAxe() {
         super(ToolHelper.CRYSTAL);
-        this.setUnlocalizedName("CrystalAxe");
+        this.setUnlocalizedName("reavaritia.crystal_axe");
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "CrystalAxe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":crystal_axe");
         this.setMaxDamage(8888);
         ReAvaItemList.CrystalAxe.set(new ItemStack(this, 1));
     }
@@ -73,7 +73,7 @@ public class CrystalAxe extends ItemAxe {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advanced) {
-        list.add(StatCollector.translateToLocal("Tooltip_CrystalAxe_00"));
+        list.add(StatCollector.translateToLocal("reavaritia.item.crystal_axe.tooltip.00"));
     }
 
     @Override

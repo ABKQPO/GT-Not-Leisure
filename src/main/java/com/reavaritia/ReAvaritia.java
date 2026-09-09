@@ -12,6 +12,7 @@ import com.reavaritia.common.entity.EntityExtremeAnvil;
 import com.reavaritia.common.items.BlazeSword;
 import com.reavaritia.common.items.ChronarchsClock;
 import com.reavaritia.common.packet.ExtremeAnvilPacket;
+import com.reavaritia.utils.MissingMappingsHandler;
 import com.reavaritia.utils.SubscribeEventUtils;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -75,5 +77,10 @@ public class ReAvaritia {
         EntityExtremeAnvil.registerEntity();
 
         network.registerMessage(ExtremeAnvilPacket.class, ExtremeAnvilPacket.class, 0, Side.SERVER);
+    }
+
+    @Mod.EventHandler
+    public void onMissingMappings(FMLMissingMappingsEvent event) {
+        MissingMappingsHandler.handleMappings(event.getAll());
     }
 }

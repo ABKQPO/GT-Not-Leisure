@@ -23,7 +23,7 @@ public class ItemPartActiveFormationPlane extends Item implements IPartItem {
     public ItemPartActiveFormationPlane() {
         this.setMaxStackSize(64);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        this.setUnlocalizedName("PartActiveFormationPlane");
+        this.setUnlocalizedName("gtnl.part_active_formation_plane");
         this.setTextureName(Mods.AppliedEnergistics2.ID + ":" + "ItemPart.FormationPlane");
         GameRegistry.registerItem(this, "part_active_formation_plane");
         AEApi.instance()
@@ -34,7 +34,7 @@ public class ItemPartActiveFormationPlane extends Item implements IPartItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.part_active_formation_plane";
+        return "item.gtnl.part_active_formation_plane";
     }
 
     @Nullable

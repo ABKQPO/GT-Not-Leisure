@@ -33,10 +33,10 @@ public class CrystalSword extends ItemSword implements SubtitleDisplay {
 
     public CrystalSword() {
         super(ToolHelper.CRYSTAL);
-        this.setUnlocalizedName("CrystalSword");
+        this.setUnlocalizedName("reavaritia.crystal_sword");
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "CrystalSword");
+        this.setTextureName(RESOURCE_ROOT_ID + ":crystal_sword");
         this.setMaxDamage(8888);
         ReAvaItemList.CrystalSword.set(new ItemStack(this, 1));
     }
@@ -50,7 +50,7 @@ public class CrystalSword extends ItemSword implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_CrystalSword_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.crystal_sword.tooltip.00"));
     }
 
     @Override
@@ -71,7 +71,8 @@ public class CrystalSword extends ItemSword implements SubtitleDisplay {
         boolean currentMode = nbt.getBoolean("SwordAuraMode");
         nbt.setBoolean("SwordAuraMode", !currentMode);
 
-        String messageKey = !currentMode ? "Tooltip_CrystalSword_Aura_On" : "Tooltip_CrystalSword_Aura_Off";
+        String messageKey = !currentMode ? "reavaritia.item.crystal_sword.aura.on"
+            : "reavaritia.item.crystal_sword.aura.off";
 
         if (world.isRemote) {
             showSubtitle(messageKey, 0);
@@ -86,7 +87,7 @@ public class CrystalSword extends ItemSword implements SubtitleDisplay {
         if (System.currentTimeMillis() - lastUsed < cooldown) {
             if (world.isRemote) {
                 long remainingTime = (cooldown - (System.currentTimeMillis() - lastUsed)) / 1000;
-                showSubtitle("Tooltip_CrystalSword_Aura_00", remainingTime);
+                showSubtitle("reavaritia.item.crystal_sword.aura.00", remainingTime);
             }
             return;
         }
@@ -136,7 +137,7 @@ public class CrystalSword extends ItemSword implements SubtitleDisplay {
             Math.max(start.zCoord, end.zCoord) + width);
     }
 
-    // 这里的粒子生成无法超过长度22格
+    // Particle generation cannot exceed a range of 22 blocks.
     @SideOnly(Side.CLIENT)
     private void spawnClientParticles(World world, EntityPlayer player) {
         Vec3 lookVec = player.getLookVec();

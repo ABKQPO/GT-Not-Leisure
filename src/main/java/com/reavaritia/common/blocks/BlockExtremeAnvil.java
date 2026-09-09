@@ -35,14 +35,15 @@ public class BlockExtremeAnvil extends BlockContainer {
 
     public BlockExtremeAnvil() {
         super(Material.anvil);
-        setBlockName("ExtremeAnvil");
-        setBlockTextureName(RESOURCE_ROOT_ID + ":" + "ExtremeAnvil");
+        setBlockName("reavaritia.extreme_anvil");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":" + "extreme_anvil");
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         setStepSound(Block.soundTypeAnvil);
         setHardness(10.0F);
         setResistance(2000.0F);
-        GameRegistry.registerBlock(this, ItemBlockExtrumeAnvil.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityExtremeAnvil.class, "ExtremeAnvilTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockExtrumeAnvil.class, "extreme_anvil");
+        GameRegistry.registerTileEntity(TileEntityExtremeAnvil.class, "ExtremeAnvil");
+        GameRegistry.registerTileEntity(TileEntityExtremeAnvil.class, "extreme_anvil_tile_entity");
         ReAvaItemList.ExtremeAnvil.set(new ItemStack(this, 1));
     }
 

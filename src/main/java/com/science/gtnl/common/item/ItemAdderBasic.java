@@ -12,13 +12,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemAdder_Basic extends Item {
+public class ItemAdderBasic extends Item {
 
     public List<String> tooltips = new ArrayList<>();
 
     public String unlocalizedName;
 
-    public ItemAdder_Basic(String aName, CreativeTabs aCreativeTabs) {
+    public ItemAdderBasic(String aName, CreativeTabs aCreativeTabs) {
         super();
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
@@ -40,12 +40,12 @@ public class ItemAdder_Basic extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack aItemStack) {
-        return "item." + this.unlocalizedName + "." + aItemStack.getItemDamage();
+        return "item.gtnl." + this.unlocalizedName + "." + aItemStack.getItemDamage();
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "item." + this.unlocalizedName;
+        return "item.gtnl." + this.unlocalizedName;
     }
 
     @Override

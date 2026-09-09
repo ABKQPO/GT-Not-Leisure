@@ -30,7 +30,7 @@ public class TestItem extends Item implements IHaloRenderItem {
 
     public TestItem() {
         super();
-        this.setUnlocalizedName("TestItem");
+        this.setUnlocalizedName("gtnl.test_item");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "test_item");
         GameRegistry.registerItem(this, "test_item");
@@ -39,7 +39,7 @@ public class TestItem extends Item implements IHaloRenderItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.test_item";
+        return "item.gtnl.test_item";
     }
 
     @Override
@@ -55,20 +55,20 @@ public class TestItem extends Item implements IHaloRenderItem {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
 
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.0"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.1"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.2"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.3"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.4"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.5"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.6"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.7"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.8"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.9"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.10"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.11"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.12"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.test_item.tooltip.13"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.1"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.2"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.3"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.4"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.5"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.6"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.7"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.8"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.9"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.10"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.11"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.12"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.test_item.tooltip.13"));
 
     }
 

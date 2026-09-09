@@ -35,8 +35,8 @@ public class InfinityHoe extends ItemHoe {
 
     public InfinityHoe() {
         super(ToolHelper.INFINITY);
-        setUnlocalizedName("InfinityHoe");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityHoe");
+        setUnlocalizedName("reavaritia.infinity_hoe");
+        setTextureName(RESOURCE_ROOT_ID + ":infinity_hoe");
         this.setCreativeTab(CreativeTabs.tabTools);
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         this.setMaxDamage(9999);
@@ -57,16 +57,16 @@ public class InfinityHoe extends ItemHoe {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityHoe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_hoe.tooltip.00"));
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             if (player.isSneaking()) {
-                createFarmland(world, player); // 潜行右键生成耕地
+                createFarmland(world, player); // Sneaking right-click creates farmland.
             } else {
-                handleCropOperation(world, player); // 普通右键操作作物
+                handleCropOperation(world, player); // Normal right-click handles crops.
             }
         }
         return stack;
@@ -156,20 +156,20 @@ public class InfinityHoe extends ItemHoe {
     }
 
     public boolean isHarvestable(Block block, int meta) {
-        // 西瓜/南瓜方块直接可收获
+        // Melon and pumpkin blocks are always harvestable.
         if (block == Blocks.melon_block || block == Blocks.pumpkin) return true;
-        // 可可豆成熟判断
+        // Check cocoa bean maturity.
         if (block instanceof BlockCocoa) return (meta & 0x3) >= 2;
-        // 普通作物成熟判断
+        // Check standard crop maturity.
         if (block instanceof BlockCrops) return meta >= 7;
-        // 下界疣成熟判断
+        // Check Nether wart maturity.
         if (block == Blocks.nether_wart) return meta >= 3;
         return false;
     }
 
     public void resetBlock(World world, int x, int y, int z, Block original) {
         if (original instanceof BlockCrops) {
-            world.setBlockMetadataWithNotify(x, y, z, 0, 3); // 重置作物
+            world.setBlockMetadataWithNotify(x, y, z, 0, 3); // Reset the crop.
         } else if (original instanceof BlockCocoa || original == Blocks.nether_wart) {
             world.setBlockToAir(x, y, z);
         } else {

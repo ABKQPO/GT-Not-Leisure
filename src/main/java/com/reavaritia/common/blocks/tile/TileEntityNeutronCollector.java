@@ -170,7 +170,7 @@ public class TileEntityNeutronCollector extends TileEntity implements IInventory
      */
     @Override
     public String getInventoryName() {
-        return "container.neutron";
+        return "reavaritia.container.neutron_collector";
     }
 
     /**

@@ -19,7 +19,7 @@ public class SatietyRing extends BaubleItem {
 
     public SatietyRing() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("SatietyRing");
+        this.setUnlocalizedName("gtnl.satiety_ring");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "satiety_ring");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "satiety_ring");
@@ -28,7 +28,7 @@ public class SatietyRing extends BaubleItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.satiety_ring";
+        return "item.gtnl.satiety_ring";
     }
 
     @Override

@@ -12,7 +12,7 @@ import appeng.api.AEApi;
 public class ItemPartDenseEnergyCell extends ItemPartEnergyCellBase {
 
     public ItemPartDenseEnergyCell() {
-        super("part_dense_energy_cell", "gtnl.item.part_dense_energy_cell");
+        super("part_dense_energy_cell", "gtnl.part_dense_energy_cell");
         GTNLItemList.PartDenseEnergyCell.set(new ItemStack(this));
     }
 

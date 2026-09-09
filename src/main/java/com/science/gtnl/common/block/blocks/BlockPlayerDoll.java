@@ -31,7 +31,7 @@ public class BlockPlayerDoll extends BlockContainer {
         super(Material.iron);
         this.setResistance(99999999f);
         this.setHardness(5f);
-        this.setBlockName("gtnl.block.player_doll");
+        this.setBlockName("gtnl.player_doll");
         this.setBlockBounds(0.1F, 0.0F, 0.1F, 0.9F, 1.0F, 0.9F);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisurePlayerDoll);
         this.setLightLevel(1f);

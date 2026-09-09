@@ -10,7 +10,11 @@ public class MetaCasing extends MetaBlockCasingBase {
     }
 
     public MetaCasing(String unlocalizedName, byte textureIdOffsite, byte texturePageIndex) {
-        super(unlocalizedName);
+        this(unlocalizedName, unlocalizedName, textureIdOffsite, texturePageIndex);
+    }
+
+    public MetaCasing(String unlocalizedName, String textureName, byte textureIdOffsite, byte texturePageIndex) {
+        super(unlocalizedName, textureName);
         if (textureIdOffsite > 112) throw new IllegalArgumentException(
             "Texture ID will overflow. Create a new GT Texture Page and manually solve this problem.");
         this.texturePageIndex = texturePageIndex;

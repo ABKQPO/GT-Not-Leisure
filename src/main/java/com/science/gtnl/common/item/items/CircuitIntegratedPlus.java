@@ -68,7 +68,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
     public CircuitIntegratedPlus() {
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
-        this.setUnlocalizedName("CircuitIntegratedPlus");
+        this.setUnlocalizedName("gtnl.circuit_integrated_plus");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "circuit_integrated_plus");
         GTNLItemList.CircuitIntegratedPlus.set(this);
@@ -222,7 +222,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.circuit_integrated_plus";
+        return "item.gtnl.circuit_integrated_plus";
     }
 
     @Override

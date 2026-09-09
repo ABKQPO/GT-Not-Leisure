@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RoyalGel extends BaubleItem {
 
     public RoyalGel() {
-        this.setUnlocalizedName("RoyalGel");
+        this.setUnlocalizedName("gtnl.royal_gel");
         this.setMaxStackSize(1);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "royal_gel");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -35,7 +35,7 @@ public class RoyalGel extends BaubleItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.royal_gel";
+        return "item.gtnl.royal_gel";
     }
 
     @Override

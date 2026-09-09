@@ -28,10 +28,10 @@ public class CrystalShovel extends ItemSpade {
 
     public CrystalShovel() {
         super(ToolHelper.CRYSTAL);
-        this.setUnlocalizedName("CrystalShovel");
+        this.setUnlocalizedName("reavaritia.crystal_shovel");
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "CrystalShovel");
+        this.setTextureName(RESOURCE_ROOT_ID + ":crystal_shovel");
         this.setMaxDamage(8888);
         MinecraftForge.EVENT_BUS.register(this);
         ReAvaItemList.CrystalShovel.set(new ItemStack(this, 1));
@@ -46,7 +46,7 @@ public class CrystalShovel extends ItemSpade {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_CrystalShovel_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.crystal_shovel.tooltip.00"));
     }
 
     @SubscribeEvent

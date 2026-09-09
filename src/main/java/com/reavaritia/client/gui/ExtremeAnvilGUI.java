@@ -160,7 +160,7 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     }
 
     public String getLocalizedName() {
-        return StatCollector.translateToLocal("container.ExtremeAnvil");
+        return StatCollector.translateToLocal("reavaritia.container.extreme_anvil");
     }
 
     @Override

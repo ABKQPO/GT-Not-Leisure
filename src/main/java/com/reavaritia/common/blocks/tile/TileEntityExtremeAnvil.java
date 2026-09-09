@@ -93,7 +93,7 @@ public class TileEntityExtremeAnvil extends TileEntity implements IInventory {
 
     @Override
     public String getInventoryName() {
-        return "container.ExtremeAnvil";
+        return "reavaritia.container.extreme_anvil";
     }
 
     @Override

@@ -25,7 +25,7 @@ public class BlockSuperDenseEnergyCell extends BlockEnergyCell {
     protected IIcon[] chargeLevelIcons;
 
     public BlockSuperDenseEnergyCell() {
-        setBlockName("gtnl.block.super_dense_energy_cell");
+        setBlockName("gtnl.super_dense_energy_cell");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setTileEntity(TileEntitySuperDenseEnergyCell.class);
         GameRegistry.registerBlock(this, getItemBlockClass(), "super_dense_energy_cell");

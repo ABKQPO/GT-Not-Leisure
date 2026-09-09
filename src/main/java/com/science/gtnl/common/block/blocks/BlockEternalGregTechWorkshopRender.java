@@ -27,7 +27,7 @@ public class BlockEternalGregTechWorkshopRender extends Block {
         this.setResistance(20f);
         this.setHardness(-1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        this.setBlockName("gtnl.block.eternal_greg_tech_workshop_renderer");
+        this.setBlockName("gtnl.eternal_greg_tech_workshop_renderer");
         this.setLightLevel(1.0f);
         GameRegistry
             .registerBlock(this, ItemBlockEternalGregTechWorkshopRender.class, "eternal_greg_tech_workshop_render");

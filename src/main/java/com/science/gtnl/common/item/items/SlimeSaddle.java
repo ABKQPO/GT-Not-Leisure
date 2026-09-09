@@ -16,7 +16,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class SlimeSaddle extends Item {
 
     public SlimeSaddle() {
-        this.setUnlocalizedName("SlimeSaddle");
+        this.setUnlocalizedName("gtnl.slime_saddle");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setMaxStackSize(1);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "slime_saddle");
@@ -26,7 +26,7 @@ public class SlimeSaddle extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.slime_saddle";
+        return "item.gtnl.slime_saddle";
     }
 
     @Override

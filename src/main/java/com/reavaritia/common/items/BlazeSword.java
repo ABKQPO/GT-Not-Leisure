@@ -30,8 +30,8 @@ public class BlazeSword extends ItemSword {
 
     public BlazeSword() {
         super(ToolHelper.BLAZE);
-        this.setUnlocalizedName("BlazeSword");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "BlazeSword");
+        this.setUnlocalizedName("reavaritia.blaze_sword");
+        this.setTextureName(RESOURCE_ROOT_ID + ":blaze_sword");
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         this.setMaxDamage(7777);
@@ -64,7 +64,7 @@ public class BlazeSword extends ItemSword {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_BlazeSword_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.blaze_sword.tooltip.00"));
     }
 
     @Override

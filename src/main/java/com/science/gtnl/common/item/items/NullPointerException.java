@@ -19,7 +19,7 @@ public class NullPointerException extends Item {
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("NullPointerException");
+        this.setUnlocalizedName("gtnl.null_pointer_exception");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "null_pointer_exception");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "null_pointer_exception");
@@ -28,7 +28,7 @@ public class NullPointerException extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.null_pointer_exception";
+        return "item.gtnl.null_pointer_exception";
     }
 
     /**

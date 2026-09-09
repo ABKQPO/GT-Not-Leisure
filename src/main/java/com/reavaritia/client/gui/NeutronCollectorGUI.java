@@ -29,7 +29,7 @@ public class NeutronCollectorGUI extends GuiContainer {
     }
 
     public String getLocalizedName() {
-        return StatCollector.translateToLocal("container." + machine.machineType);
+        return StatCollector.translateToLocal("reavaritia.container." + machine.machineType);
     }
 
     @Override
@@ -50,8 +50,9 @@ public class NeutronCollectorGUI extends GuiContainer {
             && mouseY >= l + progressBarY
             && mouseY <= l + progressBarY + progressBarHeight) {
             float percentage = machine.getProgressPercentage();
-            String progressText = String
-                .format(StatCollector.translateToLocal("GUI_NeutronCollector_Progress") + "%.2f%%", percentage);
+            String progressText = String.format(
+                StatCollector.translateToLocal("reavaritia.gui.neutron_collector.progress") + "%.2f%%",
+                percentage);
             drawHoveringText(List.of(progressText), mouseX - k, mouseY - l, fontRendererObj);
         }
     }

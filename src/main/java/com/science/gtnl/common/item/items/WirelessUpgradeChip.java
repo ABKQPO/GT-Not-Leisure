@@ -23,7 +23,7 @@ public class WirelessUpgradeChip extends Item {
 
     public WirelessUpgradeChip() {
         super();
-        this.setUnlocalizedName("WirelessUpgradeChip");
+        this.setUnlocalizedName("gtnl.wireless_upgrade_chip");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "wireless_upgrade_chip");
         GameRegistry.registerItem(this, "wireless_upgrade_chip");
@@ -32,15 +32,15 @@ public class WirelessUpgradeChip extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.wireless_upgrade_chip";
+        return "item.gtnl.wireless_upgrade_chip";
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.wireless_upgrade_chip.tooltip.0"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.wireless_upgrade_chip.tooltip.1"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.wireless_upgrade_chip.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.wireless_upgrade_chip.tooltip.1"));
     }
 
     @Override

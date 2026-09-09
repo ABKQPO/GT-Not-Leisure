@@ -48,7 +48,7 @@ public class BlockNeutronCollector extends BlockContainer {
         this.texturePrefix = texturePrefix;
         this.tileEntityName = tileEntityName;
 
-        GameRegistry.registerBlock(this, itemBlockClass, getUnlocalizedName());
+        GameRegistry.registerBlock(this, itemBlockClass, blockName);
         itemListEntry.set(new ItemStack(this, 1));
     }
 
@@ -57,7 +57,7 @@ public class BlockNeutronCollector extends BlockContainer {
         this.blockName = blockName;
         setStepSound(Block.soundTypeMetal);
         setHardness(20.0F);
-        setBlockName(blockName);
+        setBlockName("reavaritia." + blockName);
         setHarvestLevel("pickaxe", 3);
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
     }
@@ -131,15 +131,15 @@ public class BlockNeutronCollector extends BlockContainer {
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
         String prefix = texturePrefix;
-        this.bottom = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Bottom");
-        this.front = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Front");
-        this.sideLeft = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_SideLeft");
-        this.sideRight = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_SideRight");
-        this.side = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Side");
-        this.topFacingNorth = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Top_North");
-        this.topFacingSouth = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Top_South");
-        this.topFacingWest = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Top_West");
-        this.topFacingEast = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_Top_East");
+        this.bottom = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_bottom");
+        this.front = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_front");
+        this.sideLeft = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_side_left");
+        this.sideRight = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_side_right");
+        this.side = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_side");
+        this.topFacingNorth = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_top_north");
+        this.topFacingSouth = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_top_south");
+        this.topFacingWest = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_top_west");
+        this.topFacingEast = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + prefix + "_top_east");
     }
 
     @Override

@@ -427,7 +427,7 @@ public class SubscribeEventUtils {
                     .contains(StatCollector.translateToLocal("attribute.name.generic.attackDamage"))
                     || event.toolTip.get(x)
                         .contains(StatCollector.translateToLocal("Attack Damage"))) {
-                    var damage = StatCollector.translateToLocal("Damage_InfinitySword");
+                    var damage = StatCollector.translateToLocal("reavaritia.item.infinity_sword.damage");
                     if (Mods.Avaritia.isModLoaded()) damage = makeFabulous(damage);
                     event.toolTip.set(
                         x,

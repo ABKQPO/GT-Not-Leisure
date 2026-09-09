@@ -31,19 +31,19 @@ public class BlockSoulFarmland extends BlockFarmland {
 
     public BlockSoulFarmland() {
         super();
-        this.setBlockName("BlockSoulFarmland");
+        this.setBlockName("reavaritia.soul_farmland");
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         this.setHardness(0.6F);
         this.setStepSound(soundTypeSand);
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "BlockSoulFarmland");
-        GameRegistry.registerBlock(this, ItemBlockSoulFarmland.class, getUnlocalizedName());
+        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "block_soul_farmland");
+        GameRegistry.registerBlock(this, ItemBlockSoulFarmland.class, "soul_farmland");
         ReAvaItemList.SoulFarmland.set(new ItemStack(this, 1));
     }
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
-        this.topIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "BlockSoulFarmland_Top");
-        this.sideIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "BlockSoulFarmland_Side");
+        this.topIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "block_soul_farmland_top");
+        this.sideIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "block_soul_farmland_side");
     }
 
     @Override

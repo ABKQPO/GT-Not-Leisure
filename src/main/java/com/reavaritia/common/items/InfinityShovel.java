@@ -46,9 +46,9 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
 
     public InfinityShovel() {
         super(ToolHelper.INFINITY);
-        this.setUnlocalizedName("InfinityShovel");
+        this.setUnlocalizedName("reavaritia.infinity_shovel");
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityShovel");
+        this.setTextureName(RESOURCE_ROOT_ID + ":infinity_shovel");
         ReAvaItemList.InfinityShovel.set(new ItemStack(this, 1));
     }
 
@@ -61,7 +61,7 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityShovel_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_shovel.tooltip.00"));
     }
 
     @Override
@@ -72,8 +72,8 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister ir) {
-        this.itemIcon = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "InfinityShovel");
-        this.Destroyer = ir.registerIcon(RESOURCE_ROOT_ID + ":" + "InfinityDestroyer");
+        this.itemIcon = ir.registerIcon(RESOURCE_ROOT_ID + ":infinity_shovel");
+        this.Destroyer = ir.registerIcon(RESOURCE_ROOT_ID + ":infinity_destroyer");
     }
 
     @Override
@@ -102,8 +102,8 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
             player.swingItem();
 
             if (world.isRemote) {
-                String key = isDestroyerMode ? StatCollector.translateToLocal("Tooltip_Infinity_Mode_2")
-                    : StatCollector.translateToLocal("Tooltip_Infinity_Mode_1");
+                String key = isDestroyerMode ? StatCollector.translateToLocal("reavaritia.item.infinity.mode.2")
+                    : StatCollector.translateToLocal("reavaritia.item.infinity.mode.1");
                 showSubtitle(key);
             }
             return stack;

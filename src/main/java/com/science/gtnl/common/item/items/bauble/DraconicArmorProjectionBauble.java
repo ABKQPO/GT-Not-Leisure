@@ -29,7 +29,7 @@ public class DraconicArmorProjectionBauble extends BaubleItem implements IBauble
         DraconicArmorProjectionType projectionType, GTNLItemList itemEntry) {
         this.displayNameKey = displayNameKey;
         this.projectionType = projectionType;
-        setUnlocalizedName(registrationName);
+        setUnlocalizedName(displayNameKey);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setTextureName(RESOURCE_ROOT_ID + ":" + registrationName);
         setMaxStackSize(1);
@@ -39,7 +39,7 @@ public class DraconicArmorProjectionBauble extends BaubleItem implements IBauble
 
     @Override
     public String getUnlocalizedName() {
-        return displayNameKey;
+        return "item." + displayNameKey;
     }
 
     @Override

@@ -30,6 +30,13 @@ public abstract class MetaBlockCasingBase extends MetaCasingBase implements ICas
         GregTechAPI.registerMachineBlock(this, -1);
     }
 
+    public MetaBlockCasingBase(String unlocalizedName, String textureName) {
+        super(unlocalizedName, textureName);
+        this.setHardness(9.0F);
+        this.setResistance(5.0F);
+        GregTechAPI.registerMachineBlock(this, -1);
+    }
+
     @Override
     public int getTextureIndex(int aMeta) {
         return getTextureId(getTexturePageIndex(), getTextureIndexInPage(aMeta));

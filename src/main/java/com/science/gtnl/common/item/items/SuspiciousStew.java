@@ -28,7 +28,7 @@ public class SuspiciousStew extends ItemFood {
 
     public SuspiciousStew() {
         super(3, 0.6F, false);
-        this.setUnlocalizedName("SuspiciousStew");
+        this.setUnlocalizedName("gtnl.suspicious_stew");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "suspicious_stew");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -38,7 +38,7 @@ public class SuspiciousStew extends ItemFood {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.suspicious_stew";
+        return "item.gtnl.suspicious_stew";
     }
 
     @Override

@@ -23,7 +23,7 @@ public class KFCFamily extends ItemFood {
 
     public KFCFamily() {
         super(20, 20, true);
-        this.setUnlocalizedName("KFCFamily");
+        this.setUnlocalizedName("gtnl.kfc_family");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "kfc_family");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setAlwaysEdible();
@@ -33,7 +33,7 @@ public class KFCFamily extends ItemFood {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.kfc_family";
+        return "item.gtnl.kfc_family";
     }
 
     @Override
@@ -48,6 +48,6 @@ public class KFCFamily extends ItemFood {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.kfc_family.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.kfc_family.tooltip.0"));
     }
 }

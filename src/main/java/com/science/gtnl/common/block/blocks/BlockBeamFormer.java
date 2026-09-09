@@ -54,7 +54,7 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
         super(Material.iron);
         setHardness(8.0F);
         setResistance(40.0F);
-        setBlockName("gtnl.block.beam_former");
+        setBlockName("gtnl.beam_former");
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":beam_former");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

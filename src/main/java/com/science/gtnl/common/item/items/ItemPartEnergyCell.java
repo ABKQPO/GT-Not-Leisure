@@ -12,7 +12,7 @@ import appeng.api.AEApi;
 public class ItemPartEnergyCell extends ItemPartEnergyCellBase {
 
     public ItemPartEnergyCell() {
-        super("part_energy_cell", "gtnl.item.part_energy_cell");
+        super("part_energy_cell", "gtnl.part_energy_cell");
         GTNLItemList.PartEnergyCell.set(new ItemStack(this));
     }
 

@@ -92,7 +92,7 @@ public class ItemPartMECellDock extends Item implements IPartItem {
     public ItemPartMECellDock() {
         setMaxStackSize(64);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        setUnlocalizedName("MECellDock");
+        setUnlocalizedName("gtnl.me_cell_dock");
         setTextureName(RESOURCE_ROOT_ID + ":part/cell_dock");
         GameRegistry.registerItem(this, "me_cell_dock");
         AEApi.instance()

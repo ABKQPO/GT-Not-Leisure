@@ -60,7 +60,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
     public TwilightSword() {
         super(TWILIGHT_MATERIALS[0]);
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("TwilightSword");
+        this.setUnlocalizedName("gtnl.twilight_sword");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "twilight_sword");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setMaxDamage(9999);
@@ -71,7 +71,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.twilight_sword";
+        return "item.gtnl.twilight_sword";
     }
 
     @Override
@@ -277,16 +277,16 @@ public class TwilightSword extends ItemSword implements PlaySound {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.0"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.1"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.2"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.3"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.4"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.5"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.6"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.7"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.8"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.9"));
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.twilight_sword.tooltip.10"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.0"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.1"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.2"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.3"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.4"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.5"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.6"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.7"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.8"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.9"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.twilight_sword.tooltip.10"));
     }
 }

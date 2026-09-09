@@ -91,7 +91,11 @@ public class BlockLoader {
     public static MetaBlockGlass metaBlockGlass = new MetaBlockGlass("meta_block_glass");
     public static MetaBlockColumn metaBlockColumn = new MetaBlockColumn("meta_block_column");
     public static MetaCasing metaCasing = new MetaCasing("meta_casing", (byte) 0);
-    public static MetaCasing metaCasing02 = new MetaCasing("meta_casing_02", (byte) 32);
+    public static MetaCasing metaCasing02 = new MetaCasing(
+        "meta_casing_02",
+        "meta_casing02",
+        (byte) 32,
+        MetaCasing.TEXTURE_PAGE_INDEX);
 
     public static void registryBlocks() {
         playerLeash = new BlockPlayerLeash();

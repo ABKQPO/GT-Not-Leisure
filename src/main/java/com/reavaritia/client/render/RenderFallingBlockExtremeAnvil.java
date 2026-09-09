@@ -21,7 +21,7 @@ public class RenderFallingBlockExtremeAnvil extends Render {
     public static ExtremeAnvilModel model = new ExtremeAnvilModel();
 
     public static ResourceLocation TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/blocks/ExtremeAnvil.png");
+        RESOURCE_ROOT_ID + ":" + "textures/blocks/extreme_anvil.png");
 
     public RenderFallingBlockExtremeAnvil() {
         this.shadowSize = 0.5F;

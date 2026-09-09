@@ -49,7 +49,7 @@ public class BlockEnderElevator extends BlockContainer {
             case 2 -> "Carpet";
             default -> "Block";
         };
-        this.setBlockName("gtnl.block.ender_elevator." + suffix.toLowerCase());
+        this.setBlockName("gtnl.ender_elevator." + suffix.toLowerCase());
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":ender_elevator");
         this.setLightLevel(1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

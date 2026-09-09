@@ -26,7 +26,7 @@ public class TimeStopPocketWatch extends Item {
     private boolean playSound = false;
 
     public TimeStopPocketWatch() {
-        this.setUnlocalizedName("TimeStopPocketWatch");
+        this.setUnlocalizedName("gtnl.time_stop_pocket_watch");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "time_stop_pocket_watch");
         this.setMaxStackSize(1);
@@ -36,7 +36,7 @@ public class TimeStopPocketWatch extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.time_stop_pocket_watch";
+        return "item.gtnl.time_stop_pocket_watch";
     }
 
     @Override

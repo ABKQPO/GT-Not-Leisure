@@ -62,7 +62,7 @@ public class ElectricProspectorTool extends Item {
     private static final int DEFAULT_SCAN_COLOR = 0xFF7D7D7D;
     private static final ScannerBlockResult UNSCANNABLE_BLOCK = new ScannerBlockResult(null, 0, false);
 
-    public String unlocalizedName = "ElectricProspectorTool";
+    public String unlocalizedName = "item.gtnl.electric_prospector_tool";
     public int mCosts = 1;
     public static final Int2ObjectMap<IntLongPair> RANGE_MAP = new Int2ObjectOpenHashMap<>();
     public static final IntSet META_SET = new IntOpenHashSet();
@@ -71,7 +71,7 @@ public class ElectricProspectorTool extends Item {
 
     public ElectricProspectorTool() {
         super();
-        this.setUnlocalizedName("ElectricProspectorTool");
+        this.setUnlocalizedName("gtnl.electric_prospector_tool");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "electric_prospector_tool");
         this.setMaxStackSize(1);
@@ -100,14 +100,14 @@ public class ElectricProspectorTool extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        if (!itemStack.hasTagCompound()) return "gtnl.item.electric_prospector_tool";
+        if (!itemStack.hasTagCompound()) return "item.gtnl.electric_prospector_tool";
         int meta = itemStack.stackTagCompound.getInteger("toolMeta");
-        return "gtnl.item.electric_prospector_tool." + meta;
+        return "item.gtnl.electric_prospector_tool." + meta;
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.electric_prospector_tool";
+        return "item.gtnl.electric_prospector_tool";
     }
 
     @Override

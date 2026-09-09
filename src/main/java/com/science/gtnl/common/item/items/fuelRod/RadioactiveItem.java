@@ -22,14 +22,14 @@ public class RadioactiveItem extends Item {
     private final int mRadio;
 
     public RadioactiveItem(String name, int mRadio) {
-        this(name, "gtnl.item." + name, mRadio);
+        this(name, "item.gtnl." + name, mRadio);
     }
 
     public RadioactiveItem(String registrationName, String displayNameKey, int mRadio) {
         super();
         this.mRadio = mRadio;
         this.displayNameKey = displayNameKey;
-        this.setUnlocalizedName(registrationName);
+        this.setUnlocalizedName(displayNameKey);
         this.setTextureName(registrationName);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, registrationName);

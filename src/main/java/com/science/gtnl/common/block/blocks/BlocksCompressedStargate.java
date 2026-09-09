@@ -28,7 +28,7 @@ public class BlocksCompressedStargate extends Block {
         this.tier = aTier;
         this.setHardness(1.0F);
         this.setResistance(6000000.0F);
-        this.setBlockName("gtnl.block.compressed_stargate.tier." + aTier);
+        this.setBlockName("gtnl.compressed_stargate.tier." + aTier);
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":compressed_stargate/");
         this.TextureName = new String[] { "front", "side", "bottom", "top_" + aTier };
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

@@ -32,7 +32,7 @@ public class BlockSearedLadder extends Block {
         setHardness(3F);
         setResistance(20F);
         setStepSound(soundTypeMetal);
-        this.setBlockName("gtnl.block.seared_ladder");
+        this.setBlockName("gtnl.seared_ladder");
         this.setBlockTextureName("tinker:searedbricksquare");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, "seared_ladder");

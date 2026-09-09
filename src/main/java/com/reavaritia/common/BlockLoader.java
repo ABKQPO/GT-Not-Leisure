@@ -34,46 +34,47 @@ public class BlockLoader {
 
         ExtremeAnvil = new BlockExtremeAnvil();
         NeutronCollector = new BlockNeutronCollector(
-            "NeutronCollector",
+            "neutron_collector",
             3600,
             Mods.Avaritia.isModLoaded() ? getNeutronDust()
                 : GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.CosmicNeutronium, 1),
-            "NeutronCollector",
-            "NeutronCollector",
+            "neutron_collector",
+            "neutron_collector",
             ItemBlockNeutronCollector.class,
             ReAvaItemList.NeutronCollector);
 
         DenseNeutronCollector = new BlockNeutronCollector(
-            "DenseNeutronCollector",
+            "dense_neutron_collector",
             3600,
             Mods.Avaritia.isModLoaded() ? getNeutronNugget()
                 : GTOreDictUnificator.get(OrePrefixes.nugget, Materials.CosmicNeutronium, 1),
-            "DenseNeutronCollector",
-            "DenseNeutronCollector",
+            "dense_neutron_collector",
+            "dense_neutron_collector",
             ItemBlockNeutronCollector.ItemBlockDenseNeutronCollector.class,
             ReAvaItemList.DenseNeutronCollector);
 
         DenserNeutronCollector = new BlockNeutronCollector(
-            "DenserNeutronCollector",
+            "denser_neutron_collector",
             3600,
             Mods.Avaritia.isModLoaded() ? getNeutronInot()
                 : GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
-            "DenserNeutronCollector",
-            "DenserNeutronCollector",
+            "denser_neutron_collector",
+            "denser_neutron_collector",
             ItemBlockNeutronCollector.ItemBlockDenserNeutronCollector.class,
             ReAvaItemList.DenserNeutronCollector);
 
         DensestNeutronCollector = new BlockNeutronCollector(
-            "DensestNeutronCollector",
+            "densest_neutron_collector",
             200,
             Mods.Avaritia.isModLoaded() ? getNeutronInot()
                 : GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
-            "DensestNeutronCollector",
-            "DensestNeutronCollector",
+            "densest_neutron_collector",
+            "densest_neutron_collector",
             ItemBlockNeutronCollector.ItemBlockDensestNeutronCollector.class,
             ReAvaItemList.DensestNeutronCollector);
 
-        GameRegistry.registerTileEntity(TileEntityNeutronCollector.class, "NeutronCollectorTileEntity");
+        GameRegistry.registerTileEntity(TileEntityNeutronCollector.class, "NeutronCollector");
+        GameRegistry.registerTileEntity(TileEntityNeutronCollector.class, "neutron_collector_tile_entity");
 
         BlockSoulFarmland = new BlockSoulFarmland();
     }

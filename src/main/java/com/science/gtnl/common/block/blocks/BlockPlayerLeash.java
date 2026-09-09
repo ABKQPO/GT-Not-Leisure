@@ -21,7 +21,7 @@ public class BlockPlayerLeash extends Block {
         this.setHardness(3f);
         this.setBlockBounds(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
         this.setLightOpacity(0);
-        this.setBlockName("gtnl.block.player_leash");
+        this.setBlockName("gtnl.player_leash");
         this.setBlockTextureName("planks_oak");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockPlayerLeash.class, "player_leash");

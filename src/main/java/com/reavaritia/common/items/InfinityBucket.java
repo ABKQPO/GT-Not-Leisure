@@ -49,8 +49,8 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
 
     public InfinityBucket() {
         setMaxStackSize(1);
-        setUnlocalizedName("InfinityBucket");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "InfinityBucket");
+        setUnlocalizedName("reavaritia.infinity_bucket");
+        setTextureName(RESOURCE_ROOT_ID + ":infinity_bucket");
         setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
         MinecraftForge.EVENT_BUS.register(this);
         ReAvaItemList.InfinityBucket.set(new ItemStack(this, 1));
@@ -356,7 +356,7 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
     @Override
     public void showSubtitle(String name, int amount) {
         String amtText = (amount == INFINITE_FLUID_AMOUNT) ? "∞" : amount + "L";
-        IChatComponent comp = new ChatComponentTranslation("Tooltip_InfinityBucket_01", name, amtText);
+        IChatComponent comp = new ChatComponentTranslation("reavaritia.item.infinity_bucket.tooltip.01", name, amtText);
         comp.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
         Minecraft.getMinecraft().ingameGUI.func_110326_a(comp.getFormattedText(), true);
     }
@@ -368,7 +368,7 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
             ItemStack stack = player.getHeldItem();
             if (stack != null && stack.getItem() == this && player.isSneaking()) {
                 clearFluids(stack);
-                player.addChatMessage(new ChatComponentTranslation("Tooltip_InfinityBucket_02"));
+                player.addChatMessage(new ChatComponentTranslation("reavaritia.item.infinity_bucket.tooltip.02"));
                 event.setCanceled(true);
             }
         }
@@ -402,7 +402,7 @@ public class InfinityBucket extends Item implements IFluidContainerItem, Subtitl
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
-        tooltip.add(StatCollector.translateToLocal("Tooltip_InfinityBucket_00"));
+        tooltip.add(StatCollector.translateToLocal("reavaritia.item.infinity_bucket.tooltip.00"));
         NBTTagList fluids = getFluidList(stack);
         int selected = stack.hasTagCompound() ? stack.getTagCompound()
             .getInteger("Selected") : 0;

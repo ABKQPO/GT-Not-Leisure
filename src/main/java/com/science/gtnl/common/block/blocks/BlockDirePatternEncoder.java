@@ -23,7 +23,7 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.block.dire_pattern_encoder");
+        setBlockName("gtnl.dire_pattern_encoder");
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":dire_pattern_encoder");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

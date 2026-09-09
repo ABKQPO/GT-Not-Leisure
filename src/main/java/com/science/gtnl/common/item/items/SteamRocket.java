@@ -38,7 +38,7 @@ public class SteamRocket extends Item implements IHoldableItem {
         this.setHasSubtypes(true);
         this.setMaxStackSize(1);
         this.setTextureName("arrow");
-        this.setUnlocalizedName("SteamRocket");
+        this.setUnlocalizedName("gtnl.steam_rocket");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "steam_rocket");
         GTNLItemList.SteamRocket.set(new ItemStack(this, 1));
@@ -46,7 +46,7 @@ public class SteamRocket extends Item implements IHoldableItem {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.steam_rocket";
+        return "item.gtnl.steam_rocket";
     }
 
     @Override
@@ -172,8 +172,8 @@ public class SteamRocket extends Item implements IHoldableItem {
                     + rocket.fuelTank.getCapacity());
         }
 
-        toolTip.add(StatCollector.translateToLocal("gtnl.item.steam_rocket.tooltip.0"));
-        toolTip.add("§o" + StatCollector.translateToLocal("gtnl.item.steam_rocket.tooltip.1"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.steam_rocket.tooltip.0"));
+        toolTip.add("§o" + StatCollector.translateToLocal("item.gtnl.steam_rocket.tooltip.1"));
 
     }
 

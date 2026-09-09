@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class MetaBlockColumn extends Block {
 
-    public String[] textureName = new String[] { "Side", "Top", "Bottom" };
+    public String[] textureName = new String[] { "side", "top", "bottom" };
     public Int2ObjectMap<IIcon[]> textureMap = new Int2ObjectOpenHashMap<>();
 
     public MetaBlockColumn() {

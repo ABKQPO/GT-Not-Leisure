@@ -32,7 +32,7 @@ public abstract class ItemPartEnergyCellBase extends Item implements IPartItem {
     public ItemPartEnergyCellBase(String registrationName, String displayNameKey) {
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        setUnlocalizedName(registrationName);
+        setUnlocalizedName(displayNameKey);
         this.displayNameKey = displayNameKey;
         GameRegistry.registerItem(this, registrationName);
         AEApi.instance()
@@ -42,7 +42,7 @@ public abstract class ItemPartEnergyCellBase extends Item implements IPartItem {
 
     @Override
     public String getUnlocalizedName() {
-        return displayNameKey;
+        return "item." + displayNameKey;
     }
 
     protected abstract double getBaseCapacity();

@@ -17,7 +17,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class PortableCellWorkbenchItem extends Item {
 
     public PortableCellWorkbenchItem() {
-        setUnlocalizedName("PortableCellWorkbench");
+        setUnlocalizedName("gtnl.portable_cell_workbench");
         setTextureName(RESOURCE_ROOT_ID + ":portable_cell_workbench");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -27,7 +27,7 @@ public class PortableCellWorkbenchItem extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.portable_cell_workbench";
+        return "item.gtnl.portable_cell_workbench";
     }
 
     @Override

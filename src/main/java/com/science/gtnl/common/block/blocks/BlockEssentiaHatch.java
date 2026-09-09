@@ -29,7 +29,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         super(Material.iron);
         this.setHardness(9.0F);
         this.setResistance(5.0F);
-        this.setBlockName("gtnl.block.essentia_hatch");
+        this.setBlockName("gtnl.essentia_hatch");
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "essentia_hatch");
         this.setHarvestLevel("wrench", 2);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureMachine);

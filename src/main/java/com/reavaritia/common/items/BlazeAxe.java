@@ -38,10 +38,10 @@ public class BlazeAxe extends ItemAxe implements SubtitleDisplay {
 
     public BlazeAxe() {
         super(ToolHelper.BLAZE);
-        this.setUnlocalizedName("BlazeAxe");
+        this.setUnlocalizedName("reavaritia.blaze_axe");
         setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "BlazeAxe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":blaze_axe");
         this.setMaxDamage(7777);
         ReAvaItemList.BlazeAxe.set(new ItemStack(this, 1));
     }
@@ -55,7 +55,7 @@ public class BlazeAxe extends ItemAxe implements SubtitleDisplay {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_BlazeAxe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.blaze_axe.tooltip.00"));
     }
 
     @Override
@@ -75,8 +75,9 @@ public class BlazeAxe extends ItemAxe implements SubtitleDisplay {
         player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         if (player.isSneaking()) {
             toggleSmeltingMode(stack);
-            String messageKey = isSmeltingModeActive(stack) ? StatCollector.translateToLocal("Tooltip_Blaze_Smelt_On")
-                : StatCollector.translateToLocal("Tooltip_Blaze_Smelt_Off");
+            String messageKey = isSmeltingModeActive(stack)
+                ? StatCollector.translateToLocal("reavaritia.item.blaze.smelt.on")
+                : StatCollector.translateToLocal("reavaritia.item.blaze.smelt.off");
             if (world.isRemote) {
                 showSubtitle(messageKey);
             }

@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
  *
  */
 @Optional.Interface(iface = "fox.spiteful.avaritia.render.IHaloRenderItem", modid = "Avaritia")
-public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
+public class MetaItemAdder extends ItemAdderBasic implements IHaloRenderItem {
 
     public static final Int2ObjectMap<String[]> META_ITEM_TOOLTIPS_MAP = new Int2ObjectOpenHashMap<>();
     public static final IntSet META_SET = new IntOpenHashSet();

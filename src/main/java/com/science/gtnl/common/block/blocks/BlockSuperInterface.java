@@ -39,7 +39,7 @@ public class BlockSuperInterface extends BlockInterface {
         super();
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.block.super_interface");
+        setBlockName("gtnl.super_interface");
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":super_interface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

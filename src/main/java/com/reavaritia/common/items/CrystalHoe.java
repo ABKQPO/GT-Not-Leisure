@@ -30,10 +30,10 @@ public class CrystalHoe extends ItemHoe {
 
     public CrystalHoe() {
         super(ToolHelper.CRYSTAL);
-        this.setUnlocalizedName("CrystalHoe");
+        this.setUnlocalizedName("reavaritia.crystal_hoe");
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "CrystalHoe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":crystal_hoe");
         this.setMaxDamage(8888);
         ReAvaItemList.CrystalHoe.set(new ItemStack(this, 1));
     }
@@ -47,7 +47,7 @@ public class CrystalHoe extends ItemHoe {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_CrystalHoe_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.crystal_hoe.tooltip.00"));
     }
 
     @Override

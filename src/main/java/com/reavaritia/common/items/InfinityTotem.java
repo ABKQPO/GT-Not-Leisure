@@ -50,11 +50,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, PlaySound {
 
     public InfinityTotem() {
-        this.setUnlocalizedName("InfinityTotem");
+        this.setUnlocalizedName("reavaritia.infinity_totem");
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.setCreativeTab(CreativeTabs.tabTools);
         this.setCreativeTab(ReAvaCreativeTabs.ReAvaritia);
-        this.setTextureName(ReAvaritia.RESOURCE_ROOT_ID + ":" + "InfinityTotem");
+        this.setTextureName(ReAvaritia.RESOURCE_ROOT_ID + ":infinity_totem");
         this.setMaxDamage(99);
         this.setMaxStackSize(1);
         MinecraftForge.EVENT_BUS.register(this);
@@ -70,7 +70,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_InfinityTotem_00"));
+        toolTip.add(StatCollector.translateToLocal("reavaritia.item.infinity_totem.tooltip.00"));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
     @SideOnly(Side.CLIENT)
     @Override
     public void showSubtitle() {
-        IChatComponent component = new ChatComponentTranslation("Tooltip_InfinityTotem_Enable");
+        IChatComponent component = new ChatComponentTranslation("reavaritia.item.infinity_totem.enable");
         component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
         Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
     }
@@ -96,13 +96,13 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
     public void onLivingUpdate(LivingUpdateEvent event) {
         if (event.entity instanceof EntityPlayer player) {
 
-            // 检查玩家物品栏中的 InfinityTotem
+            // Check the player's inventory for the Infinity Totem.
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack stack = player.inventory.getStackInSlot(i);
                 handleTotem(stack, player);
             }
 
-            // 检查玩家饰品栏中的 InfinityTotem
+            // Check the player's baubles inventory for the Infinity Totem.
             if (ModList.Baubles.isModLoaded()) {
                 IInventory baublesInventory = BaublesApi.getBaubles(player);
                 if (baublesInventory != null) {
@@ -122,7 +122,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
                 stack.setTagCompound(new NBTTagCompound());
             }
 
-            // 获取或设置 ownerUUID
+            // Read or set the owner UUID.
             if (!stack.getTagCompound()
                 .hasKey("ownerUUID")) {
                 stack.getTagCompound()
@@ -141,10 +141,10 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
         if (event.entity.worldObj.isRemote) return;
         if (event.entity instanceof EntityPlayer player) {
 
-            // 检查玩家物品栏中的 InfinityTotem
+            // Check the player's inventory for the Infinity Totem.
             ItemStack stack = getTotemFromPlayer(player);
 
-            // 检查玩家饰品栏中的 InfinityTotem
+            // Check the player's baubles inventory for the Infinity Totem.
             if (ModList.Baubles.isModLoaded()) {
                 if (stack == null) {
                     IInventory baublesInventory = BaublesApi.getBaubles(player);
@@ -160,7 +160,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
                 }
             }
 
-            // 处理 InfinityTotem 效果
+            // Apply the Infinity Totem effect.
             if (stack != null && stack.getItemDamage() < stack.getMaxDamage()) {
                 if (stack.getItemDamage() == stack.getMaxDamage() - 1) {
                     event.setCanceled(true);
@@ -237,13 +237,13 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
     }
 
     private ItemStack getTotemFromPlayer(EntityPlayer player) {
-        // 检查手持物品
+        // Check the held item.
         ItemStack heldItem = player.getHeldItem();
         if (heldItem != null && heldItem.getItem() instanceof InfinityTotem) {
             return heldItem;
         }
 
-        // 检查物品栏
+        // Check the inventory.
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (stack != null && stack.getItem() instanceof InfinityTotem) {
@@ -251,7 +251,7 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
             }
         }
 
-        // 检查饰品栏
+        // Check the baubles inventory.
         if (ModList.Baubles.isModLoaded()) {
             IInventory baublesInventory = BaublesApi.getBaubles(player);
             if (baublesInventory != null) {
@@ -318,32 +318,32 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
             return super.onEntityItemUpdate(entityItem);
         }
 
-        // 如果耐久度为 0，销毁物品
+        // Destroy the item when its durability reaches zero.
         if (stack.getItemDamage() >= stack.getMaxDamage()) {
             entityItem.setDead();
             return true;
         }
 
-        // 如果物品掉落到 Y < 0，返回给玩家
+        // Return the item to its owner when it falls below Y zero.
         if (entityItem.posY < 0D) {
             returnItemToPlayerInventory(entityItem);
             return true;
         }
-        // 获取实体所在的中心坐标
+        // Get the entity center coordinates.
         int centerX = (int) entityItem.posX;
         int centerY = (int) entityItem.posY;
         int centerZ = (int) entityItem.posZ;
 
-        // 遍历 3x3 区域
+        // Scan the surrounding 3x3 area.
         for (int x = centerX - 2; x <= centerX + 2; x++) {
             for (int y = centerY - 2; y <= centerY + 2; y++) {
                 for (int z = centerZ - 2; z <= centerZ + 2; z++) {
                     Block block = entityItem.worldObj.getBlock(x, y, z);
 
-                    // 检查是否为仙人掌或岩浆
+                    // Check for cactus or lava.
                     if (block == Blocks.cactus || block == Blocks.lava || block == Blocks.flowing_lava) {
                         returnItemToPlayerInventory(entityItem);
-                        return true; // 如果检测到仙人掌或岩浆，直接返回
+                        return true; // Stop when cactus or lava is detected.
                     }
                 }
             }

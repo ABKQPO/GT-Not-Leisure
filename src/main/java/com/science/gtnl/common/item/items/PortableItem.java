@@ -50,7 +50,7 @@ public class PortableItem extends Item {
 
     public PortableItem() {
         super();
-        this.setUnlocalizedName("PortableItem");
+        this.setUnlocalizedName("gtnl.portable");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "portable_item");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
@@ -132,12 +132,12 @@ public class PortableItem extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        return "gtnl.item.portable." + itemStack.getItemDamage();
+        return "item.gtnl.portable." + itemStack.getItemDamage();
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.portable";
+        return "item.gtnl.portable";
     }
 
     @Override

@@ -59,7 +59,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     public VeinMiningPickaxe() {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
-        this.setUnlocalizedName("VeinMiningPickaxe");
+        this.setUnlocalizedName("gtnl.vein_mining_pickaxe");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "vein_mining_pickaxe");
         this.setMaxStackSize(1);
@@ -74,7 +74,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
     @Override
     public String getUnlocalizedName() {
-        return "gtnl.item.vein_mining_pickaxe";
+        return "item.gtnl.vein_mining_pickaxe";
     }
 
     @Override
@@ -98,12 +98,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
             }
         }
 
-        toolTip.add(StatCollector.translateToLocalFormatted("gtnl.item.vein_mining_pickaxe.max_block_gap", range));
-        toolTip.add(StatCollector.translateToLocalFormatted("gtnl.item.vein_mining_pickaxe.max_vein_count", amount));
+        toolTip.add(StatCollector.translateToLocalFormatted("item.gtnl.vein_mining_pickaxe.max_block_gap", range));
+        toolTip.add(StatCollector.translateToLocalFormatted("item.gtnl.vein_mining_pickaxe.max_vein_count", amount));
         toolTip.add(
             StatCollector.translateToLocal(
-                preciseMode ? "gtnl.item.vein_mining_pickaxe.precise_mode.enabled"
-                    : "gtnl.item.vein_mining_pickaxe.precise_mode.disabled"));
+                preciseMode ? "item.gtnl.vein_mining_pickaxe.precise_mode.enabled"
+                    : "item.gtnl.vein_mining_pickaxe.precise_mode.disabled"));
     }
 
     @Override
@@ -166,8 +166,8 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
             if (world.isRemote) {
                 String key = isPreciseMode
-                    ? StatCollector.translateToLocal("gtnl.item.vein_mining_pickaxe.precise_mode.enabled")
-                    : StatCollector.translateToLocal("gtnl.item.vein_mining_pickaxe.precise_mode.disabled");
+                    ? StatCollector.translateToLocal("item.gtnl.vein_mining_pickaxe.precise_mode.enabled")
+                    : StatCollector.translateToLocal("item.gtnl.vein_mining_pickaxe.precise_mode.disabled");
                 showSubtitle(key);
             }
         }
