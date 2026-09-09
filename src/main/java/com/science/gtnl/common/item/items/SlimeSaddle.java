@@ -19,8 +19,8 @@ public class SlimeSaddle extends Item {
         this.setUnlocalizedName("SlimeSaddle");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setMaxStackSize(1);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "SlimeSaddle");
-        GameRegistry.registerItem(this, "SlimeSaddle");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "slime_saddle");
+        GameRegistry.registerItem(this, "slime_saddle");
         GTNLItemList.SlimeSaddle.set(new ItemStack(this, 1));
     }
 

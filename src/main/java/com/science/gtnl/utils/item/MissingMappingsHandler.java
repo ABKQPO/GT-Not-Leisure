@@ -3,6 +3,7 @@ package com.science.gtnl.utils.item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -55,7 +56,12 @@ public class MissingMappingsHandler {
         .remapBlock("sciencenotleisure:CompressedStargateTier9", BlockLoader.compressedStargateTier9)
         .remapBlock("sciencenotleisure:shimmer", BlockLoader.shimmerFluidBlock)
         .remapBlock("sciencenotleisure:honey", BlockLoader.honeyFluidBlock)
+        .remapBlock("sciencenotleisure:tile.shimmer", BlockLoader.shimmerFluidBlock)
+        .remapBlock("sciencenotleisure:tile.honey", BlockLoader.honeyFluidBlock)
         .remapBlock("sciencenotleisure:tile.playerDoll", BlockLoader.playerDoll)
+        .remapBlock("sciencenotleisure:tile.RealArtificialStarRenderer", BlockLoader.artificialStarRender)
+        .remapBlock("sciencenotleisure:tile.EternalGregTechWorkshopRenderer", BlockLoader.eternalGregTechWorkshopRender)
+        .remapBlock("sciencenotleisure:tile.NanoPhagocytosisPlantRenderer", BlockLoader.nanoPhagocytosisPlantRender)
 
          // Item remappings
         .remapItem("sciencenotleisure:SteamRocket", ItemLoader.steamRocket)
@@ -90,6 +96,8 @@ public class MissingMappingsHandler {
         .remapItem("sciencenotleisure:TwilightSword", ItemLoader.twilightSword)
         .remapItem("sciencenotleisure:WirelessUpgradeChip", ItemLoader.wirelessUpgradeChip)
         .remapItem("sciencenotleisure:MetaItem", ItemLoader.metaItem)
+        .remapItem("sciencenotleisure:HoneyBucket", ItemLoader.honeyBucket)
+        .remapItem("sciencenotleisure:ShimmerBucket", ItemLoader.shimmerBucket)
 
         ;
 
@@ -104,16 +112,38 @@ public class MissingMappingsHandler {
 
             if (mapping.type == GameRegistry.Type.BLOCK) {
                 Block block = REMAPPER.blockRemappings.get(mapping.name);
+                if (block == null) {
+                    block = GameRegistry.findBlock("sciencenotleisure", normalizeLegacyId(mapping.name));
+                }
                 if (block != null) {
                     mapping.remap(block);
                 }
             } else if (mapping.type == GameRegistry.Type.ITEM) {
                 Item item = REMAPPER.itemRemappings.get(mapping.name);
+                if (item == null) {
+                    item = GameRegistry.findItem("sciencenotleisure", normalizeLegacyId(mapping.name));
+                }
                 if (item != null) {
                     mapping.remap(item);
                 }
             }
         }
+    }
+
+    private static String normalizeLegacyId(String legacyId) {
+        String prefix = "sciencenotleisure:";
+        if (!legacyId.startsWith(prefix)) return legacyId;
+
+        String id = legacyId.substring(prefix.length());
+        if (id.startsWith("tile.")) {
+            id = id.substring("tile.".length());
+        } else if (id.startsWith("item.")) {
+            id = id.substring("item.".length());
+        }
+        return id.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+            .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
+            .replace('.', '_')
+            .toLowerCase(Locale.ROOT);
     }
 
     public static class Remapper {

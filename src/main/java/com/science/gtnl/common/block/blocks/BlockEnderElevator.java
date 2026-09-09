@@ -49,11 +49,11 @@ public class BlockEnderElevator extends BlockContainer {
             case 2 -> "Carpet";
             default -> "Block";
         };
-        this.setBlockName("EnderElevator" + suffix);
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":EnderElevator");
+        this.setBlockName("gtnl.block.ender_elevator." + suffix.toLowerCase());
+        this.setBlockTextureName(RESOURCE_ROOT_ID + ":ender_elevator");
         this.setLightLevel(1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, "tile.EnderElevator" + suffix);
+        GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, "ender_elevator_" + suffix.toLowerCase());
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
@@ -76,7 +76,7 @@ public class BlockEnderElevator extends BlockContainer {
     @Override
     public void registerBlockIcons(IIconRegister reg) {
         super.registerBlockIcons(reg);
-        overlayIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":EnderElevatorOverlay");
+        overlayIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":ender_elevator_overlay");
     }
 
     @Override

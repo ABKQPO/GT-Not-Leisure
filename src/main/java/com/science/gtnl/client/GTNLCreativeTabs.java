@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SuppressWarnings("unused")
 public class GTNLCreativeTabs {
 
-    public static CreativeTabs GTNotLeisureItem = new CreativeTabs("GTNotLeisureItem") {
+    public static CreativeTabs GTNotLeisureItem = new CreativeTabs("gtnl.item_group.item") {
 
         @Override
         public Item getTabIconItem() {
@@ -24,7 +24,7 @@ public class GTNLCreativeTabs {
         }
     };
 
-    public static CreativeTabs GTNotLeisureBlock = new CreativeTabs("GTNotLeisureBlock") {
+    public static CreativeTabs GTNotLeisureBlock = new CreativeTabs("gtnl.item_group.block") {
 
         @Override
         public Item getTabIconItem() {
@@ -37,7 +37,7 @@ public class GTNLCreativeTabs {
         }
     };
 
-    public static CreativeTabs GTNotLeisurePlayerDoll = new CreativeTabs("GTNotLeisurePlayerDoll") {
+    public static CreativeTabs GTNotLeisurePlayerDoll = new CreativeTabs("gtnl.item_group.player_doll") {
 
         @Override
         public Item getTabIconItem() {
@@ -62,7 +62,7 @@ public class GTNLCreativeTabs {
         GTNotLeisureMachineStack.add(stack);
     }
 
-    public static CreativeTabs GTNotLeisureMachine = new CreativeTabs("GTNotLeisureMachine") {
+    public static CreativeTabs GTNotLeisureMachine = new CreativeTabs("gtnl.item_group.machine") {
 
         @Override
         public Item getTabIconItem() {

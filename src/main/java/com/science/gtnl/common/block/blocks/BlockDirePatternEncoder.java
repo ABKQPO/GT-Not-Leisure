@@ -23,11 +23,11 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("DirePatternEncoder");
+        setBlockName("gtnl.block.dire_pattern_encoder");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":DirePatternEncoder");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":dire_pattern_encoder");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockDirePatternEncoder.class, "tile.DirePatternEncoder");
+        GameRegistry.registerBlock(this, ItemBlockDirePatternEncoder.class, "dire_pattern_encoder");
         GameRegistry.registerTileEntity(TileEntityDirePatternEncoder.class, "dire_pattern_encoder_tile_entity");
         GTNLItemList.DirePatternEncoder.set(new ItemStack(this, 1));
         setTileEntity(TileEntityDirePatternEncoder.class);

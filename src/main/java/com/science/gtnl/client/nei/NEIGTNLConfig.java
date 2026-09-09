@@ -7,8 +7,6 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerHandler;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -96,8 +94,7 @@ public class NEIGTNLConfig implements IConfigureNEI {
         API.hideItem(GTNLItemList.NullPointerException.get(1));
         API.hideItem(GTNLItemList.TwilightSword.get(1));
         API.hideItem(GTNLItemList.FakeItemSiren.get(1));
-        API.hideItem(ModList.ScienceNotLeisure.ID + ":" + ItemLoader.stick.getUnlocalizedName());
-        API.hideItem(
-            ModList.ScienceNotLeisure.ID + ":" + BlockLoader.playerDoll.getUnlocalizedName() + " tag.HideNEI=1b");
+        API.hideItem(ModList.ScienceNotLeisure.ID + ":stick");
+        API.hideItem(ModList.ScienceNotLeisure.ID + ":player_doll tag.HideNEI=1b");
     }
 }

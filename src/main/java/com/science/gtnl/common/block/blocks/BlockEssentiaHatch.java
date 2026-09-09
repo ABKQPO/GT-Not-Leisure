@@ -29,11 +29,11 @@ public class BlockEssentiaHatch extends BlockContainer {
         super(Material.iron);
         this.setHardness(9.0F);
         this.setResistance(5.0F);
-        this.setBlockName("EssentiaHatch");
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "EssentiaHatch");
+        this.setBlockName("gtnl.block.essentia_hatch");
+        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "essentia_hatch");
         this.setHarvestLevel("wrench", 2);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureMachine);
-        GameRegistry.registerBlock(this, ItemBlockEssentiaHatch.class, "tile.EssentiaHatch");
+        GameRegistry.registerBlock(this, ItemBlockEssentiaHatch.class, "essentia_hatch");
         GameRegistry.registerTileEntity(TileEntityEssentiaHatch.class, "essentia_hatch_tile_entity");
         GregTechAPI.registerMachineBlock(this, -1);
         GTNLItemList.EssentiaHatch.set(new ItemStack(this, 1));

@@ -39,11 +39,11 @@ public class BlockSuperDualInterface extends BlockInterface {
         super();
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("SuperDualInterface");
+        setBlockName("gtnl.block.super_dual_interface");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":SuperDualInterface");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":super_dual_interface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSuperDualInterface.class, "tile.SuperDualInterface");
+        GameRegistry.registerBlock(this, ItemBlockSuperDualInterface.class, "super_dual_interface");
         GameRegistry.registerTileEntity(TileEntitySuperDualInterface.class, "super_dual_interface_tile_entity");
         GTNLItemList.SuperDualInterface.set(new ItemStack(this, 1));
         setTileEntity(TileEntitySuperDualInterface.class);
@@ -58,8 +58,8 @@ public class BlockSuperDualInterface extends BlockInterface {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        iconAlternate = register.registerIcon(RESOURCE_ROOT_ID + ":SuperDualInterfaceAlternate");
-        iconAlternateArrow = register.registerIcon(RESOURCE_ROOT_ID + ":SuperDualInterfaceAlternateArrow");
+        iconAlternate = register.registerIcon(RESOURCE_ROOT_ID + ":super_dual_interface_alternate");
+        iconAlternateArrow = register.registerIcon(RESOURCE_ROOT_ID + ":super_dual_interface_alternate_arrow");
         super.registerBlockIcons(register);
     }
 

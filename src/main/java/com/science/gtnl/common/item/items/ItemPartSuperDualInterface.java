@@ -25,8 +25,8 @@ public class ItemPartSuperDualInterface extends Item implements IPartItem {
         setMaxStackSize(64);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setUnlocalizedName("PartSuperDualInterface");
-        setTextureName(RESOURCE_ROOT_ID + ":SuperDualInterface");
-        GameRegistry.registerItem(this, "PartSuperDualInterface");
+        setTextureName(RESOURCE_ROOT_ID + ":super_dual_interface");
+        GameRegistry.registerItem(this, "part_super_dual_interface");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);

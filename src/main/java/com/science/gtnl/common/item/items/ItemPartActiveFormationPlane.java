@@ -25,7 +25,7 @@ public class ItemPartActiveFormationPlane extends Item implements IPartItem {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setUnlocalizedName("PartActiveFormationPlane");
         this.setTextureName(Mods.AppliedEnergistics2.ID + ":" + "ItemPart.FormationPlane");
-        GameRegistry.registerItem(this, "PartActiveFormationPlane");
+        GameRegistry.registerItem(this, "part_active_formation_plane");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);

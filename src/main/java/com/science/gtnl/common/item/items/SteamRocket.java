@@ -40,7 +40,7 @@ public class SteamRocket extends Item implements IHoldableItem {
         this.setTextureName("arrow");
         this.setUnlocalizedName("SteamRocket");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "SteamRocket");
+        GameRegistry.registerItem(this, "steam_rocket");
         GTNLItemList.SteamRocket.set(new ItemStack(this, 1));
     }
 

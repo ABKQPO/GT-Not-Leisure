@@ -38,8 +38,8 @@ public class ItemPartBeamFormer extends Item implements IPartItem {
         this.setMaxStackSize(64);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setUnlocalizedName("PartBeamFormer");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "PartBeamFormer");
-        GameRegistry.registerItem(this, "PartBeamFormer");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "part_beam_former");
+        GameRegistry.registerItem(this, "part_beam_former");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);

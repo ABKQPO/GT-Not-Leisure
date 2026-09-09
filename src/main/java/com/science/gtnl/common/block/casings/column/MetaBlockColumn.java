@@ -62,7 +62,7 @@ public class MetaBlockColumn extends Block {
             IIcon[] textures = new IIcon[textureName.length];
             for (int i = 0; i < this.textureName.length; ++i) {
                 textures[i] = reg
-                    .registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlockColumn/" + meta + "_" + textureName[i]);
+                    .registerIcon(RESOURCE_ROOT_ID + ":" + "meta_block_column/" + meta + "_" + textureName[i]);
             }
             this.textureMap.put(meta, textures);
         }

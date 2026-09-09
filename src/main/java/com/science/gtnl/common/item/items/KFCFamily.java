@@ -24,10 +24,10 @@ public class KFCFamily extends ItemFood {
     public KFCFamily() {
         super(20, 20, true);
         this.setUnlocalizedName("KFCFamily");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "KFCFamily");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "kfc_family");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setAlwaysEdible();
-        GameRegistry.registerItem(this, "KFCFamily");
+        GameRegistry.registerItem(this, "kfc_family");
         GTNLItemList.KFCFamily.set(new ItemStack(this, 1));
     }
 

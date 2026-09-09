@@ -26,9 +26,9 @@ public class RoyalGel extends BaubleItem {
     public RoyalGel() {
         this.setUnlocalizedName("RoyalGel");
         this.setMaxStackSize(1);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "RoyalGel");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "royal_gel");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "RoyalGel");
+        GameRegistry.registerItem(this, "royal_gel");
         GTNLItemList.RoyalGel.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }

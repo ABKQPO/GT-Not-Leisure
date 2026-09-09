@@ -57,10 +57,10 @@ public class MetaBlockBase extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlocks/0");
+        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_blocks/0");
         for (int Meta : META_SET) {
             BlockStaticDataClientOnly.BASE_ICONS
-                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlocks/" + Meta));
+                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_blocks/" + Meta));
         }
     }
 

@@ -25,8 +25,8 @@ public class ItemPartSuperInterface extends Item implements IPartItem {
         this.setMaxStackSize(64);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setUnlocalizedName("PartSuperInterface");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "SuperInterface");
-        GameRegistry.registerItem(this, "PartSuperInterface");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "super_interface");
+        GameRegistry.registerItem(this, "part_super_interface");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);

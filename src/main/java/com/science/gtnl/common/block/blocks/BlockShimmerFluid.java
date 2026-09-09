@@ -29,10 +29,10 @@ public class BlockShimmerFluid extends BlockFluidBase {
 
     public BlockShimmerFluid(Fluid fluid) {
         super(fluid, Material.water);
-        this.setBlockName("shimmer");
+        this.setBlockName("gtnl.block.shimmer");
         this.setQuantaPerBlock(7);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, getUnlocalizedName());
+        GameRegistry.registerBlock(this, "shimmer_fluid_block");
     }
 
     @Override

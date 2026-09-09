@@ -39,14 +39,14 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
 
     public BlockDimensionRespawnAnchor() {
         super(Material.rock);
-        this.setBlockName("DimensionRespawnAnchor");
+        this.setBlockName("gtnl.block.dimension_respawn_anchor");
         this.setHardness(50.0F);
         this.setResistance(2000.0F);
         this.setStepSound(soundTypeStone);
         this.setHarvestLevel("pickaxe", 3);
         this.setLightOpacity(0);
         this.setTickRandomly(true);
-        GameRegistry.registerBlock(this, ItemBlockDimensionRespawnAnchor.class, "tile.DimensionRespawnAnchor");
+        GameRegistry.registerBlock(this, ItemBlockDimensionRespawnAnchor.class, "dimension_respawn_anchor");
         GameRegistry.registerTileEntity(TileEntityDimensionRespawnAnchor.class, "dimension_respawn_anchor_tile_entity");
         GTNLItemList.DimensionRespawnAnchor.set(new ItemStack(this, 1));
         BlockDispenser.dispenseBehaviorRegistry
@@ -65,14 +65,14 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        icons[0] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorTopOff");
-        icons[1] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorTop");
-        icons[2] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorSide");
-        icons[3] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorSide1");
-        icons[4] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorSide2");
-        icons[5] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorSide3");
-        icons[6] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorSide4");
-        icons[7] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "DimensionRespawnAnchorBottom");
+        icons[0] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_top_off");
+        icons[1] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_top");
+        icons[2] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_side");
+        icons[3] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_side1");
+        icons[4] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_side2");
+        icons[5] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_side3");
+        icons[6] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_side4");
+        icons[7] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "dimension_respawn_anchor_bottom");
     }
 
     @Override

@@ -87,50 +87,51 @@ public class ItemLoader {
     public static Item recordSus = new ItemRecord("sus");
 
     public static ItemInfinityItem infinityTorch = new ItemInfinityItem(
-        "InfinityTorch",
+        "infinity_torch",
         "gtnl.item.infinity_torch",
         Blocks.torch,
         GTNLItemList.InfinityTorch);
 
     public static ItemInfinityItem infinityWaterBucket = new ItemInfinityItem(
-        "InfinityWaterBucket",
+        "infinity_water_bucket",
         "gtnl.item.infinity_water_bucket",
         Blocks.water,
         FluidRegistry.getFluid("water"),
         GTNLItemList.InfinityWaterBucket);
 
     public static ItemInfinityItem infinityLavaBucket = new ItemInfinityItem(
-        "InfinityLavaBucket",
+        "infinity_lava_bucket",
         "gtnl.item.infinity_lava_bucket",
         Blocks.lava,
         FluidRegistry.getFluid("lava"),
         GTNLItemList.InfinityLavaBucket);
 
     public static ItemInfinityItem infinityHoneyBucket = new ItemInfinityItem(
-        "InfinityHoneyBucket",
+        "infinity_honey_bucket",
         "gtnl.item.infinity_honey_bucket",
         BlockLoader.honeyFluidBlock,
         BlockLoader.honeyFluid,
         GTNLItemList.InfinityHoneyBucket);
 
     public static ItemInfinityItem infinityShimmerBucket = new ItemInfinityItem(
-        "InfinityShimmerBucket",
+        "infinity_shimmer_bucket",
         "gtnl.item.infinity_shimmer_bucket",
         BlockLoader.shimmerFluidBlock,
         BlockLoader.shimmerFluid,
         GTNLItemList.InfinityShimmerBucket);
 
     public static ItemInfinityItem superstrongSponge = new ItemInfinityItem(
-        "SuperstrongSponge",
+        "superstrong_sponge",
         "gtnl.item.superstrong_sponge",
         (Block) null,
+        null,
         false,
         GTNLItemList.SuperstrongSponge);
 
-    public static FuelRodDepleted infinityFuelRodDepleted = new FuelRodDepleted("InfinityFuelRodDepleted", 2000);
+    public static FuelRodDepleted infinityFuelRodDepleted = new FuelRodDepleted("infinity_fuel_rod_depleted", 2000);
 
     public static FuelRod infinityFuelRod = new FuelRod(
-        "InfinityFuelRod",
+        "infinity_fuel_rod",
         1,
         491520,
         500,
@@ -163,12 +164,12 @@ public class ItemLoader {
     public static RoyalGel royalGel = new RoyalGel();
     public static LuckyHorseshoe luckyHorseshoe = new LuckyHorseshoe();
     public static DraconicArmorProjectionBauble wyvernProjectionNecklace = new DraconicArmorProjectionBauble(
-        "WyvernProjectionNecklace",
+        "wyvern_projection_necklace",
         "gtnl.item.wyvern_projection_necklace",
         DraconicArmorProjectionType.WYVERN,
         GTNLItemList.WyvernProjectionNecklace);
     public static DraconicArmorProjectionBauble draconicProjectionNecklace = new DraconicArmorProjectionBauble(
-        "DraconicProjectionNecklace",
+        "draconic_projection_necklace",
         "gtnl.item.draconic_projection_necklace",
         DraconicArmorProjectionType.DRACONIC,
         GTNLItemList.DraconicProjectionNecklace);
@@ -200,7 +201,7 @@ public class ItemLoader {
             subDyeItems[i] = ItemInfinityCell.SubItem.getInstance(ItemList.DYE_ONLY_ITEMS[i].get(1));
         }
         infinityDyeCell = ItemInfinityCell
-            .getSubItem(StorageChannel.ITEMS, "gtnl.item.infinity_cell.dye", "InfinityDyeCell", subDyeItems);
+            .getSubItem(StorageChannel.ITEMS, "gtnl.item.infinity_cell.dye", "infinity_dye_cell", subDyeItems);
 
         String[] colors = { "Black", "Pink", "Red", "Orange", "Yellow", "Green", "Lime", "Blue", "LightBlue", "Cyan",
             "Brown", "Magenta", "Purple", "Gray", "LightGray", "White" };
@@ -210,12 +211,11 @@ public class ItemLoader {
             String fluidName = "dye.chemical.dye" + color.toLowerCase();
             subDyeFluid[i] = ItemInfinityCell.SubItem.getInstance(FluidRegistry.getFluid(fluidName));
         }
-        infinityDyeFluidCell = ItemInfinityCell
-            .getSubItem(
-                StorageChannel.FLUIDS,
-                "gtnl.item.infinity_cell.dye_fluid",
-                "InfinityDyeFluidCell",
-                subDyeFluid);
+        infinityDyeFluidCell = ItemInfinityCell.getSubItem(
+            StorageChannel.FLUIDS,
+            "gtnl.item.infinity_cell.dye_fluid",
+            "infinity_dye_fluid_cell",
+            subDyeFluid);
 
         List<ItemInfinityCell.SubItem> infinityStoneCell = new ArrayList<>();
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.stone));
@@ -256,8 +256,11 @@ public class ItemLoader {
                 .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 3)));
         }
 
-        ItemLoader.infinityStoneCell = ItemInfinityCell
-            .getSubItem(StorageChannel.ITEMS, "gtnl.item.infinity_cell.stone", "InfinityStoneCell", infinityStoneCell);
+        ItemLoader.infinityStoneCell = ItemInfinityCell.getSubItem(
+            StorageChannel.ITEMS,
+            "gtnl.item.infinity_cell.stone",
+            "infinity_stone_cell",
+            infinityStoneCell);
 
         GameRegistry.registerItem(recordSus, "record_sus");
 

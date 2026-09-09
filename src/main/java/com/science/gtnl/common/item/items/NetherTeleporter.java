@@ -34,10 +34,10 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
     public NetherTeleporter() {
         super();
         this.setUnlocalizedName("NetherTeleporter");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "NetherTeleporter");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "nether_teleporter");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "NetherTeleporter");
+        GameRegistry.registerItem(this, "nether_teleporter");
         GTNLItemList.NetherTeleporter.set(new ItemStack(this, 1));
     }
 

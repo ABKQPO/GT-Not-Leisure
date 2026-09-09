@@ -61,14 +61,14 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
         this.setUnlocalizedName("VeinMiningPickaxe");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "VeinMiningPickaxe");
+        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "vein_mining_pickaxe");
         this.setMaxStackSize(1);
         this.setMaxDamage(20000000);
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
             .register(this);
-        GameRegistry.registerItem(this, "VeinMiningPickaxe");
+        GameRegistry.registerItem(this, "vein_mining_pickaxe");
         GTNLItemList.VeinMiningPickaxe.set(new ItemStack(this, 1));
     }
 

@@ -50,7 +50,7 @@ public class TCResearches {
     public static void registerCategory() {
         ResearchCategories.registerCategory(
             "gtnl",
-            new ResourceLocation(RESOURCE_ROOT_ID, "textures/items/TestItem.png"),
+            new ResourceLocation(RESOURCE_ROOT_ID, "textures/items/test_item.png"),
             BACKGROUND);
     }
 

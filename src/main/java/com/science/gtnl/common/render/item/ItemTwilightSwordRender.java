@@ -21,7 +21,7 @@ public class ItemTwilightSwordRender implements IItemRenderer {
 
     public ItemTwilightSwordRender() {
         swordModel = AdvancedModelLoader
-            .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/TwilightSword.obj"));
+            .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/twilight_sword.obj"));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ItemTwilightSwordRender implements IItemRenderer {
         }
 
         Minecraft.getMinecraft().renderEngine
-            .bindTexture(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/TwilightSword.png"));
+            .bindTexture(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/twilight_sword.png"));
         swordModel.renderAll();
 
         GL11.glPopMatrix();

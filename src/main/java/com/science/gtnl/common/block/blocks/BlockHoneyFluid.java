@@ -17,10 +17,10 @@ public class BlockHoneyFluid extends BlockFluidBase {
 
     public BlockHoneyFluid(Fluid fluid) {
         super(fluid, Material.water);
-        this.setBlockName("honey");
+        this.setBlockName("gtnl.block.honey");
         this.setQuantaPerBlock(4);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, getUnlocalizedName());
+        GameRegistry.registerBlock(this, "honey_fluid_block");
     }
 
     @Override

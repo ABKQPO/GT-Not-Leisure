@@ -29,10 +29,10 @@ public class SuspiciousStew extends ItemFood {
     public SuspiciousStew() {
         super(3, 0.6F, false);
         this.setUnlocalizedName("SuspiciousStew");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "SuspiciousStew");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "suspicious_stew");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "SuspiciousStew");
+        GameRegistry.registerItem(this, "suspicious_stew");
         GTNLItemList.SuspiciousStew.set(new ItemStack(this, 1));
     }
 

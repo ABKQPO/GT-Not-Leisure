@@ -20,9 +20,9 @@ public class SatietyRing extends BaubleItem {
     public SatietyRing() {
         this.setMaxStackSize(1);
         this.setUnlocalizedName("SatietyRing");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "SatietyRing");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "satiety_ring");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "SatietyRing");
+        GameRegistry.registerItem(this, "satiety_ring");
         GTNLItemList.SatietyRing.set(new ItemStack(this, 1));
     }
 

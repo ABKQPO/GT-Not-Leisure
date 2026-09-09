@@ -25,10 +25,10 @@ public class BlockSuperDenseEnergyCell extends BlockEnergyCell {
     protected IIcon[] chargeLevelIcons;
 
     public BlockSuperDenseEnergyCell() {
-        setBlockName("SuperDenseEnergyCell");
+        setBlockName("gtnl.block.super_dense_energy_cell");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setTileEntity(TileEntitySuperDenseEnergyCell.class);
-        GameRegistry.registerBlock(this, getItemBlockClass(), "tile.SuperDenseEnergyCell");
+        GameRegistry.registerBlock(this, getItemBlockClass(), "super_dense_energy_cell");
         GameRegistry.registerTileEntity(TileEntitySuperDenseEnergyCell.class, "super_dense_energy_cell_tile_entity");
         GTNLItemList.SuperDenseEnergyCell.set(new ItemStack(this));
     }
@@ -41,10 +41,11 @@ public class BlockSuperDenseEnergyCell extends BlockEnergyCell {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        baseIcon = register.registerIcon(RESOURCE_ROOT_ID + ":BlockSuperDenseEnergyCell");
+        baseIcon = register.registerIcon(RESOURCE_ROOT_ID + ":block_super_dense_energy_cell");
         chargeLevelIcons = new IIcon[8];
         for (int level = 0; level < chargeLevelIcons.length; level++) {
-            chargeLevelIcons[level] = register.registerIcon(RESOURCE_ROOT_ID + ":BlockSuperDenseEnergyCell" + level);
+            chargeLevelIcons[level] = register
+                .registerIcon(RESOURCE_ROOT_ID + ":block_super_dense_energy_cell" + level);
         }
     }
 

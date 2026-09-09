@@ -26,8 +26,7 @@ public class DraconicArmorProjectionBauble extends BaubleItem implements IBauble
     private final DraconicArmorProjectionType projectionType;
 
     public DraconicArmorProjectionBauble(String registrationName, String displayNameKey,
-        DraconicArmorProjectionType projectionType,
-        GTNLItemList itemEntry) {
+        DraconicArmorProjectionType projectionType, GTNLItemList itemEntry) {
         this.displayNameKey = displayNameKey;
         this.projectionType = projectionType;
         setUnlocalizedName(registrationName);

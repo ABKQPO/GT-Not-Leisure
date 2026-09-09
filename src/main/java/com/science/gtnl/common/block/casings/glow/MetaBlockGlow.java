@@ -60,10 +60,10 @@ public class MetaBlockGlow extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlockGlow/0");
+        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_block_glow/0");
         for (int Meta : META_SET) {
             BlockStaticDataClientOnly.GLOW_ICONS
-                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlockGlow/" + Meta));
+                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_block_glow/" + Meta));
         }
     }
 

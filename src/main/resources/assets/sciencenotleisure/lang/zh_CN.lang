@@ -1,9 +1,8 @@
-itemGroup.GTNotLeisureItem=GT不再业余：物品
-itemGroup.GTNotLeisureMachine=GT不再业余：机器
-itemGroup.GTNotLeisureBlock=GT不再业余：方块
-itemGroup.GTNotLeisurePlayerDoll=GT不再业余：玩偶
+gtnl.item_group.item=GT不再业余：物品
+gtnl.item_group.machine=GT不再业余：机器
+gtnl.item_group.block=GT不再业余：方块
+gtnl.item_group.player_doll=GT不再业余：玩偶
 gtnl.feature.structural_reconstruction_plan=结构代替计划
-AppliedEnergistics2=应用能源2
 
 gtnl.message.welcome.0=欢迎来到GT Not Leisure！
 gtnl.message.welcome.1=如果你是第一次安装这个模组，请仔细检查配置文件
@@ -14,7 +13,7 @@ gtnl.message.recipe_removal_enabled=配方移除已启用，注意部分配方�
 gtnl.message.debug_enabled=GTNL Debug模式已启用
 gtnl.message.recipe_output_chance_enabled=GTNL 电压配方概率修改已启用
 gtnl.message.recipe_output_chance_increase=当前每级增加概率：%s
-Welcome_GTNL_reload=配置文件已重新加载！
+gtnl.config.reload=配置文件已重新加载！
 
 gtnl.tooltip.add_mod=添加模组：
 gtnl.tooltip.change_mod=修改模组：
@@ -3592,13 +3591,13 @@ gtnl.item.fuel_rod.tooltip.mox_coefficient=具有MOX特性 | MOX系数：%d
 gtnl.item.fuel_rod.tooltip.heat_output=基础产热(heta/s)：%d/%d/%d
 gtnl.item.fuel_rod.tooltip.power_output=基础发电功率(EU/t)：%d/%d/%d
 
-item.HoneyBucket.name=蜂蜜桶
-tile.honey.name=蜂蜜
-fluid.honey=蜂蜜
+gtnl.item.honey_bucket=蜂蜜桶
+gtnl.block.honey=蜂蜜
+gtnl.fluid.honey=蜂蜜
 
-item.ShimmerBucket.name=微光桶
-tile.shimmer.name=微光
-fluid.shimmer=微光
+gtnl.item.shimmer_bucket=微光桶
+gtnl.block.shimmer=微光
+gtnl.fluid.shimmer=微光
 gtnl.potion.shimmering=微光闪烁
 gtnl.recipe.shimmer=微光嬗变
 
@@ -3682,9 +3681,9 @@ gtnl.block.lamp.borderless=无边框
 gtnl.recipe.refusion_reactor.structure_incomplete=可望不可及，不是么? 
 gtnl.recipe.portal_to_alfheim.invalid_input=精灵不喜欢面包。
 
-MachineTierTooltip=机器等级：
+gtnl.tooltip.machine_tier=机器等级：
 gtnl.machine.tooltip.tier=机器等级：%s%s
-ParallelTooltip=并行：
+gtnl.tooltip.parallel=并行：
 gtnl.machine.tooltip.parallel=并行：%s%s
 gtnl.machine.steam.high_pressure.tooltip=高压模式下处理速度和蒸汽消耗翻倍
 gtnl.machine.steam.overclocking_count=超频次数
@@ -3797,8 +3796,8 @@ gtnl.machine.godforge.module.casing.4= 恒星能量抽取机械方块
 gtnl.gui.assembler_matrix.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
 gtnl.machine.assembler_matrix.pattern_exists=网络已有类似的合成样板,已跳过上传并返还空白样板！
 
-text.CraftComplete.tooltip.0=§5自动合成完毕！
-text.CraftComplete.tooltip.1=%s %s, 用时 %s
+gtnl.tooltip.craft_complete.0=§5自动合成完毕！
+gtnl.tooltip.craft_complete.1=%s %s, 用时 %s
 gtnl.ui.controller_upgrade.preview_next=查看下一阶段材料
 gtnl.ui.controller_upgrade.back_to_current=返回上一阶段材料
 gtnl.energy_monitor.owner=所有者：%s
@@ -4075,7 +4074,7 @@ gtnl.command.steam_network.join_undo=要撤销此操作，请使用 /steam_netwo
 gtnl.command.item_info.usage=/getiteminfo - 显示手持物品的全部信息
 gtnl.command.item_info.player_only=此指令只能由玩家使用。
 gtnl.command.item_info.no_item=你没有手持任何物品。
-gtnl.command.item_info.header:===== 物品信息 =====
+gtnl.command.item_info.header====== 物品信息 =====
 gtnl.command.item_info.display_name=显示名称：%s
 gtnl.command.item_info.item_stack_display_name=物品堆显示名称：%s
 gtnl.command.item_info.unlocalized_inefficient_name=低效未本地化名称：%s

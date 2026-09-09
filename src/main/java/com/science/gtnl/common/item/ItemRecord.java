@@ -9,7 +9,7 @@ public class ItemRecord extends net.minecraft.item.ItemRecord {
 
     public ItemRecord(String recordName) {
         super(recordName);
-        setTextureName(RESOURCE_ROOT_ID + ":" + "Record." + recordName);
+        setTextureName(RESOURCE_ROOT_ID + ":record_" + recordName);
         setUnlocalizedName("record");
         setCreativeTab(CreativeTabs.tabMisc);
     }

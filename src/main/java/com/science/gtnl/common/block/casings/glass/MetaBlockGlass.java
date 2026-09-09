@@ -61,10 +61,10 @@ public class MetaBlockGlass extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlockGlass/0");
+        this.blockIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_block_glass/0");
         for (int Meta : META_SET) {
             BlockStaticDataClientOnly.GLASS_ICONS
-                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaBlockGlass/" + Meta));
+                .put(Meta, reg.registerIcon(RESOURCE_ROOT_ID + ":" + "meta_block_glass/" + Meta));
         }
     }
 

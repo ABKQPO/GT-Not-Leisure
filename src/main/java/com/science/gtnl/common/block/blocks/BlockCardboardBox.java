@@ -44,8 +44,8 @@ public class BlockCardboardBox extends BlockContainer {
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setHardness(0.5F);
         setResistance(1F);
-        setBlockName("CardboardBox");
-        GameRegistry.registerBlock(this, ItemBlockCardboardBox.class, "tile.CardboardBox");
+        setBlockName("gtnl.block.cardboard_box");
+        GameRegistry.registerBlock(this, ItemBlockCardboardBox.class, "cardboard_box");
         GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "cardboard_box_tile_entity");
         GTNLItemList.CardboardBox.set(new ItemStack(this, 1));
     }
@@ -58,9 +58,9 @@ public class BlockCardboardBox extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        icons[0] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "CardboardBoxTop");
-        icons[1] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "CardboardBoxSide");
-        icons[2] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "CardboardBoxSideStorage");
+        icons[0] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "cardboard_box_top");
+        icons[1] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "cardboard_box_side");
+        icons[2] = register.registerIcon(RESOURCE_ROOT_ID + ":" + "cardboard_box_side_storage");
     }
 
     @Override

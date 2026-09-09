@@ -39,11 +39,11 @@ public class BlockSuperInterface extends BlockInterface {
         super();
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("SuperInterface");
+        setBlockName("gtnl.block.super_interface");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":SuperInterface");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":super_interface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSuperInterface.class, "tile.SuperInterface");
+        GameRegistry.registerBlock(this, ItemBlockSuperInterface.class, "super_interface");
         GameRegistry.registerTileEntity(TileEntitySuperInterface.class, "super_interface_tile_entity");
         GTNLItemList.SuperInterface.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntitySuperInterface.class);
@@ -58,8 +58,8 @@ public class BlockSuperInterface extends BlockInterface {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        this.iconAlternate = register.registerIcon(RESOURCE_ROOT_ID + ":SuperInterfaceAlternate");
-        this.iconAlternateArrow = register.registerIcon(RESOURCE_ROOT_ID + ":SuperInterfaceAlternateArrow");
+        this.iconAlternate = register.registerIcon(RESOURCE_ROOT_ID + ":super_interface_alternate");
+        this.iconAlternateArrow = register.registerIcon(RESOURCE_ROOT_ID + ":super_interface_alternate_arrow");
         super.registerBlockIcons(register);
     }
 

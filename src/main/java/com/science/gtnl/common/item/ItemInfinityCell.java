@@ -69,7 +69,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
     public static final long STORAGE_SIZE = Long.MAX_VALUE / 2;
     public static final String CUSTOM_TEXTURE_TAG = "CustomTexture";
     public static final String DEFAULT_ICON_KEY = "default";
-    public static final String DEFAULT_TEXTURE_NAME = "InfinityCell";
+    public static final String DEFAULT_TEXTURE_NAME = "infinity_cell";
     public static final String TOOLTIP_CELL_CONTENTS = NameConst.TT_KEY + "cell_contents";
     public static final String TOOLTIP_CELL_EMPTY = NameConst.TT_KEY + "cell_empty";
     public static final String TOOLTIP_INFINITY_FLUID_STORAGE = NameConst.TT_KEY + "infinity_fluid";
@@ -80,9 +80,9 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
     public ItemInfinityCell() {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + DEFAULT_TEXTURE_NAME);
         this.setHasSubtypes(true);
-        this.setUnlocalizedName("InfinityCell");
+        this.setUnlocalizedName("infinity_cell");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "InfinityCell");
+        GameRegistry.registerItem(this, "infinity_cell");
         AEApi.instance()
             .registries()
             .cell()

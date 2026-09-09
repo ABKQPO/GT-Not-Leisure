@@ -73,10 +73,10 @@ public class ElectricProspectorTool extends Item {
         super();
         this.setUnlocalizedName("ElectricProspectorTool");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "ElectricProspectorTool");
+        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "electric_prospector_tool");
         this.setMaxStackSize(1);
         this.setMaxDamage(1);
-        GameRegistry.registerItem(this, "ElectricProspectorTool");
+        GameRegistry.registerItem(this, "electric_prospector_tool");
     }
 
     public static ItemStack initItem(int aMeta, int aRange, long maxDamage) {
@@ -115,12 +115,12 @@ public class ElectricProspectorTool extends Item {
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
         this.itemIcon = iconRegister
-            .registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "ElectricProspectorTool/0");
+            .registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "electric_prospector_tool/0");
         MetaTooltipUtils.registerIcons(
             META_SET,
             ItemStaticDataClientOnly.ELECTRIC_PROSPECTOR_TOOL_ICONS,
             iconRegister,
-            ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "ElectricProspectorTool/");
+            ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "electric_prospector_tool/");
     }
 
     @Override

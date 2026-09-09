@@ -27,9 +27,9 @@ public class RejectionRing extends BaubleItem {
     public RejectionRing() {
         this.setMaxStackSize(1);
         this.setUnlocalizedName("RejectionRing");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "RejectionRing");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "rejection_ring");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "RejectionRing");
+        GameRegistry.registerItem(this, "rejection_ring");
         GTNLItemList.RejectionRing.set(new ItemStack(this, 1));
     }
 

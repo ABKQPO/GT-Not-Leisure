@@ -51,13 +51,13 @@ public class PortableItem extends Item {
     public PortableItem() {
         super();
         this.setUnlocalizedName("PortableItem");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "PortableItem");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "portable_item");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setHasSubtypes(true);
-        GameRegistry.registerItem(this, "PortableItem");
+        GameRegistry.registerItem(this, "portable_item");
         for (PortableType type : PortableType.values()) {
-            GTNLItemList.valueOf(type.getUnlocalizedName())
+            GTNLItemList.valueOf(type.getItemListName())
                 .set(new ItemStack(this, 1, type.ordinal()));
         }
     }
@@ -143,7 +143,7 @@ public class PortableItem extends Item {
     @Override
     public void registerIcons(IIconRegister iconRegister) {
         for (PortableType type : PortableType.values()) {
-            type.icon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + type.getUnlocalizedName());
+            type.icon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + type.getTextureName());
         }
     }
 
@@ -506,8 +506,13 @@ public class PortableItem extends Item {
             return ordinal();
         }
 
-        public String getUnlocalizedName() {
+        private String getItemListName() {
             return "Portable" + baseName;
+        }
+
+        private String getTextureName() {
+            return "portable_" + baseName.replaceAll("([a-z])([A-Z])", "$1_$2")
+                .toLowerCase();
         }
 
         public static PortableType byMeta(int meta) {

@@ -94,7 +94,7 @@ public class ItemPartMECellDock extends Item implements IPartItem {
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setUnlocalizedName("MECellDock");
         setTextureName(RESOURCE_ROOT_ID + ":part/cell_dock");
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "me_cell_dock");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);

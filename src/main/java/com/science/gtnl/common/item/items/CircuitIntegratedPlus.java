@@ -70,7 +70,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
         this.setMaxDamage(0);
         this.setUnlocalizedName("CircuitIntegratedPlus");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "CircuitIntegratedPlus");
+        GameRegistry.registerItem(this, "circuit_integrated_plus");
         GTNLItemList.CircuitIntegratedPlus.set(this);
 
         ALL_VARIANTS.add(new ItemStack(this, 0, 0));
@@ -236,7 +236,7 @@ public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem
     public void registerIcons(IIconRegister aIconRegister) {
         super.registerIcons(aIconRegister);
         for (int i = 0; i < mIconDamage.length; i++) {
-            mIconDamage[i] = aIconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "CircuitIntegratedPlus/" + i);
+            mIconDamage[i] = aIconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "circuit_integrated_plus/" + i);
         }
     }
 

@@ -46,15 +46,15 @@ import tectech.thing.CustomItemList;
 public class Stick extends Item implements IItemStackExtra, IKeyHandler {
 
     public IIcon defaultIcon;
-    public static final String ID = RESOURCE_ROOT_ID + ":" + "Stick";
+    public static final String ID = RESOURCE_ROOT_ID + ":stick";
 
     public Stick() {
         this.setMaxStackSize(64);
         this.setUnlocalizedName("Stick");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "Stick");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "stick");
         this.setHasSubtypes(true);
-        GameRegistry.registerItem(this, "Stick");
+        GameRegistry.registerItem(this, "stick");
         GTNLItemList.Stick.set(new ItemStack(this, 1));
     }
 
@@ -121,7 +121,7 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister reg) {
-        this.defaultIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "Stick");
+        this.defaultIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "stick");
     }
 
     @Override

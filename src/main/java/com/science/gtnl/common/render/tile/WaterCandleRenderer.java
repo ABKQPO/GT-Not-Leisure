@@ -24,7 +24,7 @@ public class WaterCandleRenderer extends TileEntitySpecialRenderer implements IS
     private final WaterCandleModel model = new WaterCandleModel();
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/blocks/WaterCandle.png");
+        RESOURCE_ROOT_ID + ":" + "textures/blocks/water_candle.png");
 
     @Override
     public int getRenderId() {

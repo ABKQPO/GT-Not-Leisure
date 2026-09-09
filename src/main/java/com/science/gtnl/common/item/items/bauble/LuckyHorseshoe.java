@@ -30,9 +30,9 @@ public class LuckyHorseshoe extends BaubleItem {
     public LuckyHorseshoe() {
         this.setMaxStackSize(1);
         this.setUnlocalizedName("LuckyHorseshoe");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "LuckyHorseshoe");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "lucky_horseshoe");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "LuckyHorseshoe");
+        GameRegistry.registerItem(this, "lucky_horseshoe");
         GTNLItemList.LuckyHorseshoe.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }

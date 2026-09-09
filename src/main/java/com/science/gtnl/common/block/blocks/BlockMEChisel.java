@@ -27,14 +27,14 @@ public class BlockMEChisel extends AEBaseTileBlock {
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("MEChisel");
+        setBlockName("gtnl.block.me_chisel");
         setHarvestLevel("pickaxe", 3);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockMEChisel.class, getUnlocalizedName());
+        GameRegistry.registerBlock(this, ItemBlockMEChisel.class, "me_chisel");
         GameRegistry.registerTileEntity(TileEntityMEChisel.class, "me_chisel_tile_entity");
         GTNLItemList.MEChisel.set(new ItemStack(this, 1));
         setTileEntity(TileEntityMEChisel.class);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":MEChisel");
+        setBlockTextureName(RESOURCE_ROOT_ID + ":me_chisel");
     }
 
     @Override

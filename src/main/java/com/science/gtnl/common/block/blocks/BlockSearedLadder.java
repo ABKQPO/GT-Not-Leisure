@@ -32,10 +32,10 @@ public class BlockSearedLadder extends Block {
         setHardness(3F);
         setResistance(20F);
         setStepSound(soundTypeMetal);
-        this.setBlockName("SearedLadder");
+        this.setBlockName("gtnl.block.seared_ladder");
         this.setBlockTextureName("tinker:searedbricksquare");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, "tile.SearedLadder");
+        GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, "seared_ladder");
         GTNLItemList.SearedLadder.set(new ItemStack(this, 1));
     }
 
@@ -54,7 +54,7 @@ public class BlockSearedLadder extends Block {
     @Override
     public void registerBlockIcons(IIconRegister reg) {
         super.registerBlockIcons(reg);
-        this.ladderIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "Searedbricksquare");
+        this.ladderIcon = reg.registerIcon(RESOURCE_ROOT_ID + ":" + "searedbricksquare");
     }
 
     @Override

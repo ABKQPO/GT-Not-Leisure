@@ -25,13 +25,13 @@ public class BlockWaterCandle extends BlockContainer {
         super(Material.iron);
         this.setResistance(99999999f);
         this.setHardness(5f);
-        this.setBlockName("WaterCandle");
+        this.setBlockName("gtnl.block.water_candle");
         this.setBlockBounds(0.5F - 0.1875F, 0.0F, 0.5F - 0.1875F, 0.5F + 0.1875F, 0.375F, 0.5F + 0.1875F);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setLightLevel(0.8f);
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "WaterCandle");
+        this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "water_candle");
         this.setStepSound(soundTypeSnow);
-        GameRegistry.registerBlock(this, "tile.WaterCandle");
+        GameRegistry.registerBlock(this, "water_candle");
         GameRegistry.registerTileEntity(TileEntityWaterCandle.class, "water_candle_tile_entity");
         GTNLItemList.WaterCandle.set(new ItemStack(this, 1));
     }

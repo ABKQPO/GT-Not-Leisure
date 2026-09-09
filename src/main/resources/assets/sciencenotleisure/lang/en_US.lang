@@ -1,9 +1,8 @@
-itemGroup.GTNotLeisureItem=GT Not Leisure: Items
-itemGroup.GTNotLeisureMachine=GT Not Leisure: Machines
-itemGroup.GTNotLeisureBlock=GT Not Leisure: Blocks
-itemGroup.GTNotLeisurePlayerDoll=GT Not Leisure: Player Doll
+gtnl.item_group.item=GT Not Leisure: Items
+gtnl.item_group.machine=GT Not Leisure: Machines
+gtnl.item_group.block=GT Not Leisure: Blocks
+gtnl.item_group.player_doll=GT Not Leisure: Player Doll
 gtnl.feature.structural_reconstruction_plan=Structural Replacement Plan
-AppliedEnergistics2=Applied Energistics 2
 
 gtnl.message.welcome.0=Welcome to GT: Science Not Leisure!
 gtnl.message.welcome.1=If this is your first time installing the mod, please check the config files carefully.
@@ -14,7 +13,7 @@ gtnl.message.recipe_removal_enabled=Recipe removal is enabled. Note that some re
 gtnl.message.debug_enabled=GTNL Debug mode is enabled.
 gtnl.message.recipe_output_chance_enabled=GTNL Voltage Recipe Chance Modification Enabled.
 gtnl.message.recipe_output_chance_increase=Current probability increase for each level: %s
-Welcome_GTNL_reload=Configuration file has been reloaded!
+gtnl.config.reload=Configuration file has been reloaded!
 
 gtnl.tooltip.add_mod=Add Mod: 
 gtnl.tooltip.change_mod=Change Mod: 
@@ -3592,13 +3591,13 @@ gtnl.item.fuel_rod.tooltip.mox_coefficient=Has MOX properties | MOX Coefficient:
 gtnl.item.fuel_rod.tooltip.heat_output=Base Heat Output (heta/s): %d/%d/%d
 gtnl.item.fuel_rod.tooltip.power_output=Base Power Output (EU/t): %d/%d/%d
 
-item.HoneyBucket.name=Honey Bucket
-tile.honey.name=Honey
-fluid.honey=Honey
+gtnl.item.honey_bucket=Honey Bucket
+gtnl.block.honey=Honey
+gtnl.fluid.honey=Honey
 
-item.ShimmerBucket.name=Shimmer Bucket
-tile.shimmer.name=Shimmer
-fluid.shimmer=Shimmer
+gtnl.item.shimmer_bucket=Shimmer Bucket
+gtnl.block.shimmer=Shimmer
+gtnl.fluid.shimmer=Shimmer
 gtnl.potion.shimmering=Shimmering
 gtnl.recipe.shimmer=Shimmer Transformation
 
@@ -3682,9 +3681,9 @@ gtnl.block.lamp.borderless=Borderless
 gtnl.recipe.refusion_reactor.structure_incomplete=Structure Incomplete
 gtnl.recipe.portal_to_alfheim.invalid_input=Invalid Input
 
-MachineTierTooltip=Machine Tier: 
+gtnl.tooltip.machine_tier=Machine Tier:
 gtnl.machine.tooltip.tier=Machine Tier: %s%s
-ParallelTooltip=Parallel: 
+gtnl.tooltip.parallel=Parallel:
 gtnl.machine.tooltip.parallel=Parallel: %s%s
 gtnl.machine.steam.high_pressure.tooltip=High pressure mode doubles processing speed and steam consumption
 gtnl.machine.steam.overclocking_count=Overclocking count
@@ -3797,8 +3796,8 @@ gtnl.machine.godforge.module.casing.4= Stellar Energy Siphon Casing
 gtnl.gui.assembler_matrix.upload_pattern=Upload pattern to available §9Assembler Matrix§r in current network.
 gtnl.machine.assembler_matrix.pattern_exists=A similar pattern exists. Upload skipped and blank pattern returned!
 
-text.CraftComplete.tooltip.0=§5Auto-Crafting Complete
-text.CraftComplete.tooltip.1=%s %s, took %s
+gtnl.tooltip.craft_complete.0=§5Auto-Crafting Complete
+gtnl.tooltip.craft_complete.1=%s %s, took %s
 gtnl.ui.controller_upgrade.preview_next=View next stage materials
 gtnl.ui.controller_upgrade.back_to_current=Back to previous stage materials
 gtnl.energy_monitor.owner=Owner: %s
@@ -4075,7 +4074,7 @@ gtnl.command.steam_network.join_undo=To undo this, join your own network again w
 gtnl.command.item_info.usage=/getiteminfo - Display all information about the item in your hand
 gtnl.command.item_info.player_only=This command can only be used by players.
 gtnl.command.item_info.no_item=You are not holding any item.
-gtnl.command.item_info.header:===== Item Info =====
+gtnl.command.item_info.header====== Item Info =====
 gtnl.command.item_info.display_name=Display Name: %s
 gtnl.command.item_info.item_stack_display_name=ItemStack Display Name: %s
 gtnl.command.item_info.unlocalized_inefficient_name=Unlocalized Inefficient Name: %s

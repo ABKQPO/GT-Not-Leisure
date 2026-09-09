@@ -20,9 +20,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RealArtificialStarRenderer extends TileEntitySpecialRenderer {
 
     public static final ResourceLocation STAR_TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "model/ArtificialStarRender.png");
+        RESOURCE_ROOT_ID + ":" + "model/artificial_star_render.png");
     public static final IModelCustom STAR_MODEL = AdvancedModelLoader
-        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/ArtificialStarRender.obj"));
+        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":" + "model/artificial_star_render.obj"));
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {

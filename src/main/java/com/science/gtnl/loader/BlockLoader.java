@@ -139,12 +139,15 @@ public class BlockLoader {
         GTNLItemList.CompressedStargateTier9.set(new ItemStack(compressedStargateTier9));
 
         honeyFluid = registerFluid(
-            new Fluid("honey").setViscosity(6000)
+            new Fluid("honey").setUnlocalizedName("gtnl.fluid.honey")
+                .setViscosity(6000)
                 .setDensity(1500));
         honeyFluidBlock = new BlockHoneyFluid(honeyFluid);
         GTNLItemList.HoneyFluidBlock.set(new ItemStack(honeyFluidBlock));
 
-        shimmerFluid = registerFluid(new Fluid("shimmer").setViscosity(800));
+        shimmerFluid = registerFluid(
+            new Fluid("shimmer").setUnlocalizedName("gtnl.fluid.shimmer")
+                .setViscosity(800));
         shimmerFluidBlock = new BlockShimmerFluid(shimmerFluid);
         GTNLItemList.ShimmerFluidBlock.set(new ItemStack(shimmerFluidBlock));
 

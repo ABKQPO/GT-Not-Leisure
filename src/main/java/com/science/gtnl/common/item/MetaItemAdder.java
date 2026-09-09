@@ -83,12 +83,12 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
-        this.itemIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":MetaItem/0");
+        this.itemIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":meta_item/0");
         MetaTooltipUtils.registerIcons(
             META_SET,
             ItemStaticDataClientOnly.META_ITEM_01_ICONS,
             iconRegister,
-            RESOURCE_ROOT_ID + ":MetaItem/");
+            RESOURCE_ROOT_ID + ":meta_item/");
         halo = new IIcon[1];
         halo[0] = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "halonoise");
     }

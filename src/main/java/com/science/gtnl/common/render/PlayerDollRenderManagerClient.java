@@ -48,7 +48,7 @@ public class PlayerDollRenderManagerClient {
     public static final ResourceLocation DEFAULT_CAPE = new ResourceLocation(RESOURCE_ROOT_ID + ":model/cape.png");
 
     public static final IModelCustom MODEL = AdvancedModelLoader
-        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":model/PlayerDoll.obj"));
+        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":model/player_doll.obj"));
 
     public static final File SKIN_DIR = new File("config/GTNotLeisure/skin");
     public static final File CAPE_DIR = new File("config/GTNotLeisure/cape");

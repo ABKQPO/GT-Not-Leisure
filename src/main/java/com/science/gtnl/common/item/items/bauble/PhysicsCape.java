@@ -35,7 +35,7 @@ import vazkii.botania.api.item.IBaubleRender;
 public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
     private static final ResourceLocation texture = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/model/PhysicsCape.png");
+        RESOURCE_ROOT_ID + ":" + "textures/model/physics_cape.png");
 
     @SideOnly(Side.CLIENT)
     private static ModelBiped model;
@@ -43,10 +43,10 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
     public PhysicsCape() {
         this.setUnlocalizedName("PhysicsCape");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "PhysicsCape");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "physics_cape");
         this.setMaxDamage(2000);
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, "PhysicsCape");
+        GameRegistry.registerItem(this, "physics_cape");
         GTNLItemList.PhysicsCape.set(new ItemStack(this, 1));
     }
 

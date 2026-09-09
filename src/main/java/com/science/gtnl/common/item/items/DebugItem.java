@@ -61,10 +61,10 @@ public class DebugItem extends Item {
         + "()[]{}@#$%^&*:;<>?!").toCharArray();
 
     public DebugItem() {
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "DebugItem");
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + "debug_item");
         this.setUnlocalizedName("DebugItem");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "DebugItem");
+        GameRegistry.registerItem(this, "debug_item");
         GTNLItemList.DebugItem.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }
