@@ -155,36 +155,36 @@ public class FOGAlloySmelterModule extends MTEBaseModule {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FOGAlloySmelterModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fog_alloy_smelter_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.2"))
             .addSeparator(EnumChatFormatting.AQUA, 74)
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGAlloySmelterModule_06"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.alloy_smelter_module.tooltip.6"))
             .beginStructureBlock(7, 7, 13, false)
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_00"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.0"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_01"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.1"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_02"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.2"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_03"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.3"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "1"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_04"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.4"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
     }

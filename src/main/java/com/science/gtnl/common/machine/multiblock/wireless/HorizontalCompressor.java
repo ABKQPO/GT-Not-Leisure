@@ -240,27 +240,27 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("HorizontalCompressorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HorizontalCompressor_00"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.info"))
             .addSupportAny()
             .beginStructureBlock(11, 10, 30, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HorizontalCompressor_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -309,7 +309,7 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_HorizontalCompressor_00");
+        return StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.upgrade");
     }
 
 }

@@ -54,6 +54,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -86,6 +87,11 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     public SteamCactusWonder(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_cactus_wonder.name";
     }
 
     @Override
@@ -236,19 +242,19 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCactusWonderRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCactusWonder_05"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.5"))
             .beginStructureBlock(9, 11, 9, true)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
@@ -282,7 +288,8 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
             .widget(
                 new TextWidget()
                     .setStringSupplier(
-                        () -> EnumChatFormatting.WHITE + StatCollector.translateToLocal("Tooltip_SteamCactusWonder_06")
+                        () -> EnumChatFormatting.WHITE
+                            + StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.info.offer_value")
                             + EnumChatFormatting.YELLOW
                             + numberFormat.format(fueledAmount))
                     .setTextAlignment((Alignment.CenterLeft)))

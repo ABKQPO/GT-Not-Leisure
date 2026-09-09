@@ -154,7 +154,7 @@ public class GTNLCustomDroneDownLinkHatchGui extends MTEHatchBaseGui<CustomDrone
     }
 
     private IWidget createConfigurationLabel() {
-        return IKey.lang("Info_ConfigurationMaintenanceHatch_00")
+        return IKey.lang("gtnl.hatch.configuration_maintenance.processing_time")
             .asWidget()
             .textAlign(Alignment.Center)
             .size(150, 14);

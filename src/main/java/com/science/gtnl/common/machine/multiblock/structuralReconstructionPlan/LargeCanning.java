@@ -36,6 +36,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -51,6 +52,11 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
 
     public LargeCanning(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_canning.name";
     }
 
     @Override
@@ -155,20 +161,20 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeCanningRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCanning_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_canning.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .addPerfectOCInfo()
             .beginStructureBlock(5, 5, 7, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCanning_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_canning.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

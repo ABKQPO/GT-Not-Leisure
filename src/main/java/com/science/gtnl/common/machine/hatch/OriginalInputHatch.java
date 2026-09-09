@@ -39,10 +39,10 @@ public class OriginalInputHatch extends MTEHatchInput {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalInputHatch_00"),
-            StatCollector.translateToLocal("Tooltip_OriginalInputHatch_01"),
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.original_input.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.original_input.tooltip.1"),
             StatCollector.translateToLocalFormatted(
-                "Tooltip_OriginalInputHatch_02",
+                "gtnl.hatch.original_input.tooltip.2",
                 NumberFormatUtil.formatNumber(getCapacity())) };
     }
 }

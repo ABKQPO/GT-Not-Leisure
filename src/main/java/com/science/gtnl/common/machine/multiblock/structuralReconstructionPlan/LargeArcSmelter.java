@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
 
     public LargeArcSmelter(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_arc_smelter.name";
     }
 
     @Override
@@ -145,19 +151,19 @@ public class LargeArcSmelter extends GTMMultiMachineBase<LargeArcSmelter> implem
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeArcSmelterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeArcSmelter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeArcSmelter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .addPerfectOCInfo()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeArcSmelter_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeArcSmelter_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeArcSmelter_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeArcSmelter_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeArcSmelter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_arc_smelter.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

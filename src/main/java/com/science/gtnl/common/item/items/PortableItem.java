@@ -55,7 +55,7 @@ public class PortableItem extends Item {
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setHasSubtypes(true);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PortableItem");
         for (PortableType type : PortableType.values()) {
             GTNLItemList.valueOf(type.getUnlocalizedName())
                 .set(new ItemStack(this, 1, type.ordinal()));
@@ -132,12 +132,12 @@ public class PortableItem extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        return "item.PortableItem." + itemStack.getItemDamage();
+        return "gtnl.item.portable." + itemStack.getItemDamage();
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "PortableItem";
+        return "gtnl.item.portable";
     }
 
     @Override

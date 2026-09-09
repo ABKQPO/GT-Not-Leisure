@@ -37,8 +37,13 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "NetherTeleporter");
         this.setMaxStackSize(1);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "NetherTeleporter");
         GTNLItemList.NetherTeleporter.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.nether_teleporter";
     }
 
     @Override
@@ -49,7 +54,7 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
             if (world.getTotalWorldTime() - lastUse < COOLDOWN_TICKS) {
                 if (world.isRemote) {
                     long remain = (COOLDOWN_TICKS - (world.getTotalWorldTime() - lastUse)) / 20;
-                    showSubtitle("Info_NetherTeleporter_Cooldown", remain);
+                    showSubtitle("gtnl.item.nether_teleporter.cooldown", remain);
                 }
                 return stack;
             }
@@ -134,7 +139,7 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
         }
 
         if (!found) {
-            player.addChatMessage(new ChatComponentTranslation("Info_NetherTeleporter_Warning"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.item.nether_teleporter.no_safe_landing"));
             return;
         }
 

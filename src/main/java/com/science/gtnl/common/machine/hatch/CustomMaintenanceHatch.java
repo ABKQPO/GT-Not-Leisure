@@ -203,7 +203,7 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
         // TODO: Remove this mui1 fallback after CustomMaintenanceHatch mui2 rollout is complete.
         if (isConfiguration()) {
             builder.widget(
-                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
+                TextWidget.localised("gtnl.hatch.configuration_maintenance.processing_time")
                     .setPos(49, 18)
                     .setSize(81, 14))
                 .widget(

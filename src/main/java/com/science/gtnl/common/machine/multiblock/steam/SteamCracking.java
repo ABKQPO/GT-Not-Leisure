@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -50,6 +51,11 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
 
     public SteamCracking(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_cracking.name";
     }
 
     @Override
@@ -206,19 +212,19 @@ public class SteamCracking extends SteamMultiMachineBase<SteamCracking> implemen
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCrackingRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_cracking.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamCrackingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCracking_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCracking_01"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_cracking.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cracking.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cracking.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(7, 4, 4, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SteamCracking_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_cracking.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_cracking.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

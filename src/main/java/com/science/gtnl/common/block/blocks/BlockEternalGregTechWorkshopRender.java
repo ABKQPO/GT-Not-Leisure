@@ -29,10 +29,16 @@ public class BlockEternalGregTechWorkshopRender extends Block {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setBlockName("EternalGregTechWorkshopRenderer");
         this.setLightLevel(1.0f);
-        GameRegistry.registerBlock(this, ItemBlockEternalGregTechWorkshopRender.class, getUnlocalizedName());
-        GameRegistry
-            .registerTileEntity(TileEntityEternalGregTechWorkshop.class, "EternalGregTechWorkshopRenderTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockEternalGregTechWorkshopRender.class, "tile.EternalGregTechWorkshopRenderer");
+        GameRegistry.registerTileEntity(
+            TileEntityEternalGregTechWorkshop.class,
+            "eternal_greg_tech_workshop_render_tile_entity");
         GTNLItemList.EternalGregTechWorkshopRender.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.eternal_greg_tech_workshop_renderer";
     }
 
     @Override

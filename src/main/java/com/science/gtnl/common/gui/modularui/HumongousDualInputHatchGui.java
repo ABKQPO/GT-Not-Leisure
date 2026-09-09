@@ -88,7 +88,7 @@ public class HumongousDualInputHatchGui extends MTEHatchBaseGui<HumongousDualInp
     public ButtonWidget<?> createRefundButton(PanelSyncManager syncManager) {
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_EXPORT)
-            .addTooltipLine(StatCollector.translateToLocal("Button_Tooltip_HumongousDualInputHatch_00"))
+            .addTooltipLine(StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.tooltip.return_contents"))
             .onMousePressed(mouseButton -> {
                 syncManager.callSyncedAction("refund_all", buffer -> {});
                 return true;

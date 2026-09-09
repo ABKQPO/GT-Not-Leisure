@@ -41,6 +41,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -57,6 +58,11 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
 
     public SteamRockBreaker(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_rock_breaker.name";
     }
 
     @Override
@@ -150,7 +156,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
             env,
             true);
         if (built == -1) {
-            GTUtility.sendChatTrans(env.getActor(), "Info_SteamRockBreaker_AutoPlacingDone");
+            GTUtility.sendChatTrans(env.getActor(), "gtnl.machine.steam_rock_breaker.message.auto_placing_done");
             return 0;
         }
         return built;
@@ -219,22 +225,22 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamRockBreakerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamRockBreaker_04"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(11, 6, 11, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SteamRockBreaker_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

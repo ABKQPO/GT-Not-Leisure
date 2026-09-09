@@ -180,25 +180,37 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SuperconductingMagneticPresserRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.info"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(38, 7, 17, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SuperconductingMagneticPresser_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

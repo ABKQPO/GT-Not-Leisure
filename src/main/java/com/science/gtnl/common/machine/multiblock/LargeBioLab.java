@@ -141,20 +141,20 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeBioLabRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeBioLab_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_bio_lab.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_bio_lab.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(7, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBioLab_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
             .toolTipFinisher();
         return tt;
     }

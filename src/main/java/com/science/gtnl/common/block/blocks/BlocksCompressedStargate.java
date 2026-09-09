@@ -19,18 +19,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlocksCompressedStargate extends Block {
 
+    private final int tier;
     public String[] TextureName;
     public IIcon[] Texture;
 
     public BlocksCompressedStargate(int aTier) {
         super(Material.iron);
+        this.tier = aTier;
         this.setHardness(1.0F);
         this.setResistance(6000000.0F);
         this.setBlockName("CompressedStargateTier" + aTier);
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "CompressedStargate/");
         this.TextureName = new String[] { "Front", "Side", "Bottom", "Top_" + aTier };
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, getUnlocalizedName());
+        GameRegistry.registerBlock(this, "tile.CompressedStargateTier" + aTier);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.compressed_stargate.tier." + tier;
     }
 
     @SideOnly(Side.CLIENT)

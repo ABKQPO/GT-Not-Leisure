@@ -32,7 +32,14 @@ import gregtech.api.util.GTUtility;
 public class SteamAssemblerSteel extends MTEBasicMachineSteel {
 
     public SteamAssemblerSteel(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional, StatCollector.translateToLocal("Tooltip_SteamAssembler_00"), 6, 1, true);
+        super(
+            aID,
+            aName,
+            aNameRegional,
+            StatCollector.translateToLocal("gtnl.machine.steam_assembler.tooltip.0"),
+            6,
+            1,
+            true);
     }
 
     public SteamAssemblerSteel(String aName, String[] aDescription, ITexture[][][] aTextures) {

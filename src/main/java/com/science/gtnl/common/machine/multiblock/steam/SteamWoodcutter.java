@@ -34,6 +34,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
 
     public SteamWoodcutter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_woodcutter.name";
     }
 
     @Override
@@ -152,8 +158,8 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWoodcutter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWoodcutter_01"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_woodcutter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_woodcutter.tooltip.1"))
             .beginStructureBlock(7, 8, 7, true)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
@@ -175,6 +181,6 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamWoodcutterRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_woodcutter.recipe_type");
     }
 }

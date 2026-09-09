@@ -48,7 +48,7 @@ public class MetaBlockGlass extends Block {
 
     @Override
     public String getUnlocalizedName() {
-        return "tile." + this.unlocalizedName;
+        return "gtnl.block." + this.unlocalizedName;
     }
 
     @Override

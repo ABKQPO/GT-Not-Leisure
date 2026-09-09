@@ -53,9 +53,9 @@ public class WirelessVacuumConveyorOutputHatch extends MTEHatchVacuumConveyorOut
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_00"),
-            StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_01"),
-            StatCollector.translateToLocal("Tooltip_WirelessVacuumConveyorOutputHatch_02") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.output.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.output.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.output.tooltip.2") };
     }
 
     @Override
@@ -71,7 +71,7 @@ public class WirelessVacuumConveyorOutputHatch extends MTEHatchVacuumConveyorOut
         tag.setInteger(NBT_Y, aBaseMetaTileEntity.getYCoord());
         tag.setInteger(NBT_Z, aBaseMetaTileEntity.getZCoord());
         dataStick.stackTagCompound = tag;
-        dataStick.setStackDisplayName(StatCollector.translateToLocal("DataStick_WirelessVacuumConveyor"));
+        dataStick.setStackDisplayName(StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.data_stick"));
         aPlayer.addChatMessage(new ChatComponentTranslation("GT5U.machines.output_bus.saved"));
     }
 
@@ -158,8 +158,11 @@ public class WirelessVacuumConveyorOutputHatch extends MTEHatchVacuumConveyorOut
         ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (targetSet) {
             info.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_WirelessVacuumConveyorOutputHatch_00", targetX, targetY, targetZ));
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input",
+                    targetX,
+                    targetY,
+                    targetZ));
         }
         return info.toArray(new String[0]);
     }

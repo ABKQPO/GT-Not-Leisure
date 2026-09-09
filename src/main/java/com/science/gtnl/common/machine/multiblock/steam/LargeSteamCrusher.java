@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -50,6 +51,11 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     public LargeSteamCrusher(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_crusher.name";
     }
 
     @Override
@@ -223,20 +229,20 @@ public class LargeSteamCrusher extends SteamMultiMachineBase<LargeSteamCrusher> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamCrusherRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamCrusherRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(7, 8, 11, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCrusher_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_crusher.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

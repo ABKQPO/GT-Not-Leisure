@@ -45,6 +45,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -64,6 +65,11 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
 
     public VacuumDryingFurnace(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.vacuum_drying_furnace.name";
     }
 
     @Override
@@ -201,30 +207,32 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("VacuumDryingFurnace_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.vacuum_drying_furnace.mode." + machineMode;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("VacuumDryingFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.5"))
             .addSupportMultiAmp()
             .beginStructureBlock(3, 5, 3, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_VacuumDryingFurnace_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.vacuum_drying_furnace.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;
@@ -261,7 +269,7 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility.sendChatTrans(aPlayer, "VacuumDryingFurnace_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override

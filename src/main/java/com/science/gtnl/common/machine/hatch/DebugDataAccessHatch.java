@@ -15,8 +15,8 @@ public class DebugDataAccessHatch extends MTEHatchDataAccess {
 
     public DebugDataAccessHatch(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 14);
-        mDescriptionArray[0] = StatCollector.translateToLocal("Tooltip_DebugDataAccessHatch_00");
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_DebugDataAccessHatch_01");
+        mDescriptionArray[0] = StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.0");
+        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.1");
     }
 
     public DebugDataAccessHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {

@@ -34,6 +34,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLathe> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
 
     public LargeIndustrialLathe(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_industrial_lathe.name";
     }
 
     @Override
@@ -146,17 +152,19 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeIndustrialLatheRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 4, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIndustrialLathe_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_industrial_lathe.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

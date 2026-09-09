@@ -216,10 +216,11 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public String[] getInfoData() {
         List<String> infoData = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
-            infoData.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
+            infoData.add(
+                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
             infoData.add(
                 IGregTechDeviceInformation.encode(
-                    "Waila_CurrentEuCost.fmt",
+                    "gtnl.waila.wireless.current_eu_cost.format",
                     EnumChatFormatting.AQUA,
                     EnumChatFormatting.RESET,
                     EnumChatFormatting.GOLD,
@@ -235,12 +236,13 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("wirelessUpgrade")) {
-            currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("Waila_WirelessUpgrade"));
+            currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.waila.wireless.upgrade"));
         }
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

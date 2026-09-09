@@ -44,6 +44,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -61,6 +62,11 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
 
     public LargeCentrifuge(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_centrifuge.name";
     }
 
     @Override
@@ -157,26 +163,26 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeCentrifugeRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCentrifuge_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_centrifuge.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCentrifuge_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_centrifuge.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeCentrifuge_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_centrifuge.mode." + machineMode;
     }
 
     @Override
@@ -198,7 +204,7 @@ public class LargeCentrifuge extends GTMMultiMachineBase<LargeCentrifuge> implem
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "LargeCentrifuge_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override

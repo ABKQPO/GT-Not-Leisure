@@ -23,11 +23,16 @@ public class ItemPartEnergyAcceptor extends Item implements IPartItem {
         setMaxStackSize(64);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setUnlocalizedName("PartEnergyAcceptor");
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PartEnergyAcceptor");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
         GTNLItemList.PartEnergyAcceptor.set(new ItemStack(this));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.part_energy_acceptor";
     }
 
     @Override

@@ -65,6 +65,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -100,6 +101,11 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     public PrecisionAssembler(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.precision_assembler.name";
     }
 
     @Override
@@ -345,19 +351,21 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PreciseAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PreciseAssembler_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.precision_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(9, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_PreciseAssembler_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTStructureChannels.PRASS_UNIT_CASING)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
@@ -398,12 +406,12 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         machineMode = (machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "PreciseAssembler_Mode_" + machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("PreciseAssembler_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.precision_assembler.mode." + machineMode;
     }
 
     @Override

@@ -41,6 +41,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -56,6 +57,11 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
     public SteamFusionReactor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_fusion_reactor.name";
     }
 
     @Override
@@ -129,7 +135,8 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (recipe.getMetadataOrDefault(SteamFusionMetadata.INSTANCE, 0) != 0) {
-                    return SimpleCheckRecipeResult.ofFailure("metadata.steamfusion");
+                    return SimpleCheckRecipeResult
+                        .ofFailure("gtnl.machine.steam_fusion_reactor.error.requires_compact_reactor");
                 }
                 return super.validateRecipe(recipe);
             }
@@ -189,19 +196,19 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamFusionReactorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFusionReactor_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.2"))
             .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamFusionReactor_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

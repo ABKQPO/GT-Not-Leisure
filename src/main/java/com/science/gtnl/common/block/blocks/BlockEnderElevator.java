@@ -53,7 +53,7 @@ public class BlockEnderElevator extends BlockContainer {
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":EnderElevator");
         this.setLightLevel(1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, getUnlocalizedName());
+        GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, "tile.EnderElevator" + suffix);
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
@@ -61,6 +61,15 @@ public class BlockEnderElevator extends BlockContainer {
         if (type == 1) setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
         else if (type == 2) setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
         else setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return switch (type) {
+            case 1 -> "gtnl.block.ender_elevator.slab";
+            case 2 -> "gtnl.block.ender_elevator.carpet";
+            default -> "gtnl.block.ender_elevator.block";
+        };
     }
 
     @SideOnly(Side.CLIENT)

@@ -139,11 +139,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
         + "multiblock/eye_of_harmony_injector";
     private static final String[][] shape = StructureUtils.readStructureFromFile(EOHI_STRUCTURE_FILE_PATH);
     public static INameFunction<EyeOfHarmonyInjector> MAX_HELIUM_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HeliumParametrization");
+        .translateToLocal("gtnl.machine.eye_of_harmony_injector.helium_threshold");
     public static INameFunction<EyeOfHarmonyInjector> MAX_HYDROGEN_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization");
+        .translateToLocal("gtnl.machine.eye_of_harmony_injector.hydrogen_threshold");
     public static INameFunction<EyeOfHarmonyInjector> MAX_RAWSTARMATTER_AMOUNT_SETTING_NAME = (base, p) -> StatCollector
-        .translateToLocal("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization");
+        .translateToLocal("gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold");
     public static IStatusFunction<EyeOfHarmonyInjector> MAX_FLUID_AMOUNT_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, maxFluidAmount / 2, maxFluidAmount, maxFluidAmount);
 
@@ -205,7 +205,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (this.enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (this.enableRender ? "enabled" : "disabled"));
         }
         return true;
     }
@@ -422,18 +422,27 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EyeOfHarmonyInjectorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.5"))
             .beginStructureBlock(53, 13, 62, false)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_Casing"), 1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
+                1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"), 1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }
@@ -617,7 +626,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
         // Title widget
         builder.widget(
-            new TextWidget(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_Title"))
+            new TextWidget(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.status_title"))
                 .setTextAlignment(Alignment.Center)
                 .setPos(5, 10)
                 .setSize(windowWidth, 8));
@@ -716,10 +725,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                     () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, new ItemDrawable(mte.getStackForm(1)) })
                 .addTooltips(
                     Arrays.asList(
-                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_00"),
-                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_01"),
+                        StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.configure_independently"),
+                        StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.target_coordinates"),
                         String.format("X: %s, Y: %s, Z: %s", gtTE.getXCoord(), gtTE.getYCoord(), gtTE.getZCoord()),
-                        StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_02")))
+                        StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.highlight_coordinates")))
                 .setSize(18, 18)
                 .setPos(0, height));
 
@@ -777,9 +786,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                     .setPos(75, 5 + height));
 
             mainDisp.widget(TextWidget.dynamicText(() -> {
-                String title = StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_HeliumParametrization");
+                String title = StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.helium_threshold");
                 if (unit.maxHeliumAmount != -1) return new Text(title);
-                return new Text(title + " - " + StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_04"));
+                return new Text(
+                    title + " - "
+                        + StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.auto_max_amount"));
             })
                 .setSize(200, 18)
                 .setPos(15, 18 + height))
@@ -795,9 +806,12 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                         .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
             mainDisp.widget(TextWidget.dynamicText(() -> {
-                String title = StatCollector.translateToLocal("Tooltip_EyeOfHarmonyInjector_HydrogenParametrization");
+                String title = StatCollector
+                    .translateToLocal("gtnl.machine.eye_of_harmony_injector.hydrogen_threshold");
                 if (unit.maxHydrogenAmount != -1) return new Text(title);
-                return new Text(title + " - " + StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_04"));
+                return new Text(
+                    title + " - "
+                        + StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.auto_max_amount"));
             })
                 .setSize(200, 18)
                 .setPos(15, 54 + height))
@@ -815,9 +829,11 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
             mainDisp.widget(TextWidget.dynamicText(() -> {
                 String title = StatCollector
-                    .translateToLocal("Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization");
+                    .translateToLocal("gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold");
                 if (unit.maxRawStarMatterAmount != -1) return new Text(title);
-                return new Text(title + " - " + StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_04"));
+                return new Text(
+                    title + " - "
+                        + StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.auto_max_amount"));
             })
                 .setSize(200, 18)
                 .setPos(15, 90 + height))
@@ -863,7 +879,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 .setBackground(
                     () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD,
                         GTUITextures.OVERLAY_BUTTON_MACHINEMODE_DEFAULT })
-                .addTooltip(StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_03"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.open_status"))
                 .setPos(174, 97)
                 .setSize(16, 16));
 

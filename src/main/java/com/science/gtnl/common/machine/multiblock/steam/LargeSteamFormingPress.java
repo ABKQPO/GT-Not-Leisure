@@ -35,6 +35,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamFormingPress extends SteamMultiMachineBase<LargeSteamFormingPress>
     implements ISurvivalConstructable {
 
@@ -52,6 +53,11 @@ public class LargeSteamFormingPress extends SteamMultiMachineBase<LargeSteamForm
 
     public LargeSteamFormingPress(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_forming_press.name";
     }
 
     @Override
@@ -199,20 +205,26 @@ public class LargeSteamFormingPress extends SteamMultiMachineBase<LargeSteamForm
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamFormingPressRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamFormingPressRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFormingPress_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFormingPress_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFormingPress_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(5, 3, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamFormingPress_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamFormingPress_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_forming_press.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

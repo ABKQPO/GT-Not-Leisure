@@ -172,15 +172,15 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             aNameRegional,
             supportFluids ? 11 : 6,
             MAX_INV_COUNT + MAX_PATTERN_COUNT * 9,
-            new String[] { StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_00"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_01"),
-                supportFluids ? StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_01_00")
-                    : StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_01_01"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_02"),
-                supportFluids ? StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_03_00")
-                    : StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_03_01"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_04"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputHatchME_06") });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.1"),
+                supportFluids ? StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.tier.uev")
+                    : StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.tier.luv"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.2"),
+                supportFluids ? StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.fluids")
+                    : StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.no_fluids"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.4"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.tooltip.6") });
         disableSort = true;
         this.supportFluids = supportFluids;
     }
@@ -532,7 +532,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         ret.add(
             "The bus is " + ((getProxy() != null && getProxy().isActive()) ? EnumChatFormatting.GREEN + "online"
                 : EnumChatFormatting.RED + "offline" + getAEDiagnostics()) + EnumChatFormatting.RESET);
-        ret.add(IGregTechDeviceInformation.encode("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+        ret.add(
+            IGregTechDeviceInformation.encode("gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled")));
         ret.add("Internal Inventory: ");
         int i = 0;
 
@@ -721,7 +722,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             .setPlayClickSound(true)
             .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_PLUS_LARGE)
             .addTooltips(
-                ImmutableList.of(StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_00")))
+                ImmutableList
+                    .of(StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.button.do_not_consume")))
             .setSize(16, 16)
             .setPos(170, 46))
             .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -732,7 +734,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                 .setPlayClickSound(true)
                 .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_EXPORT)
                 .addTooltips(
-                    ImmutableList.of(StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_01")))
+                    ImmutableList
+                        .of(StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.button.return_to_ae")))
                 .setSize(16, 16)
                 .setPos(170, 28))
             .widget(
@@ -740,8 +743,13 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                     .setToggle(() -> disablePatternOptimization, val -> disablePatternOptimization = val)
                     .setStaticTexture(GTUITextures.OVERLAY_BUTTON_PATTERN_OPTIMIZE)
                     .setVariableBackground(GTUITextures.BUTTON_STANDARD_TOGGLE)
-                    .addTooltip(0, StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_02_00"))
-                    .addTooltip(1, StatCollector.translateToLocal("Button_Tooltip_SuperCraftingInputHatchME_02_01"))
+                    .addTooltip(
+                        0,
+                        StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.button.optimization.allow"))
+                    .addTooltip(
+                        1,
+                        StatCollector
+                            .translateToLocal("gtnl.hatch.super_crafting_input_me.button.optimization.disable"))
                     .setPos(170, 10)
                     .setSize(16, 16))
             .widget(new ButtonWidget().setOnClick((clickData, widget) -> {
@@ -773,8 +781,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
                         builder)
                     .dynamicTooltip(
                         () -> Collections.singletonList(
-                            StatCollector
-                                .translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"))))
+                            StatCollector.translateToLocal(
+                                "gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled"))))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setUpdateTooltipEveryTick(true)
                     .setPos(194, 28)
@@ -871,8 +879,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         IWailaConfigHandler config) {
         NBTTagCompound tag = accessor.getNBTData();
         currenttip.add(
-            StatCollector
-                .translateToLocal("Info_ShowPattern_" + (tag.getBoolean("showPattern") ? "Enabled" : "Disabled")));
+            StatCollector.translateToLocal(
+                "gtnl.interface.show_pattern." + (tag.getBoolean("showPattern") ? "enabled" : "disabled")));
         if (tag.hasKey("inventory")) {
             NBTTagList inventory = tag.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < inventory.tagCount(); ++i) {
@@ -1005,7 +1013,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         dataStick.setStackDisplayName(
             "Super Crafting Input Buffer Link Data Stick (" + aBaseMetaTileEntity
                 .getXCoord() + ", " + aBaseMetaTileEntity.getYCoord() + ", " + aBaseMetaTileEntity.getZCoord() + ")");
-        aPlayer.addChatMessage(new ChatComponentTranslation("Tooltip_SuperCraftingInputHatchME_05"));
+        aPlayer
+            .addChatMessage(new ChatComponentTranslation("gtnl.hatch.super_crafting_input_me.info.connection_saved"));
     }
 
     @Override

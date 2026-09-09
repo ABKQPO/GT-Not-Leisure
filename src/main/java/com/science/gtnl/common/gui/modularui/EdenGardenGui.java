@@ -233,9 +233,9 @@ public class EdenGardenGui extends GTNLMultiBlockBaseGui<EdenGarden> {
 
     private String getViewModeLangKey(int mode) {
         return switch (GreenHouseViewMode.fromOrdinal(mode)) {
-            case STATUS -> "Info_EdenGarden_Status";
-            case BLOCKS -> "Info_EdenGarden_Blocks";
-            case SEEDS -> "Info_EdenGarden_Seeds";
+            case STATUS -> "gtnl.machine.eden_garden.view.status";
+            case BLOCKS -> "gtnl.machine.eden_garden.view.blocks";
+            case SEEDS -> "gtnl.machine.eden_garden.view.seeds";
         };
     }
 

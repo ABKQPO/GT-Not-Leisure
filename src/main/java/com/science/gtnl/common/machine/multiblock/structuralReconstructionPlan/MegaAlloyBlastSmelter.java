@@ -45,6 +45,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSmelter>
     implements ISurvivalConstructable {
 
@@ -64,6 +65,11 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
 
     public MegaAlloyBlastSmelter(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.mega_alloy_blast_smelter.name";
     }
 
     @Override
@@ -282,24 +288,30 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaAlloyBlastSmelterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.5"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(11, 18, 11, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MegaAlloyBlastSmelter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.mega_alloy_blast_smelter.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();

@@ -33,10 +33,15 @@ public class BlockEssentiaHatch extends BlockContainer {
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "EssentiaHatch");
         this.setHarvestLevel("wrench", 2);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureMachine);
-        GameRegistry.registerBlock(this, ItemBlockEssentiaHatch.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityEssentiaHatch.class, "EssentiaHatchTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockEssentiaHatch.class, "tile.EssentiaHatch");
+        GameRegistry.registerTileEntity(TileEntityEssentiaHatch.class, "essentia_hatch_tile_entity");
         GregTechAPI.registerMachineBlock(this, -1);
         GTNLItemList.EssentiaHatch.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.essentia_hatch";
     }
 
     @Override
@@ -79,7 +84,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         if (tItemStack == null) {
             if (!player.isSneaking()) return false;
             essentiaHatch.setLockedAspect(null);
-            GTUtility.sendChatTrans(player, "Info_EssentiaHatch_01");
+            GTUtility.sendChatTrans(player, "gtnl.chat.essentia_hatch.cleared");
             return true;
         }
         var tItem = tItemStack.getItem();
@@ -92,7 +97,7 @@ public class BlockEssentiaHatch extends BlockContainer {
         var tLocked = heldAspects.getAspects()[0];
         essentiaHatch.setLockedAspect(tLocked);
 
-        GTUtility.sendChatTrans(player, "Info_EssentiaHatch_00", tLocked.getLocalizedDescription());
+        GTUtility.sendChatTrans(player, "gtnl.chat.essentia_hatch.locked", tLocked.getLocalizedDescription());
         world.markBlockForUpdate(x, y, z);
         return true;
     }

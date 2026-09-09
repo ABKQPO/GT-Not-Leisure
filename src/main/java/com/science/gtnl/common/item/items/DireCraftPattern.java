@@ -19,8 +19,13 @@ public class DireCraftPattern extends ItemEncodedPattern {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "DireCraftPattern");
         this.setUnlocalizedName("DireCraftPattern");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "DireCraftPattern");
         GTNLItemList.DireCraftPattern.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.dire_craft_pattern";
     }
 
     @Override

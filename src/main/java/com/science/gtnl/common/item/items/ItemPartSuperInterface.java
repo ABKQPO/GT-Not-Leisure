@@ -26,11 +26,16 @@ public class ItemPartSuperInterface extends Item implements IPartItem {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setUnlocalizedName("PartSuperInterface");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "SuperInterface");
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PartSuperInterface");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
         GTNLItemList.PartSuperInterface.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.part_super_interface";
     }
 
     @Nullable

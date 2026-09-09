@@ -256,14 +256,14 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_EnergyTransferNode_00"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_01"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_02"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_03"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_04"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_05"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_06"),
-            StatCollector.translateToLocal("Tooltip_EnergyTransferNode_07") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.2"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.3"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.4"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.5"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.6"),
+            StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.tooltip.7") };
     }
 
     @Override
@@ -391,18 +391,20 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         currentTip.add(
-            EnumChatFormatting.BLUE
-                + StatCollector.translateToLocalFormatted("Info_EnergyTransferNode_00", tag.getLong("mVoltage")));
+            EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted(
+                "gtnl.hatch.energy_transfer_node.info.max_voltage",
+                tag.getLong("mVoltage")));
         currentTip.add(
-            EnumChatFormatting.YELLOW
-                + StatCollector.translateToLocalFormatted("Info_EnergyTransferNode_01", tag.getLong("mAmperes")));
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocalFormatted(
+                "gtnl.hatch.energy_transfer_node.info.max_amperage",
+                tag.getLong("mAmperes")));
 
         if (tag.hasKey("mFrontFacing")) {
             byte facing = tag.getByte("mFrontFacing");
             if (facing >= 0 && facing < ForgeDirection.VALID_DIRECTIONS.length) {
                 currentTip.add(
                     EnumChatFormatting.GREEN + StatCollector.translateToLocalFormatted(
-                        "Info_EnergyTransferNode_02",
+                        "gtnl.hatch.energy_transfer_node.info.front_facing",
                         ForgeDirection.getOrientation(facing)
                             .name()));
             }
@@ -410,8 +412,8 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
         if (tag.hasKey("mode")) {
             boolean mode = tag.getBoolean("mode");
             currentTip.add(
-                EnumChatFormatting.LIGHT_PURPLE
-                    + StatCollector.translateToLocal("Info_EnergyTransferNode_03_" + (mode ? "Out" : "In")));
+                EnumChatFormatting.LIGHT_PURPLE + StatCollector
+                    .translateToLocal("gtnl.hatch.energy_transfer_node.info.mode." + (mode ? "merge" : "split")));
         }
     }
 

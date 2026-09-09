@@ -15,6 +15,7 @@ import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
 import com.science.gtnl.utils.text.LanguageLoader;
+import com.science.gtnl.utils.world.TileEntityMigrationHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -89,6 +90,7 @@ public class ScienceNotLeisure {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
+        TileEntityMigrationHandler.register();
     }
 
     @Mod.EventHandler

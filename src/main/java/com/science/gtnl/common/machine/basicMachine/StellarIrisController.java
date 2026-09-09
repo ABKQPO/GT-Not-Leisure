@@ -28,7 +28,7 @@ public class StellarIrisController extends MTEBasicTank {
             regionalName,
             tier,
             1,
-            new String[] { StatCollector.translateToLocal("Tooltip_StellarIrisController_00") },
+            new String[] { StatCollector.translateToLocal("gtnl.machine.stellar_iris_controller.tooltip.0") },
             textures);
     }
 

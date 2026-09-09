@@ -53,12 +53,12 @@ public class WirelessSteamCoverGui extends CoverBaseGui<WirelessSteamCover> {
                     .tooltipDynamic(tooltip -> {
                         tooltip.addFromFluid(new FluidStack(steamType.fluid, 1));
                         if (cover.getSteamMode() == steamType) {
-                            tooltip.addLine("§e" + StatCollector.translateToLocal("Info_PipelessSteamCover_02"));
+                            tooltip.addLine("§e" + StatCollector.translateToLocal("gtnl.gui.wireless_steam.selected"));
                         }
                     })
                     .tooltipAutoUpdate(true));
         }
-        IWidget steamLabel = IKey.str(StatCollector.translateToLocal("Info_PipelessSteamCover_01"))
+        IWidget steamLabel = IKey.str(StatCollector.translateToLocal("gtnl.gui.wireless_steam.type"))
             .asWidget();
 
         column.child(

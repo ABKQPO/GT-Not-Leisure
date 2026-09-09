@@ -103,7 +103,7 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamOreProcessorModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.recipe_type");
     }
 
     @Override
@@ -283,16 +283,16 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamOreProcessorModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOreProcessorModule_08"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.8"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
@@ -328,9 +328,8 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     }
 
     @Override
-    public String getMachineModeName() {
-        List<String> des = getDisplayMode(getProcessingMode());
-        return String.join("\n", des);
+    public String getMachineModeKey() {
+        return "gtnl.machine.steam_ore_processor_module.mode." + machineMode;
     }
 
     @Override
@@ -370,7 +369,8 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
         NBTTagCompound tag = accessor.getNBTData();
 
         currenttip.add(
-            StatCollector.translateToLocal("Info_SteamOreProcessorModule_00") + EnumChatFormatting.BLUE
+            StatCollector.translateToLocal("gtnl.waila.steam_ore_processor_module.actual_parallel")
+                + EnumChatFormatting.BLUE
                 + tag.getInteger("currentParallelism")
                 + EnumChatFormatting.RESET);
         currenttip.addAll(getDisplayMode(tag.getInteger("mMode")));

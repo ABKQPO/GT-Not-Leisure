@@ -48,6 +48,7 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -63,6 +64,11 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
 
     public MatterFabricator(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.matter_fabricator.name";
     }
 
     @Override
@@ -248,15 +254,15 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MatterFabricatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.matter_fabricator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(15, 5, 6, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MatterFabricator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -22,17 +22,25 @@ public class DraconicArmorProjectionBauble extends BaubleItem implements IBauble
 
     public static final String[] UNIVERSAL_BAUBLE_TYPE = { BaubleExpandedSlots.universalType };
 
+    private final String displayNameKey;
     private final DraconicArmorProjectionType projectionType;
 
-    public DraconicArmorProjectionBauble(String unlocalizedName, DraconicArmorProjectionType projectionType,
+    public DraconicArmorProjectionBauble(String registrationName, String displayNameKey,
+        DraconicArmorProjectionType projectionType,
         GTNLItemList itemEntry) {
+        this.displayNameKey = displayNameKey;
         this.projectionType = projectionType;
-        setUnlocalizedName(unlocalizedName);
+        setUnlocalizedName(registrationName);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        setTextureName(RESOURCE_ROOT_ID + ":" + unlocalizedName);
+        setTextureName(RESOURCE_ROOT_ID + ":" + registrationName);
         setMaxStackSize(1);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, registrationName);
         itemEntry.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return displayNameKey;
     }
 
     @Override

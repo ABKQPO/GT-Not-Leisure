@@ -71,7 +71,7 @@ public class MixinGregtechWailaDataProvider {
             double bonus = chanceTag.getDouble("bonus");
 
             String debugMessage = String.format(
-                StatCollector.translateToLocal("Info_VoltageChanceBonus_00"),
+                StatCollector.translateToLocal("gtnl.waila.voltage_chance_bonus"),
                 bonus,
                 StringUtils.voltageTooltipFormatted(tier),
                 StringUtils.voltageTooltipFormatted(baseTier));

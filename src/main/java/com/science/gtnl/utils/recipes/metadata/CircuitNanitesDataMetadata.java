@@ -28,19 +28,35 @@ public class CircuitNanitesDataMetadata extends RecipeMetadataKey<CircuitNanites
         CircuitNanitesRecipeData data = cast(value, new CircuitNanitesRecipeData());
         AccessorRecipeDisplayInfo displayInfo = (AccessorRecipeDisplayInfo) recipeInfo;
         displayInfo.setYPos(displayInfo.getYPos() - 80);
-        recipeInfo.drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.0") + data.speedBoost, 28, 10);
-        recipeInfo.drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.1") + data.euModifier, 28, 10);
         recipeInfo.drawText(
-            StatCollector.translateToLocal("CircuitNanitesDataMetadata.2") + (data.failedChance * 100) + "%",
+            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.eu_discount", data.speedBoost),
             28,
             10);
         recipeInfo.drawText(
-            StatCollector.translateToLocal("CircuitNanitesDataMetadata.3") + (data.outputMultiplier * 100) + "%",
+            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.speed_bonus", data.euModifier),
             28,
             10);
-        recipeInfo
-            .drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.4") + data.parallelCount, 28, 10);
-        recipeInfo.drawText(StatCollector.translateToLocal("CircuitNanitesDataMetadata.5") + data.nantiesTier, 28, 10);
+        recipeInfo.drawText(
+            StatCollector.translateToLocalFormatted(
+                "gtnl.machine.tree_diagram.metadata.failure_bonus",
+                data.failedChance * 100 + "%"),
+            28,
+            10);
+        recipeInfo.drawText(
+            StatCollector.translateToLocalFormatted(
+                "gtnl.machine.tree_diagram.metadata.output_coefficient",
+                data.outputMultiplier * 100 + "%"),
+            28,
+            10);
+        recipeInfo.drawText(
+            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.parallel", data.parallelCount),
+            28,
+            10);
+        recipeInfo.drawText(
+            StatCollector
+                .translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.nanites_tier", data.nantiesTier),
+            28,
+            10);
     }
 
 }

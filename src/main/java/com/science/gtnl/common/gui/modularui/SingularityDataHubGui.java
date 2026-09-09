@@ -14,7 +14,7 @@ public class SingularityDataHubGui extends GTNLMultiBlockBaseGui<SingularityData
 
     private static final String TYPE_COUNT_SYNC_KEY = "singularityDataHubTypeCounts";
     private static final String TYPE_COUNT_WIDGET_SYNC_KEY = "singularityDataHubTypeCountRows";
-    private static final String TYPE_COUNT_TRANSLATION_KEY = "Info_SingularityDataHub_TypeCount";
+    private static final String TYPE_COUNT_TRANSLATION_KEY = "gtnl.gui.singularity_data_hub.type_count";
 
     public SingularityDataHubGui(SingularityDataHub multiblock) {
         super(multiblock);

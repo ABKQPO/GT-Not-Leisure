@@ -33,6 +33,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -48,6 +49,11 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
 
     public LargeSiftingFunnel(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_sifting_funnel.name";
     }
 
     @Override
@@ -148,19 +154,21 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSiftingFunnelRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSiftingFunnel_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_sifting_funnel.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

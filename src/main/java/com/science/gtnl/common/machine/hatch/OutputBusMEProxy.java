@@ -64,13 +64,13 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_00"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_01"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_02"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_03"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_04"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_05"),
-            StatCollector.translateToLocal("Tooltip_OutputBusMEProxy_06") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.2"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.3"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.4"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.5"),
+            StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.tooltip.6") };
     }
 
     @Override
@@ -98,14 +98,16 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
     private String getWailaLinkState(IWailaDataAccessor accessor) {
         boolean linked = accessor.getNBTData()
             .hasKey("master");
-        return StatCollector.translateToLocal(linked ? "Waila_OutputMEProxy_Linked" : "Waila_OutputMEProxy_Unlinked");
+        return StatCollector
+            .translateToLocal(linked ? "gtnl.waila.output_me_proxy.linked" : "gtnl.waila.output_me_proxy.unlinked");
     }
 
     private String getWailaLinkedTarget(IWailaDataAccessor accessor) {
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.hasKey("master")) {
             NBTTagCompound masterNBT = tag.getCompoundTag("master");
-            return EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_OutputMEProxy_Target")
+            return EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.output_me_proxy.target")
+                + " "
                 + EnumChatFormatting.WHITE
                 + "[Dim "
                 + masterNBT.getInteger("masterDim")

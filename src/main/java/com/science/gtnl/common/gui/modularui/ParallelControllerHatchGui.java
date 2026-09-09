@@ -35,7 +35,7 @@ public class ParallelControllerHatchGui extends MTEHatchBaseGui<ParallelControll
     protected ParentWidget<?> createContentSection(ModularPanel panel, PanelSyncManager syncManager) {
         IntSyncValue parallelSyncer = syncManager.findSyncHandler(PARALLEL_SYNC_KEY, IntSyncValue.class);
         return super.createContentSection(panel, syncManager).child(
-            IKey.lang("Info_ParallelControllerHatch_00")
+            IKey.lang("gtnl.hatch.parallel_controller.label")
                 .asWidget()
                 .textAlign(Alignment.Center)
                 .pos(49, 18)

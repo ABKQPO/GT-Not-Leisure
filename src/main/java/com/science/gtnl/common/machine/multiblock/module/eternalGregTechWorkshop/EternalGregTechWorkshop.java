@@ -325,12 +325,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EternalGregTechWorkshopRecipeType"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.recipe_type"))
             .beginStructureBlock(75, 96, 75, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EternalGregTechWorkshop_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.eternal_gregtech_workshop.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.eternal_gregtech_workshop.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.eternal_gregtech_workshop.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.eternal_gregtech_workshop.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
             .toolTipFinisher();
         return tt;
@@ -729,7 +729,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (enableRender ? "enabled" : "disabled"));
             if (!enableRender && isRenderActive) destroyRenderer();
         }
         return true;
@@ -885,12 +885,12 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
 
     public String getMachineStateTextForGui() {
         if (mProgresstime > 0) {
-            return StatCollector.translateToLocal("EGTW_MachineRunning");
+            return StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.running");
         }
         if (mMachine) {
-            return StatCollector.translateToLocal("EGTW_MachineStandby");
+            return StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.standby");
         }
-        return StatCollector.translateToLocal("EGTW_MachineIncomplete");
+        return StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.incomplete");
     }
 
     public int getCurrentMilestoneIdForGui() {
@@ -1273,7 +1273,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .attachSyncer(
                     new FakeSyncWidget.BooleanSyncer(this::getEnableExtraModule, this::setEnableExtraModule),
                     builder)
-                .addTooltip(StatCollector.translateToLocal("EGTW_EnableExtraModule"))
+                .addTooltip(
+                    StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.enable_extra_module"))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
                 .setPos(getStructureUpdateButtonPos())
                 .setSize(16, 16))
@@ -1286,7 +1287,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .setBackground(
                     () -> new IDrawable[] { EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32,
                         EternalGregTechWorkshopTextures.OVERLAY_CYCLIC_BLUE })
-                .addTooltip(StatCollector.translateToLocal("EGTW_UpdateStructureCheck"))
+                .addTooltip(
+                    StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.update_structure_check"))
                 .setPos(8, 91)
                 .setTooltipShowUpDelay(TOOLTIP_DELAY));
     }
@@ -1296,22 +1298,22 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     }
 
     public Text machineTierHeaderText() {
-        return new Text(StatCollector.translateToLocal("EGTW_MachineTier"));
+        return new Text(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.tier"));
     }
 
     public Text machineState() {
         if (mProgresstime > 0) {
-            return new Text(StatCollector.translateToLocal("EGTW_MachineRunning"));
+            return new Text(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.running"));
         }
         if (mMachine) {
-            return new Text(StatCollector.translateToLocal("EGTW_MachineStandby"));
+            return new Text(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.standby"));
         }
-        return new Text(StatCollector.translateToLocal("EGTW_MachineIncomplete"));
+        return new Text(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.incomplete"));
     }
 
     public Text extraModuleHeaderText() {
         if (enableExtraModule) {
-            return new Text(StatCollector.translateToLocal("EGTW_ExtraModule"));
+            return new Text(StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.extra_module"));
         }
         return new Text("");
     }
@@ -1319,9 +1321,11 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public Text extraModuleState() {
         if (enableExtraModule) {
             if (mExtraModule) {
-                return new Text(StatCollector.translateToLocal("EGTW_ExtraModule_On"));
+                return new Text(
+                    StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.extra_module.on"));
             } else {
-                return new Text(StatCollector.translateToLocal("EGTW_ExtraModule_Off"));
+                return new Text(
+                    StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.extra_module.off"));
             }
         }
         return new Text("");

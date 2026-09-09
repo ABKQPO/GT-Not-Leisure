@@ -206,6 +206,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class EnergeticPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public EnergeticPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -217,19 +218,26 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.energetic_photovoltaic_power_station.name";
+        }
+
+        @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
                 .addDynamoHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
                 .addMaintenanceHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_EnergeticPhotovoltaicPowerStation_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -271,6 +279,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class AdvancedPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public AdvancedPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -282,17 +291,26 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.advanced_photovoltaic_power_station.name";
+        }
+
+        @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
+                .addDynamoHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
                 .addMaintenanceHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_AdvancedPhotovoltaicPowerStation_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -334,6 +352,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class VibrantPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
 
         public VibrantPhotovoltaicPowerStation(int aID, String aName, String aNameRegional) {
@@ -345,17 +364,26 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.vibrant_photovoltaic_power_station.name";
+        }
+
+        @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("PhotovoltaicPowerStationRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_PhotovoltaicPowerStation_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
                 .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
+                .addDynamoHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
                 .addMaintenanceHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_VibrantPhotovoltaicPowerStation_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
                 .toolTipFinisher();
             return tt;
         }

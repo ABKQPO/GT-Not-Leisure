@@ -86,7 +86,7 @@ public abstract class MixinMTEPurificationUnitBaseGui extends MTEMultiBlockBaseG
                 new ButtonWidget<>().overlay(GTGuiTextures.OVERLAY_BUTTON_BATCH_MODE_ON)
                     .tooltip(t -> {
                         t.addLine(translateToLocal("GT5U.tpm.parallelwindow"));
-                        t.addLine(translateToLocal("Tooltip_PurificationUnit_NotWirelessMode"));
+                        t.addLine(translateToLocal("gtnl.gui.purification_unit.not_wireless_mode"));
                     })
                     .onMousePressed(mouseButton -> {
                         parallelSelectPanel.togglePanel();

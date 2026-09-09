@@ -47,6 +47,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
+@IMetaTileEntity.SkipGenerateName
 public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -365,6 +366,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class LargeBoilerBronze extends LargeBoiler {
 
         public LargeBoilerBronze(int aID, String aName, String aNameRegional) {
@@ -376,6 +378,11 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.large_boiler_bronze.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
             return new LargeBoilerBronze(this.mName);
         }
@@ -383,13 +390,22 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerBronze_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_bronze.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
+                    1)
+                .addInputBus(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
                 .toolTipFinisher();
             return tt;
         }
@@ -446,6 +462,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class LargeBoilerSteel extends LargeBoiler {
 
         public LargeBoilerSteel(int aID, String aName, String aNameRegional) {
@@ -457,6 +474,11 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.large_boiler_steel.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
             return new LargeBoilerSteel(this.mName);
         }
@@ -464,13 +486,22 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerSteel_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_steel.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
+                    1)
+                .addInputBus(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
                 .toolTipFinisher();
             return tt;
         }
@@ -527,6 +558,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class LargeBoilerTitanium extends LargeBoiler {
 
         public LargeBoilerTitanium(int aID, String aName, String aNameRegional) {
@@ -538,6 +570,11 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.large_boiler_titanium.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
             return new LargeBoilerTitanium(this.mName);
         }
@@ -545,13 +582,22 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerTitanium_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_titanium.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
+                    1)
+                .addInputBus(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
                 .toolTipFinisher();
             return tt;
         }
@@ -608,6 +654,7 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class LargeBoilerTungstenSteel extends LargeBoiler {
 
         public LargeBoilerTungstenSteel(int aID, String aName, String aNameRegional) {
@@ -619,6 +666,11 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.large_boiler_tungstensteel.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
             return new LargeBoilerTungstenSteel(this.mName);
         }
@@ -626,13 +678,22 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("LargeBoilerRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoilerTungstenSteel_00"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeBoiler_00"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_tungstensteel.tooltip.0"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
                 .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_00"), 1)
-                .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBoiler_Casing_01"), 1)
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
+                    1)
+                .addInputBus(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
+                    1)
                 .toolTipFinisher();
             return tt;
         }

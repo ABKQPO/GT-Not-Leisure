@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAlloySmelter>
     implements ISurvivalConstructable {
 
@@ -51,6 +52,11 @@ public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAllo
 
     public LargeSteamAlloySmelter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_alloy_smelter.name";
     }
 
     @Override
@@ -109,7 +115,7 @@ public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAllo
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamAlloySmelterRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.recipe_type");
     }
 
     @Override
@@ -194,14 +200,20 @@ public class LargeSteamAlloySmelter extends SteamMultiMachineBase<LargeSteamAllo
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamAlloySmelterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(3, 4, 3, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamAlloySmelter_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_alloy_smelter.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

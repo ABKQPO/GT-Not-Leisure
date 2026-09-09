@@ -59,13 +59,18 @@ public class BlockBeamFormer extends AEBaseTileBlock implements ICustomCollision
         setBlockTextureName(RESOURCE_ROOT_ID + ":BeamFormer");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setLightOpacity(0);
-        GameRegistry.registerBlock(this, ItemBlockBeamFormer.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityBeamFormer.class, "BeamFormerTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockBeamFormer.class, "tile.BeamFormer");
+        GameRegistry.registerTileEntity(TileEntityBeamFormer.class, "beam_former_tile_entity");
         GTNLItemList.BlockBeamFormer.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntityBeamFormer.class);
         this.setFeature(EnumSet.of(AEFeature.Core));
         this.isOpaque = false;
         this.isFullSize = false;
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.beam_former";
     }
 
     @Override

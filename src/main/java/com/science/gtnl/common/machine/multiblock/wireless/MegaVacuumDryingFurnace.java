@@ -217,12 +217,12 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility.sendChatTrans(aPlayer, "MegaVacuumDryingFurnace_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("MegaVacuumDryingFurnace_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.mega_vacuum_drying_furnace.mode." + machineMode;
     }
 
     @Override
@@ -248,29 +248,29 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaVacuumDryingFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(19, 14, 27, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MegaVacuumDryingFurnace_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

@@ -231,22 +231,23 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     @Override
     public String[] getDescription() {
         List<String> strings = new ArrayList<>(8);
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_00"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.0"));
         strings.add(
-            StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_01") + GTValues.TIER_COLORS[mTier]
+            StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.1") + " "
+                + GTValues.TIER_COLORS[mTier]
                 + GTValues.VN[mTier]);
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_02"));
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_03"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.2"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.3"));
 
         if (allowAuto) {
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperDualInputHatchME_00"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperDualInputHatchME_01"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperDualInputHatchME_02"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperDualInputHatchME_03"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.tooltip.0"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.tooltip.1"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.tooltip.2"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.tooltip.3"));
         }
 
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_04"));
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperDualInputHatchME_05"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.4"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.5"));
         return strings.toArray(new String[0]);
     }
 
@@ -776,7 +777,8 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 if (f_client[slotIndex] > Integer.MAX_VALUE) {
                                     double cp = f_client[slotIndex] * 1d / Integer.MAX_VALUE;
 
-                                    tooltip.add(Text.localised("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
+                                    tooltip.add(
+                                        Text.localised("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
 
                                     tooltip.add(new Text(df2.format(cp) + "*int.max"));
                                 }
@@ -862,11 +864,12 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 .setPos(3, 3)
                                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                         .addChild(
-                            TextWidget.localised("Info_AdvancedSuperDualInputHatchME_IntMax")
+                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.max_amount")
                                 .setPos(3, 64)
                                 .setSize(70, 14)
                                 .addTooltip(
-                                    StatCollector.translateToLocal("Info_AdvancedSuperDualInputHatchME_IntMaxTooltip")))
+                                    StatCollector.translateToLocal(
+                                        "gtnl.hatch.super_dual_input_me.auto_pull.max_amount.tooltip")))
                         .addChild(
                             new NumericWidget().setSetter(val -> intmaxs = (int) val)
                                 .setGetter(() -> intmaxs)
@@ -878,7 +881,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 .setPos(3, 43)
                                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                         .addChild(
-                            TextWidget.localised("Info_SuperDualInputHatchME_03")
+                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.item_min_amount")
                                 .setPos(80, 22)
                                 .setSize(74, 14))
                         .addChild(
@@ -892,7 +895,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                                 .setPos(80, 3)
                                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD))
                         .addChild(
-                            TextWidget.localised("Info_SuperDualInputHatchME_04")
+                            TextWidget.localised("gtnl.hatch.super_dual_input_me.auto_pull.fluid_min_amount")
                                 .setPos(80, 64)
                                 .setSize(74, 14))
                         .addChild(
@@ -975,12 +978,20 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Deprecated
     public ModularWindow createStoredItemStackSizeWindow(EntityPlayer player, int slotID) {
-        return createStoredStackSizeWindow(player, slotID, i_stored, "Info_SuperDualInputHatchME_00");
+        return createStoredStackSizeWindow(
+            player,
+            slotID,
+            i_stored,
+            "gtnl.hatch.super_dual_input_me.info.configure_item_extraction");
     }
 
     @Deprecated
     public ModularWindow createStoredFluidStackSizeWindow(EntityPlayer player, int slotID) {
-        return createStoredStackSizeWindow(player, slotID, f_stored, "Info_SuperDualInputHatchME_01");
+        return createStoredStackSizeWindow(
+            player,
+            slotID,
+            f_stored,
+            "gtnl.hatch.super_dual_input_me.info.configure_fluid_extraction");
     }
 
     @Deprecated
@@ -1006,8 +1017,10 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                 .setPos(3, 6)
                 .setSize(106, 14))
             .widget(
-                new TextWidget(StatCollector.translateToLocal("Info_SuperDualInputHatchME_02") + slotID).setPos(3, 20)
-                    .setSize(106, 14))
+                new TextWidget(
+                    StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.info.slot") + " " + slotID)
+                        .setPos(3, 20)
+                        .setSize(106, 14))
             .widget(
                 new NumericWidget().setSetter(val -> storedArray[slotID] = (long) val)
                     .setGetter(() -> storedArray[slotID])
@@ -1039,7 +1052,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         s.add("size:" + df.format(i_client[i]));
         if (i_client[i] > Integer.MAX_VALUE) {
             double cp = i_client[i] * 1d / Integer.MAX_VALUE;
-            s.add(StatCollector.translateToLocal("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
+            s.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
             s.add(df2.format(cp) + "*int.max");
 
         }
@@ -2142,11 +2155,11 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         if (autopull) {
             currenttip.add(
                 StatCollector.translateToLocalFormatted(
-                    "Info_SuperDualInputHatchME_03",
+                    "gtnl.hatch.super_dual_input_me.auto_pull.item_min_amount",
                     NumberFormatUtil.formatNumber(itemMinSize)));
             currenttip.add(
                 StatCollector.translateToLocalFormatted(
-                    "Info_SuperDualInputHatchME_04",
+                    "gtnl.hatch.super_dual_input_me.auto_pull.fluid_min_amount",
                     NumberFormatUtil.formatNumber(fluidMinSize)));
         }
         super.getWailaBody(itemStack, currenttip, accessor, config);

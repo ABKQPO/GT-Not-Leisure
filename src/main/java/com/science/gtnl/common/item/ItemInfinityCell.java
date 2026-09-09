@@ -82,11 +82,16 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
         this.setHasSubtypes(true);
         this.setUnlocalizedName("InfinityCell");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "InfinityCell");
         AEApi.instance()
             .registries()
             .cell()
             .addCellHandler(new InfinityCellHandler());
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.infinity_cell";
     }
 
     @Override
@@ -315,20 +320,20 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
                 .getString("key");
             if (!key.isEmpty()) {
                 return StatCollector
-                    .translateToLocalFormatted("item.InfinityCell.name", StatCollector.translateToLocal(key));
+                    .translateToLocalFormatted("gtnl.item.infinity_cell.name", StatCollector.translateToLocal(key));
             }
             var r = getRecord(stack, c);
             if (!r.isEmpty()) {
                 return StatCollector.translateToLocalFormatted(
-                    "item.InfinityCell.name",
+                    "gtnl.item.infinity_cell.name",
                     c == StorageChannel.ITEMS ? ((IAEItemStack) r.get(0)).getItemStack()
                         .getDisplayName()
                         : ((IAEFluidStack) r.get(0)).getFluidStack()
                             .getLocalizedName());
             }
-            return StatCollector.translateToLocal("item.InfinityCell.unknown");
+            return StatCollector.translateToLocal("gtnl.item.infinity_cell.unknown");
         }
-        return StatCollector.translateToLocal("item.InfinityCell.unknown");
+        return StatCollector.translateToLocal("gtnl.item.infinity_cell.unknown");
     }
 
     @SideOnly(Side.CLIENT)
@@ -341,7 +346,7 @@ public class ItemInfinityCell extends ItemCreativeStorageCell {
                     var isItem = c == StorageChannel.ITEMS;
                     lines.add(
                         StatCollector
-                            .translateToLocal(isItem ? "Tooltip_InfinityCell_Contents" : TOOLTIP_CELL_CONTENTS));
+                            .translateToLocal(isItem ? "gtnl.item.infinity_cell.contents" : TOOLTIP_CELL_CONTENTS));
                     var list = getRecord(stack, c);
                     if (!list.isEmpty()) {
                         for (IAEStack<?> s : list) {

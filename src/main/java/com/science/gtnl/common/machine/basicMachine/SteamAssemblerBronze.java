@@ -28,7 +28,14 @@ import gregtech.api.util.GTUtility;
 public class SteamAssemblerBronze extends MTEBasicMachineBronze {
 
     public SteamAssemblerBronze(int aID, String aName, String aNameRegional) {
-        super(aID, aName, aNameRegional, StatCollector.translateToLocal("Tooltip_SteamAssembler_00"), 6, 1, false);
+        super(
+            aID,
+            aName,
+            aNameRegional,
+            StatCollector.translateToLocal("gtnl.machine.steam_assembler.tooltip.0"),
+            6,
+            1,
+            false);
     }
 
     public SteamAssemblerBronze(String aName, String[] aDescription, ITexture[][][] aTextures) {

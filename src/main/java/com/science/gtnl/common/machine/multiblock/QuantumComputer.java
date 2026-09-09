@@ -80,6 +80,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class QuantumComputer extends MTETooltipMultiBlockBase
     implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo, ICustomNameObject {
 
@@ -218,32 +219,37 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.quantum_computer.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new QuantumComputer(mName);
     }
 
     @Override
     public String[] getStructureDescription(ItemStack itemStack) {
-        return new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputer_10") };
+        return new String[] { StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.10") };
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         final MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("QuantumComputerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_11"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_QuantumComputer_12"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.quantum_computer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.11"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.quantum_computer.tooltip.12"))
             .beginVariableStructureBlock(
                 3,
                 MainConfig.machine.quantum_computer.maxMultiblockSize,
@@ -983,7 +989,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 .setTextAlignment(Alignment.Center)
                 .setScrollBar()
                 .setTextColor(Color.WHITE.normal)
-                .addTooltip(StatCollector.translateToLocal("Info_QuantumComputer_03"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.machine.quantum_computer.info.3"))
                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
                 .setPos(7, 90)
                 .setSize(162, 18)
@@ -1021,14 +1027,15 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
             .widget(
                 new TextWidget()
                     .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted("Info_QuantumComputer_00", width, height, depth))
+                        () -> StatCollector
+                            .translateToLocalFormatted("gtnl.machine.quantum_computer.info.0", width, height, depth))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
                 new TextWidget()
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
-                            "Info_QuantumComputer_01",
+                            "gtnl.machine.quantum_computer.info.1",
                             NumberFormatUtil.formatNumber(maximumParallel),
                             NumberFormatUtil.formatNumber(usedParallel),
                             String.format(
@@ -1040,7 +1047,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 new TextWidget()
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
-                            "Info_QuantumComputer_02",
+                            "gtnl.machine.quantum_computer.info.2",
                             Utils.shortFormat(getMaximumStorage()),
                             usedStorage,
                             String.format(

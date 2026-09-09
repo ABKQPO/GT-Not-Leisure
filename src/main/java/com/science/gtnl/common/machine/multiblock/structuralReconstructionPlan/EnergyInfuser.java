@@ -80,6 +80,7 @@ import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class EnergyInfuser extends TTMultiblockBase implements IConstructable, ISurvivalConstructable {
 
     public static final int maxRepairedDamagePerOperation = 10000;
@@ -108,6 +109,11 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     public EnergyInfuser(String aName) {
         super(aName);
         eDismantleBoom = true;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.energy_infuser.name";
     }
 
     @Override
@@ -379,25 +385,25 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         outputAllItems = true;
-        GTUtility.sendChatTrans(aPlayer, "Info_EnergyInfuser_00");
+        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.energy_infuser.info.output_all_items");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EnergyInfuserRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EnergyInfuser_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.energy_infuser.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.5"))
             .addSupportAny()
             .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_EnergyInfuser_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

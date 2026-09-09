@@ -52,7 +52,7 @@ public class CustomMaintenanceHatchGui extends MTEHatchBaseGui<CustomMaintenance
     }
 
     public IWidget createConfigurationLabel() {
-        return IKey.lang("Info_ConfigurationMaintenanceHatch_00")
+        return IKey.lang("gtnl.hatch.configuration_maintenance.processing_time")
             .asWidget()
             .pos(49, 18)
             .size(81, 14);

@@ -166,7 +166,7 @@ public class NineIndustrialMultiMachineManager {
         }
 
         public String getLocalizationKey() {
-            return "NineIndustrialMultiMachine_Mode_" + ordinal();
+            return "gtnl.machine.nine_industrial_multi_machine.mode." + ordinal();
         }
 
         public static final MachineMode[] VALUES = values();

@@ -345,14 +345,14 @@ public class NinefoldInputHatch extends MTEHatchMultiInput
     @Override
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_00"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.ninefold_input.tooltip.0"));
         desc.add(
-            StatCollector.translateToLocal("Tooltip_NinefoldInputHatch_01")
+            StatCollector.translateToLocal("gtnl.hatch.ninefold_input.tooltip.capacity") + " "
                 + NumberFormatUtil.formatNumber(mCapacityPer)
                 + "L");
         desc.add(
             StatCollector.translateToLocalFormatted(
-                "Tooltip_NinefoldInputHatch_02",
+                "gtnl.hatch.ninefold_input.tooltip.fluid_types",
                 NumberFormatUtil.formatNumber(mInventory.length)));
         return desc.toArray(new String[] {});
     }

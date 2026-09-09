@@ -1131,15 +1131,12 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 3];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = IGregTechDeviceInformation.encode(
-            "MachineInfoData.Parallels.fmt",
-            EnumChatFormatting.AQUA,
-            EnumChatFormatting.GOLD,
-            getTrueParallel());
+        ret[origin.length] = IGregTechDeviceInformation
+            .encode("gtnl.machine.info.parallel", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, getTrueParallel());
         ret[origin.length + 1] = IGregTechDeviceInformation
-            .encode("MachineInfoData.SpeedMultiplier.fmt", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dSpeed);
+            .encode("gtnl.machine.info.speed_multiplier", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dSpeed);
         ret[origin.length + 2] = IGregTechDeviceInformation
-            .encode("MachineInfoData.EuModifier.fmt", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dEUMod);
+            .encode("gtnl.machine.info.eu_modifier", EnumChatFormatting.AQUA, EnumChatFormatting.GOLD, dEUMod);
         return ret;
     }
 

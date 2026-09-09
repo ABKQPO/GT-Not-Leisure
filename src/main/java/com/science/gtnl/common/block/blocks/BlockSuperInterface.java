@@ -43,11 +43,16 @@ public class BlockSuperInterface extends BlockInterface {
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":SuperInterface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSuperInterface.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntitySuperInterface.class, "SuperInterfaceTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockSuperInterface.class, "tile.SuperInterface");
+        GameRegistry.registerTileEntity(TileEntitySuperInterface.class, "super_interface_tile_entity");
         GTNLItemList.SuperInterface.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntitySuperInterface.class);
         this.setFeature(EnumSet.of(AEFeature.Core));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.super_interface";
     }
 
     @Override

@@ -109,16 +109,16 @@ public class SteamWeatherModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamWeatherModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_weather_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamWeatherModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamWeatherModule_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_weather_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_weather_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_weather_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_weather_module.tooltip.2"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

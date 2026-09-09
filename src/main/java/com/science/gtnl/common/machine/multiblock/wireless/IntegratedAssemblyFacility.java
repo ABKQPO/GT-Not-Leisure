@@ -75,6 +75,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<IntegratedAssemblyFacility>
     implements IControllerUpgrade {
 
@@ -133,6 +134,11 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
 
     public IntegratedAssemblyFacility(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.integrated_assembly_facility.name";
     }
 
     @Override
@@ -341,27 +347,39 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("IntegratedAssemblyFacilityRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(47, 13, 19, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_IntegratedAssemblyFacility_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
             .toolTipFinisher();
@@ -374,9 +392,9 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
         ret[origin.length] = IGregTechDeviceInformation.encode(
-            "scanner.info.CASS.tier",
+            "gtnl.machine.component_assembly_line.tier",
             mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1]
-                : IGregTechDeviceInformation.translatable("scanner.info.CASS.tier.none"));
+                : IGregTechDeviceInformation.translatable("gtnl.machine.component_assembly_line.tier.none"));
         return ret;
     }
 
@@ -399,7 +417,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "IntegratedAssemblyFacility_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
@@ -425,8 +443,9 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("IntegratedAssemblyFacility_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return machineMode == 0 ? "gtnl.machine.integrated_assembly_facility.mode.0"
+            : "gtnl.machine.integrated_assembly_facility.mode.1";
     }
 
     @Override
@@ -449,7 +468,8 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_IntegratedAssemblyFacility_00");
+        return StatCollector
+            .translateToLocal("gtnl.machine.integrated_assembly_facility.info.component_assembly_line_upgrade");
     }
 
 }

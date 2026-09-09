@@ -78,6 +78,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalConstructable {
 
     public static Object2IntMap<Coords> staticColorMap = new Object2IntOpenHashMap<>();
@@ -108,6 +109,11 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
 
     public Incubator(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.incubator.name";
     }
 
     @Override
@@ -392,24 +398,24 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("IncubatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Incubator_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.incubator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.2"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, false)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_Incubator_RadioHatch"),
-                StatCollector.translateToLocal("Tooltip_Incubator_Casing"),
+                StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.radio_hatch"),
+                StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"),
                 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_Incubator_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.incubator.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

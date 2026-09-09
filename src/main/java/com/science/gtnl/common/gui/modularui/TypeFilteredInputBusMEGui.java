@@ -57,8 +57,8 @@ public class TypeFilteredInputBusMEGui extends OredictInputBusMEGui {
             .childPadding(3)
             .child(createLabelledIntegerField("GT5U.machines.stocking_bus.min_stack_size", minStackSyncer))
             .child(createLabelledIntegerField("GT5U.machines.stocking_bus.refresh_time", refreshSyncer))
-            .child(createLabelledStringField("Info_TypeFilteredInputBusME_ModID", modIdSyncer))
-            .child(createLabelledStringField("Info_TypeFilteredInputBusME_ItemName", itemNameSyncer))
+            .child(createLabelledStringField("gtnl.hatch.type_filtered_input_bus_me.info.mod_id", modIdSyncer))
+            .child(createLabelledStringField("gtnl.hatch.type_filtered_input_bus_me.info.item_id", itemNameSyncer))
             .child(createLabelledMetaField(itemMetaSyncer));
 
         Dialog<?> panel = createDialog(CONFIG_PANEL_KEY, parent);
@@ -97,7 +97,7 @@ public class TypeFilteredInputBusMEGui extends OredictInputBusMEGui {
         return Flow.column()
             .coverChildren()
             .child(
-                IKey.lang("Info_TypeFilteredInputBusME_ItemMeta")
+                IKey.lang("gtnl.hatch.type_filtered_input_bus_me.info.item_meta")
                     .asWidget()
                     .maxWidth(72)
                     .textAlign(Alignment.Center)

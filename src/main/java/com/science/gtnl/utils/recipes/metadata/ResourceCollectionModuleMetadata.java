@@ -24,12 +24,18 @@ public class ResourceCollectionModuleMetadata extends RecipeMetadataKey<Integer>
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 1);
         switch (tier) {
-            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.0"));
-            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.1"));
-            case 3 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.2"));
-            case 4 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.3"));
-            case 5 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.4"));
-            case 6 -> recipeInfo.drawText(StatCollector.translateToLocal("ResourceCollectionModuleMetadata.5"));
+            case 1 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.0"));
+            case 2 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.1"));
+            case 3 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.2"));
+            case 4 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.3"));
+            case 5 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.4"));
+            case 6 -> recipeInfo
+                .drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.resource_collection_module.5"));
         }
     }
 

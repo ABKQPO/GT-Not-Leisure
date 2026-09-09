@@ -41,7 +41,7 @@ public class MixinGuiPatternTerm extends GuiMEMonitorable {
             this.guiLeft + 173,
             this.guiTop + this.ySize - 155,
             GTNLItemList.AssemblerMatrix.get(1),
-            I18n.format("gui.AssemblerMatrix.button.upload_pattern"),
+            I18n.format("gtnl.gui.assembler_matrix.upload_pattern"),
             itemRender);
         this.buttonList.add(this.snl$uploadPatternButton);
     }

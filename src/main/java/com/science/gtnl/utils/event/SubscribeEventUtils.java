@@ -114,7 +114,7 @@ public class SubscribeEventUtils {
                 if (MainConfig.message.enableShowAddMods) {
                     for (ModList mod : ModList.VALUES) {
                         if (mod.isModLoaded() && mod.showInModList) {
-                            String translatedPrefix = StatCollector.translateToLocal("Welcome_GTNL_ModInstall");
+                            String translatedPrefix = StatCollector.translateToLocal("gtnl.message.mod_installed");
                             player.addChatMessage(
                                 new ChatComponentText(mod.displayName + translatedPrefix)
                                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA)));
@@ -123,44 +123,45 @@ public class SubscribeEventUtils {
                 }
 
                 player.addChatMessage(
-                    new ChatComponentTranslation("Welcome_GTNL_00")
+                    new ChatComponentTranslation("gtnl.message.welcome.0")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.BOLD)));
                 player.addChatMessage(
-                    new ChatComponentTranslation("Welcome_GTNL_01")
+                    new ChatComponentTranslation("gtnl.message.welcome.1")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)));
                 player.addChatMessage(
-                    new ChatComponentTranslation("Welcome_GTNL_02")
+                    new ChatComponentTranslation("gtnl.message.welcome.2")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)));
                 player.addChatMessage(
-                    new ChatComponentTranslation("Welcome_GTNL_03")
+                    new ChatComponentTranslation("gtnl.message.welcome.3")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)));
 
                 if (MainConfig.recipe.enableDeleteRecipe) {
                     player.addChatMessage(
-                        new ChatComponentTranslation("Welcome_GTNL_DeleteRecipe")
+                        new ChatComponentTranslation("gtnl.message.recipe_removal_enabled")
                             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
                 }
 
                 if (!ModList.Overpowered.isModLoaded() && MainConfig.machine.enableRecipeOutputChance) {
                     player.addChatMessage(
-                        new ChatComponentTranslation("Welcome_GTNL_RecipeOutputChance_00")
+                        new ChatComponentTranslation("gtnl.message.recipe_output_chance_enabled")
                             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD)));
                     player.addChatMessage(
                         new ChatComponentTranslation(
-                            "Welcome_GTNL_RecipeOutputChance_01",
+                            "gtnl.message.recipe_output_chance_increase",
                             MainConfig.machine.recipeOutputChance + "%")
                                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD)));
                 }
 
                 if (MainConfig.recipe.enableShowDelRecipeTitle) {
                     TitlePacketHandler.sendTimes(player, 10, 200, 20);
-                    TitlePacketHandler.sendTitle(player, new ChatComponentTranslation("Welcome_GTNL_DeleteRecipe"));
+                    TitlePacketHandler
+                        .sendTitle(player, new ChatComponentTranslation("gtnl.message.recipe_removal_enabled"));
                 }
             }
 
             if (MainConfig.debug.enableDebugMode) {
                 player.addChatMessage(
-                    new ChatComponentTranslation("Welcome_GTNL_Debug")
+                    new ChatComponentTranslation("gtnl.message.debug_enabled")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
             }
 

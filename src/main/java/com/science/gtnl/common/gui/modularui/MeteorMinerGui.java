@@ -35,7 +35,7 @@ public class MeteorMinerGui extends GTNLMultiBlockBaseGui<MeteorMiner> {
                 }
                 multiblock.startReset();
             }))
-            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("Tooltip_MeteorMiner_06")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("gtnl.gui.meteor_miner.drilling_radius")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 }

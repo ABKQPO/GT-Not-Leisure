@@ -40,6 +40,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -55,6 +56,11 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
 
     public WoodDistillation(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.wood_distillation.name";
     }
 
     @Override
@@ -231,17 +237,17 @@ public class WoodDistillation extends GTMMultiMachineBase<WoodDistillation> impl
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("WoodDistillationRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WoodDistillation_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.wood_distillation.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(23, 20, 15, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_WoodDistillation_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.wood_distillation.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -31,7 +31,8 @@ public class SwarmCoreGui extends GTNLControllerUpgradeGui<SwarmCore> {
         IntSyncValue machineTierSyncer = syncManager.findSyncHandler(MACHINE_TIER_SYNC_KEY, IntSyncValue.class);
         return super.createTerminalTextWidget(syncManager, parent).child(
             IKey.dynamic(
-                () -> StatCollector.translateToLocalFormatted("Info_SwarmCore_01", machineTierSyncer.getIntValue()))
+                () -> StatCollector
+                    .translateToLocalFormatted("gtnl.machine.swarm_core.current_tier", machineTierSyncer.getIntValue()))
                 .asWidget()
                 .fullWidth());
     }

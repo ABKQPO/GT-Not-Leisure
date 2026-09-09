@@ -84,6 +84,7 @@ import gtnhlanth.common.register.LanthItemList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopying>
     implements ISurvivalConstructable, EnergyMonitorCustomWirelessEutProvider {
 
@@ -105,6 +106,11 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
     public ElementCopying(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.element_copying.name";
     }
 
     @Override
@@ -316,22 +322,22 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ElementCopyingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElementCopying_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.element_copying.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElementCopying_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -610,7 +616,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
             new DynamicTextWidget(
                 () -> new Text(
                     StatCollector.translateToLocalFormatted(
-                        "Info_ElementCopying_00",
+                        "gtnl.machine.element_copying.info.selected_types",
                         itemEntry.size() + fluidEntry.size(),
                         NumberFormatUtil.formatNumber(getNeedUUM()),
                         NumberFormatUtil.formatNumber(getNeedEU()))).color(Color.WHITE.normal))

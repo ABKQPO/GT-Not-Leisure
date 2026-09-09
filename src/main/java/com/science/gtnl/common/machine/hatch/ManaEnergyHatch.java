@@ -86,10 +86,10 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
     @Override
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_02", EU_TO_MANA_RATE));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaEnergyHatch_03", getCapacity()));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_energy.tooltip.0"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_energy.tooltip.1"));
+        desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_energy.tooltip.2", EU_TO_MANA_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_energy.tooltip.3", getCapacity()));
         return desc.toArray(new String[] {});
     }
 
@@ -101,7 +101,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
         if (currentMana == 0) return new String[] {};
         return new String[] { IGregTechDeviceInformation.encode(
-            "Info_ManaEnergyHatch_00",
+            "gtnl.hatch.mana_energy.info.stored_mana",
             EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(currentMana)
                 + EnumChatFormatting.RESET
                 + " / "
@@ -129,7 +129,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
             int currentMana = tag.getInteger("currentMana");
             int capacity = tag.getInteger("capacity");
             currentTip.add(
-                EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaEnergyHatch_00")
+                EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.hatch.mana_energy.info.stored_mana")
                     + EnumChatFormatting.RESET
                     + EnumChatFormatting.GREEN
                     + NumberFormatUtil.formatNumber(currentMana)

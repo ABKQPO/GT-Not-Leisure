@@ -10,7 +10,7 @@ import ic2.api.reactor.IReactorComponent;
 public class FuelRodDepleted extends RadioactiveItem implements IReactorComponent, IBoxable {
 
     public FuelRodDepleted(String aName, int mRadio) {
-        super(aName, mRadio);
+        super(aName, "gtnl.item.infinity_fuel_rod_depleted", mRadio);
         this.setTextureName(aName);
     }
 

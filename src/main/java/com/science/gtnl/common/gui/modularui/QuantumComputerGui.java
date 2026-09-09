@@ -112,7 +112,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
             .child(
                 IKey.dynamic(
                     () -> StatCollector.translateToLocalFormatted(
-                        "Info_QuantumComputer_00",
+                        "gtnl.machine.quantum_computer.info.0",
                         widthSyncer.getIntValue(),
                         heightSyncer.getIntValue(),
                         depthSyncer.getIntValue()))
@@ -123,7 +123,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
             .child(
                 IKey.dynamic(
                     () -> StatCollector.translateToLocalFormatted(
-                        "Info_QuantumComputer_01",
+                        "gtnl.machine.quantum_computer.info.1",
                         NumberFormatUtil.formatNumber(maximumParallelSyncer.getIntValue()),
                         NumberFormatUtil.formatNumber(usedParallelSyncer.getIntValue()),
                         formatPercent(usedParallelSyncer.getIntValue(), maximumParallelSyncer.getIntValue())))
@@ -134,7 +134,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
             .child(
                 IKey.dynamic(
                     () -> StatCollector.translateToLocalFormatted(
-                        "Info_QuantumComputer_02",
+                        "gtnl.machine.quantum_computer.info.2",
                         Utils.shortFormat(maximumStorageSyncer.getLongValue()),
                         usedStorageSyncer.getLongValue(),
                         formatPercent(usedParallelSyncer.getIntValue(), maximumStorageSyncer.getLongValue())))
@@ -198,7 +198,8 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
             .setTextAlignment(Alignment.Center)
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
-            .tooltipBuilder(tooltip -> tooltip.addLine(StatCollector.translateToLocal("Info_QuantumComputer_03")))
+            .tooltipBuilder(
+                tooltip -> tooltip.addLine(StatCollector.translateToLocal("gtnl.machine.quantum_computer.info.3")))
             .size(162, 18);
     }
 

@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
 
     public LargeEngravingLaser(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_engraving_laser.name";
     }
 
     @Override
@@ -166,18 +172,20 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeEngravingLaserRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEngravingLaser_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_engraving_laser.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

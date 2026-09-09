@@ -47,6 +47,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 3;
@@ -62,6 +63,11 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
     public LargeSteamFurnace(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_furnace.name";
     }
 
     @Override
@@ -396,20 +402,20 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamFurnaceRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(9, 8, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamFurnace_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

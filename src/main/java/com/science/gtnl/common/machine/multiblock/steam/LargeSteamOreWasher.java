@@ -44,6 +44,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWasher> implements ISurvivalConstructable {
 
     private static final int MACHINEMODE_OREWASH = 0;
@@ -61,6 +62,11 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
 
     public LargeSteamOreWasher(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_ore_washer.name";
     }
 
     @Override
@@ -220,20 +226,20 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamOreWasherRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamOreWasherRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(9, 5, 9, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamOreWasher_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_ore_washer.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
@@ -273,7 +279,7 @@ public class LargeSteamOreWasher extends SteamMultiMachineBase<LargeSteamOreWash
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeSteamOreWasher_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_steam_ore_washer.mode." + machineMode;
     }
 }

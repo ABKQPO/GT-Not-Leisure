@@ -65,9 +65,10 @@ public class VoidCoverGui extends CoverBaseGui<VoidCover> {
                 new ToggleButton().value(inputModeSyncer)
                     .overlay(false, GTGuiTextures.OVERLAY_BUTTON_BLACKLIST)
                     .overlay(true, GTGuiTextures.OVERLAY_BUTTON_WHITELIST)
-                    .tooltipDynamic(tooltip -> tooltip.addLine(StatCollector.translateToLocal("Info_VoidCover_00"))))
+                    .tooltipDynamic(
+                        tooltip -> tooltip.addLine(StatCollector.translateToLocal("gtnl.cover.void.mode.input"))))
             .child(
-                IKey.dynamic(() -> StatCollector.translateToLocal("Info_VoidCover_00"))
+                IKey.dynamic(() -> StatCollector.translateToLocal("gtnl.cover.void.mode.input"))
                     .asWidget());
     }
 

@@ -141,17 +141,18 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
 
-        desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamDynamoHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamDynamoHatch_01"));
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + getCapacity() + "L");
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.tooltip.0"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.tooltip.1"));
+        desc.add(
+            StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " " + getCapacity() + "L");
         if (mTier == 0) {
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamVent_00"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamVent_01"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamVent_02"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.steam.tooltip.0"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.steam.tooltip.1"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.steam.tooltip.2"));
         } else {
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamVent_00"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamVent_01"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamVent_02"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.jetstream.tooltip.0"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.jetstream.tooltip.1"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_dynamo.jetstream.tooltip.2"));
         }
 
         return desc.toArray(new String[] {});
@@ -297,16 +298,19 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
         boolean isInTeam = tag.getBoolean("isInSteamNetwork");
 
         if (!isInTeam) {
-            currenttip.add(StatCollector.translateToLocalFormatted("Info_SteamNetwork_00", steamNetworkOwner));
+            currenttip
+                .add(StatCollector.translateToLocalFormatted("gtnl.waila.steam_network.unlinked", steamNetworkOwner));
         } else {
             String steamNetworkDisplay = tag.getString("SteamNetworkDisplay");
             currenttip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_SteamNetwork_01", steamNetworkOwner, steamNetworkDisplay));
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.waila.steam_network.balance",
+                    steamNetworkOwner,
+                    steamNetworkDisplay));
             if (tag.hasKey("SteamNetworkTeam")) {
                 currenttip.add(
                     StatCollector.translateToLocalFormatted(
-                        "Info_SteamNetwork_02",
+                        "gtnl.waila.steam_network.team",
                         steamNetworkOwner,
                         tag.getString("SteamNetworkTeam")));
             }

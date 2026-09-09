@@ -36,6 +36,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -51,6 +52,11 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
 
     public SteamManufacturer(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_manufacturer.name";
     }
 
     @Override
@@ -173,16 +179,16 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamManufacturerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamManufacturer_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.2"))
             .beginStructureBlock(9, 7, 7, true)
             .toolTipFinisher();
         return tt;

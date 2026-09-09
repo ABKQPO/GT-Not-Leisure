@@ -75,17 +75,18 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
 
-        desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamEnergyHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + getCapacity() + "L");
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.tooltip.0"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.tooltip.1"));
+        desc.add(
+            StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " " + getCapacity() + "L");
         if (mTier == 0) {
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamHatch_00"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamHatch_01"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessSteamHatch_02"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.steam.tooltip.0"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.steam.tooltip.1"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.steam.tooltip.2"));
         } else {
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamHatch_00"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamHatch_01"));
-            desc.add(StatCollector.translateToLocal("Tooltip_PipelessJetstreamHatch_02"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.jetstream.tooltip.0"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.jetstream.tooltip.1"));
+            desc.add(StatCollector.translateToLocal("gtnl.hatch.wireless_steam_energy.jetstream.tooltip.2"));
         }
 
         return desc.toArray(new String[] {});
@@ -263,16 +264,19 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         boolean isInTeam = tag.getBoolean("isInSteamNetwork");
 
         if (!isInTeam) {
-            currenttip.add(StatCollector.translateToLocalFormatted("Info_SteamNetwork_00", steamNetworkOwner));
+            currenttip
+                .add(StatCollector.translateToLocalFormatted("gtnl.waila.steam_network.unlinked", steamNetworkOwner));
         } else {
             String steamNetworkDisplay = tag.getString("SteamNetworkDisplay");
             currenttip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_SteamNetwork_01", steamNetworkOwner, steamNetworkDisplay));
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.waila.steam_network.balance",
+                    steamNetworkOwner,
+                    steamNetworkDisplay));
             if (tag.hasKey("SteamNetworkTeam")) {
                 currenttip.add(
                     StatCollector.translateToLocalFormatted(
-                        "Info_SteamNetwork_02",
+                        "gtnl.waila.steam_network.team",
                         steamNetworkOwner,
                         tag.getString("SteamNetworkTeam")));
             }

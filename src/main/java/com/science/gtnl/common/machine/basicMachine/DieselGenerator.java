@@ -41,17 +41,21 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
             aName,
             aNameRegional,
             aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_DieselGenerator_00"), "", "" });
-        mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_DieselGenerator_01", getEfficiency());
-        mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_DieselGenerator_02", NumberFormatUtil.formatNumber(getCapacity()));
+            new String[] { StatCollector.translateToLocal("gtnl.machine.diesel_generator.tooltip.0"), "", "" });
+        mDescriptionArray[1] = StatCollector
+            .translateToLocalFormatted("gtnl.machine.diesel_generator.tooltip.1", getEfficiency());
+        mDescriptionArray[2] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.diesel_generator.tooltip.2",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     public DieselGenerator(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
-        mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_DieselGenerator_01", getEfficiency());
-        mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_DieselGenerator_02", NumberFormatUtil.formatNumber(getCapacity()));
+        mDescriptionArray[1] = StatCollector
+            .translateToLocalFormatted("gtnl.machine.diesel_generator.tooltip.1", getEfficiency());
+        mDescriptionArray[2] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.diesel_generator.tooltip.2",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     @Override

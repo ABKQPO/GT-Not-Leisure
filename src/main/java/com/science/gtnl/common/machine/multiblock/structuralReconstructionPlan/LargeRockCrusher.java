@@ -171,17 +171,17 @@ public class LargeRockCrusher extends GTMMultiMachineBase<LargeRockCrusher> impl
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeRockCrusherRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeRockCrusher_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.info"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeRockCrusher_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.casing"))
             .toolTipFinisher();
         return tt;
     }

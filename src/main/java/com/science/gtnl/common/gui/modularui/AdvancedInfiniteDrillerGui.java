@@ -31,8 +31,9 @@ public class AdvancedInfiniteDrillerGui extends GTNLMultiBlockBaseGui<AdvancedIn
         DoubleSyncValue excessFuelSyncer = syncManager.findSyncHandler(EXCESS_FUEL_SYNC_KEY, DoubleSyncValue.class);
         return super.createTerminalTextWidget(syncManager, parent).child(
             IKey.dynamic(
-                () -> StatCollector
-                    .translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", excessFuelSyncer.getDoubleValue()))
+                () -> StatCollector.translateToLocalFormatted(
+                    "gtnl.machine.advanced_infinite_driller.info.excess_fuel",
+                    excessFuelSyncer.getDoubleValue()))
                 .asWidget()
                 .fullWidth());
     }

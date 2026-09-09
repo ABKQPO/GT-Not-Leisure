@@ -129,7 +129,7 @@ public class LargeSteamBending extends SteamMultiMachineBase<LargeSteamBending> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamBendingRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_bending.recipe_type");
     }
 
     @Override
@@ -214,14 +214,14 @@ public class LargeSteamBending extends SteamMultiMachineBase<LargeSteamBending> 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamBendingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamBending_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamBending_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamBending_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(5, 4, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamBending_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_bending.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_bending.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

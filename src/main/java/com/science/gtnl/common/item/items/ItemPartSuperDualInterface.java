@@ -26,11 +26,16 @@ public class ItemPartSuperDualInterface extends Item implements IPartItem {
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setUnlocalizedName("PartSuperDualInterface");
         setTextureName(RESOURCE_ROOT_ID + ":SuperDualInterface");
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PartSuperDualInterface");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
         GTNLItemList.PartSuperDualInterface.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.part_super_dual_interface";
     }
 
     @Nullable

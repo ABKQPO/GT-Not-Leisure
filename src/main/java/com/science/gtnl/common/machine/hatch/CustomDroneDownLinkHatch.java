@@ -162,7 +162,7 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
         super.addUIWidgets(builder, buildContext);
         if (isConfiguration()) {
             builder.widget(
-                TextWidget.localised("Info_ConfigurationMaintenanceHatch_00")
+                TextWidget.localised("gtnl.hatch.configuration_maintenance.processing_time")
                     .setTextAlignment(Alignment.Center)
                     .setPos(0, 38)
                     .setSize(150, 14))

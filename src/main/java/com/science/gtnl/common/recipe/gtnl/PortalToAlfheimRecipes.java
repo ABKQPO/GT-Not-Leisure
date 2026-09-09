@@ -33,7 +33,8 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 GTUtility.copyAmountUnsafe(
                     Integer.MAX_VALUE,
                     GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockNuke", 1)
-                        .setStackDisplayName(StatCollector.translateToLocal("PTARRecipes.1"))))
+                        .setStackDisplayName(
+                            StatCollector.translateToLocal("gtnl.recipe.portal_to_alfheim.invalid_input"))))
             .duration(1200)
             .eut(0)
             .fake()

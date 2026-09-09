@@ -230,21 +230,21 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaMixerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaMixer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaMixer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaMixer_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaMixer_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_mixer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(11, 9, 18, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MegaMixer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
             .toolTipFinisher();
         return tt;
     }

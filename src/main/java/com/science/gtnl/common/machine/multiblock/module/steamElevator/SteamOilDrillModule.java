@@ -65,27 +65,31 @@ public class SteamOilDrillModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamOilDrillModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamOilDrillModuleRecipeType"));
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.recipe_type"));
         switch (mTier) {
-            case 2 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamOilDrillModuleI_00"));
-            case 3 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamOilDrillModuleII_00"));
-            case 4 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamOilDrillModuleIII_00"));
+            case 2 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.tooltip.basic"));
+            case 3 -> tt
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.tooltip.advanced"));
+            case 4 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.tooltip.elite"));
         }
-        tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamOilDrillModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamOilDrillModule_01"))
-            .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamOilDrillModule_02", mTier - 1))
+        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.tooltip.1"))
+            .addInfo(
+                StatCollector.translateToLocalFormatted("gtnl.machine.steam_oil_drill_module.tooltip.2", mTier - 1))
             .addInfo(
                 StatCollector.translateToLocalFormatted(
-                    "Tooltip_SteamOilDrillModule_03",
+                    "gtnl.machine.steam_oil_drill_module.tooltip.3",
                     250 * (1 << Math.max(0, mTier - 2)),
                     1000 * (1 << Math.max(0, mTier - 2))))
-            .addInfo(StatCollector.translateToLocalFormatted("Tooltip_SteamOilDrillModule_04", 1200 / (mTier - 1)))
+            .addInfo(
+                StatCollector
+                    .translateToLocalFormatted("gtnl.machine.steam_oil_drill_module.tooltip.4", 1200 / (mTier - 1)))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

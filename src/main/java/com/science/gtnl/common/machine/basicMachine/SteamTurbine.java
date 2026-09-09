@@ -34,20 +34,22 @@ public class SteamTurbine extends MTEBasicGenerator implements IAddGregtechLogo 
             aName,
             aNameRegional,
             aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_SteamTurbine_00"),
-                StatCollector.translateToLocal("Tooltip_SteamTurbine_01"), "", "" });
+            new String[] { StatCollector.translateToLocal("gtnl.machine.steam_turbine.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.machine.steam_turbine.tooltip.1"), "", "" });
         mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_SteamTurbine_02", 800 / getEfficiency());
-        mDescriptionArray[3] = StatCollector
-            .translateToLocalFormatted("Tooltip_SteamTurbine_03", NumberFormatUtil.formatNumber(getCapacity()));
+            .translateToLocalFormatted("gtnl.machine.steam_turbine.tooltip.2", 800 / getEfficiency());
+        mDescriptionArray[3] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.steam_turbine.tooltip.3",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     public SteamTurbine(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
         mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_SteamTurbine_02", 800 / getEfficiency());
-        mDescriptionArray[3] = StatCollector
-            .translateToLocalFormatted("Tooltip_SteamTurbine_03", NumberFormatUtil.formatNumber(getCapacity()));
+            .translateToLocalFormatted("gtnl.machine.steam_turbine.tooltip.2", 800 / getEfficiency());
+        mDescriptionArray[3] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.steam_turbine.tooltip.3",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     @Override

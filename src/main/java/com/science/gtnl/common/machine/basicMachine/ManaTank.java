@@ -197,10 +197,10 @@ public class ManaTank extends MTEDigitalTankBase {
 
     @Override
     public void addAdditionalTooltipInformation(ItemStack stack, List<String> tooltip) {
-        tooltip.add(StatCollector.translateToLocal("Tooltip_ManaTank_00"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_ManaTank_01"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_ManaTank_02"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_ManaTank_03"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.machine.mana_tank.tooltip.0"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.machine.mana_tank.tooltip.1"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.machine.mana_tank.tooltip.2"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.machine.mana_tank.tooltip.3"));
         if (stack.hasTagCompound()
             && (stack.stackTagCompound.hasKey("mFluid") || stack.stackTagCompound.hasKey("lockedFluidName"))) {
             final FluidStack tContents = FluidStack

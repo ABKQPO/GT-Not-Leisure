@@ -369,7 +369,7 @@ public class OredictInputBusMEGui extends MTEHatchInputBusMEGui {
                     .textAlign(Alignment.Center))
             .child(createIntegerField(refreshSyncer))
             .child(
-                IKey.lang("Info_OredictInputBusME_Oredict")
+                IKey.lang("gtnl.hatch.oredict_input_bus_me.info.ore_dict")
                     .asWidget()
                     .maxWidth(72)
                     .textAlign(Alignment.Center))

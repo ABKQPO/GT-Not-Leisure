@@ -120,23 +120,23 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     @Override
     public String[] getDescription() {
         List<String> strings = new ArrayList<>(8);
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_00"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.0"));
         strings.add(
-            StatCollector.translateToLocal("Tooltip_SuperInputBusME_01")
+            StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.1") + " "
                 + GTValues.TIER_COLORS[autoPullAvailable ? 7 : 4]
                 + GTValues.VN[autoPullAvailable ? 7 : 4]);
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_02"));
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_03"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.2"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.3"));
 
         if (autoPullAvailable) {
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperInputBusME_00"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperInputBusME_01"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperInputBusME_02"));
-            strings.add(StatCollector.translateToLocal("Tooltip_AdvancedSuperInputBusME_03"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.auto_pull.tooltip.0"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.auto_pull.tooltip.1"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.auto_pull.tooltip.2"));
+            strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.auto_pull.tooltip.3"));
         }
 
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_04"));
-        strings.add(StatCollector.translateToLocal("Tooltip_SuperInputBusME_05"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.4"));
+        strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.5"));
         return strings.toArray(new String[0]);
     }
 
@@ -852,11 +852,12 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                         .add(WIDTH - 3, 0)));
 
         builder.widget(
-            TextWidget.localised("Info_SuperInputHatchME_00")
+            TextWidget.localised("gtnl.hatch.super_input_me.info.configure_extraction")
                 .setPos(3, 6)
                 .setSize(106, 14))
             .widget(
-                new TextWidget(StatCollector.translateToLocal("Info_SuperInputHatchME_01") + slotID).setPos(3, 20)
+                new TextWidget(StatCollector.translateToLocal("gtnl.hatch.super_input_me.info.slot") + " " + slotID)
+                    .setPos(3, 20)
                     .setSize(106, 14))
             .widget(
                 new NumericWidget().setSetter(val -> storedStackSizes[slotID] = (int) val)

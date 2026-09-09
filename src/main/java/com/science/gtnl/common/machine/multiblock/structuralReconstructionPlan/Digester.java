@@ -42,6 +42,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class Digester extends GTMMultiMachineBase<Digester> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -57,6 +58,11 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     public Digester(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.digester.name";
     }
 
     @Override
@@ -230,21 +236,21 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DigesterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Digester_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.digester.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.digester.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.digester.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 4, 7, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_Digester_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

@@ -64,7 +64,7 @@ public abstract class MetaCasingBase extends Block implements IMetaBlock {
 
     @Override
     public String getUnlocalizedName() {
-        return "tile." + this.unlocalizedName;
+        return "gtnl.block." + this.unlocalizedName;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class AnimatedText {
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.LONEI.get() + AnimatedTooltipHandler.RESET;
 
     public static final Supplier<String> SCIENCE_NOT_LEISURE = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.text(StatCollector.translateToLocal("Tooltip_Adder")),
+        AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.add_mod")),
         AnimatedTooltipHandler.animatedText(
             "Science Not Leisure",
             1,
@@ -60,7 +60,7 @@ public class AnimatedText {
             AnimatedTooltipHandler.LIGHT_PURPLE));
 
     public static final Supplier<String> SCIENCE_NOT_LEISURE_CHANGE = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.text(StatCollector.translateToLocal("Tooltip_ChangeAdder")),
+        AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.change_mod")),
         AnimatedTooltipHandler.animatedText(
             "Science Not Leisure",
             1,
@@ -75,7 +75,7 @@ public class AnimatedText {
 
     public static final Supplier<String> STRUCTURAL_RECONSTRUCTION_PLAN = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.animatedText(
-            StatCollector.translateToLocal("StructuralReconstructionPlan"),
+            StatCollector.translateToLocal("gtnl.feature.structural_reconstruction_plan"),
             1,
             50,
             AnimatedTooltipHandler.BLUE,

@@ -216,14 +216,14 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
         if (tag.hasKey("mEUt")) {
             currentTip.add(
-                StatCollector.translateToLocal("Info_NaquadahReactor_00") + EnumChatFormatting.WHITE
+                StatCollector.translateToLocal("gtnl.waila.naquadah_reactor.power_output") + EnumChatFormatting.WHITE
                     + NumberFormatUtil.formatNumber(tag.getLong("mEUt"))
                     + " EU/t"
                     + EnumChatFormatting.RESET);
         }
 
         if (tag.getBoolean("useExtraGas")) {
-            currentTip.add(StatCollector.translateToLocal("Info_NaquadahReactor_01"));
+            currentTip.add(StatCollector.translateToLocal("gtnl.waila.naquadah_reactor.extra_gas_boost"));
         }
     }
 
@@ -280,6 +280,11 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.large_naquadah_reactor.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
             return new LargeNaquadahReactor(this.mName);
         }
@@ -319,23 +324,37 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("NaquadahReactorRecipeType"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted("Tooltip_LargeNaquadahReactor_00", getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.recipe_type"))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_LargeNaquadahReactor_02",
+                        "gtnl.machine.large_naquadah_reactor.tooltip.0",
+                        getMaxParallelRecipes()))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.1"))
+                .addInfo(
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.large_naquadah_reactor.tooltip.2",
                         getDurationMultiple(),
                         getEUtMultiple()))
                 .addInfo(
-                    StatCollector.translateToLocalFormatted("Tooltip_LargeNaquadahReactor_03", getExtraGas().amount))
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.large_naquadah_reactor.tooltip.3",
+                        getExtraGas().amount))
                 .beginStructureBlock(25, 25, 9, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
-                .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeNaquadahReactor_Casing"))
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
+                .addEnergyHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
+                .addDynamoHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
+                .addMaintenanceHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -456,23 +475,27 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("NaquadahReactorRecipeType"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted("Tooltip_HyperNaquadahReactor_00", getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.naquadah_reactor.recipe_type"))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_HyperNaquadahReactor_02",
+                        "gtnl.machine.hyper_naquadah_reactor.tooltip.0",
+                        getMaxParallelRecipes()))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.tooltip.1"))
+                .addInfo(
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.hyper_naquadah_reactor.tooltip.2",
                         getDurationMultiple(),
                         getEUtMultiple()))
                 .addInfo(
-                    StatCollector.translateToLocalFormatted("Tooltip_HyperNaquadahReactor_03", getExtraGas().amount))
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.hyper_naquadah_reactor.tooltip.3",
+                        getExtraGas().amount))
                 .beginStructureBlock(27, 21, 21, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
-                .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HyperNaquadahReactor_Casing"))
+                .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
+                .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
+                .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
+                .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
+                .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -704,7 +727,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
             float aX, float aY, float aZ, ItemStack aTool) {
             if (getBaseMetaTileEntity().isServerSide()) {
                 enableRender = !enableRender;
-                GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
+                GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (enableRender ? "enabled" : "disabled"));
                 checkStructure(true, getBaseMetaTileEntity());
             }
             return true;
@@ -746,28 +769,38 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("NaquadahReactorRecipeType"))
-                .addInfo(
-                    StatCollector
-                        .translateToLocalFormatted("Tooltip_AdvancedHyperNaquadahReactor_00", getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_01"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.naquadah_reactor.recipe_type"))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_AdvancedHyperNaquadahReactor_02",
+                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.0",
+                        getMaxParallelRecipes()))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.1"))
+                .addInfo(
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.2",
                         getDurationMultiple(),
                         getEUtMultiple()))
                 .addInfo(
-                    StatCollector
-                        .translateToLocalFormatted("Tooltip_AdvancedHyperNaquadahReactor_03", getExtraGas().amount))
-                .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_04"))
+                    StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.3",
+                        getExtraGas().amount))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.4"))
                 .beginStructureBlock(35, 19, 36, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                .addInputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
+                .addOutputHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
+                .addEnergyHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
+                .addDynamoHatch(
+                    "0+",
+                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
                 .addMaintenanceHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_AdvancedHyperNaquadahReactor_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -940,17 +973,20 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
             if (euText != null) {
                 currentTip.add(
-                    StatCollector.translateToLocal("Info_NaquadahReactor_02") + EnumChatFormatting.WHITE
+                    StatCollector.translateToLocal("gtnl.waila.naquadah_reactor.wireless_power_output")
+                        + EnumChatFormatting.WHITE
                         + euText
                         + " EU"
                         + EnumChatFormatting.RESET);
             }
 
             if (tag.getBoolean("wirelessMode")) {
-                currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
-            } else if (euText != null) {
                 currentTip
-                    .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Info_NaquadahReactor_03"));
+                    .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
+            } else if (euText != null) {
+                currentTip.add(
+                    EnumChatFormatting.LIGHT_PURPLE
+                        + StatCollector.translateToLocal("gtnl.waila.naquadah_reactor.force_wireless"));
             }
         }
 

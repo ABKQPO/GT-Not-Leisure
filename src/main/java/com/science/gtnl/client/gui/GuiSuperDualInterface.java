@@ -84,7 +84,7 @@ public class GuiSuperDualInterface extends GuiUpgradeable {
             this.guiTop,
             this.host instanceof PartSuperDualInterface ? GTNLItemList.PartSuperDualInterface.get(1)
                 : GTNLItemList.SuperDualInterface.get(1),
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.switch"),
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.switch"),
             itemRender);
         this.buttonList.add(this.switcher);
 
@@ -164,7 +164,7 @@ public class GuiSuperDualInterface extends GuiUpgradeable {
             16,
             16,
             "<",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.0"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.previous_page"));
         this.nextPage = new GuiSuperInterface.GuiTextAeButton(
             102,
             btnX,
@@ -172,7 +172,7 @@ public class GuiSuperDualInterface extends GuiUpgradeable {
             16,
             16,
             ">",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.1"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.next_page"));
         this.buttonList.add(prevPage);
         this.buttonList.add(nextPage);
     }
@@ -200,12 +200,14 @@ public class GuiSuperDualInterface extends GuiUpgradeable {
         }
 
         this.fontRendererObj.drawString(
-            getGuiDisplayName(StatCollector.translateToLocal("container.SuperDualInterface")),
+            getGuiDisplayName(StatCollector.translateToLocal("gtnl.gui.super_dual_interface.name")),
             8,
             6,
             4210752);
-        String pageLabel = StatCollector
-            .translateToLocalFormatted("text.SuperInterface.page", container.currentPage + 1, container.getMaxPages());
+        String pageLabel = StatCollector.translateToLocalFormatted(
+            "gtnl.gui.super_interface.page",
+            container.currentPage + 1,
+            container.getMaxPages());
         this.fontRendererObj.drawString(pageLabel, 100, 6, 4210752);
 
         this.prevPage.enabled = container.currentPage > 0;

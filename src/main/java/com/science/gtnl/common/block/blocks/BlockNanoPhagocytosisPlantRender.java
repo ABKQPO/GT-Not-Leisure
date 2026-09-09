@@ -29,9 +29,15 @@ public class BlockNanoPhagocytosisPlantRender extends Block {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setBlockName("NanoPhagocytosisPlantRenderer");
         this.setLightLevel(1.0f);
-        GameRegistry.registerBlock(this, ItemBlockNanoPhagocytosisPlantRender.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityNanoPhagocytosisPlant.class, "NanoPhagocytosisPlantRenderTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockNanoPhagocytosisPlantRender.class, "tile.NanoPhagocytosisPlantRenderer");
+        GameRegistry
+            .registerTileEntity(TileEntityNanoPhagocytosisPlant.class, "nano_phagocytosis_plant_render_tile_entity");
         GTNLItemList.NanoPhagocytosisPlantRender.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.nano_phagocytosis_plant_renderer";
     }
 
     @Override

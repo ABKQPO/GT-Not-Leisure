@@ -259,35 +259,35 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_SwarmCore_00");
+        return StatCollector.translateToLocal("gtnl.machine.swarm_core.upgrade_required");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SwarmCoreRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SwarmCore_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SwarmCore_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SwarmCore_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.swarm_core.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.2"))
             .addSupportAny()
             .beginStructureBlock(41, 54, 41, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_SwarmCore_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -471,8 +471,8 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
         super.drawTexts(screenElements, inventorySlot);
         screenElements
             .widget(
-                new TextWidget()
-                    .setStringSupplier(() -> StatCollector.translateToLocalFormatted("Info_SwarmCore_01", machineTier))
+                new TextWidget().setStringSupplier(
+                    () -> StatCollector.translateToLocalFormatted("gtnl.machine.swarm_core.current_tier", machineTier))
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
                     .setEnabled(true))
             .widget(

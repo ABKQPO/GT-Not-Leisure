@@ -42,6 +42,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveDistillationTower>
     implements ISurvivalConstructable {
 
@@ -63,6 +64,11 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.primitive_distillation_tower.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new PrimitiveDistillationTower(this.mName);
     }
@@ -70,14 +76,26 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PrimitiveDistillationTowerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.1"))
             .beginStructureBlock(3, 7, 3, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_01"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PrimitiveDistillationTower_Casing_02"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.1"),
+                1)
             .toolTipFinisher();
         return tt;
     }
@@ -289,7 +307,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("PrimitiveDistillationTowerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.recipe_type");
     }
 
     public List<? extends IFluidStore> getFluidOutputSlots(FluidStack[] toOutput) {

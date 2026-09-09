@@ -43,6 +43,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompressor>
     implements ISurvivalConstructable {
 
@@ -59,6 +60,11 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
 
     public LargeSteamCompressor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_compressor.name";
     }
 
     @Override
@@ -242,22 +248,28 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamCompressorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamCompressorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(7, 7, 7, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCompressor_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.casing"), 1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_compressor.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

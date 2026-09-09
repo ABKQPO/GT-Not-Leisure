@@ -45,9 +45,14 @@ public class BlockCardboardBox extends BlockContainer {
         setHardness(0.5F);
         setResistance(1F);
         setBlockName("CardboardBox");
-        GameRegistry.registerBlock(this, ItemBlockCardboardBox.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBoxTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockCardboardBox.class, "tile.CardboardBox");
+        GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "cardboard_box_tile_entity");
         GTNLItemList.CardboardBox.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.cardboard_box";
     }
 
     @Override

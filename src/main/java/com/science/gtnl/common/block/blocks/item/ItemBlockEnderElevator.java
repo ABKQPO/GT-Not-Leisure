@@ -16,11 +16,11 @@ public class ItemBlockEnderElevator extends ItemBlock {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean f3_h) {
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EnderElevator_00"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EnderElevator_01"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EnderElevator_02"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EnderElevator_03"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EnderElevator_04"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.ender_elevator.tooltip.0"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.ender_elevator.tooltip.1"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.ender_elevator.tooltip.2"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.ender_elevator.tooltip.3"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.ender_elevator.tooltip.4"));
     }
 
 }

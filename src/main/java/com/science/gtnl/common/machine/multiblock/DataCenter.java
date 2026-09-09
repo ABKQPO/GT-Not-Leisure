@@ -269,15 +269,15 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DataCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DataCenter_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.data_center.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(15, 9, 15, true)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_DataCenter_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.data_center.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.data_center.casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("gt.blockmachines.hatch.dataoutass.tier.07.name"),
                 StatCollector.translateToLocal("tt.keyword.Structure.AnyComputerCasing"),
@@ -296,10 +296,10 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessModeEnabled = !wirelessModeEnabled;
             if (wirelessModeEnabled) {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Enabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Disabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.disabled");
                 WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
             }
         }

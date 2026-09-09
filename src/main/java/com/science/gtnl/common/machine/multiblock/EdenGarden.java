@@ -90,6 +90,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHouse {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -138,6 +139,11 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     public EdenGarden(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.eden_garden.name";
     }
 
     @Override
@@ -373,15 +379,11 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal(getMachineModeNameKey());
-    }
-
-    private String getMachineModeNameKey() {
+    public String getMachineModeKey() {
         return switch (machineMode) {
-            case MODE_FARM -> "Info_EdenGarden_Operating";
-            case MODE_OUTPUT -> "Info_EdenGarden_Output";
-            default -> "Info_EdenGarden_Input";
+            case MODE_FARM -> "gtnl.machine.eden_garden.mode.operating";
+            case MODE_OUTPUT -> "gtnl.machine.eden_garden.mode.output";
+            default -> "gtnl.machine.eden_garden.mode.input";
         };
     }
 
@@ -455,21 +457,21 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EdenGardenRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EdenGarden_06"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.eden_garden.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.6"))
             .addSupportAny()
             .beginStructureBlock(6, 43, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_EdenGarden_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -479,27 +481,29 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         List<String> info = new ArrayList<>(
             Arrays.asList(
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_01",
+                    "gtnl.machine.eden_garden.info.mode",
                     EnumChatFormatting.GREEN,
-                    IGregTechDeviceInformation.translatable(getMachineModeNameKey()),
+                    IGregTechDeviceInformation.translatable(getMachineModeKey()),
                     EnumChatFormatting.RESET),
 
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_04",
+                    "gtnl.machine.eden_garden.info.max_slots",
                     EnumChatFormatting.GREEN,
                     this.maxSeedCount,
                     EnumChatFormatting.RESET),
 
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_05",
+                    "gtnl.machine.eden_garden.info.used_slots",
                     ((this.getTotalStoredCropCount() > maxSeedCount) ? EnumChatFormatting.RED
                         : EnumChatFormatting.GREEN),
                     this.getTotalStoredCropCount())));
 
         if (this.getTotalStoredCropCount() > this.maxSeedCount) {
             info.add(
-                IGregTechDeviceInformation
-                    .encode("Info_EdenGarden_07.fmt", EnumChatFormatting.DARK_RED, EnumChatFormatting.RESET));
+                IGregTechDeviceInformation.encode(
+                    "gtnl.machine.eden_garden.info.too_many_seeds.format",
+                    EnumChatFormatting.DARK_RED,
+                    EnumChatFormatting.RESET));
         }
 
         info.addAll(Arrays.asList(super.getInfoData()));
@@ -636,7 +640,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
                         .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
                 })
                 .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
                 .setSize(16, 16));
     }
 
@@ -656,8 +660,8 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         builder.widget(
             new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
                 .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Inventory"))
-                        : new Text(StatCollector.translateToLocal("Info_EdenGarden_Status")))
+                    i -> i == 0 ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.inventory"))
+                        : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.status")))
                 .setBackground(GTUITextures.BUTTON_STANDARD)
                 .setPos(140, 91)
                 .setSize(55, 16));
@@ -696,14 +700,15 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         nextMachineMode();
-        GTUtility.sendChatTrans(aPlayer, getMachineModeNameKey());
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
         greenHouseViewMode = greenHouseViewMode.next();
-        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_ViewMode_Change", greenHouseViewMode.name());
+        GTUtility
+            .sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.view_mode_changed", greenHouseViewMode.name());
         return true;
     }
 

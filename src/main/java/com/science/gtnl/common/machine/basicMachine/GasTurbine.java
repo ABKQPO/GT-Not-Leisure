@@ -32,17 +32,21 @@ public class GasTurbine extends MTEBasicGenerator implements IAddGregtechLogo {
             aName,
             aNameRegional,
             aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_GasTurbine_00"), "", "" });
-        mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_GasTurbine_01", getEfficiency());
-        mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_GasTurbine_02", NumberFormatUtil.formatNumber(getCapacity()));
+            new String[] { StatCollector.translateToLocal("gtnl.machine.gas_turbine.tooltip.0"), "", "" });
+        mDescriptionArray[1] = StatCollector
+            .translateToLocalFormatted("gtnl.machine.gas_turbine.tooltip.1", getEfficiency());
+        mDescriptionArray[2] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.gas_turbine.tooltip.2",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     public GasTurbine(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
-        mDescriptionArray[1] = StatCollector.translateToLocalFormatted("Tooltip_GasTurbine_01", getEfficiency());
-        mDescriptionArray[2] = StatCollector
-            .translateToLocalFormatted("Tooltip_GasTurbine_02", NumberFormatUtil.formatNumber(getCapacity()));
+        mDescriptionArray[1] = StatCollector
+            .translateToLocalFormatted("gtnl.machine.gas_turbine.tooltip.1", getEfficiency());
+        mDescriptionArray[2] = StatCollector.translateToLocalFormatted(
+            "gtnl.machine.gas_turbine.tooltip.2",
+            NumberFormatUtil.formatNumber(getCapacity()));
     }
 
     @Override

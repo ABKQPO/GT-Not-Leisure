@@ -19,7 +19,7 @@ public class BloodSoulFormat implements INEISpecialInfoFormatter {
         if (recipeInfo.recipe.mSpecialValue > 0) {
             specialInfo.add(
                 String.format(
-                    StatCollector.translateToLocal("NEI.BloodSoulSacrificialArray.specialValue"),
+                    StatCollector.translateToLocal("gtnl.nei.blood_soul_sacrificial_array.special_value"),
                     recipeInfo.recipe.mSpecialValue));
         }
         return specialInfo;

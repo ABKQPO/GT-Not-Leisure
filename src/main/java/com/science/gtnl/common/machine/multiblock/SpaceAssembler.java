@@ -118,7 +118,7 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_SpaceAssembler_00");
+        return StatCollector.translateToLocal("gtnl.gui.space_assembler.upgrade.title");
     }
 
     @Override
@@ -266,22 +266,22 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SpaceAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SpaceAssembler_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.space_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(11, 11, 11, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SpaceAssembler_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SpaceAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SpaceAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SpaceAssembler_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_SpaceAssembler_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

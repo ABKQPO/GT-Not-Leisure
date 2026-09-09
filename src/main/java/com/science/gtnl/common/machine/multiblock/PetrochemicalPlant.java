@@ -43,6 +43,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import kekztech.common.Blocks;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -54,6 +55,11 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
 
     public PetrochemicalPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.petrochemical_plant.name";
     }
 
     public PetrochemicalPlant(String aName) {
@@ -257,20 +263,25 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PetrochemicalPlantRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.2"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(28, 60, 65, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Casing"))
-            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_PetrochemicalPlant_Muffler"), 8)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.casing"))
+            .addMufflerHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.petrochemical_plant.tooltip.muffler"),
+                8)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

@@ -43,6 +43,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -60,6 +61,11 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
 
     public LargeElectromagnet(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_electromagnet.name";
     }
 
     @Override
@@ -159,17 +165,19 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeElectromagnetRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_electromagnet.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 4, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectromagnet_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_electromagnet.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_electromagnet.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_electromagnet.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_electromagnet.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -193,12 +201,12 @@ public class LargeElectromagnet extends GTMMultiMachineBase<LargeElectromagnet> 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "LargeElectromagnet_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeElectromagnet_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_electromagnet.mode." + machineMode;
     }
 
     @Override

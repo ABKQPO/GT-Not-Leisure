@@ -36,9 +36,14 @@ public class BlockPlayerDoll extends BlockContainer {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisurePlayerDoll);
         this.setLightLevel(1f);
         this.setStepSound(soundTypeGlass);
-        GameRegistry.registerBlock(this, ItemBlockPlayerDoll.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityPlayerDoll.class, "PlayerDollTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockPlayerDoll.class, "tile.PlayerDoll");
+        GameRegistry.registerTileEntity(TileEntityPlayerDoll.class, "player_doll_tile_entity");
         GTNLItemList.PlayerDoll.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.player_doll";
     }
 
     @Override

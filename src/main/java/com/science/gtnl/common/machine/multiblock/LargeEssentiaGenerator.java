@@ -597,21 +597,21 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         final MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeEssentiaGeneratorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_06"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.info.6"))
             .beginStructureBlock(9, 3, 9, true)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
-            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.casing"))
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_EssentiaInputHatch"),
-                StatCollector.translateToLocal("Tooltip_LargeEssentiaGenerator_Casing"),
+                StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.essentia_input_hatch"),
+                StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.casing"),
                 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
@@ -660,7 +660,10 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
             if ((mUpgrade & (1 << upgrade)) == 0 && upgrade != 0) {
                 itemstack.stackSize--;
                 mUpgrade = mUpgrade | (1 << upgrade);
-                GTUtility.sendChatTrans(aPlayer, "Info_LargeEssentiaGenerator_Install", itemstack.getDisplayName());
+                GTUtility.sendChatTrans(
+                    aPlayer,
+                    "gtnl.chat.large_essentia_generator.upgrade_installed",
+                    itemstack.getDisplayName());
             }
             setupParameters();
             return true;

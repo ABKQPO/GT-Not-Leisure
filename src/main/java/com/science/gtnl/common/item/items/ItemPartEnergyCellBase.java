@@ -27,14 +27,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemPartEnergyCellBase extends Item implements IPartItem {
 
-    public ItemPartEnergyCellBase(String unlocalizedName) {
+    private final String displayNameKey;
+
+    public ItemPartEnergyCellBase(String registrationName, String displayNameKey) {
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        setUnlocalizedName(unlocalizedName);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        setUnlocalizedName(registrationName);
+        this.displayNameKey = displayNameKey;
+        GameRegistry.registerItem(this, registrationName);
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return displayNameKey;
     }
 
     protected abstract double getBaseCapacity();

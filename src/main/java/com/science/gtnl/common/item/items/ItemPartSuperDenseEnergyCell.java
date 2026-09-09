@@ -11,7 +11,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 public class ItemPartSuperDenseEnergyCell extends ItemPartEnergyCellBase {
 
     public ItemPartSuperDenseEnergyCell() {
-        super("PartSuperDenseEnergyCell");
+        super("PartSuperDenseEnergyCell", "gtnl.item.part_super_dense_energy_cell");
         GTNLItemList.PartSuperDenseEnergyCell.set(new ItemStack(this));
     }
 

@@ -86,12 +86,12 @@ public class BlockLoader {
     public static BlocksCompressedStargate compressedStargateTier8 = new BlocksCompressedStargate(8);
     public static BlocksCompressedStargate compressedStargateTier9 = new BlocksCompressedStargate(9);
 
-    public static MetaBlockBase metaBlock = new MetaBlockBase("MetaBlock");
-    public static MetaBlockGlow metaBlockGlow = new MetaBlockGlow("MetaBlockGlow");
-    public static MetaBlockGlass metaBlockGlass = new MetaBlockGlass("MetaBlockGlass");
-    public static MetaBlockColumn metaBlockColumn = new MetaBlockColumn("MetaBlockColumn");
-    public static MetaCasing metaCasing = new MetaCasing("MetaCasing", (byte) 0);
-    public static MetaCasing metaCasing02 = new MetaCasing("MetaCasing02", (byte) 32);
+    public static MetaBlockBase metaBlock = new MetaBlockBase("meta_block");
+    public static MetaBlockGlow metaBlockGlow = new MetaBlockGlow("meta_block_glow");
+    public static MetaBlockGlass metaBlockGlass = new MetaBlockGlass("meta_block_glass");
+    public static MetaBlockColumn metaBlockColumn = new MetaBlockColumn("meta_block_column");
+    public static MetaCasing metaCasing = new MetaCasing("meta_casing", (byte) 0);
+    public static MetaCasing metaCasing02 = new MetaCasing("meta_casing_02", (byte) 32);
 
     public static void registryBlocks() {
         playerLeash = new BlockPlayerLeash();
@@ -118,14 +118,14 @@ public class BlockLoader {
         GTNLItemList.EnderElevatorBlock.set(new ItemStack(enderElevatorBlock));
         GTNLItemList.EnderElevatorSlab.set(new ItemStack(enderElevatorSlab));
         GTNLItemList.EnderElevatorCarpet.set(new ItemStack(enderElevatorCarpet));
-        GameRegistry.registerTileEntity(TileEntityEnderElevator.class, "EnderElevatorTileEntity");
+        GameRegistry.registerTileEntity(TileEntityEnderElevator.class, "ender_elevator_tile_entity");
 
-        GameRegistry.registerBlock(metaBlock, ItemBlockBase.class, metaBlock.getUnlocalizedName());
-        GameRegistry.registerBlock(metaBlockGlow, ItemBlockGlow.class, metaBlockGlow.getUnlocalizedName());
-        GameRegistry.registerBlock(metaBlockGlass, ItemBlockGlass.class, metaBlockGlass.getUnlocalizedName());
-        GameRegistry.registerBlock(metaBlockColumn, ItemBlockColumn.class, metaBlockColumn.getUnlocalizedName());
-        GameRegistry.registerBlock(metaCasing, MetaItemBlockCasing.class, metaCasing.getUnlocalizedName());
-        GameRegistry.registerBlock(metaCasing02, MetaItemBlockCasing.class, metaCasing02.getUnlocalizedName());
+        GameRegistry.registerBlock(metaBlock, ItemBlockBase.class, "meta_block");
+        GameRegistry.registerBlock(metaBlockGlow, ItemBlockGlow.class, "meta_block_glow");
+        GameRegistry.registerBlock(metaBlockGlass, ItemBlockGlass.class, "meta_block_glass");
+        GameRegistry.registerBlock(metaBlockColumn, ItemBlockColumn.class, "meta_block_column");
+        GameRegistry.registerBlock(metaCasing, MetaItemBlockCasing.class, "meta_casing");
+        GameRegistry.registerBlock(metaCasing02, MetaItemBlockCasing.class, "meta_casing_02");
 
         GTNLItemList.CompressedStargateTier0.set(new ItemStack(compressedStargateTier0));
         GTNLItemList.CompressedStargateTier1.set(new ItemStack(compressedStargateTier1));
@@ -242,117 +242,129 @@ public class BlockLoader {
 
         GTNLItemList.StargateCoil.set(ItemBlockBase.initMetaBlock(2));
         GTNLItemList.BlackLampOff.set(
-            ItemBlockBase.initMetaBlock(3, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase.initMetaBlock(3, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.BlackLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 4,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.PinkLampOff.set(
-            ItemBlockBase.initMetaBlock(5, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase.initMetaBlock(5, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.PinkLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 6,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.RedLampOff.set(
-            ItemBlockBase.initMetaBlock(7, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase.initMetaBlock(7, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.RedLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 8,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.OrangeLampOff.set(
-            ItemBlockBase.initMetaBlock(9, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase.initMetaBlock(9, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.OrangeLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 10,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.YellowLampOff.set(
-            ItemBlockBase.initMetaBlock(11, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(11, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.YellowLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 12,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.GreenLampOff.set(
-            ItemBlockBase.initMetaBlock(13, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(13, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.GreenLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 14,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LimeLampOff.set(
-            ItemBlockBase.initMetaBlock(15, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(15, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.LimeLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 16,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.BlueLampOff.set(
-            ItemBlockBase.initMetaBlock(17, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(17, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.BlueLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 18,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LightBlueLampOff.set(
-            ItemBlockBase.initMetaBlock(19, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(19, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.LightBlueLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 20,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.CyanLampOff.set(
-            ItemBlockBase.initMetaBlock(21, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(21, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.CyanLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 22,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.BrownLampOff.set(
-            ItemBlockBase.initMetaBlock(23, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(23, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.BrownLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 24,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.MagentaLampOff.set(
-            ItemBlockBase.initMetaBlock(25, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(25, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.MagentaLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 26,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.PurpleLampOff.set(
-            ItemBlockBase.initMetaBlock(27, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(27, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.PurpleLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 28,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.GrayLampOff.set(
-            ItemBlockBase.initMetaBlock(29, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(29, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.GrayLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 30,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LightGrayLampOff.set(
-            ItemBlockBase.initMetaBlock(31, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(31, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.LightGrayLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 32,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.WhiteLampOff.set(
-            ItemBlockBase.initMetaBlock(33, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow") }));
+            ItemBlockBase
+                .initMetaBlock(33, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow") }));
         GTNLItemList.WhiteLampOffBorderless.set(
             ItemBlockBase.initMetaBlock(
                 34,
-                new String[] { StatCollector.translateToLocal("Tooltip_Lamp_NoGlow"),
-                    StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.no_glow"),
+                    StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.BlazeCubeBlock.set(ItemBlockBase.initMetaBlock(35));
         GTNLItemList.CompressedStargateCoil.set(ItemBlockBase.initMetaBlock(36));
         GTNLItemList.CompressedStargateCoil1.set(ItemBlockBase.initMetaBlock(37));
@@ -369,67 +381,67 @@ public class BlockLoader {
         GTNLItemList.BlackLamp.set(ItemBlockGlow.initMetaBlockGlow(1));
         GTNLItemList.BlackLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(2, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(2, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.PinkLamp.set(ItemBlockGlow.initMetaBlockGlow(3));
         GTNLItemList.PinkLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(4, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(4, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.RedLamp.set(ItemBlockGlow.initMetaBlockGlow(5));
         GTNLItemList.RedLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(6, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(6, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.OrangeLamp.set(ItemBlockGlow.initMetaBlockGlow(7));
         GTNLItemList.OrangeLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(8, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(8, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.YellowLamp.set(ItemBlockGlow.initMetaBlockGlow(9));
         GTNLItemList.YellowLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(10, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(10, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.GreenLamp.set(ItemBlockGlow.initMetaBlockGlow(11));
         GTNLItemList.GreenLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(12, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(12, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LimeLamp.set(ItemBlockGlow.initMetaBlockGlow(13));
         GTNLItemList.LimeLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(14, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(14, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.BlueLamp.set(ItemBlockGlow.initMetaBlockGlow(15));
         GTNLItemList.BlueLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(16, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(16, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LightBlueLamp.set(ItemBlockGlow.initMetaBlockGlow(17));
         GTNLItemList.LightBlueLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(18, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(18, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.CyanLamp.set(ItemBlockGlow.initMetaBlockGlow(19));
         GTNLItemList.CyanLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(20, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(20, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.BrownLamp.set(ItemBlockGlow.initMetaBlockGlow(21));
         GTNLItemList.BrownLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(22, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(22, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.MagentaLamp.set(ItemBlockGlow.initMetaBlockGlow(23));
         GTNLItemList.MagentaLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(24, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(24, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.PurpleLamp.set(ItemBlockGlow.initMetaBlockGlow(25));
         GTNLItemList.PurpleLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(26, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(26, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.GrayLamp.set(ItemBlockGlow.initMetaBlockGlow(27));
         GTNLItemList.GrayLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(28, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(28, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.LightGrayLamp.set(ItemBlockGlow.initMetaBlockGlow(29));
         GTNLItemList.LightGrayLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(30, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(30, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
         GTNLItemList.WhiteLamp.set(ItemBlockGlow.initMetaBlockGlow(31));
         GTNLItemList.WhiteLampBorderless.set(
             ItemBlockGlow
-                .initMetaBlockGlow(32, new String[] { StatCollector.translateToLocal("Tooltip_Lamp_Borderless") }));
+                .initMetaBlockGlow(32, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
 
         GTNLItemList.GaiaGlass.set(ItemBlockGlass.initMetaBlockGlass(0));
         GTNLItemList.TerraGlass.set(ItemBlockGlass.initMetaBlockGlass(1));
@@ -487,28 +499,29 @@ public class BlockLoader {
             MetaItemBlockCasing.initMetaBlockCasing(
                 6,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixPatternCore_00") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_pattern_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 7,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixCrafterCore_00") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_crafter_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixSingularityCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 8,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSingularityCrafterCore_00") }));
+                new String[] { StatCollector
+                    .translateToLocal("gtnl.block.assembler_matrix_singularity_crafter_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixSpeedCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 9,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixSpeedCore_00") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_speed_core.tooltip.0") }));
         GTNLItemList.QuantumComputerCasing.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 10,
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
-                    "Tooltip_QuantumComputerCasing_00",
+                    "gtnl.block.quantum_computer_casing.tooltip.0",
                     MainConfig.machine.quantum_computer.maxMultiblockSize,
                     MainConfig.machine.quantum_computer.maxMultiblockSize,
                     MainConfig.machine.quantum_computer.maxMultiblockSize) }));
@@ -520,35 +533,37 @@ public class BlockLoader {
                 14,
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
-                    "Tooltip_QuantumComputerDataEntangler_00",
+                    "gtnl.block.quantum_computer_data_entangler.tooltip.0",
                     MainConfig.machine.quantum_computer.maxDataEntangler) }));
         GTNLItemList.QuantumComputerAccelerator.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 15,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputerAccelerator_00") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.quantum_computer_accelerator.tooltip.0") }));
         GTNLItemList.QuantumComputerMultiThreader.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 16,
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
-                    "Tooltip_QuantumComputerMultiThreader_00",
+                    "gtnl.block.quantum_computer_multi_threader.tooltip.0",
                     MainConfig.machine.quantum_computer.maxMultiThreader) }));
         GTNLItemList.QuantumComputerCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 17,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputerCore_00") }));
+                new String[] { StatCollector.translateToLocal("gtnl.block.quantum_computer_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixDebugCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 18,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_AssemblerMatrixDebugCrafterCore_00") }));
+                new String[] {
+                    StatCollector.translateToLocal("gtnl.block.assembler_matrix_debug_crafter_core.tooltip.0") }));
         GTNLItemList.QuantumComputerSingularityCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
                 19,
                 metaCasing02,
-                new String[] { StatCollector.translateToLocal("Tooltip_QuantumComputerSingularityCore_00") }));
+                new String[] {
+                    StatCollector.translateToLocal("gtnl.block.quantum_computer_singularity_core.tooltip.0") }));
         GTNLItemList.CompressedFurnaceCasing.set(MetaItemBlockCasing.initMetaBlockCasing(20, metaCasing02));
     }
 
@@ -562,14 +577,14 @@ public class BlockLoader {
         GTNLItemList.SaplingBrickuoia.set(new ItemStack(saplingBrickuoia, 1));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),
-            () -> StatCollector.translateToLocal("Tooltip_GiantBrickuoiaSapling_00"));
+            () -> StatCollector.translateToLocal("gtnl.block.giant_brickuoia_sapling.tooltip.0"));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),
-            () -> StatCollector.translateToLocal("Tooltip_GiantBrickuoiaSapling_01"));
+            () -> StatCollector.translateToLocal("gtnl.block.giant_brickuoia_sapling.tooltip.1"));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SaplingBrickuoia.get(1), () -> "");
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.SaplingBrickuoia.get(1),
-            () -> StatCollector.translateToLocal("Tooltip_GiantBrickuoiaSapling_02"));
+            () -> StatCollector.translateToLocal("gtnl.block.giant_brickuoia_sapling.tooltip.2"));
         OreDictionary.registerOre("treeSapling", new ItemStack(saplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
     }
 }

@@ -24,9 +24,9 @@ public class CleanroomMetadata extends RecipeMetadataKey<Integer> {
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 1);
         switch (tier) {
-            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.0"));
-            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.1"));
-            case 3 -> recipeInfo.drawText(StatCollector.translateToLocal("CleanroomMetadata.2"));
+            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.cleanroom.0"));
+            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.cleanroom.1"));
+            case 3 -> recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.cleanroom.2"));
         }
     }
 }

@@ -198,26 +198,26 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaBrewerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaBrewer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_brewer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_brewer.info"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(28, 22, 15, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBrewer_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBrewer_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBrewer_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBrewer_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBrewer_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_brewer.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_brewer.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_brewer.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_brewer.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_brewer.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;
@@ -247,12 +247,12 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "MegaBrewer_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("MegaBrewer_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.mega_brewer.mode." + machineMode;
     }
 
 }

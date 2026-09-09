@@ -62,6 +62,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> implements ISurvivalConstructable {
 
     private static final TranslatableText BLAZE_INPUT_HATCH_NAME = TranslatableText.lang("FluidBlazeInputHatch");
@@ -83,6 +84,11 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
     public BlazeBlastFurnace(final String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.blaze_blast_furnace.name";
     }
 
     @Override
@@ -376,25 +382,37 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BlazeBlastFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.5"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 6, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
-            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_01"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"), 1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"),
+                1)
+            .addMufflerHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.1"),
+                1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"),
+                1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("FluidBlazeInputHatch"),
-                StatCollector.translateToLocal("Tooltip_BlazeBlastFurnace_Casing_00"),
+                StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"),
                 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();

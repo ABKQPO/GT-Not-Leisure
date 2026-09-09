@@ -71,17 +71,20 @@ public interface IGreenHouse extends IVoidable {
     int MODE_OUTPUT = 2;
 
     CheckRecipeResult BLOCK_UNDER_MISMATCH_INPUT = SimpleCheckRecipeResult
-        .ofFailure("GTNL.greenhouse.blockUnderMismatch.input");
+        .ofFailure("gtnl.greenhouse.block_under_mismatch.input");
     CheckRecipeResult BLOCK_UNDER_MISMATCH_FARM = SimpleCheckRecipeResult
-        .ofFailure("GTNL.greenhouse.blockUnderMismatch.farm");
-    CheckRecipeResult BLOCK_UNDER_NOT_FOUND = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.blockUnderNotFound");
-    CheckRecipeResult SEED_BED_TIER_TOO_LOW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedBedTierTooLow");
-    CheckRecipeResult SEEDS_FULL = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedsFull");
-    CheckRecipeResult SEED_TYPES_FULL = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedTypesFull");
-    CheckRecipeResult SEED_OVERFLOW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.seedOverflow");
-    CheckRecipeResult CANNOT_GROW = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.cannotGrow");
-    CheckRecipeResult NOT_ENOUGH_WATER = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.notEnoughWater");
-    CheckRecipeResult NOT_ENOUGH_FERTILIZER = SimpleCheckRecipeResult.ofFailure("GTNL.greenhouse.notEnoughFertilizer");
+        .ofFailure("gtnl.greenhouse.block_under_mismatch.farm");
+    CheckRecipeResult BLOCK_UNDER_NOT_FOUND = SimpleCheckRecipeResult
+        .ofFailure("gtnl.greenhouse.block_under_not_found");
+    CheckRecipeResult SEED_BED_TIER_TOO_LOW = SimpleCheckRecipeResult
+        .ofFailure("gtnl.greenhouse.seed_bed_tier_too_low");
+    CheckRecipeResult SEEDS_FULL = SimpleCheckRecipeResult.ofFailure("gtnl.greenhouse.seeds_full");
+    CheckRecipeResult SEED_TYPES_FULL = SimpleCheckRecipeResult.ofFailure("gtnl.greenhouse.seed_types_full");
+    CheckRecipeResult SEED_OVERFLOW = SimpleCheckRecipeResult.ofFailure("gtnl.greenhouse.seed_overflow");
+    CheckRecipeResult CANNOT_GROW = SimpleCheckRecipeResult.ofFailure("gtnl.greenhouse.cannot_grow");
+    CheckRecipeResult NOT_ENOUGH_WATER = SimpleCheckRecipeResult.ofFailure("gtnl.greenhouse.not_enough_water");
+    CheckRecipeResult NOT_ENOUGH_FERTILIZER = SimpleCheckRecipeResult
+        .ofFailure("gtnl.greenhouse.not_enough_fertilizer");
 
     IGregTechTileEntity getBaseMetaTileEntity();
 
@@ -700,7 +703,9 @@ public interface IGreenHouse extends IVoidable {
             new DrawableWidget().setDrawable(GTUITextures.OVERLAY_BUTTON_CYCLIC)
                 .setPos(5, 5)
                 .setSize(16, 16))
-            .widget(new TextWidget(StatCollector.translateToLocal("Info_EdenGarden_Configuration")).setPos(25, 9))
+            .widget(
+                new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
+                    .setPos(25, 9))
             .widget(
                 ButtonWidget.closeWindowButton(true)
                     .setPos(185, 3))
@@ -714,33 +719,33 @@ public interface IGreenHouse extends IVoidable {
                         })
                         .addTooltip(
                             0,
-                            new Text(StatCollector.translateToLocal("Info_EdenGarden_Operating"))
+                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.operating"))
                                 .color(Color.GREEN.dark(3)))
                         .addTooltip(
                             1,
-                            new Text(StatCollector.translateToLocal("Info_EdenGarden_Input"))
+                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.input"))
                                 .color(Color.YELLOW.dark(3)))
                         .addTooltip(
                             2,
-                            new Text(StatCollector.translateToLocal("Info_EdenGarden_Output"))
+                            new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.output"))
                                 .color(Color.YELLOW.dark(3)))
                         .setTextureGetter(
                             i -> i == 0
-                                ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Operating"))
+                                ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.operating"))
                                     .color(Color.GREEN.dark(3))
                                     .withFixedSize(70 - 18, 18, 15, 0)
                                 : i == 1
-                                    ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Input"))
+                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.input"))
                                         .color(Color.YELLOW.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("Info_EdenGarden_Output"))
+                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.output"))
                                         .color(Color.YELLOW.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0))
                         .setBackground(
                             ModularUITextures.VANILLA_BACKGROUND,
                             GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
                         .setSize(70, 18)
-                        .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_SetupMode")))
+                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.setup")))
                     .widget(
                         new CycleButtonWidget().setLength(2)
                             .setGetter(
@@ -752,25 +757,25 @@ public interface IGreenHouse extends IVoidable {
                             })
                             .addTooltip(
                                 0,
-                                new Text(StatCollector.translateToLocal("Info_EdenGarden_Disabled"))
+                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
                                     .color(Color.RED.dark(3)))
                             .addTooltip(
                                 1,
-                                new Text(StatCollector.translateToLocal("Info_EdenGarden_Enabled"))
+                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
                                     .color(Color.GREEN.dark(3)))
                             .setTextureGetter(
                                 i -> i == 0
-                                    ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Disabled"))
+                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
                                         .color(Color.RED.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("Info_EdenGarden_Enabled"))
+                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
                                         .color(Color.GREEN.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0))
                             .setBackground(
                                 ModularUITextures.VANILLA_BACKGROUND,
                                 GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
                             .setSize(70, 18)
-                            .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_IC2Mode")))
+                            .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.ic2")))
                     .widget(
                         new CycleButtonWidget().setLength(2)
                             .setGetter(() -> isUseNoHumidity() ? 1 : 0)
@@ -780,34 +785,37 @@ public interface IGreenHouse extends IVoidable {
                             })
                             .addTooltip(
                                 0,
-                                new Text(StatCollector.translateToLocal("Info_EdenGarden_Disabled"))
+                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
                                     .color(Color.RED.dark(3)))
                             .addTooltip(
                                 1,
-                                new Text(StatCollector.translateToLocal("Info_EdenGarden_Enabled"))
+                                new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
                                     .color(Color.GREEN.dark(3)))
                             .setTextureGetter(
                                 i -> i == 0
-                                    ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Disabled"))
+                                    ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.disabled"))
                                         .color(Color.RED.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0)
-                                    : new Text(StatCollector.translateToLocal("Info_EdenGarden_Enabled"))
+                                    : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.enabled"))
                                         .color(Color.GREEN.dark(3))
                                         .withFixedSize(70 - 18, 18, 15, 0))
                             .setBackground(
                                 ModularUITextures.VANILLA_BACKGROUND,
                                 GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
                             .setSize(70, 18)
-                            .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode")))
+                            .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.no_humidity")))
                     .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
                     .setPos(10, 30))
             .widget(
                 new Column()
                     .widget(
-                        new TextWidget(StatCollector.translateToLocal("Info_EdenGarden_SetupMode")).setSize(100, 18))
-                    .widget(new TextWidget(StatCollector.translateToLocal("Info_EdenGarden_IC2Mode")).setSize(100, 18))
+                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.setup"))
+                            .setSize(100, 18))
                     .widget(
-                        new TextWidget(StatCollector.translateToLocal("Info_EdenGarden_NoHumidityMode"))
+                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.ic2"))
+                            .setSize(100, 18))
+                    .widget(
+                        new TextWidget(StatCollector.translateToLocal("gtnl.machine.eden_garden.mode.no_humidity"))
                             .setSize(100, 18))
                     .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
                     .setPos(80, 30))
@@ -822,25 +830,25 @@ public interface IGreenHouse extends IVoidable {
 
     default void tryChangeMode(EntityPlayer aPlayer) {
         if (this.getMaxProgressTime() > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Working");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_running");
             return;
         }
         if (!this.getStoredCrops()
             .isEmpty()) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_HasSeeds");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_has_seeds");
             return;
         }
         this.setMode(GreenHouseModes.getNextMode(this.getMode()));
         GTUtility.sendChatTrans(
             aPlayer,
-            "Info_EdenGarden_Mode_Change",
+            "gtnl.machine.eden_garden.message.mode_changed",
             this.getMode()
                 .getName());
     }
 
     default void tryChangeSetupPhase(EntityPlayer aPlayer) {
         if (this.getMaxProgressTime() > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.setup_mode_running");
             return;
         }
         int nextSetupPhase = this.getSetupPhase() + 1;
@@ -849,14 +857,16 @@ public interface IGreenHouse extends IVoidable {
         this.setMachineMode(machineModeFromSetupPhase(nextSetupPhase));
 
         String phaseKey = switch (nextSetupPhase) {
-            case 0 -> "Info_EdenGarden_Operating";
-            case 1 -> "Info_EdenGarden_Input";
-            case 2 -> "Info_EdenGarden_Output";
-            default -> "Info_EdenGarden_SetupPhase_Invalid";
+            case 0 -> "gtnl.machine.eden_garden.mode.operating";
+            case 1 -> "gtnl.machine.eden_garden.mode.input";
+            case 2 -> "gtnl.machine.eden_garden.mode.output";
+            default -> "gtnl.machine.eden_garden.message.invalid_setup_phase";
         };
 
-        GTUtility
-            .sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Change_Format", new ChatComponentTranslation(phaseKey));
+        GTUtility.sendChatTrans(
+            aPlayer,
+            "gtnl.machine.eden_garden.message.setup_phase_changed.format",
+            new ChatComponentTranslation(phaseKey));
     }
 
     @Deprecated
@@ -864,9 +874,9 @@ public interface IGreenHouse extends IVoidable {
         // TODO: Remove this legacy humidity toggle after greenhouse biome handling is fully CropsNH based.
         this.setUseNoHumidity(!this.isUseNoHumidity());
         if (this.isUseNoHumidity()) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Enabled");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_enabled");
         } else {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Disabled");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_disabled");
         }
     }
 

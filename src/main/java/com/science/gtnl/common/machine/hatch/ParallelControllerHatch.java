@@ -44,18 +44,18 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
             aNameRegional,
             aTier,
             0,
-            new String[] { StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_00"), "", "", "" },
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.0"), "", "", "" },
             aTextures);
         this.maxParallel = setMaxParallel(mTier);
         this.parallel = maxParallel;
         int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
         mDescriptionArray[1] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_01"), maxParallel);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.1"), maxParallel);
         mDescriptionArray[2] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_02"), speedBoost);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.2"), speedBoost);
         mDescriptionArray[3] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_03"), euDiscount);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.3"), euDiscount);
     }
 
     public ParallelControllerHatch(String aName, int aTier, int aInvSlotCount, String[] aDescription,
@@ -66,11 +66,11 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
         mDescriptionArray[1] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_01"), maxParallel);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.1"), maxParallel);
         mDescriptionArray[2] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_02"), speedBoost);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.2"), speedBoost);
         mDescriptionArray[3] = String
-            .format(StatCollector.translateToLocal("Tooltip_ParallelControllerHatch_03"), euDiscount);
+            .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.3"), euDiscount);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after ParallelControllerHatch mui2 rollout is complete.
         builder.widget(
-            TextWidget.localised("Info_ParallelControllerHatch_00")
+            TextWidget.localised("gtnl.hatch.parallel_controller.label")
                 .setPos(49, 18)
                 .setSize(81, 14))
             .widget(

@@ -264,7 +264,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("CheatOreProcessingFactoryRecipeType"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.cheat_ore_processing_factory.recipe_type"))
             .beginStructureBlock(41, 26, 18, false)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

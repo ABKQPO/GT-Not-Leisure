@@ -21,7 +21,7 @@ public class NaquadahReactorFormat implements INEISpecialInfoFormatter {
     public List<String> format(RecipeDisplayInfo recipeInfo) {
         List<String> msgs = new ArrayList<>();
         msgs.add(
-            StatCollector.translateToLocal("NEI.NaquadahReactorRecipes.specialValue") + NumberFormatUtil.formatNumber(
+            StatCollector.translateToLocal("gtnl.nei.naquadah_reactor.special_value") + NumberFormatUtil.formatNumber(
                 recipeInfo.recipe.getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, Pair.of(0, 0L))
                     .getValue())
                 + " EU/t");

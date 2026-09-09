@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -52,13 +53,18 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_lava_maker.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamLavaMaker(this.mName);
     }
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamLavaMakerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.recipe_type");
     }
 
     @Override
@@ -170,12 +176,12 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamLavaMaker_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.2"))
             .beginStructureBlock(3, 5, 3, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamLavaMaker_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

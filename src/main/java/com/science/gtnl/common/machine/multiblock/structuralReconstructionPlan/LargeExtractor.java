@@ -44,6 +44,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -61,6 +62,11 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
 
     public LargeExtractor(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_extractor.name";
     }
 
     @Override
@@ -161,19 +167,19 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeExtractorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeExtractor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_extractor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 3, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeExtractor_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_extractor.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -197,12 +203,12 @@ public class LargeExtractor extends GTMMultiMachineBase<LargeExtractor> implemen
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "LargeExtractor_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeExtractor_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_extractor.mode." + machineMode;
     }
 
     @Override

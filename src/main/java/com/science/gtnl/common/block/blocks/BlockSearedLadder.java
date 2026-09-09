@@ -35,8 +35,13 @@ public class BlockSearedLadder extends Block {
         this.setBlockName("SearedLadder");
         this.setBlockTextureName("tinker:searedbricksquare");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, getUnlocalizedName());
+        GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, "tile.SearedLadder");
         GTNLItemList.SearedLadder.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.seared_ladder";
     }
 
     @SideOnly(Side.CLIENT)

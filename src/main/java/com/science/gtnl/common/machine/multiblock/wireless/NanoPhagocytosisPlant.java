@@ -56,6 +56,7 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.block.BlockQuantumGlass;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPhagocytosisPlant> {
 
     private static final int HORIZONTAL_OFF_SET = 10;
@@ -104,6 +105,11 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
     public NanoPhagocytosisPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.nano_phagocytosis_plant.name";
     }
 
     @Override
@@ -285,7 +291,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (enableRender ? "enabled" : "disabled"));
             if (!enableRender && isRenderActive) destroyRenderer();
         }
         return true;
@@ -555,12 +561,13 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "NanoPhagocytosisPlant_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("NanoPhagocytosisPlant_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return machineMode == 0 ? "gtnl.machine.nano_phagocytosis_plant.mode.0"
+            : "gtnl.machine.nano_phagocytosis_plant.mode.1";
     }
 
     @Override
@@ -580,25 +587,31 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("NanoPhagocytosisPlantRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(21, 24, 38, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_NanoPhagocytosisPlant_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"), 1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }

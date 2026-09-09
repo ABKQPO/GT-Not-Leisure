@@ -67,6 +67,7 @@ import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
     private static final int HORIZONTAL_OFF_SET = 62;
@@ -116,6 +117,11 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
     public RealArtificialStar(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.real_artificial_star.name";
     }
 
     @Override
@@ -461,38 +467,44 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("Tooltip_RealArtificialStar_MachineType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_09"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.9"))
             .beginStructureBlock(121, 112, 109, false)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_01"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_02"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_03"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_04"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_05"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStar_02_06"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_01"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_02"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_03"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_04"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_05"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_06"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_07"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_08"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_09"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_10"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_11"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_12"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_13"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_RealArtificialStarInfo_14"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.output_coefficient"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.actual_output"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.recovery_chance"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.fuel_consumption"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.continuous_bonus"))
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.max_continuous_bonus"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.1"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.2"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.3"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.4"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.5"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.6"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.7"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.8"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.9"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.10"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.11"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.12"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.13"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.14"))
             .addSubChannelUsage(GTStructureChannels.EOH_COMPRESSION)
             .addSubChannelUsage(GTStructureChannels.EOH_DILATION)
             .addSubChannelUsage(GTStructureChannels.EOH_STABILISATION)
@@ -550,7 +562,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("isActive")) {
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Info_RealArtificialStar_00")
+                EnumChatFormatting.AQUA
+                    + StatCollector.translateToLocal("gtnl.machine.real_artificial_star.info.current_generation")
                     + EnumChatFormatting.GOLD
                     + tag.getString("currentOutputEU")
                     + EnumChatFormatting.RED
@@ -581,34 +594,39 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 6];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode("Info_RealArtificialStar_01")
+        ret[origin.length] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.continuous_bonus")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.GREEN
             + (rewardContinuous + 100)
             + "%";
         ret[origin.length + 1] = EnumChatFormatting.GOLD
-            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_02")
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.generation_multiplier")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.GREEN
             + outputMultiplier;
         ret[origin.length + 2] = EnumChatFormatting.GOLD
-            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_03")
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.space_field_level")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierDimensionField;
-        ret[origin.length + 3] = EnumChatFormatting.GOLD + IGregTechDeviceInformation.encode(
-            "Info_RealArtificialStar_04") + EnumChatFormatting.RESET + ": " + EnumChatFormatting.YELLOW + tierTimeField;
+        ret[origin.length + 3] = EnumChatFormatting.GOLD
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.time_field_level")
+            + EnumChatFormatting.RESET
+            + ": "
+            + EnumChatFormatting.YELLOW
+            + tierTimeField;
         ret[origin.length + 4] = EnumChatFormatting.GOLD
-            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_05")
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.stability_field_level")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.YELLOW
             + tierStabilisationField;
         ret[origin.length + 5] = EnumChatFormatting.GOLD
-            + IGregTechDeviceInformation.encode("Info_RealArtificialStar_06")
+            + IGregTechDeviceInformation.encode("gtnl.machine.real_artificial_star.info.recovery_chance")
             + EnumChatFormatting.RESET
             + ": "
             + EnumChatFormatting.AQUA
@@ -625,7 +643,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (enableRender ? "enabled" : "disabled"));
         }
         return true;
     }

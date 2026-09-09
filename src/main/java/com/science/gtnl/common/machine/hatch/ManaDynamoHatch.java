@@ -115,7 +115,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         isLiquidizerMode = !isLiquidizerMode;
-        GTUtility.sendChatTrans(aPlayer, "Mode_ManaDynamoHatch_0" + (isLiquidizerMode ? 1 : 0));
+        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.mana_dynamo.mode." + (isLiquidizerMode ? "liquidizer" : "pool"));
     }
 
     @Override
@@ -136,10 +136,10 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     @Override
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_ManaDynamoHatch_01"));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_02", MANA_TO_EU_RATE));
-        desc.add(StatCollector.translateToLocalFormatted("Tooltip_ManaDynamoHatch_03", getCapacity()));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.tooltip.0"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.tooltip.1"));
+        desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_dynamo.tooltip.2", MANA_TO_EU_RATE));
+        desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_dynamo.tooltip.3", getCapacity()));
         return desc.toArray(new String[] {});
     }
 
@@ -151,7 +151,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
         if (currentMana != 0) {
             return new String[] { IGregTechDeviceInformation.encode(
-                "Info_ManaDynamoHatch_00",
+                "gtnl.hatch.mana_dynamo.info.stored_mana",
                 EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(currentMana)
                     + EnumChatFormatting.RESET
                     + " / "
@@ -194,7 +194,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             int currentMana = tag.getInteger("currentMana");
             int capacity = tag.getInteger("capacity");
             currentTip.add(
-                EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_ManaDynamoHatch_00")
+                EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.info.stored_mana")
                     + EnumChatFormatting.RESET
                     + EnumChatFormatting.GREEN
                     + NumberFormatUtil.formatNumber(currentMana)

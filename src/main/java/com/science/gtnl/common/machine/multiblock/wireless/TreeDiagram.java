@@ -62,6 +62,7 @@ import lombok.Getter;
 import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -115,6 +116,11 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
 
     public TreeDiagram(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.tree_diagram.name";
     }
 
     @Override
@@ -388,16 +394,15 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("TreeDiagramRecipes"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TreeDiagram_00"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.tree_diagram.recipe_type"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(194, 71, 184, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_TreeDiagram_Casing_00"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_TreeDiagram_Casing_00"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_TreeDiagram_Casing_00"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_TreeDiagram_Casing_00"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_TreeDiagram_Casing_00"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
             .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
             .toolTipFinisher();
         return tt;

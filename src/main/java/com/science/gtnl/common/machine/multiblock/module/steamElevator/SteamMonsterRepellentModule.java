@@ -89,22 +89,27 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamMonsterRepellentModuleRecipeType"));
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.recipe_type"));
         switch (mTier) {
-            case 1 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleI_00"));
-            case 2 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleII_00"));
-            case 3 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModuleIII_00"));
+            case 1 -> tt
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.basic"));
+            case 2 -> tt.addInfo(
+                StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.advanced"));
+            case 3 -> tt
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.elite"));
         }
-        tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamMonsterRepellentModule_03") + (1 << (5 + mTier)))
+        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.2"))
+            .addInfo(
+                StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.3")
+                    + (1 << (5 + mTier)))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

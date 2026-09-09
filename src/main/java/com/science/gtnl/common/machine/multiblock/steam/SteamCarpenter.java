@@ -33,6 +33,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -48,6 +49,11 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
 
     public SteamCarpenter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_carpenter.name";
     }
 
     @Override
@@ -152,15 +158,15 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamCarpenterRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_carpenter.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamCarpenter_01"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_carpenter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_carpenter.tooltip.1"))
             .beginStructureBlock(3, 3, 3, true)
             .toolTipFinisher();
         return tt;

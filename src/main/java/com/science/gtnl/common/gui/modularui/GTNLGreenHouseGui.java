@@ -59,7 +59,7 @@ public class GTNLGreenHouseGui {
                 if (panelHandler != null) panelHandler.openPanel();
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_EdenGarden_Configuration")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eden_garden.view.configuration")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -78,7 +78,7 @@ public class GTNLGreenHouseGui {
                 .pos(5, 5)
                 .size(16, 16));
         panel.child(
-            IKey.lang("Info_EdenGarden_Configuration")
+            IKey.lang("gtnl.machine.eden_garden.view.configuration")
                 .asWidget()
                 .pos(25, 9)
                 .size(150, 12));
@@ -118,7 +118,7 @@ public class GTNLGreenHouseGui {
                 greenHouse.tryChangeSetupPhase(syncManager.getPlayer());
                 syncValue.setIntValue(greenHouse.getSetupPhase(), false, true);
             }))
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_EdenGarden_SetupMode")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eden_garden.mode.setup")))
             .size(70, 18);
     }
 
@@ -134,7 +134,7 @@ public class GTNLGreenHouseGui {
                     false,
                     true);
             }))
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_EdenGarden_IC2Mode")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eden_garden.mode.ic2")))
             .size(70, 18);
     }
 
@@ -146,22 +146,22 @@ public class GTNLGreenHouseGui {
                 greenHouse.tryChangeHumidityMode(syncManager.getPlayer());
                 syncValue.setIntValue(greenHouse.isUseNoHumidity() ? 1 : 0, false, true);
             }))
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_EdenGarden_NoHumidityMode")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eden_garden.mode.no_humidity")))
             .size(70, 18);
     }
 
     private IKey createSetupPhaseText(int setupPhase) {
         return switch (setupPhase) {
-            case 0 -> createStateText("Info_EdenGarden_Operating", EnumChatFormatting.GREEN);
-            case 1 -> createStateText("Info_EdenGarden_Input", EnumChatFormatting.YELLOW);
-            case 2 -> createStateText("Info_EdenGarden_Output", EnumChatFormatting.YELLOW);
-            default -> createStateText("Info_EdenGarden_SetupPhase_Invalid", EnumChatFormatting.RED);
+            case 0 -> createStateText("gtnl.machine.eden_garden.mode.operating", EnumChatFormatting.GREEN);
+            case 1 -> createStateText("gtnl.machine.eden_garden.mode.input", EnumChatFormatting.YELLOW);
+            case 2 -> createStateText("gtnl.machine.eden_garden.mode.output", EnumChatFormatting.YELLOW);
+            default -> createStateText("gtnl.machine.eden_garden.message.invalid_setup_phase", EnumChatFormatting.RED);
         };
     }
 
     private IKey createEnabledText(boolean enabled) {
-        return enabled ? createStateText("Info_EdenGarden_Enabled", EnumChatFormatting.GREEN)
-            : createStateText("Info_EdenGarden_Disabled", EnumChatFormatting.RED);
+        return enabled ? createStateText("gtnl.machine.eden_garden.mode.enabled", EnumChatFormatting.GREEN)
+            : createStateText("gtnl.machine.eden_garden.mode.disabled", EnumChatFormatting.RED);
     }
 
     private IKey createStateText(String langKey, EnumChatFormatting color) {
@@ -173,9 +173,9 @@ public class GTNLGreenHouseGui {
     private Flow createLabels() {
         return Flow.column()
             .coverChildren()
-            .child(createLabel("Info_EdenGarden_SetupMode"))
-            .child(createLabel("Info_EdenGarden_IC2Mode"))
-            .child(createLabel("Info_EdenGarden_NoHumidityMode"))
+            .child(createLabel("gtnl.machine.eden_garden.mode.setup"))
+            .child(createLabel("gtnl.machine.eden_garden.mode.ic2"))
+            .child(createLabel("gtnl.machine.eden_garden.mode.no_humidity"))
             .setEnabledIf(
                 widget -> !greenHouse.getBaseMetaTileEntity()
                     .isActive());

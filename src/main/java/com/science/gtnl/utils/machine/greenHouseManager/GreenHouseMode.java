@@ -223,7 +223,7 @@ public abstract class GreenHouseMode {
             IGreenHouse mte = parent.get();
             if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
             if (mte.getMaxProgressTime() > 0) {
-                GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_00_Red");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.running_input_forbidden");
                 return super.transferStackInSlot(aPlayer, aSlotIndex);
             }
 

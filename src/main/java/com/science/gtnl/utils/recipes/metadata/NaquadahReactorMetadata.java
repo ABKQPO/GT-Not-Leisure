@@ -28,9 +28,9 @@ public class NaquadahReactorMetadata extends RecipeMetadataKey<Pair<Integer, Lon
         int tier = data.getKey();
 
         if (tier == 1) {
-            recipeInfo.drawText(StatCollector.translateToLocal("NaquadahReactorMetadata.0"));
+            recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.naquadah_reactor.0"));
         } else if (tier == 2) {
-            recipeInfo.drawText(StatCollector.translateToLocal("NaquadahReactorMetadata.1"));
+            recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.naquadah_reactor.1"));
         }
     }
 }

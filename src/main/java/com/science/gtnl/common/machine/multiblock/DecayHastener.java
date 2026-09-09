@@ -33,6 +33,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -48,6 +49,11 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
 
     public DecayHastener(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.decay_hastener.name";
     }
 
     @Override
@@ -143,17 +149,17 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DecayHastenerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_DecayHastener_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.decay_hastener.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 13, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_DecayHastener_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.decay_hastener.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

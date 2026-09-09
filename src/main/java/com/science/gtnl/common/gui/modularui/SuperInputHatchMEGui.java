@@ -270,10 +270,10 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
             .marginTop(15)
             .childPadding(3)
             .child(
-                IKey.lang("Info_SuperInputHatchME_00")
+                IKey.lang("gtnl.hatch.super_input_me.info.configure_extraction")
                     .asWidget())
             .child(
-                IKey.str(StatCollector.translateToLocal("Info_SuperInputHatchME_01") + slot)
+                IKey.str(StatCollector.translateToLocal("gtnl.hatch.super_input_me.info.slot") + " " + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(
@@ -486,7 +486,7 @@ public class SuperInputHatchMEGui extends MTEHatchBaseGui<SuperInputHatchME> {
         protected void addToolTip(RichTooltip tooltip) {
             super.addToolTip(tooltip);
             if (displayMiddleClickTooltip) {
-                tooltip.addLine(IKey.lang("Info_SuperInputHatchME_00"));
+                tooltip.addLine(IKey.lang("gtnl.hatch.super_input_me.info.configure_extraction"));
             }
         }
     }

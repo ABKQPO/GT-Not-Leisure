@@ -86,6 +86,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -97,7 +98,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     private static final String[][] shape_t1 = StructureUtils.readStructureFromFile(MMO_STRUCTURE_FILE_PATH);
     private static final String[][] shape_t2 = StructureUtils.readStructureFromFile(MMT_STRUCTURE_FILE_PATH);
 
-    private static final TranslatableText LASER_BEACON_NAME = TranslatableText.lang("tile.LaserBeacon.name");
+    private static final TranslatableText LASER_BEACON_NAME = TranslatableText.lang("gtnl.block.laser_beacon.name");
 
     public TileEntityLaserBeacon renderer;
     public int xStart, yStart, zStart;
@@ -127,6 +128,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
 
     public MeteorMiner(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.meteor_miner.name";
     }
 
     @Override
@@ -276,36 +282,42 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MeteorMinerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_11"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_12"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_13"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_14"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_15"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_16"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_17"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_07"))
-            .addController(StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_01_01"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_01_02"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_01_02"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_01_02"), 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_01_03"), 2)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_MeteorMiner_13"))
-            .addController(StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_02_01"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_02_02"), 3)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_02_02"), 3)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MeteorMiner_Casing_02_02"), 3)
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.meteor_miner.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.11"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.12"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.13"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.14"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.15"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.16"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.17"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.7"))
+            .addController(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.0"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"), 1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"),
+                1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.2"), 2)
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.13"))
+            .addController(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.0"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"), 3)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"), 3)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"),
+                3)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;
@@ -315,7 +327,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         enableRender = !enableRender;
-        GTUtility.sendChatTrans(aPlayer, "MeteorMiner_Render_" + (enableRender ? "Enabled" : "Disabled"));
+        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.meteor_miner.render." + (enableRender ? "enabled" : "disabled"));
         if (renderer != null) renderer.setShouldRender(enableRender);
     }
 
@@ -379,11 +391,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         currentTip.add(
-            StatCollector.translateToLocal("Info_MeteorMiner_00") + EnumChatFormatting.WHITE
+            StatCollector.translateToLocal("gtnl.machine.meteor_miner.info.machine_tier") + EnumChatFormatting.WHITE
                 + tag.getInteger("tierMachine")
                 + EnumChatFormatting.RESET);
         currentTip.add(
-            StatCollector.translateToLocal("Info_MeteorMiner_01") + EnumChatFormatting.WHITE
+            StatCollector.translateToLocal("gtnl.machine.meteor_miner.info.fortune_tier") + EnumChatFormatting.WHITE
                 + tag.getInteger("fortuneTier")
                 + EnumChatFormatting.RESET);
     }

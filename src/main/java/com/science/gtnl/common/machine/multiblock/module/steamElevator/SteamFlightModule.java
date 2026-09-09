@@ -88,18 +88,18 @@ public class SteamFlightModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamFlightModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_flight_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamFlightModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamFlightModule_04"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.4"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

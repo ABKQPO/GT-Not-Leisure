@@ -45,7 +45,7 @@ public class WirelessSteamEnergyHatchGui extends CustomFluidHatchGui {
                     .tooltipDynamic(tooltip -> {
                         tooltip.addFromFluid(new FluidStack(steamType.fluid, 1));
                         if (hatch.getSteamMode() == steamType) {
-                            tooltip.addLine("§e" + StatCollector.translateToLocal("Info_PipelessSteamCover_02"));
+                            tooltip.addLine("§e" + StatCollector.translateToLocal("gtnl.gui.wireless_steam.selected"));
                         }
                     })
                     .tooltipAutoUpdate(true));

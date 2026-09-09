@@ -24,8 +24,8 @@ public class TapDynamoHatch extends MTEHatchDynamo {
             aName,
             aNameRegional,
             aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_TapDynamoHatch_00"),
-                StatCollector.translateToLocal("Tooltip_TapDynamoHatch_01") });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.1") });
     }
 
     public TapDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {

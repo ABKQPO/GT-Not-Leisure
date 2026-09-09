@@ -101,6 +101,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> implements ISurvivalConstructable {
 
     public static Object2IntMap<ItemId> specialRecipe = new Object2IntOpenHashMap<>();
@@ -124,6 +125,11 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     public GrandAssemblyLine(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.grand_assembly_line.name";
     }
 
     @Override
@@ -933,27 +939,30 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("GrandAssemblyLineRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(48, 5, 5, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_GrandAssemblyLine_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"),
+                1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -962,10 +971,11 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public String[] getInfoData() {
         List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
-            ret.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
+            ret.add(
+                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
             ret.add(
                 IGregTechDeviceInformation.encode(
-                    "Waila_CurrentEuCost.fmt",
+                    "gtnl.waila.wireless.current_eu_cost.format",
                     EnumChatFormatting.AQUA,
                     EnumChatFormatting.RESET,
                     EnumChatFormatting.GOLD,
@@ -981,9 +991,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD
@@ -1024,7 +1035,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(StatCollector.translateToLocal("Info_GrandAssemblyLine_00"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.info.minimum_recipe_time"))
             .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(174, 112)
             .setSize(16, 16));
@@ -1049,7 +1060,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         .add(WIDTH - 3, 0)
                         .subtract(0, 10)));
         builder.widget(
-            TextWidget.localised("Info_GrandAssemblyLine_00")
+            TextWidget.localised("gtnl.machine.grand_assembly_line.info.minimum_recipe_time")
                 .setPos(3, 4)
                 .setSize(150, 20))
             .widget(

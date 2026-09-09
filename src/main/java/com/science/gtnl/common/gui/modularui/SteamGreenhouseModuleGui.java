@@ -246,8 +246,8 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
 
     private String getViewModeLangKey(int mode) {
         return switch (GreenHouseViewMode.fromOrdinalWithoutBlocks(mode)) {
-            case STATUS -> "Info_EdenGarden_Status";
-            default -> "Info_EdenGarden_Seeds";
+            case STATUS -> "gtnl.machine.eden_garden.view.status";
+            default -> "gtnl.machine.eden_garden.view.seeds";
         };
     }
 

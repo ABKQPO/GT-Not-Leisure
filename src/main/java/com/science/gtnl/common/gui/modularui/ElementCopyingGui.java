@@ -195,7 +195,7 @@ public class ElementCopyingGui extends GTNLMultiBlockBaseGui<ElementCopying> {
         return IKey
             .dynamic(
                 () -> StatCollector.translateToLocalFormatted(
-                    "Info_ElementCopying_00",
+                    "gtnl.machine.element_copying.info.selected_types",
                     itemSyncer.getValue()
                         .size()
                         + fluidSyncer.getValue()

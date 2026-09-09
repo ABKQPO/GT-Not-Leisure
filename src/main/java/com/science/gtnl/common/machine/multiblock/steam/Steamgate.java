@@ -33,6 +33,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -51,6 +52,11 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
 
     public Steamgate(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steamgate.name";
     }
 
     @Override
@@ -104,10 +110,10 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Steamgate_03"))
+        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.3"))
             .beginStructureBlock(9, 9, 1, true)
             .toolTipFinisher();
         return tt;
@@ -179,8 +185,7 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
             tag.setInteger("z", aBaseMetaTileEntity.getZCoord());
 
             device.stackTagCompound = tag;
-            aPlayer
-                .addChatMessage(new ChatComponentTranslation(StatCollector.translateToLocal("Tooltip_Steamgate_04")));
+            aPlayer.addChatMessage(new ChatComponentTranslation("gtnl.machine.steamgate.message.saved"));
         }
     }
 
@@ -218,9 +223,9 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
         // Try to link, and report the result back to the player.
         boolean result = trySetControllerFromCoord(x, y, z);
         if (result) {
-            aPlayer.addChatMessage(new ChatComponentTranslation("Tooltip_Steamgate_05"));
+            aPlayer.addChatMessage(new ChatComponentTranslation("gtnl.machine.steamgate.message.linked"));
         } else {
-            aPlayer.addChatMessage(new ChatComponentTranslation("Tooltip_Steamgate_06"));
+            aPlayer.addChatMessage(new ChatComponentTranslation("gtnl.machine.steamgate.message.link_failed"));
         }
 
     }

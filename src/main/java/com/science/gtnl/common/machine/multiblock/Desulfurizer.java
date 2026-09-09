@@ -33,6 +33,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -48,6 +49,11 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
 
     public Desulfurizer(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.desulfurizer.name";
     }
 
     @Override
@@ -196,17 +202,17 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("DesulfurizerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Desulfurizer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_Desulfurizer_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.desulfurizer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.1"))
             .addPerfectOCInfo()
             .addSupportMultiAmp()
             .beginStructureBlock(12, 6, 6, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_Desulfurizer_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_Desulfurizer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_Desulfurizer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_Desulfurizer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_Desulfurizer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.desulfurizer.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

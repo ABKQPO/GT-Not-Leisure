@@ -88,7 +88,8 @@ public class AweEffect extends EffectBase {
             }
 
             if (!player.capabilities.isCreativeMode) {
-                player.playerNetServerHandler.kickPlayerFromServer(StatCollector.translateToLocal("Awe_Kick"));
+                player.playerNetServerHandler
+                    .kickPlayerFromServer(StatCollector.translateToLocal("gtnl.effect.awe.kick"));
             } else {
                 if (!player.capabilities.allowFlying) {
                     player.capabilities.allowFlying = true;

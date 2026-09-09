@@ -46,8 +46,10 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             aNameRegional,
             aTier,
             3,
-            new String[] { StatCollector.translateToLocal("HatchCustomFluid_00"),
-                StatCollector.translateToLocal("HatchCustomFluid_01") + NumberFormatUtil.formatNumber(aAmount) + "L" });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " "
+                    + NumberFormatUtil.formatNumber(aAmount)
+                    + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
     }
@@ -60,8 +62,10 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             aNameRegional,
             aTier,
             3,
-            new String[] { StatCollector.translateToLocal("HatchCustomFluid_00"),
-                StatCollector.translateToLocal("HatchCustomFluid_01") + NumberFormatUtil.formatNumber(aAmount) + "L" });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " "
+                    + NumberFormatUtil.formatNumber(aAmount)
+                    + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
         this.uiTexture = aUITexture;
@@ -219,9 +223,10 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         if (mLockedFluids == null) return new String[] { "INVALID HATCH. ASSIGN LOCKED FLUIDS" };
 
         ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_00"));
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_01") + mFluidCapacity + "L");
-        desc.add(StatCollector.translateToLocal("HatchCustomFluid_02"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"));
+        desc.add(
+            StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " " + mFluidCapacity + "L");
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.allowed_fluids"));
 
         for (Fluid allowed : mLockedFluids) {
             desc.add("-" + (allowed.getLocalizedName(new FluidStack(allowed, 1))));

@@ -49,6 +49,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -67,6 +68,11 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
 
     public LibraryOfRuina(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.library_of_ruina.name";
     }
 
     @Override
@@ -220,33 +226,33 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LibraryOfRuinaRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_07"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.7"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(69, 51, 73, true)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_09"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_10"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_11"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_12"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_13"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_14"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_15"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_LibraryOfRuina_16"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LibraryOfRuina_Casing"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.8"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.9"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.10"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.11"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.12"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.13"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.14"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.15"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.library_of_ruina.tooltip.casing"))
             .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
             .toolTipFinisher();
         return tt;

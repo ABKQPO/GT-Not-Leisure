@@ -180,9 +180,10 @@ public class SuperSpaceElevator extends TTMultiblockBase
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD
@@ -207,10 +208,11 @@ public class SuperSpaceElevator extends TTMultiblockBase
     public String[] getInfoData() {
         List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
-            ret.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
+            ret.add(
+                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
             ret.add(
                 IGregTechDeviceInformation.encode(
-                    "Waila_CurrentEuCost.fmt",
+                    "gtnl.waila.wireless.current_eu_cost.format",
                     EnumChatFormatting.AQUA,
                     EnumChatFormatting.RESET,
                     EnumChatFormatting.GOLD,
@@ -223,19 +225,19 @@ public class SuperSpaceElevator extends TTMultiblockBase
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SuperSpaceElevatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_07"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.7"))
             .addSupportAny()
             .beginStructureBlock(65, 53, 65, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
-            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_SuperSpaceElevator_Casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.super_space_elevator.casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.super_space_elevator.casing"))
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
             .toolTipFinisher();
@@ -645,7 +647,10 @@ public class SuperSpaceElevator extends TTMultiblockBase
                 .setDefaultColor(COLOR_TEXT_WHITE.get())
                 .setEnabled(widget -> getBaseMetaTileEntity().isAllowedToWork()));
         screenElements.widget(
-            TextWidget.dynamicText(() -> new Text(StatCollector.translateToLocal("Info_SuperSpaceElevator_00") + mTier))
+            TextWidget
+                .dynamicText(
+                    () -> new Text(
+                        StatCollector.translateToLocal("gtnl.machine.super_space_elevator.structure_levels") + mTier))
                 .setDefaultColor(COLOR_TEXT_WHITE.get())
                 .setEnabled(widget -> getBaseMetaTileEntity().isAllowedToWork()));
     }

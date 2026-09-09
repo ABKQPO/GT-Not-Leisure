@@ -39,11 +39,16 @@ public class ItemPartBeamFormer extends Item implements IPartItem {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setUnlocalizedName("PartBeamFormer");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "PartBeamFormer");
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PartBeamFormer");
         AEApi.instance()
             .partHelper()
             .setItemBusRenderer(this);
         GTNLItemList.PartBeamFormer.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.part_beam_former";
     }
 
     @Override

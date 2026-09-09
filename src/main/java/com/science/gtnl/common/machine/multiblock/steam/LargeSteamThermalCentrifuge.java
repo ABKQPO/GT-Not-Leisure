@@ -35,6 +35,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamThermalCentrifuge extends SteamMultiMachineBase<LargeSteamThermalCentrifuge>
     implements ISurvivalConstructable {
 
@@ -52,6 +53,11 @@ public class LargeSteamThermalCentrifuge extends SteamMultiMachineBase<LargeStea
 
     public LargeSteamThermalCentrifuge(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_thermal_centrifuge.name";
     }
 
     @Override
@@ -209,20 +215,26 @@ public class LargeSteamThermalCentrifuge extends SteamMultiMachineBase<LargeStea
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamThermalCentrifugeRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamThermalCentrifugeRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(7, 5, 7, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamThermalCentrifuge_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_thermal_centrifuge.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

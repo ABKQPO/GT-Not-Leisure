@@ -29,7 +29,7 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
 
     public SuperDataAccessHatch(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_SuperDataAccessHatch_00");
+        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.super_data_access.tooltip.0");
         initializeInventory();
     }
 

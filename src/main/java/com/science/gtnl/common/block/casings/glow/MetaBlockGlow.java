@@ -47,7 +47,7 @@ public class MetaBlockGlow extends Block {
 
     @Override
     public String getUnlocalizedName() {
-        return "tile." + this.unlocalizedName;
+        return "gtnl.block." + this.unlocalizedName;
     }
 
     @Override

@@ -271,10 +271,10 @@ public class SuperInputBusMEGui extends MTEHatchBaseGui<SuperInputBusME> {
             .marginTop(15)
             .childPadding(3)
             .child(
-                IKey.lang("Info_SuperInputHatchME_00")
+                IKey.lang("gtnl.hatch.super_input_me.info.configure_extraction")
                     .asWidget())
             .child(
-                IKey.str(StatCollector.translateToLocal("Info_SuperInputHatchME_01") + slot)
+                IKey.str(StatCollector.translateToLocal("gtnl.hatch.super_input_me.info.slot") + " " + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(createIntegerField(stackSizeSyncer).size(106, 18));

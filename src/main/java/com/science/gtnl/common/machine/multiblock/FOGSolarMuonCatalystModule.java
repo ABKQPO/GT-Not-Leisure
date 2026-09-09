@@ -181,36 +181,36 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         final MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FOGSolarMuonCatalystModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fog_solar_muon_catalyst_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.2"))
             .addSeparator(EnumChatFormatting.AQUA, 74)
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGSolarMuonCatalystModule_06"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6"))
             .beginStructureBlock(7, 7, 13, false)
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_00"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.0"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_01"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.1"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_02"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.2"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_03"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.3"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "1"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGMachine_Casing_04"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.4"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
     }

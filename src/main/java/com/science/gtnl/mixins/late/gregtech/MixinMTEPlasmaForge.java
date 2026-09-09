@@ -85,7 +85,7 @@ public abstract class MixinMTEPlasmaForge extends MTEExtendedPowerMultiBlockBase
         String[] original = super.getInfoData();
         if (!gtnl$lockRuntime) return original;
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add("Info_PlasmaForge_00");
+        list.add("gtnl.waila.plasma_forge.decay_blocking");
         return list.toArray(new String[0]);
     }
 
@@ -95,7 +95,7 @@ public abstract class MixinMTEPlasmaForge extends MTEExtendedPowerMultiBlockBase
         super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         if (!tag.getBoolean("lockRuntime")) return;
-        currentTip.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        currentTip.add(StatCollector.translateToLocal("gtnl.waila.plasma_forge.decay_blocking"));
     }
 
     @Override

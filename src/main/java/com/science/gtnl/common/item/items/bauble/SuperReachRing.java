@@ -23,8 +23,13 @@ public class SuperReachRing extends BaubleItem {
         this.setUnlocalizedName("SuperReachRing");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "SuperReachRing");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "SuperReachRing");
         GTNLItemList.SuperReachRing.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.super_reach_ring";
     }
 
     @Override

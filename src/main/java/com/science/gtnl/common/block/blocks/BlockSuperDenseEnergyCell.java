@@ -28,9 +28,14 @@ public class BlockSuperDenseEnergyCell extends BlockEnergyCell {
         setBlockName("SuperDenseEnergyCell");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         setTileEntity(TileEntitySuperDenseEnergyCell.class);
-        GameRegistry.registerBlock(this, getItemBlockClass(), getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntitySuperDenseEnergyCell.class, "SuperDenseEnergyCellTileEntity");
+        GameRegistry.registerBlock(this, getItemBlockClass(), "tile.SuperDenseEnergyCell");
+        GameRegistry.registerTileEntity(TileEntitySuperDenseEnergyCell.class, "super_dense_energy_cell_tile_entity");
         GTNLItemList.SuperDenseEnergyCell.set(new ItemStack(this));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.super_dense_energy_cell";
     }
 
     @Override

@@ -49,9 +49,9 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
 
     @Override
     public String[] getDescription() {
-        return new String[] { translateToLocal("Tooltip_WirelessVacuumConveyorInputHatch_00"),
-            translateToLocal("Tooltip_WirelessVacuumConveyorInputHatch_01"),
-            translateToLocal("Tooltip_WirelessVacuumConveyorInputHatch_02") };
+        return new String[] { translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.input.tooltip.0"),
+            translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.input.tooltip.1"),
+            translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.input.tooltip.2") };
     }
 
     @Override
@@ -145,7 +145,7 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
         World world = inputBase.getWorld();
         if (tag.hasKey(WirelessVacuumConveyorOutputHatch.LEGACY_NBT_DIMENSION)
             && tag.getInteger(WirelessVacuumConveyorOutputHatch.LEGACY_NBT_DIMENSION) != world.provider.dimensionId) {
-            player.addChatMessage(new ChatComponentTranslation("Chat_WirelessVacuumConveyor_01"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.hatch.wireless_vacuum_conveyor.link_failed"));
             return true;
         }
 
@@ -153,13 +153,15 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
             .getTileEntity(world, tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"), false);
         if (!(tile instanceof IGregTechTileEntity gregTechTile) || gregTechTile.isDead()
             || !(gregTechTile.getMetaTileEntity() instanceof WirelessVacuumConveyorOutputHatch output)) {
-            player.addChatMessage(new ChatComponentTranslation("Chat_WirelessVacuumConveyor_01"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.hatch.wireless_vacuum_conveyor.link_failed"));
             return true;
         }
 
         boolean linked = output.trySetTarget(inputBase.getXCoord(), inputBase.getYCoord(), inputBase.getZCoord());
         player.addChatMessage(
-            new ChatComponentTranslation(linked ? "Chat_WirelessVacuumConveyor_00" : "Chat_WirelessVacuumConveyor_01"));
+            new ChatComponentTranslation(
+                linked ? "gtnl.hatch.wireless_vacuum_conveyor.link_established"
+                    : "gtnl.hatch.wireless_vacuum_conveyor.link_failed"));
         return true;
     }
 }

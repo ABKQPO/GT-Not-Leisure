@@ -102,20 +102,20 @@ public class SteamEntityCrusherModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamEntityCrusherModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamEntityCrusherModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamEntityCrusherModule_06"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.tooltip.6"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

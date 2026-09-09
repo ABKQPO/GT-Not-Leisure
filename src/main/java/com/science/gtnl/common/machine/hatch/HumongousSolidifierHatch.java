@@ -212,8 +212,8 @@ public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAdd
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_00"),
-            StatCollector.translateToLocal("Tooltip_HumongousSolidifierHatch_01") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.humongous_solidifier.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.humongous_solidifier.tooltip.1") };
     }
 
     @Override

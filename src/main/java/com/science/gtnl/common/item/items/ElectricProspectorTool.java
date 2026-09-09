@@ -76,7 +76,7 @@ public class ElectricProspectorTool extends Item {
         this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "ElectricProspectorTool");
         this.setMaxStackSize(1);
         this.setMaxDamage(1);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "ElectricProspectorTool");
     }
 
     public static ItemStack initItem(int aMeta, int aRange, long maxDamage) {
@@ -100,14 +100,14 @@ public class ElectricProspectorTool extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        if (!itemStack.hasTagCompound()) return "ElectricProspectorTool";
+        if (!itemStack.hasTagCompound()) return "gtnl.item.electric_prospector_tool";
         int meta = itemStack.stackTagCompound.getInteger("toolMeta");
-        return "item.ElectricProspectorTool." + meta;
+        return "gtnl.item.electric_prospector_tool." + meta;
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "ElectricProspectorTool";
+        return "gtnl.item.electric_prospector_tool";
     }
 
     @Override

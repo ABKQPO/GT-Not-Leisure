@@ -87,13 +87,13 @@ import tectech.util.CommonValues;
 public class HighPerformanceComputationArray extends TTMultiblockBase implements ISurvivalConstructable, IMTERenderer {
 
     public static final INameFunction<HighPerformanceComputationArray> LENS_NAME = (base, p) -> StatCollector
-        .translateToLocal("HPCA_Info_00");
+        .translateToLocal("gtnl.gui.high_performance_computation_array.structure_length");
     public static final INameFunction<HighPerformanceComputationArray> MAX_TEMP_NAME = (base, p) -> StatCollector
-        .translateToLocal("HPCA_Info_01");
+        .translateToLocal("gtnl.gui.high_performance_computation_array.max_heat");
     public static final INameFunction<HighPerformanceComputationArray> COMPUTE_NAME = (base, p) -> StatCollector
-        .translateToLocal("HPCA_Info_02");
+        .translateToLocal("gtnl.gui.high_performance_computation_array.produced_computation");
     public static final INameFunction<HighPerformanceComputationArray> COOLANT_NAME = (base, p) -> StatCollector
-        .translateToLocal("HPCA_Info_03");
+        .translateToLocal("gtnl.gui.high_performance_computation_array.coolant_consumption");
     public static final IStatusFunction<HighPerformanceComputationArray> LENS_STATUS = (base, p) -> LedStatus
         .fromLimitsInclusiveOuterBoundary(p.get(), 0, 4, 8, 16);
     public static final IStatusFunction<HighPerformanceComputationArray> MAX_TEMP_STATUS = (base, p) -> LedStatus
@@ -426,33 +426,33 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("HighPerformanceComputationArrayRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_04"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.4"))
             .addSupportAny()
             .beginVariableStructureBlock(2, 2, 4, 4, 5, 16, false)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_00"),
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.0"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
                 1)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_02"),
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.2"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
                 1)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_03"),
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_04"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.3"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.4"),
                 2)
             .addEnergyHatch(
                 "0+",
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
                 1)
             .addMaintenanceHatch(
                 "0+",
-                StatCollector.translateToLocal("Tooltip_HighPerformanceComputationArray_Casing_01"),
+                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
                 1)
             .toolTipFinisher();
         return tt;
@@ -464,10 +464,10 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessMode = !wirelessMode;
             if (wirelessMode) {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Enabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Disabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.disabled");
                 WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
             }
         }

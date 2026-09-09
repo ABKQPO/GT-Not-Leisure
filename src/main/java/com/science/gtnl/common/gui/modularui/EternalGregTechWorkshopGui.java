@@ -317,12 +317,13 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
         BooleanSyncValue extraBuiltSyncer = syncManager
             .findSyncHandler(EXTRA_MODULE_BUILT_SYNC_KEY, BooleanSyncValue.class);
 
-        return super.createTerminalTextWidget(syncManager, parent).child(
-            IKey.lang("EGTW_MachineTier")
-                .style(EnumChatFormatting.WHITE)
-                .asWidget()
-                .fullWidth()
-                .marginTop(4))
+        return super.createTerminalTextWidget(syncManager, parent)
+            .child(
+                IKey.lang("gtnl.machine.eternal_greg_tech_workshop.tier")
+                    .style(EnumChatFormatting.WHITE)
+                    .asWidget()
+                    .fullWidth()
+                    .marginTop(4))
             .child(
                 IKey.dynamic(() -> Integer.toString(machineTierSyncer.getIntValue()))
                     .style(EnumChatFormatting.WHITE)
@@ -330,7 +331,10 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                     .fullWidth()
                     .marginBottom(2))
             .child(
-                IKey.dynamic(() -> extraEnabledSyncer.getBoolValue() ? translateToLocal("EGTW_ExtraModule") : "")
+                IKey.dynamic(
+                    () -> extraEnabledSyncer.getBoolValue()
+                        ? translateToLocal("gtnl.machine.eternal_greg_tech_workshop.extra_module")
+                        : "")
                     .style(EnumChatFormatting.WHITE)
                     .asWidget()
                     .fullWidth()
@@ -382,7 +386,9 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
 
     private String getExtraModuleState(BooleanSyncValue extraEnabledSyncer, BooleanSyncValue extraBuiltSyncer) {
         if (!extraEnabledSyncer.getBoolValue()) return "";
-        return translateToLocal(extraBuiltSyncer.getBoolValue() ? "EGTW_ExtraModule_On" : "EGTW_ExtraModule_Off");
+        return translateToLocal(
+            extraBuiltSyncer.getBoolValue() ? "gtnl.machine.eternal_greg_tech_workshop.extra_module.on"
+                : "gtnl.machine.eternal_greg_tech_workshop.extra_module.off");
     }
 
     private IWidget createGeneralInfoButton() {
@@ -456,7 +462,9 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                 return true;
             })
             .clickSound(ForgeOfGodsGuiUtil.getButtonSound())
-            .tooltip(tooltip -> tooltip.addLine(translateToLocal("EGTW_UpdateStructureCheck")))
+            .tooltip(
+                tooltip -> tooltip
+                    .addLine(translateToLocal("gtnl.machine.eternal_greg_tech_workshop.update_structure_check")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -507,7 +515,9 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                 return true;
             })
             .clickSound(ForgeOfGodsGuiUtil.getButtonSound())
-            .tooltip(tooltip -> tooltip.addLine(translateToLocal("EGTW_EnableExtraModule")))
+            .tooltip(
+                tooltip -> tooltip
+                    .addLine(translateToLocal("gtnl.machine.eternal_greg_tech_workshop.enable_extra_module")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 

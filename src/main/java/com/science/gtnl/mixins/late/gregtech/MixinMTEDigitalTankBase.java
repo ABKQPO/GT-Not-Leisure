@@ -24,7 +24,8 @@ public abstract class MixinMTEDigitalTankBase {
 
         if (self instanceof ManaTank tank) {
             tank.isLiquidizerMode = !tank.isLiquidizerMode;
-            GTUtility.sendChatTrans(aPlayer, "Mode_ManaTank_0" + (tank.isLiquidizerMode ? 0 : 1));
+            GTUtility
+                .sendChatTrans(aPlayer, "gtnl.machine.mana_tank.mode." + (tank.isLiquidizerMode ? "pool" : "tank"));
             ci.cancel();
         }
     }

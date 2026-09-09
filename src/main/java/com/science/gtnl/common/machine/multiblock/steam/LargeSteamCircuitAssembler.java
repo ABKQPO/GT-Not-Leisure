@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteamCircuitAssembler>
     implements ISurvivalConstructable {
 
@@ -52,6 +53,11 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
 
     public LargeSteamCircuitAssembler(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_circuit_assembler.name";
     }
 
     @Override
@@ -186,22 +192,31 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamCircuitAssemblerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamCircuitAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.3"))
             .beginStructureBlock(3, 4, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCircuitAssembler_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_circuit_assembler.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

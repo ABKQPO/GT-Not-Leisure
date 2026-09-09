@@ -30,7 +30,9 @@ public class PCBFactoryGui extends GTNLControllerUpgradeGui<PCBFactory> {
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager syncManager, ModularPanel parent) {
         IntSyncValue machineTierSyncer = syncManager.findSyncHandler(MACHINE_TIER_SYNC_KEY, IntSyncValue.class);
         return super.createTerminalTextWidget(syncManager, parent).child(
-            IKey.dynamic(() -> StatCollector.translateToLocal("Info_PCBFactory_00") + machineTierSyncer.getIntValue())
+            IKey.dynamic(
+                () -> StatCollector.translateToLocal("gtnl.gui.pcb_factory.machine_tier")
+                    + machineTierSyncer.getIntValue())
                 .asWidget()
                 .fullWidth());
     }

@@ -73,9 +73,11 @@ import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationArrayToAlfheim> {
 
-    private static final TranslatableText MANA_INPUT_HATCH_NAME = TranslatableText.lang("FluidManaInputHatch");
+    private static final TranslatableText MANA_INPUT_HATCH_NAME = TranslatableText
+        .lang("gtnl.hatch.fluid_mana_input.name");
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String TATA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/teleportation_array_to_alfheim";
@@ -100,6 +102,11 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     public TeleportationArrayToAlfheim(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.teleportation_array_to_alfheim.name";
     }
 
     @Override
@@ -499,31 +506,54 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("TeleportationArrayToAlfheimRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.3"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(23, 18, 23, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
+                1)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("FluidManaInputHatch"),
-                StatCollector.translateToLocal("Tooltip_TeleportationArrayToAlfheim_Casing"),
+                StatCollector.translateToLocal("gtnl.hatch.fluid_mana_input.name"),
+                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
                 1)
             .toolTipFinisher();
         return tt;
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("TeleportationArrayToAlfheim_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return switch (machineMode) {
+            case PORTAL_MODE -> "gtnl.machine.teleportation_array_to_alfheim.mode.portal";
+            case NATURE_MODE -> "gtnl.machine.teleportation_array_to_alfheim.mode.nature";
+            case MANA_MODE -> "gtnl.machine.teleportation_array_to_alfheim.mode.mana";
+            default -> "gtnl.machine.teleportation_array_to_alfheim.mode.rune";
+        };
     }
 
     @Override
@@ -557,7 +587,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 4;
-        GTUtility.sendChatTrans(aPlayer, "TeleportationArrayToAlfheim_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override

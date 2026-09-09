@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChemicalBath>
     implements ISurvivalConstructable {
 
@@ -51,6 +52,11 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
 
     public LargeSteamChemicalBath(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_chemical_bath.name";
     }
 
     @Override
@@ -202,22 +208,34 @@ public class LargeSteamChemicalBath extends SteamMultiMachineBase<LargeSteamChem
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamChemicalBathRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamChemicalBathRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(9, 5, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamChemicalBath_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_steam_chemical_bath.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

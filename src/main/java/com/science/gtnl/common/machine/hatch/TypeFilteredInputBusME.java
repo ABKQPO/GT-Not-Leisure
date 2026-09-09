@@ -62,35 +62,39 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_00"),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_01") + GTValues.TIER_COLORS[isSuper ? 8 : 6],
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_02"),
-            StatCollector.translateToLocalFormatted("Tooltip_TypeFilteredInputBusME_03", isSuper ? 100 : 16),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_04"),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_05"),
-            StatCollector.translateToLocalFormatted("Tooltip_TypeFilteredInputBusME_06", isSuper ? 100 : 16),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_07"),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_08"),
-            StatCollector.translateToLocal("Tooltip_TypeFilteredInputBusME_09") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.1") + " "
+                + GTValues.TIER_COLORS[isSuper ? 8 : 6],
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.2"),
+            StatCollector
+                .translateToLocalFormatted("gtnl.hatch.type_filtered_input_bus_me.tooltip.3", isSuper ? 100 : 16),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.4"),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.5"),
+            StatCollector
+                .translateToLocalFormatted("gtnl.hatch.type_filtered_input_bus_me.tooltip.6", isSuper ? 100 : 16),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.7"),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.8"),
+            StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.tooltip.9") };
     }
 
     @Override
     public String[] getInfoData() {
-        String busStatusKey = getProxy() != null && getProxy().isActive() ? "Info_TypeFilteredInputBusME_Online"
-            : IGregTechDeviceInformation.encode("Info_TypeFilteredInputBusME_Offline", getAEDiagnostics());
-        return new String[] { busStatusKey,
-            hasFilter()
-                ? IGregTechDeviceInformation.encode(
-                    "Info_TypeFilteredInputBusME_Filtered.fmt",
-                    EnumChatFormatting.GREEN + (modid != null ? modid : "*")
-                        + ":"
-                        + (name != null ? name : "*")
-                        + "@"
-                        + (meta != GTRecipeBuilder.WILDCARD ? meta : "*")
-                        + EnumChatFormatting.RESET)
-                : IGregTechDeviceInformation.encode(
-                    "Info_TypeFilteredInputBusME_Filtered.fmt",
-                    IGregTechDeviceInformation.translatable("Info_TypeFilteredInputBusME_Filtered_Unset")) };
+        String busStatusKey = getProxy() != null && getProxy().isActive()
+            ? "gtnl.hatch.type_filtered_input_bus_me.info.online"
+            : IGregTechDeviceInformation
+                .encode("gtnl.hatch.type_filtered_input_bus_me.info.offline", getAEDiagnostics());
+        return new String[] { busStatusKey, hasFilter()
+            ? IGregTechDeviceInformation.encode(
+                "gtnl.hatch.type_filtered_input_bus_me.info.filtered.format",
+                EnumChatFormatting.GREEN + (modid != null ? modid : "*")
+                    + ":"
+                    + (name != null ? name : "*")
+                    + "@"
+                    + (meta != GTRecipeBuilder.WILDCARD ? meta : "*")
+                    + EnumChatFormatting.RESET)
+            : IGregTechDeviceInformation.encode(
+                "gtnl.hatch.type_filtered_input_bus_me.info.filtered.format",
+                IGregTechDeviceInformation.translatable("gtnl.hatch.type_filtered_input_bus_me.info.filtered.unset")) };
     }
 
     @Override
@@ -239,7 +243,7 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
 
         builder.widget(
-            TextWidget.localised("Info_TypeFilteredInputBusME_ModID")
+            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.mod_id")
                 .setPos(3, 120)
                 .setSize(60, 14))
             .widget(
@@ -253,7 +257,7 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
                     .attachSyncer(new FakeSyncWidget.StringSyncer(this::getModid, this::setModid), builder));
 
         builder.widget(
-            TextWidget.localised("Info_TypeFilteredInputBusME_ItemName")
+            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.item_id")
                 .setPos(3, 154)
                 .setSize(60, 14))
             .widget(
@@ -267,7 +271,7 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
                     .attachSyncer(new FakeSyncWidget.StringSyncer(this::getNameFilter, this::setNameFilter), builder));
 
         builder.widget(
-            TextWidget.localised("Info_TypeFilteredInputBusME_ItemMeta")
+            TextWidget.localised("gtnl.hatch.type_filtered_input_bus_me.info.item_meta")
                 .setPos(3, 188)
                 .setSize(60, 14))
             .widget(

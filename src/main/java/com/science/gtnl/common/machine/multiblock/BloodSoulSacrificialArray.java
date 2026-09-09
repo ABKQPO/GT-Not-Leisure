@@ -73,6 +73,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacrificialArray> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -105,6 +106,11 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
     public BloodSoulSacrificialArray(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.blood_soul_sacrificial_array.name";
     }
 
     @Override
@@ -444,7 +450,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public String[] getInfoData() {
         String[] info = super.getInfoData();
         info[4] = IGregTechDeviceInformation.encode(
-            "BloodSoulSacrificialArray.LPNetwork.fmt",
+            "gtnl.machine.blood_soul_sacrificial_array.info.lp_network.format",
             EnumChatFormatting.RED,
             NumberFormatUtil.formatNumber(Math.abs(currentEssence)),
             EnumChatFormatting.RESET);
@@ -456,7 +462,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currentTip, accessor, config);
         currentTip.add(
-            StatCollector.translateToLocal("BloodSoulSacrificialArray.LPNetwork") + EnumChatFormatting.WHITE
+            StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.info.lp_network")
+                + EnumChatFormatting.WHITE
                 + currentEssence
                 + EnumChatFormatting.RESET
                 + " LP");
@@ -465,18 +472,24 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BloodSoulSacrificialArrayRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.5"))
             .beginStructureBlock(33, 14, 30, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_BloodSoulSacrificialArray_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.blood_soul_sacrificial_array.tooltip.casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }
@@ -510,7 +523,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatTrans(aPlayer, "BloodSoulSacrificialArray_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
@@ -520,14 +533,19 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
             enableRender = !enableRender;
             GTUtility.sendChatTrans(
                 aPlayer,
-                "BloodSoulSacrificialArray_Render_" + (this.enableRender ? "Enabled" : "Disabled"));
+                this.enableRender ? "gtnl.machine.blood_soul_sacrificial_array.render.enabled"
+                    : "gtnl.machine.blood_soul_sacrificial_array.render.disabled");
         }
         return true;
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("BloodSoulSacrificialArray_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return switch (machineMode) {
+            case MACHINEMODE_BLOOD_DEMON -> "gtnl.machine.blood_soul_sacrificial_array.mode.blood_demon";
+            case MACHINEMODE_FALLING_TOWER -> "gtnl.machine.blood_soul_sacrificial_array.mode.falling_tower";
+            default -> "gtnl.machine.blood_soul_sacrificial_array.mode.alchemic";
+        };
     }
 
     @Override

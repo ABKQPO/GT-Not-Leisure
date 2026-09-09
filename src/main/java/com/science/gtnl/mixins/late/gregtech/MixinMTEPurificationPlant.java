@@ -149,10 +149,11 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     public String[] getInfoData() {
         List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
         if (gtnl$wirelessMode) {
-            ret.add(IGregTechDeviceInformation.encode("Waila_WirelessMode.fmt", EnumChatFormatting.LIGHT_PURPLE));
+            ret.add(
+                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
             ret.add(
                 IGregTechDeviceInformation.encode(
-                    "Waila_CurrentEuCost.fmt",
+                    "gtnl.waila.wireless.current_eu_cost.format",
                     EnumChatFormatting.AQUA,
                     EnumChatFormatting.RESET,
                     EnumChatFormatting.GOLD,
@@ -168,9 +169,10 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
         super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

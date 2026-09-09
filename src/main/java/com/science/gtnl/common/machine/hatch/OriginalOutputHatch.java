@@ -36,10 +36,12 @@ public class OriginalOutputHatch extends MTEHatchOutput {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_00"), StatCollector
-            .translateToLocalFormatted("Tooltip_OriginalOutputHatch_01", NumberFormatUtil.formatNumber(getCapacity())),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_02"),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_03"),
-            StatCollector.translateToLocal("Tooltip_OriginalOutputHatch_04") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.original_output.tooltip.0"),
+            StatCollector.translateToLocalFormatted(
+                "gtnl.hatch.original_output.tooltip.1",
+                NumberFormatUtil.formatNumber(getCapacity())),
+            StatCollector.translateToLocal("gtnl.hatch.original_output.tooltip.2"),
+            StatCollector.translateToLocal("gtnl.hatch.original_output.tooltip.3"),
+            StatCollector.translateToLocal("gtnl.hatch.original_output.tooltip.4") };
     }
 }

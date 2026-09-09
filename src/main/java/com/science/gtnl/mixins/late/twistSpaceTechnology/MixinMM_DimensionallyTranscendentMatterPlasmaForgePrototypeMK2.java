@@ -92,7 +92,7 @@ public abstract class MixinMM_DimensionallyTranscendentMatterPlasmaForgePrototyp
         if (!gtnl$lockRuntime) return;
         String[] original = cir.getReturnValue();
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add(IGregTechDeviceInformation.encode("Info_PlasmaForge_00"));
+        list.add(IGregTechDeviceInformation.encode("gtnl.waila.plasma_forge.decay_blocking"));
         cir.setReturnValue(list.toArray(new String[0]));
     }
 
@@ -111,7 +111,7 @@ public abstract class MixinMM_DimensionallyTranscendentMatterPlasmaForgePrototyp
         super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         if (!tag.getBoolean("lockRuntime")) return;
-        currentTip.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        currentTip.add(StatCollector.translateToLocal("gtnl.waila.plasma_forge.decay_blocking"));
     }
 
     @Override

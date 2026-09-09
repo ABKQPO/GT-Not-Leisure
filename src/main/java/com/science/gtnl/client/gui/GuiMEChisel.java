@@ -30,7 +30,7 @@ public class GuiMEChisel extends AEBaseGui {
     @Override
     public void initGui() {
         super.initGui();
-        this.parallel = new MEGuiTextField(64, 12, I18n.format("text.me_chisel.gui.parallel")) {
+        this.parallel = new MEGuiTextField(64, 12, I18n.format("gtnl.gui.me_chisel.pattern_parallel")) {
 
             @Override
             public boolean textboxKeyTyped(char keyChar, int keyID) {
@@ -116,7 +116,8 @@ public class GuiMEChisel extends AEBaseGui {
 
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.fontRendererObj.drawString(this.getGuiDisplayName(I18n.format("tile.MEChisel.name")), 8, 6, 4210752);
+        this.fontRendererObj
+            .drawString(this.getGuiDisplayName(I18n.format("gtnl.machine.me_chisel.name")), 8, 6, 4210752);
         this.fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 

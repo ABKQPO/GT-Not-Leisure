@@ -80,6 +80,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public abstract class KuangBiaoOneGiantNuclearFusionReactor
     extends GTMMultiMachineBase<KuangBiaoOneGiantNuclearFusionReactor>
     implements ISurvivalConstructable, IMTERenderer, IWirelessEnergy {
@@ -238,39 +239,37 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("KuangBiaoOneGiantNuclearFusionReactorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_00"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.0"))
             .addInfo(
                 StatCollector.translateToLocalFormatted(
-                    "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_01",
+                    "gtnl.machine.extreme_fusion_reactor.tooltip.1",
                     (int) ((getMachineDurationModifier() - 1) * 100)))
             .addInfo(
                 StatCollector.translateToLocalFormatted(
-                    "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_02",
+                    "gtnl.machine.extreme_fusion_reactor.tooltip.2",
                     (int) (getMachineEUtDiscount() * 100)))
-            .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.3"))
             .addInfo(
-                StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04")
+                StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.4")
                     + NumberFormatUtil.formatNumber(maxEUStore())
                     + " EU")
             .addInfo(
                 StatCollector.translateToLocalFormatted(
-                    "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05",
+                    "gtnl.machine.extreme_fusion_reactor.tooltip.5",
                     GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]))
-            .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_06"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.6"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(39, 17, 39, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
             .addMaintenanceHatch(
                 "0+",
-                StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -290,7 +289,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (this.enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (this.enableRender ? "enabled" : "disabled"));
         }
         return true;
     }
@@ -575,6 +574,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.extreme_fusion_reactor_mk_i.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
             return new LuVTier(this.mName);
         }
@@ -623,6 +627,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         public ZPMTier(String aName) {
             super(aName);
+        }
+
+        @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.extreme_fusion_reactor_mk_ii.name";
         }
 
         @Override
@@ -677,6 +686,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
 
         @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.extreme_fusion_reactor_mk_iii.name";
+        }
+
+        @Override
         public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
             return new UVTier(this.mName);
         }
@@ -725,6 +739,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         public UHVTier(String aName) {
             super(aName);
+        }
+
+        @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.extreme_fusion_reactor_mk_iv.name";
         }
 
         @Override
@@ -784,6 +803,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @IMetaTileEntity.SkipGenerateDescription
+    @IMetaTileEntity.SkipGenerateName
     public static class UEVTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public int totalOverclockedDuration = 0;
@@ -802,6 +822,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         public UEVTier(String aName) {
             super(aName);
+        }
+
+        @Override
+        public String getLocalNameKey() {
+            return "gtnl.machine.extreme_fusion_reactor_mk_v.name";
         }
 
         @Override
@@ -831,48 +856,46 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("KuangBiaoOneGiantNuclearFusionReactorRecipeType"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_00"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.recipe_type"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.0"))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_01",
+                        "gtnl.machine.extreme_fusion_reactor.tooltip.1",
                         (int) ((getMachineDurationModifier() - 1) * 100)))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_02",
+                        "gtnl.machine.extreme_fusion_reactor.tooltip.2",
                         (int) (getMachineEUtDiscount() * 100)))
-                .addInfo(StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_03"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.3"))
                 .addInfo(
-                    StatCollector.translateToLocal("Tooltip_KuangBiaoOneGiantNuclearFusionReactor_04")
+                    StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.4")
                         + NumberFormatUtil.formatNumber(maxEUStore())
                         + " EU")
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
-                        "Tooltip_KuangBiaoOneGiantNuclearFusionReactor_05",
+                        "gtnl.machine.extreme_fusion_reactor.tooltip.5",
                         GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-                .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+                .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
                 .addSupportAny()
                 .beginStructureBlock(39, 17, 39, true)
-                .addInputBus(
-                    "0+",
-                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
                 .addOutputBus(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
                 .addEnergyHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
                 .addMaintenanceHatch(
                     "0+",
-                    StatCollector.translateToLocal("Tooltip_KuangBiaoTwoGiantNuclearFusionReactor_Casing"))
+                    StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
                 .toolTipFinisher();
             return tt;
         }
@@ -909,12 +932,13 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             super.getWailaBody(itemStack, currentTip, accessor, config);
             final NBTTagCompound tag = accessor.getNBTData();
             if (tag.getBoolean("wirelessUpgrade")) {
-                currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("Waila_WirelessUpgrade"));
+                currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.waila.wireless.upgrade"));
             }
             if (tag.getBoolean("wirelessMode")) {
-                currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+                currentTip
+                    .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
                 currentTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                         + EnumChatFormatting.RESET
                         + ": "
                         + EnumChatFormatting.GOLD
@@ -940,9 +964,10 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         public String[] getInfoData() {
             List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
             if (wirelessMode) {
-                ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
                 ret.add(
-                    EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
+                    EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
+                ret.add(
+                    EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("gtnl.waila.wireless.current_eu_cost")
                         + EnumChatFormatting.RESET
                         + ": "
                         + EnumChatFormatting.GOLD

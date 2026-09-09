@@ -49,7 +49,7 @@ public class RealArtificialStarRecipes implements IRecipePool {
                 .itemOutputs(
                     GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 17)
                         .setStackDisplayName(
-                            StatCollector.translateToLocal("NEI.RealAntimatterFuelRodGeneratingRecipe.01")))
+                            StatCollector.translateToLocal("gtnl.nei.real_antimatter_fuel_rod_generating_recipe.0")))
                 .specialValue(1024)
                 .eut(0)
                 .duration(0)
@@ -61,7 +61,7 @@ public class RealArtificialStarRecipes implements IRecipePool {
                 .itemOutputs(
                     GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 17)
                         .setStackDisplayName(
-                            StatCollector.translateToLocal("NEI.RealAntimatterFuelRodGeneratingRecipe.01")))
+                            StatCollector.translateToLocal("gtnl.nei.real_antimatter_fuel_rod_generating_recipe.0")))
                 .specialValue(32768)
                 .eut(0)
                 .duration(0)

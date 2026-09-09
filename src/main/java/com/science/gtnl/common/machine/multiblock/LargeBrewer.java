@@ -45,6 +45,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -63,6 +64,11 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
 
     public LargeBrewer(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_brewer.name";
     }
 
     @Override
@@ -165,26 +171,26 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeBrewerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeBrewer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_brewer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBrewer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_brewer.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeBrewer_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_brewer.mode." + machineMode;
     }
 
     @Override
@@ -208,7 +214,7 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatTrans(aPlayer, "LargeBrewer_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override

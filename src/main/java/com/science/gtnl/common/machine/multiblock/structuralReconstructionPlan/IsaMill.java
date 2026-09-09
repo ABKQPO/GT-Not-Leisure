@@ -53,6 +53,7 @@ import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.nbthandlers.M
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalConstructable {
 
     private static final TranslatableText MILLING_BALL_BUS_NAME = TranslatableText
@@ -73,6 +74,11 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
 
     public IsaMill(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.isa_mill.name";
     }
 
     @Override
@@ -354,19 +360,19 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("IsaMillRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IsaMill_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IsaMill_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.isa_mill.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.1"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 5, 9, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_IsaMill_Casing"), 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_IsaMill_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_IsaMill_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_IsaMill_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_IsaMill_Casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.isa_mill.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

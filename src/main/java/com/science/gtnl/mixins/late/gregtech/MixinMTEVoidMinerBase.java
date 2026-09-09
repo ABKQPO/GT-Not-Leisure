@@ -324,7 +324,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         }
 
         return new Text(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("Info_Dimension_Override")
+            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override")
                 + (ext == null ? vmTweak$mLastDimensionOverride : ext));
     }
 

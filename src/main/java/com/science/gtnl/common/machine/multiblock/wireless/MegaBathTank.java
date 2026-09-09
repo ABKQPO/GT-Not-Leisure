@@ -189,26 +189,26 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MegaBathTankRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(31, 13, 31, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MegaBathTank_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -246,12 +246,12 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatTrans(aPlayer, "MegaBathTank_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("MegaBathTank_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.mega_bath_tank.mode." + machineMode;
     }
 
     @SideOnly(Side.CLIENT)

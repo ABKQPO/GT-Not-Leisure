@@ -567,9 +567,9 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
                     + (this.gtnl$wirelessMode ? this.gtnl$effectiveParallelLong : this.effectiveParallel)
                     + "(Long)"));
         if (gtnl$wirelessMode) {
-            ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
+            ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
             ret.add(
-                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD
@@ -583,9 +583,10 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public void getExtraWailaBody(ItemStack itemStack, List<String> currenttip, NBTTagCompound tag,
         IWailaDataAccessor accessor, IWailaConfigHandler config, CallbackInfo ci) {
         if (tag.getBoolean("wirelessMode")) {
-            currenttip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currenttip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currenttip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

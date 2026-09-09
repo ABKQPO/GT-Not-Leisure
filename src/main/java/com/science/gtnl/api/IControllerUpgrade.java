@@ -349,7 +349,7 @@ public interface IControllerUpgrade {
             .setBackground(
                 (previewLevel < maxPreviewLevel) ? GTUITextures.BUTTON_STANDARD : GTUITextures.BUTTON_STANDARD_DISABLED,
                 ModularUITextures.ARROW_RIGHT)
-            .addTooltip(StatCollector.translateToLocal("gtnl.ui.controllerUpgrade.previewNext"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.ui.controller_upgrade.preview_next"))
             .setPos(nextButtonX, switchButtonY)
             .setSize(16, 16));
 
@@ -367,7 +367,7 @@ public interface IControllerUpgrade {
             .setBackground(
                 previewMode ? GTUITextures.BUTTON_STANDARD : GTUITextures.BUTTON_STANDARD_DISABLED,
                 ModularUITextures.ARROW_LEFT)
-            .addTooltip(StatCollector.translateToLocal("gtnl.ui.controllerUpgrade.backToCurrent"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.ui.controller_upgrade.back_to_current"))
             .setPos(previousButtonX, switchButtonY)
             .setSize(16, 16));
 

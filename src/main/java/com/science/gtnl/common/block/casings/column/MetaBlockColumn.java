@@ -40,6 +40,11 @@ public class MetaBlockColumn extends Block {
         this.setBlockName(unlocalizedName);
     }
 
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.meta_block_column";
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(int side, int meta) {

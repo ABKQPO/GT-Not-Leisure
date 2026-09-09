@@ -64,9 +64,14 @@ public class DebugItem extends Item {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "DebugItem");
         this.setUnlocalizedName("DebugItem");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "DebugItem");
         GTNLItemList.DebugItem.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.debug_item";
     }
 
     @SubscribeEvent

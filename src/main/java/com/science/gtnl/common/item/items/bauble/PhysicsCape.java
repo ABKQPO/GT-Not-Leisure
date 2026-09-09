@@ -46,15 +46,20 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "PhysicsCape");
         this.setMaxDamage(2000);
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PhysicsCape");
         GTNLItemList.PhysicsCape.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.physics_cape";
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_PhysicsCape_00"));
+        toolTip.add(StatCollector.translateToLocal("gtnl.item.physics_cape.tooltip.0"));
     }
 
     @Override

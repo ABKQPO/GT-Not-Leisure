@@ -39,6 +39,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCokeOven>
     implements ISurvivalConstructable {
 
@@ -58,6 +59,11 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     public SteamInfernalCokeOven(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_infernal_coke_oven.name";
     }
 
     @Override
@@ -188,16 +194,16 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamInfernalCokeOvenRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamInfernalCokeOven_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamInfernalCokeOven_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamInfernalCokeOven_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.2"))
             .beginStructureBlock(5, 5, 5, true)
             .toolTipFinisher();
         return tt;

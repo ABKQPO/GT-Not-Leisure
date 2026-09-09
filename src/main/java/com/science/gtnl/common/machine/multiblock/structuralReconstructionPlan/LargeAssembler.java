@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeAssembler extends GTMMultiMachineBase<LargeAssembler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeAssembler extends GTMMultiMachineBase<LargeAssembler> implemen
 
     public LargeAssembler(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_assembler.name";
     }
 
     @Override
@@ -153,20 +159,20 @@ public class LargeAssembler extends GTMMultiMachineBase<LargeAssembler> implemen
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(9, 3, 3, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAssembler_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAssembler_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeAssembler_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_assembler.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

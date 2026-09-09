@@ -16,8 +16,8 @@ public class SteamWeatherFormat implements INEISpecialInfoFormatter {
     @NotNull
     public List<String> format(RecipeDisplayInfo recipeInfo) {
         List<String> specialInfo = new ArrayList<>();
-        specialInfo
-            .add(StatCollector.translateToLocal("NEI.SteamWeather.specialValue." + recipeInfo.recipe.mSpecialValue));
+        specialInfo.add(
+            StatCollector.translateToLocal("gtnl.nei.steam_weather.special_value." + recipeInfo.recipe.mSpecialValue));
         return specialInfo;
     }
 }

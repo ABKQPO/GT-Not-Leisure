@@ -70,6 +70,7 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ResourceCollectionModule extends TileEntityModuleBase {
 
     private static final INameFunction<ResourceCollectionModule> PARALLEL_SETTING_NAME = (base, p) -> GCCoreUtil
@@ -101,6 +102,11 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
     public ResourceCollectionModule(String aName) {
         super(aName, 25, 5, 1);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.resource_collection_module.name";
     }
 
     @Override
@@ -162,12 +168,12 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         machineMode = (machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "ResourceCollectionModule_Mode_" + machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.resource_collection_module.mode." + machineMode;
     }
 
     @Override
@@ -304,16 +310,28 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ResourceCollectionModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .beginStructureBlock(1, 5, 2, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ResourceCollectionModule_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }
@@ -345,8 +363,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                 () -> new Text(
                     StatCollector.translateToLocalFormatted(
                         "gt.interact.desc.mb.mode",
-                        StatCollector.translateToLocal("ResourceCollectionModule_Mode_" + machineMode)))
-                            .color(Color.WHITE.normal)).setPos(10, 77));
+                        StatCollector.translateToLocal(getMachineModeKey()))).color(Color.WHITE.normal))
+                            .setPos(10, 77));
         builder.widget(createModeSwitchButton(builder));
     }
 

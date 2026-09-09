@@ -256,20 +256,20 @@ public class LargeSteamLathe extends SteamMultiMachineBase<LargeSteamLathe> impl
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamLatheRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamLatheRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamLathe_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(7, 4, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamLathe_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

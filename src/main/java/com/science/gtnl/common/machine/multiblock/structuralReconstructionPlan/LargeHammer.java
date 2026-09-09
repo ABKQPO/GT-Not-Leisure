@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -50,6 +51,11 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
 
     public LargeHammer(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_hammer.name";
     }
 
     @Override
@@ -139,19 +145,19 @@ public class LargeHammer extends GTMMultiMachineBase<LargeHammer> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeHammerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeHammer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_hammer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeHammer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_hammer.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

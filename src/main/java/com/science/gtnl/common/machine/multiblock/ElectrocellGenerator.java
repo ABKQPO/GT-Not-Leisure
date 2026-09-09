@@ -322,16 +322,16 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ElectrocellGeneratorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.5"))
             .beginStructureBlock(11, 5, 3, true)
-            .addDynamoHatch("0+", StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElectrocellGenerator_Casing"))
+            .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.electrocell_generator.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.electrocell_generator.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -61,6 +61,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -83,6 +84,11 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
 
     public LargeIncubator(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_incubator.name";
     }
 
     @Override
@@ -305,25 +311,25 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeIncubatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeIncubator_04"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_incubator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.4"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(13, 9, 13, false)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
             .addOtherStructurePart(
-                StatCollector.translateToLocal("Tooltip_LargeIncubator_RadioHatch"),
-                StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"),
+                StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.radio_hatch"),
+                StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"),
                 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeIncubator_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

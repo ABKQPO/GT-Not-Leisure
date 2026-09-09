@@ -70,7 +70,7 @@ public class VaultPortHatch extends MTEHatch
             aNameRegional,
             3,
             0,
-            new String[] { StatCollector.translateToLocal("Tooltip_VaultPortHatch_00") });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.vault_port.tooltip.0") });
     }
 
     public VaultPortHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {

@@ -63,7 +63,7 @@ public class EnergyMonitor extends MTEBasicTank {
             aNameRegional,
             aTier,
             1,
-            new String[] { StatCollector.translateToLocal("Tooltip_EnergyMonitor_00") },
+            new String[] { StatCollector.translateToLocal("gtnl.machine.energy_monitor.tooltip.0") },
             aTextures);
     }
 

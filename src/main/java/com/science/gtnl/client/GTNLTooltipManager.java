@@ -40,11 +40,11 @@ public class GTNLTooltipManager implements IContainerTooltipHandler {
                 hotkeys.put(
                     StatCollector.translateToLocal("nei.key.ctrl") + " + "
                         + StatCollector.translateToLocal("nei.mouse.middle"),
-                    StatCollector.translateToLocal("nei.bookmark.ae_retrieve_item"));
+                    StatCollector.translateToLocal("gtnl.nei.bookmark.ae_retrieve_item"));
                 hotkeys.put(
                     StatCollector.translateToLocal("nei.key.alt") + " + "
                         + StatCollector.translateToLocal("nei.mouse.middle"),
-                    StatCollector.translateToLocal("nei.bookmark.ae_start_craft"));
+                    StatCollector.translateToLocal("gtnl.nei.bookmark.ae_start_craft"));
             }
         }
 

@@ -287,8 +287,8 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("NineIndustrialMultiMachine_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return NineIndustrialMultiMachineManager.getModeLocalization(machineMode);
     }
 
     @Override
@@ -473,28 +473,28 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         }
 
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("NineIndustrialMultiMachineRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_07"));
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.info.7"));
         for (int i = 0; i < 36; i++) {
             tt.addInfo(
-                StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Mode_" + i) + " - "
+                StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.mode." + i) + " - "
                     + EnumChatFormatting.YELLOW
                     + aBuiltStrings[i]
                     + EnumChatFormatting.RESET);
         }
         tt.beginStructureBlock(29, 29, 29, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_NineIndustrialMultiMachine_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.casing"))
             .toolTipFinisher();
         return tt;
     }

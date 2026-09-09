@@ -32,6 +32,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -50,13 +51,18 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_gate_assembler.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SteamGateAssembler(this.mName);
     }
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamGateAssemblerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_gate_assembler.recipe_type");
     }
 
     @Override
@@ -192,10 +198,10 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGateAssembler_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_gate_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_gate_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_gate_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_gate_assembler.tooltip.3"))
             .beginStructureBlock(21, 20, 21, true)
             .toolTipFinisher();
         return tt;

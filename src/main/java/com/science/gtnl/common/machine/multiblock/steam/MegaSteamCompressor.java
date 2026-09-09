@@ -45,6 +45,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.render.RenderingTileEntityBlackhole;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompressor> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -62,6 +63,11 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
     public MegaSteamCompressor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.mega_steam_compressor.name";
     }
 
     @Override
@@ -197,7 +203,7 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("MegaSteamCompressorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.recipe_type");
     }
 
     @Override
@@ -244,10 +250,10 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSteamCompressor_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.3"))
             .beginStructureBlock(35, 33, 35, true)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

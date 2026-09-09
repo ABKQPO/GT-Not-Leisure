@@ -216,76 +216,79 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
-        currentTip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("Info_SteamBeaconModule_02"));
+        currentTip.add(
+            EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.waila.steam_beacon_module.enabled_effects"));
         if (tag.getBoolean("enableSpeedEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_00"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.0"));
         }
         if (tag.getBoolean("enableStrengthEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_01"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.1"));
         }
         if (tag.getBoolean("enableJumpBoostEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_02"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.2"));
         }
         if (tag.getBoolean("enableResistanceEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_03"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.3"));
         }
         if (tag.getBoolean("enableHealthRegenerationEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_04"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.4"));
         }
         if (tag.getBoolean("enableNightVisionEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_05"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.5"));
         }
         if (tag.getBoolean("enableHasteEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_06"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.6"));
         }
         if (tag.getBoolean("enableFireResistanceEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_07"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.7"));
         }
         if (tag.getBoolean("enableWaterBreathingEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_08"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.8"));
         }
         if (tag.getBoolean("enableWarpWardEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_09"));
+            currentTip.add(
+                EnumChatFormatting.GREEN + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.9"));
         }
         if (tag.getBoolean("enableFeatherFeetEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_10"));
+            currentTip.add(
+                EnumChatFormatting.GREEN
+                    + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.10"));
         }
         if (tag.getBoolean("enableVisRegenEffect")) {
-            currentTip
-                .add(EnumChatFormatting.GREEN + StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_11"));
+            currentTip.add(
+                EnumChatFormatting.GREEN
+                    + StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.11"));
         }
     }
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamBeaconModuleRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamBeaconModuleRecipeType"));
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.recipe_type"));
         switch (mTier) {
-            case 1 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModuleI_00"));
-            case 2 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModuleII_00"));
-            case 3 -> tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModuleIII_00"));
+            case 1 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.basic"));
+            case 2 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.advanced"));
+            case 3 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.elite"));
         }
-        tt.addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_02") + (1 << (5 + mTier)))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeaconModule_04"))
+        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.2") + (1 << (5 + mTier)))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.4"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
@@ -856,7 +859,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_00"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.configure"))
             .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(174, 91)
             .setSize(16, 16));
@@ -884,7 +887,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         .add(WIDTH - 3, 0)
                         .subtract(0, 10)));
         builder.widget(
-            TextWidget.localised("Info_SteamBeaconModule_00")
+            TextWidget.localised("gtnl.machine.steam_beacon_module.configure")
                 .setPos(0, 0)
                 .setSize(100, 18))
             .widget(
@@ -907,7 +910,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         return ret.toArray(new IDrawable[0]);
                     })
                     .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasSpeedEffect, this::setSpeedEffect), builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_00"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.0"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 18)
                     .setSize(16, 16))
@@ -929,7 +932,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                     .attachSyncer(
                         new FakeSyncWidget.BooleanSyncer(this::hasStrengthEffect, this::setStrengthEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_01"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.1"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(24, 18)
                     .setSize(16, 16))
@@ -951,7 +954,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                     .attachSyncer(
                         new FakeSyncWidget.BooleanSyncer(this::hasJumpBoostEffect, this::setJumpBoostEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_02"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.2"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(42, 18)
                     .setSize(16, 16))
@@ -973,7 +976,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                     .attachSyncer(
                         new FakeSyncWidget.BooleanSyncer(this::hasResistanceEffect, this::setResistanceEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_03"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.3"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 36)
                     .setSize(16, 16))
@@ -997,7 +1000,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                             this::hasHealthRegenerationEffect,
                             this::setHealthRegenerationEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_04"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.4"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(24, 36)
                     .setSize(16, 16))
@@ -1019,7 +1022,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                     .attachSyncer(
                         new FakeSyncWidget.BooleanSyncer(this::hasNightVisionEffect, this::setNightVisionEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_05"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.5"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(42, 36)
                     .setSize(16, 16));
@@ -1040,7 +1043,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         return ret.toArray(new IDrawable[0]);
                     })
                     .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasHasteEffect, this::setHasteEffect), builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_06"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.6"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 54)
                     .setSize(16, 16))
@@ -1064,7 +1067,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                                 this::hasFireResistanceEffect,
                                 this::setFireResistanceEffect),
                             builder)
-                        .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_07"))
+                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.7"))
                         .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(24, 54)
                         .setSize(16, 16))
@@ -1088,7 +1091,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                                 this::hasWaterBreathingEffect,
                                 this::setWaterBreathingEffect),
                             builder)
-                        .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_08"))
+                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.8"))
                         .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(42, 54)
                         .setSize(16, 16));
@@ -1112,7 +1115,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                     .attachSyncer(
                         new FakeSyncWidget.BooleanSyncer(this::hasWarpWardEffect, this::setWarpWardEffect),
                         builder)
-                    .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_09"))
+                    .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.9"))
                     .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                     .setPos(6, 72)
                     .setSize(16, 16))
@@ -1134,7 +1137,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         .attachSyncer(
                             new FakeSyncWidget.BooleanSyncer(this::hasFeatherFeetEffect, this::setFeatherFeetEffect),
                             builder)
-                        .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_10"))
+                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.10"))
                         .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(24, 72)
                         .setSize(16, 16));
@@ -1158,7 +1161,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         .attachSyncer(
                             new FakeSyncWidget.BooleanSyncer(this::hasVisRegenEffect, this::setVisRegenEffect),
                             builder)
-                        .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_Effect_11"))
+                        .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.effect.11"))
                         .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
                         .setPos(42, 72)
                         .setSize(16, 16));
@@ -1184,7 +1187,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                 return ret.toArray(new IDrawable[0]);
             })
             .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::hasMachineCanWork, this::setMachineCanWork), builder)
-            .addTooltip(StatCollector.translateToLocal("Info_SteamBeaconModule_01"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.confirm"))
             .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(66, 37)
             .setSize(16, 16))

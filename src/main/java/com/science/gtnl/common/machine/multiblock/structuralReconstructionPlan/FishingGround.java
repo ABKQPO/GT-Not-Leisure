@@ -37,6 +37,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class FishingGround extends GTMMultiMachineBase<FishingGround> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -52,6 +53,11 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
 
     public FishingGround(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.fishing_ground.name";
     }
 
     @Override
@@ -180,17 +186,17 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FishingGroundRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FishingGround_00"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fishing_ground.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.fishing_ground.tooltip.0"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(13, 4, 13, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FishingGround_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.fishing_ground.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.fishing_ground.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.fishing_ground.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.fishing_ground.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

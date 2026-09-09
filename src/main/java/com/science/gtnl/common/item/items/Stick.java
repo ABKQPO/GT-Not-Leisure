@@ -54,8 +54,13 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "Stick");
         this.setHasSubtypes(true);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "Stick");
         GTNLItemList.Stick.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.stick";
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -222,7 +227,8 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
                         .getBoolean("Enchanted");
                 list.add(
                     StatCollector.translateToLocalFormatted(
-                        enchanted ? "Tooltip_Stick_01" : "Tooltip_Stick_00",
+                        enchanted ? "gtnl.item.cardboard_stick.tooltip.enchanted"
+                            : "gtnl.item.cardboard_stick.tooltip.normal",
                         disguised.getDisplayName()));
             }
         }

@@ -120,7 +120,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
                 }
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_EyeOfHarmonyInjector_03")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eye_of_harmony_injector.open_status")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -138,7 +138,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
             .setDraggable(true);
         panel.child(ButtonWidget.panelCloseButton());
         panel.child(
-            IKey.lang("Info_EyeOfHarmonyInjector_Title")
+            IKey.lang("gtnl.machine.eye_of_harmony_injector.status_title")
                 .asWidget()
                 .textAlign(Alignment.Center)
                 .pos(5, 10)
@@ -170,7 +170,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
             .filter(Objects::nonNull)
             .toList();
         if (units.isEmpty()) {
-            return IKey.lang("Info_EyeOfHarmonyInjector_05")
+            return IKey.lang("gtnl.machine.eye_of_harmony_injector.no_linked_units")
                 .asWidget()
                 .textAlign(Alignment.Center)
                 .size(PANEL_WIDTH - 10, PANEL_HEIGHT - 25);
@@ -199,18 +199,19 @@ public class EyeOfHarmonyInjectorStatusPanel {
                     .textAlign(Alignment.CenterLeft)
                     .pos(75, 5)
                     .size(140, 10))
-            .child(createAmountLabel("Tooltip_EyeOfHarmonyInjector_HeliumParametrization", unit, AmountType.HELIUM, 18))
+            .child(
+                createAmountLabel("gtnl.machine.eye_of_harmony_injector.helium_threshold", unit, AmountType.HELIUM, 18))
             .child(createAmountField(unit, linkedUnitsSyncer, syncManager, AmountType.HELIUM, 36))
             .child(
                 createAmountLabel(
-                    "Tooltip_EyeOfHarmonyInjector_HydrogenParametrization",
+                    "gtnl.machine.eye_of_harmony_injector.hydrogen_threshold",
                     unit,
                     AmountType.HYDROGEN,
                     54))
             .child(createAmountField(unit, linkedUnitsSyncer, syncManager, AmountType.HYDROGEN, 72))
             .child(
                 createAmountLabel(
-                    "Tooltip_EyeOfHarmonyInjector_RawStarMatterParametrization",
+                    "gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold",
                     unit,
                     AmountType.RAW_STAR_MATTER,
                     90))
@@ -234,11 +235,11 @@ public class EyeOfHarmonyInjectorStatusPanel {
                 return true;
             })
             .tooltipBuilder(
-                tooltip -> tooltip.addLine(IKey.lang("Info_EyeOfHarmonyInjector_00"))
-                    .addLine(IKey.lang("Info_EyeOfHarmonyInjector_01"))
+                tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.eye_of_harmony_injector.configure_independently"))
+                    .addLine(IKey.lang("gtnl.machine.eye_of_harmony_injector.target_coordinates"))
                     .addLine(IKey.str("Dim: %s", unit.dimensionId))
                     .addLine(IKey.str("X: %s, Y: %s, Z: %s", unit.x, unit.y, unit.z))
-                    .addLine(IKey.lang("Info_EyeOfHarmonyInjector_02")))
+                    .addLine(IKey.lang("gtnl.machine.eye_of_harmony_injector.highlight_coordinates")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -248,7 +249,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
 
     private String getLinkedUnitDisplayName(EyeOfHarmonyInjector.LinkedUnitGuiData unit) {
         return unit.displayName == null || unit.displayName.isEmpty()
-            ? StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_FallbackName")
+            ? StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.fallback_name")
             : unit.displayName;
     }
 
@@ -300,7 +301,7 @@ public class EyeOfHarmonyInjectorStatusPanel {
             .dynamic(
                 () -> amountType.hasManualOverride(unit) ? StatCollector.translateToLocal(langKey)
                     : StatCollector.translateToLocal(langKey) + " - "
-                        + StatCollector.translateToLocal("Info_EyeOfHarmonyInjector_04"))
+                        + StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.auto_max_amount"))
             .asWidget()
             .textAlign(Alignment.CenterLeft)
             .pos(15, y)

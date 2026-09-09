@@ -61,7 +61,7 @@ public class MixinBehaviourScanner {
         double bonus = tier <= baseTier ? 0.0 : (tier - baseTier) * MainConfig.machine.recipeOutputChance;
 
         String debugMessage = String.format(
-            StatCollector.translateToLocal("Info_VoltageChanceBonus_00"),
+            StatCollector.translateToLocal("gtnl.waila.voltage_chance_bonus"),
             bonus,
             StringUtils.voltageTooltipFormatted(tier),
             StringUtils.voltageTooltipFormatted(baseTier));

@@ -40,19 +40,19 @@ public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return "SteamBeeBreedingModuleRecipeType";
+        return "gtnl.machine.steam_bee_breeding_module.recipe_type";
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamBeeBreedingModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamBeeBreedingModule_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.5"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;

@@ -54,6 +54,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> implements ISurvivalConstructable {
 
     private static final String CA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/component_assembler";
@@ -80,6 +81,11 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
 
     public ComponentAssembler(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.component_assembler.name";
     }
 
     @Override
@@ -261,31 +267,33 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
         ret[origin.length] = IGregTechDeviceInformation.encode(
-            "scanner.info.CASS.tier",
+            "gtnl.machine.component_assembly_line.tier",
             mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1]
-                : IGregTechDeviceInformation.translatable("scanner.info.CASS.tier.none"));
+                : IGregTechDeviceInformation.translatable("gtnl.machine.component_assembly_line.tier.none"));
         return ret;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ComponentAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ComponentAssembler_07"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.component_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.7"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 5, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ComponentAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ComponentAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ComponentAssembler_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ComponentAssembler_Casing"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ComponentAssembler_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
             .toolTipFinisher();

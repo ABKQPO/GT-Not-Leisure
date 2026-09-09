@@ -71,6 +71,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDriller>
     implements ISurvivalConstructable {
 
@@ -98,6 +99,11 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     public AdvancedInfiniteDriller(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.advanced_infinite_driller.name";
     }
 
     @Override
@@ -393,34 +399,43 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     @Override
     public String[] getInfoData() {
         List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        ret.add(IGregTechDeviceInformation.encode("Info_AdvancedInfiniteDriller_00", excessFuel));
+        ret.add(
+            IGregTechDeviceInformation.encode("gtnl.machine.advanced_infinite_driller.info.excess_fuel", excessFuel));
         return ret.toArray(new String[0]);
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("AdvancedInfiniteDrillerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_11"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_12"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.11"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.12"))
             .addSupportAny()
             .beginStructureBlock(25, 41, 25, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_AdvancedInfiniteDriller_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -439,7 +454,9 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             .widget(
                 new TextWidget()
                     .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", excessFuel))
+                        () -> StatCollector.translateToLocalFormatted(
+                            "gtnl.machine.advanced_infinite_driller.info.excess_fuel",
+                            excessFuel))
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
                     .setEnabled(true))
             .widget(
@@ -468,8 +485,9 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         NBTTagCompound tag = accessor.getNBTData();
         if (tag.hasKey("excessFuel")) {
             currentTip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_AdvancedInfiniteDriller_00", tag.getDouble("excessFuel")));
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.machine.advanced_infinite_driller.info.excess_fuel",
+                    tag.getDouble("excessFuel")));
         }
     }
 

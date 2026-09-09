@@ -40,7 +40,7 @@ public class DebugResearchStation extends MTEBasicMachine {
             aNameRegional,
             aTier,
             1,
-            new String[] { StatCollector.translateToLocal("Tooltip_DebugResearchStation_00"),
+            new String[] { StatCollector.translateToLocal("gtnl.machine.debug_research_station.tooltip.0"),
                 StatCollector.translateToLocal("GT5U.MBTT.MachineType") + ": "
                     + EnumChatFormatting.YELLOW
                     + StatCollector.translateToLocal("gt.blockmachines.multimachine.em.research.name")

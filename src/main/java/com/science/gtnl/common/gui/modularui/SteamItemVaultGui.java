@@ -11,7 +11,7 @@ import com.science.gtnl.common.machine.multiblock.steam.SteamItemVault;
 public class SteamItemVaultGui extends GTNLSteamMultiBlockBaseGui {
 
     private static final String TYPE_COUNT_SYNC_KEY = "steamItemVaultTypeCounts";
-    private static final String TYPE_COUNT_TRANSLATION_KEY = "Info_SteamItemVault_TypeCount";
+    private static final String TYPE_COUNT_TRANSLATION_KEY = "gtnl.gui.steam_item_vault.type_count";
 
     private final SteamItemVault vault;
 

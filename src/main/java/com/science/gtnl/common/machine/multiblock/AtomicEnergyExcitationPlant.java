@@ -58,6 +58,7 @@ import gregtech.common.render.IMTERenderer;
 import kubatech.loaders.BlockLoader;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnergyExcitationPlant>
     implements ISurvivalConstructable, IMTERenderer {
 
@@ -93,6 +94,11 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
     public AtomicEnergyExcitationPlant(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.atomic_energy_excitation_plant.name";
     }
 
     @Override
@@ -166,7 +172,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (enableRender ? "enabled" : "disabled"));
             checkStructure(true, getBaseMetaTileEntity());
         }
         return true;
@@ -453,23 +459,23 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("AtomicEnergyExcitationPlantRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.atomic_energy_excitation_plant.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.atomic_energy_excitation_plant.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.atomic_energy_excitation_plant.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.atomic_energy_excitation_plant.tooltip.2"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(17, 29, 23, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_AtomicEnergyExcitationPlant_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
+            .addInputBus("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gt.blockcasings.9.11.name"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)

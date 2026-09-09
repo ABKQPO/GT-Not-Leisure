@@ -31,10 +31,17 @@ public class MissingMappingsHandler {
         .remapBlock("sciencenotleisure:StargateTier9", BlockLoader.compressedStargateTier9)
 
         .remapBlock("sciencenotleisure:MetaBlockGlow", BlockLoader.metaBlockGlow)
+        .remapBlock("sciencenotleisure:tile.MetaBlockGlow", BlockLoader.metaBlockGlow)
         .remapBlock("sciencenotleisure:MetaBlockGlass", BlockLoader.metaBlockGlass)
+        .remapBlock("sciencenotleisure:tile.MetaBlockGlass", BlockLoader.metaBlockGlass)
+        .remapBlock("sciencenotleisure:MetaBlockColumn", BlockLoader.metaBlockColumn)
+        .remapBlock("sciencenotleisure:tile.MetaBlockColumn", BlockLoader.metaBlockColumn)
         .remapBlock("sciencenotleisure:MetaBlock", BlockLoader.metaBlock)
+        .remapBlock("sciencenotleisure:tile.MetaBlock", BlockLoader.metaBlock)
         .remapBlock("sciencenotleisure:MetaCasing02", BlockLoader.metaCasing02)
+        .remapBlock("sciencenotleisure:tile.MetaCasing02", BlockLoader.metaCasing02)
         .remapBlock("sciencenotleisure:MetaCasing", BlockLoader.metaCasing)
+        .remapBlock("sciencenotleisure:tile.MetaCasing", BlockLoader.metaCasing)
         .remapBlock("sciencenotleisure:PlayerLeash", BlockLoader.playerLeash)
         .remapBlock("sciencenotleisure:CompressedStargateTier0", BlockLoader.compressedStargateTier0)
         .remapBlock("sciencenotleisure:CompressedStargateTier1", BlockLoader.compressedStargateTier1)
@@ -82,6 +89,7 @@ public class MissingMappingsHandler {
         .remapItem("sciencenotleisure:TimeStopPocketWatch", ItemLoader.timeStopPocketWatch)
         .remapItem("sciencenotleisure:TwilightSword", ItemLoader.twilightSword)
         .remapItem("sciencenotleisure:WirelessUpgradeChip", ItemLoader.wirelessUpgradeChip)
+        .remapItem("sciencenotleisure:MetaItem", ItemLoader.metaItem)
 
         ;
 

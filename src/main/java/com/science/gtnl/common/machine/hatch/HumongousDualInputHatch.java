@@ -75,9 +75,9 @@ public class HumongousDualInputHatch extends DualInputHatch
         this.mStoredFluid = new FluidStack[tier];
         this.fluidTanks = new FluidStackTank[tier];
         this.mCapacityPer = Integer.MAX_VALUE;
-        mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_DualInputHatch_02_00")
+        mDescriptionArray[2] = StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_capacity")
             + NumberFormatUtil.formatNumber(tier)
-            + StatCollector.translateToLocal("Tooltip_DualInputHatch_02_01")
+            + StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_slots")
             + NumberFormatUtil.formatNumber(mCapacityPer)
             + "L";
 
@@ -383,7 +383,9 @@ public class HumongousDualInputHatch extends DualInputHatch
         })
             .setPlayClickSound(true)
             .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_EXPORT)
-            .addTooltips(ImmutableList.of(StatCollector.translateToLocal("Button_Tooltip_HumongousDualInputHatch_00")))
+            .addTooltips(
+                ImmutableList
+                    .of(StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.tooltip.return_contents")))
             .setSize(16, 16)
             .setPos(170 + 4 * (mTier - 1) + mTier / 2, 102 + 14 * (mTier - 1)));
 

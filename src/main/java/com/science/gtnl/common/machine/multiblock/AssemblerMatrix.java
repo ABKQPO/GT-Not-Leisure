@@ -144,6 +144,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     implements IInterfaceHost, IGridProxyable, IAEAppEngInventory, IMEConnectable, ICustomNameObject {
 
@@ -163,7 +164,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     private static final int VERTICAL_OFF_SET = 8;
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(AM_STRUCTURE_FILE_PATH);
-    private static final TranslatableText SPEED_CASING_NAME = TranslatableText.lang("tile.MetaCasing02.9.name");
+    private static final TranslatableText SPEED_CASING_NAME = TranslatableText.lang("gtnl.block.meta_casing_02.9.name");
 
     public int mCountPatternCasing = -1;
     public int mCountCrafterCasing = -1;
@@ -244,6 +245,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.assembler_matrix.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new AssemblerMatrix(this.mName);
     }
@@ -270,7 +276,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             showPattern = !showPattern;
-            GTUtility.sendChatTrans(aPlayer, "Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled"));
         }
         return true;
     }
@@ -279,11 +285,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotChangeModeRunning");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.mode_running");
             return;
         }
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatTrans(aPlayer, "AssemblerMatrix_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     public void setPatternMultiply(int patternMultiply) {
@@ -362,7 +368,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 .attachSyncer(new FakeSyncWidget.BooleanSyncer(() -> showPattern, val -> showPattern = val), builder)
                 .dynamicTooltip(
                     () -> Collections.singletonList(
-                        StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled"))))
+                        StatCollector
+                            .translateToLocal("gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled"))))
                 .setTooltipShowUpDelay(TOOLTIP_DELAY)
                 .setUpdateTooltipEveryTick(true)
                 .setPos(26, 91)
@@ -374,7 +381,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 .setTextAlignment(Alignment.Center)
                 .setScrollBar()
                 .setTextColor(Color.WHITE.normal)
-                .addTooltip(StatCollector.translateToLocal("Info_AssemblerMatrix_03"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.3"))
                 .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
                 .setPos(43, 90)
                 .setSize(126, 18)
@@ -396,7 +403,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(StatCollector.translateToLocal("Info_AssemblerMatrix_01"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.1"))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(getPowerPanelButtonPos())
             .setSize(16, 16);
@@ -422,14 +429,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         .add(w - 3, 0)));
 
         builder.widget(
-            new TextWidget(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("Info_AssemblerMatrix_01"))
-                .setPos(0, 2)
-                .setSize(100, 18));
+            new TextWidget(
+                EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.1"))
+                    .setPos(0, 2)
+                    .setSize(100, 18));
 
         builder.widget(new FakeSyncWidget.IntegerSyncer(this::getPatternMultiply, this::setPatternMultiply));
 
         builder.widget(
-            TextWidget.localised("Info_AssemblerMatrix_02")
+            TextWidget.localised("gtnl.machine.assembler_matrix.info.2")
                 .setPos(0, 24)
                 .setSize(100, 18));
 
@@ -630,8 +638,12 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("AssemblerMatrix_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return switch (machineMode) {
+            case MODE_INPUT -> "gtnl.machine.assembler_matrix.mode.input";
+            case MODE_OUTPUT -> "gtnl.machine.assembler_matrix.mode.output";
+            default -> "gtnl.machine.assembler_matrix.mode.operating";
+        };
     }
 
     @Override
@@ -803,14 +815,14 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("AssemblerMatrixRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_AssemblerMatrix_06"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.6"))
             .addSupportAny()
             .beginStructureBlock(9, 9, 9, false)
             .toolTipFinisher();
@@ -1197,20 +1209,21 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                         : IGregTechDeviceInformation.encode("kubatech.infodata.mia.running_mode.operating.normal"))));
         info.add(
             IGregTechDeviceInformation.encode(
-                "Info_AssemblerMatrix_00",
+                "gtnl.machine.assembler_matrix.info.0",
                 "" + EnumChatFormatting.GOLD + inventory.size() + EnumChatFormatting.RESET,
                 (inventory.size() > mMaxSlots ? EnumChatFormatting.DARK_RED.toString()
                     : EnumChatFormatting.GOLD.toString()) + mMaxSlots + EnumChatFormatting.RESET));
-        info.add(IGregTechDeviceInformation.encode("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+        info.add(
+            IGregTechDeviceInformation.encode("gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled")));
         info.add(
             IGregTechDeviceInformation.encode("GT5U.multiblock.recipesDone") + ": "
                 + EnumChatFormatting.GREEN
                 + NumberFormatUtil.formatNumber(recipesDone)
                 + EnumChatFormatting.RESET);
         if (wirelessMode) {
-            info.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
+            info.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
             info.add(
-                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD
@@ -1236,11 +1249,13 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     + EnumChatFormatting.WHITE
                     + tag.getLong("maxParallelLong"));
         }
-        currentTip.add(StatCollector.translateToLocal("Info_ShowPattern_" + (showPattern ? "Enabled" : "Disabled")));
+        currentTip.add(
+            StatCollector.translateToLocal("gtnl.interface.show_pattern." + (showPattern ? "enabled" : "disabled")));
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentEuCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

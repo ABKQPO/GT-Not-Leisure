@@ -239,17 +239,17 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("RocketAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_RocketAssembler_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.info.1"))
             .addSupportAny()
             .beginStructureBlock(17, 24, 16, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_RocketAssembler_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -272,7 +272,7 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
         float aX, float aY, float aZ, ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             this.enableRender = !enableRender;
-            GTUtility.sendChatTrans(aPlayer, "Info_Render_" + (this.enableRender ? "Enabled" : "Disabled"));
+            GTUtility.sendChatTrans(aPlayer, "gtnl.chat.render." + (this.enableRender ? "enabled" : "disabled"));
         }
         return true;
     }

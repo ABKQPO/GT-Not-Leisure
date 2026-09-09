@@ -56,9 +56,9 @@ public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implem
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_00"),
-            StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_01"),
-            StatCollector.translateToLocal("Tooltip_WirelessMultiDynamoHatch_02"),
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.wireless_multi_dynamo.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.wireless_multi_dynamo.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.wireless_multi_dynamo.tooltip.2"),
             AnimatedTooltipHandler.GRAY + "Author: "
                 + AnimatedTooltipHandler.GRAY
                 + AnimatedTooltipHandler.BOLD

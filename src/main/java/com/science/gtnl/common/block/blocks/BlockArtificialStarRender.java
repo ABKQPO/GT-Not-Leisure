@@ -31,9 +31,14 @@ public class BlockArtificialStarRender extends Block {
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         this.setBlockName("RealArtificialStarRenderer");
         this.setLightLevel(1.0f);
-        GameRegistry.registerBlock(this, ItemBlockArtificialStarRender.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityArtificialStar.class, "ArtificialStarRenderTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockArtificialStarRender.class, "tile.RealArtificialStarRenderer");
+        GameRegistry.registerTileEntity(TileEntityArtificialStar.class, "artificial_star_render_tile_entity");
         GTNLItemList.ArtificialStarRender.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.artificial_star_renderer";
     }
 
     @Override

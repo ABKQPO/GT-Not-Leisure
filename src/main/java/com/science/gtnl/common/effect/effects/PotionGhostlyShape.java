@@ -122,7 +122,7 @@ public class PotionGhostlyShape extends EffectBase {
 
         if (actionSuccessful) {
             player.removePotionEffect(EffectLoader.ghostly_shape.id);
-            player.addChatMessage(new ChatComponentTranslation("Info_GhostlyShape_Cancel"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.effect.ghostly_shape.cancelled"));
         }
     }
 
@@ -132,7 +132,7 @@ public class PotionGhostlyShape extends EffectBase {
         if (player.worldObj.isRemote) return;
         if (player.isPotionActive(EffectLoader.ghostly_shape)) {
             player.removePotionEffect(EffectLoader.ghostly_shape.id);
-            player.addChatMessage(new ChatComponentTranslation("Info_GhostlyShape_Cancel"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.effect.ghostly_shape.cancelled"));
         }
     }
 
@@ -142,7 +142,7 @@ public class PotionGhostlyShape extends EffectBase {
         if (player.worldObj.isRemote) return;
         if (player.isPotionActive(EffectLoader.ghostly_shape)) {
             player.removePotionEffect(EffectLoader.ghostly_shape.id);
-            player.addChatMessage(new ChatComponentTranslation("Info_GhostlyShape_Cancel"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.effect.ghostly_shape.cancelled"));
         }
     }
 }

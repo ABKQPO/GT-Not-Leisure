@@ -270,39 +270,39 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "EngravingLaserPlant_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("EngravingLaserPlant_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.engraving_laser_plant.mode." + machineMode;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EngravingLaserPlantRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(21, 12, 22, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EngravingLaserPlant_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
             .toolTipFinisher();
@@ -338,9 +338,9 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
         ret[origin.length] = IGregTechDeviceInformation.encode(
-            "scanner.info.CASS.tier",
+            "gtnl.machine.component_assembly_line.tier",
             mCasingTier >= 0 ? GTValues.VN[mCasingTier + 1]
-                : IGregTechDeviceInformation.translatable("scanner.info.CASS.tier.none"));
+                : IGregTechDeviceInformation.translatable("gtnl.machine.component_assembly_line.tier.none"));
         return ret;
     }
 
@@ -396,7 +396,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_EngravingLaserPlant_00");
+        return StatCollector.translateToLocal("gtnl.gui.engraving_laser_plant.precision_laser_engraver_upgrade");
     }
 
     @Override

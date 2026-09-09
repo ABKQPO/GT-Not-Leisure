@@ -144,20 +144,20 @@ public class MassFabricator extends GTMMultiMachineBase<MassFabricator> implemen
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MassFabricatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mass_fabricator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .addPerfectOCInfo()
             .beginStructureBlock(5, 5, 8, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MassFabricator_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.mass_fabricator.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -19,7 +19,7 @@ public class RocketAssemblerFormat implements INEISpecialInfoFormatter {
         if (recipeInfo.recipe.mSpecialValue > 1) {
             specialInfo.add(
                 String.format(
-                    StatCollector.translateToLocal("NEI.RocketAssembler.specialValue"),
+                    StatCollector.translateToLocal("gtnl.nei.rocket_assembler.special_value"),
                     recipeInfo.recipe.mSpecialValue));
         }
         return specialInfo;

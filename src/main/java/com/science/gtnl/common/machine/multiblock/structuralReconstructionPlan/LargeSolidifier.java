@@ -49,6 +49,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -64,6 +65,11 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
 
     public LargeSolidifier(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_solidifier.name";
     }
 
     @Override
@@ -240,19 +246,19 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSolidifierRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSolidifier_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_solidifier.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSolidifier_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_solidifier.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -304,7 +304,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                     .containsKey(aeItem);
 
                 if (!isCraftable) {
-                    player.addChatMessage(new ChatComponentTranslation("nei.bookmark.ae_no_craft"));
+                    player.addChatMessage(new ChatComponentTranslation("gtnl.nei.bookmark.ae_no_craft"));
                     return;
                 }
 
@@ -362,7 +362,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                 .containsKey(aeItem);
 
             if (!isCraftable) {
-                player.addChatMessage(new ChatComponentTranslation("nei.bookmark.ae_no_craft"));
+                player.addChatMessage(new ChatComponentTranslation("gtnl.nei.bookmark.ae_no_craft"));
                 return;
             }
 

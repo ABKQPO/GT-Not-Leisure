@@ -40,6 +40,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.block.ModBlocks;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatment> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -59,6 +60,11 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.platinum_based_treatment.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
         return new PlatinumBasedTreatment(this.mName);
     }
@@ -66,23 +72,31 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PlatinumBasedTreatmentRecipes"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.recipe.platinum_based_treatment"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.5"))
             .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(15, 17, 18, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_00"))
-            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_PlatinumBasedTreatment_Casing_01"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.casing"))
+            .addMufflerHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.platinum_based_treatment.tooltip.muffler"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();

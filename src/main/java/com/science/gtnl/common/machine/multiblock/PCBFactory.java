@@ -345,33 +345,33 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("PCBFactoryRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_PCBFactory_10"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.pcb_factory.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.10"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginVariableStructureBlock(13, 47, 16, 30, 14, 46, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_PCBFactory_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -614,9 +614,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         // TODO: Remove this mui1 fallback after the PCB Factory terminal text is fully ported to mui2.
         super.drawTexts(screenElements, inventorySlot);
-        screenElements.widget(
-            TextWidget.dynamicText(() -> new Text(StatCollector.translateToLocal("Info_PCBFactory_00") + machineTier))
-                .setDefaultColor(COLOR_TEXT_WHITE.get()))
+        screenElements
+            .widget(
+                TextWidget.dynamicText(
+                    () -> new Text(StatCollector.translateToLocal("gtnl.gui.pcb_factory.machine_tier") + machineTier))
+                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
                 new FakeSyncWidget.IntegerSyncer(() -> machineTier, tier -> machineTier = tier).setSynced(true, false));
     }
@@ -665,7 +667,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     @Override
     public String getUpgradeButtonTooltip() {
-        return StatCollector.translateToLocal("Info_PCBFactory_01");
+        return StatCollector.translateToLocal("gtnl.gui.pcb_factory.upgrade.t4_machine_tier");
     }
 
     @Override

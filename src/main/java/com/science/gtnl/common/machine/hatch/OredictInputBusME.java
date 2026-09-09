@@ -137,16 +137,17 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_OredictInputBusME_00"),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_01") + GTValues.TIER_COLORS[isSuper ? 8 : 6],
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_02"),
-            StatCollector.translateToLocalFormatted("Tooltip_OredictInputBusME_03", isSuper ? 100 : 16),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_04"),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_05"),
-            StatCollector.translateToLocalFormatted("Tooltip_OredictInputBusME_06", isSuper ? 100 : 16),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_07"),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_08"),
-            StatCollector.translateToLocal("Tooltip_OredictInputBusME_09") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.1") + " "
+                + GTValues.TIER_COLORS[isSuper ? 8 : 6],
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.2"),
+            StatCollector.translateToLocalFormatted("gtnl.hatch.oredict_input_bus_me.tooltip.3", isSuper ? 100 : 16),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.4"),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.5"),
+            StatCollector.translateToLocalFormatted("gtnl.hatch.oredict_input_bus_me.tooltip.6", isSuper ? 100 : 16),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.7"),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.8"),
+            StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.tooltip.9") };
     }
 
     @Nullable
@@ -866,7 +867,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                     .setPos(3, 58)
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD));
         builder.widget(
-            TextWidget.localised("Info_OredictInputBusME_Oredict")
+            TextWidget.localised("gtnl.hatch.oredict_input_bus_me.info.ore_dict")
                 .setPos(3, 120)
                 .setSize(50, 14))
             .widget(
@@ -895,13 +896,17 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
 
     @Override
     public String[] getInfoData() {
-        String busStatusKey = getProxy() != null && getProxy().isActive() ? "Info_OredictInputBusME_Online"
-            : IGregTechDeviceInformation.encode("Info_OredictInputBusME_Offline", getAEDiagnostics());
-        return new String[] { busStatusKey, hasFilter() ? IGregTechDeviceInformation
-            .encode("Info_OredictInputBusME_Oredict.fmt", EnumChatFormatting.GREEN + oreDict + EnumChatFormatting.RESET)
-            : IGregTechDeviceInformation.encode(
-                "Info_OredictInputBusME_Oredict.fmt",
-                IGregTechDeviceInformation.translatable("Info_OredictInputBusME_Oredict_Unset")) };
+        String busStatusKey = getProxy() != null && getProxy().isActive()
+            ? "gtnl.hatch.oredict_input_bus_me.info.online"
+            : IGregTechDeviceInformation.encode("gtnl.hatch.oredict_input_bus_me.info.offline", getAEDiagnostics());
+        return new String[] { busStatusKey,
+            hasFilter()
+                ? IGregTechDeviceInformation.encode(
+                    "gtnl.hatch.oredict_input_bus_me.info.ore_dict.format",
+                    EnumChatFormatting.GREEN + oreDict + EnumChatFormatting.RESET)
+                : IGregTechDeviceInformation.encode(
+                    "gtnl.hatch.oredict_input_bus_me.info.ore_dict.format",
+                    IGregTechDeviceInformation.translatable("gtnl.hatch.oredict_input_bus_me.info.ore_dict.unset")) };
     }
 
 }

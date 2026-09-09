@@ -51,6 +51,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -66,6 +67,11 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
     public ElectricBlastFurnace(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.electric_blast_furnace.name";
     }
 
     @Override
@@ -249,21 +255,25 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.5"))
             .beginStructureBlock(5, 6, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_00"))
-            .addMufflerHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricBlastFurnace_Casing_01"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.casing"))
+            .addMufflerHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_blast_furnace.tooltip.muffler"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

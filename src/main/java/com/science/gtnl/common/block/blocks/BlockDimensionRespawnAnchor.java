@@ -46,8 +46,8 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
         this.setHarvestLevel("pickaxe", 3);
         this.setLightOpacity(0);
         this.setTickRandomly(true);
-        GameRegistry.registerBlock(this, ItemBlockDimensionRespawnAnchor.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityDimensionRespawnAnchor.class, "DimensionRespawnAnchorTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockDimensionRespawnAnchor.class, "tile.DimensionRespawnAnchor");
+        GameRegistry.registerTileEntity(TileEntityDimensionRespawnAnchor.class, "dimension_respawn_anchor_tile_entity");
         GTNLItemList.DimensionRespawnAnchor.set(new ItemStack(this, 1));
         BlockDispenser.dispenseBehaviorRegistry
             .putObject(Item.getItemFromBlock(Blocks.glowstone), new BehaviorGlowstoneCharge());
@@ -55,6 +55,11 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
         FMLCommonHandler.instance()
             .bus()
             .register(this);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.dimension_respawn_anchor";
     }
 
     @Override
@@ -182,7 +187,7 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
             IAnchorRespawn anchor = (IAnchorRespawn) player;
             anchor.setAnchorRespawn(world.provider.dimensionId, x, y + 1, z);
 
-            player.addChatMessage(new ChatComponentTranslation("Info_DimensionRespawnAnchor_SetSpawn"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.chat.dimension_respawn_anchor.spawn_set"));
 
             world.playSoundEffect(
                 x + 0.5,

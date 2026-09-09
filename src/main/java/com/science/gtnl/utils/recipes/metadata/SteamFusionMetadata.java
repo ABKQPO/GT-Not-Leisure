@@ -23,6 +23,9 @@ public class SteamFusionMetadata extends RecipeMetadataKey<Integer> {
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 0);
-        if (tier != 0) recipeInfo.drawText(StatCollector.translateToLocal("SteamFusionMetadata.0"));
+        if (tier != 0) {
+            recipeInfo.drawText(
+                StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.metadata.requires_compact_reactor"));
+        }
     }
 }

@@ -23,6 +23,6 @@ public class SolorMuonCatalystMetadata extends RecipeMetadataKey<Boolean> {
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         boolean needRing = cast(value, false);
-        if (needRing) recipeInfo.drawText(StatCollector.translateToLocal("SolorMuonCatalystMetadata.0"));
+        if (needRing) recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.solar_muon_catalyst.0"));
     }
 }

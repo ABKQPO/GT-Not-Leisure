@@ -72,7 +72,7 @@ public abstract class MixinServerConfigurationManager {
         if (!(tile instanceof TileEntityDimensionRespawnAnchor respawnAnchorTile)
             || respawnAnchorTile.getEnergyLevel() <= 0) {
             anchor.clearAnchorRespawn();
-            player.addChatMessage(new ChatComponentTranslation("Info_DimensionRespawnAnchor_NoBedOrAnchor"));
+            player.addChatMessage(new ChatComponentTranslation("gtnl.chat.dimension_respawn_anchor.no_spawn_point"));
             return originalDimension;
         }
 

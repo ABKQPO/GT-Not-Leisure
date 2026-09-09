@@ -245,19 +245,19 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public String getMachineType() {
-        return "SteamGreenhouseModuleRecipeType";
+        return "gtnl.machine.steam_greenhouse_module.recipe_type";
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamGreenhouseModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamGreenhouseModule_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.5"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
@@ -313,24 +313,26 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         List<String> info = new ArrayList<>(
             Arrays.asList(
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_01",
+                    "gtnl.machine.eden_garden.info.mode",
                     EnumChatFormatting.GREEN,
-                    IGregTechDeviceInformation.translatable(getMachineModeNameKey()),
+                    IGregTechDeviceInformation.translatable(getMachineModeKey()),
                     EnumChatFormatting.RESET),
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_04",
+                    "gtnl.machine.eden_garden.info.max_slots",
                     EnumChatFormatting.GREEN,
                     this.maxSeedCount,
                     EnumChatFormatting.RESET),
                 IGregTechDeviceInformation.encode(
-                    "Info_EdenGarden_05",
+                    "gtnl.machine.eden_garden.info.used_slots",
                     this.getTotalStoredCropCount() > maxSeedCount ? EnumChatFormatting.RED : EnumChatFormatting.GREEN,
                     this.getTotalStoredCropCount())));
 
         if (this.getTotalStoredCropCount() > this.maxSeedCount) {
             info.add(
-                IGregTechDeviceInformation
-                    .encode("Info_EdenGarden_07.fmt", EnumChatFormatting.DARK_RED, EnumChatFormatting.RESET));
+                IGregTechDeviceInformation.encode(
+                    "gtnl.machine.eden_garden.info.too_many_seeds.format",
+                    EnumChatFormatting.DARK_RED,
+                    EnumChatFormatting.RESET));
         }
 
         info.addAll(Arrays.asList(super.getInfoData()));
@@ -339,14 +341,15 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         nextMachineMode();
-        GTUtility.sendChatTrans(aPlayer, getMachineModeNameKey());
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
         greenHouseViewMode = greenHouseViewMode.nextWithoutBlocks();
-        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_ViewMode_Change", greenHouseViewMode.name());
+        GTUtility
+            .sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.view_mode_changed", greenHouseViewMode.name());
         return true;
     }
 
@@ -374,7 +377,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
                         .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
                 })
                 .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("Info_EdenGarden_Configuration"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
                 .setSize(16, 16));
     }
 
@@ -397,8 +400,8 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         builder.widget(
             new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
                 .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("Info_EdenGarden_Inventory"))
-                        : new Text(StatCollector.translateToLocal("Info_EdenGarden_Status")))
+                    i -> i == 0 ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.inventory"))
+                        : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.status")))
                 .setBackground(GTUITextures.BUTTON_STANDARD)
                 .setPos(140, 91)
                 .setSize(55, 16));
@@ -437,7 +440,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
                 .dynamicTooltip(() -> {
                     List<String> ret = new ArrayList<>();
                     ret.add(
-                        StatCollector.translateToLocal("AllSteamCapacity") + uiSteamStored
+                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
                             + uiSteamCapacity
                             + "L");
@@ -583,15 +586,11 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal(getMachineModeNameKey());
-    }
-
-    private String getMachineModeNameKey() {
+    public String getMachineModeKey() {
         return switch (machineMode) {
-            case MODE_FARM -> "Info_EdenGarden_Operating";
-            case MODE_OUTPUT -> "Info_EdenGarden_Output";
-            default -> "Info_EdenGarden_Input";
+            case MODE_FARM -> "gtnl.machine.eden_garden.mode.operating";
+            case MODE_OUTPUT -> "gtnl.machine.eden_garden.mode.output";
+            default -> "gtnl.machine.eden_garden.mode.input";
         };
     }
 
@@ -638,7 +637,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public void tryChangeSetupPhase(EntityPlayer aPlayer) {
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Working");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.setup_mode_running");
             return;
         }
         this.setupPhase++;
@@ -646,28 +645,30 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         setMachineMode(machineModeFromSetupPhase(this.setupPhase));
 
         String phaseKey = switch (this.setupPhase) {
-            case 0 -> "Info_EdenGarden_Operating";
-            case 1 -> "Info_EdenGarden_Input";
-            case 2 -> "Info_EdenGarden_Output";
-            default -> "Info_EdenGarden_SetupPhase_Invalid";
+            case 0 -> "gtnl.machine.eden_garden.mode.operating";
+            case 1 -> "gtnl.machine.eden_garden.mode.input";
+            case 2 -> "gtnl.machine.eden_garden.mode.output";
+            default -> "gtnl.machine.eden_garden.message.invalid_setup_phase";
         };
-        GTUtility
-            .sendChatTrans(aPlayer, "Info_EdenGarden_SetupPhase_Change_Format", new ChatComponentTranslation(phaseKey));
+        GTUtility.sendChatTrans(
+            aPlayer,
+            "gtnl.machine.eden_garden.message.setup_phase_changed.format",
+            new ChatComponentTranslation(phaseKey));
     }
 
     @Deprecated
     public void tryChangeMode(EntityPlayer aPlayer) {
         // TODO: Remove this legacy MUI1 greenhouse mode toggle after Steam Greenhouse only exposes MUI2 machine modes.
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Working");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_running");
             return;
         }
         if (!this.storedCrops.isEmpty()) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_HasSeeds");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_has_seeds");
             return;
         }
         this.mode = GreenHouseModes.getNextMode(this.mode);
-        GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_Mode_Change", this.mode.getName());
+        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_changed", this.mode.getName());
     }
 
     @Deprecated
@@ -675,9 +676,9 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         // TODO: Remove this legacy humidity toggle after CropsNH biome checks are the only growth environment control.
         this.useNoHumidity = !this.useNoHumidity;
         if (this.useNoHumidity) {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Enabled");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_enabled");
         } else {
-            GTUtility.sendChatTrans(aPlayer, "Info_EdenGarden_NoHumidityMode_Disabled");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_disabled");
         }
     }
 

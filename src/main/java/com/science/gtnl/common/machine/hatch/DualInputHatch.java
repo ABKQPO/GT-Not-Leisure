@@ -58,16 +58,16 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
             aNameRegional,
             aTier,
             aTier * aTier + 1,
-            new String[] { StatCollector.translateToLocal("Tooltip_DualInputHatch_00"), "", "" });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.0"), "", "" });
         this.mStoredFluid = new FluidStack[aTier];
         this.fluidTanks = new FluidStackTank[aTier];
         this.mCapacityPer = getCapacityPerTank(aTier);
         this.itemSlotAmount = aTier * aTier + 1;
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_DualInputHatch_01")
+        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.item_slots")
             + NumberFormatUtil.formatNumber(itemSlotAmount - 1);
-        mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_DualInputHatch_02_00")
+        mDescriptionArray[2] = StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_capacity")
             + NumberFormatUtil.formatNumber(aTier)
-            + StatCollector.translateToLocal("Tooltip_DualInputHatch_02_01")
+            + StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_slots")
             + NumberFormatUtil.formatNumber(mCapacityPer)
             + "L";
 
@@ -92,11 +92,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         this.fluidTanks = new FluidStackTank[aTier];
         this.mCapacityPer = getCapacityPerTank(aTier);
         this.itemSlotAmount = aTier * aTier + 1;
-        mDescriptionArray[1] = StatCollector.translateToLocal("Tooltip_DualInputHatch_01")
+        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.item_slots")
             + NumberFormatUtil.formatNumber(itemSlotAmount - 1);
-        mDescriptionArray[2] = StatCollector.translateToLocal("Tooltip_DualInputHatch_02_00")
+        mDescriptionArray[2] = StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_capacity")
             + NumberFormatUtil.formatNumber(aTier)
-            + StatCollector.translateToLocal("Tooltip_DualInputHatch_02_01")
+            + StatCollector.translateToLocal("gtnl.hatch.dual_input.tooltip.fluid_slots")
             + NumberFormatUtil.formatNumber(mCapacityPer)
             + "L";
 

@@ -232,17 +232,17 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeGasCollectorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeGasCollector_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.2"))
             .addSupportAny()
             .beginStructureBlock(5, 5, 5, true)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeGasCollector_Casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
             .toolTipFinisher();
         return tt;
     }

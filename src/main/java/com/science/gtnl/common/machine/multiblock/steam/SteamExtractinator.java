@@ -37,6 +37,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -52,6 +53,11 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     public SteamExtractinator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.steam_extractinator.name";
     }
 
     @Override
@@ -175,20 +181,24 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamExtractinatorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_extractinator.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamExtractinator_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.2"))
             .beginStructureBlock(15, 10, 17, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_00"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_01"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SteamExtractinator_Casing_02"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.top_casing"))
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.bottom_casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.middle_casing"))
             .toolTipFinisher();
         return tt;
     }

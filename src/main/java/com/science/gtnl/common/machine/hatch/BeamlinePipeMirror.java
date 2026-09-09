@@ -85,8 +85,8 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_00"),
-            StatCollector.translateToLocal("Tooltip_BeamlinePipeMirror_01") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.tooltip.1") };
     }
 
     @Override

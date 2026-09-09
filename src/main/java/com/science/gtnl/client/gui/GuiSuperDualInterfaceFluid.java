@@ -53,7 +53,7 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
             this.guiTop,
             this.cont.getTile() instanceof PartSuperDualInterface ? GTNLItemList.PartSuperDualInterface.get(1)
                 : GTNLItemList.SuperDualInterface.get(1),
-            StatCollector.translateToLocal("text.SuperDualInterface.tooltip.switch"),
+            StatCollector.translateToLocal("gtnl.gui.super_dual_interface.tooltip.switch"),
             itemRender);
         this.buttonList.add(this.switcher);
         this.prevPage = new GuiSuperInterface.GuiTextAeButton(
@@ -63,7 +63,7 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
             16,
             16,
             "<",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.0"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.previous_page"));
         this.nextPage = new GuiSuperInterface.GuiTextAeButton(
             102,
             this.guiLeft - 18,
@@ -71,17 +71,19 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
             16,
             16,
             ">",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.1"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.next_page"));
         this.buttonList.add(this.prevPage);
         this.buttonList.add(this.nextPage);
     }
 
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        fontRendererObj.drawString(getGuiDisplayName(I18n.format("container.SuperDualInterface")), 8, 6, 0x404040);
+        fontRendererObj
+            .drawString(getGuiDisplayName(I18n.format("gtnl.gui.super_dual_interface.name")), 8, 6, 0x404040);
         fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, ySize - 94, 0x404040);
         fontRendererObj.drawString(
-            StatCollector.translateToLocalFormatted("text.SuperInterface.page", cont.currentPage + 1, cont.maxPage),
+            StatCollector
+                .translateToLocalFormatted("gtnl.gui.super_interface.page", cont.currentPage + 1, cont.maxPage),
             110,
             6,
             0x404040);

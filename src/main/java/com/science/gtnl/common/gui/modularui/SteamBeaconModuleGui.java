@@ -159,7 +159,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 }
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_SteamBeaconModule_00")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.steam_beacon_module.configure")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -177,7 +177,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
             .setDraggable(true);
         panel.child(ButtonWidget.panelCloseButton());
         panel.child(
-            IKey.lang("Info_SteamBeaconModule_00")
+            IKey.lang("gtnl.machine.steam_beacon_module.configure")
                 .asWidget()
                 .pos(0, 0)
                 .size(104, 18)
@@ -198,7 +198,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 SPEED_SYNC_KEY,
                 SPEED_EFFECT,
-                "Info_SteamBeaconModule_Effect_00",
+                "gtnl.machine.steam_beacon_module.effect.0",
                 6,
                 18,
                 beaconModule::hasSpeedEffect,
@@ -208,7 +208,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 STRENGTH_SYNC_KEY,
                 STRENGTH_EFFECT,
-                "Info_SteamBeaconModule_Effect_01",
+                "gtnl.machine.steam_beacon_module.effect.1",
                 24,
                 18,
                 beaconModule::hasStrengthEffect,
@@ -218,7 +218,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 JUMP_BOOST_SYNC_KEY,
                 JUMP_BOOST_EFFECT,
-                "Info_SteamBeaconModule_Effect_02",
+                "gtnl.machine.steam_beacon_module.effect.2",
                 42,
                 18,
                 beaconModule::hasJumpBoostEffect,
@@ -228,7 +228,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 RESISTANCE_SYNC_KEY,
                 RESISTANCE_EFFECT,
-                "Info_SteamBeaconModule_Effect_03",
+                "gtnl.machine.steam_beacon_module.effect.3",
                 6,
                 36,
                 beaconModule::hasResistanceEffect,
@@ -238,7 +238,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 HEALTH_REGENERATION_SYNC_KEY,
                 HEALTH_REGENERATION_EFFECT,
-                "Info_SteamBeaconModule_Effect_04",
+                "gtnl.machine.steam_beacon_module.effect.4",
                 24,
                 36,
                 beaconModule::hasHealthRegenerationEffect,
@@ -248,7 +248,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                 syncManager,
                 NIGHT_VISION_SYNC_KEY,
                 NIGHT_VISION_EFFECT,
-                "Info_SteamBeaconModule_Effect_05",
+                "gtnl.machine.steam_beacon_module.effect.5",
                 42,
                 36,
                 beaconModule::hasNightVisionEffect,
@@ -260,7 +260,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     syncManager,
                     HASTE_SYNC_KEY,
                     HASTE_EFFECT,
-                    "Info_SteamBeaconModule_Effect_06",
+                    "gtnl.machine.steam_beacon_module.effect.6",
                     6,
                     54,
                     beaconModule::hasHasteEffect,
@@ -270,7 +270,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     syncManager,
                     FIRE_RESISTANCE_SYNC_KEY,
                     FIRE_RESISTANCE_EFFECT,
-                    "Info_SteamBeaconModule_Effect_07",
+                    "gtnl.machine.steam_beacon_module.effect.7",
                     24,
                     54,
                     beaconModule::hasFireResistanceEffect,
@@ -280,7 +280,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     syncManager,
                     WATER_BREATHING_SYNC_KEY,
                     WATER_BREATHING_EFFECT,
-                    "Info_SteamBeaconModule_Effect_08",
+                    "gtnl.machine.steam_beacon_module.effect.8",
                     42,
                     54,
                     beaconModule::hasWaterBreathingEffect,
@@ -293,7 +293,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     syncManager,
                     WARP_WARD_SYNC_KEY,
                     WARP_WARD_EFFECT,
-                    "Info_SteamBeaconModule_Effect_09",
+                    "gtnl.machine.steam_beacon_module.effect.9",
                     6,
                     72,
                     beaconModule::hasWarpWardEffect,
@@ -303,7 +303,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     syncManager,
                     FEATHER_FEET_SYNC_KEY,
                     FEATHER_FEET_EFFECT,
-                    "Info_SteamBeaconModule_Effect_10",
+                    "gtnl.machine.steam_beacon_module.effect.10",
                     24,
                     72,
                     beaconModule::hasFeatherFeetEffect,
@@ -314,7 +314,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                         syncManager,
                         VIS_REGEN_SYNC_KEY,
                         VIS_REGEN_EFFECT,
-                        "Info_SteamBeaconModule_Effect_11",
+                        "gtnl.machine.steam_beacon_module.effect.11",
                         42,
                         72,
                         beaconModule::hasVisRegenEffect,
@@ -355,7 +355,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     }
                 }
             }))
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_SteamBeaconModule_01")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.steam_beacon_module.confirm")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 

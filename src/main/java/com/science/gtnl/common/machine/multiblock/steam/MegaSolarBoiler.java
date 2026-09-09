@@ -49,6 +49,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -69,13 +70,18 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.mega_solar_boiler.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity arg0) {
         return new MegaSolarBoiler(this.mName);
     }
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("MegaSolarBoilerRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.recipe_type");
     }
 
     @Override
@@ -191,9 +197,9 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSolarBoiler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSolarBoiler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_MegaSolarBoiler_02"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.2"))
             .beginStructureBlock(21, 5, 7, true)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

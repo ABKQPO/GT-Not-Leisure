@@ -74,7 +74,7 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             default -> new int[] { 7, 9, 7 };
         };
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("VoidMinerRecipeType"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.void_miner.recipe_type"))
             .addInfo("")
             .addInfo("")
             .addInfo("")
@@ -91,17 +91,17 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             .addInfo("")
             .addInfo(
                 StatCollector.translateToLocalFormatted(
-                    "Tooltip_VoidMiner_01",
+                    "gtnl.machine.void_miner.info.0",
                     NumberFormatUtil.formatNumber(GTValues.V[this.getMinTier()])))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_06"))
-            .addInfo(StatCollector.translateToLocalFormatted("Tooltip_VoidMiner_07", TIER_MULTIPLIER * 2))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_VoidMiner_10"));
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.5"))
+            .addInfo(StatCollector.translateToLocalFormatted("gtnl.machine.void_miner.info.6", TIER_MULTIPLIER * 2))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.info.9"));
 
         if (TIER_MULTIPLIER == 3) tt.addPerfectOCInfo();
 
@@ -109,30 +109,30 @@ public abstract class MixinMTEVoidMiners extends MTEVoidMinerBase<MixinMTEVoidMi
             .beginStructureBlock(structureBlock[0], structureBlock[1], structureBlock[2], false);
 
         switch (TIER_MULTIPLIER) {
-            case 2 -> tt.addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerII_Casing_00"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerII_Casing_01"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerII_Casing_02"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerII_Casing_03"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerII_Casing_04"));
+            case 2 -> tt.addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.2.casing.0"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.2.casing.1"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.2.casing.2"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.2.casing.3"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.2.casing.4"));
 
-            case 3 -> tt.addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerIII_Casing_00"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerIII_Casing_01"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerIII_Casing_02"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerIII_Casing_03"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerIII_Casing_04"));
-            default -> tt.addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerI_Casing_00"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerI_Casing_01"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerI_Casing_02"))
-                .addStructureInfo(StatCollector.translateToLocal("Tooltip_VoidMinerI_Casing_03"));
+            case 3 -> tt.addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.3.casing.0"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.3.casing.1"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.3.casing.2"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.3.casing.3"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.3.casing.4"));
+            default -> tt.addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.1.casing.0"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.1.casing.1"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.1.casing.2"))
+                .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.void_miner.tier.1.casing.3"));
         }
 
         tt.addEnergyHatch(
             "0+",
-            StatCollector.translateToLocalFormatted("Tooltip_VoidMiner_Casing_00", GTValues.VN[this.getMinTier()]))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_02"))
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_03"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_VoidMiner_Casing_01"))
+            StatCollector.translateToLocalFormatted("gtnl.machine.void_miner.casing.0", GTValues.VN[this.getMinTier()]))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.void_miner.casing.1"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.void_miner.casing.2"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.void_miner.casing.3"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.void_miner.casing.1"))
             .toolTipFinisher();
         return tt;
     }

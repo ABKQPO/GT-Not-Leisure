@@ -151,7 +151,7 @@ public class SubscribeEventClientUtils {
 
             if (newRange != oldRange) {
                 nbt.setInteger("range", newRange);
-                ClientUtils.showSubtitle("Tooltip_VeinMiningPickaxe_00", newRange);
+                ClientUtils.showSubtitle("gtnl.item.vein_mining_pickaxe.max_block_gap", newRange);
                 network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
                 event.setCanceled(true);
             }
@@ -174,7 +174,7 @@ public class SubscribeEventClientUtils {
 
             if (newAmount != oldAmount) {
                 nbt.setInteger("amount", newAmount);
-                ClientUtils.showSubtitle("Tooltip_VeinMiningPickaxe_01", newAmount);
+                ClientUtils.showSubtitle("gtnl.item.vein_mining_pickaxe.max_vein_count", newAmount);
                 network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
                 event.setCanceled(true);
             }
@@ -227,7 +227,7 @@ public class SubscribeEventClientUtils {
 
             if (effect != null && event.gui instanceof GuiIngameMenu) {
                 TitleAPI.setTimes(10, 100, 20);
-                TitleAPI.setTitle(new ChatComponentTranslation("Awe_Cancel_01"));
+                TitleAPI.setTitle(new ChatComponentTranslation("gtnl.effect.awe.cancel.0"));
                 event.setCanceled(true);
             }
         }
@@ -242,7 +242,7 @@ public class SubscribeEventClientUtils {
             PotionEffect effect = player.getActivePotionEffect(EffectLoader.awe);
 
             if (effect != null && event.gui instanceof GuiInventory) {
-                String[] messages = { "Awe_Cancel_02_01", "Awe_Cancel_02_02" };
+                String[] messages = { "gtnl.effect.awe.cancel.1", "gtnl.effect.awe.cancel.2" };
                 String message = messages[RANDOM.nextInt(messages.length)];
                 TitleAPI.setTimes(10, 100, 20);
                 TitleAPI.setTitle(new ChatComponentTranslation(message));

@@ -54,10 +54,10 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
             aNameRegional,
             6,
             0,
-            new String[] { StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_00"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_01"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_02"),
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_03") });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.tooltip.1"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.tooltip.2"),
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.tooltip.3") });
         disableSort = true;
     }
 
@@ -152,19 +152,22 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         var ret = new ArrayList<String>();
         if (getMasterSuper() != null) {
             ret.add(
-                IGregTechDeviceInformation
-                    .encode("Chat_SuperCraftingInputProxy_00_00.fmt", masterSuperX, masterSuperY, masterSuperZ));
+                IGregTechDeviceInformation.encode(
+                    "gtnl.hatch.super_crafting_input_proxy.master_super",
+                    masterSuperX,
+                    masterSuperY,
+                    masterSuperZ));
             ret.addAll(Arrays.asList(getMasterSuper().getInfoData()));
         } else if (getCraftingMaster() != null) {
             ret.add(
                 IGregTechDeviceInformation.encode(
-                    "Chat_SuperCraftingInputProxy_00_01.fmt",
+                    "gtnl.hatch.super_crafting_input_proxy.crafting_master",
                     craftingMasterX,
                     craftingMasterY,
                     craftingMasterZ));
             ret.addAll(Arrays.asList(getCraftingMaster().getInfoData()));
         } else {
-            ret.add("Chat_SuperCraftingInputProxy_01");
+            ret.add("gtnl.hatch.super_crafting_input_proxy.unlinked");
         }
         return ret.toArray(new String[0]);
     }
@@ -274,7 +277,8 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
                     nbt.getInteger("zSuper")) != null;
                 aPlayer.addChatMessage(
                     new ChatComponentTranslation(
-                        success ? "Chat_SuperCraftingInputProxy_02" : "Chat_SuperCraftingInputProxy_03"));
+                        success ? "gtnl.hatch.super_crafting_input_proxy.bind_success"
+                            : "gtnl.hatch.super_crafting_input_proxy.bind_failed"));
                 return true;
             }
             if ("CraftingInputBuffer".equals(dataStick.stackTagCompound.getString("type"))) {
@@ -285,7 +289,8 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
                     nbt.getInteger("z")) != null;
                 aPlayer.addChatMessage(
                     new ChatComponentTranslation(
-                        success ? "Chat_SuperCraftingInputProxy_02" : "Chat_SuperCraftingInputProxy_03"));
+                        success ? "gtnl.hatch.super_crafting_input_proxy.bind_success"
+                            : "gtnl.hatch.super_crafting_input_proxy.bind_failed"));
                 return true;
             }
         }
@@ -361,17 +366,23 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         boolean superLinked = tag.getBoolean("superLinked");
         boolean craftingLinked = tag.getBoolean("craftingLinked");
         currenttip.add(
-            (superLinked || craftingLinked) ? StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_05_00")
-                : StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_05_01"));
+            (superLinked || craftingLinked)
+                ? StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.waila.connected")
+                : StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.waila.unlinked"));
 
         if (superLinked) {
             currenttip.add(
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_04") + tag.getInteger(
-                    "superMasterX") + ", " + tag.getInteger("superMasterY") + ", " + tag.getInteger("superMasterZ"));
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.waila.connected_to") + " "
+                    + tag.getInteger("superMasterX")
+                    + ", "
+                    + tag.getInteger("superMasterY")
+                    + ", "
+                    + tag.getInteger("superMasterZ"));
         }
         if (craftingLinked) {
             currenttip.add(
-                StatCollector.translateToLocal("Tooltip_SuperCraftingInputProxy_04") + tag.getInteger("craftingMasterX")
+                StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.waila.connected_to") + " "
+                    + tag.getInteger("craftingMasterX")
                     + ", "
                     + tag.getInteger("craftingMasterY")
                     + ", "

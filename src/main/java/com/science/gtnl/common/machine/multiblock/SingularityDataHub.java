@@ -204,7 +204,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                 new TextWidget()
                     .setStringSupplier(
                         () -> VaultTypeCountFormatter
-                            .createTypeCountText(typeCountPayloadForGui, "Info_SingularityDataHub_TypeCount"))
+                            .createTypeCountText(typeCountPayloadForGui, "gtnl.gui.singularity_data_hub.type_count"))
                     .setDefaultColor(COLOR_TEXT_WHITE.get())
                     .setEnabled(true))
             .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));
@@ -281,7 +281,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         setDoVoidExcess(!doVoidExcess);
-        GTUtility.sendChatTrans(aPlayer, "Info_SingularityDataHub_AutoVoiding", doVoidExcess);
+        GTUtility.sendChatTrans(aPlayer, "gtnl.chat.singularity_data_hub.auto_voiding", doVoidExcess);
     }
 
     @Override
@@ -410,18 +410,18 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SingularityDataHubRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SingularityDataHub_07"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.7"))
             .beginStructureBlock(15, 31, 15, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SingularityDataHub_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -464,17 +464,19 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
 
         ll.add(
-            EnumChatFormatting.YELLOW + IGregTechDeviceInformation.encode("Info_SingularityDataHub_OperationalData")
+            EnumChatFormatting.YELLOW
+                + IGregTechDeviceInformation.encode("gtnl.waila.singularity_data_hub.operational_data")
                 + EnumChatFormatting.RESET);
 
         for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
             addOperationalTypeInfo(ll, type);
         }
 
-        ll.add(IGregTechDeviceInformation.encode("Info_SingularityDataHub_RunningCost", getActualEnergyUsage()));
-        ll.add(IGregTechDeviceInformation.encode("Info_SingularityDataHub_AutoVoiding", doVoidExcess));
+        ll.add(
+            IGregTechDeviceInformation.encode("gtnl.waila.singularity_data_hub.running_cost", getActualEnergyUsage()));
+        ll.add(IGregTechDeviceInformation.encode("gtnl.waila.singularity_data_hub.auto_voiding", doVoidExcess));
         if (wirelessMode)
-            ll.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("Waila_WirelessMode"));
+            ll.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
         ll.add(EnumChatFormatting.STRIKETHROUGH + "---------------------------------------------");
 
         return ll.toArray(new String[0]);
@@ -484,7 +486,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         IItemList<?> store) {
         info.add(
             EnumChatFormatting.YELLOW
-                + IGregTechDeviceInformation.encode("Info_SingularityDataHub_StoredStacks", getTypeName(type))
+                + IGregTechDeviceInformation.encode("gtnl.waila.singularity_data_hub.stored_stacks", getTypeName(type))
                 + EnumChatFormatting.RESET);
 
         int index = 0;
@@ -505,24 +507,26 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     private void addOperationalTypeInfo(ArrayList<String> info, IAEStackType<?> type) {
         String typeName = getTypeName(type);
         info.add(
-            IGregTechDeviceInformation
-                .encode("Info_SingularityDataHub_TypeUsed", typeName, formatStackAmount(type, getStoredAmount(type))));
+            IGregTechDeviceInformation.encode(
+                "gtnl.waila.singularity_data_hub.type_used",
+                typeName,
+                formatStackAmount(type, getStoredAmount(type))));
         info.add(
             IGregTechDeviceInformation.encode(
-                "Info_SingularityDataHub_TypeCapacity",
+                "gtnl.waila.singularity_data_hub.type_capacity",
                 typeName,
                 formatStackAmount(type, maxTotalCapacity(type))));
         info.add(
             IGregTechDeviceInformation.encode(
-                "Info_SingularityDataHub_PerTypeCapacity",
+                "gtnl.waila.singularity_data_hub.per_type_capacity",
                 typeName,
                 formatStackAmount(type, capacityPerStack(type))));
         info.add(
             IGregTechDeviceInformation
-                .encode("Info_SingularityDataHub_TypeUsedTypes", typeName, nf.format(stackTypesCount(type))));
+                .encode("gtnl.waila.singularity_data_hub.type_used_types", typeName, nf.format(stackTypesCount(type))));
         info.add(
             IGregTechDeviceInformation
-                .encode("Info_SingularityDataHub_TypeTotalTypes", typeName, nf.format(maxStackTypes(type))));
+                .encode("gtnl.waila.singularity_data_hub.type_total_types", typeName, nf.format(maxStackTypes(type))));
     }
 
     @Override

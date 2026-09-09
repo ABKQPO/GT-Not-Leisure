@@ -48,24 +48,27 @@ public class ItemBlockCardboardBox extends ItemBlock {
     public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag) {
         CardboardBoxUtils.BlockData data = CardboardBoxUtils.getBlockData(itemstack);
         list.add(
-            AnimatedTooltipHandler.BLUE
-                + StatCollector.translateToLocal("Tooltip_CardBoardBox_00_" + (data != null ? "Yes" : "No")));
+            AnimatedTooltipHandler.BLUE + StatCollector
+                .translateToLocal("gtnl.waila.cardboard_box.has_block_data." + (data != null ? "yes" : "no")));
 
         if (data != null) {
             if (Item.getItemFromBlock(data.block) == null) {
-                list.add(StatCollector.translateToLocal("Tooltip_CardBoardBox_01") + data.block.getLocalizedName());
+                list.add(
+                    StatCollector.translateToLocal("gtnl.waila.cardboard_box.block") + data.block.getLocalizedName());
             } else {
                 list.add(
-                    StatCollector.translateToLocal("Tooltip_CardBoardBox_01")
+                    StatCollector.translateToLocal("gtnl.waila.cardboard_box.block")
                         + new ItemStack(data.block, 1, data.metaSpecial != -1 ? data.metaSpecial : data.meta)
                             .getDisplayName());
             }
             list.add(
-                StatCollector.translateToLocal("Tooltip_CardBoardBox_02")
+                StatCollector.translateToLocal("gtnl.waila.cardboard_box.metadata")
                     + (data.metaSpecial != -1 ? data.metaSpecial : data.meta));
 
             if (data.tileTag != null) {
-                list.add(StatCollector.translateToLocal("Tooltip_CardBoardBox_03") + data.tileTag.getString("id"));
+                list.add(
+                    StatCollector.translateToLocal("gtnl.waila.cardboard_box.tile_entity")
+                        + data.tileTag.getString("id"));
             }
         }
     }

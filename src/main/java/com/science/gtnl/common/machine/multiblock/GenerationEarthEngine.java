@@ -39,6 +39,7 @@ import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngine> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 321;
@@ -54,6 +55,11 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
 
     public GenerationEarthEngine(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.generation_earth_engine.name";
     }
 
     @Override
@@ -174,16 +180,31 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("GenerationEarthEngineRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.1"))
             .beginStructureBlock(643, 218, 643, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_GenerationEarthEngine_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"), 1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
+                1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
             .toolTipFinisher();
         return tt;

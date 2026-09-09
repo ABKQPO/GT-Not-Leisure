@@ -76,7 +76,7 @@ public class WirelessSteamCover extends CoverLegacyData {
 
     @Override
     public String getDescription() {
-        return StatCollector.translateToLocal("PipelessSteamCover");
+        return StatCollector.translateToLocal("gtnl.cover.pipeless_steam.name");
     }
 
     public SteamTypes getSteamMode() {
@@ -96,7 +96,7 @@ public class WirelessSteamCover extends CoverLegacyData {
             coverData = SteamTypes.NETWORK_CONVERTIBLE_TYPES.length - 1;
         }
 
-        GTUtility.sendChatTrans(aPlayer, "Info_PipelessSteamCover_00", getSteamMode().fluid.getLocalizedName());
+        GTUtility.sendChatTrans(aPlayer, "gtnl.gui.wireless_steam.switch_to", getSteamMode().fluid.getLocalizedName());
     }
 
     @Override

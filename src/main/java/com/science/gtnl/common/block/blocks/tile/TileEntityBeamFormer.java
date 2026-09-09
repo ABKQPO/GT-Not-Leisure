@@ -321,7 +321,8 @@ public class TileEntityBeamFormer extends AENetworkTile
         if (!player.worldObj.isRemote) {
             this.hideBeam = !this.hideBeam;
             player.addChatMessage(
-                new ChatComponentTranslation(this.hideBeam ? "text.beam_former.hide" : "text.beam_former.show"));
+                new ChatComponentTranslation(
+                    this.hideBeam ? "gtnl.machine.beam_former.beam.hidden" : "gtnl.machine.beam_former.beam.shown"));
             this.markForUpdate();
             if (this.otherBeamFormer != null) {
                 this.otherBeamFormer.setHideBeam(this.hideBeam);

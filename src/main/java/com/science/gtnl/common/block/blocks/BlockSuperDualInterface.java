@@ -43,11 +43,16 @@ public class BlockSuperDualInterface extends BlockInterface {
         setHarvestLevel("pickaxe", 3);
         setBlockTextureName(RESOURCE_ROOT_ID + ":SuperDualInterface");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSuperDualInterface.class, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntitySuperDualInterface.class, "SuperDualInterfaceTileEntity");
+        GameRegistry.registerBlock(this, ItemBlockSuperDualInterface.class, "tile.SuperDualInterface");
+        GameRegistry.registerTileEntity(TileEntitySuperDualInterface.class, "super_dual_interface_tile_entity");
         GTNLItemList.SuperDualInterface.set(new ItemStack(this, 1));
         setTileEntity(TileEntitySuperDualInterface.class);
         setFeature(EnumSet.of(AEFeature.Core));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.super_dual_interface";
     }
 
     @Override

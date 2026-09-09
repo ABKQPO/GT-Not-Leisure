@@ -46,7 +46,7 @@ public class GuiMECellDock extends AEBaseGui {
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
         fontRendererObj.drawString(
-            getGuiDisplayName(StatCollector.translateToLocal("item.MECellDock.name")),
+            getGuiDisplayName(StatCollector.translateToLocal("gtnl.gui.me_cell_dock.name")),
             8,
             6,
             ColorUtils.guiTextColorGray.getColor());

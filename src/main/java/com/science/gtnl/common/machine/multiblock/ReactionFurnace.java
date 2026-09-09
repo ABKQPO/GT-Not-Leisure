@@ -46,6 +46,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.WirelessNetworkManager;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurnace>
     implements ISurvivalConstructable, EnergyMonitorCustomWirelessEutProvider {
 
@@ -65,6 +66,11 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.reaction_furnace.name";
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new ReactionFurnace(this.mName);
     }
@@ -77,18 +83,18 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ReactionFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ReactionFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ReactionFurnace_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.1"))
             .addSupportAny()
             .beginStructureBlock(31, 21, 29, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ReactionFurnace_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

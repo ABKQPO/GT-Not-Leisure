@@ -43,13 +43,13 @@ public class HydraulicSuperBuffer extends MTEBuffer {
             aNameRegional,
             aTier,
             257,
-            new String[] { StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_00"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_01"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_02"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_03"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_04"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_05"),
-                StatCollector.translateToLocal("Tooltip_HydraulicSuperBuffer_06") });
+            new String[] { StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.0"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.1"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.2"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.3"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.4"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.5"),
+                StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.tooltip.6") });
     }
 
     public HydraulicSuperBuffer(String aName, int aTier, int aInvSlotCount, String[] aDescription,

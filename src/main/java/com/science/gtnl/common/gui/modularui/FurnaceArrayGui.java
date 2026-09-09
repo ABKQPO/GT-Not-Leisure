@@ -40,14 +40,16 @@ public class FurnaceArrayGui extends GTNLSteamMultiBlockBaseGui {
         return super.createTerminalTextWidget(syncManager, parent)
             .child(
                 IKey.dynamic(
-                    () -> StatCollector
-                        .translateToLocalFormatted("Info_FurnaceArray_01", furnaceCountSyncer.getLongValue()))
+                    () -> StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.furnace_array.furnace_count",
+                        furnaceCountSyncer.getLongValue()))
                     .asWidget()
                     .fullWidth())
             .child(
                 IKey.dynamic(
-                    () -> StatCollector
-                        .translateToLocalFormatted("Info_FurnaceArray_02", coalCountSyncer.getLongValue()))
+                    () -> StatCollector.translateToLocalFormatted(
+                        "gtnl.machine.furnace_array.coal_count",
+                        coalCountSyncer.getLongValue()))
                     .asWidget()
                     .fullWidth());
     }

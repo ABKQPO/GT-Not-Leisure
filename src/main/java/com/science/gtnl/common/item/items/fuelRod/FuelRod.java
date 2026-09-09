@@ -34,7 +34,7 @@ public class FuelRod extends RadioactiveItem implements IReactorComponent, IBoxa
     // region Constructor
     public FuelRod(String aName, int aCells, int aEUt, int aHeat, int aRads, int aDuration, float aHeatBonus,
         ItemStack aDepletedResult) {
-        super(aName, aRads);
+        super(aName, "gtnl.item.infinity_fuel_rod", aRads);
         this.setMaxStackSize(64);
         this.numberOfCells = aCells;
         this.Power = aEUt / 25.0F;
@@ -199,21 +199,22 @@ public class FuelRod extends RadioactiveItem implements IReactorComponent, IBoxa
         final int powerInfo = (int) this.Power * 25;
         list.add(
             String.format(
-                StatCollector.translateToLocal("Tooltip_FuelRod_00"),
+                StatCollector.translateToLocal("gtnl.item.fuel_rod.tooltip.durability"),
                 Duration - getCustomDamage(stack),
                 Duration));
-        if (this.HeatBonus > 0F)
-            list.add(String.format(StatCollector.translateToLocal("Tooltip_FuelRod_01"), this.HeatBonus));
+        if (this.HeatBonus > 0F) list.add(
+            String
+                .format(StatCollector.translateToLocal("gtnl.item.fuel_rod.tooltip.mox_coefficient"), this.HeatBonus));
         list.add(
             String.format(
                 String.format(
-                    StatCollector.translateToLocal("Tooltip_FuelRod_02"),
+                    StatCollector.translateToLocal("gtnl.item.fuel_rod.tooltip.heat_output"),
                     this.Heat,
                     this.Heat * 6,
                     this.Heat * 24)));
         list.add(
             String.format(
-                StatCollector.translateToLocal("Tooltip_FuelRod_03"),
+                StatCollector.translateToLocal("gtnl.item.fuel_rod.tooltip.power_output"),
                 powerInfo,
                 powerInfo * 4,
                 powerInfo * 12));

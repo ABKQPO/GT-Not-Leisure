@@ -25,7 +25,8 @@ public class ReFusionReactorRecipes implements IRecipePool {
                     .copyAmountUnsafe(Integer.MAX_VALUE, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Stone, 1)))
             .itemOutputs(
                 GTNLItemList.TrollFace.get(1)
-                    .setStackDisplayName(StatCollector.translateToLocal("RFRRRecipes.1")))
+                    .setStackDisplayName(
+                        StatCollector.translateToLocal("gtnl.recipe.refusion_reactor.structure_incomplete")))
             .fluidOutputs(
                 Materials.MagMatter.getMolten(Integer.MAX_VALUE),
                 Materials.MHDCSM.getMolten(Integer.MAX_VALUE),

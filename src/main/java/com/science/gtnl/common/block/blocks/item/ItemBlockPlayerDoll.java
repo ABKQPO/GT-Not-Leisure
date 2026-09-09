@@ -66,7 +66,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             String capeUrl = tag.getString("CapeHttp");
             if (!StringUtils.isNullOrEmpty(capeUrl)) {
                 toolTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_02")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.cape_url")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + capeUrl);
             }
@@ -76,13 +77,14 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             byte renderMode = tag.getByte("RenderCapeMode");
 
             String renderStatus = switch (renderMode) {
-                case 1 -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Cape");
-                case 2 -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Elytra");
-                default -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Off");
+                case 1 -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.cape");
+                case 2 -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.elytra");
+                default -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.off");
             };
 
             toolTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode")
+                    + " "
                     + EnumChatFormatting.GOLD
                     + renderStatus);
         }
@@ -91,7 +93,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             String skinUrl = tag.getString("SkinHttp");
             if (!StringUtils.isNullOrEmpty(skinUrl)) {
                 toolTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_01")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.skin_url")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + skinUrl);
                 return;
@@ -102,7 +105,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
             String playerName = tag.getString("SkullOwner");
             if (!StringUtils.isNullOrEmpty(playerName)) {
                 toolTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_00")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.player_name")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + playerName);
             }
@@ -264,7 +268,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
                     .setPos(8, 8)
                     .setSize(77, 12))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_00")).setPos(88, 10));
+                .widget(
+                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.player_name")).setPos(88, 10));
 
             TextFieldWidget skinHttpText = new TextFieldWidget();
             builder.widget(
@@ -276,7 +281,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
                     .setPos(8, 26)
                     .setSize(197, 12))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_02")).setPos(208, 28));
+                .widget(
+                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.skin_url")).setPos(208, 28));
 
             TextFieldWidget capeHttpText = new TextFieldWidget();
             builder.widget(
@@ -288,7 +294,8 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                     .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD.withOffset(-1, -1, 2, 2))
                     .setPos(8, 44)
                     .setSize(197, 12))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_04")).setPos(208, 46));
+                .widget(
+                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.cape_url")).setPos(208, 46));
 
             ButtonWidget renderCapeModeButton = new ButtonWidget();
             builder.widget(
@@ -312,10 +319,12 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
                     .setUpdateTooltipEveryTick(true)
                     .setPos(64, 66)
                     .setSize(16, 16))
-                .widget(new TextWidget(StatCollector.translateToLocal("Tooltip_PlayerDoll_03")).setPos(85, 68));
+                .widget(
+                    new TextWidget(StatCollector.translateToLocal("gtnl.gui.player_doll.render_mode")).setPos(85, 68));
 
             builder.widget(
-                new VanillaButtonWidget().setDisplayString(StatCollector.translateToLocal("Tooltip_PlayerDoll_01"))
+                new VanillaButtonWidget()
+                    .setDisplayString(StatCollector.translateToLocal("gtnl.gui.player_doll.confirm"))
                     .setOnClick((clickData, widget) -> {
                         playerNameText.onRemoveFocus();
                         skinHttpText.onRemoveFocus();
@@ -345,9 +354,9 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IItemWithModularUI
 
         public String getRenderModeTooltip(ItemStack stack) {
             return switch (getRenderMode(stack)) {
-                case RENDER_CAPE -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Cape");
-                case RENDER_ELYTRA -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Elytra");
-                default -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Off");
+                case RENDER_CAPE -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.cape");
+                case RENDER_ELYTRA -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.elytra");
+                default -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.off");
             };
         }
 

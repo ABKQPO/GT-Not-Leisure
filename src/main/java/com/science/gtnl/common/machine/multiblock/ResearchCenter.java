@@ -182,27 +182,27 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ResearchCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.research_center.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(37, 8, 10, false)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_00"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_01"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_02"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_03"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_04"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_ResearchCenter_Structure_05"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"), 1)
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.0"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.1"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.2"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.3"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.4"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.5"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("tt.keyword.Structure.DataAccessHatch"),
-                StatCollector.translateToLocal("Tooltip_ResearchCenter_Casing"),
+                StatCollector.translateToLocal("gtnl.machine.research_center.casing"),
                 1)
             .toolTipFinisher();
         return tt;

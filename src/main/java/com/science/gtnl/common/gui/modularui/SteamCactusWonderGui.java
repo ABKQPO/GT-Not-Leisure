@@ -35,7 +35,8 @@ public class SteamCactusWonderGui extends GTNLSteamMultiBlockBaseGui {
         LongSyncValue fueledAmountSyncer = syncManager.findSyncHandler(FUELED_AMOUNT_SYNC_KEY, LongSyncValue.class);
         return super.createTerminalTextWidget(syncManager, parent).child(
             IKey.dynamic(
-                () -> EnumChatFormatting.WHITE + StatCollector.translateToLocal("Tooltip_SteamCactusWonder_06")
+                () -> EnumChatFormatting.WHITE
+                    + StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.info.offer_value")
                     + EnumChatFormatting.YELLOW
                     + cactusWonder.formatFueledAmountForGui(fueledAmountSyncer.getLongValue()))
                 .asWidget()

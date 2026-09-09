@@ -301,7 +301,7 @@ public class GTNLControllerUpgradePanels {
                 previousPanel.openPanel();
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("gtnl.ui.controllerUpgrade.backToCurrent")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("gtnl.ui.controller_upgrade.back_to_current")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -322,7 +322,7 @@ public class GTNLControllerUpgradePanels {
                 nextPanel.openPanel();
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("gtnl.ui.controllerUpgrade.previewNext")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("gtnl.ui.controller_upgrade.preview_next")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 

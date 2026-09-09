@@ -36,6 +36,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellRegulator>
     implements ISurvivalConstructable {
 
@@ -53,6 +54,11 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
 
     public FlotationCellRegulator(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.flotation_cell_regulator.name";
     }
 
     @Override
@@ -168,17 +174,21 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FlotationCellRegulatorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_00"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.tooltip.0"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(9, 5, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FlotationCellRegulator_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.flotation_cell_regulator.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

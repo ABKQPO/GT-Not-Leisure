@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISu
 
     public LargeBender(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_bender.name";
     }
 
     @Override
@@ -137,17 +143,17 @@ public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeBenderRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeBender_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeBender_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_bender.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 4, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeBender_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bender.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -180,12 +180,12 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 3;
-        GTUtility.sendChatTrans(aPlayer, "FastNeutronBreederReactor_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("FastNeutronBreederReactor_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.fast_neutron_breeder_reactor.mode." + machineMode;
     }
 
     @Override
@@ -229,25 +229,25 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FastNeutronBreederReactorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(15, 24, 15, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FastNeutronBreederReactor_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FastNeutronBreederReactor_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_FastNeutronBreederReactor_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_FastNeutronBreederReactor_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FastNeutronBreederReactor_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.casing"), 1)
             .toolTipFinisher();
         return tt;
     }

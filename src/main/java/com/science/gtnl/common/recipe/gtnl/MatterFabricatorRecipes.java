@@ -31,7 +31,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Iron, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.01")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.0")))
             .itemOutputs(GTUtility.copyAmountUnsafe(640, PAINT_BALL))
             .eut(120)
             .duration(200)
@@ -42,7 +42,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Iron, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.01")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.0")))
             .fluidOutputs(Materials.UUAmplifier.getFluid(2000))
             .eut(120)
             .duration(200)
@@ -53,7 +53,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.gem, Materials.Emerald, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.02")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.1")))
             .itemOutputs(GTUtility.copyAmountUnsafe(640, PAINT_BALL))
             .eut(120)
             .duration(200)
@@ -64,7 +64,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.gem, Materials.Emerald, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.02")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.1")))
             .fluidOutputs(Materials.UUAmplifier.getFluid(2000))
             .eut(120)
             .duration(200)
@@ -75,7 +75,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.Iron, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.03")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.2")))
             .itemOutputs(GTUtility.copyAmountUnsafe(640 * 9, PAINT_BALL))
             .eut(120)
             .duration(200)
@@ -86,7 +86,7 @@ public class MatterFabricatorRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.Iron, 1L)
-                    .setStackDisplayName(StatCollector.translateToLocal("NEI.MatterFabricatorRecipes.03")))
+                    .setStackDisplayName(StatCollector.translateToLocal("gtnl.nei.matter_fabricator_recipes.2")))
             .fluidOutputs(Materials.UUAmplifier.getFluid(20000))
             .eut(120)
             .duration(200)

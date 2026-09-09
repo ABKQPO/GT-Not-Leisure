@@ -55,6 +55,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class NanitesIntegratedProcessingCenter
     extends WirelessEnergyMultiMachineBase<NanitesIntegratedProcessingCenter> {
 
@@ -77,6 +78,11 @@ public class NanitesIntegratedProcessingCenter
 
     public NanitesIntegratedProcessingCenter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.nanites_integrated_processing_center.name";
     }
 
     @Override
@@ -283,13 +289,16 @@ public class NanitesIntegratedProcessingCenter
                     new NanitesIntegratedProcessingRecipesData(false, false, false));
 
                 if (data.bioengineeringModule && !bioModule) {
-                    return SimpleCheckRecipeResult.ofFailure("missing_bio_module");
+                    return SimpleCheckRecipeResult.ofFailure(
+                        "gtnl.machine.nanites_integrated_processing_center.error.missing_bioengineering_module");
                 }
                 if (data.oreExtractionModule && !oreModule) {
-                    return SimpleCheckRecipeResult.ofFailure("missing_ore_module");
+                    return SimpleCheckRecipeResult.ofFailure(
+                        "gtnl.machine.nanites_integrated_processing_center.error.missing_ore_extraction_module");
                 }
                 if (data.polymerTwistingModule && !polModule) {
-                    return SimpleCheckRecipeResult.ofFailure("missing_pol_module");
+                    return SimpleCheckRecipeResult.ofFailure(
+                        "gtnl.machine.nanites_integrated_processing_center.error.missing_polymer_twisting_module");
                 }
 
                 return recipe.mSpecialValue <= mHeatingCapacity ? CheckRecipeResultRegistry.SUCCESSFUL
@@ -322,26 +331,42 @@ public class NanitesIntegratedProcessingCenter
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("NanitesIntegratedProcessingCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(
+            StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(31, 22, 46, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_NanitesIntegratedProcessingCenter_Casing"), 1)
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.casing"),
+                1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.nanites_integrated_processing_center.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();

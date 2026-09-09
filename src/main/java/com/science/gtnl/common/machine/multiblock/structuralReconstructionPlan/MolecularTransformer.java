@@ -36,6 +36,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransformer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -51,6 +52,11 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
 
     public MolecularTransformer(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.molecular_transformer.name";
     }
 
     @Override
@@ -71,15 +77,17 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("MolecularTransformerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.molecular_transformer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(9, 11, 9, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_MolecularTransformer_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

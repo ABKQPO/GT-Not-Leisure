@@ -24,8 +24,8 @@ public class IsaMillMetadata extends RecipeMetadataKey<Integer> {
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 1);
         switch (tier) {
-            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("IsaMillMetadata.0"));
-            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("IsaMillMetadata.1"));
+            case 1 -> recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.isa_mill.0"));
+            case 2 -> recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.isa_mill.1"));
         }
     }
 }

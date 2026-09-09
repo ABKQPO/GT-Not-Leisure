@@ -132,7 +132,7 @@ public class GuiSuperInterface extends GuiUpgradeable {
             16,
             16,
             "<",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.0"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.previous_page"));
 
         this.nextPage = new GuiTextAeButton(
             102,
@@ -141,7 +141,7 @@ public class GuiSuperInterface extends GuiUpgradeable {
             16,
             16,
             ">",
-            StatCollector.translateToLocal("text.SuperInterface.tooltip.1"));
+            StatCollector.translateToLocal("gtnl.gui.super_interface.tooltip.next_page"));
         this.buttonList.add(prevPage);
         this.buttonList.add(nextPage);
     }
@@ -168,10 +168,15 @@ public class GuiSuperInterface extends GuiUpgradeable {
                         : ButtonToolTips.OptimizePatternsNoReq.getLocal()));
         }
 
-        this.fontRendererObj
-            .drawString(getGuiDisplayName(StatCollector.translateToLocal("container.SuperInterface")), 8, 6, 4210752);
-        String pageLabel = StatCollector
-            .translateToLocalFormatted("text.SuperInterface.page", container.currentPage + 1, container.getMaxPages());
+        this.fontRendererObj.drawString(
+            getGuiDisplayName(StatCollector.translateToLocal("gtnl.gui.super_interface.name")),
+            8,
+            6,
+            4210752);
+        String pageLabel = StatCollector.translateToLocalFormatted(
+            "gtnl.gui.super_interface.page",
+            container.currentPage + 1,
+            container.getMaxPages());
         this.fontRendererObj.drawString(pageLabel, 100, 6, 4210752);
 
         this.prevPage.enabled = container.currentPage > 0;

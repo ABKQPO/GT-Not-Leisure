@@ -47,6 +47,7 @@ import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -62,6 +63,11 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
 
     public FuelRefiningComplex(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.fuel_refining_complex.name";
     }
 
     @Override
@@ -219,17 +225,19 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FuelRefiningComplexRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(17, 14, 16, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FuelRefiningComplex_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.fuel_refining_complex.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

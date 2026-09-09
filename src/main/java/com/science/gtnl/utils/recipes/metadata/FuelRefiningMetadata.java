@@ -23,6 +23,6 @@ public class FuelRefiningMetadata extends RecipeMetadataKey<Integer> {
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         int tier = cast(value, 0);
-        recipeInfo.drawText(StatCollector.translateToLocalFormatted("FuelRefiningMetadata", tier));
+        recipeInfo.drawText(StatCollector.translateToLocalFormatted("gtnl.recipe.metadata.fuel_refining", tier));
     }
 }

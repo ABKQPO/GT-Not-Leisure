@@ -18,15 +18,21 @@ import ic2.core.IC2Potion;
 // Code From NH-Utilities
 public class RadioactiveItem extends Item {
 
+    private final String displayNameKey;
     private final int mRadio;
 
     public RadioactiveItem(String name, int mRadio) {
+        this(name, "gtnl.item." + name, mRadio);
+    }
+
+    public RadioactiveItem(String registrationName, String displayNameKey, int mRadio) {
         super();
         this.mRadio = mRadio;
-        this.setUnlocalizedName(name);
-        this.setTextureName(name);
+        this.displayNameKey = displayNameKey;
+        this.setUnlocalizedName(registrationName);
+        this.setTextureName(registrationName);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, registrationName);
     }
 
     @Override
@@ -46,6 +52,11 @@ public class RadioactiveItem extends Item {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         return getUnlocalizedName();
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return displayNameKey;
     }
 
 }

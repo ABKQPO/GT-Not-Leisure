@@ -21,8 +21,8 @@ public class ItemBlockEssentiaHatch extends ItemBlock {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         if (stack == null) return;
-        tooltip.add(StatCollector.translateToLocal("Tooltip_NoMobsSpawnInThisBlock"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EssentiaHatch_00"));
-        tooltip.add(StatCollector.translateToLocal("Tooltip_EssentiaHatch_01"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.tooltip.no_mobs_spawn"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.essentia_hatch.tooltip.0"));
+        tooltip.add(StatCollector.translateToLocal("gtnl.block.essentia_hatch.tooltip.1"));
     }
 }

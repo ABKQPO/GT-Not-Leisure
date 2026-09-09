@@ -243,20 +243,20 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamCuttingRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamCuttingRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCutting_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCutting_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamCutting_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(9, 4, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCutting_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamCutting_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

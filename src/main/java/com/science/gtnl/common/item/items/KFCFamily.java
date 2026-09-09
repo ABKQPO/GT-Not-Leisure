@@ -27,8 +27,13 @@ public class KFCFamily extends ItemFood {
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "KFCFamily");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setAlwaysEdible();
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "KFCFamily");
         GTNLItemList.KFCFamily.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.kfc_family";
     }
 
     @Override
@@ -43,6 +48,6 @@ public class KFCFamily extends ItemFood {
     @SideOnly(Side.CLIENT)
     public void addInformation(final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip,
         final boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("Tooltip_KFCFamily_00"));
+        toolTip.add(StatCollector.translateToLocal("gtnl.item.kfc_family.tooltip.0"));
     }
 }

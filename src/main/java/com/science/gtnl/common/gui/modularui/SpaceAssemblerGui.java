@@ -24,7 +24,8 @@ public class SpaceAssemblerGui extends GTNLControllerUpgradeGui<SpaceAssembler> 
         return super.createTerminalTextWidget(syncManager, parent).child(
             IKey.dynamic(
                 () -> StatCollector.translateToLocal(
-                    upgradeSyncer.getBoolValue() ? "Info_SpaceAssembler_02" : "Info_SpaceAssembler_01"))
+                    upgradeSyncer.getBoolValue() ? "gtnl.gui.space_assembler.upgrade.enabled"
+                        : "gtnl.gui.space_assembler.upgrade.disabled"))
                 .asWidget()
                 .fullWidth());
     }

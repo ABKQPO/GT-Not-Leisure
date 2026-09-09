@@ -36,6 +36,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeCutter extends GTMMultiMachineBase<LargeCutter> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -51,6 +52,11 @@ public class LargeCutter extends GTMMultiMachineBase<LargeCutter> implements ISu
 
     public LargeCutter(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_cutter.name";
     }
 
     @Override
@@ -147,18 +153,18 @@ public class LargeCutter extends GTMMultiMachineBase<LargeCutter> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeCutterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCutter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeCutter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_cutter.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 4, 4, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeCutter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_cutter.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

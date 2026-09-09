@@ -28,11 +28,14 @@ public class NanitesIntegratedProcessingMetadata extends RecipeMetadataKey<Nanit
         NanitesIntegratedProcessingRecipesData data = cast(
             value,
             new NanitesIntegratedProcessingRecipesData(false, false, false));
-        if (data.bioengineeringModule)
-            recipeInfo.drawText(StatCollector.translateToLocal("NanitesIntegratedProcessingMetadata.0"));
-        if (data.oreExtractionModule)
-            recipeInfo.drawText(StatCollector.translateToLocal("NanitesIntegratedProcessingMetadata.1"));
-        if (data.polymerTwistingModule)
-            recipeInfo.drawText(StatCollector.translateToLocal("NanitesIntegratedProcessingMetadata.2"));
+        if (data.bioengineeringModule) recipeInfo.drawText(
+            StatCollector.translateToLocal(
+                "gtnl.machine.nanites_integrated_processing_center.metadata.requires_bioengineering_module"));
+        if (data.oreExtractionModule) recipeInfo.drawText(
+            StatCollector.translateToLocal(
+                "gtnl.machine.nanites_integrated_processing_center.metadata.requires_ore_extraction_module"));
+        if (data.polymerTwistingModule) recipeInfo.drawText(
+            StatCollector.translateToLocal(
+                "gtnl.machine.nanites_integrated_processing_center.metadata.requires_polymer_twisting_module"));
     }
 }

@@ -349,7 +349,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("FurnaceArrayRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.furnace_array.recipe_type");
     }
 
     @Override
@@ -377,16 +377,16 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FurnaceArrayRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FurnaceArray_04"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.furnace_array.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.4"))
             .beginStructureBlock(3, 3, 3, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_FurnaceArray_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -420,12 +420,13 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
             .widget(
                 new TextWidget()
                     .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted("Info_FurnaceArray_01", furnaceCount))
+                        () -> StatCollector
+                            .translateToLocalFormatted("gtnl.machine.furnace_array.furnace_count", furnaceCount))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(
-                new TextWidget()
-                    .setStringSupplier(() -> StatCollector.translateToLocalFormatted("Info_FurnaceArray_02", coalCount))
+                new TextWidget().setStringSupplier(
+                    () -> StatCollector.translateToLocalFormatted("gtnl.machine.furnace_array.coal_count", coalCount))
                     .setTextAlignment(Alignment.CenterLeft)
                     .setDefaultColor(COLOR_TEXT_WHITE.get()))
             .widget(new FakeSyncWidget.LongSyncer(() -> furnaceCount, f -> furnaceCount = f))

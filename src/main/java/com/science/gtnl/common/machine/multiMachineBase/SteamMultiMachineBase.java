@@ -456,9 +456,11 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     public String[] getInfoData() {
         ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
-        info.add(IGregTechDeviceInformation.encode("MachineTierTooltip.fmt", EnumChatFormatting.YELLOW, tierMachine));
         info.add(
-            IGregTechDeviceInformation.encode("ParallelTooltip.fmt", EnumChatFormatting.YELLOW, getTrueParallel()));
+            IGregTechDeviceInformation.encode("gtnl.machine.tooltip.tier", EnumChatFormatting.YELLOW, tierMachine));
+        info.add(
+            IGregTechDeviceInformation
+                .encode("gtnl.machine.tooltip.parallel", EnumChatFormatting.YELLOW, getTrueParallel()));
         return info.toArray(new String[0]);
     }
 
@@ -482,16 +484,19 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         boolean isInTeam = tag.getBoolean("isInSteamNetwork");
 
         if (!isInTeam) {
-            currenttip.add(StatCollector.translateToLocalFormatted("Info_SteamNetwork_00", steamNetworkOwner));
+            currenttip
+                .add(StatCollector.translateToLocalFormatted("gtnl.waila.steam_network.unlinked", steamNetworkOwner));
         } else {
             String steamNetworkDisplay = tag.getString("SteamNetworkDisplay");
             currenttip.add(
-                StatCollector
-                    .translateToLocalFormatted("Info_SteamNetwork_01", steamNetworkOwner, steamNetworkDisplay));
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.waila.steam_network.balance",
+                    steamNetworkOwner,
+                    steamNetworkDisplay));
             if (tag.hasKey("SteamNetworkTeam")) {
                 currenttip.add(
                     StatCollector.translateToLocalFormatted(
-                        "Info_SteamNetwork_02",
+                        "gtnl.waila.steam_network.team",
                         steamNetworkOwner,
                         tag.getString("SteamNetworkTeam")));
             }
@@ -1496,7 +1501,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 return ret.toArray(new IDrawable[0]);
             })
             .setEnabled(supportsSteamOC())
-            .addTooltip(StatCollector.translateToLocal("Info_SteamMachine_00"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam.overclocking_count"))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(174, 112)
             .setSize(16, 16));
@@ -1505,7 +1510,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 .dynamicTooltip(() -> {
                     List<String> ret = new ArrayList<>();
                     ret.add(
-                        StatCollector.translateToLocal("AllSteamCapacity") + uiSteamStored
+                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
                             + uiSteamCapacity
                             + "L");
@@ -1628,7 +1633,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                         .add(WIDTH - 3, 0)
                         .subtract(0, 10)));
         builder.widget(
-            TextWidget.localised("Info_SteamMachine_00")
+            TextWidget.localised("gtnl.machine.steam.overclocking_count")
                 .setPos(3, 4)
                 .setSize(150, 20))
             .widget(

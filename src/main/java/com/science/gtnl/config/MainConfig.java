@@ -8,6 +8,7 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultFloat;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultInt;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultString;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
+import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.Name;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
@@ -114,14 +115,17 @@ public class MainConfig {
     public static class Machine {
 
         @Comment("Default energy consumption per operation (in AE/t)")
+        @LangKey("gtnl.gui.config.general.machine.beam_former_energy_consume")
         @DefaultDouble(10)
         public double beamFormerEnergyConsume = 10;
 
         @Comment("Default maximum beam length (in blocks)")
+        @LangKey("gtnl.gui.config.general.machine.beam_former_length")
         @DefaultInt(256)
         public int beamFormerLength = 256;
 
         @Comment("Allow interaction with machines from their main facing (similar to GTM behavior)")
+        @LangKey("gtnl.gui.config.general.machine.allow_main_facing_interaction")
         @DefaultBoolean(false)
         public boolean allowMainFacingInteraction = false;
 
@@ -495,6 +499,7 @@ public class MainConfig {
     public static class Minecraft {
 
         @Comment({ "Enhances the /kill command to support modern selectors and improved behaviour." })
+        @LangKey("gtnl.gui.config.general.minecraft.enable_kill_enhance")
         @DefaultBoolean(true)
         public boolean enableKillEnhance = true;
     }

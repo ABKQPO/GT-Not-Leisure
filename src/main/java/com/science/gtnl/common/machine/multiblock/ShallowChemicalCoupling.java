@@ -45,6 +45,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemicalCoupling>
     implements ISurvivalConstructable {
 
@@ -62,6 +63,11 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
 
     public ShallowChemicalCoupling(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.shallow_chemical_coupling.name";
     }
 
     @Override
@@ -247,22 +253,30 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ShallowChemicalCouplingRecipes"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.recipe.shallow_chemical_coupling"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.3"))
             .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()
             .beginStructureBlock(7, 11, 7, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ShallowChemicalCoupling_Casing_00"))
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();

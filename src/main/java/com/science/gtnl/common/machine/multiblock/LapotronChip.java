@@ -42,6 +42,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LapotronChip extends MultiMachineBase<LapotronChip>
     implements ISurvivalConstructable, INEIPreviewModifier {
 
@@ -62,6 +63,11 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
 
     public LapotronChip(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.lapotron_chip.name";
     }
 
     @Override
@@ -192,16 +198,16 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LapotronChipRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LapotronChip_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.1"))
             .beginStructureBlock(177, 121, 177, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LapotronChip_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
             .addSubChannelUsage(GTStructureChannels.STRUCTURE_LENGTH)

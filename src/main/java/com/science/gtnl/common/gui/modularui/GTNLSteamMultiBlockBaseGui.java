@@ -111,10 +111,8 @@ public class GTNLSteamMultiBlockBaseGui extends MTEMultiBlockBaseGui<MTESteamMul
             .top(8)
             .tooltipDynamic(tooltip -> {
                 tooltip.addLine(
-                    StatCollector.translateToLocal("AllSteamCapacity") + steamStoredSyncer.getLongValue()
-                        + "/"
-                        + steamCapacitySyncer.getLongValue()
-                        + "L");
+                    StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + steamStoredSyncer
+                        .getLongValue() + "/" + steamCapacitySyncer.getLongValue() + "L");
                 if (steamStoredSyncer.getLongValue() == 0 && anySteamSyncer.getIntValue() != 0) {
                     tooltip.addLine(EnumChatFormatting.RED + "Found steam of wrong type!");
                 }
@@ -155,7 +153,7 @@ public class GTNLSteamMultiBlockBaseGui extends MTEMultiBlockBaseGui<MTESteamMul
                 }
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_SteamMachine_00")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.steam.overclocking_count")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -181,7 +179,8 @@ public class GTNLSteamMultiBlockBaseGui extends MTEMultiBlockBaseGui<MTESteamMul
     }
 
     private IWidget makeRecipeOcTitleWidget() {
-        return IKey.str(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("Info_SteamMachine_00"))
+        return IKey
+            .str(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gtnl.machine.steam.overclocking_count"))
             .asWidget()
             .textAlign(Alignment.Center)
             .size(STEAM_OC_PANEL_WIDTH, 18)

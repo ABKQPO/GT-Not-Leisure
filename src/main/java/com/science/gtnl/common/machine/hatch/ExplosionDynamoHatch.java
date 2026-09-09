@@ -15,7 +15,7 @@ public class ExplosionDynamoHatch extends MTEHatchDynamo {
             aName,
             aNameRegional,
             aTier,
-            new String[] { StatCollector.translateToLocal("Tooltip_ExplosionDynamoHatch_00") });
+            new String[] { StatCollector.translateToLocal("gtnl.hatch.explosion_dynamo.tooltip.0") });
     }
 
     public ExplosionDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {

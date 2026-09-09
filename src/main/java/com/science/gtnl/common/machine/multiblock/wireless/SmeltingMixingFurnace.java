@@ -69,6 +69,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<SmeltingMixingFurnace> {
 
     public static final FluidStack[] valid_fuels = { Materials.ExcitedDTCC.getFluid(1L),
@@ -93,6 +94,11 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     public SmeltingMixingFurnace(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.smelting_mixing_furnace.name";
     }
 
     @Override
@@ -349,28 +355,40 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SmeltingMixingFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(17, 17, 33, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SmeltingMixingFurnace_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"), 1)
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
+                1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
+                1)
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
+                1)
             .toolTipFinisher();
         return tt;
     }
@@ -380,7 +398,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         if (!enableMnemonic) return super.getInfoData();
         String[] original = super.getInfoData();
         List<String> list = new ArrayList<>(Arrays.asList(original));
-        list.add("Info_PlasmaForge_00");
+        list.add("gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled");
         return list.toArray(new String[0]);
     }
 
@@ -403,12 +421,13 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         machineMode = (machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "SmeltingMixingFurnace_Mode_" + machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("SmeltingMixingFurnace_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return machineMode == MACHINEMODE_DTPF ? "gtnl.machine.smelting_mixing_furnace.mode.plasma_forge"
+            : "gtnl.machine.smelting_mixing_furnace.mode.smelting_mixing";
     }
 
     @Override
@@ -422,7 +441,8 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
         super.getWailaBody(itemStack, currentTip, accessor, config);
         NBTTagCompound tag = accessor.getNBTData();
         if (!tag.getBoolean("enableMnemonic")) return;
-        currentTip.add(StatCollector.translateToLocal("Info_PlasmaForge_00"));
+        currentTip
+            .add(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled"));
     }
 
     @Override

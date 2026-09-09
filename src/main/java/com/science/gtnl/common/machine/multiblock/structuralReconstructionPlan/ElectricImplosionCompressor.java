@@ -39,6 +39,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImplosionCompressor>
     implements ISurvivalConstructable {
 
@@ -56,6 +57,11 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
 
     public ElectricImplosionCompressor(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.electric_implosion_compressor.name";
     }
 
     @Override
@@ -177,17 +183,25 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ElectricImplosionCompressorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 8, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricImplosionCompressor_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ElectricImplosionCompressor_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricImplosionCompressor_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ElectricImplosionCompressor_Casing"))
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

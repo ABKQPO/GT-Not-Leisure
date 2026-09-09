@@ -33,6 +33,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPressureSteamFusionReactor>
     implements ISurvivalConstructable {
 
@@ -50,6 +51,11 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
 
     public HighPressureSteamFusionReactor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.high_pressure_steam_fusion_reactor.name";
     }
 
     @Override
@@ -128,7 +134,7 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("HighPressureSteamFusionReactorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.recipe_type");
     }
 
     @Override
@@ -159,13 +165,19 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_03"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.3"))
             .beginStructureBlock(47, 7, 47, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HighPressureSteamFusionReactor_Casing"), 1)
+            .addInputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing"),
+                1)
+            .addOutputHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing"),
+                1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();
         return tt;

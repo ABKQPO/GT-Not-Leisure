@@ -168,7 +168,7 @@ public class VoidCover extends CoverLegacyData implements IFluidsLockable {
 
     @Override
     public String getDescription() {
-        return StatCollector.translateToLocal("VoidCover");
+        return StatCollector.translateToLocal("gtnl.cover.void.name");
     }
 
     @Override

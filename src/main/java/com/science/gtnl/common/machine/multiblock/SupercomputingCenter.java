@@ -450,19 +450,19 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SupercomputingCenterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SupercomputingCenter_06"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.6"))
             .addSupportAny()
             .beginStructureBlock(28, 59, 21, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_SupercomputingCenter_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -490,10 +490,10 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessMode = !wirelessMode;
             if (wirelessMode) {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Enabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.enabled");
                 WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
             } else {
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_WirelessMode_Disabled");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.disabled");
                 WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
             }
         }

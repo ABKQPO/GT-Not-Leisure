@@ -56,8 +56,8 @@ public class FOGExtractorModuleGui extends FOGModuleGui {
             .tooltipDynamic(
                 tooltip -> tooltip.addLine(
                     translateToLocal(
-                        fluidModeSyncer.getBoolValue() ? "fog.button.fluidmode.tooltip.02"
-                            : "fog.button.fluidmode.tooltip.01")))
+                        fluidModeSyncer.getBoolValue() ? "gtnl.machine.fog_extractor.fluid_mode.enabled"
+                            : "gtnl.machine.fog_extractor.fluid_mode.disabled")))
             .tooltipAutoUpdate(true)
             .tooltipShowUpTimer(TOOLTIP_DELAY)
             .clickSound(ForgeOfGodsGuiUtil.getButtonSound());

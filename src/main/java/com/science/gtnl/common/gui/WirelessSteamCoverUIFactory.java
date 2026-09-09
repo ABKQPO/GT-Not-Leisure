@@ -62,7 +62,7 @@ public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
                                 .setPos(SPACE_X * 2, SPACE_Y * 0))
                         .setPos(START_X, START_Y))
             .widget(
-                new TextWidget(StatCollector.translateToLocal("Info_PipelessSteamCover_01"))
+                new TextWidget(StatCollector.translateToLocal("gtnl.gui.wireless_steam.type"))
                     .setDefaultColor(COLOR_TEXT_GRAY.get())
                     .setPos(3 + START_X + SPACE_X * 4, 4 + START_Y + SPACE_Y * 0));
     }

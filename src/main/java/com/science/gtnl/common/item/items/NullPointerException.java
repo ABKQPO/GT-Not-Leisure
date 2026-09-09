@@ -22,8 +22,13 @@ public class NullPointerException extends Item {
         this.setUnlocalizedName("NullPointerException");
         this.setTextureName(RESOURCE_ROOT_ID + ":" + "NullPointerException");
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "NullPointerException");
         GTNLItemList.NullPointerException.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.null_pointer_exception";
     }
 
     /**

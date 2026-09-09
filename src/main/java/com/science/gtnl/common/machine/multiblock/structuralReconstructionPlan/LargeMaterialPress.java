@@ -44,6 +44,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeMaterialPress extends GTMMultiMachineBase<LargeMaterialPress> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -59,6 +60,11 @@ public class LargeMaterialPress extends GTMMultiMachineBase<LargeMaterialPress> 
 
     public LargeMaterialPress(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_material_press.name";
     }
 
     @Override
@@ -180,19 +186,21 @@ public class LargeMaterialPress extends GTMMultiMachineBase<LargeMaterialPress> 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeMaterialPressRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMaterialPress_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeMaterialPress_01"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_material_press.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.1"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 3, 3, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMaterialPress_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMaterialPress_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeMaterialPress_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMaterialPress_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeMaterialPress_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.casing"))
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.large_material_press.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

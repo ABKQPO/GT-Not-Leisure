@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamExtractor extends SteamMultiMachineBase<LargeSteamExtractor> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeSteamExtractor extends SteamMultiMachineBase<LargeSteamExtract
 
     public LargeSteamExtractor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_extractor.name";
     }
 
     @Override
@@ -206,20 +212,20 @@ public class LargeSteamExtractor extends SteamMultiMachineBase<LargeSteamExtract
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamExtractorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamExtractorRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(5, 5, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamExtractor_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_extractor.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .toolTipFinisher();
         return tt;

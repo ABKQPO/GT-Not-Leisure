@@ -230,7 +230,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 parent,
                 manager,
                 index,
-                "Info_SuperDualInputHatchME_00",
+                "gtnl.hatch.super_dual_input_me.info.configure_item_extraction",
                 () -> machine.getStoredItemStackSizeForGui(index),
                 value -> machine.setStoredItemStackSizeForGui(index, value)));
 
@@ -259,7 +259,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                             tooltip.addLine(IKey.lang("modularui2.amount", NumberFormatUtil.formatNumber(amount)));
                         }
                         if (amount > Integer.MAX_VALUE) {
-                            tooltip.addLine(IKey.lang("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
+                            tooltip.addLine(IKey.lang("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
                             tooltip
                                 .addLine(IKey.str(DOUBLE_FORMAT.format(amount * 1d / Integer.MAX_VALUE) + "*int.max"));
                         }
@@ -332,7 +332,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 parent,
                 manager,
                 index,
-                "Info_SuperDualInputHatchME_01",
+                "gtnl.hatch.super_dual_input_me.info.configure_fluid_extraction",
                 () -> machine.getStoredFluidStackSizeForGui(index),
                 value -> machine.setStoredFluidStackSizeForGui(index, value)));
 
@@ -396,7 +396,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                                     NumberFormatUtil.formatNumber(amount),
                                     getBaseUnit()));
                             if (amount > Integer.MAX_VALUE) {
-                                tooltip.addLine(IKey.lang("Info_AdvancedSuperDualInputHatchME_ExceedIntMax"));
+                                tooltip.addLine(IKey.lang("gtnl.hatch.super_dual_input_me.auto_pull.exceeds_int_max"));
                                 tooltip.addLine(
                                     IKey.str(DOUBLE_FORMAT.format(amount * 1d / Integer.MAX_VALUE) + "*int.max"));
                             }
@@ -475,12 +475,22 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 createConfigField("GT5U.machines.stocking_bus.refresh_time", createIntegerField(refreshSyncer), 10, 6))
             .child(
                 createConfigField(
-                    "Info_AdvancedSuperDualInputHatchME_IntMax",
+                    "gtnl.hatch.super_dual_input_me.auto_pull.max_amount",
                     createIntegerField(intMaxSyncer),
                     104,
                     6))
-            .child(createConfigField("Info_SuperDualInputHatchME_03", createLongField(minItemSyncer), 198, 6))
-            .child(createConfigField("Info_SuperDualInputHatchME_04", createLongField(minFluidSyncer), 292, 6));
+            .child(
+                createConfigField(
+                    "gtnl.hatch.super_dual_input_me.auto_pull.item_min_amount",
+                    createLongField(minItemSyncer),
+                    198,
+                    6))
+            .child(
+                createConfigField(
+                    "gtnl.hatch.super_dual_input_me.auto_pull.fluid_min_amount",
+                    createLongField(minFluidSyncer),
+                    292,
+                    6));
     }
 
     public Widget<?> createConfigField(String labelKey, TextFieldWidget field, int x, int y) {
@@ -493,8 +503,9 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                     .size(CONFIG_FIELD_WIDTH, 14)
                     .textAlign(Alignment.Center))
             .child(field.size(CONFIG_FIELD_WIDTH, 18));
-        if ("Info_AdvancedSuperDualInputHatchME_IntMax".equals(labelKey)) {
-            column.tooltip(tooltip -> tooltip.addLine(IKey.lang("Info_AdvancedSuperDualInputHatchME_IntMaxTooltip")));
+        if ("gtnl.hatch.super_dual_input_me.auto_pull.max_amount".equals(labelKey)) {
+            column.tooltip(
+                tooltip -> tooltip.addLine(IKey.lang("gtnl.hatch.super_dual_input_me.auto_pull.max_amount.tooltip")));
         }
         return column;
     }
@@ -536,7 +547,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
                 IKey.lang(titleKey)
                     .asWidget())
             .child(
-                IKey.str(StatCollector.translateToLocal("Info_SuperDualInputHatchME_02") + slot)
+                IKey.str(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.info.slot") + " " + slot)
                     .asWidget()
                     .maxWidth(106))
             .child(
@@ -766,7 +777,7 @@ public class SuperDualInputHatchMEGui extends MTEHatchBaseGui<SuperDualInputHatc
         protected void addToolTip(RichTooltip tooltip) {
             super.addToolTip(tooltip);
             if (displayMiddleClickTooltip) {
-                tooltip.addLine(IKey.lang("Info_SuperInputHatchME_00"));
+                tooltip.addLine(IKey.lang("gtnl.hatch.super_input_me.info.configure_extraction"));
             }
         }
     }

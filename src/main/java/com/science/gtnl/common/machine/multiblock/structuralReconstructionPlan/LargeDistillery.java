@@ -51,6 +51,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 2;
@@ -85,6 +86,11 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
 
     public LargeDistillery(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_distillery.name";
     }
 
     @Override
@@ -343,19 +349,19 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeDistilleryRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeDistillery_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeDistillery_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_distillery.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 15, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeDistillery_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -379,12 +385,12 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "LargeDistillery_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargeDistillery_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_distillery.mode." + machineMode;
     }
 
     @Override

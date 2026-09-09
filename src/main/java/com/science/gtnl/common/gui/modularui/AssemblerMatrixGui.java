@@ -130,7 +130,7 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
                 }
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_AssemblerMatrix_01")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.assembler_matrix.info.1")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -170,7 +170,8 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
                 tooltip -> tooltip.addLine(
                     IKey.dynamic(
                         () -> StatCollector.translateToLocal(
-                            "Info_ShowPattern_" + (showPatternSyncer.getBoolValue() ? "Enabled" : "Disabled")))))
+                            "gtnl.interface.show_pattern."
+                                + (showPatternSyncer.getBoolValue() ? "enabled" : "disabled")))))
             .tooltipAutoUpdate(true)
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
@@ -181,7 +182,7 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
             .setTextAlignment(Alignment.Center)
             .setTextColor(Color.WHITE.main)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD)
-            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("Info_AssemblerMatrix_03")))
+            .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.machine.assembler_matrix.info.3")))
             .tooltipShowUpTimer(TOOLTIP_DELAY)
             .size(126, 18);
     }
@@ -200,13 +201,14 @@ public class AssemblerMatrixGui extends GTNLMultiBlockBaseGui<AssemblerMatrix> {
 
         panel.child(ButtonWidget.panelCloseButton());
         panel.child(
-            IKey.str(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("Info_AssemblerMatrix_01"))
+            IKey.str(
+                EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gtnl.machine.assembler_matrix.info.1"))
                 .asWidget()
                 .pos(0, 2)
                 .size(100, 18)
                 .textAlign(Alignment.Center));
         panel.child(
-            IKey.lang("Info_AssemblerMatrix_02")
+            IKey.lang("gtnl.machine.assembler_matrix.info.2")
                 .asWidget()
                 .pos(0, 24)
                 .size(100, 18)

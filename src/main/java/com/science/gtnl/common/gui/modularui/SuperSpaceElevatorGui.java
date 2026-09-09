@@ -82,7 +82,8 @@ public class SuperSpaceElevatorGui extends GTNLTTMultiBlockBaseGui<SuperSpaceEle
                     .fullWidth())
             .child(
                 IKey.dynamic(
-                    () -> StatCollector.translateToLocal("Info_SuperSpaceElevator_00") + tierSyncer.getIntValue())
+                    () -> StatCollector.translateToLocal("gtnl.machine.super_space_elevator.structure_levels")
+                        + tierSyncer.getIntValue())
                     .color(Color.WHITE.main)
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)

@@ -31,9 +31,14 @@ public class BlockWaterCandle extends BlockContainer {
         this.setLightLevel(0.8f);
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":" + "WaterCandle");
         this.setStepSound(soundTypeSnow);
-        GameRegistry.registerBlock(this, getUnlocalizedName());
-        GameRegistry.registerTileEntity(TileEntityWaterCandle.class, "WaterCandleTileEntity");
+        GameRegistry.registerBlock(this, "tile.WaterCandle");
+        GameRegistry.registerTileEntity(TileEntityWaterCandle.class, "water_candle_tile_entity");
         GTNLItemList.WaterCandle.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.block.water_candle";
     }
 
     @Override

@@ -71,24 +71,24 @@ public class MetaItemAdder extends ItemAdder_Basic implements IHaloRenderItem {
 
     @Override
     public String getUnlocalizedName(ItemStack aItemStack) {
-        return "item." + this.unlocalizedName + "." + aItemStack.getItemDamage();
+        return "gtnl.item." + this.unlocalizedName + "." + aItemStack.getItemDamage();
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "item." + this.unlocalizedName;
+        return "gtnl.item." + this.unlocalizedName;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
-        this.itemIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "MetaItem/0");
+        this.itemIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":MetaItem/0");
         MetaTooltipUtils.registerIcons(
             META_SET,
             ItemStaticDataClientOnly.META_ITEM_01_ICONS,
             iconRegister,
-            RESOURCE_ROOT_ID + ":" + "MetaItem/");
+            RESOURCE_ROOT_ID + ":MetaItem/");
         halo = new IIcon[1];
         halo[0] = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":" + "halonoise");
     }

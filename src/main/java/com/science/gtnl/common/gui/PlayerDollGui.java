@@ -45,22 +45,22 @@ public class PlayerDollGui {
             mode -> ItemBlockPlayerDoll.setRenderMode(stack, mode)).allowC2S();
 
         panel.child(createTextField(stack, "SkullOwner", 8, 8, 77));
-        panel.child(createLabel("Tooltip_PlayerDoll_00", 88, 10, 160));
+        panel.child(createLabel("gtnl.gui.player_doll.player_name", 88, 10, 160));
 
         panel.child(createTextField(stack, "SkinHttp", 8, 26, 197));
-        panel.child(createLabel("Tooltip_PlayerDoll_02", 208, 28, 85));
+        panel.child(createLabel("gtnl.gui.player_doll.skin_url", 208, 28, 85));
 
         panel.child(createTextField(stack, "CapeHttp", 8, 44, 197));
-        panel.child(createLabel("Tooltip_PlayerDoll_04", 208, 46, 85));
+        panel.child(createLabel("gtnl.gui.player_doll.cape_url", 208, 46, 85));
 
         panel.child(createRenderModeButton(renderModeSync).pos(64, 66));
-        panel.child(createLabel("Tooltip_PlayerDoll_03", 85, 68, 160));
+        panel.child(createLabel("gtnl.gui.player_doll.render_mode", 85, 68, 160));
 
         panel.child(
             new ButtonWidget<>().size(48, 20)
                 .pos(8, 62)
                 .background(GTGuiTextures.BUTTON_STANDARD)
-                .overlay(IKey.lang("Tooltip_PlayerDoll_01"))
+                .overlay(IKey.lang("gtnl.gui.player_doll.confirm"))
                 .onMousePressed(mouseButton -> {
                     MCHelper.closeScreen();
                     return true;
@@ -124,10 +124,10 @@ public class PlayerDollGui {
     private static String getRenderModeTooltip(byte mode) {
         return switch (mode) {
             case ItemBlockPlayerDoll.RENDER_CAPE -> StatCollector
-                .translateToLocal("Waila_TileEntityPlayerDoll_03_Cape");
+                .translateToLocal("gtnl.waila.player_doll.render_mode.cape");
             case ItemBlockPlayerDoll.RENDER_ELYTRA -> StatCollector
-                .translateToLocal("Waila_TileEntityPlayerDoll_03_Elytra");
-            default -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Off");
+                .translateToLocal("gtnl.waila.player_doll.render_mode.elytra");
+            default -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.off");
         };
     }
 }

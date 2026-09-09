@@ -152,7 +152,7 @@ public abstract class MixinMTEVoidMinerBaseGui extends MTEMultiBlockBaseGui<MTEV
         if (displayName == null || displayName.isEmpty()) {
             displayName = raw;
         }
-        return StatCollector.translateToLocal("Info_Dimension_Override") + displayName;
+        return StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override") + displayName;
     }
 
     @Unique

@@ -180,20 +180,20 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
         if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotChangeModeRunning");
+            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.mode_running");
             return;
         }
         mPrimaryMode++;
         if (mPrimaryMode == 3) mPrimaryMode = 0;
         switch (mPrimaryMode) {
             case 0:
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Input");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.primary_mode.input");
                 break;
             case 1:
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Output");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.primary_mode.output");
                 break;
             case 2:
-                GTUtility.sendChatTrans(aPlayer, "Info_GTNL_PrimaryMode_Operating");
+                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.primary_mode.operating");
                 break;
         }
     }
@@ -276,19 +276,19 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
 
     @Override
     public String getMachineType() {
-        return "SteamApiaryModuleRecipeType";
+        return "gtnl.machine.steam_apiary_module.recipe_type";
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("SteamApiaryModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamApiaryModule_05"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.5"))
             .beginStructureBlock(1, 5, 2, false)
             .toolTipFinisher();
         return tt;
@@ -488,7 +488,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
             })
-            .addTooltip(StatCollector.translateToLocal("Info_SteamMachine_00"))
+            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam.overclocking_count"))
             .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
             .setPos(174, 112)
             .setSize(16, 16));
@@ -498,7 +498,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 .dynamicTooltip(() -> {
                     List<String> ret = new ArrayList<>();
                     ret.add(
-                        StatCollector.translateToLocal("AllSteamCapacity") + uiSteamStored
+                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
                             + uiSteamCapacity
                             + "L");
@@ -558,7 +558,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                         .add(WIDTH - 3, 0)
                         .subtract(0, 10)));
         builder.widget(
-            TextWidget.localised("Info_SteamMachine_00")
+            TextWidget.localised("gtnl.machine.steam.overclocking_count")
                 .setPos(3, 4)
                 .setSize(150, 20))
             .widget(
@@ -621,20 +621,20 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                     .setGetter(() -> mPrimaryMode)
                     .setSetter(val -> {
                         if (this.mMaxProgresstime > 0) {
-                            GTUtility.sendChatTrans(player, "Info_GTNL_CannotChangeModeRunning");
+                            GTUtility.sendChatTrans(player, "gtnl.machine.message.mode_running");
                             return;
                         }
                         mPrimaryMode = val;
                         if (!(player instanceof EntityPlayerMP)) return;
                         switch (mPrimaryMode) {
                             case 0:
-                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Input");
+                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.input");
                                 break;
                             case 1:
-                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Output");
+                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.output");
                                 break;
                             case 2:
-                                GTUtility.sendChatTrans(player, "Info_GTNL_PrimaryMode_Operating");
+                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.operating");
                                 break;
                         }
                     })
@@ -1023,7 +1023,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
             if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
             if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
                 if (mte.mMaxProgresstime > 0) {
-                    GTUtility.sendChatTrans(aPlayer, "Info_GTNL_CannotInsertRunning_Red");
+                    GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.insert_running");
                     return super.transferStackInSlot(aPlayer, aSlotIndex);
                 }
                 World w = mte.getBaseMetaTileEntity()

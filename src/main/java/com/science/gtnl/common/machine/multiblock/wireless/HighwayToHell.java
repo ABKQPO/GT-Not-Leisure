@@ -428,27 +428,27 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("HighwayToHellRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighwayToHell_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighwayToHell_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighwayToHell_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_HighwayToHell_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_08"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_09"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_WirelessEnergyMultiMachine_10"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
             .addSupportAny()
             .beginStructureBlock(19, 18, 17, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_HighwayToHell_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -494,7 +494,10 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         staticAnimations = !staticAnimations;
-        GTUtility.sendChatTrans(aPlayer, staticAnimations ? "Info_HighwayToHell_00" : "Info_HighwayToHell_01");
+        GTUtility.sendChatTrans(
+            aPlayer,
+            staticAnimations ? "gtnl.chat.highway_to_hell.static_turbine_texture"
+                : "gtnl.chat.highway_to_hell.animated_turbine_texture");
         for (MTEHatchTurbine h : GTUtility.validMTEList(mTurbineHatches)) {
             h.mUsingAnimation = staticAnimations;
         }

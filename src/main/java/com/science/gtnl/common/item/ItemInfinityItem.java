@@ -44,6 +44,7 @@ import vazkii.botania.common.Botania;
 
 public class ItemInfinityItem extends Item implements IFluidContainerItem {
 
+    private final String displayNameKey;
     public Block block;
     public Fluid fluid;
     public boolean isBlockItem;
@@ -53,12 +54,21 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
         this(name, block, fluid, true, itemList);
     }
 
+    public ItemInfinityItem(String registrationName, String displayNameKey, Block block, Fluid fluid,
+        GTNLItemList itemList) {
+        this(registrationName, displayNameKey, block, fluid, true, itemList);
+    }
+
     public ItemInfinityItem(String name, Block block, boolean isBlockItem, GTNLItemList itemList) {
         this(name, block, null, isBlockItem, itemList);
     }
 
     public ItemInfinityItem(String name, Block block, GTNLItemList itemList) {
         this(name, block, null, true, itemList);
+    }
+
+    public ItemInfinityItem(String registrationName, String displayNameKey, Block block, GTNLItemList itemList) {
+        this(registrationName, displayNameKey, block, null, true, itemList);
     }
 
     public ItemInfinityItem(String name, Fluid fluid, boolean isBlockItem, GTNLItemList itemList) {
@@ -70,19 +80,30 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
     }
 
     public ItemInfinityItem(String name, Block block, Fluid fluid, boolean isBlockItem, GTNLItemList itemList) {
+        this(name, name, block, fluid, isBlockItem, itemList);
+    }
+
+    public ItemInfinityItem(String registrationName, String displayNameKey, Block block, Fluid fluid,
+        boolean isBlockItem, GTNLItemList itemList) {
         this.isBlockItem = isBlockItem;
         this.block = block;
         this.fluid = fluid;
-        this.setUnlocalizedName(name);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + name);
+        this.displayNameKey = displayNameKey;
+        this.setUnlocalizedName(registrationName);
+        this.setTextureName(RESOURCE_ROOT_ID + ":" + registrationName);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         this.setMaxStackSize(1);
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
             .register(this);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, registrationName);
         itemList.set(new ItemStack(this));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return displayNameKey;
     }
 
     @Override

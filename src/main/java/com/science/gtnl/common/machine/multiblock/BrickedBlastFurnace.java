@@ -37,6 +37,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurnace> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -52,6 +53,11 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
 
     public BrickedBlastFurnace(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.bricked_blast_furnace.name";
     }
 
     @Override
@@ -175,24 +181,24 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("BrickBlastFurnaceRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("BrickBlastFurnaceRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_04"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.4"))
             .beginStructureBlock(15, 14, 15, true)
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_00"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_01"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_02"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_03"))
-            .addStructureInfo(StatCollector.translateToLocal("Tooltip_BrickBlastFurnace_Casing_04"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.0"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.1"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.2"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.3"))
+            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.4"))
             .toolTipFinisher();
         return tt;
     }

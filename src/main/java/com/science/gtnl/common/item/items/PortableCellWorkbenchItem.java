@@ -21,8 +21,13 @@ public class PortableCellWorkbenchItem extends Item {
         setTextureName(RESOURCE_ROOT_ID + ":PortableCellWorkbench");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "PortableCellWorkbench");
         GTNLItemList.PortableCellWorkbench.set(new ItemStack(this));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.portable_cell_workbench";
     }
 
     @Override

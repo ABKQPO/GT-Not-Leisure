@@ -167,9 +167,9 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     @Override
     public String[] getDescription() {
         ArrayList<String> desc = new ArrayList<>();
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_00"));
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_01"));
-        desc.add(StatCollector.translateToLocal("Tooltip_DebugEnergyHatch_02"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.0"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.1"));
+        desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.2"));
         return desc.toArray(new String[] {});
     }
 

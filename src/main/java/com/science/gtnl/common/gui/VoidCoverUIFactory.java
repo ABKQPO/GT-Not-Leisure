@@ -77,7 +77,7 @@ public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
                 .attachSyncer(
                     new FakeSyncWidget.BooleanSyncer(() -> cover.isInputMode, v -> cover.isInputMode = v),
                     builder)
-                .addTooltip(StatCollector.translateToLocal("Info_VoidCover_00"))
+                .addTooltip(StatCollector.translateToLocal("gtnl.cover.void.mode.input"))
                 .setPos(78, 5)
                 .setSize(16, 16));
     }

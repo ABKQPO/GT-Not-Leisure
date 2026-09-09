@@ -39,7 +39,8 @@ public class PlayerDollWailaDataProvider implements IWailaDataProvider {
             String capeUrl = tag.getString("CapeHttp");
             if (!StringUtils.isNullOrEmpty(capeUrl)) {
                 currentTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_02")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.cape_url")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + capeUrl);
             }
@@ -49,13 +50,14 @@ public class PlayerDollWailaDataProvider implements IWailaDataProvider {
             byte renderMode = tag.getByte("RenderCapeMode");
 
             String renderStatus = switch (renderMode) {
-                case 1 -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Cape");
-                case 2 -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Elytra");
-                default -> StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03_Off");
+                case 1 -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.cape");
+                case 2 -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.elytra");
+                default -> StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode.off");
             };
 
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_03")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.render_mode")
+                    + " "
                     + EnumChatFormatting.GOLD
                     + renderStatus);
         }
@@ -64,7 +66,8 @@ public class PlayerDollWailaDataProvider implements IWailaDataProvider {
             String skinUrl = tag.getString("SkinHttp");
             if (!StringUtils.isNullOrEmpty(skinUrl)) {
                 currentTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_01")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.skin_url")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + skinUrl);
                 return currentTip;
@@ -75,7 +78,8 @@ public class PlayerDollWailaDataProvider implements IWailaDataProvider {
             String playerName = tag.getString("SkullOwner");
             if (!StringUtils.isNullOrEmpty(playerName)) {
                 currentTip.add(
-                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_TileEntityPlayerDoll_00")
+                    EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.player_doll.player_name")
+                        + " "
                         + EnumChatFormatting.GOLD
                         + playerName);
             }

@@ -243,7 +243,7 @@ public class AnimatedTooltipHandler {
             if (GuiScreen.isShiftKeyDown()) {
                 appendTooltipText(event.toolTip, shiftTooltips);
             } else {
-                event.toolTip.add(StatCollector.translateToLocal("Tooltip_PressShift"));
+                event.toolTip.add(StatCollector.translateToLocal("gtnl.tooltip.press_shift"));
             }
         }
 
@@ -252,7 +252,7 @@ public class AnimatedTooltipHandler {
             if (GuiScreen.isCtrlKeyDown()) {
                 appendTooltipText(event.toolTip, ctrlTooltips);
             } else {
-                event.toolTip.add(StatCollector.translateToLocal("Tooltip_PressCtrl"));
+                event.toolTip.add(StatCollector.translateToLocal("gtnl.tooltip.press_ctrl"));
             }
         }
     }

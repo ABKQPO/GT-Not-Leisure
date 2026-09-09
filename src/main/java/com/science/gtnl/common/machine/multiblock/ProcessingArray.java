@@ -65,6 +65,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class ProcessingArray extends MultiMachineBase<ProcessingArray> implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 2;
@@ -86,6 +87,11 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     public ProcessingArray(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.processing_array.name";
     }
 
     @Override
@@ -380,23 +386,26 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("ProcessingArrayRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_06"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_07"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_ProcessingArray_08"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.processing_array.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.6"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.7"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.8"))
             .beginStructureBlock(5, 5, 5, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_ProcessingArray_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
+            .addMaintenanceHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"),
+                1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
             .toolTipFinisher();
         return tt;

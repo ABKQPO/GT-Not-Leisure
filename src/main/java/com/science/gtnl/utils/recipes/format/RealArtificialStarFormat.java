@@ -16,7 +16,7 @@ public class RealArtificialStarFormat implements INEISpecialInfoFormatter {
     public List<String> format(RecipeDisplayInfo recipeInfo) {
         List<String> msgs = new ArrayList<>();
         msgs.add(
-            StatCollector.translateToLocal("NEI.RealArtificialStarGeneratingRecipes.specialValue")
+            StatCollector.translateToLocal("gtnl.nei.real_artificial_star.generating.special_value")
                 + recipeInfo.recipe.mSpecialValue
                 + " × 2,147,483,647 EU");
         return msgs;

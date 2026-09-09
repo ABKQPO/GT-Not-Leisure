@@ -27,7 +27,8 @@ public class ElectrocellGeneratorMetadata extends RecipeMetadataKey<Long> implem
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         long generatorEUt = cast(value, 1L);
-        recipeInfo.drawText(StatCollector.translateToLocalFormatted("ElectrocellGeneratorMetadata", generatorEUt));
+        recipeInfo.drawText(
+            StatCollector.translateToLocalFormatted("gtnl.recipe.metadata.electrocell_generator", generatorEUt));
     }
 
     @Override
@@ -35,7 +36,7 @@ public class ElectrocellGeneratorMetadata extends RecipeMetadataKey<Long> implem
         List<String> specialInfo = new ArrayList<>();
         specialInfo.add(
             StatCollector.translateToLocalFormatted(
-                "NEI.ElectrocellGenerator.specialValue",
+                "gtnl.nei.electrocell_generator.special_value",
                 recipeInfo.recipe.mSpecialValue / 100D));
         return specialInfo;
     }

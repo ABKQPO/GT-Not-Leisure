@@ -61,7 +61,7 @@ public class PktPatternTermUploadPattern extends ServerboundPacket {
             var channel = (AssemblerMatrix) channelNode.getMachine();
             if (channel.getPossibleOutputs()
                 .contains(out)) {
-                player.addChatMessage(new ChatComponentTranslation("text.AssemblerMatrix.tooltip.0"));
+                player.addChatMessage(new ChatComponentTranslation("gtnl.machine.assembler_matrix.pattern_exists"));
                 var stack = AEApi.instance()
                     .definitions()
                     .materials()

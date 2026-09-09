@@ -42,6 +42,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -59,6 +60,11 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
 
     public LargePacker(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_packer.name";
     }
 
     @Override
@@ -157,17 +163,17 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargePackerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargePacker_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargePacker_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_packer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(3, 3, 6, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargePacker_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_packer.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -191,12 +197,12 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         this.machineMode = (this.machineMode + 1) % 2;
-        GTUtility.sendChatTrans(aPlayer, "LargePacker_Mode_" + this.machineMode);
+        GTUtility.sendChatTrans(aPlayer, getMachineModeKey());
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("LargePacker_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.large_packer.mode." + machineMode;
     }
 
     @Override

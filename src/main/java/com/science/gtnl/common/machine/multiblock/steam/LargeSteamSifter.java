@@ -35,6 +35,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -50,6 +51,11 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
 
     public LargeSteamSifter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_steam_sifter.name";
     }
 
     @Override
@@ -210,22 +216,22 @@ public class LargeSteamSifter extends SteamMultiMachineBase<LargeSteamSifter> im
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("LargeSteamSifterRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeSteamSifterRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamSifter_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamSifter_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeSteamSifter_02"))
-            .addInfo(StatCollector.translateToLocal("HighPressureTooltipNotice"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
             .beginStructureBlock(5, 7, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamSifter_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeSteamSifter_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamSifter_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeSteamSifter_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_sifter.tooltip.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
             .toolTipFinisher();

@@ -32,12 +32,12 @@ public class EGTWFusionModule extends EternalGregTechWorkshopModule {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("EGTWFusionModuleRecipeType"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.etgw_fusion_module.recipe_type"))
             .beginStructureBlock(9, 5, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EGTWFusionModule_Casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EGTWFusionModule_Casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_EGTWFusionModule_Casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_EGTWFusionModule_Casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.egtw_fusion_module.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.egtw_fusion_module.casing"), 1)
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.egtw_fusion_module.casing"), 1)
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.egtw_fusion_module.casing"), 1)
             .toolTipFinisher();
         return tt;
     }

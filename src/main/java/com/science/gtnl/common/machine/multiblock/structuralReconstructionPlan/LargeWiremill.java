@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
 
     public LargeWiremill(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_wiremill.name";
     }
 
     @Override
@@ -147,17 +153,17 @@ public class LargeWiremill extends GTMMultiMachineBase<LargeWiremill> implements
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeWiremillRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeWiremill_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_wiremill.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 3, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeWiremill_Casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_wiremill.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }

@@ -44,6 +44,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcaneAssembler>
     implements ISurvivalConstructable {
 
@@ -64,6 +65,11 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
 
     public IndustrialArcaneAssembler(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.industrial_arcane_assembler.name";
     }
 
     @Override
@@ -202,15 +208,21 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("IndustrialArcaneAssemblerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_IndustrialArcaneAssembler_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.2"))
             .addSupportAny()
             .beginStructureBlock(19, 19, 19, true)
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_EnergeticIndustrialArcaneAssembler_Casing"))
+            .addInputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
+            .addOutputBus(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
+            .addEnergyHatch(
+                "0+",
+                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
@@ -228,8 +240,8 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     }
 
     @Override
-    public String getMachineModeName() {
-        return StatCollector.translateToLocal("IndustrialArcaneAssembler_Mode_" + machineMode);
+    public String getMachineModeKey() {
+        return "gtnl.machine.industrial_arcane_assembler.mode." + machineMode;
     }
 
     @Override

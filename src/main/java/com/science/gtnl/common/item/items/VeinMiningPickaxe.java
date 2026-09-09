@@ -68,8 +68,13 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         FMLCommonHandler.instance()
             .bus()
             .register(this);
-        GameRegistry.registerItem(this, getUnlocalizedName());
+        GameRegistry.registerItem(this, "VeinMiningPickaxe");
         GTNLItemList.VeinMiningPickaxe.set(new ItemStack(this, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "gtnl.item.vein_mining_pickaxe";
     }
 
     @Override
@@ -93,12 +98,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
             }
         }
 
-        toolTip.add(StatCollector.translateToLocalFormatted("Tooltip_VeinMiningPickaxe_00", range));
-        toolTip.add(StatCollector.translateToLocalFormatted("Tooltip_VeinMiningPickaxe_01", amount));
+        toolTip.add(StatCollector.translateToLocalFormatted("gtnl.item.vein_mining_pickaxe.max_block_gap", range));
+        toolTip.add(StatCollector.translateToLocalFormatted("gtnl.item.vein_mining_pickaxe.max_vein_count", amount));
         toolTip.add(
             StatCollector.translateToLocal(
-                preciseMode ? "Tooltip_VeinMiningPickaxe_PreciseMode_On"
-                    : "Tooltip_VeinMiningPickaxe_PreciseMode_Off"));
+                preciseMode ? "gtnl.item.vein_mining_pickaxe.precise_mode.enabled"
+                    : "gtnl.item.vein_mining_pickaxe.precise_mode.disabled"));
     }
 
     @Override
@@ -160,8 +165,9 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
             player.swingItem();
 
             if (world.isRemote) {
-                String key = isPreciseMode ? StatCollector.translateToLocal("Tooltip_VeinMiningPickaxe_PreciseMode_On")
-                    : StatCollector.translateToLocal("Tooltip_VeinMiningPickaxe_PreciseMode_Off");
+                String key = isPreciseMode
+                    ? StatCollector.translateToLocal("gtnl.item.vein_mining_pickaxe.precise_mode.enabled")
+                    : StatCollector.translateToLocal("gtnl.item.vein_mining_pickaxe.precise_mode.disabled");
                 showSubtitle(key);
             }
         }

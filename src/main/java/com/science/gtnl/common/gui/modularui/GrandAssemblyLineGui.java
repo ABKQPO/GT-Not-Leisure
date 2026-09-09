@@ -60,7 +60,9 @@ public class GrandAssemblyLineGui extends GTNLMultiBlockBaseGui<GrandAssemblyLin
                 }
                 return true;
             })
-            .tooltipBuilder(tooltip -> tooltip.addLine(translateToLocal("Info_GrandAssemblyLine_00")))
+            .tooltipBuilder(
+                tooltip -> tooltip
+                    .addLine(translateToLocal("gtnl.machine.grand_assembly_line.info.minimum_recipe_time")))
             .tooltipShowUpTimer(TOOLTIP_DELAY);
     }
 
@@ -79,7 +81,7 @@ public class GrandAssemblyLineGui extends GTNLMultiBlockBaseGui<GrandAssemblyLin
 
         panel.child(ButtonWidget.panelCloseButton());
         panel.child(
-            IKey.lang("Info_GrandAssemblyLine_00")
+            IKey.lang("gtnl.machine.grand_assembly_line.info.minimum_recipe_time")
                 .asWidget()
                 .pos(3, 4)
                 .size(PANEL_WIDTH - 8, 18)

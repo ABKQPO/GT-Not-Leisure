@@ -186,36 +186,36 @@ public class FOGExtractorModule extends MTEBaseModule {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("FOGExtractorModuleRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_02"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fog_extractor_module.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.2"))
             .addSeparator(EnumChatFormatting.AQUA, 74)
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_04"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_05"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_FOGExtractorModule_06"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.4"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.6"))
             .beginStructureBlock(7, 7, 13, false)
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_00"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.0"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "20"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_01"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.1"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_02"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.2"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "5"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_03"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.3"))
             .addStructureInfo(
                 EnumChatFormatting.GOLD + "1"
                     + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("Tooltip_FOGModule_Casing_04"))
+                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.4"))
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
     }
@@ -251,7 +251,8 @@ public class FOGExtractorModule extends MTEBaseModule {
             .dynamicTooltip(
                 () -> Collections.singletonList(
                     StatCollector.translateToLocal(
-                        fluidMode ? "fog.button.fluidmode.tooltip.02" : "fog.button.fluidmode.tooltip.01")))
+                        fluidMode ? "gtnl.machine.fog_extractor.fluid_mode.enabled"
+                            : "gtnl.machine.fog_extractor.fluid_mode.disabled")))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(174, 91)
             .setSize(16, 16);

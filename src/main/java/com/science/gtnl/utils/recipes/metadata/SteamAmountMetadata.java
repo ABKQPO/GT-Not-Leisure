@@ -25,6 +25,8 @@ public class SteamAmountMetadata extends RecipeMetadataKey<Long> {
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
         long offer = cast(value, 0L);
-        recipeInfo.drawText(StatCollector.translateToLocal("CactusWonderMetadata") + numberFormat.format(offer));
+        recipeInfo.drawText(
+            StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.info.offer_value")
+                + numberFormat.format(offer));
     }
 }

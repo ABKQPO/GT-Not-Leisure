@@ -670,20 +670,20 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     @Override
     public String getMachineType() {
-        return StatCollector.translateToLocal("SteamElevatorRecipeType");
+        return StatCollector.translateToLocal("gtnl.machine.steam_elevator.recipe_type");
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_03"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_SteamElevator_04"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.3"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.4"))
             .beginStructureBlock(35, 43, 35, false)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_SteamElevator_Casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_elevator.casing"), 1)
             .toolTipFinisher();
         return tt;
     }
@@ -706,9 +706,10 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("wirelessMode")) {
-            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("Waila_WirelessMode"));
+            currentTip
+                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
             currentTip.add(
-                EnumChatFormatting.AQUA + StatCollector.translateToLocal("Waila_CurrentSteamCost")
+                EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_steam_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD

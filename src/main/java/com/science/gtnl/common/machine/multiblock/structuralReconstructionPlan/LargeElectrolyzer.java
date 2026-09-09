@@ -34,6 +34,7 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
+@IMetaTileEntity.SkipGenerateName
 public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -49,6 +50,11 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
 
     public LargeElectrolyzer(String aName) {
         super(aName);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_electrolyzer.name";
     }
 
     @Override
@@ -138,19 +144,19 @@ public class LargeElectrolyzer extends GTMMultiMachineBase<LargeElectrolyzer> im
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("LargeElectrolyzerRecipeType"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_00"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_01"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_02"))
-            .addInfo(StatCollector.translateToLocal("Tooltip_GTMMultiMachine_03"))
+        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.0"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportMultiAmp()
             .beginStructureBlock(5, 3, 4, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("Tooltip_LargeElectrolyzer_Casing"))
+            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
+            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_electrolyzer.tooltip.casing"))
             .toolTipFinisher();
         return tt;
     }
