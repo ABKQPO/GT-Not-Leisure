@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -703,73 +701,10 @@ public class DisassemblerHelper {
     }
 
     private static void addFluidPacketOutput(ObjectArrayList<ItemStack> outputs, FluidStack fluid, String source) {
-        ItemStack packet = createFluidPacket(fluid, source);
-        if (GTUtility.isStackValid(packet) && packet.stackSize > 0) {
+        ItemStack packet = ItemFluidPacket.newStack(fluid);
+        if (GTUtility.isStackValid(packet)) {
             outputs.add(packet);
         }
-    }
-
-    private static ItemStack createFluidPacket(FluidStack fluid, String source) {
-        if (fluid == null) {
-            ScienceNotLeisure.LOG.warn("Skipping null fluid while generating Shimmer recipe from {}.", source);
-            return null;
-        }
-        if (fluid.amount <= 0) {
-            ScienceNotLeisure.LOG.warn(
-                "Skipping fluid packet with non-positive amount while generating Shimmer recipe from {}: {}",
-                source,
-                describeFluidStack(fluid));
-            return null;
-        }
-        if (fluid.getFluid() == null) {
-            ScienceNotLeisure.LOG.warn(
-                "Skipping fluid packet with missing fluid type while generating Shimmer recipe from {}: {}",
-                source,
-                describeFluidStack(fluid));
-            return null;
-        }
-        Fluid fluidType = fluid.getFluid();
-        String fluidName = FluidRegistry.getDefaultFluidName(fluidType);
-        if (fluidName == null || fluidName.isEmpty()) {
-            fluidName = fluidType.getName();
-        }
-        if (fluidName == null || fluidName.isEmpty()) {
-            ScienceNotLeisure.LOG.warn(
-                "Skipping fluid packet with empty fluid name while generating Shimmer recipe from {}: {}",
-                source,
-                describeFluidStack(fluid));
-            return null;
-        }
-        try {
-            Fluid registeredFluid = FluidRegistry.getFluid(fluidName);
-            if (registeredFluid == null) {
-                ScienceNotLeisure.LOG.warn(
-                    "Skipping fluid packet with unregistered fluid while generating Shimmer recipe from {}: {}",
-                    source,
-                    describeFluidStack(fluid));
-                return null;
-            }
-            FluidStack registeredStack = registeredFluid == fluidType ? fluid
-                : new FluidStack(registeredFluid, fluid.amount);
-            return ItemFluidPacket.newStack(registeredStack);
-        } catch (IllegalArgumentException e) {
-            ScienceNotLeisure.LOG.warn(
-                "Skipping invalid fluid packet while generating Shimmer recipe from {}: {}",
-                source,
-                describeFluidStack(fluid),
-                e);
-            return null;
-        }
-    }
-
-    private static String describeFluidStack(FluidStack fluid) {
-        if (fluid == null) {
-            return "null";
-        }
-        String fluidName = fluid.getFluid() == null ? "null"
-            : fluid.getFluid()
-                .getName();
-        return "FluidStack{name=" + fluidName + ", amount=" + fluid.amount + "}";
     }
 
     public static void applyDebugCrafting(RecipeBuilder builder, ReversedRecipeRegistry.GTCraftingRecipe original) {
