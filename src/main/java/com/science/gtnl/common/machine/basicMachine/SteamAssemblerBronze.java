@@ -2,28 +2,26 @@ package com.science.gtnl.common.machine.basicMachine;
 
 import net.minecraft.util.StatCollector;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.ProgressBar;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
+import gregtech.api.gui.modularui.FallbackableSteamTexture;
+import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineBronze;
+import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.BasicUIProperties;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
+import gregtech.common.modularui2.util.SteamTexture;
 
 public class SteamAssemblerBronze extends MTEBasicMachineBronze {
 
@@ -50,6 +48,11 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
     @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.assemblerRecipes;
+    }
+
+    @Override
+    protected BasicUIProperties getUIProperties() {
+        return applyTo(super.getUIProperties());
     }
 
     @Override
@@ -152,37 +155,18 @@ public class SteamAssemblerBronze extends MTEBasicMachineBronze {
                 .setPos(151, 62));
     }
 
-    @Override
-    @Deprecated
-    public void addProgressBar(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
-        // TODO: Remove this mui1 fallback after SteamAssemblerBronze mui2 rollout is complete.
-        builder.widget(
-            setNEITransferRect(
-                new ProgressBar()
-                    .setProgress(() -> maxProgresstime() != 0 ? (float) getProgresstime() / maxProgresstime() : 0)
-                    .setTexture(uiProperties.progressBarTexture.get(), uiProperties.progressBarImageSize)
-                    .setDirection(uiProperties.progressBarDirection)
-                    .setPos(uiProperties.progressBarPos)
-                    .setSize(uiProperties.progressBarSize),
-                uiProperties.neiTransferRectId));
-        addProgressBarSpecialTextures(builder, uiProperties);
+    public static BasicUIProperties applyTo(BasicUIProperties baseProperties) {
+        return baseProperties.toBuilder()
+            .progressBarTextureSteam(new FallbackableSteamTexture(GTUITextures.PROGRESSBAR_ARROW_STEAM))
+            .progressBarTextureSteamMUI2(GTGuiTextures.PROGRESSBAR_ARROW_STEAM)
+            .slotOverlaysSteamMUI2(SteamAssemblerBronze::getSlotOverlay)
+            .build();
     }
 
-    @Override
-    @Deprecated
-    public void addProgressBarSpecialTextures(ModularWindow.Builder builder, BasicUIProperties uiProperties) {
-        // TODO: Remove this mui1 fallback after SteamAssemblerBronze mui2 rollout is complete.
-
-        for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
-            builder.widget(
-                new DrawableWidget().setDrawable(specialTexture.getLeft())
-                    .setSize(
-                        specialTexture.getRight()
-                            .getLeft())
-                    .setPos(
-                        specialTexture.getRight()
-                            .getRight()));
+    private static SteamTexture getSlotOverlay(int index, boolean isFluid, boolean isOutput, boolean isSpecial) {
+        if (isFluid) {
+            return GTGuiTextures.OVERLAY_SLOT_CANISTER_STEAM;
         }
-
+        return isOutput ? GTGuiTextures.OVERLAY_SLOT_OUT_STEAM : GTGuiTextures.OVERLAY_SLOT_IN_STEAM;
     }
 }
