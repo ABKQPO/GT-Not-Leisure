@@ -2,7 +2,6 @@ package com.science.gtnl.common.packet;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.glodblock.github.common.item.ItemFluidPacket;
 import com.glodblock.github.common.item.ItemWirelessUltraTerminal;
 import com.glodblock.github.inventory.InventoryHandler;
 import com.glodblock.github.inventory.item.IWirelessTerminal;
@@ -37,7 +37,9 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.PrimaryGui;
 import appeng.container.implementations.ContainerCraftAmount;
@@ -51,7 +53,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.cache.CraftingGridCache;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import gregtech.api.enums.Mods;
@@ -59,7 +60,7 @@ import io.netty.buffer.ByteBuf;
 
 public class KeyBindingHandler extends ServerboundPacket {
 
-    public ItemStack stack;
+    public IAEStack<?> stack;
     public String key;
     public boolean isAE = false;
 
@@ -71,22 +72,22 @@ public class KeyBindingHandler extends ServerboundPacket {
         this.key = key;
     }
 
-    public KeyBindingHandler(String key, ItemStack item, boolean isAE) {
+    public KeyBindingHandler(String key, IAEStack<?> stack, boolean isAE) {
         this.key = key;
-        this.stack = item;
+        this.stack = stack;
         this.isAE = isAE;
     }
 
     @Override
     protected void read(ByteBuf buf) {
-        this.stack = ByteBufUtils.readItemStack(buf);
+        this.stack = Platform.readStackByte(buf);
         this.key = ByteBufUtils.readUTF8String(buf);
         this.isAE = buf.readBoolean();
     }
 
     @Override
     protected void write(ByteBuf buf) {
-        ByteBufUtils.writeItemStack(buf, this.stack);
+        Platform.writeStackByte(this.stack, buf);
         ByteBufUtils.writeUTF8String(buf, this.key);
         buf.writeBoolean(this.isAE);
     }
@@ -96,17 +97,18 @@ public class KeyBindingHandler extends ServerboundPacket {
     @Override
     public void handleServer(EntityPlayerMP player) {
         var container = player.openContainer;
-        var item = stack;
+        var requestedStack = stack;
+        if (requestedStack == null) return;
         switch (key) {
             case "gui.ae_retrieve_item" -> ServerThreadUtil
-                .addScheduledTask(() -> retrieveItem(player, container, item, isAE));
+                .addScheduledTask(() -> retrieveStack(player, container, requestedStack, isAE));
             case "gui.ae_start_craft" -> ServerThreadUtil
-                .addScheduledTask(() -> startCraft(player, container, item, isAE));
+                .addScheduledTask(() -> startCraft(player, container, requestedStack, isAE));
         }
     }
 
-    private void retrieveItem(EntityPlayerMP player, Container container, ItemStack exItem, boolean isAE) {
-        long targetCount = exItem.getMaxStackSize();
+    private void retrieveStack(EntityPlayerMP player, Container container, IAEStack<?> requestedStack, boolean isAE) {
+        long targetCount = getTargetCount(requestedStack);
         if (!isAE) {
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack item = player.inventory.getStackInSlot(i);
@@ -134,7 +136,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                                 player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                                 continue;
                             }
-                            targetCount = wirelessRetrieve(player, exItem, gridNode, targetCount, obj);
+                            targetCount = wirelessRetrieve(player, requestedStack, gridNode, targetCount, obj);
                             if (targetCount <= 0) {
                                 return;
                             }
@@ -148,14 +150,14 @@ public class KeyBindingHandler extends ServerboundPacket {
                         player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                         continue;
                     }
-                    targetCount = wirelessRetrieve(player, exItem, gridNode, targetCount, obj);
+                    targetCount = wirelessRetrieve(player, requestedStack, gridNode, targetCount, obj);
                     if (targetCount <= 0) {
                         return;
                     }
                 }
             }
             if (Mods.Baubles.isModLoaded()) {
-                readBaublesR(player, exItem, targetCount);
+                readBaublesR(player, requestedStack, targetCount);
             }
         } else if (container instanceof AEBaseContainer c && container instanceof IContainerCraftingPacket t) {
             IGridNode gridNode = t.getNetworkNode();
@@ -166,61 +168,64 @@ public class KeyBindingHandler extends ServerboundPacket {
             IGrid grid = gridNode.getGrid();
             if (securityCheck(player, grid, SecurityPermissions.EXTRACT)) {
                 IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-                var iItemStorageChannel = storageGrid.getItemInventory();
                 var host = c.getTarget();
                 if (host instanceof IActionHost h) {
-                    var aeItem = Optional.ofNullable(
-                        iItemStorageChannel.extractItems(
-                            AEItemStack.create(exItem)
-                                .setStackSize(targetCount),
-                            Actionable.SIMULATE,
-                            new PlayerSource(player, h)));
-
-                    if (aeItem.isPresent()) {
-                        var aeItem0 = aeItem.get();
-                        var aeItem1 = iItemStorageChannel.extractItems(
-                            AEItemStack.create(exItem)
-                                .setStackSize(aeItem0.getStackSize()),
-                            Actionable.MODULATE,
-                            new PlayerSource(player, h));
-
-                        Utils.placeItemBackInInventory(player, aeItem1.getItemStack());
-                    }
+                    extractAndDeliver(player, storageGrid, requestedStack, targetCount, new PlayerSource(player, h));
                 }
             }
         }
     }
 
-    private long wirelessRetrieve(EntityPlayerMP player, ItemStack exItem, IGridNode gridNode, long targetCount,
-        WirelessTerminalGuiObject obj) {
+    private long wirelessRetrieve(EntityPlayerMP player, IAEStack<?> requestedStack, IGridNode gridNode,
+        long targetCount, WirelessTerminalGuiObject obj) {
         IGrid grid = gridNode.getGrid();
         if (securityCheck(player, grid, SecurityPermissions.EXTRACT)) {
             IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-            var iItemStorageChannel = storageGrid.getItemInventory();
-            var aeItem = Optional.ofNullable(
-                iItemStorageChannel.extractItems(
-                    AEItemStack.create(exItem)
-                        .setStackSize(targetCount),
-                    Actionable.SIMULATE,
-                    new PlayerSource(player, obj)));
-
-            if (aeItem.isPresent()) {
-                var aeItem0 = aeItem.get();
-                var aeItem1 = iItemStorageChannel.extractItems(
-                    AEItemStack.create(exItem)
-                        .setStackSize(aeItem0.getStackSize()),
-                    Actionable.MODULATE,
-                    new PlayerSource(player, obj));
-
-                targetCount -= aeItem1.getStackSize();
-
-                Utils.placeItemBackInInventory(player, aeItem1.getItemStack());
-            }
+            return extractAndDeliver(player, storageGrid, requestedStack, targetCount, new PlayerSource(player, obj));
         }
         return targetCount;
     }
 
-    private void startCraft(EntityPlayerMP player, Container container, ItemStack exItem, boolean isAE) {
+    private long getTargetCount(IAEStack<?> requestedStack) {
+        if (requestedStack instanceof IAEItemStack itemStack) {
+            return itemStack.getItemStack()
+                .getMaxStackSize();
+        }
+        return Math.max(1, requestedStack.getStackSize());
+    }
+
+    private long extractAndDeliver(EntityPlayerMP player, IStorageGrid storageGrid, IAEStack<?> requestedStack,
+        long targetCount, PlayerSource source) {
+        if (requestedStack instanceof IAEItemStack itemStack) {
+            IAEItemStack request = itemStack.copy();
+            request.setStackSize(targetCount);
+            IAEItemStack extracted = storageGrid.getItemInventory()
+                .extractItems(request, Actionable.MODULATE, source);
+            if (extracted != null) {
+                Utils.placeItemBackInInventory(player, extracted.getItemStack());
+                return targetCount - extracted.getStackSize();
+            }
+            return targetCount;
+        }
+
+        if (requestedStack instanceof IAEFluidStack fluidStack) {
+            IAEFluidStack request = fluidStack.copy();
+            request.setStackSize(targetCount);
+            IAEFluidStack extracted = storageGrid.getFluidInventory()
+                .extractItems(request, Actionable.MODULATE, source);
+            if (extracted != null) {
+                ItemStack packet = ItemFluidPacket.newStack(extracted);
+                if (packet != null) {
+                    Utils.placeItemBackInInventory(player, packet);
+                    return targetCount - extracted.getStackSize();
+                }
+            }
+        }
+
+        return targetCount;
+    }
+
+    private void startCraft(EntityPlayerMP player, Container container, IAEStack<?> requestedStack, boolean isAE) {
         UUID playUUID = player.getUniqueID();
         long worldTime = Instant.now()
             .getEpochSecond();
@@ -262,7 +267,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                                 player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                                 continue;
                             }
-                            openWirelessCraft(item, player, exItem, gridNode, i, false);
+                            openWirelessCraft(item, player, requestedStack, gridNode, i, false);
                             return;
                         }
                         continue;
@@ -274,12 +279,12 @@ public class KeyBindingHandler extends ServerboundPacket {
                         player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                         continue;
                     }
-                    openWirelessCraft(item, player, exItem, gridNode, i, false);
+                    openWirelessCraft(item, player, requestedStack, gridNode, i, false);
                     return;
                 }
             }
             if (Mods.Baubles.isModLoaded()) {
-                readBaublesS(player, exItem);
+                readBaublesS(player, requestedStack);
             }
         } else if (container instanceof ContainerMEMonitorable) {
             AEBaseContainer aec;
@@ -298,10 +303,10 @@ public class KeyBindingHandler extends ServerboundPacket {
             if (securityCheck(player, grid, SecurityPermissions.CRAFT)) {
                 CraftingGridCache cgc = gridNode.getGrid()
                     .getCache(ICraftingGrid.class);
-                IAEItemStack aeItem = AEItemStack.create(exItem)
-                    .setStackSize(1);
-                boolean isCraftable = cgc.getCraftingPatterns()
-                    .containsKey(aeItem);
+                IAEStack<?> stackToCraft = requestedStack.copy();
+                stackToCraft.setStackSize(1);
+                boolean isCraftable = cgc.getCraftingMultiPatterns()
+                    .containsKey(stackToCraft);
 
                 if (!isCraftable) {
                     player.addChatMessage(new ChatComponentTranslation("gtnl.nei.bookmark.ae_no_craft"));
@@ -328,11 +333,8 @@ public class KeyBindingHandler extends ServerboundPacket {
 
                     if (player.openContainer instanceof ContainerCraftAmount cca) {
                         cca.setPrimaryGui(primaryGui);
-                        var item0 = aeItem.getItemStack();
-                        cca.getCraftingItem()
-                            .putStack(item0);
-                        cca.setItemToCraft(aeItem);
-                        cca.setInitialCraftAmount(exItem.stackSize);
+                        cca.setItemToCraft(stackToCraft);
+                        cca.setInitialCraftAmount(requestedStack.getStackSize());
                         cca.detectAndSendChanges();
                     } else {
                         ScienceNotLeisure.LOG.error(
@@ -350,16 +352,16 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    private void openWirelessCraft(ItemStack terminal, EntityPlayerMP player, ItemStack exItem, IGridNode gridNode,
-        int i, boolean isBauble) {
+    private void openWirelessCraft(ItemStack terminal, EntityPlayerMP player, IAEStack<?> requestedStack,
+        IGridNode gridNode, int i, boolean isBauble) {
         IGrid grid = gridNode.getGrid();
         if (securityCheck(player, grid, SecurityPermissions.CRAFT)) {
             CraftingGridCache cgc = gridNode.getGrid()
                 .getCache(ICraftingGrid.class);
-            IAEItemStack aeItem = AEItemStack.create(exItem)
-                .setStackSize(1);
-            boolean isCraftable = cgc.getCraftingPatterns()
-                .containsKey(aeItem);
+            IAEStack<?> stackToCraft = requestedStack.copy();
+            stackToCraft.setStackSize(1);
+            boolean isCraftable = cgc.getCraftingMultiPatterns()
+                .containsKey(stackToCraft);
 
             if (!isCraftable) {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.nei.bookmark.ae_no_craft"));
@@ -402,11 +404,8 @@ public class KeyBindingHandler extends ServerboundPacket {
 
             if (player.openContainer instanceof ContainerCraftAmount cca) {
                 cca.setPrimaryGui(primaryGui);
-                var item0 = aeItem.getItemStack();
-                cca.getCraftingItem()
-                    .putStack(item0);
-                cca.setItemToCraft(aeItem);
-                cca.setInitialCraftAmount(exItem.stackSize);
+                cca.setItemToCraft(stackToCraft);
+                cca.setInitialCraftAmount(requestedStack.getStackSize());
                 cca.detectAndSendChanges();
             } else {
                 ScienceNotLeisure.LOG.error(
@@ -438,7 +437,7 @@ public class KeyBindingHandler extends ServerboundPacket {
     }
 
     @cpw.mods.fml.common.Optional.Method(modid = "Baubles")
-    private void readBaublesS(EntityPlayerMP player, ItemStack exitem) {
+    private void readBaublesS(EntityPlayerMP player, IAEStack<?> requestedStack) {
         for (int i = 0; i < BaublesApi.getBaubles(player)
             .getSizeInventory(); i++) {
             ItemStack item = BaublesApi.getBaubles(player)
@@ -467,7 +466,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                             player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                             continue;
                         }
-                        openWirelessCraft(item, player, exitem, gridNode, i, true);
+                        openWirelessCraft(item, player, requestedStack, gridNode, i, true);
                         return;
                     }
                     continue;
@@ -479,14 +478,14 @@ public class KeyBindingHandler extends ServerboundPacket {
                     player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                     continue;
                 }
-                openWirelessCraft(item, player, exitem, gridNode, i, true);
+                openWirelessCraft(item, player, requestedStack, gridNode, i, true);
                 return;
             }
         }
     }
 
     @cpw.mods.fml.common.Optional.Method(modid = "Baubles")
-    private void readBaublesR(EntityPlayerMP player, ItemStack exitem, long targetCount) {
+    private void readBaublesR(EntityPlayerMP player, IAEStack<?> requestedStack, long targetCount) {
         var inv = BaublesApi.getBaubles(player);
         if (inv == null) return;
         for (int i = 0; i < inv.getSizeInventory(); i++) {
@@ -515,7 +514,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                             player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                             continue;
                         }
-                        targetCount = wirelessRetrieve(player, exitem, gridNode, targetCount, obj);
+                        targetCount = wirelessRetrieve(player, requestedStack, gridNode, targetCount, obj);
                         if (targetCount <= 0) {
                             return;
                         }
@@ -529,7 +528,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                     player.addChatMessage(PlayerMessages.DeviceNotLinked.toChat());
                     continue;
                 }
-                targetCount = wirelessRetrieve(player, exitem, gridNode, targetCount, obj);
+                targetCount = wirelessRetrieve(player, requestedStack, gridNode, targetCount, obj);
                 if (targetCount <= 0) {
                     return;
                 }

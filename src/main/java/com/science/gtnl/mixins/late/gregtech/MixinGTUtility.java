@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.glodblock.github.common.item.ItemFluidDrop;
+import com.glodblock.github.common.item.ItemFluidPacket;
 
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTUtility;
@@ -21,7 +22,11 @@ public class MixinGTUtility {
         CallbackInfoReturnable<FluidStack> cir) {
         if (!Mods.AE2FluidCraft.isModLoaded()) return;
         if (itemStack == null) return;
-        if (!(itemStack.getItem() instanceof ItemFluidDrop)) return;
-        cir.setReturnValue(ItemFluidDrop.getFluidStack(itemStack));
+        if (itemStack.getItem() instanceof ItemFluidPacket) {
+            cir.setReturnValue(ItemFluidPacket.getFluidStack(itemStack));
+        }
+        if (itemStack.getItem() instanceof ItemFluidDrop) {
+            cir.setReturnValue(ItemFluidDrop.getFluidStack(itemStack));
+        }
     }
 }

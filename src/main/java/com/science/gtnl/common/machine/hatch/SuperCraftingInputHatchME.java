@@ -42,7 +42,6 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.glodblock.github.common.item.ItemFluidDrop;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.google.common.collect.ImmutableList;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -1362,23 +1361,18 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
 
             ItemStack[] sharedItems = this.parentMTE.getSharedItems();
             ItemStack[] manualInventory = getNonNullManualInventory();
-            IAEItemStack[] patternInputs = this.patternDetails.getInputs();
+            IAEStack<?>[] patternInputs = this.patternDetails.getAEInputs();
             ObjectArrayList<ItemStack> inputItems = new ObjectArrayList<>(
                 sharedItems.length + manualInventory.length + patternInputs.length);
             ObjectArrayList<FluidStack> inputFluids = new ObjectArrayList<>(patternInputs.length);
 
             Collections.addAll(inputItems, sharedItems);
 
-            for (IAEItemStack singleInput : patternInputs) {
-                if (singleInput == null) continue;
-                ItemStack singleInputItemStack = singleInput.getItemStack();
-                if (singleInputItemStack.getItem() instanceof ItemFluidDrop) {
-                    FluidStack fluidStack = ItemFluidDrop.getFluidStack(singleInputItemStack);
-                    if (fluidStack != null) {
-                        inputFluids.add(fluidStack);
-                    }
-                } else {
-                    inputItems.add(singleInputItemStack);
+            for (IAEStack<?> singleInput : patternInputs) {
+                if (singleInput instanceof IAEItemStack itemInput) {
+                    inputItems.add(itemInput.getItemStack());
+                } else if (singleInput instanceof IAEFluidStack fluidInput) {
+                    inputFluids.add(fluidInput.getFluidStack());
                 }
             }
 

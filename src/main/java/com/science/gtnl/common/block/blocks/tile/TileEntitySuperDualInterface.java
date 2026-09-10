@@ -18,7 +18,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.glodblock.github.common.item.ItemFluidDrop;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.glodblock.github.inventory.AEFluidInventory;
 import com.glodblock.github.inventory.IAEFluidTank;
@@ -213,11 +212,12 @@ public class TileEntitySuperDualInterface extends TileInterface implements ICust
         getDualityFluid().addDrops(drops);
         if (getInterfaceDuality().getWaitingToSend() != null) {
             for (var waitingStack : getInterfaceDuality().getWaitingToSend()) {
-                if (!(waitingStack instanceof IAEItemStack itemWaitingStack)) continue;
-                ItemStack is = itemWaitingStack.getItemStack();
-                if (is != null && is.getItem() instanceof ItemFluidDrop) {
-                    drops.add(ItemFluidPacket.newStack(ItemFluidDrop.getFluidStack(is)));
-                    is.stackSize = 0;
+                if (waitingStack instanceof IAEFluidStack fluidWaitingStack) {
+                    ItemStack packet = ItemFluidPacket.newStack(fluidWaitingStack);
+                    if (packet != null) {
+                        drops.add(packet);
+                        fluidWaitingStack.setStackSize(0);
+                    }
                 }
             }
         }

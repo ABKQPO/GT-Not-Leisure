@@ -15,15 +15,16 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
-import com.glodblock.github.common.item.ItemFluidDrop;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.common.packet.KeyBindingHandler;
 import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEStack;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -125,13 +126,20 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public boolean mouseClicked(GuiContainer gui, int mousex, int mousey, int button) {
         ItemStack stack = GuiContainerManager.getStackMouseOver(gui);
         if (stack == null) return false;
+        IAEStack<?> aeStack;
         if (stack.getItem() instanceof ItemFluidDisplay) {
             FluidStack fluidStack = ItemUtils.getFluidFromItemFluidDisplay(stack);
             if (fluidStack == null) return false;
             if (fluidStack.amount == 0) fluidStack.amount = 1;
-            stack = ItemFluidDrop.newStack(fluidStack);
+            aeStack = AEApi.instance()
+                .storage()
+                .createFluidStack(fluidStack);
+        } else {
+            aeStack = AEApi.instance()
+                .storage()
+                .createItemStack(stack);
         }
-        return startAEWork(stack, mousex, mousey);
+        return aeStack != null && startAEWork(aeStack, mousex, mousey);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -152,7 +160,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
         tryHandlePickBlockInput();
     }
 
-    public boolean startAEWork(ItemStack item, int mouseX, int mouseY) {
+    public boolean startAEWork(IAEStack<?> stack, int mouseX, int mouseY) {
         for (Map.Entry<String, BooleanSupplier> keyBinding : KEY_BINDINGS.entrySet()) {
             if (!keyBinding.getValue()
                 .getAsBoolean()) continue;
@@ -164,7 +172,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
             ScienceNotLeisure.network.sendToServer(
                 new KeyBindingHandler(
                     keyBinding.getKey(),
-                    item,
+                    stack,
                     MC.thePlayer.openContainer instanceof ContainerMEMonitorable));
             if (AE_START_CRAFT_KEY.equals(keyBinding.getKey())) {
                 var player = MC.thePlayer;
