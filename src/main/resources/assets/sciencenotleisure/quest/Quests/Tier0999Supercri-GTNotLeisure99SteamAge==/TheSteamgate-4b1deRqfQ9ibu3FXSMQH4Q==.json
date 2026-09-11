@@ -74,19 +74,19 @@
           "Count:3": 14,
           "Damage:2": 22,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "2:10": {
           "Count:3": 48,
           "Damage:2": 21,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "3:10": {
           "Count:3": 1,
           "Damage:2": 81,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         }
       },
       "taskID:8": "bq_standard:retrieval"

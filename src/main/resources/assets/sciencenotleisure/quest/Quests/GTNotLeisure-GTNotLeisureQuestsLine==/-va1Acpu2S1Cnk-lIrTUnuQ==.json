@@ -74,7 +74,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.WirelessUpgradeChip"
+          "id:8": "sciencenotleisure:wireless_upgrade_chip"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

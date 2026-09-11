@@ -14,10 +14,10 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.Stick",
+        "id:8": "sciencenotleisure:stick",
         "tag:10": {
           "Enchanted:1": 0,
-          "ID:8": "sciencenotleisure:item.SatietyRing",
+          "ID:8": "sciencenotleisure:satiety_ring",
           "Meta:3": 0
         }
       },
@@ -51,7 +51,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.SatietyRing"
+          "id:8": "sciencenotleisure:satiety_ring"
         }
       },
       "taskID:8": "bq_standard:retrieval"

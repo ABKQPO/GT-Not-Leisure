@@ -79,7 +79,7 @@
           "Count:3": 578,
           "Damage:2": 13,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "2:10": {
           "Count:3": 935,
@@ -97,7 +97,7 @@
           "Count:3": 2515,
           "Damage:2": 2,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaBlockGlass"
+          "id:8": "sciencenotleisure:meta_block_glass"
         },
         "5:10": {
           "Count:3": 2159,

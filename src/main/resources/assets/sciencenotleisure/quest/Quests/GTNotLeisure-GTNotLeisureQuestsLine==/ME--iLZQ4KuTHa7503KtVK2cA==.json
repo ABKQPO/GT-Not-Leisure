@@ -14,7 +14,7 @@
         "Count:3": 2,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.PartBeamFormer"
+        "id:8": "sciencenotleisure:part_beam_former"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -46,7 +46,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MEChisel"
+          "id:8": "sciencenotleisure:me_chisel"
         }
       },
       "taskID:8": "bq_standard:retrieval"
@@ -63,7 +63,7 @@
           "Count:3": 2,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.PartBeamFormer"
+          "id:8": "sciencenotleisure:part_beam_former"
         }
       },
       "taskID:8": "bq_standard:retrieval"
@@ -80,7 +80,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.PartActiveFormationPlane"
+          "id:8": "sciencenotleisure:part_active_formation_plane"
         }
       },
       "taskID:8": "bq_standard:retrieval"

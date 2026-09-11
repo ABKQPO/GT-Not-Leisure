@@ -69,19 +69,19 @@
           "Count:3": 12,
           "Damage:2": 23,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "2:10": {
           "Count:3": 5,
           "Damage:2": 25,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "3:10": {
           "Count:3": 44,
           "Damage:2": 24,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing"
+          "id:8": "sciencenotleisure:meta_casing"
         },
         "4:10": {
           "Count:3": 60,

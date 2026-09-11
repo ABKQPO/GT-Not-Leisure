@@ -14,7 +14,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.VeinMiningPickaxe",
+        "id:8": "sciencenotleisure:vein_mining_pickaxe",
         "tag:10": {
           "GT.ToolStats:10": {
             "MaxDamage:4": 20000000
@@ -55,7 +55,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.VeinMiningPickaxe",
+          "id:8": "sciencenotleisure:vein_mining_pickaxe",
           "tag:10": {
             "GT.ToolStats:10": {
               "MaxDamage:4": 20000000
